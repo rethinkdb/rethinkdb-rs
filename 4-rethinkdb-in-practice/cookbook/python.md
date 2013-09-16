@@ -234,6 +234,51 @@ We can use the following syntax:
 r.table("users").pluck({"contact": {"phone": True, "email": True}}).run()
 ```
 
+## Filtering based on a date range ##
+Suppose you want to retrieve all the posts which field date is
+between January 1st, 2012 (included) and January 1st, 2013 (excluded), you could do:
+
+```py
+r.table("posts").filter( lambda post:
+    (post["date"] >= r.time(2012, 1, 1, 'Z')) &
+    (post["date"] < r.time(2013, 1, 1, 'Z'))
+).run(conn)
+```
+
+## Filering with Regex ##
+
+If you want to retrieve all users whose last name starts with "Ma", 
+you can use `r.match` this way:
+
+```py
+# Will return Martin, Martinez, Marshall etc.
+r.table("users").filter( lambda user:
+    user["lastName"].match("^Ma")
+).run(conn)
+```
+
+If you want to retrieve all users whose last name ends with an "s", 
+you can use `r.match` this way:
+
+```py
+# Will return Williams, Jones, Davis etc.
+r.table("users").filter( lambda user:
+    user["lastName"].match("s$")
+).run(conn)
+```
+
+If you want to retrieve all users whose last name contains "ll", 
+you can use `r.match` this way:
+
+```py
+# Will return Williams, Miller, Allen etc.
+r.table("users").filter( lambda user:
+    user["lastName"].match("ll")
+).run(conn)
+```
+
+
+
 {% endfaqsection %}
 
 {% faqsection Manipulating documents %}
@@ -344,6 +389,22 @@ r.table("posts").map(lambda post:
         })
     ).run()
 ```
+
+## Renaming a field when retrieving documents ##
+
+Suppose we want to rename the field `id` to `id_user` when retrieving
+documents from the table `users`. We could do:
+
+```py
+r.table("users").map(
+    # Add the field id_user that is equal to the id one
+    r.row.merge({
+        "id_user": r.row["id"]
+    })
+    .without("id") # Remove the field id
+)
+```
+
 
 {% endfaqsection %}
 
