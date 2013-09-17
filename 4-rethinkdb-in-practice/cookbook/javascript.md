@@ -421,6 +421,103 @@ r.table("posts").map(function(post) {
     })
 ```
 
+## Performing a pivot operation ##
+
+Suppose the table `marks` stores the marks of every students per course:
+
+```js
+[
+    {
+        "name": "William Adama",
+        "mark": 90,
+        "id": 1,
+        "course": "English"
+    },
+    {
+        "name": "William Adama",
+        "mark": 70,
+        "id": 2,
+        "course": "Mathematics"
+    },
+    {
+        "name": "Laura Roslin",
+        "mark": 80,
+        "id": 3,
+        "course": "English"
+    },
+    {
+        "name": "Laura Roslin",
+        "mark": 80,
+        "id": 4,
+        "course": "Mathematics"
+    }
+]
+```
+
+You may be interested in retrieving the results in this format
+
+```js
+[
+    {
+        "name": "Laura Roslin",
+        "Mathematics": 80,
+        "English": 80
+    },
+    {
+        "name": "William Adama",
+        "Mathematics": 70,
+        "English": 90
+    }
+]
+```
+
+In this case, you can do a pivot operation with the `groupedMapReduce` and
+`coerceTo` commands.
+
+
+```javascript
+r.db('test').table('marks').groupedMapReduce(function(doc) { 
+        return doc("name") 
+    },
+    function(doc) { 
+        return [[doc("course"), doc("mark")]]
+    },
+    function(left, right) { 
+        return left.union(right)
+    }).map(function(result) { 
+        return r.expr({
+            name: result("group")
+        }).merge( result("reduction").coerceTo("OBJECT") )
+    })
+```
+
+_Note:_ A nicer syntax will eventually be added. See the
+[Github issue 838](https://github.com/rethinkdb/rethinkdb/issues/838) to track
+progress.
+
+
+## Performing an unpivot operation ##
+
+Doing an unpivot operation to "cancel" a pivot one can be done with the `concatMap`,
+`map` and `coerceTo` commands:
+
+```js
+r.table("pivotedMarks").concatMap( function(doc) {
+    return doc.without("name").coerceTo("array").map( function(values) {
+        return {
+            name: doc("name"),
+            course: values.nth(0),
+            mark: values.nth(1)
+        }
+    })
+})
+```
+
+_Note:_ A nicer syntax will eventually be added. See the
+[Github issue 838](https://github.com/rethinkdb/rethinkdb/issues/838) to track
+progress.
+
+
 {% endfaqsection %}
 
 {% faqsection Miscellaneous %}
