@@ -421,7 +421,7 @@ r.table("posts").map(function(post) {
     })
 ```
 
-## Pivot operation ##
+## Performing a pivot operation ##
 
 Suppose the table `marks` stores the marks of every students per course:
 
@@ -440,13 +440,13 @@ Suppose the table `marks` stores the marks of every students per course:
         "course": "Mathematics"
     },
     {
-        "name": "Mary McDonnell",
+        "name": "Laura Roslin",
         "mark": 80,
         "id": 3,
         "course": "English"
     },
     {
-        "name": "Mary McDonnell",
+        "name": "Laura Roslin",
         "mark": 80,
         "id": 4,
         "course": "Mathematics"
@@ -459,7 +459,7 @@ You may be interested in retrieving the results in this format
 ```js
 [
     {
-        "name": "Mary McDonnell",
+        "name": "Laura Roslin",
         "Mathematics": 80,
         "English": 80
     },
@@ -496,7 +496,7 @@ _Note:_ A nicer syntax will eventually be added. See the
 progress.
 
 
-## Unpivot operation ##
+## Performing an unpivot operation ##
 
 Doing an unpivot operation to "cancel" a pivot one can be done with the `concatMap`,
 `map` and `coerceTo` commands:
