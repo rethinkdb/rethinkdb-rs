@@ -166,7 +166,7 @@ run a query, the object being:
 ```
 
 This object is not a connection, but a cursor. To retrieve the results, you can
-call `next`, `each` or `toArray` on it.
+call `next`, `each` or `toArray` on this object.
 
 For example you can retrieve all the results and put them in an array with
 `toArray`:
