@@ -127,13 +127,56 @@ sudo npm install -g n
 If you're trying to run the RethinkDB JavaScript driver on an older
 version of Node.js, you might get an error similar to this one:
 
-```
+```js
 /home/user/rethinkdb.js:13727
 return buffer.slice(offset, end);
              ^
 TypeError: Object #<ArrayBuffer> has no method 'slice'
 at bufferSlice (/home/user/rethinkdb.js:13727:17)
 at Socket.TcpConnection.rawSocket.once.handshake_callback (/home/user/rethinkdb.js:13552:26)
+```
+
+## I get back a connection in my callback with the Node driver ##
+
+Many people have been reporting that they get back a connection object when they
+run a query, the object being:
+
+```js
+{
+    _conn: {
+        host: 'localhost',
+        port: 28015,
+        db: undefined,
+        authKey: '',
+        timeout: 20,
+        outstandingCallbacks: {},
+        nextToken: 2,
+        open: true,
+        buffer: <Buffer 04 00 00 00 08 02 10 01>,
+        _events: {},
+        rawSocket: { ... }
+    },
+    _token: 1,
+    _chunks: [],
+    _endFlag: true,
+    _contFlag: true,
+    _cont: null,
+    _cbQueue: []
+}
+```
+
+This object is not a connection, but a cursor. To retrieve the results, you can
+call `next`, `each` or `toArray` on it.
+
+For example you can retrieve all the results and put them in an array with
+`toArray`:
+
+```js
+r.table("test").run( conn, function(error, cursor) {
+    cursor.toArray( function(error, results) {
+        console.log(results) // results is an array of documents
+    })
+})
 ```
 
 {% endfaqsection %}
