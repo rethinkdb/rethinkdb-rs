@@ -346,6 +346,104 @@ r.table("posts").map{|post|
     }.run
 ```
 
+## Pivot operation ##
+
+Suppose the table `marks` stores the marks of every students per course:
+
+```rb
+[
+    {
+        :name => "William Adama",
+        :mark => 90,
+        :id => 1,
+        :course => "English"
+    },
+    {
+        :name => "William Adama",
+        :mark => 70,
+        :id => 2,
+        :course => "Mathematics"
+    },
+    {
+        :name => "Mary McDonnell",
+        :mark => 80,
+        :id => 3,
+        :course => "English"
+    },
+    {
+        :name => "Mary McDonnell",
+        :mark => 80,
+        :id => 4,
+        :course => "Mathematics"
+    }
+]
+```
+
+You may be interested in retrieving the results in this format
+
+```rb
+[
+    {
+        :name => "Mary McDonnell",
+        :Mathematics => 80,
+        :English => 80
+    },
+    {
+        :name => "William Adama",
+        :Mathematics => 70,
+        :English => 90
+    }
+]
+```
+
+In this case, you can do a pivot operation with the `grouped_map_reduce` and
+`coerce_to` commands.
+
+
+```rb
+r.db('test').table('marks').grouped_map_reduce( lambda {|doc|
+        doc["name"]
+    },
+    lambda {|doc|
+        [[doc["course"], doc["mark"]]]
+    },
+    lambda {|left, right|
+        left.union(right)
+    }).map{ |result|
+        r.expr({
+            :name => result["group"]
+        }).merge( result["reduction"].coerce_to("OBJECT") )
+    }
+```
+
+_Note:_ A nicer syntax will eventually be added. See the
+[Github issue 838](https://github.com/rethinkdb/rethinkdb/issues/838) to track
+progress.
+
+
+## Unpivot operation ##
+
+Doing an unpivot operation to "cancel" a pivot one can be done with the `concatMap`,
+`map` and `coerce_to` commands:
+
+```rb
+r.table("pivoted_marks").concat_map{ |doc|
+    doc.without("name").coerce_to("array").map{ |values|
+        {
+            :name => doc["name"],
+            :course => values[0],
+            :mark => values[1]
+        }
+    }
+}
+```
+
+_Note:_ A nicer syntax will eventually be added. See the
+[Github issue 838](https://github.com/rethinkdb/rethinkdb/issues/838) to track
+progress.
+
+
+
 {% endfaqsection %}
 
 {% faqsection Miscellaneous %}
