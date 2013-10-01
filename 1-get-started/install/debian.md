@@ -42,7 +42,7 @@ sudo apt-get install rethinkdb
 sudo apt-get install g++ protobuf-compiler protobuf-c-compiler libprotobuf-dev \
 libprotobuf-c0-dev libboost-dev libssl-dev libv8-dev libboost-program-options-dev \
 libgoogle-perftools-dev jsdoc-toolkit libprotoc-dev curl exuberant-ctags m4   \
-python-pip git-core
+python-pip git-core libtinfo-dev
 ```
 
 Debian does not provide Node.js, so it will be built alongside RethinkDB later
