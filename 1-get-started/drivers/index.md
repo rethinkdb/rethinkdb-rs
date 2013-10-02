@@ -25,13 +25,9 @@ alias: docs/guides/drivers/
 
 <div class="icon-box-category">
     <h1>Community-supported drivers &raquo;</h1>
-    <a class="mini icon-box driver-language" href="https://github.com/christopherhesse/rethinkgo">
-        <img src="/assets/images/docs/driver-languages/go.png" />
-        <p class="name">Go</p>
-    </a>
-    <a class="mini icon-box driver-language" href="http://danielmewes.github.io/php-rql/">
-        <img src="/assets/images/docs/driver-languages/php.png" />
-        <p class="name">PHP</p>
+    <a class="mini icon-box driver-language" href="https://github.com/unbit/librethinkdb">
+        <img src="/assets/images/docs/driver-languages/c.png" />
+        <p class="name">C</p>
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/mfenniak/rethinkdb-net">
         <img src="/assets/images/docs/driver-languages/csharp.png" />
@@ -41,29 +37,33 @@ alias: docs/guides/drivers/
         <img src="/assets/images/docs/driver-languages/commonlisp.png" />
         <p class="name smaller-font">Common Lisp</p>
     </a>
-    <a class="mini icon-box driver-language" href="http://hackage.haskell.org/package/rethinkdb">
-        <img src="/assets/images/docs/driver-languages/haskell.png" />
-        <p class="name">Haskell</p>
+    <a class="mini icon-box driver-language" href="https://github.com/azukiapp/elixir-rethinkdb">
+        <img src="/assets/images/docs/driver-languages/elixir.png" />
+        <p class="name">Elixir</p>
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/taybin/lethink">
         <img src="/assets/images/docs/driver-languages/erlang.png" />
         <p class="name">Erlang</p>
     </a>
-    <a class="mini icon-box driver-language" href="https://github.com/unbit/librethinkdb">
-        <img src="/assets/images/docs/driver-languages/c.png" />
-        <p class="name">C</p>
+    <a class="mini icon-box driver-language" href="https://github.com/christopherhesse/rethinkgo">
+        <img src="/assets/images/docs/driver-languages/go.png" />
+        <p class="name">Go</p>
     </a>
-    <a class="mini icon-box driver-language" href="https://github.com/taybin/lexthink">
-        <img src="/assets/images/docs/driver-languages/elixir.png" />
-        <p class="name">Elixir</p>
+    <a class="mini icon-box driver-language" href="http://hackage.haskell.org/package/rethinkdb">
+        <img src="/assets/images/docs/driver-languages/haskell.png" />
+        <p class="name">Haskell</p>
+    </a>
+    <a class="mini icon-box driver-language" href="https://github.com/dkhenry/rethinkjava">
+        <img src="/assets/images/docs/driver-languages/java.png" />
+        <p class="name">Java</span></p>
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/njlg/perl-rethinkdb">
         <img src="/assets/images/docs/driver-languages/perl.png" />
         <p class="name">Perl</p>
     </a>
-    <a class="mini icon-box driver-language" href="https://github.com/dkhenry/rethinkjava">
-        <img src="/assets/images/docs/driver-languages/java.png" />
-        <p class="name">Java</span></p>
+    <a class="mini icon-box driver-language" href="http://danielmewes.github.io/php-rql/">
+        <img src="/assets/images/docs/driver-languages/php.png" />
+        <p class="name">PHP</p>
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/kclay/rethink-scala">
         <img src="/assets/images/docs/driver-languages/scala.png" />
@@ -96,6 +96,6 @@ __Thanks to all our amazing driver contributors!__
 - [@kclay](https://github.com/kclay) (Scala): [https://github.com/kclay/rethink-scala](https://github.com/kclay/rethink-scala)
 - [@njlg](https://github.com/njlg) (Perl): [https://github.com/njlg/perl-rethinkdb](https://github.com/njlg/perl-rethinkdb)
 - [@orthecreedence](https://github.com/orthecreedence) (Common Lisp): [https://github.com/orthecreedence/cl-rethinkdb](https://github.com/orthecreedence/cl-rethinkdb)
-- [@taybin](https://github.com/taybin/lethink) (Erlang): [https://github.com/taybin/lethink](https://github.com/taybin/lethink)
-- [@taybin](https://github.com/taybin/lexthink) (Elixir): [https://github.com/taybin/lethink](https://github.com/taybin/lethink)
+- [@taybin](https://github.com/taybin) (Erlang): [https://github.com/taybin/lethink](https://github.com/taybin/lethink)
+- [@nuxlli](https://github.com/nuxlli) (Elixir): [https://github.com/azukiapp/elixir-rethinkdb](https://github.com/azukiapp/elixir-rethinkdb)
 - [@unbit](https://github.com/unbit) (C): [https://github.com/unbit/librethinkdb](https://github.com/unbit/librethinkdb)
