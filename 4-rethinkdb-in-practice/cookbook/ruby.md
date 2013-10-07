@@ -235,9 +235,18 @@ We can use the following syntax:
 r.table("users").pluck({"contact"=>{"phone"=>true, "email"=>true}}).run
 ```
 
+
 ## Filtering based on a date range ##
-Suppose you want to retrieve all the posts which field date is
+Suppose you want to retrieve all the posts whose date field is
 between January 1st, 2012 (included) and January 1st, 2013 (excluded), you could do:
+
+```rb
+r.table("posts").filter{ |post|
+    post.during(r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z'))
+}.run(conn)
+```
+
+You can also manually compare dates:
 
 ```rb
 r.table("posts").filter{ |post|
