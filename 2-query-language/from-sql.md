@@ -1103,6 +1103,6 @@ r.<a href="/api/#py:manipulating_tables-table_drop">table_drop</a>("users")
 Browse the following resources to learn more about ReQL:
 
 - [Lambda functions in RethinkDB](/blog/lambda-functions/)
-- [Introduction to map/reduce](/docs/overview/introduction-mapreduce/)
-- [Introduction to Joins](/docs/overview/joins/)
+- [Introduction to map/reduce](/docs/map-reduce/)
+- [Introduction to Joins](/docs/table-joins/)
 - [API Reference](/api/)

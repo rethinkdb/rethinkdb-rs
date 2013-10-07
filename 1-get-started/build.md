@@ -33,7 +33,7 @@ should be available for your operating system's repository. On Ubuntu,
 you can install build dependencies with apt-get:
 
 ```bash
-sudo apt-get install g++ protobuf-compiler protobuf-c-compiler libprotobuf-dev libv8-dev libgoogle-perftools-dev make libprotoc-dev default-jre libboost-dev
+sudo apt-get install g++ protobuf-compiler protobuf-c-compiler libprotobuf-dev libv8-dev libgoogle-perftools-dev make libprotoc-dev libboost-dev libtinfo-dev
 ```
 
 ## Build the server ##

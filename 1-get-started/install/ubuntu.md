@@ -36,8 +36,8 @@ There are a number of packages required for the build process. On Ubuntu, you ca
 
 ```bash
 sudo apt-get install g++ protobuf-compiler protobuf-c-compiler libprotobuf-dev
-libv8-dev libgoogle-perftools-dev make libprotoc-dev default-jre libboost-dev
-python-pip python-dev libyaml-dev nodejs npm git-core
+libv8-dev libgoogle-perftools-dev make libprotoc-dev libboost-dev
+python-pip python-dev libyaml-dev nodejs npm git-core libtinfo-dev
 ```
 
 Install PyYAML, which is required for building the internal documentation:

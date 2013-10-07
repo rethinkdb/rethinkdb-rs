@@ -32,7 +32,7 @@ sudo rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6
 Install the main dependencies:
 
 ```bash
-sudo yum install git-core boost-static m4 gcc-c++ python-pip v8-devel nodejs npm
+sudo yum install git-core boost-static m4 gcc-c++ python-pip v8-devel nodejs npm ncurses-devel
 ```
 
 Install PyYAML, which is required for building the internal documentation:

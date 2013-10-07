@@ -22,7 +22,7 @@ The following instructions were tested on Fedora 18.
 Install the main dependencies:
 
 ```bash
-sudo yum install gcc-c++ protobuf-compiler protobuf-c protobuf-c-devel protobuf-devel boost-devel openssl-devel v8-devel gperftools-devel nodejs npm curl ctags-etags m4 protobuf-static boost-static git-core python-pip
+sudo yum install gcc-c++ protobuf-compiler protobuf-c protobuf-c-devel protobuf-devel boost-devel openssl-devel v8-devel gperftools-devel nodejs npm curl ctags-etags m4 protobuf-static boost-static git-core python-pip ncurses-devel
 ```
 
 Install PyYAML, which is required for building the internal documentation:
