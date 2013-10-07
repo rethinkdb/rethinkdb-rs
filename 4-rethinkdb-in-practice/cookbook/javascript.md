@@ -284,6 +284,60 @@ r.table("users").pluck({contact: {phone: true, email: true}})
     })
 ```
 
+
+## Filtering based on a date range ##
+Suppose you want to retrieve all the posts whose date field is
+between January 1st, 2012 (included) and January 1st, 2013 (excluded), you could do:
+
+```js
+r.table("posts").filter( function(post) {
+    return post("date").during( r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z') )
+}).run( conn, callback)
+```
+
+You can also manually compare dates:
+
+```js
+r.table("posts").filter( function(post) {
+    return post("date").ge( r.time(2012, 1, 1, 'Z') ).
+       and(post("date").lt( r.time(2013, 1, 1, 'Z') ))
+}).run( conn, callback)
+```
+
+
+## Filtering with Regex ##
+
+If you want to retrieve all users whose last name starts with "Ma", 
+you can use `r.match` this way:
+
+```js
+// Will return Martin, Martinez, Marshall etc.
+r.table("users").filter( function(user) {
+    return user("lastName").match("^Ma")
+}).run( conn, callback)
+```
+
+If you want to retrieve all users whose last name ends with an "s", 
+you can use `r.match` this way:
+
+```js
+// Will return Williams, Jones, Davis etc.
+r.table("users").filter( function(user) {
+    return user("lastName").match("s$")
+}).run( conn, callback)
+```
+
+If you want to retrieve all users whose last name contains "ll", 
+you can use `r.match` this way:
+
+```js
+// Will return Williams, Miller, Allen etc.
+r.table("users").filter( function(user) {
+    return user("lastName").match("ll")
+}).run( conn, callback)
+```
+
+
 {% endfaqsection %}
 
 {% faqsection Manipulating documents %}
@@ -517,6 +571,20 @@ _Note:_ A nicer syntax will eventually be added. See the
 [Github issue 838](https://github.com/rethinkdb/rethinkdb/issues/838) to track
 progress.
 
+
+## Renaming a field when retrieving documents ##
+
+Suppose we want to rename the field `id` to `idUser` when retrieving
+documents from the table `users`. We could do:
+
+```js
+r.table("users").map(
+    r.row.merge({ // Add the field idUser that is equal to the id one
+        idUser: r.row("id")
+    })
+    .without("id") // Remove the field id
+)
+```
 
 {% endfaqsection %}
 

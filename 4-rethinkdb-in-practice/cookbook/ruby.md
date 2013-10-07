@@ -235,6 +235,61 @@ We can use the following syntax:
 r.table("users").pluck({"contact"=>{"phone"=>true, "email"=>true}}).run
 ```
 
+
+## Filtering based on a date range ##
+Suppose you want to retrieve all the posts whose date field is
+between January 1st, 2012 (included) and January 1st, 2013 (excluded), you could do:
+
+```rb
+r.table("posts").filter{ |post|
+    post.during(r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z'))
+}.run(conn)
+```
+
+You can also manually compare dates:
+
+```rb
+r.table("posts").filter{ |post|
+    (post["date"] >= r.time(2012, 1, 1, 'Z')) &
+    (post["date"] < r.time(2013, 1, 1, 'Z'))
+}.run(conn)
+```
+
+
+## Filtering with regex ##
+
+If you want to retrieve all users whose last name starts with "Ma", 
+you can use `r.match` this way:
+
+```rb
+# Will return Martin, Martinez, Marshall etc.
+r.table("users").filter{ |user|
+    user["lastName"].match("^Ma")
+}.run(conn)
+```
+
+If you want to retrieve all users whose last name ends with an "s", 
+you can use `r.match` this way:
+
+```rb
+# Will return Williams, Jones, Davis etc.
+r.table("users").filter{ |user|
+    user["lastName"].match("s$")
+}.run(conn)
+```
+
+If you want to retrieve all users whose last name contains "ll", 
+you can use `r.match` this way:
+
+```rb
+# Will return Williams, Miller, Allen etc.
+r.table("users").filter{ |user|
+    user["lastName"].match("ll")
+}.run(conn)
+```
+
+
+
 {% endfaqsection %}
 
 {% faqsection Manipulating documents %}
@@ -442,6 +497,21 @@ _Note:_ A nicer syntax will eventually be added. See the
 [Github issue 838](https://github.com/rethinkdb/rethinkdb/issues/838) to track
 progress.
 
+
+## Renaming a field when retrieving documents ##
+
+Suppose we want to rename the field `id` to `id_user` when retrieving
+documents from the table `users`. We could do:
+
+```rb
+r.table("users").map{ |user|
+    # Add the field id_user that is equal to the id one
+    user.merge({
+        "id_user" => user["id"]
+    })
+    .without("id") # Remove the field id
+}
+```
 
 
 {% endfaqsection %}
