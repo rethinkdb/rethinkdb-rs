@@ -110,7 +110,7 @@ conn.use('heroes')
 ```
 
 
-## run ##
+## [run](run/) ##
 
 {% apibody %}
 query.run(conn[, use_outdated=False, time_format=<time_format>]) → cursor
@@ -118,12 +118,14 @@ query.run(conn[, use_outdated=False, time_format=<time_format>]) → cursor
 
 Run a query on a connection.
 
-__Example: Call run on the connection with a query to execute the query.
+__Example:__ Call run on the connection with a query to execute the query.
 
 ```py
 for doc in r.table('marvel').run(conn):
     print doc
 ```py
+
+[Read more &rarr;](run/)
 
 
 {% endapisection %}
@@ -876,7 +878,7 @@ function.
 
 `grouped_map_reduce` is a generalized form of group by.
 
-Example: It's only fair that heroes be compared against their weight class.
+__Example:__ It's only fair that heroes be compared against their weight class.
 
 ```py
 r.table('marvel').grouped_map_reduce(
@@ -898,7 +900,7 @@ Groups elements by the values of the given attributes and then applies the given
 reduction. Though similar to `groupedMapReduce`, `groupBy` takes a standardized object
 for specifying the reduction. Can be used with a number of predefined common reductions.
 
-Example: Using a predefined reduction we can easily find the average strength of members of each weight class.
+__Example:__ Using a predefined reduction we can easily find the average strength of members of each weight class.
 
 ```py
 r.table('marvel').group_by('weightClass', r.avg('strength')).run(conn)

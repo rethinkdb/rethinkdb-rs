@@ -1,7 +1,7 @@
 ---
 layout: documentation
 title: "ReQL command reference"
-active: docs
+active: api
 permalink: api/
 ---
 
