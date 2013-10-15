@@ -3,6 +3,7 @@ layout: api-command
 language: Python
 permalink: api/python/get_all/
 command: get_all
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/selecting-data/get_all.md
 ---
 
 {% apibody %}

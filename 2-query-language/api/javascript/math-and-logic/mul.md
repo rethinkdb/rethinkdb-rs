@@ -3,6 +3,7 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/mul/
 command: mul
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/math-and-logic/mul.md
 ---
 
 {% apibody %}

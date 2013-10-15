@@ -3,6 +3,7 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/run/
 command: run
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/accessing-rql/run.md
 ---
 
 {% apibody %}

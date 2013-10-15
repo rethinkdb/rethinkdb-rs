@@ -3,6 +3,7 @@ layout: api-command
 language: Python
 permalink: api/python/row/
 command: row
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/document-manipulation/row.md
 ---
 
 {% apibody %}

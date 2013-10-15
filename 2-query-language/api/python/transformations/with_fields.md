@@ -3,6 +3,7 @@ layout: api-command
 language: Python
 permalink: api/python/with_fields/
 command: with_fields
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/transformations/with_fields.md
 ---
 
 {% apibody %}

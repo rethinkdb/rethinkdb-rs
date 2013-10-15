@@ -3,6 +3,7 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/order_by/
 command: order_by 
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/transformations/order_by.md
 ---
 
 {% apibody %}

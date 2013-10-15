@@ -3,6 +3,7 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/during/
 command: during
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/dates-and-times/during.md
 ---
 
 {% apibody %}

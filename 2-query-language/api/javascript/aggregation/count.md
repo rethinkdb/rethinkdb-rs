@@ -3,6 +3,7 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/count/
 command: count
+github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/javascript/aggregation/count.md
 ---
 
 {% apibody %}

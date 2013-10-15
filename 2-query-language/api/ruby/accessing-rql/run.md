@@ -3,6 +3,7 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/run/
 command: run
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/accessing-rql/run.md
 ---
 
 {% apibody %}
@@ -15,7 +16,7 @@ __Example:__ Call run on the connection with a query to execute the query.
 
 ```rb
 r.table('marvel').run(conn).each{|x| p x}
-```rb
+```
 
 
 __Example:__ If you are OK with potentially out of date data from all the tables

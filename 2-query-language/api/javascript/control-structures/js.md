@@ -1,26 +1,35 @@
 ---
 layout: api-command 
 language: JavaScript
-permalink: api/javascript/expr/
-command: expr
+permalink: api/javascript/js/
+command: js
+github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/javascript/control-structures/js.md
 ---
 
 {% apibody %}
-r.expr(value) → value
+r.js(jsString) → value
 {% endapibody %}
 
-Construct a RQL JSON object from a native object.
+Create a javascript expression.
 
-__Example:__ Objects wrapped with expr can then be manipulated by RQL API functions.
+__Example:__ Concatenate two strings using Javascript'
 
 ```js
-r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)
+r.js("'str1' + 'str2'").run(conn, callback)
+```
+
+__Example:__ Select all documents where the 'magazines' field is greater than 5 by running Javascript on the server.
+
+```js
+r.table('marvel').filter(
+    r.js('(function (row) { return row.magazines > 5; })')
+).run(conn, callback)
 ```
 
 
-__Example:__ In JavaScript, you can also do this with just r.
+__Example:__ You may also specify a timeout in seconds (defaults to 5).
 
 ```js
-r({a: 'b'}).merge({b: [1,2,3]}).run(conn, callback)
+r.js('while(true) {}', {timeout:1.3}).run(conn, callback)
 ```
 

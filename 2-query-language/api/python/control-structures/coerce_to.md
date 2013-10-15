@@ -3,6 +3,7 @@ layout: api-command
 language: Python
 permalink: api/python/coerce_to/
 command: coerce_to
+github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/python/control-structures/coerce_to.md
 ---
 
 {% apibody %}

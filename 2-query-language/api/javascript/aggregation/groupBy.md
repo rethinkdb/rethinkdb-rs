@@ -3,6 +3,7 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/group_by/
 command: groupBy
+github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/javascript/aggregation/groupBy.md
 ---
 
 {% apibody %}

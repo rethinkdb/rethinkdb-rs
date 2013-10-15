@@ -3,6 +3,7 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/group_by/
 command: group_by 
+github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/ruby/aggregation/group_by.md
 ---
 
 {% apibody %}

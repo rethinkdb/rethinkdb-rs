@@ -3,6 +3,7 @@ layout: api-command
 language: Python
 permalink: api/python/eq_join/
 command: eq_join
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/joins/eq_join.md
 ---
 
 {% apibody %}

@@ -3,6 +3,7 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/day_of_week/
 command: dayOfWeek
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/dates-and-times/dayOfWeek.md
 ---
 {% apibody %}
 time.day_of_week() → number

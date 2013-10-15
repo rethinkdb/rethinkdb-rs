@@ -3,6 +3,7 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/count/
 command: count 
+github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/ruby/aggregation/count.md
 ---
 
 

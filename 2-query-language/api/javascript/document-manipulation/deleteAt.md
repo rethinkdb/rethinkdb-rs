@@ -3,6 +3,7 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/delete_at/
 command: delete_at
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/deleteAt.md
 ---
 
 {% apibody %}

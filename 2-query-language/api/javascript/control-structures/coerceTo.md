@@ -3,6 +3,7 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/coerce_to/
 command: coerceTo
+github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/javascript/control-structures/coerceTo.md
 ---
 
 {% apibody %}

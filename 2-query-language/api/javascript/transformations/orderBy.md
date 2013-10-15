@@ -3,6 +3,7 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/order_by/
 command: orderBy
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/transformations/orderBy.md
 ---
 
 {% apibody %}

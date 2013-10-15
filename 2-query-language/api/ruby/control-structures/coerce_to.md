@@ -3,6 +3,7 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/coerce_to/
 command: coerce_to 
+github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/ruby/control-structures/coerce_to.md
 ---
 
 {% apibody %}

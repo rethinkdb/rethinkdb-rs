@@ -3,6 +3,7 @@ layout: api-command
 language: Python
 permalink: api/python/replace/
 command: replace
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/writing-data/replace.md
 ---
 
 {% apibody %}
