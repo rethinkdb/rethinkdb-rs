@@ -1,5 +1,6 @@
 ---
 layout: api-command 
+language: JavaScript
 permalink: api/javascript/table/
 command: table
 ---

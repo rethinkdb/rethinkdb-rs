@@ -1,5 +1,6 @@
 ---
 layout: api-command 
+language: JavaScript
 permalink: api/javascript/day_of_week/
 command: dayOfWeek
 ---

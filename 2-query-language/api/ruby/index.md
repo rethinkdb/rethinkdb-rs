@@ -111,7 +111,7 @@ conn.use('heroes')
 ```
 
 
-## run ##
+## [run](run/) ##
 
 {% apibody %}
 query.run(conn[, opts]) → cursor
@@ -123,8 +123,9 @@ __Example:__ Call run on the connection with a query to execute the query.
 
 ```rb
 r.table('marvel').run(conn).each{|x| p x}
-```rb
+```
 
+[Read more &rarr;](run/)
 
 {% endapisection %}
 
@@ -187,7 +188,7 @@ r.db_list.run(conn)
 
 
 {% apisection Manipulating tables%}
-## table_create ##
+## [table_create](table_create/) ##
 
 {% apibody %}
 db.table_create(table_name[, options]) → object
@@ -204,6 +205,8 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 ```rb
 r.db('test').table_create('dc_universe').run(conn)
 ```
+
+[Read more &rarr;](table_create/)
 
 ## table_drop ##
 
@@ -239,7 +242,7 @@ r.db('test').table_list().run(conn)
 ```
 
 
-## index_create ##
+## [index_create](index_create/) ##
 
 {% apibody %}
 table.index_create(index_name[, index_function]) → object
@@ -253,6 +256,8 @@ index.
 ```rb
 r.table('dc').index_create('code_name').run(conn)
 ```
+
+[Read more &rarr;](index_create/)
 
 
 ## index_drop ##
@@ -290,7 +295,8 @@ r.table('marvel').index_list().run(conn)
 
 {% apisection Writing data%}
 
-## insert ##
+## [insert](insert/) ##
+
 {% apibody %}
 table.insert(json | [json][, { :durability => 'soft', :return_vals => true :upsert => true}]) → object
 {% endapibody %}
@@ -316,7 +322,10 @@ r.table('marvel').insert(
     { :superhero => 'Iron Man', :superpower => 'Arc Reactor' }).run(conn)
 ```
 
-## update ##
+[Read more &rarr;](insert/)
+
+
+## [update](update/) ##
 
 {% apibody %}
 table.update(json | expr[, durability => 'soft', return_vals => true]) → object
@@ -346,8 +355,10 @@ the document.
 r.table('marvel').get('superman').update{ {:age => 30} }.run(conn)
 ```
 
+[Read more &rarr;](update/)
 
-## replace ##
+
+## [replace](replace/) ##
 
 {% apibody %}
 table.replace(json | expr[, durability => 'soft', return_vals => true]) → object
@@ -384,11 +395,12 @@ r.table('marvel').get('superman').replace({
     :id => 'superman',
     :age => 30
 }).run(conn)
-
 ```
 
+[Read more &rarr;](replace/)
 
-## delete ##
+
+## [delete](delete/) ##
 
 {% apibody %}
 table.delete[({:durability => soft, :return_vals => true})] → object
@@ -418,6 +430,7 @@ __Example:__ Delete superman from the database.
 r.table('marvel').get('superman').delete.run(conn)
 ```
 
+[Read more &rarr;](delete/)
 
 {% endapisection %}
 
@@ -439,7 +452,7 @@ r.db('heroes').table('marvel').run(conn)
 ```
 
 
-## table ##
+## [table](table/) ##
 
 {% apibody %}
 db.table(name[, opts]) → table
@@ -453,6 +466,8 @@ __Example:__ Return all documents in the table 'marvel' of the default database.
 ```rb
 r.table('marvel').run(conn)
 ```
+
+[Read more &rarr;](table/)
 
 ## get ##
 
@@ -469,7 +484,7 @@ r.table('marvel').get('superman').run(conn)
 ```
 
 
-## get_all ##
+## [get_all](get_all/) ##
 
 {% apibody %}
 table.get_all(key[, key2...], [, :index => 'id']) → selection
@@ -484,8 +499,9 @@ __Example:__ Secondary index keys are not guaranteed to be unique so we cannot q
 r.table('marvel').get_all('man_of_steel', :index => 'code_name').run(conn)
 ```
 
+[Read more &rarr;](get_all/)
 
-## between ##
+## [between](between/) ##
 
 {% apibody %}
 table.between(lower_key, upper_key[, :index => 'id', :left_bound => 'closed', :right_bound => 'open']) → selection
@@ -504,7 +520,9 @@ __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open 
 r.table('marvel').between(10, 20).run(conn)
 ```
 
-## filter ##
+[Read more &rarr;](between/)
+
+## [filter](filter/) ##
 
 {% apibody %}
 sequence.filter(predicate) → selection
@@ -526,7 +544,7 @@ __Example:__ Get all active users aged 30.
 r.table('users').filter('active' => true, 'profile' => {'age' => 30}).run(conn)
 ```
 
-
+[Read more &rarr;](filter/)
 
 {% endapisection %}
 
@@ -576,7 +594,7 @@ r.table('marvel').outer_join(r.table('dc')) {|marvel_row, dc_row|
 ```
 
 
-## eq_join ##
+## [eq_join](eq_join/) ##
 
 {% apibody %}
 sequence.eq_join(left_attr, other_table[, index='id']) → stream
@@ -590,6 +608,8 @@ __Example:__ Let our heroes join forces to battle evil!
 ```rb
 r.table('marvel').eq_join(:main_dc_collaborator, r.table('dc')).run(conn)
 ```
+
+[Read more &rarr;](eq_join/)
 
 
 ## zip ##
@@ -632,7 +652,7 @@ r.table('marvel').map {|hero|
 ```
 
 
-## with_fields ##
+## [with_fields](with_fields/) ##
 
 {% apibody %}
 sequence.with_selectors([selector1, selector2...]) → stream
@@ -649,6 +669,8 @@ __Example:__ Get a list of heroes and their nemeses, excluding any heroes that l
 ```rb
 r.table('marvel').with_fields('id', 'nemesis')
 ```
+
+[Read more &rarr;](with_fields/)
 
 
 ## concatMap ##
@@ -671,7 +693,7 @@ r.table('marvel').concat_map {|hero|
 ```
 
 
-## order_by ##
+## [order_by](order_by/) ##
 
 {% apibody %}
 sequence.order_by(key1, [key2...]) → stream
@@ -687,6 +709,8 @@ __Example:__ Order our heroes by a series of performance metrics.
 ```rb
 r.table('marvel').order_by(:enemies_vanquished, :damsels_saved).run(conn)
 ```
+
+[Read more &rarr;](order_by/)
 
 
 ## skip ##
@@ -751,7 +775,7 @@ r.expr([1,2,3])[1].run(conn)
 ```
 
 
-## indexes_of ##
+## [indexes_of](indexes_of/) ##
 
 {% apibody %}
 sequence.indexes_of(datum | predicate) → array
@@ -764,6 +788,8 @@ __Example:__ Find the position of the letter 'c'.
 ```rb
 r.expr(['a','b','c']).indexes_of('c').run(conn)
 ```
+
+[Read more &rarr;](indexes_of/)
 
 
 
@@ -839,7 +865,7 @@ r.table('marvel').order_by(:strength)[5..10].run(conn)
 ```
 
 
-## count ##
+## [count](count/) ##
 
 {% apibody %}
 sequence.count([filter]) → number
@@ -855,6 +881,7 @@ __Example:__ Just how many super heroes are there?
 (r.table('marvel').count() + r.table('dc').count()).run(conn)
 ```
 
+[Read more &rarr;](count/)
 
 ## distinct ##
 
@@ -896,7 +923,7 @@ r.table('marvel').grouped_map_reduce(
 ```
 
 
-## group_by ##
+## [group_by](group_by/) ##
 
 {% apibody %}
 sequence.group_by(selector1[, selector2...], reduction_object) → array
@@ -912,8 +939,10 @@ __Example:__ Using a predefined reduction we can easily find the average strengt
 r.table('marvel').group_by(:weight_class, r.avg(:strength)).run(conn)
 ```
 
+[Read more &rarr;](group_by/)
 
-## contains ##
+
+## [contains](contains/) ##
 
 {% apibody %}
 sequence.contains(value1[, value2...]) → bool
@@ -929,6 +958,7 @@ __Example:__ Has Iron Man ever fought Superman?
 r.table('marvel').get('ironman')[:opponents].contains('superman').run(conn)
 ```
 
+[Read more &rarr;](contains/)
 
 
 {% endapisection %}
@@ -988,7 +1018,7 @@ r.table('marvel').group_by(:strength, r.avg(:agility)).run(conn)
 
 {% apisection Document manipulation%}
 
-## pluck ##
+## [pluck](pluck/) ##
 
 {% apibody %}
 sequence.pluck([selector1, selector2...]) → stream
@@ -1007,8 +1037,10 @@ document.
 r.table('marvel').get('IronMan').pluck('reactorState', 'reactorPower').run(conn)
 ```
 
+[Read more &rarr;](pluck/)
 
-## without ##
+
+## [without](without/) ##
 
 {% apibody %}
 sequence.without([selector1, selector2...]) → stream
@@ -1027,8 +1059,10 @@ out the list of IronMan's romantic conquests.
 r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn)
 ```
 
+[Read more &rarr;](without/)
 
-## merge ##
+
+## [merge](merge/) ##
 
 {% apibody %}
 singleSelection.merge(object) → object
@@ -1046,6 +1080,7 @@ r.table('marvel').get('IronMan').merge(
     r.table('loadouts').get('alienInvasionKit')).run(conn)
 ```
 
+[Read more &rarr;](merge/)
 
 ## append ##
 
@@ -1172,7 +1207,7 @@ r.table('marvel').get('IronMan')[:first_appearance].run(conn)
 ```
 
 
-## has_fields ##
+## [has_fields](has_fields/) ##
 
 {% apibody %}
 sequence.has_fields([selector1, selector2...]) → stream
@@ -1191,6 +1226,7 @@ __Example:__ Which heroes are married?
 r.table('marvel').has_fields(:spouse).run(conn)
 ```
 
+[Read more &rarr;](has_fields/)
 
 
 ## insert_at ##
@@ -1223,7 +1259,7 @@ r.expr(["Iron Man", "Spider-Man"]).splice_at(1, ["Hulk", "Thor"]).run(conn)
 ```
 
 
-## delete_at ##
+## [delete_at](delete_at/) ##
 
 {% apibody %}
 array.delete_at(index [,endIndex]) → array
@@ -1237,6 +1273,7 @@ __Example:__ Hulk decides to leave the avengers.
 r.expr(["Iron Man", "Hulk", "Spider-Man"]).delete_at(1).run(conn)
 ```
 
+[Read more &rarr;](delete_at/)
 
 ## change_at ##
 
@@ -1274,7 +1311,7 @@ r.table('marvel').get('ironman').keys.run(conn)
 {% apisection String manipulation%}
 These commands provide string operators.
 
-## match ##
+## [match](match/) ##
 
 {% apibody %}
 string.match(regexp) → array
@@ -1292,13 +1329,14 @@ __Example:__ Get all users whose name starts with A.
 r.table('users').filter{|row| row[:name].match("^A")}.run(conn)
 ```
 
+[Read more &rarr;](match/)
 
 {% endapisection %}
 
 
 {% apisection Math and logic%}
 
-## + ##
+## [+](add/) ##
 
 {% apibody %}
 number + number → number
@@ -1315,8 +1353,10 @@ __Example:__ It's as easy as 2 + 2 = 4.
 (r.expr(2) + 2).run(conn)
 ```
 
+[Read more &rarr;](add/)
 
-## - ##
+
+## [-](sub/) ##
 
 {% apibody %}
 number - number → number
@@ -1332,8 +1372,9 @@ __Example:__ It's as easy as 2 - 2 = 0.
 (r.expr(2) - 2).run(conn)
 ```
 
+[Read more &rarr;](sub/)
 
-## * ##
+## [*](mul/) ##
 
 {% apibody %}
 number * number → number
@@ -1347,6 +1388,8 @@ __Example:__ It's as easy as 2 * 2 = 4.
 ```rb
 (r.expr(2) * 2).run(conn)
 ```
+
+[Read more &rarr;](mul/)
 
 ## \ ##
 
@@ -1614,7 +1657,7 @@ r.table("users").filter{ |user|
 ```
 
 
-## during ##
+## [during](during/) ##
 
 {% apibody %}
 time.during(start_time, end_time[, left_bound="open/closed", right_bound="open/closed"]) → bool
@@ -1629,6 +1672,8 @@ r.table("posts").filter{ |post|
     post['date'].during(r.time(2013, 12, 1), r.time(2013, 12, 10))
 }.run(conn)
 ```
+
+[Read more &rarr;](during/)
 
 
 
@@ -1686,7 +1731,7 @@ r.table("users").filter{ |user|
 ```
 
 
-## month ##
+## [month](month/) ##
 
 {% apibody %}
 time.month() → number
@@ -1702,6 +1747,8 @@ r.table("users").filter{ |user|
 }
 
 ```
+
+[Read more &rarr;](month/)
 
 
 
@@ -1723,7 +1770,7 @@ r.table("users").filter{ |user|
 
 
 
-## day_of_week ##
+## [day_of_week](day_of_week/) ##
 
 {% apibody %}
 time.day_of_week() → number
@@ -1737,6 +1784,7 @@ __Example:__ Return today's day of week.
 r.now().day_of_week().run(conn)
 ```
 
+[Read more &rarr;](day_of_week/)
 
 
 ## day_of_year ##
@@ -1946,7 +1994,7 @@ r.table('projects').map {|p|
 ```
 
 
-## expr ##
+## [expr](expr/) ##
 
 {% apibody %}
 r.expr(value) → value
@@ -1960,7 +2008,9 @@ __Example:__ Objects wrapped with expr can then be manipulated by RQL API functi
 r.expr({:a => 'b'}).merge({:b => [1,2,3]}).run(conn)
 ```
 
-## js ##
+[Read more &rarr;](expr/)
+
+## [js](js/) ##
 
 {% apibody %}
 r.js(jsString) → value
@@ -1974,7 +2024,9 @@ __Example:__ Concatenate two strings using Javascript'
 r.js("'str1' + 'str2'").run(conn)
 ```
 
-## coerce_to ##
+[Read more &rarr;](js/)
+
+## [coerce_to](coerce_to/) ##
 
 {% apibody %}
 sequence.coerce_to(type_name) → array
@@ -1992,6 +2044,8 @@ __Example:__ Convert a table to an array.
 ```rb
 r.table('marvel').coerce_to('array').run(conn)
 ```
+
+[Read more &rarr;](coerce_to/)
 
 ## type_of ##
 

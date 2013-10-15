@@ -1,7 +1,9 @@
 ---
 layout: api-command 
+language: JavaScript
 permalink: api/javascript/row/
 command: row
+rb: false
 ---
 
 {% apibody %}
