@@ -8,10 +8,10 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 
 
 {% apibody %}
-sequence.without([selector1, selector2...]) → stream
-array.without([selector1, selector2...]) → array
-singleSelection.without([selector1, selector2...]) → object
-object.without([selector1, selector2...]) → object
+sequence.without([selector1, selector2...]) &rarr; stream
+array.without([selector1, selector2...]) &rarr; array
+singleSelection.without([selector1, selector2...]) &rarr; object
+object.without([selector1, selector2...]) &rarr; object
 {% endapibody %}
 
 The opposite of pluck; takes an object or a sequence of objects, and returns them with

@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 ---
 
 {% apibody %}
-query.run(conn[, opts]) → cursor
+query.run(conn[, opts]) &rarr; cursor
 {% endapibody %}
 
 Run a query on a connection.

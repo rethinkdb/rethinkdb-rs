@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-table.getAll(key[, key2...], [, {index:'id'}]) → selection
+table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
 {% endapibody %}
 
 Get all documents where the given value matches the value of the requested index.

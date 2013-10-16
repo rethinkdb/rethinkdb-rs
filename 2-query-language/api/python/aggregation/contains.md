@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/p
 ---
 
 {% apibody %}
-sequence.contains(value1[, value2...]) → bool
+sequence.contains(value1[, value2...]) &rarr; bool
 {% endapibody %}
 
 Returns whether or not a sequence contains all the specified values, or if functions are

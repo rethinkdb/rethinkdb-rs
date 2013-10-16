@@ -7,8 +7,8 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-query.run(connection, callback) → r
-query.run(options[, callback]) → r
+query.run(connection, callback) &rarr; r
+query.run(options[, callback]) &rarr; r
 {% endapibody %}
 
 Run a query on a connection.

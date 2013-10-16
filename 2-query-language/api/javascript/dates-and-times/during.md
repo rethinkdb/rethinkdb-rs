@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-time.during(startTime, endTime[, options]) → bool
+time.during(startTime, endTime[, options]) &rarr; bool
 {% endapibody %}
 
 Return if a time is between two other times (by default, inclusive for the start,

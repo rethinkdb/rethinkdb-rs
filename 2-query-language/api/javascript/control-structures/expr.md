@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/jav
 ---
 
 {% apibody %}
-r.expr(value) → value
+r.expr(value) &rarr; value
 {% endapibody %}
 
 Construct a RQL JSON object from a native object.

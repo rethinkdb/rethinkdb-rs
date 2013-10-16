@@ -8,9 +8,9 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 
 
 {% apibody %}
-sequence.filter(predicate) → selection
-stream.filter(predicate) → stream
-array.filter(predicate) → array
+sequence.filter(predicate) &rarr; selection
+stream.filter(predicate) &rarr; stream
+array.filter(predicate) &rarr; array
 {% endapibody %}
 
 Get all the documents for which the given predicate is true.

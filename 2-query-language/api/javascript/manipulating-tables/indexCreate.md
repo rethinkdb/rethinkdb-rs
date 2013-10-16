@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-table.indexCreate(indexName[, indexFunction]) → object
+table.indexCreate(indexName[, indexFunction]) &rarr; object
 {% endapibody %}
 
 Create a new secondary index on this table.

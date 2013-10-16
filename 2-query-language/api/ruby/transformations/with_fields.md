@@ -7,8 +7,8 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 ---
 
 {% apibody %}
-sequence.with_selectors([selector1, selector2...]) → stream
-array.with_selectors([selector1, selector2...]) → array
+sequence.with_selectors([selector1, selector2...]) &rarr; stream
+array.with_selectors([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
 Takes a sequence of objects and a list of fields. If any objects in the sequence don't

@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/p
 ---
 
 {% apibody %}
-string.match(regexp) → array
+string.match(regexp) &rarr; array
 {% endapibody %}
 
 Match against a regular expression. Returns a match object containing the matched string,

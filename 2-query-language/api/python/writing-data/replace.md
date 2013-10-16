@@ -7,9 +7,9 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/p
 ---
 
 {% apibody %}
-table.replace(json | expr[, durability='soft', return_vals=true]) → object
-selection.replace(json | expr[, durability='soft', return_vals=true]) → object
-singleSelection.replace(json | expr[, durability='soft', return_vals=true]) → object
+table.replace(json | expr[, durability='soft', return_vals=true]) &rarr; object
+selection.replace(json | expr[, durability='soft', return_vals=true]) &rarr; object
+singleSelection.replace(json | expr[, durability='soft', return_vals=true]) &rarr; object
 {% endapibody %}
 
 Replace documents in a table. Accepts a JSON document or a RQL expression, and replaces

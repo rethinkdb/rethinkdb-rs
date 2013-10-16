@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/r
 ---
 
 {% apibody %}
-sequence.group_by(selector1[, selector2...], reduction_object) → array
+sequence.group_by(selector1[, selector2...], reduction_object) &rarr; array
 {% endapibody %}
 
 Groups elements by the values of the given attributes and then applies the given

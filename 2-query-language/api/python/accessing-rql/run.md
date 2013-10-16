@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/p
 ---
 
 {% apibody %}
-query.run(conn[, use_outdated=False, time_format=<time_format>]) → cursor
+query.run(conn[, use_outdated=False, time_format=<time_format>]) &rarr; cursor
 {% endapibody %}
 
 Run a query on a connection.

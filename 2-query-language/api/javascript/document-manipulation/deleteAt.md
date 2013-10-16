@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-array.deleteAt(index [,endIndex]) → array
+array.deleteAt(index [,endIndex]) &rarr; array
 {% endapibody %}
 
 Remove an element from an array at a given index. Returns the modified array.
