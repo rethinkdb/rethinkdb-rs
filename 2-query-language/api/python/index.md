@@ -370,8 +370,8 @@ Replace documents in a table. Accepts a JSON document or a RQL expression, and r
 the original document with the new one. The new document must have the same primary key
 as the original document. The optional argument durability with value 'hard' or 'soft'
 will override the table or query's default durability setting. The optional argument
-return_vals will return the old and new values of the row you're modifying when set to
-true (only valid for single-row replacements). The optional argument non_atomic lets you
+`return_vals` will return the old and new values of the row you're modifying when set to
+true (only valid for single-row replacements). The optional argument `non_atomic` lets you
 permit non-atomic updates.
 
 Replace returns an object that contains the following attributes:
