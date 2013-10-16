@@ -126,7 +126,7 @@ __Example:__ Call run on the connection with a query to execute the query.
 r.table('marvel').run(conn).each{|x| p x}
 ```
 
-[Read more &rarr;](run/)
+[Read more about this command &rarr;](run/)
 
 {% endapisection %}
 
@@ -207,7 +207,7 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 r.db('test').table_create('dc_universe').run(conn)
 ```
 
-[Read more &rarr;](table_create/)
+[Read more about this command &rarr;](table_create/)
 
 ## table_drop ##
 
@@ -258,7 +258,7 @@ index.
 r.table('dc').index_create('code_name').run(conn)
 ```
 
-[Read more &rarr;](index_create/)
+[Read more about this command &rarr;](index_create/)
 
 
 ## index_drop ##
@@ -323,7 +323,7 @@ r.table('marvel').insert(
     { :superhero => 'Iron Man', :superpower => 'Arc Reactor' }).run(conn)
 ```
 
-[Read more &rarr;](insert/)
+[Read more about this command &rarr;](insert/)
 
 
 ## [update](update/) ##
@@ -356,7 +356,7 @@ the document.
 r.table('marvel').get('superman').update{ {:age => 30} }.run(conn)
 ```
 
-[Read more &rarr;](update/)
+[Read more about this command &rarr;](update/)
 
 
 ## [replace](replace/) ##
@@ -398,7 +398,7 @@ r.table('marvel').get('superman').replace({
 }).run(conn)
 ```
 
-[Read more &rarr;](replace/)
+[Read more about this command &rarr;](replace/)
 
 
 ## [delete](delete/) ##
@@ -431,7 +431,7 @@ __Example:__ Delete superman from the database.
 r.table('marvel').get('superman').delete.run(conn)
 ```
 
-[Read more &rarr;](delete/)
+[Read more about this command &rarr;](delete/)
 
 {% endapisection %}
 
@@ -468,7 +468,7 @@ __Example:__ Return all documents in the table 'marvel' of the default database.
 r.table('marvel').run(conn)
 ```
 
-[Read more &rarr;](table/)
+[Read more about this command &rarr;](table/)
 
 ## get ##
 
@@ -500,7 +500,7 @@ __Example:__ Secondary index keys are not guaranteed to be unique so we cannot q
 r.table('marvel').get_all('man_of_steel', :index => 'code_name').run(conn)
 ```
 
-[Read more &rarr;](get_all/)
+[Read more about this command &rarr;](get_all/)
 
 ## [between](between/) ##
 
@@ -521,7 +521,7 @@ __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open 
 r.table('marvel').between(10, 20).run(conn)
 ```
 
-[Read more &rarr;](between/)
+[Read more about this command &rarr;](between/)
 
 ## [filter](filter/) ##
 
@@ -545,7 +545,7 @@ __Example:__ Get all active users aged 30.
 r.table('users').filter('active' => true, 'profile' => {'age' => 30}).run(conn)
 ```
 
-[Read more &rarr;](filter/)
+[Read more about this command &rarr;](filter/)
 
 {% endapisection %}
 
@@ -610,7 +610,7 @@ __Example:__ Let our heroes join forces to battle evil!
 r.table('marvel').eq_join(:main_dc_collaborator, r.table('dc')).run(conn)
 ```
 
-[Read more &rarr;](eq_join/)
+[Read more about this command &rarr;](eq_join/)
 
 
 ## zip ##
@@ -671,7 +671,7 @@ __Example:__ Get a list of heroes and their nemeses, excluding any heroes that l
 r.table('marvel').with_fields('id', 'nemesis')
 ```
 
-[Read more &rarr;](with_fields/)
+[Read more about this command &rarr;](with_fields/)
 
 
 ## concatMap ##
@@ -711,7 +711,7 @@ __Example:__ Order our heroes by a series of performance metrics.
 r.table('marvel').order_by(:enemies_vanquished, :damsels_saved).run(conn)
 ```
 
-[Read more &rarr;](order_by/)
+[Read more about this command &rarr;](order_by/)
 
 
 ## skip ##
@@ -790,7 +790,7 @@ __Example:__ Find the position of the letter 'c'.
 r.expr(['a','b','c']).indexes_of('c').run(conn)
 ```
 
-[Read more &rarr;](indexes_of/)
+[Read more about this command &rarr;](indexes_of/)
 
 
 
@@ -882,7 +882,7 @@ __Example:__ Just how many super heroes are there?
 (r.table('marvel').count() + r.table('dc').count()).run(conn)
 ```
 
-[Read more &rarr;](count/)
+[Read more about this command &rarr;](count/)
 
 ## distinct ##
 
@@ -940,7 +940,7 @@ __Example:__ Using a predefined reduction we can easily find the average strengt
 r.table('marvel').group_by(:weight_class, r.avg(:strength)).run(conn)
 ```
 
-[Read more &rarr;](group_by/)
+[Read more about this command &rarr;](group_by/)
 
 
 ## [contains](contains/) ##
@@ -959,7 +959,7 @@ __Example:__ Has Iron Man ever fought Superman?
 r.table('marvel').get('ironman')[:opponents].contains('superman').run(conn)
 ```
 
-[Read more &rarr;](contains/)
+[Read more about this command &rarr;](contains/)
 
 
 {% endapisection %}
@@ -1038,7 +1038,7 @@ document.
 r.table('marvel').get('IronMan').pluck('reactorState', 'reactorPower').run(conn)
 ```
 
-[Read more &rarr;](pluck/)
+[Read more about this command &rarr;](pluck/)
 
 
 ## [without](without/) ##
@@ -1060,7 +1060,7 @@ out the list of IronMan's romantic conquests.
 r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn)
 ```
 
-[Read more &rarr;](without/)
+[Read more about this command &rarr;](without/)
 
 
 ## [merge](merge/) ##
@@ -1081,7 +1081,7 @@ r.table('marvel').get('IronMan').merge(
     r.table('loadouts').get('alienInvasionKit')).run(conn)
 ```
 
-[Read more &rarr;](merge/)
+[Read more about this command &rarr;](merge/)
 
 ## append ##
 
@@ -1227,7 +1227,7 @@ __Example:__ Which heroes are married?
 r.table('marvel').has_fields(:spouse).run(conn)
 ```
 
-[Read more &rarr;](has_fields/)
+[Read more about this command &rarr;](has_fields/)
 
 
 ## insert_at ##
@@ -1274,7 +1274,7 @@ __Example:__ Hulk decides to leave the avengers.
 r.expr(["Iron Man", "Hulk", "Spider-Man"]).delete_at(1).run(conn)
 ```
 
-[Read more &rarr;](delete_at/)
+[Read more about this command &rarr;](delete_at/)
 
 ## change_at ##
 
@@ -1330,7 +1330,7 @@ __Example:__ Get all users whose name starts with A.
 r.table('users').filter{|row| row[:name].match("^A")}.run(conn)
 ```
 
-[Read more &rarr;](match/)
+[Read more about this command &rarr;](match/)
 
 {% endapisection %}
 
@@ -1354,7 +1354,7 @@ __Example:__ It's as easy as 2 + 2 = 4.
 (r.expr(2) + 2).run(conn)
 ```
 
-[Read more &rarr;](add/)
+[Read more about this command &rarr;](add/)
 
 
 ## [-](sub/) ##
@@ -1373,7 +1373,7 @@ __Example:__ It's as easy as 2 - 2 = 0.
 (r.expr(2) - 2).run(conn)
 ```
 
-[Read more &rarr;](sub/)
+[Read more about this command &rarr;](sub/)
 
 ## [*](mul/) ##
 
@@ -1390,7 +1390,7 @@ __Example:__ It's as easy as 2 * 2 = 4.
 (r.expr(2) * 2).run(conn)
 ```
 
-[Read more &rarr;](mul/)
+[Read more about this command &rarr;](mul/)
 
 ## \ ##
 
@@ -1674,7 +1674,7 @@ r.table("posts").filter{ |post|
 }.run(conn)
 ```
 
-[Read more &rarr;](during/)
+[Read more about this command &rarr;](during/)
 
 
 
@@ -1749,7 +1749,7 @@ r.table("users").filter{ |user|
 
 ```
 
-[Read more &rarr;](month/)
+[Read more about this command &rarr;](month/)
 
 
 
@@ -1785,7 +1785,7 @@ __Example:__ Return today's day of week.
 r.now().day_of_week().run(conn)
 ```
 
-[Read more &rarr;](day_of_week/)
+[Read more about this command &rarr;](day_of_week/)
 
 
 ## day_of_year ##
@@ -2009,7 +2009,7 @@ __Example:__ Objects wrapped with expr can then be manipulated by RQL API functi
 r.expr({:a => 'b'}).merge({:b => [1,2,3]}).run(conn)
 ```
 
-[Read more &rarr;](expr/)
+[Read more about this command &rarr;](expr/)
 
 ## [js](js/) ##
 
@@ -2025,7 +2025,7 @@ __Example:__ Concatenate two strings using Javascript'
 r.js("'str1' + 'str2'").run(conn)
 ```
 
-[Read more &rarr;](js/)
+[Read more about this command &rarr;](js/)
 
 ## [coerce_to](coerce_to/) ##
 
@@ -2046,7 +2046,7 @@ __Example:__ Convert a table to an array.
 r.table('marvel').coerce_to('array').run(conn)
 ```
 
-[Read more &rarr;](coerce_to/)
+[Read more about this command &rarr;](coerce_to/)
 
 ## type_of ##
 
