@@ -5,7 +5,8 @@ active: docs
 docs_active: cookbook
 js: faq_index
 permalink: docs/cookbook/python/
-doc_index: Python
+switcher: true
+language: Python
 ---
 {% include recipe-forms.html %}
 

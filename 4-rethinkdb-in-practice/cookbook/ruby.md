@@ -5,7 +5,8 @@ active: docs
 docs_active: cookbook
 js: faq_index
 permalink: docs/cookbook/ruby/
-doc_index: Ruby
+switcher: true
+language : Ruby
 ---
 {% include recipe-forms.html %}
 

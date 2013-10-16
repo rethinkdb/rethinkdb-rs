@@ -5,7 +5,8 @@ active: docs
 docs_active: cookbook
 js: [faq_index, fancybox]
 permalink: docs/cookbook/javascript/
-doc_index: JavaScript
+switcher: true
+language : JavaScript
 ---
 {% include recipe-forms.html %}
 

@@ -5,7 +5,8 @@ active: docs
 docs_active: guide
 permalink: docs/guide/javascript/
 alias: docs/guides/ten-min/
-doc_index: JavaScript
+switcher: true
+language : JavaScript
 ---
 {% infobox %}
 <strong>Before you start:</strong>

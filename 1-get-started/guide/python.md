@@ -4,7 +4,9 @@ title: Ten-minute guide with RethinkDB and Python
 active: docs
 docs_active: guide
 permalink: docs/guide/python/
-doc_index: Python
+switcher: true
+language: Python
+
 ---
 
 {% infobox %}
