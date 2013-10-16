@@ -16,16 +16,21 @@ The other files in this directory are dedicated to one other command.
 The yaml header has to contains:
 ```yaml
 ---
-layout: api-command                       # The layout of the document
-language: JavaScript                      # The language, valid values are JavaScript, Python, Ruby
-permalink: api/javascript/add_listener/   # The permaling
-command: addListener                      # The name of the command (used in the title)
-py: false                                 # This method is not defined in python (valid keys are js, py, rb)
-rb: false                                 # This method is not defined in python (valid keys are js, py, rb)
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/accessing-rql/addListener.md
+# The layout of the document
+layout: api-command
+# The language, valid values are JavaScript, Python, Ruby
+language: JavaScript
+# The permalink
+permalink: api/javascript/add_listener/
+# The name of the command (used in the title)
+command: addListener
+# This method is not defined in python (valid keys are js, py, rb)
+py: false
+# This method is not defined in python (valid keys are js, py, rb)
+rb: false
 # Link to edit this document
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/accessing-rql/addListener.md
 ---
-
 ```
 
 
