@@ -96,8 +96,8 @@ conn.use('heroes')
 ## [run](run/) ##
 
 {% apibody %}
-query.run(connection, callback) → r
-query.run(options[, callback]) → r
+query.run(connection, callback) 
+query.run(options[, callback])
 {% endapibody %}
 
 Run a query on a connection.
