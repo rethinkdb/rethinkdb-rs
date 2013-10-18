@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-db.tableCreate(tableName[, options]) &rarr; object
+db.tableCreate(tableName[, options]) → object
 {% endapibody %}
 
 Create a table. A RethinkDB table is a collection of JSON documents. 

@@ -7,9 +7,9 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/p
 ---
 
 {% apibody %}
-table.delete([durability='soft', return_vals=true]) &rarr; object
-selection.delete([durability='soft', return_vals=true]) &rarr; object
-singleSelection.delete([durability='soft', return_vals=true]) &rarr; object
+table.delete([durability='soft', return_vals=true]) → object
+selection.delete([durability='soft', return_vals=true]) → object
+singleSelection.delete([durability='soft', return_vals=true]) → object
 {% endapibody %}
 
 Delete one or more documents from a table. The optional argument return_vals will return

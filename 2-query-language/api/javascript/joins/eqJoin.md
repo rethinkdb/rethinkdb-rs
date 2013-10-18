@@ -7,8 +7,8 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-sequence.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; stream
-array.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; array
+sequence.eqJoin(leftAttr, otherTable[, {index:'id'}]) → stream
+array.eqJoin(leftAttr, otherTable[, {index:'id'}]) → array
 {% endapibody %}
 
 An efficient join that looks up elements in the right table by primary key.

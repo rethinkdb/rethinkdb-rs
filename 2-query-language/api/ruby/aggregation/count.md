@@ -8,7 +8,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/r
 
 
 {% apibody %}
-sequence.count([filter]) &rarr; number
+sequence.count([filter]) → number
 {% endapibody %}
 
 Count the number of elements in the sequence. With a single argument, count the number

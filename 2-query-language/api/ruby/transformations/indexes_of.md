@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 ---
 
 {% apibody %}
-sequence.indexes_of(datum | predicate) &rarr; array
+sequence.indexes_of(datum | predicate) → array
 {% endapibody %}
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.

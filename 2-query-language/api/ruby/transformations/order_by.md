@@ -7,8 +7,8 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 ---
 
 {% apibody %}
-sequence.order_by(key1, [key2...]) &rarr; stream
-array.order_by(key1, [key2...]) &rarr; array
+sequence.order_by(key1, [key2...]) → stream
+array.order_by(key1, [key2...]) → array
 {% endapibody %}
 
 Sort the sequence by document values of the given key(s). `orderBy` defaults to ascending

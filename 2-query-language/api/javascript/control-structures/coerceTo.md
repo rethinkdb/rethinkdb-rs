@@ -7,10 +7,10 @@ github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/jav
 ---
 
 {% apibody %}
-sequence.coerceTo(typeName) &rarr; array
-value.coerceTo(typeName) &rarr; string
-array.coerceTo(typeName) &rarr; object
-object.coerceTo(typeName) &rarr; array
+sequence.coerceTo(typeName) → array
+value.coerceTo(typeName) → string
+array.coerceTo(typeName) → object
+object.coerceTo(typeName) → array
 {% endapibody %}
 
 Converts a value of one type into another. 

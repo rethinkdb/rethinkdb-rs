@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 ---
 
 {% apibody %}
-table.between(lower_key, upper_key[, :index => 'id', :left_bound => 'closed', :right_bound => 'open']) &rarr; selection
+table.between(lower_key, upper_key[, :index => 'id', :left_bound => 'closed', :right_bound => 'open']) → selection
 {% endapibody %}
 
 Get all documents between two keys. Accepts three optional arguments: `index`,

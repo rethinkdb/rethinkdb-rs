@@ -6,7 +6,7 @@ command: js
 ---
 
 {% apibody %}
-r.js(jsString) &rarr; value
+r.js(jsString) → value
 {% endapibody %}
 
 Create a javascript expression.

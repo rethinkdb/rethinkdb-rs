@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/p
 ---
 
 {% apibody %}
-time.during(start_time, end_time[, left_bound="open/closed", right_bound="open/closed"]) &rarr; bool
+time.during(start_time, end_time[, left_bound="open/closed", right_bound="open/closed"]) → bool
 {% endapibody %}
 
 Return if a time is between two other times (by default, inclusive for the start, exclusive for the end).

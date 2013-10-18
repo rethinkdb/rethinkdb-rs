@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 ---
 
 {% apibody %}
-db.table(name[, opts]) &rarr; table
+db.table(name[, opts]) → table
 {% endapibody %}
 
 Select all documents in a table. This command can be chained with other commands to do

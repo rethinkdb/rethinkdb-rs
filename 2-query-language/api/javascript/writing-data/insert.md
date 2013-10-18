@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-table.insert(json | [json][, {durability: 'soft', returnVals: true, upsert:true}]) &rarr; object
+table.insert(json | [json][, {durability: 'soft', returnVals: true, upsert:true}]) → object
 {% endapibody %}
 
 Insert JSON documents into a table. Accepts a single JSON document or an array of

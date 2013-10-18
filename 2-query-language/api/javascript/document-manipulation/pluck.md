@@ -7,10 +7,10 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-sequence.pluck([selector1, selector2...]) &rarr; stream
-array.pluck([selector1, selector2...]) &rarr; array
-object.pluck([selector1, selector2...]) &rarr; object
-singleSelection.pluck([selector1, selector2...]) &rarr; object
+sequence.pluck([selector1, selector2...]) → stream
+array.pluck([selector1, selector2...]) → array
+object.pluck([selector1, selector2...]) → object
+singleSelection.pluck([selector1, selector2...]) → object
 {% endapibody %}
 
 Plucks out one or more attributes from either an object or a sequence of objects

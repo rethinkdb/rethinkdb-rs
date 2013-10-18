@@ -7,9 +7,9 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/p
 ---
 
 {% apibody %}
-number - number &rarr; number
-time - time &rarr; number
-time - number &rarr; time
+number - number → number
+time - time → number
+time - number → time
 {% endapibody %}
 
 Subtract two numbers.

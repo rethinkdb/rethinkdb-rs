@@ -7,10 +7,10 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/j
 ---
 
 {% apibody %}
-number.add(number) &rarr; number
-string.add(string) &rarr; string
-array.add(array) &rarr; array
-time.add(number) &rarr; time
+number.add(number) → number
+string.add(string) → string
+array.add(array) → array
+time.add(number) → time
 {% endapibody %}
 
 Sum two numbers, concatenate two strings, or concatenate 2 arrays.
