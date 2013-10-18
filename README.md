@@ -30,6 +30,10 @@ py: false
 rb: false
 # Link to edit this document
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/accessing-rql/addListener.md
+# Set of related commands
+related_commands:
+    - <name>: <url_from_parent>
+    - <name>: <url_from_parent>
 ---
 ```
 
@@ -42,6 +46,7 @@ for all the languages.
 
 ## Style guidelines ##
 We use `redcarpet` to convert Markdown files.
+
 
 ### Markdown ###
 Use Markdown as much as you can. Use HTML code only if needed.
@@ -75,7 +80,7 @@ The blue info box
 
 ## Contribute ##
 
-While the RethinkDB team will do its best to provide the best docu
+While the RethinkDB team will do its best to provide the best documentation possible, 
 Fork this repository, add your changes and submit a pull request :)
 
 ## License ##
