@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-sequence.isEmpty() → bool
+sequence.isEmpty() &rarr; bool
 {% endapibody %}
 
 Test if a sequence is empty.

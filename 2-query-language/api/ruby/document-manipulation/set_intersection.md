@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.set_intersection(array) → array
+array.set_intersection(array) &rarr; array
 {% endapibody %}
 
 Intersect two arrays returning values that occur in both of them as a set (an array with

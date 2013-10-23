@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-r.connect(host='localhost', port=28015, db='test', auth_key='') → connection
+r.connect(host='localhost', port=28015, db='test', auth_key='') &rarr; connection
 {% endapibody %}
 
 Create a new connection to the database server.

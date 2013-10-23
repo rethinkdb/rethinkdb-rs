@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.set_insert(value) → array
+array.set_insert(value) &rarr; array
 {% endapibody %}
 
 Add a value to an array and return it as a set (an array with distinct values).

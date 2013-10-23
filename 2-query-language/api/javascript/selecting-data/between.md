@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-table.between(lowerKey, upperKey[, {index:'id', left_bound:'closed', right_bound:'open'}]) → selection
+table.between(lowerKey, upperKey[, {index:'id', left_bound:'closed', right_bound:'open'}]) &rarr; selection
 {% endapibody %}
 
 Get all documents between two keys. Accepts three optional arguments: `index`,

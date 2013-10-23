@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.change_at(index, value) → array
+array.change_at(index, value) &rarr; array
 {% endapibody %}
 
 Change a value in an array at a given index. Returns the modified array.

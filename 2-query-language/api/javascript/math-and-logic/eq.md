@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-value.eq(value) → bool
+value.eq(value) &rarr; bool
 {% endapibody %}
 
 Test if two values are equal.

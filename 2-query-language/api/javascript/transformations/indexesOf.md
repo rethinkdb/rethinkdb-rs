@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-sequence.indexesOf(datum | predicate) → array
+sequence.indexesOf(datum | predicate) &rarr; array
 {% endapibody %}
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.

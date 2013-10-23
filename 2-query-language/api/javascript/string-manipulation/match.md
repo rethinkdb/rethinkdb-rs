@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-string.match(regexp) → array
+string.match(regexp) &rarr; array
 {% endapibody %}
 
 Match against a regular expression. Returns a match object containing the matched string,

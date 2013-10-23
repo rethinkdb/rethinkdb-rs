@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-query.run(conn[, opts]) → cursor
+query.run(conn[, opts]) &rarr; cursor
 {% endapibody %}
 
 Run a query on a connection.

@@ -9,7 +9,7 @@ related_commands:
 ---
 
 {% apibody %}
-bool & bool → bool
+bool & bool &rarr; bool
 {% endapibody %}
 
 Compute the logical and of two values.

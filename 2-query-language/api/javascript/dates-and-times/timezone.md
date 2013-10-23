@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.timezone() → string
+time.timezone() &rarr; string
 {% endapibody %}
 
 Return the timezone of the time object.

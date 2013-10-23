@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-db.tableDrop(tableName) → object
+db.tableDrop(tableName) &rarr; object
 {% endapibody %}
 
 Drop a table. The table and all its data will be deleted.

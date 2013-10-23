@@ -11,7 +11,7 @@ related_commands:
 
 
 {% apibody %}
-r.db_drop(db_name) → object
+r.db_drop(db_name) &rarr; object
 {% endapibody %}
 
 Drop a database. The database, all its tables, and corresponding data will be deleted.

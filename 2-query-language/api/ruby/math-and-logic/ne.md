@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-value.ne(value) → bool
+value.ne(value) &rarr; bool
 {% endapibody %}
 
 Test if two values are not equal.

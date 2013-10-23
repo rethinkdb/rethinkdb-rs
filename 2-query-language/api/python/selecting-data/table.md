@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-db.table(name[, use_outdated=False]) → table
+db.table(name[, use_outdated=False]) &rarr; table
 {% endapibody %}
 
 Select all documents in a table. This command can be chained with other commands to do

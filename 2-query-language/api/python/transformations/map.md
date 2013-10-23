@@ -10,8 +10,8 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.map(mapping_function) → stream
-array.map(mapping_function) → array
+sequence.map(mapping_function) &rarr; stream
+array.map(mapping_function) &rarr; array
 {% endapibody %}
 
 Transform each element of the sequence by applying the given mapping function.

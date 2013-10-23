@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-db.table_list() → array
+db.table_list() &rarr; array
 {% endapibody %}
 
 List all table names in a database. The result is a list of strings.

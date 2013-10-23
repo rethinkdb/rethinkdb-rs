@@ -11,7 +11,7 @@ io:
 ---
 
 {% apibody %}
-r.row → value
+r.row &rarr; value
 {% endapibody %}
 
 Returns the currently visited document.

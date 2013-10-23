@@ -12,8 +12,8 @@ io:
 ---
 
 {% apibody %}
-value.default(default_value) → any
-sequence.default(default_value) → any
+value.default(default_value) &rarr; any
+sequence.default(default_value) &rarr; any
 {% endapibody %}
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an

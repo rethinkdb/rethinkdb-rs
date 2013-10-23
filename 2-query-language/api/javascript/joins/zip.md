@@ -16,8 +16,8 @@ related_commands:
 ---
 
 {% apibody %}
-stream.zip() → stream
-array.zip() → array
+stream.zip() &rarr; stream
+array.zip() &rarr; array
 {% endapibody %}
 
 Used to 'zip' up the result of a join by merging the 'right' fields into 'left' fields of each member of the sequence.

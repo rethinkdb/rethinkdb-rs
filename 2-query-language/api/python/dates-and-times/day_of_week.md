@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.day_of_week() → number
+time.day_of_week() &rarr; number
 {% endapibody %}
 
 

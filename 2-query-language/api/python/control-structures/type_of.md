@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/pyt
 ---
 
 {% apibody %}
-any.type_of() → string
+any.type_of() &rarr; string
 {% endapibody %}
 
 Gets the type of a value.

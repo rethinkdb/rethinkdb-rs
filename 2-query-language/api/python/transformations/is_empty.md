@@ -9,7 +9,7 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.is_empty() → bool
+sequence.is_empty() &rarr; bool
 {% endapibody %}
 
 Test if a sequence is empty.

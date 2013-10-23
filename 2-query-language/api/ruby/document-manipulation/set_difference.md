@@ -12,7 +12,7 @@ related_commands:
     set_intersection: set_intersection
 ---
 {% apibody %}
-array.set_difference(array) → array
+array.set_difference(array) &rarr; array
 {% endapibody %}
 
 Remove the elements of one array from another and return them as a set (an array with

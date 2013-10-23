@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-~bool → bool
+~bool &rarr; bool
 {% endapibody %}
 Compute the logical inverse (not).
 

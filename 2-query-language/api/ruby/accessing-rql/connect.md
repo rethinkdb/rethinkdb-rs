@@ -12,7 +12,7 @@ related_commands:
 
 
 {% apibody %}
-r.connect(opts) → connection
+r.connect(opts) &rarr; connection
 {% endapibody %}
 
 Create a new connection to the database server.

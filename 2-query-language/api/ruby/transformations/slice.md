@@ -11,8 +11,8 @@ related_commands:
 ---
 
 {% apibody %}
-sequence[start_index[, end_index]] → stream
-array[start_index[, end_index]] → array
+sequence[start_index[, end_index]] &rarr; stream
+array[start_index[, end_index]] &rarr; array
 {% endapibody %}
 
 Trim the sequence to within the bounds provided.

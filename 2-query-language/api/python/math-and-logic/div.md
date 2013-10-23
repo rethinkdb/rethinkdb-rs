@@ -12,7 +12,7 @@ related_commands:
 ---
 
 {% apibody %}
-number / number → number
+number / number &rarr; number
 {% endapibody %}
 
 Divide two numbers.

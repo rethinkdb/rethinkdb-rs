@@ -15,7 +15,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.setDifference(array) → array
+array.setDifference(array) &rarr; array
 {% endapibody %}
 
 Remove the elements of one array from another and return them as a set (an array with

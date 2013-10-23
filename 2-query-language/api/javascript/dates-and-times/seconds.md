@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.seconds() → number
+time.seconds() &rarr; number
 {% endapibody %}
 
 Return the seconds in a time object as a number between 0 and 59.999 (double precision).

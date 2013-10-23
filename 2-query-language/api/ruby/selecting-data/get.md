@@ -12,7 +12,7 @@ related_commands:
 
 
 {% apibody %}
-table.get(key) → singleRowSelection
+table.get(key) &rarr; singleRowSelection
 {% endapibody %}
 
 Get a document by primary key.

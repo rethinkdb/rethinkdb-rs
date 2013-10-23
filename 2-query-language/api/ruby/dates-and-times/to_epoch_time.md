@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.to_epoch_time() → number
+time.to_epoch_time() &rarr; number
 {% endapibody %}
 
 Convert a time object to its epoch time.

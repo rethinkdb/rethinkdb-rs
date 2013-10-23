@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/pyt
 ---
 
 {% apibody %}
-r.error(message) → error
+r.error(message) &rarr; error
 {% endapibody %}
 
 Throw a runtime error. If called with no arguments inside the second argument to `default`, re-throw the current error.

@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.to_iso8601() → number
+time.to_iso8601() &rarr; number
 {% endapibody %}
 
 Convert a time object to its iso 8601 format.

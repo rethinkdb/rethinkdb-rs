@@ -19,10 +19,10 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.hasFields([selector1, selector2...]) → stream
-array.hasFields([selector1, selector2...]) → array
-singleSelection.hasFields([selector1, selector2...]) → boolean
-object.hasFields([selector1, selector2...]) → boolean
+sequence.hasFields([selector1, selector2...]) &rarr; stream
+array.hasFields([selector1, selector2...]) &rarr; array
+singleSelection.hasFields([selector1, selector2...]) &rarr; boolean
+object.hasFields([selector1, selector2...]) &rarr; boolean
 {% endapibody %}
 
 Test if an object has all of the specified fields. An object has a field if it has the

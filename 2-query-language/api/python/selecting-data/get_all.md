@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-table.get_all(key1[, key2...], [, index='id']) → selection
+table.get_all(key1[, key2...], [, index='id']) &rarr; selection
 {% endapibody %}
 
 Get all documents where the given value matches the value of the requested index.

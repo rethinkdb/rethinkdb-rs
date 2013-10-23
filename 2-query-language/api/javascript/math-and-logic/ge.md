@@ -16,7 +16,7 @@ related_commands:
 ---
 
 {% apibody %}
-value.ge(value) → bool
+value.ge(value) &rarr; bool
 {% endapibody %}
 
 Test if the first value is greater than or equal to other.

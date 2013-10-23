@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.time_of_day() → number
+time.time_of_day() &rarr; number
 {% endapibody %}
 
 Return the number of seconds elapsed since the beginning of the day stored in the time object.

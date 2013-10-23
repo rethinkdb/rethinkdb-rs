@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.dayOfWeek() → number
+time.dayOfWeek() &rarr; number
 {% endapibody %}
 
 Return the day of week of a time object as a number between 1 and 7 (following ISO 8601 standard). For your convenience, the terms r.monday, r.tuesday etc. are defined and map to the appropriate integer.

@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.date() → time
+time.date() &rarr; time
 {% endapibody %}
 
 Return a new time object only based on the day, month and year (ie. the same day at 00:00).

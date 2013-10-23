@@ -12,8 +12,8 @@ io:
 ---
 
 {% apibody %}
-singleSelection.keys() → array
-object.keys() → array
+singleSelection.keys() &rarr; array
+object.keys() &rarr; array
 {% endapibody %}
 
 Return an array containing all of the object's keys.

@@ -16,8 +16,8 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.slice(startIndex[, endIndex]) → stream
-array.slice(startIndex[, endIndex]) → array
+sequence.slice(startIndex[, endIndex]) &rarr; stream
+array.slice(startIndex[, endIndex]) &rarr; array
 {% endapibody %}
 
 Trim the sequence to within the bounds provided.

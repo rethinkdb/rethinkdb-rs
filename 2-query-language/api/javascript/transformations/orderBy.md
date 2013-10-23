@@ -14,8 +14,8 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.orderBy(key1, [key2...]) → stream
-array.orderBy(key1, [key2...]) → array
+sequence.orderBy(key1, [key2...]) &rarr; stream
+array.orderBy(key1, [key2...]) &rarr; array
 {% endapibody %}
 
 Sort the sequence by document values of the given key(s). `orderBy` defaults to ascending

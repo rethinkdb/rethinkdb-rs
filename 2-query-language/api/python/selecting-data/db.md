@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-r.db(db_name) → db
+r.db(db_name) &rarr; db
 {% endapibody %}
 
 Reference a database.

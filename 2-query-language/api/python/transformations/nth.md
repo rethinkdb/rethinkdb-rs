@@ -12,7 +12,7 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.nth(index) → object
+sequence.nth(index) &rarr; object
 {% endapibody %}
 
 Get the nth element of a sequence.

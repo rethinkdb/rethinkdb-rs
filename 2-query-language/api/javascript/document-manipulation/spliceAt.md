@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.spliceAt(index, array) → array
+array.spliceAt(index, array) &rarr; array
 {% endapibody %}
 
 Insert several values in to an array at a given index. Returns the modified array.

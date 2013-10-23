@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/rub
 ---
 
 {% apibody %}
-any.info() → object
+any.info() &rarr; object
 {% endapibody %}
 
 Get information about a RQL value.

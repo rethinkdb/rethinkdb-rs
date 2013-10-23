@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-r.js(jsString) → value
+r.js(jsString) &rarr; value
 {% endapibody %}
 
 Create a javascript expression.

@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.set_union(array) → array
+array.set_union(array) &rarr; array
 {% endapibody %}
 
 Add a several values to an array and return it as a set (an array with distinct values).

@@ -15,8 +15,8 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.withFields([selector1, selector2...]) → stream
-array.withFields([selector1, selector2...]) → array
+sequence.withFields([selector1, selector2...]) &rarr; stream
+array.withFields([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
 Takes a sequence of objects and a list of fields. If any objects in the sequence don't

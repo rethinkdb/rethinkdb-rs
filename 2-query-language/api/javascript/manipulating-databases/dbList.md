@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-r.dbList() → array
+r.dbList() &rarr; array
 {% endapibody %}
 
 List all database names in the system. The result is a list of strings.

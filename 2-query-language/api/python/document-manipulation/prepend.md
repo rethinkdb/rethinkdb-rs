@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.prepend(value) → array
+array.prepend(value) &rarr; array
 {% endapibody %}
 
 Prepend a value to an array.

@@ -16,7 +16,7 @@ related_commands:
 ---
 
 {% apibody %}
-value.le(value) → bool
+value.le(value) &rarr; bool
 {% endapibody %}
 
 Test if the first value is less than or equal to other.

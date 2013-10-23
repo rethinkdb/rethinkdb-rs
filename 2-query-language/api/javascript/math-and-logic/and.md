@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-bool.and(bool) → bool
+bool.and(bool) &rarr; bool
 {% endapibody %}
 
 Compute the logical and of two values.

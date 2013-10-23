@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-db.table(name[, opts]) → table
+db.table(name[, opts]) &rarr; table
 {% endapibody %}
 
 Select all documents in a table. This command can be chained with other commands to do

@@ -9,9 +9,9 @@ related_commands:
 ---
 
 {% apibody %}
-sequence[attr] → sequence
-singleSelection[attr] → value
-object[attr] → value
+sequence[attr] &rarr; sequence
+singleSelection[attr] &rarr; value
+object[attr] &rarr; value
 {% endapibody %}
 
 Get a single field from an object. If called on a sequence, gets that field from every

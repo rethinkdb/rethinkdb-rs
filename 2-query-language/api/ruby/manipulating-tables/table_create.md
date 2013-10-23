@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-db.table_create(table_name[, options]) → object
+db.table_create(table_name[, options]) &rarr; object
 {% endapibody %}
 
 Create a table. A RethinkDB table is a collection of JSON documents. 

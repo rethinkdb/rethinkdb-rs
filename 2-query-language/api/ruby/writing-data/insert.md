@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-table.insert(json | [json][, { :durability => 'soft', :return_vals => true :upsert => true}]) → object
+table.insert(json | [json][, { :durability => 'soft', :return_vals => true :upsert => true}]) &rarr; object
 {% endapibody %}
 
 Insert JSON documents into a table. Accepts a single JSON document or an array of

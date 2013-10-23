@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/pyt
 ---
 
 {% apibody %}
-r.json(json_string) → value
+r.json(json_string) &rarr; value
 {% endapibody %}
 
 Parse a JSON string on the server.

@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.count([filter]) → number
+sequence.count([filter]) &rarr; number
 {% endapibody %}
 
 Count the number of elements in the sequence. With a single argument, count the number

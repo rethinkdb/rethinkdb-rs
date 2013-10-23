@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-any.typeOf() → string
+any.typeOf() &rarr; string
 {% endapibody %}
 
 Gets the type of a value.

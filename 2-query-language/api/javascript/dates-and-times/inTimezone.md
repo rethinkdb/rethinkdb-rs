@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.inTimezone(timezone) → time
+time.inTimezone(timezone) &rarr; time
 {% endapibody %}
 
 Return a new time object with a different timezone. While the time stays the same, the results returned by methods such as hours() will change since they take the timezone into account. The timezone argument has to be of the ISO 8601 format.

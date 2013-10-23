@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-sequence.union(sequence) → array
+sequence.union(sequence) &rarr; array
 {% endapibody %}
 
 Concatenate two sequences.

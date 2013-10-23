@@ -11,8 +11,8 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.limit(n) → stream
-array.limit(n) → array
+sequence.limit(n) &rarr; stream
+array.limit(n) &rarr; array
 {% endapibody %}
 
 

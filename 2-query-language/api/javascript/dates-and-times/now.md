@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-r.now() → time
+r.now() &rarr; time
 {% endapibody %}
 
 Return a time object representing the current time in UTC. The command now() is computed once when the server receives the query, so multiple instances of r.now() will always return the same time inside a query.

@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-any.info() → object
+any.info() &rarr; object
 {% endapibody %}
 
 Get information about a RQL value.

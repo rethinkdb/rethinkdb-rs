@@ -12,7 +12,7 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.reduce(reduction_function[, base]) → value
+sequence.reduce(reduction_function[, base]) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction

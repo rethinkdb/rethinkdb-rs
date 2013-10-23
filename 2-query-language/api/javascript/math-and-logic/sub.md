@@ -19,9 +19,9 @@ related_commands:
 ---
 
 {% apibody %}
-number.sub(number) → number
-time.sub(time) → number
-time.sub(number) → time
+number.sub(number) &rarr; number
+time.sub(time) &rarr; number
+time.sub(number) &rarr; time
 {% endapibody %}
 
 Subtract two numbers.

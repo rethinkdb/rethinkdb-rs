@@ -12,8 +12,8 @@ related_commands:
 
 
 {% apibody %}
-sequence.eq_join(left_attr, other_table[, index='id']) → stream
-array.eq_join(left_attr, other_table[, index='id']) → array
+sequence.eq_join(left_attr, other_table[, index='id']) &rarr; stream
+array.eq_join(left_attr, other_table[, index='id']) &rarr; array
 {% endapibody %}
 
 An efficient join that looks up elements in the right table by primary key.

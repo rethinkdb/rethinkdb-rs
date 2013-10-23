@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-table.index_list() → array
+table.index_list() &rarr; array
 {% endapibody %}
 
 List all the secondary indexes of this table.

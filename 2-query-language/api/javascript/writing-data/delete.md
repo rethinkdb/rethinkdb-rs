@@ -18,9 +18,9 @@ related_commands:
 ---
 
 {% apibody %}
-table.delete([{durability: 'soft', return_vals: true}]) → object
-selection.delete([{durability: 'soft', return_vals: true}]) → object
-singleSelection.delete([{durability: 'soft', return_vals: true}]) → object
+table.delete([{durability: 'soft', return_vals: true}]) &rarr; object
+selection.delete([{durability: 'soft', return_vals: true}]) &rarr; object
+singleSelection.delete([{durability: 'soft', return_vals: true}]) &rarr; object
 {% endapibody %}
 
 Delete one or more documents from a table. The optional argument return_vals will return

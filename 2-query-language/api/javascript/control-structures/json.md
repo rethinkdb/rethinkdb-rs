@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-r.json(json_string) → value
+r.json(json_string) &rarr; value
 {% endapibody %}
 
 Parse a JSON string on the server.

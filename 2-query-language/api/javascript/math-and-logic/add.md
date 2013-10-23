@@ -23,10 +23,10 @@ related_commands:
 ---
 
 {% apibody %}
-number.add(number) → number
-string.add(string) → string
-array.add(array) → array
-time.add(number) → time
+number.add(number) &rarr; number
+string.add(string) &rarr; string
+array.add(array) &rarr; array
+time.add(number) &rarr; time
 {% endapibody %}
 
 Sum two numbers, concatenate two strings, or concatenate 2 arrays.

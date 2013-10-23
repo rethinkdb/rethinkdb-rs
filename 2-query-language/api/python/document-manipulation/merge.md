@@ -11,10 +11,10 @@ related_commands:
 ---
 
 {% apibody %}
-singleSelection.merge(object) → object
-object.merge(object) → object
-sequence.merge(object) → stream
-array.merge(object) → array
+singleSelection.merge(object) &rarr; object
+object.merge(object) &rarr; object
+sequence.merge(object) &rarr; stream
+array.merge(object) &rarr; array
 {% endapibody %}
 
 Merge two objects together to construct a new object with properties from both. Gives preference to attributes from other when there is a conflict.

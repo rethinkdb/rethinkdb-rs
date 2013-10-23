@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.difference(array) → array
+array.difference(array) &rarr; array
 {% endapibody %}
 
 Remove the elements of one array from another array.

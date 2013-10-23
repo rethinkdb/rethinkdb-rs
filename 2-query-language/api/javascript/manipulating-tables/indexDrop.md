@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-table.indexDrop(indexName) → object
+table.indexDrop(indexName) &rarr; object
 {% endapibody %}
 
 Delete a previously created secondary index of this table.

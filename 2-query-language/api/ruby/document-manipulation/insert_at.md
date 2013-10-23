@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.insert_at(index, value) → array
+array.insert_at(index, value) &rarr; array
 {% endapibody %}
 
 Insert a value in to an array at a given index. Returns the modified array.

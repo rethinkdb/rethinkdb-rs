@@ -8,7 +8,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/p
 ---
 
 {% apibody %}
-r.row → value
+r.row &rarr; value
 {% endapibody %}
 
 Returns the currently visited document.

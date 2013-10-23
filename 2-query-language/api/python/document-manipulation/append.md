@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.append(value) → array
+array.append(value) &rarr; array
 {% endapibody %}
 
 Append a value to an array.

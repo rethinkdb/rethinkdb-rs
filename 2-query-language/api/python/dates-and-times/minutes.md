@@ -10,7 +10,7 @@ related_commands:
     in_timezone: in_timezone/
 ---
 {% apibody %}
-time.minutes() → number
+time.minutes() &rarr; number
 {% endapibody %}
 
 Return the minute in a time object as a number between 0 and 59.

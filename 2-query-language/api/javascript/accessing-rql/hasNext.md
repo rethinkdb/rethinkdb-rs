@@ -15,7 +15,7 @@ related_commands:
 ---
 
 {% apibody %}
-cursor.hasNext() → bool
+cursor.hasNext() &rarr; bool
 {% endapibody %}
 
 Check if there are more elements in the cursor.

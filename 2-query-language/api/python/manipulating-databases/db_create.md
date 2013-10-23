@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-r.db_create(db_name) → object
+r.db_create(db_name) &rarr; object
 {% endapibody %}
 
 Create a database. A RethinkDB database is a collection of tables, similar to

@@ -14,9 +14,9 @@ io:
 ---
 
 {% apibody %}
-sequence.sample(number) → selection
-stream.sample(number) → array
-array.sample(number) → array
+sequence.sample(number) &rarr; selection
+stream.sample(number) &rarr; array
+array.sample(number) &rarr; array
 {% endapibody %}
 
 Select a given number of elements from a sequence with uniform random distribution. Selection is done without replacement.

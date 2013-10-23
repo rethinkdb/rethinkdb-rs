@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-db.tableList() → array
+db.tableList() &rarr; array
 {% endapibody %}
 
 List all table names in a database. The result is a list of strings.

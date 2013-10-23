@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.year() → number
+time.year() &rarr; number
 {% endapibody %}
 
 Return the year of a time object.

@@ -11,8 +11,8 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.inner_join(other_sequence, predicate) → stream
-array.inner_join(other_sequence, predicate) → array
+sequence.inner_join(other_sequence, predicate) &rarr; stream
+array.inner_join(other_sequence, predicate) &rarr; array
 {% endapibody %}
 
 Returns the inner product of two sequences (e.g. a table, a filter result) filtered by

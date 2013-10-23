@@ -11,8 +11,8 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.outer_join(other_sequence, predicate) → stream
-array.outer_join(other_sequence, predicate) → array
+sequence.outer_join(other_sequence, predicate) &rarr; stream
+array.outer_join(other_sequence, predicate) &rarr; array
 {% endapibody %}
 
 Computes a left outer join by retaining each row in the left table even if no match was

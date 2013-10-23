@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-r.epoch_time(epoch_time) → time
+r.epoch_time(epoch_time) &rarr; time
 {% endapibody %}
 
 Create a time object based on seconds since epoch.

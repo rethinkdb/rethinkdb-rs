@@ -10,8 +10,8 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.concat_map(mapping_function) → stream
-array.concat_map(mapping_function) → array
+sequence.concat_map(mapping_function) &rarr; stream
+array.concat_map(mapping_function) &rarr; array
 {% endapibody %}
 
 Flattens a sequence of arrays returned by the mappingFunction into a single sequence.

@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-bool.not() → bool
+bool.not() &rarr; bool
 {% endapibody %}
 Compute the logical inverse (not).
 

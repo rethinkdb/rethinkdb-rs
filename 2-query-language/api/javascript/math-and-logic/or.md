@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-bool.or(bool) → bool
+bool.or(bool) &rarr; bool
 {% endapibody %}
 
 Compute the logical or of two values.

@@ -10,7 +10,7 @@ related_commands:
 ---
 
 {% apibody %}
-query.run(conn[, use_outdated=False, time_format=<time_format>]) → cursor
+query.run(conn[, use_outdated=False, time_format=<time_format>]) &rarr; cursor
 {% endapibody %}
 
 Run a query on a connection.

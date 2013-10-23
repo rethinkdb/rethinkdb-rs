@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-r.expr(value) → value
+r.expr(value) &rarr; value
 {% endapibody %}
 
 Construct a RQL JSON object from a native object.

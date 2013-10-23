@@ -12,8 +12,8 @@ related_commands:
 ---
 
 {% apibody %}
-number * number → number
-array * number → array
+number * number &rarr; number
+array * number &rarr; array
 {% endapibody %}
 
 Multiply two numbers, or make a periodic array.

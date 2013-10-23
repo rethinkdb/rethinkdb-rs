@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-array.deleteAt(index [,endIndex]) → array
+array.deleteAt(index [,endIndex]) &rarr; array
 {% endapibody %}
 
 Remove an element from an array at a given index. Returns the modified array.

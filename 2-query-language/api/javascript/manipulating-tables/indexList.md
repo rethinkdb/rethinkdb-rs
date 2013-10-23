@@ -15,7 +15,7 @@ related_commands:
 
 
 {% apibody %}
-table.indexList() → array
+table.indexList() &rarr; array
 {% endapibody %}
 
 List all the secondary indexes of this table.

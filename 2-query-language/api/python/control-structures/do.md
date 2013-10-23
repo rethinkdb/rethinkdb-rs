@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/pyt
 ---
 
 {% apibody %}
-any.do(arg [, args]*, expr) → any
+any.do(arg [, args]*, expr) &rarr; any
 {% endapibody %}
 
 Evaluate the expr in the context of one or more value bindings.

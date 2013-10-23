@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/pyt
 ---
 
 {% apibody %}
-r.js(jsString) → value
+r.js(jsString) &rarr; value
 {% endapibody %}
 
 Create a javascript expression.

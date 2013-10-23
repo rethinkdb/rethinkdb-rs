@@ -12,7 +12,7 @@ related_commands:
 
 
 {% apibody %}
-sequence.distinct() → array
+sequence.distinct() &rarr; array
 {% endapibody %}
 
 Remove duplicate elements from the sequence.

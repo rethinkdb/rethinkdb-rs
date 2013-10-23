@@ -12,7 +12,7 @@ related_commands:
 ---
 
 {% apibody %}
-sequence.forEach(write_query) → object
+sequence.forEach(write_query) &rarr; object
 {% endapibody %}
 
 Loop over a sequence, evaluating the given write query for each element.

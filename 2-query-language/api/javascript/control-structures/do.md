@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-any.do(arg [, args]*, expr) → any
+any.do(arg [, args]*, expr) &rarr; any
 {% endapibody %}
 
 Evaluate the expr in the context of one or more value bindings.

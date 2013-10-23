@@ -15,7 +15,7 @@ All RQL queries begin from the top level module.
 ## [r](r/) ##
 
 {% apibody %}
-r → r
+r &rarr; r
 {% endapibody %}
 
 The toplevel RQL namespace.
@@ -31,7 +31,7 @@ include RethinkDB::Shortcuts
 ## [connect](connect/) ##
 
 {% apibody %}
-r.connect(opts) → connection
+r.connect(opts) &rarr; connection
 {% endapibody %}
 
 Create a new connection to the database server.
@@ -115,7 +115,7 @@ conn.use('heroes')
 ## [run](run/) ##
 
 {% apibody %}
-query.run(conn[, opts]) → cursor
+query.run(conn[, opts]) &rarr; cursor
 {% endapibody %}
 
 Run a query on a connection.
@@ -126,7 +126,7 @@ __Example:__ Call run on the connection with a query to execute the query.
 r.table('marvel').run(conn).each{|x| p x}
 ```
 
-[Read more about this command →](run/)
+[Read more about this command &rarr;](run/)
 
 {% endapisection %}
 
@@ -134,7 +134,7 @@ r.table('marvel').run(conn).each{|x| p x}
 ## [db_create](db_create/) ##
 
 {% apibody %}
-r.db_create(db_name) → object
+r.db_create(db_name) &rarr; object
 {% endapibody %}
 
 Create a database. A RethinkDB database is a collection of tables, similar to
@@ -154,7 +154,7 @@ r.db_create('superheroes').run(conn)
 ## [db_drop](db_drop/) ##
 
 {% apibody %}
-r.db_drop(db_name) → object
+r.db_drop(db_name) &rarr; object
 {% endapibody %}
 
 Drop a database. The database, all its tables, and corresponding data will be deleted.
@@ -172,7 +172,7 @@ r.db_drop('superheroes').run(conn)
 ## [db_list](db_list/) ##
 
 {% apibody %}
-r.db_list() → array
+r.db_list() &rarr; array
 {% endapibody %}
 
 List all database names in the system. The result is a list of strings.
@@ -192,7 +192,7 @@ r.db_list.run(conn)
 ## [table_create](table_create/) ##
 
 {% apibody %}
-db.table_create(table_name[, options]) → object
+db.table_create(table_name[, options]) &rarr; object
 {% endapibody %}
 
 Create a table. A RethinkDB table is a collection of JSON documents. 
@@ -207,12 +207,12 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 r.db('test').table_create('dc_universe').run(conn)
 ```
 
-[Read more about this command →](table_create/)
+[Read more about this command &rarr;](table_create/)
 
 ## [table_drop](table_drop/) ##
 
 {% apibody %}
-db.table_drop(table_name) → object
+db.table_drop(table_name) &rarr; object
 {% endapibody %}
 
 Drop a table. The table and all its data will be deleted.
@@ -230,7 +230,7 @@ r.db('test').table_drop('dc_universe').run(conn)
 ## [table_list](table_list/) ##
 
 {% apibody %}
-db.table_list() → array
+db.table_list() &rarr; array
 {% endapibody %}
 
 List all table names in a database. The result is a list of strings.
@@ -245,7 +245,7 @@ r.db('test').table_list().run(conn)
 ## [index_create](index_create/) ##
 
 {% apibody %}
-table.index_create(index_name[, index_function]) → object
+table.index_create(index_name[, index_function]) &rarr; object
 {% endapibody %}
 
 Create a new secondary index on this table.
@@ -257,13 +257,13 @@ index.
 r.table('dc').index_create('code_name').run(conn)
 ```
 
-[Read more about this command →](index_create/)
+[Read more about this command &rarr;](index_create/)
 
 
 ## [index_drop](index_drop/) ##
 
 {% apibody %}
-table.index_drop(index_name) → object
+table.index_drop(index_name) &rarr; object
 {% endapibody %}
 
 Delete a previously created secondary index of this table.
@@ -278,7 +278,7 @@ r.table('dc').index_drop('code_name').run(conn)
 ## [index_list](index_list/) ##
 
 {% apibody %}
-table.index_list() → array
+table.index_list() &rarr; array
 {% endapibody %}
 
 List all the secondary indexes of this table.
@@ -298,7 +298,7 @@ r.table('marvel').index_list().run(conn)
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json][, { :durability => 'soft', :return_vals => true :upsert => true}]) → object
+table.insert(json | [json][, { :durability => 'soft', :return_vals => true :upsert => true}]) &rarr; object
 {% endapibody %}
 
 Insert JSON documents into a table. Accepts a single JSON document or an array of
@@ -322,15 +322,15 @@ r.table('marvel').insert(
     { :superhero => 'Iron Man', :superpower => 'Arc Reactor' }).run(conn)
 ```
 
-[Read more about this command →](insert/)
+[Read more about this command &rarr;](insert/)
 
 
 ## [update](update/) ##
 
 {% apibody %}
-table.update(json | expr[, durability => 'soft', return_vals => true]) → object
-selection.update(json | expr[, durability => 'soft', return_vals => true]) → object
-singleSelection.update(json | expr[, durability => 'soft', return_vals => true]) → object
+table.update(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
+selection.update(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
+singleSelection.update(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
 {% endapibody %}
 
 Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a
@@ -355,15 +355,15 @@ the document.
 r.table('marvel').get('superman').update{ {:age => 30} }.run(conn)
 ```
 
-[Read more about this command →](update/)
+[Read more about this command &rarr;](update/)
 
 
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(json | expr[, durability => 'soft', return_vals => true]) → object
-selection.replace(json | expr[, durability => 'soft', return_vals => true]) → object
-singleSelection.replace(json | expr[, durability => 'soft', return_vals => true]) → object
+table.replace(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
+selection.replace(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
+singleSelection.replace(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
 {% endapibody %}
 
 Replace documents in a table. Accepts a JSON document or a RQL expression, and replaces
@@ -397,15 +397,15 @@ r.table('marvel').get('superman').replace({
 }).run(conn)
 ```
 
-[Read more about this command →](replace/)
+[Read more about this command &rarr;](replace/)
 
 
 ## [delete](delete/) ##
 
 {% apibody %}
-table.delete[({:durability => soft, :return_vals => true})] → object
-selection.delete[({:durability => soft, :return_vals => true})] → object
-singleSelection.delete[({:durability => soft, :return_vals => true})] → object
+table.delete[({:durability => soft, :return_vals => true})] &rarr; object
+selection.delete[({:durability => soft, :return_vals => true})] &rarr; object
+singleSelection.delete[({:durability => soft, :return_vals => true})] &rarr; object
 {% endapibody %}
 
 Delete one or more documents from a table. The optional argument return_vals will return
@@ -430,7 +430,7 @@ __Example:__ Delete superman from the database.
 r.table('marvel').get('superman').delete.run(conn)
 ```
 
-[Read more about this command →](delete/)
+[Read more about this command &rarr;](delete/)
 
 {% endapisection %}
 
@@ -440,7 +440,7 @@ r.table('marvel').get('superman').delete.run(conn)
 ## [db](db/) ##
 
 {% apibody %}
-r.db(db_name) → db
+r.db(db_name) &rarr; db
 {% endapibody %}
 
 Reference a database.
@@ -455,7 +455,7 @@ r.db('heroes').table('marvel').run(conn)
 ## [table](table/) ##
 
 {% apibody %}
-db.table(name[, opts]) → table
+db.table(name[, opts]) &rarr; table
 {% endapibody %}
 
 Select all documents in a table. This command can be chained with other commands to do
@@ -467,12 +467,12 @@ __Example:__ Return all documents in the table 'marvel' of the default database.
 r.table('marvel').run(conn)
 ```
 
-[Read more about this command →](table/)
+[Read more about this command &rarr;](table/)
 
 ## [get](get/) ##
 
 {% apibody %}
-table.get(key) → singleRowSelection
+table.get(key) &rarr; singleRowSelection
 {% endapibody %}
 
 Get a document by primary key.
@@ -487,7 +487,7 @@ r.table('marvel').get('superman').run(conn)
 ## [get_all](get_all/) ##
 
 {% apibody %}
-table.get_all(key[, key2...], [, :index => 'id']) → selection
+table.get_all(key[, key2...], [, :index => 'id']) &rarr; selection
 {% endapibody %}
 
 Get all documents where the given value matches the value of the requested index.
@@ -499,12 +499,12 @@ __Example:__ Secondary index keys are not guaranteed to be unique so we cannot q
 r.table('marvel').get_all('man_of_steel', :index => 'code_name').run(conn)
 ```
 
-[Read more about this command →](get_all/)
+[Read more about this command &rarr;](get_all/)
 
 ## [between](between/) ##
 
 {% apibody %}
-table.between(lower_key, upper_key[, :index => 'id', :left_bound => 'closed', :right_bound => 'open']) → selection
+table.between(lower_key, upper_key[, :index => 'id', :left_bound => 'closed', :right_bound => 'open']) &rarr; selection
 {% endapibody %}
 
 Get all documents between two keys. Accepts three optional arguments: `index`,
@@ -520,14 +520,14 @@ __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open 
 r.table('marvel').between(10, 20).run(conn)
 ```
 
-[Read more about this command →](between/)
+[Read more about this command &rarr;](between/)
 
 ## [filter](filter/) ##
 
 {% apibody %}
-sequence.filter(predicate) → selection
-stream.filter(predicate) → stream
-array.filter(predicate) → array
+sequence.filter(predicate) &rarr; selection
+stream.filter(predicate) &rarr; stream
+array.filter(predicate) &rarr; array
 {% endapibody %}
 
 Get all the documents for which the given predicate is true.
@@ -544,7 +544,7 @@ __Example:__ Get all active users aged 30.
 r.table('users').filter('active' => true, 'profile' => {'age' => 30}).run(conn)
 ```
 
-[Read more about this command →](filter/)
+[Read more about this command &rarr;](filter/)
 
 {% endapisection %}
 
@@ -555,8 +555,8 @@ These commands allow the combination of multiple sequences into a single sequenc
 ## [inner_join](inner_join/) ##
 
 {% apibody %}
-sequence.inner_join(other_sequence, predicate) → stream
-array.inner_join(other_sequence, predicate) → array
+sequence.inner_join(other_sequence, predicate) &rarr; stream
+array.inner_join(other_sequence, predicate) &rarr; array
 {% endapibody %}
 
 Returns the inner product of two sequences (e.g. a table, a filter result) filtered by
@@ -576,8 +576,8 @@ r.table('marvel').inner_join(r.table('dc')) {|marvel_row, dc_row|
 ## [outer_join](outer_join/) ##
 
 {% apibody %}
-sequence.outer_join(other_sequence, predicate) → stream
-array.outer_join(other_sequence, predicate) → array
+sequence.outer_join(other_sequence, predicate) &rarr; stream
+array.outer_join(other_sequence, predicate) &rarr; array
 {% endapibody %}
 
 Computes a left outer join by retaining each row in the left table even if no match was
@@ -597,8 +597,8 @@ r.table('marvel').outer_join(r.table('dc')) {|marvel_row, dc_row|
 ## [eq_join](eq_join/) ##
 
 {% apibody %}
-sequence.eq_join(left_attr, other_table[, index='id']) → stream
-array.eq_join(left_attr, other_table[, index='id']) → array
+sequence.eq_join(left_attr, other_table[, index='id']) &rarr; stream
+array.eq_join(left_attr, other_table[, index='id']) &rarr; array
 {% endapibody %}
 
 An efficient join that looks up elements in the right table by primary key.
@@ -609,14 +609,14 @@ __Example:__ Let our heroes join forces to battle evil!
 r.table('marvel').eq_join(:main_dc_collaborator, r.table('dc')).run(conn)
 ```
 
-[Read more about this command →](eq_join/)
+[Read more about this command &rarr;](eq_join/)
 
 
 ## [zip](zip/) ##
 
 {% apibody %}
-stream.zip() → stream
-array.zip() → array
+stream.zip() &rarr; stream
+array.zip() &rarr; array
 {% endapibody %}
 
 Used to 'zip' up the result of a join by merging the 'right' fields into 'left' fields of each member of the sequence.
@@ -637,8 +637,8 @@ These commands are used to transform data in a sequence.
 ## [map](map/) ##
 
 {% apibody %}
-sequence.map(mapping_function) → stream
-array.map(mapping_function) → array
+sequence.map(mapping_function) &rarr; stream
+array.map(mapping_function) &rarr; array
 {% endapibody %}
 
 Transform each element of the sequence by applying the given mapping function.
@@ -655,8 +655,8 @@ r.table('marvel').map {|hero|
 ## [with_fields](with_fields/) ##
 
 {% apibody %}
-sequence.with_selectors([selector1, selector2...]) → stream
-array.with_selectors([selector1, selector2...]) → array
+sequence.with_selectors([selector1, selector2...]) &rarr; stream
+array.with_selectors([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
 Takes a sequence of objects and a list of fields. If any objects in the sequence don't
@@ -670,14 +670,14 @@ __Example:__ Get a list of heroes and their nemeses, excluding any heroes that l
 r.table('marvel').with_fields('id', 'nemesis')
 ```
 
-[Read more about this command →](with_fields/)
+[Read more about this command &rarr;](with_fields/)
 
 
 ## [concat_map](concat_map/) ##
 
 {% apibody %}
-sequence.concat_map(mapping_function) → stream
-array.concat_map(mapping_function) → array
+sequence.concat_map(mapping_function) &rarr; stream
+array.concat_map(mapping_function) &rarr; array
 {% endapibody %}
 
 Flattens a sequence of arrays returned by the mappingFunction into a single sequence.
@@ -696,8 +696,8 @@ r.table('marvel').concat_map {|hero|
 ## [order_by](order_by/) ##
 
 {% apibody %}
-sequence.order_by(key1, [key2...]) → stream
-array.order_by(key1, [key2...]) → array
+sequence.order_by(key1, [key2...]) &rarr; stream
+array.order_by(key1, [key2...]) &rarr; array
 {% endapibody %}
 
 Sort the sequence by document values of the given key(s). `orderBy` defaults to ascending
@@ -710,14 +710,14 @@ __Example:__ Order our heroes by a series of performance metrics.
 r.table('marvel').order_by(:enemies_vanquished, :damsels_saved).run(conn)
 ```
 
-[Read more about this command →](order_by/)
+[Read more about this command &rarr;](order_by/)
 
 
 ## [skip](skip/) ##
 
 {% apibody %}
-sequence.skip(n) → stream
-array.skip(n) → array
+sequence.skip(n) &rarr; stream
+array.skip(n) &rarr; array
 {% endapibody %}
 
 Skip a number of elements from the head of the sequence.
@@ -732,8 +732,8 @@ r.table('marvel').order_by(:success_metric).skip(10).run(conn)
 ## [limit](limit/) ##
 
 {% apibody %}
-sequence.limit(n) → stream
-array.limit(n) → array
+sequence.limit(n) &rarr; stream
+array.limit(n) &rarr; array
 {% endapibody %}
 
 
@@ -748,8 +748,8 @@ r.table('marvel').order_by(:belovedness).limit(10).run(conn)
 <h2 name="[]-slice"><a href="slice/">[]</a></h2>
 
 {% apibody %}
-sequence[start_index[, end_index]] → stream
-array[start_index[, end_index]] → array
+sequence[start_index[, end_index]] &rarr; stream
+array[start_index[, end_index]] &rarr; array
 {% endapibody %}
 
 Trim the sequence to within the bounds provided.
@@ -763,7 +763,7 @@ r.table('marvel').order_by(:strength)[5..10].run(conn)
 <h2 name="[]-nth"><a href="nth">[]</a></h2>
 
 {% apibody %}
-sequence[index] → object
+sequence[index] &rarr; object
 {% endapibody %}
 
 Get the nth element of a sequence.
@@ -778,7 +778,7 @@ r.expr([1,2,3])[1].run(conn)
 ## [indexes_of](indexes_of/) ##
 
 {% apibody %}
-sequence.indexes_of(datum | predicate) → array
+sequence.indexes_of(datum | predicate) &rarr; array
 {% endapibody %}
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.
@@ -789,14 +789,14 @@ __Example:__ Find the position of the letter 'c'.
 r.expr(['a','b','c']).indexes_of('c').run(conn)
 ```
 
-[Read more about this command →](indexes_of/)
+[Read more about this command &rarr;](indexes_of/)
 
 
 
 ## [is_empty](is_empty/) ##
 
 {% apibody %}
-sequence.is_empty() → bool
+sequence.is_empty() &rarr; bool
 {% endapibody %}
 
 Test if a sequence is empty.
@@ -810,7 +810,7 @@ r.table('marvel').is_empty().run(conn)
 ## [union](union/) ##
 
 {% apibody %}
-sequence.union(sequence) → array
+sequence.union(sequence) &rarr; array
 {% endapibody %}
 
 Concatenate two sequences.
@@ -825,9 +825,9 @@ r.table('marvel').union(r.table('dc')).run(conn)
 ## [sample](sample/) ##
 
 {% apibody %}
-sequence.sample(number) → selection
-stream.sample(number) → array
-array.sample(number) → array
+sequence.sample(number) &rarr; selection
+stream.sample(number) &rarr; array
+array.sample(number) &rarr; array
 {% endapibody %}
 
 Select a given number of elements from a sequence with uniform random distribution. Selection is done without replacement.
@@ -848,7 +848,7 @@ These commands are used to compute smaller values from large sequences.
 ## [reduce](reduce/) ##
 
 {% apibody %}
-sequence.reduce(reduction_function[, base]) → value
+sequence.reduce(reduction_function[, base]) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction
@@ -868,7 +868,7 @@ r.table('marvel').order_by(:strength)[5..10].run(conn)
 ## [count](count/) ##
 
 {% apibody %}
-sequence.count([filter]) → number
+sequence.count([filter]) &rarr; number
 {% endapibody %}
 
 Count the number of elements in the sequence. With a single argument, count the number
@@ -881,12 +881,12 @@ __Example:__ Just how many super heroes are there?
 (r.table('marvel').count() + r.table('dc').count()).run(conn)
 ```
 
-[Read more about this command →](count/)
+[Read more about this command &rarr;](count/)
 
 ## [distinct](distinct/) ##
 
 {% apibody %}
-sequence.distinct() → array
+sequence.distinct() &rarr; array
 {% endapibody %}
 
 Remove duplicate elements from the sequence.
@@ -901,7 +901,7 @@ r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)
 ## [grouped_map_reduce](grouped_map_reduce) ##
 
 {% apibody %}
-sequence.grouped_map_reduce(grouping, mapping, reduction, base) → value
+sequence.grouped_map_reduce(grouping, mapping, reduction, base) &rarr; value
 {% endapibody %}
 
 Partition the sequence into groups based on the `grouping` function. The elements of each
@@ -925,7 +925,7 @@ r.table('marvel').grouped_map_reduce(
 ## [group_by](group_by/) ##
 
 {% apibody %}
-sequence.group_by(selector1[, selector2...], reduction_object) → array
+sequence.group_by(selector1[, selector2...], reduction_object) &rarr; array
 {% endapibody %}
 
 Groups elements by the values of the given attributes and then applies the given
@@ -938,13 +938,13 @@ __Example:__ Using a predefined reduction we can easily find the average strengt
 r.table('marvel').group_by(:weight_class, r.avg(:strength)).run(conn)
 ```
 
-[Read more about this command →](group_by/)
+[Read more about this command &rarr;](group_by/)
 
 
 ## [contains](contains/) ##
 
 {% apibody %}
-sequence.contains(value1[, value2...]) → bool
+sequence.contains(value1[, value2...]) &rarr; bool
 {% endapibody %}
 
 Returns whether or not a sequence contains all the specified values, or if functions are
@@ -957,7 +957,7 @@ __Example:__ Has Iron Man ever fought Superman?
 r.table('marvel').get('ironman')[:opponents].contains('superman').run(conn)
 ```
 
-[Read more about this command →](contains/)
+[Read more about this command &rarr;](contains/)
 
 
 {% endapisection %}
@@ -1020,10 +1020,10 @@ r.table('marvel').group_by(:strength, r.avg(:agility)).run(conn)
 ## [pluck](pluck/) ##
 
 {% apibody %}
-sequence.pluck([selector1, selector2...]) → stream
-array.pluck([selector1, selector2...]) → array
-object.pluck([selector1, selector2...]) → object
-singleSelection.pluck([selector1, selector2...]) → object
+sequence.pluck([selector1, selector2...]) &rarr; stream
+array.pluck([selector1, selector2...]) &rarr; array
+object.pluck([selector1, selector2...]) &rarr; object
+singleSelection.pluck([selector1, selector2...]) &rarr; object
 {% endapibody %}
 
 Plucks out one or more attributes from either an object or a sequence of objects
@@ -1036,16 +1036,16 @@ document.
 r.table('marvel').get('IronMan').pluck('reactorState', 'reactorPower').run(conn)
 ```
 
-[Read more about this command →](pluck/)
+[Read more about this command &rarr;](pluck/)
 
 
 ## [without](without/) ##
 
 {% apibody %}
-sequence.without([selector1, selector2...]) → stream
-array.without([selector1, selector2...]) → array
-singleSelection.without([selector1, selector2...]) → object
-object.without([selector1, selector2...]) → object
+sequence.without([selector1, selector2...]) &rarr; stream
+array.without([selector1, selector2...]) &rarr; array
+singleSelection.without([selector1, selector2...]) &rarr; object
+object.without([selector1, selector2...]) &rarr; object
 {% endapibody %}
 
 The opposite of pluck; takes an object or a sequence of objects, and returns them with
@@ -1058,16 +1058,16 @@ out the list of IronMan's romantic conquests.
 r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn)
 ```
 
-[Read more about this command →](without/)
+[Read more about this command &rarr;](without/)
 
 
 ## [merge](merge/) ##
 
 {% apibody %}
-singleSelection.merge(object) → object
-object.merge(object) → object
-sequence.merge(object) → stream
-array.merge(object) → array
+singleSelection.merge(object) &rarr; object
+object.merge(object) &rarr; object
+sequence.merge(object) &rarr; stream
+array.merge(object) &rarr; array
 {% endapibody %}
 
 Merge two objects together to construct a new object with properties from both. Gives preference to attributes from other when there is a conflict.
@@ -1079,12 +1079,12 @@ r.table('marvel').get('IronMan').merge(
     r.table('loadouts').get('alienInvasionKit')).run(conn)
 ```
 
-[Read more about this command →](merge/)
+[Read more about this command &rarr;](merge/)
 
 ## [append](append/) ##
 
 {% apibody %}
-array.append(value) → array
+array.append(value) &rarr; array
 {% endapibody %}
 
 Append a value to an array.
@@ -1099,7 +1099,7 @@ r.table('marvel').get('IronMan')[:equipment].append('new_boots').run(conn)
 ## [prepend](prepend/) ##
 
 {% apibody %}
-array.prepend(value) → array
+array.prepend(value) &rarr; array
 {% endapibody %}
 
 Prepend a value to an array.
@@ -1114,7 +1114,7 @@ r.table('marvel').get('IronMan')[:equipment].prepend('new_boots').run(conn)
 ## [difference](difference/) ##
 
 {% apibody %}
-array.difference(array) → array
+array.difference(array) &rarr; array
 {% endapibody %}
 
 Remove the elements of one array from another array.
@@ -1129,7 +1129,7 @@ r.table('marvel').get('IronMan')[:equipment].difference(['Boots']).run(conn)
 ## [set_insert](set_insert/) ##
 
 {% apibody %}
-array.set_insert(value) → array
+array.set_insert(value) &rarr; array
 {% endapibody %}
 
 Add a value to an array and return it as a set (an array with distinct values).
@@ -1144,7 +1144,7 @@ r.table('marvel').get('IronMan')[:equipment].set_insert('new_boots').run(conn)
 ## [set_union](set_union/) ##
 
 {% apibody %}
-array.set_union(array) → array
+array.set_union(array) &rarr; array
 {% endapibody %}
 
 Add a several values to an array and return it as a set (an array with distinct values).
@@ -1159,7 +1159,7 @@ r.table('marvel').get('IronMan')[:equipment].set_union(['newBoots', 'arc_reactor
 ## [set_intersection](set_intersection/) ##
 
 {% apibody %}
-array.set_intersection(array) → array
+array.set_intersection(array) &rarr; array
 {% endapibody %}
 
 Intersect two arrays returning values that occur in both of them as a set (an array with
@@ -1175,7 +1175,7 @@ r.table('marvel').get('IronMan')[:equipment].set_intersection(['newBoots', 'arc_
 ## [set_difference](set_difference/) ##
 
 {% apibody %}
-array.set_difference(array) → array
+array.set_difference(array) &rarr; array
 {% endapibody %}
 
 Remove the elements of one array from another and return them as a set (an array with
@@ -1191,9 +1191,9 @@ r.table('marvel').get('IronMan')[:equipment].set_difference(['newBoots', 'arc_re
 <h2 name="[]-get_field"><a href="get_field">[]</a></h2>
 
 {% apibody %}
-sequence[attr] → sequence
-singleSelection[attr] → value
-object[attr] → value
+sequence[attr] &rarr; sequence
+singleSelection[attr] &rarr; value
+object[attr] &rarr; value
 {% endapibody %}
 
 Get a single field from an object. If called on a sequence, gets that field from every
@@ -1209,10 +1209,10 @@ r.table('marvel').get('IronMan')[:first_appearance].run(conn)
 ## [has_fields](has_fields/) ##
 
 {% apibody %}
-sequence.has_fields([selector1, selector2...]) → stream
-array.has_fields([selector1, selector2...]) → array
-singleSelection.has_fields([selector1, selector2...]) → boolean
-object.has_fields([selector1, selector2...]) → boolean
+sequence.has_fields([selector1, selector2...]) &rarr; stream
+array.has_fields([selector1, selector2...]) &rarr; array
+singleSelection.has_fields([selector1, selector2...]) &rarr; boolean
+object.has_fields([selector1, selector2...]) &rarr; boolean
 {% endapibody %}
 
 Test if an object has all of the specified fields. An object has a field if it has the
@@ -1225,13 +1225,13 @@ __Example:__ Which heroes are married?
 r.table('marvel').has_fields(:spouse).run(conn)
 ```
 
-[Read more about this command →](has_fields/)
+[Read more about this command &rarr;](has_fields/)
 
 
 ## [insert_at](insert_at/) ##
 
 {% apibody %}
-array.insert_at(index, value) → array
+array.insert_at(index, value) &rarr; array
 {% endapibody %}
 
 Insert a value in to an array at a given index. Returns the modified array.
@@ -1246,7 +1246,7 @@ r.expr(["Iron Man", "Spider-Man"]).insert_at(1, "Hulk").run(conn)
 ## [splice_at](splice_at/) ##
 
 {% apibody %}
-array.splice_at(index, array) → array
+array.splice_at(index, array) &rarr; array
 {% endapibody %}
 
 Insert several values in to an array at a given index. Returns the modified array.
@@ -1261,7 +1261,7 @@ r.expr(["Iron Man", "Spider-Man"]).splice_at(1, ["Hulk", "Thor"]).run(conn)
 ## [delete_at](delete_at/) ##
 
 {% apibody %}
-array.delete_at(index [,endIndex]) → array
+array.delete_at(index [,endIndex]) &rarr; array
 {% endapibody %}
 
 Remove an element from an array at a given index. Returns the modified array.
@@ -1272,12 +1272,12 @@ __Example:__ Hulk decides to leave the avengers.
 r.expr(["Iron Man", "Hulk", "Spider-Man"]).delete_at(1).run(conn)
 ```
 
-[Read more about this command →](delete_at/)
+[Read more about this command &rarr;](delete_at/)
 
 ## [change_at](change_at/) ##
 
 {% apibody %}
-array.change_at(index, value) → array
+array.change_at(index, value) &rarr; array
 {% endapibody %}
 
 Change a value in an array at a given index. Returns the modified array.
@@ -1291,8 +1291,8 @@ r.expr(["Iron Man", "Bruce", "Spider-Man"]).change_at(1, "Hulk").run(conn)
 ## [keys](keys/) ##
 
 {% apibody %}
-singleSelection.keys() → array
-object.keys() → array
+singleSelection.keys() &rarr; array
+object.keys() &rarr; array
 {% endapibody %}
 
 Return an array containing all of the object's keys.
@@ -1313,7 +1313,7 @@ These commands provide string operators.
 ## [match](match/) ##
 
 {% apibody %}
-string.match(regexp) → array
+string.match(regexp) &rarr; array
 {% endapibody %}
 
 Match against a regular expression. Returns a match object containing the matched string,
@@ -1328,7 +1328,7 @@ __Example:__ Get all users whose name starts with A.
 r.table('users').filter{|row| row[:name].match("^A")}.run(conn)
 ```
 
-[Read more about this command →](match/)
+[Read more about this command &rarr;](match/)
 
 {% endapisection %}
 
@@ -1338,10 +1338,10 @@ r.table('users').filter{|row| row[:name].match("^A")}.run(conn)
 ## [+](add/) ##
 
 {% apibody %}
-number + number → number
-string + string → string
-array + array → array
-time + number → time
+number + number &rarr; number
+string + string &rarr; string
+array + array &rarr; array
+time + number &rarr; time
 {% endapibody %}
 
 Sum two numbers, concatenate two strings, or concatenate 2 arrays.
@@ -1352,15 +1352,15 @@ __Example:__ It's as easy as 2 + 2 = 4.
 (r.expr(2) + 2).run(conn)
 ```
 
-[Read more about this command →](add/)
+[Read more about this command &rarr;](add/)
 
 
 ## [-](sub/) ##
 
 {% apibody %}
-number - number → number
-time - time → number
-time - number → time
+number - number &rarr; number
+time - time &rarr; number
+time - number &rarr; time
 {% endapibody %}
 
 Subtract two numbers.
@@ -1371,13 +1371,13 @@ __Example:__ It's as easy as 2 - 2 = 0.
 (r.expr(2) - 2).run(conn)
 ```
 
-[Read more about this command →](sub/)
+[Read more about this command &rarr;](sub/)
 
 ## [*](mul/) ##
 
 {% apibody %}
-number * number → number
-array * number → array
+number * number &rarr; number
+array * number &rarr; array
 {% endapibody %}
 
 Multiply two numbers, or make a periodic array.
@@ -1388,12 +1388,12 @@ __Example:__ It's as easy as 2 * 2 = 4.
 (r.expr(2) * 2).run(conn)
 ```
 
-[Read more about this command →](mul/)
+[Read more about this command &rarr;](mul/)
 
 ## [/](div/) ##
 
 {% apibody %}
-number / number → number
+number / number &rarr; number
 {% endapibody %}
 
 Divide two numbers.
@@ -1409,7 +1409,7 @@ __Example:__ It's as easy as 2 / 2 = 1.
 ## [%](mod/) ##
 
 {% apibody %}
-number % number → number
+number % number &rarr; number
 {% endapibody %}
 
 Find the remainder when dividing two numbers.
@@ -1423,7 +1423,7 @@ __Example:__ It's as easy as 2 % 2 = 0.
 ## [&](and/) ##
 
 {% apibody %}
-bool & bool → bool
+bool & bool &rarr; bool
 {% endapibody %}
 
 Compute the logical and of two values.
@@ -1438,7 +1438,7 @@ __Example:__ True and false anded is false?
 ## [|](or/) ##
 
 {% apibody %}
-bool | bool → bool
+bool | bool &rarr; bool
 {% endapibody %}
 
 Compute the logical or of two values.
@@ -1453,7 +1453,7 @@ __Example:__ True or false ored is true?
 ## [eq](eq/) ##
 
 {% apibody %}
-value.eq(value) → bool
+value.eq(value) &rarr; bool
 {% endapibody %}
 
 Test if two values are equal.
@@ -1468,7 +1468,7 @@ r.expr(2).eq(2).run(conn)
 ## [ne](ne/) ##
 
 {% apibody %}
-value.ne(value) → bool
+value.ne(value) &rarr; bool
 {% endapibody %}
 
 Test if two values are not equal.
@@ -1483,7 +1483,7 @@ r.expr(2).ne(2).run(conn)
 ## [>](gt/) ##
 
 {% apibody %}
-value > value → bool
+value > value &rarr; bool
 {% endapibody %}
 
 Test if the first value is greater than other.
@@ -1497,7 +1497,7 @@ __Example:__ Is 2 greater than 2?
 ## [>=](ge/) ##
 
 {% apibody %}
-value >= value → bool
+value >= value &rarr; bool
 {% endapibody %}
 
 Test if the first value is greater than or equal to other.
@@ -1511,7 +1511,7 @@ __Example:__ Is 2 greater than or equal to 2?
 ## [<](lt/) ##
 
 {% apibody %}
-value < value → bool
+value < value &rarr; bool
 {% endapibody %}
 
 Test if the first value is less than other.
@@ -1525,7 +1525,7 @@ __Example:__ Is 2 less than 2?
 ## [<=](le/) ##
 
 {% apibody %}
-value <= value → bool
+value <= value &rarr; bool
 {% endapibody %}
 
 Test if the first value is less than or equal to other.
@@ -1540,7 +1540,7 @@ __Example:__ Is 2 less than or equal to 2?
 ## [not](not/) ##
 
 {% apibody %}
-bool.not() → bool
+bool.not() &rarr; bool
 {% endapibody %}
 Compute the logical inverse (not).
 
@@ -1559,7 +1559,7 @@ r(true).not.run(conn)
 ## [now](now/) ##
 
 {% apibody %}
-r.now() → time
+r.now() &rarr; time
 {% endapibody %}
 
 Return a time object representing the current time in UTC. The command now() is computed once when the server receives the query, so multiple instances of r.now() will always return the same time inside a query.
@@ -1576,7 +1576,7 @@ r.table("users").insert({
 ## [time](time/) ##
 
 {% apibody %}
-r.time(year, month, day[, hour, minute, second], timezone) → time
+r.time(year, month, day[, hour, minute, second], timezone) &rarr; time
 {% endapibody %}
 
 Create a time object for a specific time.
@@ -1592,7 +1592,7 @@ r.table("user").get("John").update(:birthdate => r.time(1986, 11, 3, 'Z')).run(c
 ## [epoch_time](epoch_time/) ##
 
 {% apibody %}
-r.epoch_time(epoch_time) → time
+r.epoch_time(epoch_time) &rarr; time
 {% endapibody %}
 
 Create a time object based on seconds since epoch.
@@ -1607,7 +1607,7 @@ r.table("user").get("John").update(:birthdate => r.epoch_time(531360000)).run(co
 ## [iso8601](iso8601/) ##
 
 {% apibody %}
-r.ISO8601(iso8601Date[, {default_timezone:''}]) → time
+r.ISO8601(iso8601Date[, {default_timezone:''}]) &rarr; time
 {% endapibody %}
 
 Create a time object based on an iso8601 date-time string (e.g.
@@ -1626,7 +1626,7 @@ r.table("user").get("John").update(:birth => r.iso8601('1986-11-03T08:30:00-07:0
 ## [in_timezone](in_timezone/) ##
 
 {% apibody %}
-time.in_timezone(timezone) → time
+time.in_timezone(timezone) &rarr; time
 {% endapibody %}
 
 Return a new time object with a different timezone. While the time stays the same, the results returned by methods such as hours() will change since they take the timezone into account. The timezone argument has to be of the ISO 8601 format.
@@ -1642,7 +1642,7 @@ r.now().in_timezone('-08:00').hours().run(conn)
 ## [timezone](timezone/) ##
 
 {% apibody %}
-time.timezone() → string
+time.timezone() &rarr; string
 {% endapibody %}
 
 Return the timezone of the time object.
@@ -1659,7 +1659,7 @@ r.table("users").filter{ |user|
 ## [during](during/) ##
 
 {% apibody %}
-time.during(start_time, end_time[, left_bound="open/closed", right_bound="open/closed"]) → bool
+time.during(start_time, end_time[, left_bound="open/closed", right_bound="open/closed"]) &rarr; bool
 {% endapibody %}
 
 Return if a time is between two other times (by default, inclusive for the start, exclusive for the end).
@@ -1672,14 +1672,14 @@ r.table("posts").filter{ |post|
 }.run(conn)
 ```
 
-[Read more about this command →](during/)
+[Read more about this command &rarr;](during/)
 
 
 
 ## [date](date/) ##
 
 {% apibody %}
-time.date() → time
+time.date() &rarr; time
 {% endapibody %}
 
 Return a new time object only based on the day, month and year (ie. the same day at 00:00).
@@ -1697,7 +1697,7 @@ r.table("users").filter{ |user|
 ## [time\_of\_day](time_of_day/) ##
 
 {% apibody %}
-time.time_of_day() → number
+time.time_of_day() &rarr; number
 {% endapibody %}
 
 Return the number of seconds elapsed since the beginning of the day stored in the time object.
@@ -1714,7 +1714,7 @@ r.table("posts").filter{ |post|
 ## [year](year/) ##
 
 {% apibody %}
-time.year() → number
+time.year() &rarr; number
 {% endapibody %}
 
 Return the year of a time object.
@@ -1732,7 +1732,7 @@ r.table("users").filter{ |user|
 ## [month](month/) ##
 
 {% apibody %}
-time.month() → number
+time.month() &rarr; number
 {% endapibody %}
 
 Return the month of a time object as a number between 1 and 12. For your convenience, the terms r.january, r.february etc. are defined and map to the appropriate integer.
@@ -1745,14 +1745,14 @@ r.table("users").filter{ |user|
 }
 ```
 
-[Read more about this command →](month/)
+[Read more about this command &rarr;](month/)
 
 
 
 ## [day](day/) ##
 
 {% apibody %}
-time.day() → number
+time.day() &rarr; number
 {% endapibody %}
 
 Return the day of a time object as a number between 1 and 31.
@@ -1770,7 +1770,7 @@ r.table("users").filter{ |user|
 ## [day\_of\_week](day_of_week/) ##
 
 {% apibody %}
-time.day_of_week() → number
+time.day_of_week() &rarr; number
 {% endapibody %}
 
 Return the day of week of a time object as a number between 1 and 7 (following ISO 8601 standard). For your convenience, the terms r.monday, r.tuesday etc. are defined and map to the appropriate integer.
@@ -1781,13 +1781,13 @@ __Example:__ Return today's day of week.
 r.now().day_of_week().run(conn)
 ```
 
-[Read more about this command →](day_of_week/)
+[Read more about this command &rarr;](day_of_week/)
 
 
 ## [day\_of\_year](day_of_year/) ##
 
 {% apibody %}
-time.day_of_year() → number
+time.day_of_year() &rarr; number
 {% endapibody %}
 
 Return the day of the year of a time object as a number between 1 and 366 (following ISO 8601 standard).
@@ -1804,7 +1804,7 @@ r.table("users").filter{ |user|
 ## [hours](hours/) ##
 
 {% apibody %}
-time.hours() → number
+time.hours() &rarr; number
 {% endapibody %}
 
 Return the hour in a time object as a number between 0 and 23.
@@ -1821,7 +1821,7 @@ r.table("posts").filter{ |post|
 ## [minutes](minutes/) ##
 
 {% apibody %}
-time.minutes() → number
+time.minutes() &rarr; number
 {% endapibody %}
 
 Return the minute in a time object as a number between 0 and 59.
@@ -1839,7 +1839,7 @@ r.table("posts").filter{ |post|
 ## [seconds](seconds/) ##
 
 {% apibody %}
-time.seconds() → number
+time.seconds() &rarr; number
 {% endapibody %}
 
 Return the seconds in a time object as a number between 0 and 59.999 (double precision).
@@ -1856,7 +1856,7 @@ r.table("posts").filter{ |post|
 ## [to_iso8601](to_iso8601/) ##
 
 {% apibody %}
-time.to_iso8601() → number
+time.to_iso8601() &rarr; number
 {% endapibody %}
 
 Convert a time object to its iso 8601 format.
@@ -1871,7 +1871,7 @@ r.now().to_iso8601()
 ## [to\_epoch\_time](to_epoch_time/) ##
 
 {% apibody %}
-time.to_epoch_time() → number
+time.to_epoch_time() &rarr; number
 {% endapibody %}
 
 Convert a time object to its epoch time.
@@ -1892,7 +1892,7 @@ r.now().to_epoch_time()
 ## [do](do/) ##
 
 {% apibody %}
-any.do(arg [, args]*, expr) → any
+any.do(arg [, args]*, expr) &rarr; any
 {% endapibody %}
 
 Evaluate the expr in the context of one or more value bindings.
@@ -1909,7 +1909,7 @@ r.do(r.table('marvel').get('IronMan')) { |ironman| ironman[:name] }.run(conn)
 ## [branch](branch/) ##
 
 {% apibody %}
-r.branch(test, true_branch, false_branch) → any
+r.branch(test, true_branch, false_branch) &rarr; any
 {% endapibody %}
 
 Evaluate one of two control paths based on the value of an expression. branch is effectively an if renamed due to language constraints.
@@ -1929,7 +1929,7 @@ r.table('marvel').map { |row|  r.branch(row[:victories] > 100,
 ## [for_each](for_each/) ##
 
 {% apibody %}
-sequence.for_each(write_query) → object
+sequence.for_each(write_query) &rarr; object
 {% endapibody %}
 
 Loop over a sequence, evaluating the given write query for each element.
@@ -1947,7 +1947,7 @@ r.table('marvel').for_each {|hero|
 ## [error](error/) ##
 
 {% apibody %}
-r.error(message) → error
+r.error(message) &rarr; error
 {% endapibody %}
 
 Throw a runtime error. If called with no arguments inside the second argument to `default`, re-throw the current error.
@@ -1965,8 +1965,8 @@ r.table('marvel').get('IronMan').do { |ironman|
 ## [default](default/) ##
 
 {% apibody %}
-value.default(default_value) → any
-sequence.default(default_value) → any
+value.default(default_value) &rarr; any
+sequence.default(default_value) &rarr; any
 {% endapibody %}
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
@@ -1989,7 +1989,7 @@ r.table('projects').map {|p|
 ## [expr](expr/) ##
 
 {% apibody %}
-r.expr(value) → value
+r.expr(value) &rarr; value
 {% endapibody %}
 
 Construct a RQL JSON object from a native object.
@@ -2000,12 +2000,12 @@ __Example:__ Objects wrapped with expr can then be manipulated by RQL API functi
 r.expr({:a => 'b'}).merge({:b => [1,2,3]}).run(conn)
 ```
 
-[Read more about this command →](expr/)
+[Read more about this command &rarr;](expr/)
 
 ## [js](js/) ##
 
 {% apibody %}
-r.js(jsString) → value
+r.js(jsString) &rarr; value
 {% endapibody %}
 
 Create a javascript expression.
@@ -2016,15 +2016,15 @@ __Example:__ Concatenate two strings using Javascript'
 r.js("'str1' + 'str2'").run(conn)
 ```
 
-[Read more about this command →](js/)
+[Read more about this command &rarr;](js/)
 
 ## [coerce_to](coerce_to/) ##
 
 {% apibody %}
-sequence.coerce_to(type_name) → array
-value.coerce_to(type_name) → string
-array.coerce_to(type_name) → object
-object.coerce_to(type_name) → array
+sequence.coerce_to(type_name) &rarr; array
+value.coerce_to(type_name) &rarr; string
+array.coerce_to(type_name) &rarr; object
+object.coerce_to(type_name) &rarr; array
 {% endapibody %}
 
 Converts a value of one type into another. 
@@ -2037,12 +2037,12 @@ __Example:__ Convert a table to an array.
 r.table('marvel').coerce_to('array').run(conn)
 ```
 
-[Read more about this command →](coerce_to/)
+[Read more about this command &rarr;](coerce_to/)
 
 ## [type_of](type_of/) ##
 
 {% apibody %}
-any.type_of() → string
+any.type_of() &rarr; string
 {% endapibody %}
 
 Gets the type of a value.
@@ -2056,7 +2056,7 @@ r.expr("foo").type_of().run(conn)
 ## [info](info/) ##
 
 {% apibody %}
-any.info() → object
+any.info() &rarr; object
 {% endapibody %}
 
 Get information about a RQL value.
@@ -2070,7 +2070,7 @@ r.table('marvel').info().run(conn)
 ## [json](json/) ##
 
 {% apibody %}
-r.json(json_string) → value
+r.json(json_string) &rarr; value
 {% endapibody %}
 
 Parse a JSON string on the server.

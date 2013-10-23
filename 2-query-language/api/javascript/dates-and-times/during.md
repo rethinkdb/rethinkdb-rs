@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.during(startTime, endTime[, options]) → bool
+time.during(startTime, endTime[, options]) &rarr; bool
 {% endapibody %}
 
 Return if a time is between two other times (by default, inclusive for the start,

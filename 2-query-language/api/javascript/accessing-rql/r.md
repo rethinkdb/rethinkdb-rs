@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-r → r
+r &rarr; r
 {% endapibody %}
 
 The toplevel RQL namespace.

@@ -13,7 +13,7 @@ related_commands:
 ---
 
 {% apibody %}
-time.minutes() → number
+time.minutes() &rarr; number
 {% endapibody %}
 
 Return the minute in a time object as a number between 0 and 59.

@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 ---
 
 {% apibody %}
-sequence.union(sequence) → array
+sequence.union(sequence) &rarr; array
 {% endapibody %}
 
 Concatenate two sequences.

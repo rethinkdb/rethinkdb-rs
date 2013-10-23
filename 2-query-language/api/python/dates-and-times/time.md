@@ -11,7 +11,7 @@ related_commands:
 ---
 
 {% apibody %}
-r.time(year, month, day[, hour, minute, second], timezone) → time
+r.time(year, month, day[, hour, minute, second], timezone) &rarr; time
 {% endapibody %}
 
 Create a time object for a specific time.

@@ -10,7 +10,7 @@ io:
 ---
 
 {% apibody %}
-r.error(message) → error
+r.error(message) &rarr; error
 {% endapibody %}
 
 Throw a runtime error. If called with no arguments inside the second argument to `default`, re-throw the current error.

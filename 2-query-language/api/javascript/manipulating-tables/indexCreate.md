@@ -14,7 +14,7 @@ related_commands:
 ---
 
 {% apibody %}
-table.indexCreate(indexName[, indexFunction]) → object
+table.indexCreate(indexName[, indexFunction]) &rarr; object
 {% endapibody %}
 
 Create a new secondary index on this table.

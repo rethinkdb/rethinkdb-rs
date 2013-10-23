@@ -11,9 +11,9 @@ related_commands:
 ---
 
 {% apibody %}
-table.update(json | expr[, durability='soft', return_vals=true]) → object
-selection.update(json | expr[, durability='soft', return_vals=true]) → object
-singleSelection.update(json | expr[, durability='soft', return_vals=true]) → object
+table.update(json | expr[, durability='soft', return_vals=true]) &rarr; object
+selection.update(json | expr[, durability='soft', return_vals=true]) &rarr; object
+singleSelection.update(json | expr[, durability='soft', return_vals=true]) &rarr; object
 {% endapibody %}
 
 Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a

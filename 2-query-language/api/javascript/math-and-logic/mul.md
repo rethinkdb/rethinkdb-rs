@@ -17,8 +17,8 @@ related_commands:
 ---
 
 {% apibody %}
-number.mul(number) → number
-array.mul(number) → array
+number.mul(number) &rarr; number
+array.mul(number) &rarr; array
 {% endapibody %}
 
 Multiply two numbers, or make a periodic array.

@@ -7,7 +7,7 @@ github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/pyt
 ---
 
 {% apibody %}
-sequence.for_each(write_query) → object
+sequence.for_each(write_query) &rarr; object
 {% endapibody %}
 
 Loop over a sequence, evaluating the given write query for each element.
