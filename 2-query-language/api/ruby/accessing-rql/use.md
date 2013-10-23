@@ -1,0 +1,26 @@
+---
+layout: api-command 
+language: Ruby
+permalink: api/ruby/use/
+command: use 
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/accessing-rql/use.md
+related_commands:
+    connect: connect/
+    repl: repl/
+    close: close/
+---
+
+{% apibody %}
+connection.use(db_name)
+{% endapibody %}
+
+Change the default database on this connection.
+
+__Example:__ Change the default database so that we don't need to specify the database
+when referencing a table.
+
+```rb
+conn.use('heroes')
+```
+
+

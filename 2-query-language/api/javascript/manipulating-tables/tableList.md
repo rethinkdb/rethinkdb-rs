@@ -1,0 +1,26 @@
+---
+layout: api-command 
+language: JavaScript
+permalink: api/javascript/table_list/
+command: tableList
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/manipulating-tables/tableList.md
+io:
+    -   - db
+        - array
+related_commands:
+    tableCreate: table_create/
+    tableDrop: table_drop/
+---
+
+{% apibody %}
+db.tableList() → array
+{% endapibody %}
+
+List all table names in a database. The result is a list of strings.
+
+__Example:__ List all tables of the 'test' database.
+
+```js
+r.db('test').tableList().run(conn, callback)
+```
+

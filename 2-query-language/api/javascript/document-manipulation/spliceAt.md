@@ -1,0 +1,27 @@
+---
+layout: api-command 
+language: JavaScript
+permalink: api/javascript/splice_at/
+command: spliceAt
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/spliceAt.md
+io:
+    -   - array
+        - array
+related_commands:
+    insertAt: insert_at/
+    deleteAt: delete_at/
+    changeAt: change_at/
+---
+
+{% apibody %}
+array.spliceAt(index, array) → array
+{% endapibody %}
+
+Insert several values in to an array at a given index. Returns the modified array.
+
+__Example:__ Hulk and Thor decide to join the avengers.
+
+```js
+r.expr(["Iron Man", "Spider-Man"]).spliceAt(1, ["Hulk", "Thor"]).run(conn, callback)
+```
+

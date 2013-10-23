@@ -1,0 +1,30 @@
+---
+layout: api-command 
+language: JavaScript
+permalink: api/javascript/set_difference/
+command: setDifference
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/setDifference.md
+io:
+    -   - array
+        - array
+related_commands:
+    difference: difference/
+    setInsert: set_insert/
+    setUnion: set_union/
+    setDifference: set_difference/
+---
+
+{% apibody %}
+array.setDifference(array) → array
+{% endapibody %}
+
+Remove the elements of one array from another and return them as a set (an array with
+distinct values).
+
+__Example:__ Check which pieces of equipment Iron Man has, excluding a fixed list.
+
+```js
+r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_reactor']).run(conn, callback)
+```
+
+

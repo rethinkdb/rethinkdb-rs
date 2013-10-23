@@ -1,0 +1,25 @@
+---
+layout: api-command 
+language: Ruby
+permalink: api/ruby/change_at/
+command: change_at 
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/document-manipulation/change_at.md
+related_commands:
+    insert_at: insert_at/
+    delete_at: delete_at/
+    splice_at: splice_at/
+---
+
+{% apibody %}
+array.change_at(index, value) → array
+{% endapibody %}
+
+Change a value in an array at a given index. Returns the modified array.
+
+__Example:__ Bruce Banner hulks out.
+
+```rb
+r.expr(["Iron Man", "Bruce", "Spider-Man"]).change_at(1, "Hulk").run(conn)
+```
+
+

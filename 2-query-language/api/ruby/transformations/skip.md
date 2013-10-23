@@ -1,0 +1,26 @@
+---
+layout: api-command 
+language: Ruby
+permalink: api/ruby/skip/
+command: skip 
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/transformations/skip.md
+related_commands:
+    order_by: order_by/
+    limit: limit/
+    []: slice/
+---
+
+{% apibody %}
+sequence.skip(n) → stream
+array.skip(n) → array
+{% endapibody %}
+
+Skip a number of elements from the head of the sequence.
+
+__Example:__ Here in conjunction with `order_by` we choose to ignore the most successful heroes.
+
+```rb
+r.table('marvel').order_by(:success_metric).skip(10).run(conn)
+```
+
+

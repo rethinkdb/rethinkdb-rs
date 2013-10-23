@@ -1,0 +1,26 @@
+---
+layout: api-command 
+language: Ruby
+permalink: api/ruby/day/
+command: day 
+github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/dates-and-times/day.md
+related_commands:
+    now: now/
+    time: time/
+---
+
+{% apibody %}
+time.day() → number
+{% endapibody %}
+
+Return the day of a time object as a number between 1 and 31.
+
+__Example:__ Return the users born on the 24th of any month.
+
+```rb
+r.table("users").filter{ |user|
+    user["birthdate"].day().eq(24)
+}
+```
+
+
