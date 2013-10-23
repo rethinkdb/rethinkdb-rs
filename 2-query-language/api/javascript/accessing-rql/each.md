@@ -16,9 +16,13 @@ related_commands:
     close (cursor): close-cursor/
 ---
 
+# Command syntax #
+
 {% apibody %}
 cursor.each(callback[, onFinishedCallback])
 {% endapibody %}
+
+# Description #
 
 Lazily iterate over the result set one element at a time.
 

@@ -12,9 +12,13 @@ related_commands:
     groupedMapReduce: grouped_map_reduce/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.reduce(reductionFunction[, base]) &rarr; value
 {% endapibody %}
+
+# Description #
 
 Produce a single value from a sequence through repeated application of a reduction
 function.

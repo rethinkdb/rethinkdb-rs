@@ -9,12 +9,16 @@ related_commands:
     map: map/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.without([selector1, selector2...]) &rarr; stream
 array.without([selector1, selector2...]) &rarr; array
 singleSelection.without([selector1, selector2...]) &rarr; object
 object.without([selector1, selector2...]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 The opposite of pluck; takes an object or a sequence of objects, and returns them with
 the specified paths removed.

@@ -12,9 +12,13 @@ related_commands:
     time: time/
 ---
 
+# Command syntax #
+
 {% apibody %}
 time.to_epoch_time() &rarr; number
 {% endapibody %}
+
+# Description #
 
 Convert a time object to its epoch time.
 

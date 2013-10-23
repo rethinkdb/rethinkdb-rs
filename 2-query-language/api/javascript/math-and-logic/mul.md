@@ -16,10 +16,14 @@ related_commands:
     mod: mod/
 ---
 
+# Command syntax #
+
 {% apibody %}
 number.mul(number) &rarr; number
 array.mul(number) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Multiply two numbers, or make a periodic array.
 

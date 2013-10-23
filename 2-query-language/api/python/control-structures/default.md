@@ -6,10 +6,14 @@ command: default
 github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/python/control-structures/default.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 value.default(default_value) &rarr; any
 sequence.default(default_value) &rarr; any
 {% endapibody %}
+
+# Description #
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
 error related to the absence of a value is thrown in the process, or if its first

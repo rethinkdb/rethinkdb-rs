@@ -10,10 +10,14 @@ related_commands:
     '[]': slice/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.order_by(key1, [key2...]) &rarr; stream
 array.order_by(key1, [key2...]) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Sort the sequence by document values of the given key(s). `orderBy` defaults to ascending
 ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or

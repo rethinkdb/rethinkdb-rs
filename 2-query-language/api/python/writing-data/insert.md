@@ -11,9 +11,13 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 table.insert(json | [json][, durability='soft', return_vals=True, upsert=True]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Insert JSON documents into a table. Accepts a single JSON document or an array of
 documents.

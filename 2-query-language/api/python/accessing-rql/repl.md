@@ -10,9 +10,13 @@ related_commands:
     close: close/
 ---
 
+# Command syntax #
+
 {% apibody %}
 connection.repl()
 {% endapibody %}
+
+# Description #
 
 Set the default connection to make REPL use easier. Allows calling run() without specifying a connection. 
 

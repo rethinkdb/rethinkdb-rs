@@ -11,9 +11,13 @@ related_commands:
     group_by: group_by/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.reduce(reduction_function[, base]) &rarr; value
 {% endapibody %}
+
+# Description #
 
 Produce a single value from a sequence through repeated application of a reduction
 function.

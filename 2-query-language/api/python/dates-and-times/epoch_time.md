@@ -10,9 +10,13 @@ related_commands:
     iso8601: iso8601/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.epoch_time(epoch_time) &rarr; time
 {% endapibody %}
+
+# Description #
 
 Create a time object based on seconds since epoch.
 

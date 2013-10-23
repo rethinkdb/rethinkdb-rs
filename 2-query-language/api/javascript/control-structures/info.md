@@ -9,9 +9,13 @@ io:
         - object
 ---
 
+# Command syntax #
+
 {% apibody %}
 any.info() &rarr; object
 {% endapibody %}
+
+# Description #
 
 Get information about a RQL value.
 

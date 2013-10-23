@@ -9,9 +9,13 @@ related_commands:
     index_list: index_list/
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.index_drop(index_name) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Delete a previously created secondary index of this table.
 

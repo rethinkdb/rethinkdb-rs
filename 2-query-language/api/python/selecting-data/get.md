@@ -10,9 +10,13 @@ related_commands:
     filter: filter/
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.get(key) &rarr; singleRowSelection
 {% endapibody %}
+
+# Description #
 
 Get a document by primary key.
 

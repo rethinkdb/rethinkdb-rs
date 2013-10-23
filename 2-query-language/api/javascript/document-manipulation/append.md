@@ -13,9 +13,13 @@ related_commands:
     deleteAt: delete_at/
     changeAt: change_at/
 ---
+# Command syntax #
+
 {% apibody %}
 array.append(value) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Append a value to an array.
 

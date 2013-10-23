@@ -12,9 +12,13 @@ related_commands:
     tableDrop: table_drop/
 ---
 
+# Command syntax #
+
 {% apibody %}
 db.tableList() &rarr; array
 {% endapibody %}
+
+# Description #
 
 List all table names in a database. The result is a list of strings.
 

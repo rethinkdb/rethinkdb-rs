@@ -10,9 +10,13 @@ related_commands:
     in_timezone: in_timezone/
 ---
 
+# Command syntax #
+
 {% apibody %}
 time.time_of_day() &rarr; number
 {% endapibody %}
+
+# Description #
 
 Return the number of seconds elapsed since the beginning of the day stored in the time object.
 

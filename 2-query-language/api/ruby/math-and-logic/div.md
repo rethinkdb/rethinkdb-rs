@@ -11,9 +11,13 @@ related_commands:
     '%': mod/
 ---
 
+# Command syntax #
+
 {% apibody %}
 number / number &rarr; number
 {% endapibody %}
+
+# Description #
 
 Divide two numbers.
 

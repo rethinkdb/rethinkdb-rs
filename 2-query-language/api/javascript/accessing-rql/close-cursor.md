@@ -16,9 +16,13 @@ related_commands:
     each: each/
 ---
 
+# Command syntax #
+
 {% apibody %}
 cursor.close()
 {% endapibody %}
+
+# Description #
 
 
 Close a cursor. Closing a cursor cancels the corresponding query and frees the memory

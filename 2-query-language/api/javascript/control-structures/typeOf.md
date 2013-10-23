@@ -9,9 +9,13 @@ io:
         - string
 ---
 
+# Command syntax #
+
 {% apibody %}
 any.typeOf() &rarr; string
 {% endapibody %}
+
+# Description #
 
 Gets the type of a value.
 

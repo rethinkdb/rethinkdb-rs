@@ -15,9 +15,13 @@ related_commands:
     lt: lt/
 ---
 
+# Command syntax #
+
 {% apibody %}
 value.le(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if the first value is less than or equal to other.
 

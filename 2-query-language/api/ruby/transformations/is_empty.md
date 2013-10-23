@@ -8,9 +8,13 @@ related_commands:
     indexes_of: indexes_of/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.is_empty() &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if a sequence is empty.
 

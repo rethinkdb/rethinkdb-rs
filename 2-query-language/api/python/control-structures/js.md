@@ -6,9 +6,13 @@ command: js
 github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/python/control-structures/js.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.js(jsString) &rarr; value
 {% endapibody %}
+
+# Description #
 
 Create a javascript expression.
 

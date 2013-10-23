@@ -12,9 +12,13 @@ related_commands:
     reduce: reduce/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.contains(value1[, value2...]) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Returns whether or not a sequence contains all the specified values, or if functions are
 provided instead, returns whether or not a sequence contains values matching all the

@@ -14,9 +14,13 @@ related_commands:
     setDifference: set_difference/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.setInsert(value) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Add a value to an array and return it as a set (an array with distinct values).
 

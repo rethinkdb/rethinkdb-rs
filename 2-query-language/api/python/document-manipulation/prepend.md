@@ -9,9 +9,13 @@ related_commands:
     merge: merge/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.prepend(value) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Prepend a value to an array.
 

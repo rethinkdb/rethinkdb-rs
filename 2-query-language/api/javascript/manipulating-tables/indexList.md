@@ -14,9 +14,13 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 table.indexList() &rarr; array
 {% endapibody %}
+
+# Description #
 
 List all the secondary indexes of this table.
 

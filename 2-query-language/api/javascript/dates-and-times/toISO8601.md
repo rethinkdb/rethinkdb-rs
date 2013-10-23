@@ -12,9 +12,13 @@ related_commands:
     time: time/
 ---
 
+# Command syntax #
+
 {% apibody %}
 time.toISO8601() &rarr; number
 {% endapibody %}
+
+# Description #
 
 Convert a time object to its iso 8601 format.
 

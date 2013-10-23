@@ -7,9 +7,13 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 related_commands:
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.difference(array) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Remove the elements of one array from another array.
 

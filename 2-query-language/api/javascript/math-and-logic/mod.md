@@ -14,9 +14,13 @@ related_commands:
     div: div/
 ---
 
+# Command syntax #
+
 {% apibody %}
 number.div(number) &rarr; number
 {% endapibody %}
+
+# Description #
 
 Divide two numbers.
 

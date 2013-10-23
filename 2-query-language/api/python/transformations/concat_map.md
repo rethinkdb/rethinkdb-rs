@@ -9,10 +9,14 @@ related_commands:
     reduce: reduce/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.concat_map(mapping_function) &rarr; stream
 array.concat_map(mapping_function) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Flattens a sequence of arrays returned by the mappingFunction into a single sequence.
 

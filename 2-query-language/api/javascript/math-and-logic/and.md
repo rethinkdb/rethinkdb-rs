@@ -13,9 +13,13 @@ related_commands:
     ne: ne/
 ---
 
+# Command syntax #
+
 {% apibody %}
 bool.and(bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Compute the logical and of two values.
 

@@ -13,9 +13,13 @@ related_commands:
 
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.indexCreate(indexName[, indexFunction]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Create a new secondary index on this table.
 

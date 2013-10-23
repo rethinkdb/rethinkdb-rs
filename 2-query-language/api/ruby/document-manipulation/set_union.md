@@ -12,9 +12,13 @@ related_commands:
     set_difference: set_difference/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.set_union(array) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Add a several values to an array and return it as a set (an array with distinct values).
 

@@ -18,12 +18,16 @@ related_commands:
     withFields: with_fields/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.hasFields([selector1, selector2...]) &rarr; stream
 array.hasFields([selector1, selector2...]) &rarr; array
 singleSelection.hasFields([selector1, selector2...]) &rarr; boolean
 object.hasFields([selector1, selector2...]) &rarr; boolean
 {% endapibody %}
+
+# Description #
 
 Test if an object has all of the specified fields. An object has a field if it has the
 specified key and that key maps to a non-null value. For instance, the object

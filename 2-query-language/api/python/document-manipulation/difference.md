@@ -12,9 +12,13 @@ related_commands:
     set_difference: set_difference/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.difference(array) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Remove the elements of one array from another array.
 

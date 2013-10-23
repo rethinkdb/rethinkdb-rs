@@ -10,9 +10,13 @@ related_commands:
     close: close/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.connect(host='localhost', port=28015, db='test', auth_key='') &rarr; connection
 {% endapibody %}
+
+# Description #
 
 Create a new connection to the database server.
 

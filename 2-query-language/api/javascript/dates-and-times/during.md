@@ -13,9 +13,13 @@ related_commands:
     inTimezone: in_timezone/
 ---
 
+# Command syntax #
+
 {% apibody %}
 time.during(startTime, endTime[, options]) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Return if a time is between two other times (by default, inclusive for the start,
 exclusive for the end).

@@ -14,9 +14,13 @@ related_commands:
     changeAt: change_at/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.prepend(value) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Prepend a value to an array.
 

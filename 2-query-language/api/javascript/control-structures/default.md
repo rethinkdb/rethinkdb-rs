@@ -11,10 +11,14 @@ io:
         - any
 ---
 
+# Command syntax #
+
 {% apibody %}
 value.default(default_value) &rarr; any
 sequence.default(default_value) &rarr; any
 {% endapibody %}
+
+# Description #
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
 error related to the absence of a value is thrown in the process, or if its first

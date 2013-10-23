@@ -19,12 +19,16 @@ related_commands:
     map: map/
 ---
 
+# Command syntax #
+
 {% apibody %}
 singleSelection.merge(object) &rarr; object
 object.merge(object) &rarr; object
 sequence.merge(object) &rarr; stream
 array.merge(object) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Merge two objects together to construct a new object with properties from both. Gives preference to attributes from other when there is a conflict.
 

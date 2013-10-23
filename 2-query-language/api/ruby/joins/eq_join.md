@@ -11,10 +11,14 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 sequence.eq_join(left_attr, other_table[, index='id']) &rarr; stream
 array.eq_join(left_attr, other_table[, index='id']) &rarr; array
 {% endapibody %}
+
+# Description #
 
 An efficient join that looks up elements in the right table by primary key.
 

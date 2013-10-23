@@ -14,9 +14,13 @@ related_commands:
     close (cursor): close-cursor/
 ---
 
+# Command syntax #
+
 {% apibody %}
 cursor.hasNext() &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Check if there are more elements in the cursor.
 

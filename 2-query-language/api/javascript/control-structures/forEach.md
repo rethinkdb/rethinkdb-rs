@@ -11,9 +11,13 @@ related_commands:
     map: map/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.forEach(write_query) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Loop over a sequence, evaluating the given write query for each element.
 

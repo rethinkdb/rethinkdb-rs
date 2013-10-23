@@ -12,9 +12,13 @@ related_commands:
     getAll: get_all/
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.between(lowerKey, upperKey[, {index:'id', left_bound:'closed', right_bound:'open'}]) &rarr; selection
 {% endapibody %}
+
+# Description #
 
 Get all documents between two keys. Accepts three optional arguments: `index`,
 `left_bound`, and `right_bound`. If `index` is set to the name of a secondary index,

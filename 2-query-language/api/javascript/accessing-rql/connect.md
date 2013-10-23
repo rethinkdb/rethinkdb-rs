@@ -12,9 +12,13 @@ related_commands:
     close: close/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.connect(opts, callback)
 {% endapibody %}
+
+# Description #
 
 Create a new connection to the database server.
 

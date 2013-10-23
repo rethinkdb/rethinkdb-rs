@@ -10,9 +10,13 @@ related_commands:
     iso8601: iso8601/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.time(year, month, day[, hour, minute, second], timezone) &rarr; time
 {% endapibody %}
+
+# Description #
 
 Create a time object for a specific time.
 

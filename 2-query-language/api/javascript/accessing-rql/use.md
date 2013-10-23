@@ -13,9 +13,13 @@ related_commands:
     close: close/
 ---
 
+# Command syntax #
+
 {% apibody %}
 conn.use(dbName)
 {% endapibody %}
+
+# Description #
 
 Change the default database on this connection.
 

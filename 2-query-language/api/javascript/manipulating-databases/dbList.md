@@ -13,9 +13,13 @@ related_commands:
     tableCreate: table_create/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.dbList() &rarr; array
 {% endapibody %}
+
+# Description #
 
 List all database names in the system. The result is a list of strings.
 

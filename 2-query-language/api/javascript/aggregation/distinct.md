@@ -13,9 +13,13 @@ related_commands:
     groupedMapReduce: grouped_map_reduce/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.distinct() &rarr; array
 {% endapibody %}
+
+# Description #
 
 Remove duplicate elements from the sequence.
 

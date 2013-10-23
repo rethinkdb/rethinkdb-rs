@@ -13,9 +13,13 @@ related_commands:
     time: time/
 ---
 
+# Command syntax #
+
 {% apibody %}
 time.timezone() &rarr; string
 {% endapibody %}
+
+# Description #
 
 Return the timezone of the time object.
 

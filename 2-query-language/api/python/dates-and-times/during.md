@@ -10,9 +10,13 @@ related_commands:
     in_timezone: in_timezone/
 ---
 
+# Command syntax #
+
 {% apibody %}
 time.during(start_time, end_time[, left_bound="open/closed", right_bound="open/closed"]) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Return if a time is between two other times (by default, inclusive for the start, exclusive for the end).
 

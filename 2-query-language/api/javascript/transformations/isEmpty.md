@@ -9,9 +9,13 @@ io:
         - bool
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.isEmpty() &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if a sequence is empty.
 

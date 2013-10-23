@@ -9,9 +9,13 @@ io:
         - value
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.expr(value) &rarr; value
 {% endapibody %}
+
+# Description #
 
 Construct a RQL JSON object from a native object.
 

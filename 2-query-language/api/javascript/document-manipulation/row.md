@@ -10,9 +10,13 @@ io:
         - value
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.row &rarr; value
 {% endapibody %}
+
+# Description #
 
 Returns the currently visited document.
 

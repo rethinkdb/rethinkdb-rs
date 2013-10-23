@@ -9,9 +9,13 @@ related_commands:
     time: time/
 ---
 
+# Command syntax #
+
 {% apibody %}
 time.day() &rarr; number
 {% endapibody %}
+
+# Description #
 
 Return the day of a time object as a number between 1 and 31.
 

@@ -17,9 +17,13 @@ related_commands:
     delete: delete/
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.insert(json | [json][, {durability: 'soft', returnVals: true, upsert:true}]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Insert JSON documents into a table. Accepts a single JSON document or an array of
 documents.

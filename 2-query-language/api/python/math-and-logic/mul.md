@@ -11,10 +11,14 @@ related_commands:
     '%': mod/
 ---
 
+# Command syntax #
+
 {% apibody %}
 number * number &rarr; number
 array * number &rarr; array
 {% endapibody %}
+
+# Description #
 
 Multiply two numbers, or make a periodic array.
 

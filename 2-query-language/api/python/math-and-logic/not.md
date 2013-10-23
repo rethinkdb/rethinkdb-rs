@@ -9,9 +9,13 @@ related_commands:
     '!=': ne/
 ---
 
+# Command syntax #
+
 {% apibody %}
 ~bool &rarr; bool
 {% endapibody %}
+
+# Description #
 Compute the logical inverse (not).
 
 __Example:__ Not true is false.

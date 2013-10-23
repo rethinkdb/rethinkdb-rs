@@ -9,9 +9,13 @@ io:
         - array
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.union(sequence) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Concatenate two sequences.
 

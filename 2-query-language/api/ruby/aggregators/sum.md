@@ -10,9 +10,13 @@ related_commands:
     avg: avg/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.sum(attr)
 {% endapibody %}
+
+# Description #
 
 Compute the sum of the given field in the group.
 

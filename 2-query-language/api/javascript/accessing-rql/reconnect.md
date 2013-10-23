@@ -13,9 +13,13 @@ related_commands:
     close: close/
 ---
 
+# Command syntax #
+
 {% apibody %}
 conn.reconnect()
 {% endapibody %}
+
+# Description #
 
 Close and attempt to reopen a connection. Has the effect of canceling any outstanding
 request while keeping the connection open.

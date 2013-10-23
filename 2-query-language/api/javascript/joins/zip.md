@@ -15,10 +15,14 @@ related_commands:
     outerJoin: outer_join/
 ---
 
+# Command syntax #
+
 {% apibody %}
 stream.zip() &rarr; stream
 array.zip() &rarr; array
 {% endapibody %}
+
+# Description #
 
 Used to 'zip' up the result of a join by merging the 'right' fields into 'left' fields of each member of the sequence.
 

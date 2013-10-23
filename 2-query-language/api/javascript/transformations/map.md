@@ -14,10 +14,14 @@ related_commands:
     reduce: reduce/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.map(mappingFunction) &rarr; stream
 array.map(mappingFunction) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Transform each element of the sequence by applying the given mapping function.
 

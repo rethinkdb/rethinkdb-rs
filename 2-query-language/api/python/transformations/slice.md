@@ -10,10 +10,14 @@ related_commands:
     limit: limit/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence[start_index[, end_index]] &rarr; stream
 array[start_index[, end_index]] &rarr; array
 {% endapibody %}
+
+# Description #
 
 Trim the sequence to within the bounds provided.
 

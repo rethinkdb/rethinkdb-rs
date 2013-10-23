@@ -8,9 +8,13 @@ related_commands:
     '|': or/
 ---
 
+# Command syntax #
+
 {% apibody %}
 bool & bool &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Compute the logical and of two values.
 

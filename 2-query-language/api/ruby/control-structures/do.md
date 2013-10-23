@@ -6,9 +6,13 @@ command: do
 github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/ruby/control-structures/do.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 any.do(arg [, args]*, expr) &rarr; any
 {% endapibody %}
+
+# Description #
 
 Evaluate the expr in the context of one or more value bindings.
 

@@ -10,9 +10,13 @@ related_commands:
     avg: avg
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.group_by(selector1[, selector2...], reduction_object) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Groups elements by the values of the given attributes and then applies the given
 reduction. Though similar to `groupedMapReduce`, `groupBy` takes a standardized object

@@ -6,9 +6,13 @@ command: indexes_of
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/transformations/indexes_of.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.indexes_of(datum | predicate) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.
 

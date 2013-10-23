@@ -15,12 +15,16 @@ io:
         - array
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.coerceTo(typeName) &rarr; array
 value.coerceTo(typeName) &rarr; string
 array.coerceTo(typeName) &rarr; object
 object.coerceTo(typeName) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Converts a value of one type into another. 
 

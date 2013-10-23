@@ -15,10 +15,14 @@ related_commands:
     nth: nth/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.skip(n) &rarr; stream
 array.skip(n) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Skip a number of elements from the head of the sequence.
 

@@ -10,9 +10,13 @@ related_commands:
     change_at: change_at/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.splice_at(index, array) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Insert several values in to an array at a given index. Returns the modified array.
 

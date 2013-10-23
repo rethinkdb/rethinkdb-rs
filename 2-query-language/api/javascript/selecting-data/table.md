@@ -9,9 +9,13 @@ related_commands:
     get: get/
 ---
 
+# Command syntax #
+
 {% apibody %}
 db.table(name[, {useOutdated: false}]) &rarr; table
 {% endapibody %}
+
+# Description #
 
 Select all documents in a table. This command can be chained with other commands to do
 further processing on the data.

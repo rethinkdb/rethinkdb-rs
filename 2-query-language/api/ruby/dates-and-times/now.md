@@ -10,9 +10,13 @@ related_commands:
     iso8601: iso8601/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.now() &rarr; time
 {% endapibody %}
+
+# Description #
 
 Return a time object representing the current time in UTC. The command now() is computed once when the server receives the query, so multiple instances of r.now() will always return the same time inside a query.
 

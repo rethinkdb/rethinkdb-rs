@@ -6,9 +6,13 @@ command: error
 github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/ruby/control-structures/error.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.error(message) &rarr; error
 {% endapibody %}
+
+# Description #
 
 Throw a runtime error. If called with no arguments inside the second argument to `default`, re-throw the current error.
 

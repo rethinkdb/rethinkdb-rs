@@ -15,10 +15,14 @@ related_commands:
     zip: zip/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; stream
 array.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; array
 {% endapibody %}
+
+# Description #
 
 An efficient join that looks up elements in the right table by primary key.
 

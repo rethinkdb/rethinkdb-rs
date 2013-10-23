@@ -9,9 +9,13 @@ io:
         - any
 ---
 
+# Command syntax #
+
 {% apibody %}
 any.do(arg [, args]*, expr) &rarr; any
 {% endapibody %}
+
+# Description #
 
 Evaluate the expr in the context of one or more value bindings.
 

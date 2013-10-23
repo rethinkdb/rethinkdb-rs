@@ -9,9 +9,13 @@ related_commands:
     time: time/
 ---
 
+# Command syntax #
+
 {% apibody %}
 time.year() &rarr; number
 {% endapibody %}
+
+# Description #
 
 Return the year of a time object.
 

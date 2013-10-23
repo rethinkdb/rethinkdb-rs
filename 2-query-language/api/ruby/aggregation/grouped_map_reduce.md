@@ -11,9 +11,13 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 sequence.grouped_map_reduce(grouping, mapping, reduction, base) &rarr; value
 {% endapibody %}
+
+# Description #
 
 Partition the sequence into groups based on the `grouping` function. The elements of each
 group are then mapped using the `mapping` function and reduced using the `reduction`

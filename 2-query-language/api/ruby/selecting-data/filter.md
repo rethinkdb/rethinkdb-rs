@@ -11,11 +11,15 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 sequence.filter(predicate) &rarr; selection
 stream.filter(predicate) &rarr; stream
 array.filter(predicate) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Get all the documents for which the given predicate is true.
 

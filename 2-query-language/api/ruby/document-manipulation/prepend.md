@@ -7,9 +7,13 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/r
 related_commands:
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.prepend(value) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Prepend a value to an array.
 

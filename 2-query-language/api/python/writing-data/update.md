@@ -10,11 +10,15 @@ related_commands:
     delete: delete/
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.update(json | expr[, durability='soft', return_vals=true]) &rarr; object
 selection.update(json | expr[, durability='soft', return_vals=true]) &rarr; object
 singleSelection.update(json | expr[, durability='soft', return_vals=true]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a
 combination of the two. You can pass options like `returnVals` that will return the old

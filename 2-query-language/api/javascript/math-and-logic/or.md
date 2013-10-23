@@ -13,9 +13,13 @@ related_commands:
     ne: ne/
 ---
 
+# Command syntax #
+
 {% apibody %}
 bool.or(bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Compute the logical or of two values.
 

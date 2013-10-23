@@ -9,9 +9,13 @@ related_commands:
     index_drop: index_drop/
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.index_list() &rarr; array
 {% endapibody %}
+
+# Description #
 
 List all the secondary indexes of this table.
 

@@ -9,9 +9,13 @@ related_commands:
     time: time/
 ---
 
+# Command syntax #
+
 {% apibody %}
 time.day_of_year() &rarr; number
 {% endapibody %}
+
+# Description #
 
 Return the day of the year of a time object as a number between 1 and 366 (following ISO 8601 standard).
 

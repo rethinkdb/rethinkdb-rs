@@ -22,12 +22,16 @@ related_commands:
     mod: mod/
 ---
 
+# Command syntax #
+
 {% apibody %}
 number.add(number) &rarr; number
 string.add(string) &rarr; string
 array.add(array) &rarr; array
 time.add(number) &rarr; time
 {% endapibody %}
+
+# Description #
 
 Sum two numbers, concatenate two strings, or concatenate 2 arrays.
 

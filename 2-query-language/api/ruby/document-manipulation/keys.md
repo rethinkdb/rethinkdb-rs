@@ -10,10 +10,14 @@ related_commands:
     splice_at: splice_at/
 ---
 
+# Command syntax #
+
 {% apibody %}
 singleSelection.keys() &rarr; array
 object.keys() &rarr; array
 {% endapibody %}
+
+# Description #
 
 Return an array containing all of the object's keys.
 

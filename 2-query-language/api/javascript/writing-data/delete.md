@@ -17,11 +17,15 @@ related_commands:
     replace: replace/
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.delete([{durability: 'soft', return_vals: true}]) &rarr; object
 selection.delete([{durability: 'soft', return_vals: true}]) &rarr; object
 singleSelection.delete([{durability: 'soft', return_vals: true}]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Delete one or more documents from a table. The optional argument return_vals will return
 the old value of the row you're deleting when set to true (only valid for single-row

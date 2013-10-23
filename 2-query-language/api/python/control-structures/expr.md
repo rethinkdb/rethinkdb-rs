@@ -6,9 +6,13 @@ command: expr
 github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/python/control-structures/expr.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.expr(value) &rarr; value
 {% endapibody %}
+
+# Description #
 
 Construct a RQL JSON object from a native object.
 

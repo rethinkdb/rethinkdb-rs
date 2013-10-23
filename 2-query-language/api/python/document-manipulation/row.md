@@ -7,9 +7,13 @@ rb: false
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/document-manipulation/row.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.row &rarr; value
 {% endapibody %}
+
+# Description #
 
 Returns the currently visited document.
 

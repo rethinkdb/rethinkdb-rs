@@ -15,10 +15,14 @@ related_commands:
     nth: nth/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.limit(n) &rarr; stream
 array.limit(n) &rarr; array
 {% endapibody %}
+
+# Description #
 
 
 End the sequence after the given number of elements.

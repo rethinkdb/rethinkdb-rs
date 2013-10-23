@@ -15,9 +15,13 @@ related_commands:
     close: close/
 ---
 
+# Command syntax #
+
 {% apibody %}
 connection.addListener(event, listener)
 {% endapibody %}
+
+# Description #
 
 The connection object also supports the event emitter interface so you can listen for
 changes in connection state.

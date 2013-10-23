@@ -6,10 +6,14 @@ command: run
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/accessing-rql/run.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 query.run(connection, callback) &rarr; r
 query.run(options[, callback]) &rarr; r
 {% endapibody %}
+
+# Description #
 
 Run a query on a connection.
 

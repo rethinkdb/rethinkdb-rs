@@ -11,11 +11,15 @@ related_commands:
     '%': mod/
 ---
 
+# Command syntax #
+
 {% apibody %}
 number - number &rarr; number
 time - time &rarr; number
 time - number &rarr; time
 {% endapibody %}
+
+# Description #
 
 Subtract two numbers.
 

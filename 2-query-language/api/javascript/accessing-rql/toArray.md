@@ -16,9 +16,13 @@ related_commands:
     close (cursor): close-cursor/
 ---
 
+# Command syntax #
+
 {% apibody %}
 cursor.toArray(callback)
 {% endapibody %}
+
+# Description #
 
 Retrieve all results and pass them as an array to the given callback.
 

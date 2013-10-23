@@ -11,9 +11,13 @@ related_commands:
     '/': div/
 ---
 
+# Command syntax #
+
 {% apibody %}
 number % number &rarr; number
 {% endapibody %}
+
+# Description #
 
 Find the remainder when dividing two numbers.
 

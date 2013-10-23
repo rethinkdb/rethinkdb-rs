@@ -10,9 +10,13 @@ related_commands:
     ne: ne/
 ---
 
+# Command syntax #
+
 {% apibody %}
 value.eq(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if two values are equal.
 

@@ -10,9 +10,13 @@ related_commands:
     '<=': le/
 ---
 
+# Command syntax #
+
 {% apibody %}
 value < value &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if the first value is less than other.
 

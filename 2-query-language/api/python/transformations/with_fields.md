@@ -10,10 +10,14 @@ related_commands:
     without: without/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.with_selectors([selector1, selector2...]) &rarr; stream
 array.with_selectors([selector1, selector2...]) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Takes a sequence of objects and a list of fields. If any objects in the sequence don't
 have all of the specified fields, they're dropped from the sequence. The remaining

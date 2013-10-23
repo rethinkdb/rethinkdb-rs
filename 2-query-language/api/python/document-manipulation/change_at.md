@@ -10,9 +10,13 @@ related_commands:
     delete_at: delete_at
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.change_at(index, value) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Change a value in an array at a given index. Returns the modified array.
 

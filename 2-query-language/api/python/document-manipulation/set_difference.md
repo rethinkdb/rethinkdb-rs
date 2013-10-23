@@ -12,9 +12,13 @@ related_commands:
     set_intersection: set_intersection/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.set_difference(array) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Remove the elements of one array from another and return them as a set (an array with
 distinct values).

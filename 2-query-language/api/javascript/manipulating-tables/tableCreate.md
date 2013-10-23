@@ -12,9 +12,13 @@ related_commands:
     tableDrop: table_drop/
 ---
 
+# Command syntax #
+
 {% apibody %}
 db.tableCreate(tableName[, options]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Create a table. A RethinkDB table is a collection of JSON documents. 
 

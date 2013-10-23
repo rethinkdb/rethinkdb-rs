@@ -13,9 +13,13 @@ related_commands:
     tableCreate: table_create/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.dbDrop(dbName) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Drop a database. The database, all its tables, and corresponding data will be deleted.
 

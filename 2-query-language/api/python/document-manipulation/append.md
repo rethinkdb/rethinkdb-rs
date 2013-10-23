@@ -9,9 +9,13 @@ related_commands:
     merge: merge/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.append(value) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Append a value to an array.
 

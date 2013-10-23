@@ -18,11 +18,15 @@ related_commands:
     mod: mod/
 ---
 
+# Command syntax #
+
 {% apibody %}
 number.sub(number) &rarr; number
 time.sub(time) &rarr; number
 time.sub(number) &rarr; time
 {% endapibody %}
+
+# Description #
 
 Subtract two numbers.
 

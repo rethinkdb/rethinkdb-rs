@@ -18,12 +18,16 @@ related_commands:
     map: map/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.pluck([selector1, selector2...]) &rarr; stream
 array.pluck([selector1, selector2...]) &rarr; array
 object.pluck([selector1, selector2...]) &rarr; object
 singleSelection.pluck([selector1, selector2...]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Plucks out one or more attributes from either an object or a sequence of objects
 (projection).

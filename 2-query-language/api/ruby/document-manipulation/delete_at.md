@@ -11,9 +11,13 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 array.delete_at(index [,endIndex]) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Remove an element from an array at a given index. Returns the modified array.
 

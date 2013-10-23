@@ -6,12 +6,16 @@ command: coerce_to
 github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/python/control-structures/coerce_to.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.coerce_to(type_name) &rarr; array
 value.coerce_to(type_name) &rarr; string
 array.coerce_to(type_name) &rarr; object
 object.coerce_to(type_name) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Converts a value of one type into another. 
 

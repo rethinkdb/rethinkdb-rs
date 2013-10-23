@@ -15,9 +15,13 @@ related_commands:
     le: le/
 ---
 
+# Command syntax #
+
 {% apibody %}
 value.ge(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if the first value is greater than or equal to other.
 

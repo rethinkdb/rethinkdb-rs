@@ -11,12 +11,16 @@ related_commands:
     '%': mod/
 ---
 
+# Command syntax #
+
 {% apibody %}
 number + number &rarr; number
 string + string &rarr; string
 array + array &rarr; array
 time + number &rarr; time
 {% endapibody %}
+
+# Description #
 
 Sum two numbers, concatenate two strings, or concatenate 2 arrays.
 

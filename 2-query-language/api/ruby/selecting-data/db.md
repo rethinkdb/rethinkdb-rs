@@ -10,9 +10,13 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 r.db(db_name) &rarr; db
 {% endapibody %}
+
+# Description #
 
 Reference a database.
 

@@ -14,9 +14,13 @@ related_commands:
     close (cursor): close-cursor/
 ---
 
+# Command syntax #
+
 {% apibody %}
 cursor.next(callback)
 {% endapibody %}
+
+# Description #
 
 Get the next element in the cursor.
 

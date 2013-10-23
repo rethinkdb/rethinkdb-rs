@@ -13,10 +13,14 @@ related_commands:
     map: map/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.concatMap(mappingFunction) &rarr; stream
 array.concatMap(mappingFunction) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Flattens a sequence of arrays returned by the mappingFunction into a single sequence.
 

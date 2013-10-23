@@ -9,9 +9,13 @@ io:
         - value
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.json(json_string) &rarr; value
 {% endapibody %}
+
+# Description #
 
 Parse a JSON string on the server.
 

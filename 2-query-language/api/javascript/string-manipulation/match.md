@@ -9,9 +9,13 @@ io:
         - array
 ---
 
+# Command syntax #
+
 {% apibody %}
 string.match(regexp) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Match against a regular expression. Returns a match object containing the matched string,
 that string's start/end position, and the capture groups. Accepts RE2 syntax

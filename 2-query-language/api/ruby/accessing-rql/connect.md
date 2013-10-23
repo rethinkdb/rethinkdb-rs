@@ -11,9 +11,13 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 r.connect(opts) &rarr; connection
 {% endapibody %}
+
+# Description #
 
 Create a new connection to the database server.
 

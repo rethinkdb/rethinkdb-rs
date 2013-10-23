@@ -9,9 +9,13 @@ related_commands:
     repl: repl/
 ---
 
+# Command syntax #
+
 {% apibody %}
 query.run(conn[, opts]) &rarr; cursor
 {% endapibody %}
+
+# Description #
 
 Run a query on a connection.
 

@@ -9,9 +9,13 @@ io:
         - error
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.error(message) &rarr; error
 {% endapibody %}
+
+# Description #
 
 Throw a runtime error. If called with no arguments inside the second argument to `default`, re-throw the current error.
 

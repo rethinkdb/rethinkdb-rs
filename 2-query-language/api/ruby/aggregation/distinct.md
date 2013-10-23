@@ -11,9 +11,13 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 sequence.distinct() &rarr; array
 {% endapibody %}
+
+# Description #
 
 Remove duplicate elements from the sequence.
 

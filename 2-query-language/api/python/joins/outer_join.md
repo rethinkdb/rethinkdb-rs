@@ -10,10 +10,14 @@ related_commands:
     zip: zip/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.outer_join(other_sequence, predicate) &rarr; stream
 array.outer_join(other_sequence, predicate) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Computes a left outer join by retaining each row in the left table even if no match was
 found in the right table.

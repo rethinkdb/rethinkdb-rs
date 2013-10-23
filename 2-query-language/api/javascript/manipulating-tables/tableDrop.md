@@ -12,9 +12,13 @@ related_commands:
     tableList: table_list/
 ---
 
+# Command syntax #
+
 {% apibody %}
 db.tableDrop(tableName) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Drop a table. The table and all its data will be deleted.
 

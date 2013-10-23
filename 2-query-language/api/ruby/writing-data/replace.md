@@ -11,11 +11,15 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 table.replace(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
 selection.replace(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
 singleSelection.replace(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Replace documents in a table. Accepts a JSON document or a RQL expression, and replaces
 the original document with the new one. The new document must have the same primary key

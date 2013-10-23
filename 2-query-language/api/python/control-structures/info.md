@@ -6,9 +6,13 @@ command: info
 github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/python/control-structures/info.md
 ---
 
+# Command syntax #
+
 {% apibody %}
 any.info() &rarr; object
 {% endapibody %}
+
+# Description #
 
 Get information about a RQL value.
 

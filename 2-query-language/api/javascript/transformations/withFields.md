@@ -14,10 +14,14 @@ related_commands:
     concatMap: concat_map/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.withFields([selector1, selector2...]) &rarr; stream
 array.withFields([selector1, selector2...]) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Takes a sequence of objects and a list of fields. If any objects in the sequence don't
 have all of the specified fields, they're dropped from the sequence. The remaining

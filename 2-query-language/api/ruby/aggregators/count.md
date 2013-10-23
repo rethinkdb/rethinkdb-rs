@@ -10,9 +10,13 @@ related_commands:
     avg: avg/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.count
 {% endapibody %}
+
+# Description #
 
 Count the total size of the group.
 

@@ -15,10 +15,14 @@ related_commands:
     nth: nth/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.slice(startIndex[, endIndex]) &rarr; stream
 array.slice(startIndex[, endIndex]) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Trim the sequence to within the bounds provided.
 

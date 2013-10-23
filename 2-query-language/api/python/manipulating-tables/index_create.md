@@ -9,9 +9,13 @@ related_commands:
     index_list: index_list/
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.index_create(index_name[, index_function]) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Create a new secondary index on this table.
 

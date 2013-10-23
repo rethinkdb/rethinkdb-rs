@@ -12,9 +12,13 @@ related_commands:
     set_intersection: set_intersection/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.set_intersection(array) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Intersect two arrays returning values that occur in both of them as a set (an array with
 distinct values).

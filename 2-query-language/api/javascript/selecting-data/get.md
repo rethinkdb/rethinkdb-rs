@@ -12,9 +12,13 @@ related_commands:
     between: between/
 ---
 
+# Command syntax #
+
 {% apibody %}
 table.get(key) &rarr; singleRowSelection
 {% endapibody %}
+
+# Description #
 
 Get a document by primary key.
 

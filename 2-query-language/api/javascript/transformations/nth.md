@@ -13,9 +13,13 @@ related_commands:
     slice: slice/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.nth(index) &rarr; object
 {% endapibody %}
+
+# Description #
 
 Get the nth element of a sequence.
 

@@ -13,9 +13,13 @@ related_commands:
     changeAt: change_at/
 ---
 
+# Command syntax #
+
 {% apibody %}
 array.insertAt(index, value) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Insert a value in to an array at a given index. Returns the modified array.
 

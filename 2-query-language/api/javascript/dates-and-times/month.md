@@ -13,9 +13,13 @@ related_commands:
 ---
 
 
+# Command syntax #
+
 {% apibody %}
 time.month() &rarr; number
 {% endapibody %}
+
+# Description #
 
 Return the month of a time object as a number between 1 and 12. For your convenience, the terms r.january, r.february etc. are defined and map to the appropriate integer.
 

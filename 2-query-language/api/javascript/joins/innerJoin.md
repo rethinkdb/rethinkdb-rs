@@ -15,10 +15,14 @@ related_commands:
     zip: zip/
 ---
 
+# Command syntax #
+
 {% apibody %}
 sequence.innerJoin(otherSequence, predicate) &rarr; stream
 array.innerJoin(otherSequence, predicate) &rarr; array
 {% endapibody %}
+
+# Description #
 
 Returns the inner product of two sequences (e.g. a table, a filter result) filtered by
 the predicate. The query compares each row of the left sequence with each row of the

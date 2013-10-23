@@ -11,9 +11,13 @@ related_commands:
     do: do/
 ---
 
+# Command syntax #
+
 {% apibody %}
 r.branch(test, true_branch, false_branch) &rarr; any
 {% endapibody %}
+
+# Description #
 
 Evaluate one of two control paths based on the value of an expression. branch is effectively an if renamed due to language constraints.
 
