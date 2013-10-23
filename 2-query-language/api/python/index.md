@@ -12,7 +12,7 @@ github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/p
 {% apisection Accessing RQL%}
 All RQL queries begin from the top level module.
 
-## r ##
+## [r](r/) ##
 
 {% apibody %}
 r → r
@@ -27,7 +27,7 @@ import rethinkdb as r
 ```
 
 
-## connect ##
+## [connect](connect/) ##
 
 {% apibody %}
 r.connect(host='localhost', port=28015, db='test', auth_key='') → connection
@@ -45,7 +45,7 @@ __Example:__ Opens a connection using the default host and port but specifying t
 conn = r.connect(db='heroes')
 ```
 
-## repl ##
+## [repl](repl/) ##
 
 {% apibody %}
 connection.repl()
@@ -63,7 +63,7 @@ r.table('users').run()
 ```
 
 
-## close ##
+## [close](close/) ##
 
 {% apibody %}
 conn.close()
@@ -79,7 +79,7 @@ conn.close()
 ```
 
 
-## reconnect ##
+## [reconnect](reconnect/) ##
 
 {% apibody %}
 connection.reconnect()
@@ -95,7 +95,7 @@ conn.reconnect()
 ```
 
 
-## use ##
+## [use](use/) ##
 
 {% apibody %}
 connection.use(db_name)
@@ -131,8 +131,11 @@ for doc in r.table('marvel').run(conn):
 
 {% endapisection %}
 
+
+
 {% apisection Manipulating databases%}
-## db_create ##
+
+## [db_create](db_create/) ##
 
 {% apibody %}
 r.db_create(db_name) → object
@@ -152,7 +155,7 @@ r.db_create('superheroes').run(conn)
 ```
 
 
-## db_drop ##
+## [db_drop](db_drop/) ##
 
 {% apibody %}
 r.db_drop(db_name) → object
@@ -170,7 +173,7 @@ r.db_drop('superheroes').run(conn)
 ```
 
 
-## db_list ##
+## [db_list](db_list/) ##
 
 {% apibody %}
 r.db_list() → array
@@ -210,7 +213,7 @@ r.db('test').table_create('dc_universe').run(conn)
 
 [Read more about this command →](table_create/)
 
-## table_drop ##
+## [table_drop](table_drop/) ##
 
 {% apibody %}
 db.table_drop(table_name) → object
@@ -228,7 +231,7 @@ r.db('test').table_drop('dc_universe').run(conn)
 ```
 
 
-## table_list ##
+## [table_list](table_list/) ##
 
 {% apibody %}
 db.table_list() → array
@@ -262,7 +265,7 @@ r.table('dc').index_create('code_name').run(conn)
 [Read more about this command →](index_create/)
 
 
-## index_drop ##
+## [index_drop](index_drop/) ##
 
 {% apibody %}
 table.index_drop(index_name) → object
@@ -277,7 +280,7 @@ r.table('dc').index_drop('code_name').run(conn)
 ```
 
 
-## index_list ##
+## [index_list](index_list/) ##
 
 {% apibody %}
 table.index_list() → array
@@ -434,7 +437,7 @@ r.table('marvel').get('superman').delete().run(conn)
 
 {% apisection Selecting data%}
 
-## db ##
+## [db](db/) ##
 
 {% apibody %}
 r.db(db_name) → db
@@ -466,7 +469,7 @@ r.table('marvel').run(conn)
 
 [Read more about this command →](table/)
 
-## get ##
+## [get](get/) ##
 
 {% apibody %}
 table.get(key) → singleRowSelection
@@ -551,7 +554,7 @@ r.table('users').filter({'active': True, 'profile': {'age': 30}}).run(conn)
 {% apisection Joins%}
 These commands allow the combination of multiple sequences into a single sequence
 
-## inner_join ##
+## [inner_join](inner_join/) ##
 
 {% apibody %}
 sequence.inner_join(other_sequence, predicate) → stream
@@ -571,7 +574,7 @@ r.table('marvel').inner_join(r.table('dc'), lambda marvelRow, dcRow:
 ```
 
 
-## outer_join ##
+## [outer_join](outer_join/) ##
 
 {% apibody %}
 sequence.outer_join(other_sequence, predicate) → stream
@@ -609,7 +612,7 @@ r.table('marvel').eq_join('main_dc_collaborator', r.table('dc')).run(conn)
 [Read more about this command →](eq_join/)
 
 
-## zip ##
+## [zip](zip/) ##
 
 {% apibody %}
 stream.zip() → stream
@@ -631,7 +634,7 @@ r.table('marvel').eq_join('main_dc_collaborator', r.table('dc')).zip().run(conn)
 {% apisection Transformations%}
 These commands are used to transform data in a sequence.
 
-## map ##
+## [map](map/) ##
 
 {% apibody %}
 sequence.map(mapping_function) → stream
@@ -670,7 +673,7 @@ r.table('marvel').with_fields('id', 'nemesis')
 [Read more about this command →](with_fields/)
 
 
-## concatMap ##
+## [concat_map](concat_map/) ##
 
 {% apibody %}
 sequence.concat_map(mapping_function) → stream
@@ -707,7 +710,7 @@ r.table('marvel').order_by('enemies_vanquished', 'damsels_saved').run(conn)
 [Read more about this command →](order_by/)
 
 
-## skip ##
+## [skip](skip/) ##
 
 {% apibody %}
 sequence.skip(n) → stream
@@ -723,7 +726,7 @@ r.table('marvel').order_by('successMetric').skip(10).run(conn)
 ```
 
 
-## limit ##
+## [limit](limit/) ##
 
 {% apibody %}
 sequence.limit(n) → stream
@@ -739,7 +742,7 @@ __Example:__ Only so many can fit in our Pantheon of heroes.
 r.table('marvel').order_by('belovedness').limit(10).run(conn)
 ```
 
-## [] ##
+<h2 name="[]-slice"><a href="slice/">[]</a></h2>
 
 {% apibody %}
 sequence[start_index[, end_index]] → stream
@@ -752,10 +755,9 @@ __Example:__ For this fight, we need heroes with a good mix of strength and agil
 
 ```py
 r.table('marvel').order_by('strength')[5:10].run(conn)
-
 ```
 
-## [] ##
+<h2 name="[]-nth"><a href="nth">[]</a></h2>
 
 {% apibody %}
 sequence.nth(index) → object
@@ -787,7 +789,7 @@ r.expr(['a','b','c']).indexes_of('c').run(conn)
 [Read more about this command →](indexes_of/)
 
 
-## is_empty ##
+## [is_empty](is_empty/) ##
 
 {% apibody %}
 sequence.is_empty() → bool
@@ -801,7 +803,7 @@ __Example:__ Are there any documents in the marvel table?
 r.table('marvel').is_empty().run(conn)
 ```
 
-## union ##
+## [union](union/) ##
 
 {% apibody %}
 sequence.union(sequence) → array
@@ -816,7 +818,7 @@ r.table('marvel').union(r.table('dc')).run(conn)
 ```
 
 
-## sample ##
+## [sample](sample/) ##
 
 {% apibody %}
 sequence.sample(number) → selection
@@ -839,7 +841,7 @@ r.table('marvel').sample(3).run(conn)
 {% apisection Aggregation%}
 These commands are used to compute smaller values from large sequences.
 
-## reduce ##
+## [reduce](reduce/) ##
 
 {% apibody %}
 sequence.reduce(reduction_function[, base]) → value
@@ -879,7 +881,7 @@ __Example:__ Just how many super heroes are there?
 [Read more about this command →](count/)
 
 
-## distinct ##
+## [distinct](distinct/) ##
 
 {% apibody %}
 sequence.distinct() → array
@@ -894,7 +896,7 @@ r.table('marvel').concat_map(lambda hero: hero['villainList']).distinct().run(co
 ```
 
 
-## grouped_map_reduce ##
+## [grouped\_map\_reduce](grouped_map_reduce/) ##
 
 {% apibody %}
 sequence.grouped_map_reduce(grouping, mapping, reduction, base) → value
@@ -962,7 +964,7 @@ r.table('marvel').get('ironman')['opponents'].contains('superman').run(conn)
 {% apisection Aggregators%}
 These standard aggregator objects are to be used in conjunction with groupBy.
 
-<h2 name="count-aggregation">count</h2>
+<h2 name="count-aggregator"><a href="count-aggregator">count</a></h2>
 
 {% apibody %}
 r.count
@@ -977,7 +979,7 @@ r.table('marvel').group_by('strength', r.count).run(conn)
 ```
 
 
-## sum ##
+## [sum](sum/) ##
 
 {% apibody %}
 r.sum(attr)
@@ -992,7 +994,7 @@ r.table('marvel').group_by('strength', r.sum('enemiesVanquished')).run(conn)
 ```
 
 
-## avg ##
+## [avg](avg/) ##
 
 {% apibody %}
 r.avg(attr)
@@ -1094,7 +1096,7 @@ r.table('marvel').get('IronMan').merge(
 
 [Read more about this command →](merge/)
 
-## append ##
+## [append](append/) ##
 
 {% apibody %}
 array.append(value) → array
@@ -1109,7 +1111,7 @@ r.table('marvel').get('IronMan')['equipment'].append('newBoots').run(conn)
 ```
 
 
-## prepend ##
+## [prepend](prepend/) ##
 
 {% apibody %}
 array.prepend(value) → array
@@ -1124,7 +1126,7 @@ r.table('marvel').get('IronMan')['equipment'].prepend('newBoots').run(conn)
 ```
 
 
-## difference ##
+## [difference](difference/) ##
 
 {% apibody %}
 array.difference(array) → array
@@ -1139,7 +1141,7 @@ r.table('marvel').get('IronMan')['equipment'].difference(['Boots']).run(conn)
 ```
 
 
-## set_insert ##
+## [set_insert](set_insert/) ##
 
 {% apibody %}
 array.set_insert(value) → array
@@ -1154,7 +1156,7 @@ r.table('marvel').get('IronMan')['equipment'].set_insert('newBoots').run(conn)
 ```
 
 
-## set_union ##
+## [set_union](set_union/) ##
 
 {% apibody %}
 array.set_union(array) → array
@@ -1169,7 +1171,7 @@ r.table('marvel').get('IronMan')['equipment'].set_union(['newBoots', 'arc_reacto
 ```
 
 
-## set_intersection ##
+## [set_intersection](set_intersection/) ##
 
 {% apibody %}
 array.set_intersection(array) → array
@@ -1185,7 +1187,7 @@ r.table('marvel').get('IronMan')['equipment'].set_intersection(['newBoots', 'arc
 ```
 
 
-## set_difference ##
+## [set_difference](set_difference/) ##
 
 {% apibody %}
 array.set_difference(array) → array
@@ -1201,7 +1203,7 @@ r.table('marvel').get('IronMan')['equipment'].set_difference(['newBoots', 'arc_r
 ```
 
 
-## [] ##
+<h2 name="[]-get_field"><a href="get_field">[]</a></h2>
 
 {% apibody %}
 sequence[attr] → sequence
@@ -1241,7 +1243,7 @@ r.table('marvel').has_fields('spouse').run(conn)
 [Read more about this command →](has_fields/)
 
 
-## insert_at ##
+## [insert_at](insert_at/) ##
 
 {% apibody %}
 array.insert_at(index, value) → array
@@ -1256,7 +1258,7 @@ r.expr(["Iron Man", "Spider-Man"]).insert_at(1, "Hulk").run(conn)
 ```
 
 
-## splice_at ##
+## [splice_at](splice_at/) ##
 
 {% apibody %}
 array.splice_at(index, array) → array
@@ -1288,7 +1290,7 @@ r.expr(["Iron Man", "Hulk", "Spider-Man"]).delete_at(1).run(conn)
 [Read more about this command →](delete_at/)
 
 
-## change_at ##
+## [change_at](change_at/) ##
 
 {% apibody %}
 array.change_at(index, value) → array
@@ -1302,7 +1304,7 @@ __Example:__ Bruce Banner hulks out.
 r.expr(["Iron Man", "Bruce", "Spider-Man"]).change_at(1, "Hulk").run(conn)
 ```
 
-## keys ##
+## [keys](keys/) ##
 
 {% apibody %}
 singleSelection.keys() → array
@@ -1324,7 +1326,7 @@ r.table('marvel').get('ironman').keys().run(conn)
 {% apisection String manipulation%}
 These commands provide string operators.
 
-## match ##
+## [match](match/) ##
 
 {% apibody %}
 string.match(regexp) → array
@@ -1406,7 +1408,7 @@ __Example:__ It's as easy as 2 * 2 = 4.
 
 [Read more about this command →](mul/)
 
-## \ ##
+## [/](div/) ##
 
 {% apibody %}
 number / number → number
@@ -1422,7 +1424,7 @@ __Example:__ It's as easy as 2 / 2 = 1.
 
 
 
-## % ##
+## [%](mod/) ##
 
 {% apibody %}
 number % number → number
@@ -1436,7 +1438,7 @@ __Example:__ It's as easy as 2 % 2 = 0.
 (r.expr(2) % 2).run(conn)
 ```
 
-## & ##
+## [&](and/) ##
 
 {% apibody %}
 bool & bool → bool
@@ -1451,7 +1453,7 @@ __Example:__ True and false anded is false?
 ```
 
 
-## | ##
+## [|](or/) ##
 
 {% apibody %}
 bool | bool → bool
@@ -1466,7 +1468,7 @@ __Example:__ True or false ored is true?
 ```
 
 
-## == ##
+## [==](eq/) ##
 
 {% apibody %}
 value == value → bool
@@ -1481,7 +1483,7 @@ __Example:__ Does 2 equal 2?
 ```
 
 
-## != ##
+## [!=](ne/) ##
 
 {% apibody %}
 value != value → bool
@@ -1496,7 +1498,7 @@ __Example:__ Does 2 not equal 2?
 ```
 
 
-## > ##
+## [>](gt/) ##
 
 {% apibody %}
 value > value → bool
@@ -1510,7 +1512,7 @@ __Example:__ Is 2 greater than 2?
 (r.expr(2) > 2).run(conn)
 ```
 
-## >= ##
+## [>=](ge/) ##
 
 {% apibody %}
 value >= value → bool
@@ -1524,7 +1526,7 @@ __Example:__ Is 2 greater than or equal to 2?
 (r.expr(2) >= 2).run(conn)
 ```
 
-## < ##
+## [<](lt/) ##
 
 {% apibody %}
 value < value → bool
@@ -1538,7 +1540,7 @@ __Example:__ Is 2 less than 2?
 (r.expr(2) < 2).run(conn)
 ```
 
-## <= ##
+## [<=](le/) ##
 
 {% apibody %}
 value <= value → bool
@@ -1553,7 +1555,7 @@ __Example:__ Is 2 less than or equal to 2?
 ```
 
 
-## ~ ##
+## [~](not/) ##
 
 {% apibody %}
 ~bool → bool
@@ -1572,7 +1574,7 @@ __Example:__ Not true is false.
 
 {% apisection Dates and times%}
 
-## now ##
+## [now](now/) ##
 
 {% apibody %}
 r.now() → time
@@ -1589,7 +1591,7 @@ r.table("users").insert({
 }).run(conn)
 ```
 
-## time ##
+## [time](time/) ##
 
 {% apibody %}
 r.time(year, month, day[, hour, minute, second], timezone) → time
@@ -1605,7 +1607,7 @@ r.table("user").get("John").update({"birthdate": r.time(1986, 11, 3, 'Z')}).run(
 
 
 
-## epoch_time ##
+## [epoch_time](epoch_time/) ##
 
 {% apibody %}
 r.epoch_time(epoch_time) → time
@@ -1620,10 +1622,10 @@ r.table("user").get("John").update({"birthdate": r.epoch_time(531360000)}).run(c
 ```
 
 
-## iso8601 ##
+## [iso8601](iso8601/) ##
 
 {% apibody %}
-r.ISO8601(iso8601Date[, {default_timezone:''}]) → time
+r.iso8601(iso8601Date[, default_timezone='']) → time
 {% endapibody %}
 
 Create a time object based on an iso8601 date-time string (e.g.
@@ -1632,6 +1634,7 @@ dates. If you pass an ISO 8601 date-time without a time zone, you must specify t
 zone with the optarg `default_timezone`. Read more about the ISO 8601 format on the
 Wikipedia page.
 
+
 __Example:__ Update the time of John's birth.
 
 ```py
@@ -1639,7 +1642,7 @@ r.table("user").get("John").update({"birth": r.iso8601('1986-11-03T08:30:00-07:0
 ```
 
 
-## in_timezone ##
+## [in_timezone](in_timezone/) ##
 
 {% apibody %}
 time.in_timezone(timezone) → time
@@ -1655,7 +1658,7 @@ r.now().in_timezone('-08:00').hours().run(conn)
 
 
 
-## timezone ##
+## [timezone](timezone/) ##
 
 {% apibody %}
 time.timezone() → string
@@ -1692,7 +1695,7 @@ r.table("posts").filter(
 
 
 
-## date ##
+## [date](date/) ##
 
 {% apibody %}
 time.date() → time
@@ -1710,7 +1713,7 @@ r.table("users").filter(lambda user:
 
 
 
-## time_of_day ##
+## [time\_of\_day](time_of_day) ##
 
 {% apibody %}
 time.time_of_day() → number
@@ -1727,7 +1730,7 @@ r.table("posts").filter(
 ```
 
 
-## year ##
+## [year](year/) ##
 
 {% apibody %}
 time.year() → number
@@ -1763,7 +1766,7 @@ r.table("users").filter(
 [Read more about this command →](month/)
 
 
-## day ##
+## [day](day/) ##
 
 {% apibody %}
 time.day() → number
@@ -1781,7 +1784,7 @@ r.table("users").filter(
 
 
 
-## [day_of_week](day_of_week/) ##
+## [day\_of\_week](day_of_week/) ##
 
 {% apibody %}
 time.day_of_week() → number
@@ -1798,7 +1801,7 @@ r.now().day_of_week().run(conn)
 [Read more about this command →](day_of_week/)
 
 
-## day_of_year ##
+## [day\_of\_year](day_of_year) ##
 
 {% apibody %}
 time.day_of_year() → number
@@ -1815,7 +1818,7 @@ r.table("users").filter(
 ```
 
 
-## hours ##
+## [hours](hours/) ##
 
 {% apibody %}
 time.hours() → number
@@ -1832,7 +1835,7 @@ r.table("posts").filter(lambda post:
 ```
 
 
-## minutes ##
+## [minutes](minutes/) ##
 
 {% apibody %}
 time.minutes() → number
@@ -1850,7 +1853,7 @@ r.table("posts").filter(lambda post:
 
 
 
-## seconds ##
+## [seconds](seconds/) ##
 
 {% apibody %}
 time.seconds() → number
@@ -1867,7 +1870,7 @@ r.table("posts").filter(lambda post:
 ```
 
 
-## to_iso8601 ##
+## [to_iso8601](to_iso8601/) ##
 
 {% apibody %}
 time.to_iso8601() → number
@@ -1882,7 +1885,7 @@ r.now().to_iso8601()
 ```
 
 
-## to\_epoch\_time ##
+## [to\_epoch\_time](to_epoch_time) ##
 
 {% apibody %}
 time.to_epoch_time() → number
@@ -1903,7 +1906,7 @@ r.now().to_epoch_time()
 
 {% apisection Control structures%}
 
-## do ##
+## [do](do/) ##
 
 {% apibody %}
 any.do(arg [, args]*, expr) → any
@@ -1921,7 +1924,7 @@ r.do(r.table('marvel').get('IronMan'),
 ```
 
 
-## branch ##
+## [branch](branch/) ##
 
 {% apibody %}
 r.branch(test, true_branch, false_branch) → any
@@ -1941,7 +1944,7 @@ r.table('marvel').map(r.branch(r.row['victories'] > 100,
 ```
 
 
-## for_each ##
+## [for_each](for_each/) ##
 
 {% apibody %}
 sequence.for_each(write_query) → object
@@ -1959,7 +1962,7 @@ r.table('marvel').for_each(
 
 
 
-## error ##
+## [error](error/) ##
 
 {% apibody %}
 r.error(message) → error
@@ -1977,7 +1980,7 @@ r.table('marvel').get('IronMan').do(
 ).run(conn)
 ```
 
-## default ##
+## [default](default/) ##
 
 {% apibody %}
 value.default(default_value) → any
@@ -2001,7 +2004,7 @@ r.table('projects').map(
 ```
 
 
-## expr ##
+## [expr](expr/) ##
 
 {% apibody %}
 r.expr(value) → value
@@ -2052,7 +2055,7 @@ r.table('marvel').coerce_to('array').run(conn)
 
 [Read more about this command →](coerce_to/)
 
-## type_of ##
+## [type_of](type_of) ##
 
 {% apibody %}
 any.type_of() → string
@@ -2066,7 +2069,7 @@ __Example:__ Get the type of a string.
 r.expr("foo").type_of().run(conn)
 ```
 
-## info ##
+## [info](info/) ##
 
 {% apibody %}
 any.info() → object
@@ -2080,7 +2083,7 @@ __Example:__ Get information about a table such as primary key, or cache size.
 r.table('marvel').info().run(conn)
 ```
 
-## json ##
+## [json](json/) ##
 
 {% apibody %}
 r.json(json_string) → value

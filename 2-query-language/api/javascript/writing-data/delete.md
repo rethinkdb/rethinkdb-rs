@@ -4,6 +4,17 @@ language: JavaScript
 permalink: api/javascript/delete/
 command: delete
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/writing-data/delete.md
+io:
+    -   - table
+        - object
+    -   - selection
+        - object
+    -   - singleSelection
+        - object
+related_commands:
+    insert: insert/
+    update: update/
+    replace: replace/
 ---
 
 {% apibody %}

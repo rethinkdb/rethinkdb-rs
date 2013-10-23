@@ -6,6 +6,14 @@ command: each
 py: false
 rb: false
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/accessing-rql/each.md
+io:
+    -   - cursor
+        - undefined
+related_commands:
+    next: next/
+    hasNext: hasNext/
+    toArray: toArray/
+    close (cursor): close-cursor/
 ---
 
 {% apibody %}

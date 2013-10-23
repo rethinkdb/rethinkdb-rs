@@ -4,6 +4,17 @@ language: JavaScript
 permalink: api/javascript/insert/
 command: insert
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/writing-data/insert.md
+io:
+    -   - table
+        - object
+    -   - selection
+        - object
+    -   - singleSelection
+        - object
+related_commands:
+    update: update/
+    replace: replace/
+    delete: delete/
 ---
 
 {% apibody %}

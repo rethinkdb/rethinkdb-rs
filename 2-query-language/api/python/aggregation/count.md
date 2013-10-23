@@ -4,6 +4,10 @@ language: Python
 permalink: api/python/count/
 command: count
 github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/python/aggregation/count.md
+related_commands:
+    map: map/
+    reduce: reduce/
+    grouped_map_reduce: grouped_map_reduce/
 ---
 
 {% apibody %}

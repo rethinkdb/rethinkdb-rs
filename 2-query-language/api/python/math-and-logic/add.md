@@ -4,6 +4,11 @@ language: Python
 permalink: api/python/add/
 command: +
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/math-and-logic/add.md
+related_commands:
+    '-': sub/
+    '*': mul/
+    '/': div/
+    '%': mod/
 ---
 
 {% apibody %}

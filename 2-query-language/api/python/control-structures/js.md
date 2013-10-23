@@ -3,6 +3,7 @@ layout: api-command
 language: Python
 permalink: api/python/js/
 command: js
+github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/python/control-structures/js.md
 ---
 
 {% apibody %}

@@ -4,6 +4,10 @@ language: Python
 permalink: api/python/during/
 command: during
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/dates-and-times/during.md
+related_commands:
+    now: now/
+    time: time/
+    in_timezone: in_timezone/
 ---
 
 {% apibody %}

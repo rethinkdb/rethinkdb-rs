@@ -4,6 +4,13 @@ language: JavaScript
 permalink: api/javascript/index_create/
 command: indexCreate
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/manipulating-tables/indexCreate.md
+io:
+    -   - table
+        - object
+related_commands:
+    indexList: index_list/
+    indexDrop: index_drop/
+
 ---
 
 {% apibody %}

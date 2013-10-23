@@ -4,6 +4,10 @@ language: Ruby
 permalink: api/ruby/get_all/
 command: get_all 
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/selecting-data/get_all.md
+related_commands:
+    get: get/
+    between: between/
+    filter: filter/
 ---
 
 {% apibody %}

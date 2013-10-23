@@ -4,6 +4,9 @@ language: JavaScript
 permalink: api/javascript/table/
 command: table
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/selecting-data/table.md
+related_commands:
+    filter: filter/
+    get: get/
 ---
 
 {% apibody %}

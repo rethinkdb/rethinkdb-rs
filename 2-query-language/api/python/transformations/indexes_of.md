@@ -6,6 +6,7 @@ command: indexes_of
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/transformations/indexes_of.md
 ---
 
+
 {% apibody %}
 sequence.indexes_of(datum | predicate) → array
 {% endapibody %}

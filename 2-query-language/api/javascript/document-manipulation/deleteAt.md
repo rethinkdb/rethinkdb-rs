@@ -2,8 +2,15 @@
 layout: api-command 
 language: JavaScript
 permalink: api/javascript/delete_at/
-command: delete_at
+command: deleteAt
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/deleteAt.md
+io:
+    -   - array
+        - array
+related_commands:
+    insertAt: insert_at/
+    spliceAt: splice_at/
+    changeAt: change_at/
 ---
 
 {% apibody %}

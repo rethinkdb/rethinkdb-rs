@@ -4,6 +4,10 @@ language: Python
 permalink: api/python/between/
 command: between
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/selecting-data/between.md
+related_commands:
+    get: get/
+    get_all: get_all/
+    filter: filter/
 ---
 
 {% apibody %}

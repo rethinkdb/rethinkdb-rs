@@ -4,6 +4,9 @@ language: JavaScript
 permalink: api/javascript/indexes_of/
 command: indexesOf
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/transformations/indexesOf.md
+io:
+    -   - sequence
+        - array
 ---
 
 {% apibody %}

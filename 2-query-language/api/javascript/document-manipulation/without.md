@@ -4,6 +4,18 @@ language: JavaScript
 permalink: api/javascript/without/
 command: without
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/without.md
+io:
+    -   - sequence
+        - stream
+    -   - array
+        - array
+    -   - object
+        - object
+    -   - singleSelection
+        - object
+related_commands:
+    pluck: pluck/
+    map: map/
 ---
 
 {% apibody %}

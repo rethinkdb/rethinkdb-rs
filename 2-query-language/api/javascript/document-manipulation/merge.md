@@ -4,6 +4,19 @@ language: JavaScript
 permalink: api/javascript/merge/
 command: merge
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/merge.md
+io:
+    -   - sequence
+        - stream
+    -   - array
+        - array
+    -   - object
+        - object
+    -   - singleSelection
+        - object
+related_commands:
+    pluck: pluck/
+    without: without/
+    map: map/
 ---
 
 {% apibody %}

@@ -4,6 +4,18 @@ language: JavaScript
 permalink: api/javascript/sub/
 command: sub
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/math-and-logic/sub.md
+io:
+    -   - number
+        - number
+    -   - time
+        - time
+    -   - time
+        - number
+related_commands:
+    add: add/
+    mul: mul/
+    div: div/
+    mod: mod/
 ---
 
 {% apibody %}

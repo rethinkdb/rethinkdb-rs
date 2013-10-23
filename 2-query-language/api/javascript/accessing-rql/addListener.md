@@ -6,6 +6,13 @@ command: addListener
 py: false
 rb: false
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/accessing-rql/addListener.md
+io:
+    -   - connection
+        - undefined
+related_commands:
+    connect: connect/
+    reconnect: reconnect/
+    close: close/
 ---
 
 {% apibody %}

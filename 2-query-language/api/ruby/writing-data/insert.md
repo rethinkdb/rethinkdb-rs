@@ -4,6 +4,10 @@ language: Ruby
 permalink: api/ruby/insert/
 command: insert
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/writing-data/insert.md
+related_commands:
+    update: update/
+    replace: replace/
+    delete: delete/
 ---
 
 {% apibody %}

@@ -4,6 +4,10 @@ language: Ruby
 permalink: api/ruby/replace/
 command: replace
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/writing-data/replace.md
+related_commands:
+    insert: insert/
+    update: update/
+    delete: delete/
 ---
 
 

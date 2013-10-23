@@ -4,6 +4,9 @@ language: Python
 permalink: api/python/month/
 command: month
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/dates-and-times/month.md
+related_commands:
+    now: now/
+    time: time/
 ---
 
 {% apibody %}

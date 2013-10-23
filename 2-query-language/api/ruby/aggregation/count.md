@@ -4,8 +4,11 @@ language: Ruby
 permalink: api/ruby/count/
 command: count 
 github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/ruby/aggregation/count.md
+related_commands:
+    map: map/
+    reduce: reduce/
+    grouped_map_reduce: grouped_map_reduce/
 ---
-
 
 {% apibody %}
 sequence.count([filter]) → number

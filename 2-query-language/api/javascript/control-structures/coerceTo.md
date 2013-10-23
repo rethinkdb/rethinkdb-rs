@@ -4,6 +4,15 @@ language: JavaScript
 permalink: api/javascript/coerce_to/
 command: coerceTo
 github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/javascript/control-structures/coerceTo.md
+io:
+    -   - sequence
+        - array
+    -   - value
+        - string
+    -   - array
+        - object
+    -   - object
+        - array
 ---
 
 {% apibody %}

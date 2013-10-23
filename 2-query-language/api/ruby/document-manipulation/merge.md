@@ -4,6 +4,10 @@ language: Ruby
 permalink: api/ruby/merge/
 command: merge 
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/document-manipulation/merge.md
+related_commands:
+    pluck: pluck/
+    without: without/
+    map: map/
 ---
 
 {% apibody %}

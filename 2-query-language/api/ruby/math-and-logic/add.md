@@ -4,6 +4,11 @@ language: Ruby
 permalink: api/ruby/add/
 command: '+'
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/math-and-logic/add.md
+related_commands:
+    '-': sub/
+    '*': mul/
+    '/': div/
+    '%': mod/
 ---
 
 {% apibody %}

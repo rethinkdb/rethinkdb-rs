@@ -4,6 +4,11 @@ language: Python
 permalink: api/python/mul/
 command: '*'
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/math-and-logic/mul.md
+related_commands:
+    '+': add/
+    '-': sub/
+    '/': div/
+    '%': mod/
 ---
 
 {% apibody %}

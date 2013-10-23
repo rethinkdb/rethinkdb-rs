@@ -4,6 +4,12 @@ language: JavaScript
 permalink: api/javascript/month/
 command: month
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/dates-and-times/month.md
+io:
+    -   - time
+        - number
+related_commands:
+    now: now/
+    time: time/
 ---
 
 

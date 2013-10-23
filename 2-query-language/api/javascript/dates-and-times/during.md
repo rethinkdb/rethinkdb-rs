@@ -4,6 +4,13 @@ language: JavaScript
 permalink: api/javascript/during/
 command: during
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/dates-and-times/during.md
+io:
+    -   - time
+        - bool
+related_commands:
+    now: now/
+    time: time/
+    inTimezone: in_timezone/
 ---
 
 {% apibody %}

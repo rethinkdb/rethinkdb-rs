@@ -4,6 +4,10 @@ language: Ruby
 permalink: api/ruby/group_by/
 command: group_by 
 github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/ruby/aggregation/group_by.md
+related_commands:
+    count: count-aggregation/
+    sum: sum
+    avg: avg
 ---
 
 {% apibody %}

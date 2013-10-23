@@ -4,6 +4,16 @@ language: JavaScript
 permalink: api/javascript/mul/
 command: mul
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/math-and-logic/mul.md
+io:
+    -   - number
+        - number
+    -   - array
+        - array
+related_commands:
+    add: add/
+    sub: sub/
+    div: div/
+    mod: mod/
 ---
 
 {% apibody %}

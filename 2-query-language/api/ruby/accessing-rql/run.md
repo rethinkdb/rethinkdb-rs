@@ -4,6 +4,9 @@ language: Ruby
 permalink: api/ruby/run/
 command: run
 github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/accessing-rql/run.md
+related_commands:
+    connect: connect/
+    repl: repl/
 ---
 
 {% apibody %}
