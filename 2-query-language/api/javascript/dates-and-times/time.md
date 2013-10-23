@@ -16,7 +16,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.time(year, month, day[, hour, minute, second], timezone) &rarr; time
+r.time(year, month, day[, hour, minute, second], timezone)
+    &rarr; time
 {% endapibody %}
 
 # Description #

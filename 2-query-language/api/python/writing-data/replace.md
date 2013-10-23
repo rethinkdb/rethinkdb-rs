@@ -13,9 +13,12 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(json | expr[, durability='soft', return_vals=true]) &rarr; object
-selection.replace(json | expr[, durability='soft', return_vals=true]) &rarr; object
-singleSelection.replace(json | expr[, durability='soft', return_vals=true]) &rarr; object
+table.replace(json | expr[, durability='soft', return_vals=true])
+    &rarr; object
+selection.replace(json | expr[, durability='soft', return_vals=true])
+    &rarr; object
+singleSelection.replace(json | expr[, durability='soft', return_vals=true])
+    &rarr; object
 {% endapibody %}
 
 # Description #

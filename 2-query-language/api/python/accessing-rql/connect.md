@@ -13,7 +13,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.connect(host='localhost', port=28015, db='test', auth_key='') &rarr; connection
+r.connect(host='localhost', port=28015, db='test', auth_key='')
+    &rarr; connection
 {% endapibody %}
 
 # Description #

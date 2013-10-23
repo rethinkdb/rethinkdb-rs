@@ -201,6 +201,18 @@ If successful, the operation returns an object: `{created: 1}`. If a table with 
 name already exists, the operation throws `RqlRuntimeError`.
 Note: that you can only use alphanumeric characters and underscores for the table name.
 
+When creating a table you can specify the following options:
+
+- `primary_key`: the name of the primary key. The default primary key is id;
+- `durability`: if set to `soft`, this enables _soft durability_ on this table:
+writes will be acknowledged by the server immediately and flushed to disk in the
+background. Default is `hard` (acknowledgement of writes happens after data has been
+written to disk);
+- `cache_size`: set the cache size (in bytes) to be used by the table. The
+default is 1073741824 (1024MB);
+- `datacenter`: the name of the datacenter this table should be assigned to.
+
+
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```rb
@@ -298,7 +310,9 @@ r.table('marvel').index_list().run(conn)
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json][, { :durability => 'soft', :return_vals => true :upsert => true}]) &rarr; object
+table.insert(json | [json]
+    [, { :durability => 'soft', :return_vals => true :upsert => true}])
+        &rarr; object
 {% endapibody %}
 
 Insert JSON documents into a table. Accepts a single JSON document or an array of
@@ -328,9 +342,12 @@ r.table('marvel').insert(
 ## [update](update/) ##
 
 {% apibody %}
-table.update(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
-selection.update(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
-singleSelection.update(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
+table.update(json | expr[, durability => 'soft', return_vals => true])
+    &rarr; object
+selection.update(json | expr[, durability => 'soft', return_vals => true])
+    &rarr; object
+singleSelection.update(json | expr[, durability => 'soft', return_vals => true])
+    &rarr; object
 {% endapibody %}
 
 Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a
@@ -361,9 +378,12 @@ r.table('marvel').get('superman').update{ {:age => 30} }.run(conn)
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
-selection.replace(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
-singleSelection.replace(json | expr[, durability => 'soft', return_vals => true]) &rarr; object
+table.replace(json | expr[, durability => 'soft', return_vals => true])
+    &rarr; object
+selection.replace(json | expr[, durability => 'soft', return_vals => true])
+    &rarr; object
+singleSelection.replace(json | expr[, durability => 'soft', return_vals => true])
+    &rarr; object
 {% endapibody %}
 
 Replace documents in a table. Accepts a JSON document or a RQL expression, and replaces
@@ -403,9 +423,12 @@ r.table('marvel').get('superman').replace({
 ## [delete](delete/) ##
 
 {% apibody %}
-table.delete[({:durability => soft, :return_vals => true})] &rarr; object
-selection.delete[({:durability => soft, :return_vals => true})] &rarr; object
-singleSelection.delete[({:durability => soft, :return_vals => true})] &rarr; object
+table.delete[({:durability => soft, :return_vals => true})]
+    &rarr; object
+selection.delete[({:durability => soft, :return_vals => true})]
+    &rarr; object
+singleSelection.delete[({:durability => soft, :return_vals => true})]
+    &rarr; object
 {% endapibody %}
 
 Delete one or more documents from a table. The optional argument return_vals will return
@@ -504,7 +527,9 @@ r.table('marvel').get_all('man_of_steel', :index => 'code_name').run(conn)
 ## [between](between/) ##
 
 {% apibody %}
-table.between(lower_key, upper_key[, :index => 'id', :left_bound => 'closed', :right_bound => 'open']) &rarr; selection
+table.between(lower_key, upper_key
+    [, :index => 'id', :left_bound => 'closed', :right_bound => 'open'])
+        &rarr; selection
 {% endapibody %}
 
 Get all documents between two keys. Accepts three optional arguments: `index`,
@@ -898,10 +923,11 @@ r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)
 ```
 
 
-## [grouped_map_reduce](grouped_map_reduce) ##
+## [grouped\_map\_reduce](grouped_map_reduce) ##
 
 {% apibody %}
-sequence.grouped_map_reduce(grouping, mapping, reduction, base) &rarr; value
+sequence.grouped_map_reduce(grouping, mapping, reduction, base)
+    &rarr; value
 {% endapibody %}
 
 Partition the sequence into groups based on the `grouping` function. The elements of each
@@ -1576,7 +1602,8 @@ r.table("users").insert({
 ## [time](time/) ##
 
 {% apibody %}
-r.time(year, month, day[, hour, minute, second], timezone) &rarr; time
+r.time(year, month, day[, hour, minute, second], timezone)
+    &rarr; time
 {% endapibody %}
 
 Create a time object for a specific time.
@@ -1659,7 +1686,9 @@ r.table("users").filter{ |user|
 ## [during](during/) ##
 
 {% apibody %}
-time.during(start_time, end_time[, left_bound="open/closed", right_bound="open/closed"]) &rarr; bool
+time.during(start_time, end_time
+    [, left_bound="open/closed", right_bound="open/closed"])
+        &rarr; bool
 {% endapibody %}
 
 Return if a time is between two other times (by default, inclusive for the start, exclusive for the end).
@@ -2052,6 +2081,7 @@ __Example:__ Get the type of a string.
 ```rb
 r.expr("foo").type_of().run(conn)
 ```
+
 
 ## [info](info/) ##
 

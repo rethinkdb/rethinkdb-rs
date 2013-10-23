@@ -14,7 +14,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.grouped_map_reduce(grouping, mapping, reduction, base) &rarr; value
+sequence.grouped_map_reduce(grouping, mapping, reduction, base)
+    &rarr; value
 {% endapibody %}
 
 # Description #

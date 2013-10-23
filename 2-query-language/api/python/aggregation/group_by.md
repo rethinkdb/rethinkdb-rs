@@ -13,7 +13,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.group_by(selector1[, selector2...], reduction_object) &rarr; array
+sequence.group_by(selector1[, selector2...], reduction_object)
+    &rarr; array
 {% endapibody %}
 
 # Description #

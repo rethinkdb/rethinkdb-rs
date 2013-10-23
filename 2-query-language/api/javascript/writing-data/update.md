@@ -21,9 +21,12 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.update(json | expr[, {durability: 'soft', return_vals: true]) &rarr; object
-selection.update(json | expr[, {durability: 'soft', return_vals: true]) &rarr; object
-singleSelection.update(json | expr[, {durability: 'soft', return_vals: true]) &rarr; object
+table.update(json | expr[, {durability: 'soft', return_vals: true])
+    &rarr; object
+selection.update(json | expr[, {durability: 'soft', return_vals: true])
+    &rarr; object
+singleSelection.update(json | expr[, {durability: 'soft', return_vals: true])
+    &rarr; object
 {% endapibody %}
 
 # Description #

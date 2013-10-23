@@ -14,7 +14,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, durability='soft', return_vals=True, upsert=True]) &rarr; object
+table.insert(json | [json][, durability='soft', return_vals=True, upsert=True])
+    &rarr; object
 {% endapibody %}
 
 # Description #

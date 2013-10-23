@@ -13,7 +13,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-time.during(start_time, end_time[, left_bound="open/closed", right_bound="open/closed"]) &rarr; bool
+time.during(start_time, end_time[, left_bound="open/closed", right_bound="open/closed"])
+    &rarr; bool
 {% endapibody %}
 
 # Description #

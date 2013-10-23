@@ -13,9 +13,12 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.delete([durability='soft', return_vals=true]) &rarr; object
-selection.delete([durability='soft', return_vals=true]) &rarr; object
-singleSelection.delete([durability='soft', return_vals=true]) &rarr; object
+table.delete([durability='soft', return_vals=true])
+    &rarr; object
+selection.delete([durability='soft', return_vals=true])
+    &rarr; object
+singleSelection.delete([durability='soft', return_vals=true])
+    &rarr; object
 {% endapibody %}
 
 # Description #

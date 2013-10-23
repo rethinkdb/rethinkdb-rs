@@ -15,7 +15,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.between(lowerKey, upperKey[, {index:'id', left_bound:'closed', right_bound:'open'}]) &rarr; selection
+table.between(lowerKey, upperKey[, {index:'id', left_bound:'closed', right_bound:'open'}])
+    &rarr; selection
 {% endapibody %}
 
 # Description #

@@ -13,7 +13,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, { :durability => 'soft', :return_vals => true :upsert => true}]) &rarr; object
+table.insert(json | [json][, { :durability => 'soft', :return_vals => true :upsert => true}])
+    &rarr; object
 {% endapibody %}
 
 # Description #
