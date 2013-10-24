@@ -1093,7 +1093,7 @@ r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, cal
 {% apisection Aggregators%}
 These standard aggregator objects are to be used in conjunction with groupBy.
 
-<h2 name="count-aggregator"><a href="count-aggregator">count</a></h2>
+## [count](count-aggregator/) ##
 
 {% apibody %}
 r.count

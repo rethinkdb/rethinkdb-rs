@@ -770,7 +770,7 @@ __Example:__ Only so many can fit in our Pantheon of heroes.
 r.table('marvel').order_by(:belovedness).limit(10).run(conn)
 ```
 
-<h2 name="[]-slice"><a href="slice/">[]</a></h2>
+## [\[\]](slice/) ##
 
 {% apibody %}
 sequence[start_index[, end_index]] &rarr; stream
@@ -785,7 +785,7 @@ __Example:__ For this fight, we need heroes with a good mix of strength and agil
 r.table('marvel').order_by(:strength)[5..10].run(conn)
 ```
 
-<h2 name="[]-nth"><a href="nth">[]</a></h2>
+## [\[\]](nth/) ##
 
 {% apibody %}
 sequence[index] &rarr; object
@@ -992,7 +992,7 @@ r.table('marvel').get('ironman')[:opponents].contains('superman').run(conn)
 {% apisection Aggregators%}
 These standard aggregator objects are to be used in conjunction with groupBy.
 
-<h2 name="count-aggregator"><a href="count-aggregator">count</a></h2>
+## [count]](count-aggregator/) ##
 
 {% apibody %}
 r.count
@@ -1214,7 +1214,7 @@ r.table('marvel').get('IronMan')[:equipment].set_difference(['newBoots', 'arc_re
 ```
 
 
-<h2 name="[]-get_field"><a href="get_field">[]</a></h2>
+## [\[\]](get_field/) ##
 
 {% apibody %}
 sequence[attr] &rarr; sequence
