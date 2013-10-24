@@ -441,7 +441,7 @@ Delete returns an object that contains the following attributes:
 - `skipped`: the number of documents from the selection that were left unmodified because
 there was nothing to do. For example, if you delete a row that has already been deleted,
 that row will be skipped
-- `errors`L the number of errors encountered while deleting
+- `errors`: the number of errors encountered while deleting
 if errors occured, first_error contains the text of the first error
 - `inserted`, `replaced`, and `unchanged`: all 0 for a delete operation.
 
