@@ -10,10 +10,10 @@ All the API files are in `2-query-language/api`.
 Each language has its own directory, which means that a change for a method should be
 done in three different files.
 
-The file `index.md` contains a short description of every commands.
+The file `index.md` contains a short description of every command.
 
 The other files in this directory are dedicated to one other command.
-The yaml header has to contains:
+The yaml header has to contain:
 ```yaml
 ---
 # The layout of the document
@@ -40,7 +40,7 @@ related_commands:
 
 
 ### Guide and cookbook ###
-There are one file per language, so if you want to update a recipe, make sure you do it
+There is one file per language, so if you want to update a recipe, make sure you do it
 for all the languages.
 
 
