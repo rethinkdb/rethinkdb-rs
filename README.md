@@ -4,12 +4,8 @@ This repository contains all of the documentation available at [rethinkdb.com](h
 
 ## Architecture ##
 
-### API ###
-All the API files are in `/api`.
-
-Each language has its own directory, which means that ReQL command changes require updating three different files.
-
-The file `index.md` contains a short description of every command.
+### API docs ###
+All the API files are in `/api`. Each language has its own directory, which means that ReQL command changes require updating three different files. The file `index.md` contains a short description of every command.
 
 Each command has a dedicated [Markdown](http://whatismarkdown.com/) file for each language. A [YAML](http://yaml.org/)
 header is used in each file for our [Jekyll](http://jekyllrb.com/) build system, and has to contain:
