@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/set_union/
 command: setUnion
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/setUnion.md
 io:
     -   - array
         - array

@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/in_timezone/
 command: in_timezone 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/dates-and-times/in_timezone.md
 related_commands:
     timezone: timezone/
     now: now/

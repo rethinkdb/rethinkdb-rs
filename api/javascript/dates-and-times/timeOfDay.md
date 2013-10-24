@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/time_of_day/
 command: timeOfDay 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/dates-and-times/timeOfDay.md
 io:
     -   - time
         - number

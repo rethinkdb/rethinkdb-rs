@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/epoch_time/
 command: epochTime
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/dates-and-times/epochTime.md
 io:
     -   - r
         - time

@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/minutes/
 command: minutes 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/dates-and-times/minutes.md
 io:
     -   - time
         - number

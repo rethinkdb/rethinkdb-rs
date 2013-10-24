@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/contains/
 command: contains 
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/ruby/aggregation/contains.md
 related_commands:
     map: map/
     reduce: reduce/

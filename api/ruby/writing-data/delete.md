@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/delete/
 command: delete 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/writing-data/delete.md
 related_commands:
     insert: insert/
     update: update/

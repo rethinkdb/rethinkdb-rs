@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/set_union/
 command: set_union 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/document-manipulation/set_union.md
 related_commands:
     union: union/
     difference: difference/

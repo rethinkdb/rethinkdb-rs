@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/db_create/
 command: db_create
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/accessing-rql/db_create.md
 related_commands:
     db_drop: db_drop/
     db_list: db_list/

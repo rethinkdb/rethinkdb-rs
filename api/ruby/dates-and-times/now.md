@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/now/
 command: now 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/dates-and-times/now.md
 related_commands:
     time: time/
     epoch_time: epoch_time/

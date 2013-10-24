@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/delete_at/
 command: delete_at
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/document-manipulation/delete_at.md
 related_commands:
     insert_at: insert_at/
     splice_at: splice_at/

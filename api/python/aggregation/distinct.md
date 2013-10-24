@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/distinct/
 command: distinct
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/python/aggregation/distinct.md
 related_commands:
     map: map/
     concat_map: concat_map/

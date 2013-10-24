@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/order_by/
 command: order_by
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/transformations/order_by.md
 related_commands:
     skip: skip
     limit: limit

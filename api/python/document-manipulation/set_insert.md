@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/set_insert/
 command: set_insert 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/document-manipulation/set_insert.md
 related_commands:
     union: union/
     difference: difference/

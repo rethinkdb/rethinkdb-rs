@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/index_drop/
 command: indexDrop
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/manipulating-tables/indexDrop.md
 io:
     -   - table
         - object

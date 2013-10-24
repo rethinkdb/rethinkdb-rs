@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/update/
 command: update
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/writing-data/update.md
 io:
     -   - table
         - object

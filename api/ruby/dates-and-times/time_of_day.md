@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/time_of_day/
 command: time_of_day
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/dates-and-times/time_of_day.md
 related_commands:
     now: now/
     time: time/

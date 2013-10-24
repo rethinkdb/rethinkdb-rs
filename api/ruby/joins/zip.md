@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/zip/
 command: zip 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/joins/zip.md
 related_commands:
     eq_join: eq_join/
     inner_join: inner_join/

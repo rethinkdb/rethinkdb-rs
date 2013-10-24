@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/distinct/
 command: distinct 
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/javascript/aggregation/distinct.md
 io:
     -   - sequence
         - value

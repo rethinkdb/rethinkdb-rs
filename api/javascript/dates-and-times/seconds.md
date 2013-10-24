@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/seconds/
 command: seconds 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/dates-and-times/seconds.md
 io:
     -   - time
         - number

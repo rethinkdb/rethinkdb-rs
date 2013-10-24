@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/replace/
 command: replace
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/writing-data/replace.md
 io:
     -   - table
         - object

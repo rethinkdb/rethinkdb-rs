@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/run/
 command: run
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/accessing-rql/run.md
 related_commands:
     connect: #connect
     repl: #repl

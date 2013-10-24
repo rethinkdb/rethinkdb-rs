@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/expr/
 command: expr 
-github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/ruby/control-structures/expr.md
 ---
 
 # Command syntax #

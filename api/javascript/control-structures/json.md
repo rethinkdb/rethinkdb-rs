@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/json/
 command: json 
-github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/javascript/control-structures/json.md
 io:
     -   - r
         - value

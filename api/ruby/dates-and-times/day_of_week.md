@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/day_of_week/
 command: day_of_week 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/dates-and-times/day_of_week.md
 related_commands:
     
 ---

@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/gt/
 command: '>'
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/math-and-logic/gt.md
 related_commands:
     '>=': ge/
     '<' : lt/

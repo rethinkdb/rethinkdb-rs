@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/sample/
 command: sample 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/transformations/sample.md
 ---
 
 # Command syntax #

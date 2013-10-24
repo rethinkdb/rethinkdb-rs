@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/gt/
 command: '>'
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/math-and-logic/gt.md
 related_commands:
     '>=': ge/
     '<': lt/

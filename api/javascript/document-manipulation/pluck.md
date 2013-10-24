@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/pluck/
 command: pluck
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/pluck.md
 io:
     -   - sequence
         - stream

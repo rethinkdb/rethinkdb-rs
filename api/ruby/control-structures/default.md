@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/default/
 command: default 
-github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/ruby/control-structures/default.md
 ---
 
 # Command syntax #

@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/filter/
 command: filter
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/selecting-data/filter.md
 io:
     -   - sequence
         - selection 

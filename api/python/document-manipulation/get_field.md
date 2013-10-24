@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/get_field/
 command: '[] (get_field)'
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/document-manipulation/get_field.md
 related_commands:
     row: row/
 ---

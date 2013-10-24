@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/match/
 command: match
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/string-manipulation/match.md
 ---
 
 # Command syntax #

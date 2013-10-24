@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/default/
 command: default 
-github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/javascript/control-structures/default.md
 io:
     -   - value
         - any

@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/insert_at/
 command: insert_at
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/document-manipulation/insert_at.md
 related_commands:
     splice_at: splice_at/
     delete_at: delete_at/

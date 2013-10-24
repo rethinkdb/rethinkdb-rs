@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/sub/
 command: '-'
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/math-and-logic/sub.md
 related_commands:
     '+': add/
     '*': mul/

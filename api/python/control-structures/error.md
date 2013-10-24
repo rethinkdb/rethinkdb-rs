@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/error/
 command: error 
-github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/python/control-structures/error.md
 ---
 
 # Command syntax #

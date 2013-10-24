@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/table_list/
 command: tableList
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/manipulating-tables/tableList.md
 io:
     -   - db
         - array

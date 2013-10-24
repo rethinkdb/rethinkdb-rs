@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/seconds/
 command: seconds 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/dates-and-times/seconds.md
 related_commands:
     now: now/
     time: time/

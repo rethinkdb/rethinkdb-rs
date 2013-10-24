@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/inner_join/
 command: inner_join 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/joins/inner_join.md
 related_commands:
     eq_join: eq_join/
     outer_join: outer_join/

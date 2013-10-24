@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/concat_map/
 command: concat_map 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/transformations/concat_map.md
 related_commands:
     map: map/
     reduce: reduce/

@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/index_create/
 command: index_create
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/manipulating-tables/index_create.md
 related_commands:
     index_drop: index_drop/
     index_list: index_list/

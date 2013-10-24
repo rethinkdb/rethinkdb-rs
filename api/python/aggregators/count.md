@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/count-aggregator/
 command: count
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/python/aggregation/count.md
 related_commands:
     group_by: group_by/
     sum: sum/

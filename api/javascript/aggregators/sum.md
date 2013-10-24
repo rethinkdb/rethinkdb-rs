@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/sum/
 command: sum 
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/javascript/aggregators/sum.md
 io:
     -   - r
         - null

@@ -4,7 +4,6 @@ language: JavaScript
 permalink: api/javascript/row/
 command: row
 rb: false
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/row.md
 io:
     -   - r
         - value

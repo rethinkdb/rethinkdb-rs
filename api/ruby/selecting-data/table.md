@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/table/
 command: table
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/selecting-data/table.md
 related_commands:
     filter: filter/ 
     get: get/

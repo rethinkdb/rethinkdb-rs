@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/eq_join/
 command: eqJoin
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/joins/eqJoin.md
 io:
     -   - sequence
         - stream

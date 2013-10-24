@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/reduce/
 command: reduce
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/python/aggregation/reduce.md
 related_commands:
     map: map/
     concat_map: concat_map/

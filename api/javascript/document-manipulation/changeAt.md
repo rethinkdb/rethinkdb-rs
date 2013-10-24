@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/change_at/
 command: changeAt 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/changeAt.md
 io:
     -   - array
         - array

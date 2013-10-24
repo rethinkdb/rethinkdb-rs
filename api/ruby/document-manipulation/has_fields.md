@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/has_fields/
 command: has_fields 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/document-manipulation/has_fields.md
 related_commands:
     '[] (get_field)': get_field/
     with_fields: with_fields/

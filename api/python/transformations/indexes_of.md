@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/indexes_of/
 command: indexes_of
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/transformations/indexes_of.md
 ---
 
 

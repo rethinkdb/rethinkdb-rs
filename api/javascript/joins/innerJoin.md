@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/inner_join/
 command: innerJoin
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/joins/innerJoin.md
 io:
     -   - sequence
         - stream

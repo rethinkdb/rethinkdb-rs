@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/slice/
 command: '[] (slice)'
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/transformations/slice.md
 related_commands:
     order_by: order_by/
     skip: skip/

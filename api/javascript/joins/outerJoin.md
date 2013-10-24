@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/outer_join/
 command: outerJoin
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/joins/outerJoin.md
 io:
     -   - sequence
         - stream

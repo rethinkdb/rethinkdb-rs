@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/db_create/
 command: db_create 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/manipulating-databases/db_create.md
 related_commands:
     db_drop: db_drop/
     db_list: db_list/

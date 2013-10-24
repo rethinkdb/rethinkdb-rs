@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/for_each/
 command: for_each 
-github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/ruby/control-structures/for_each.md
 ---
 
 # Command syntax #

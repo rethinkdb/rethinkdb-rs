@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/skip/
 command: skip 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/transformations/skip.md
 related_commands:
     order_by: order_by/
     limit: limit/

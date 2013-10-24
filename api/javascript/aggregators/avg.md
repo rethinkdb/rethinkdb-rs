@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/avg/
 command: avg
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/javascript/aggregators/avg.md
 io:
     -   - r
         - null

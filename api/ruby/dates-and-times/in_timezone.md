@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/in_timezone/
 command: in_timezone 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/dates-and-times/in_timezone.md
 related_commands:
     timezone: timezone/
     now: now/

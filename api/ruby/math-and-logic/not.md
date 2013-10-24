@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/not/
 command: not
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/math-and-logic/not.md
 related_commands:
     'eq': eq/
     'ne': ne/

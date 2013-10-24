@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/sample/
 command: sample 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/transformations/sample.md
 io:
     -   - sequence
         - selection

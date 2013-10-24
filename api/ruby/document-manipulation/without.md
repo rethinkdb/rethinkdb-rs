@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/without/
 command: without 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/document-manipulation/without.md
 related_commands:
     pluck: pluck/
     map: map/

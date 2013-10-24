@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/update/
 command: update
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/writing-data/update.md
 related_commands:
     insert: insert/
     replace: replace/

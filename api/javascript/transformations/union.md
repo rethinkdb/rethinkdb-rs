@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/union/
 command: union 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/transformations/union.md
 io:
     -   - sequence
         - array

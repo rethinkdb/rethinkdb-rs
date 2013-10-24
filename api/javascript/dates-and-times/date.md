@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/date/
 command: date 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/dates-and-times/date.md
 io:
     -   - time
         - time

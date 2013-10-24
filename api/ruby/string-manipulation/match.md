@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/match/
 command: match 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/string-manipulation/match.md
 ---
 
 # Command syntax #

@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/set_union/
 command: set_union 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/document-manipulation/set_union.md
 related_commands:
     union: union/
     difference: difference/

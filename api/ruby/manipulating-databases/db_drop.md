@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/db_drop/
 command: db_drop
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/accessing-rql/db_drop.md
 related_commands:
     db_create: db_create/
     db_list: db_list/

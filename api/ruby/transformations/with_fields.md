@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/with_fields/
 command: with_fields 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/transformations/with_fields.md
 related_commands:
     has_fields: has_fields/
     pluck: pluck/

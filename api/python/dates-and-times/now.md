@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/now/
 command: now 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/dates-and-times/now.md
 related_commands:
     time: time/
     epoch_time: epoch_time/

@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/hours/
 command: hours
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/dates-and-times/hours.md
 related_commands:
     now: now/
     time: time/

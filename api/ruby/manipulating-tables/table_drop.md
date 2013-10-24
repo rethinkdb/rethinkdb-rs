@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/table_drop/
 command: table_drop
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/manipulating-tables/table_drop.md
 related_commands:
     table_create: table_create
     table_list: table_list/

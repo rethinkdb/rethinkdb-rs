@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/ne/
 command: ne 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/math-and-logic/ne.md
 io:
     -   - value
         - bool

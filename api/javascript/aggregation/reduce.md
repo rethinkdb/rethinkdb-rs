@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/reduce/
 command: reduce 
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/javascript/aggregation/reduce.md
 io:
     -   - sequence
         - value

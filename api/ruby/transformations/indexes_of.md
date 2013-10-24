@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/indexes_of/
 command: indexes_of
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/transformations/indexes_of.md
 ---
 
 # Command syntax #

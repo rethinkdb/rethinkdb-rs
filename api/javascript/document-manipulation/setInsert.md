@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/set_insert/
 command: setInsert 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/setInsert.md
 io:
     -   - array
         - array

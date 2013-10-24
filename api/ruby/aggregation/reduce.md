@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/reduce/
 command: reduce 
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/ruby/aggregation/reduce.md
 related_commands:
     map: map/
     concat_map: concat_map/

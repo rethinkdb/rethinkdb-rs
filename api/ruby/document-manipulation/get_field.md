@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/get_field/
 command: '[] (get_field)'
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/document-manipulation/get_field.md
 related_commands:
     row: row/
 ---

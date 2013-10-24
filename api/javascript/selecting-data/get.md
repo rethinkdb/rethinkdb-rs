@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/get/
 command: get 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/selecting-data/get.md
 io:
     -   - table
         - singleSelection

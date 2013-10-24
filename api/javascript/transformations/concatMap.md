@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/concat_map/
 command: concatMap
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/transformations/concatMap.md
 io:
     -   - sequence
         - stream

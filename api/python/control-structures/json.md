@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/json/
 command: json
-github_doc: https://github.com/rethinkdb/docs/blob/docs/2-query-language/api/python/control-structures/json.md
 ---
 
 # Command syntax #

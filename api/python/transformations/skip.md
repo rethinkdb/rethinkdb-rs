@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/skip/
 command: skip 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/transformations/skip.md
 related_commands:
     order_by: order_by/
     limit: limit/

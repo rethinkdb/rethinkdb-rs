@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/table_create/
 command: table_create
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/manipulating-tables/table_create.md
 related_commands:
     table_drop: table_drop/
     table_list: table_list/

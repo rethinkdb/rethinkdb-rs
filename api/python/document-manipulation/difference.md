@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/difference/
 command: difference 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/document-manipulation/difference.md
 related_commands:
     union: union/
     set_insert: set_insert/

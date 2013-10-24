@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/grouped_map_reduce/
 command: groupedMapReduce 
-github_doc: https://github.com/rethinkdb/docs/blob/master/2-query-language/api/javascript/aggregation/groupedMapReduce.md
 io:
     -   - sequence
         - value

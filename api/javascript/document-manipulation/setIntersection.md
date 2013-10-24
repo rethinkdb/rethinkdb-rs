@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/set_intersection/
 command: setIntersection
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/document-manipulation/setIntersection.md
 io:
     -   - array
         - array

@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/day_of_year/
 command: dayOfYear 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/dates-and-times/dayOfYear.md
 io:
     -   - time
         - number

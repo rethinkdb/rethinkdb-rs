@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/pluck/
 command: pluck 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/document-manipulation/pluck.md
 related_commands:
     without: without/
     map: map/

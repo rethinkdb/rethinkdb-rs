@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/div/
 command: div
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/math-and-logic/div.md
 io:
     -   - number
         - number

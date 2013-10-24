@@ -3,7 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/append/
 command: append 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/python/document-manipulation/append.md
 related_commands:
     prepend: prepend/
     merge: merge/

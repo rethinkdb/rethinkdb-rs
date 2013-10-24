@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/splice_at/
 command: splice_at 
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/document-manipulation/splice_at.md
 related_commands:
     insert_at: insert_at/
     delete_at: delete_at/

@@ -5,7 +5,6 @@ permalink: api/javascript/each/
 command: each
 py: false
 rb: false
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/accessing-rql/each.md
 io:
     -   - cursor
         - undefined

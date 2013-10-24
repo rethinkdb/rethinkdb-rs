@@ -3,7 +3,6 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/set_intersection/
 command: set_intersection
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/ruby/document-manipulation/set_intersection.md
 related_commands:
     union: union/
     difference: difference/
