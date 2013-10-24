@@ -72,7 +72,7 @@ __infobox__: produces an info box -- the _info_ version of the infobox produces 
 ## Contribute ##
 
 While the RethinkDB team will do its best to provide the best documentation possible, 
-Fork this repository, add your changes and submit a pull request :)
+please fork this repository, add your changes and submit a pull request :)
 
 ## License ##
 
