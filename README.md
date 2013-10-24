@@ -33,8 +33,8 @@ related_commands:
 
 ### Multi-language docs ###
 
-When there is a documentation page that differs between languages (e.g. the guides and the cookbook), one Markdown 
-file is used per language. If, for example, a recipe is updated in the cookbook, make sure to update each version per-language.
+When there is a documentation page that differs between languages (e.g. the guides and the [Cookbook](http://rethinkdb.com/docs/cookbook/javascript/)), one Markdown 
+file is used per language. If, for example, a recipe is updated in the Cookbook, make sure to update each version per-language.
 
 ## Style guidelines ##
 We use [redcarpet](https://github.com/vmg/redcarpet) to process Markdown files.
