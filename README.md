@@ -1,6 +1,6 @@
 # RethinkDB docs #
 
-All the documentation available at [www.rethinkdb.com](http://www.rethinkdb.com).
+This repository contains all of the documentation available at [rethinkdb.com](http://www.rethinkdb.com).
 
 ## Architecture ##
 
