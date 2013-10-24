@@ -5,15 +5,14 @@ This repository contains all of the documentation available at [rethinkdb.com](h
 ## Architecture ##
 
 ### API ###
-All the API files are in `2-query-language/api`.
+All the API files are in `/api`.
 
-Each language has its own directory, which means that a change for a method should be
-done in three different files.
+Each language has its own directory, which means that ReQL command changes require updating three different files.
 
 The file `index.md` contains a short description of every command.
 
-The other files in this directory are dedicated to one other command.
-The yaml header has to contain:
+Each command has a dedicated [Markdown](http://whatismarkdown.com/) file for each language. A [YAML](http://yaml.org/)
+header is used in each file for our [Jekyll](http://jekyllrb.com/) build system, and has to contain:
 ```yaml
 ---
 # The layout of the document
@@ -24,12 +23,10 @@ language: JavaScript
 permalink: api/javascript/add_listener/
 # The name of the command (used in the title)
 command: addListener
-# This method is not defined in python (valid keys are js, py, rb)
-py: false
-# This method is not defined in python (valid keys are js, py, rb)
-rb: false
-# Link to edit this document
-github_doc: https://github.com/rethinkdb/docs/edit/master/2-query-language/api/javascript/accessing-rql/addListener.md
+# This method is not defined in a language, in this case, JavaScript -- (valid keys are js, py, rb) -- optional
+js: false
+# Defines the input and output of the command
+io: [...]
 # Set of related commands
 related_commands:
     - <name>: <url_from_parent>
@@ -37,46 +34,40 @@ related_commands:
 ---
 ```
 
+### Multi-language docs ###
 
-
-### Guide and cookbook ###
-There is one file per language, so if you want to update a recipe, make sure you do it
-for all the languages.
-
+When there is a documentation page that differs between languages (e.g. the guides and the cookbook), one Markdown 
+file is used per language. If, for example, a recipe is updated in the cookbook, make sure to update each version per-language.
 
 ## Style guidelines ##
-We use `redcarpet` to convert Markdown files.
+We use [redcarpet](https://github.com/vmg/redcarpet) to process Markdown files.
 
 
-### Markdown ###
-Use Markdown as much as you can. Use HTML code only if needed.
+### Markdown vs HTML ###
+Use Markdown as much as you can. Use HTML markup only if needed.
 
-
-### Special tags ###
-Define a FAQ section (like in the cookbook), and creates some links to jump to the relevant faq.
+### Custom Jekyll tags ###
+__faqsection__: defines a FAQ section (e.g. the [Cookbook](http://rethinkdb.com/docs/cookbook/javascript/)),
+and creates links to jump to the relevant entry.
 ```
 {% faqsection %} <body> {% endfaqsection %}
 ```
 
 
-Define an API section in the `index.md`.
+__apisection__: defines an API section as seen On the [API index](http://rethinkdb.com/api/javascript).
 ```
 {% apisection %} <body> {% endapisection %}
 ```
 
-Define the body of a command
+__apibody__: defines the method signature of a ReQL command
 ```
 {% apibody %} <body> {% endapibody %}
 ```
 
-
-
-The blue info box
+__infobox__: produces an info box -- the _info_ version of the infobox produces a blue box
 ```
 {% infobox info %} <content> {% endinfobox %}
 ```
-
-
 
 ## Contribute ##
 
