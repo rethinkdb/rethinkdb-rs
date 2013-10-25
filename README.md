@@ -3,6 +3,39 @@
 This repository contains all of the documentation available at [rethinkdb.com](http://www.rethinkdb.com). 
 We use [Jekyll](http://jekyllrb.com/) to build the site, so documentation is written in [Markdown](http://whatismarkdown.com/).
 
+Contributions are welcome, so fork the repository, submit a pull request, or [open an issue](https://github.com/rethinkdb/docs/issues) so we can improve the documentation.
+
+## Guidelines ##
+
+### YAML front-matter ###
+We use [Jekyll](http://jekyllrb.com/) to build a static site. Each file starts with a [YAML front-matter block](http://jekyllrb.com/docs/frontmatter/), which defines variables used by Jekyll in the build process. The required variables are:
+
+```
+---
+layout: documentation                 # The layout we are going to use
+title: Introduction to ReQL           # Title of the page
+active: docs                          # The active link in the navbar at the top of the page
+docs_active: introduction-to-reql     # The active link in the documentation index on the right
+permalink: docs/introduction-to-reql/ # URL of the page
+---
+```
+### Markdown parser ###
+
+The site use [Redcarpet](https://github.com/vmg/redcarpet) to parse the Markdown
+files, so make sure that you use the appropriate syntax. 
+See this [handy guide](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) to get started with Markdown.
+Use Markdown as much as you can. Use HTML markup only if needed.
+
+### Consistency for multi-version docs ###
+
+Some documentation pages have multiple versions for different languages, client drivers, platforms, etc.
+All updates should be reflected in each version of the page.
+
+For example, if you add a recipe to the [Cookbook](http://rethinkdb.com/docs/cookbook/javascript/), you will have to add it to the JavaScript, Python
+and Ruby versions of the recipe.
+If you aren't familiar with one of the languages, we'll be more than happy to
+help you add all the versions.
+
 ## Architecture ##
 
 ### API docs ###
@@ -31,17 +64,7 @@ related_commands:
 ---
 ```
 
-### Multi-language docs ###
 
-When there is a documentation page that differs between languages (e.g. the guides and the [Cookbook](http://rethinkdb.com/docs/cookbook/javascript/)), one Markdown 
-file is used per language. If, for example, a recipe is updated in the Cookbook, make sure to update each version per-language.
-
-## Style guidelines ##
-We use [redcarpet](https://github.com/vmg/redcarpet) to process Markdown files.
-
-
-### Markdown vs HTML ###
-Use Markdown as much as you can. Use HTML markup only if needed.
 
 ### Custom Jekyll tags ###
 __faqsection__: defines a FAQ section (e.g. the [Cookbook](http://rethinkdb.com/docs/cookbook/javascript/)),
@@ -68,8 +91,10 @@ __infobox__: produces an info box -- the _info_ version of the infobox produces 
 
 ## Contribute ##
 
-While the RethinkDB team will do its best to provide the best documentation possible, 
-please fork this repository, add your changes, and submit pull requests. :)
+While the RethinkDB team works hard to provide high quality documentation,
+you may encounter errors or missing information.
+
+Feel free to fork the repository, commit changes and open a pull request!
 
 ## License ##
 
