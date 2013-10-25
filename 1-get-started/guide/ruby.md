@@ -283,7 +283,7 @@ After processing this query, RethinkDB will add an additional post to
 Jean-Luc Picard's document.
 
 {% infobox info %}
-Browse the [API reference](/api/#rb) for many more array operations available in RethinkDB.
+Browse the [API reference](/api/ruby/) for many more array operations available in RethinkDB.
 {% endinfobox %}
 
 

@@ -150,7 +150,7 @@ If you aren't sure which schema to use, ask us on [Stack Overflow](http://stacko
 or [on IRC](/community). For more detailed information, take a look at the
 API documentation for the join commands.
 
-- [eq_join](/api/#py:joins-eqJoin)
-- [inner_join](/api/#py:joins-inner)
-- [outer_join](/api/#py:joins-outer)
-- [zip](/api/#py:joins-zip)
+- [eq_join](/api/python/eq_join/)
+- [inner_join](/api/python/inner_join/)
+- [outer_join](/api/python/outer_join/)
+- [zip](/api/python/zip/)

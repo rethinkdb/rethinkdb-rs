@@ -290,7 +290,7 @@ After processing this query, RethinkDB will add an additional post to
 Jean-Luc Picard's document.
 
 {% infobox info %}
-Browse the [API reference](/api/#py) for many more array operations available in RethinkDB.
+Browse the [API reference](/api/python/) for many more array operations available in RethinkDB.
 {% endinfobox %}
 
 # Delete documents #

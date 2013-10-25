@@ -108,11 +108,11 @@ Secondary indexes have the following limitations:
 
 Browse the API reference to learn more about secondary index commands:
 
-* [indexCreate](/api/#py:manipulating_tables-index_create)
-* [indexDrop](/api/#py:manipulating_tables-index_drop)
-* [indexList](/api/#py:manipulating_tables-index_list)
-* [getAll](/api/#py:selecting_data-get_all)
-* [between](/api/#py:selecting_data-between)
+* [indexCreate](/api/python/index_create/)
+* [indexDrop](/api/python/index_drop/)
+* [indexList](/api/python/index_list/)
+* [getAll](/api/python/get_all/)
+* [between](/api/python/between/)
 
 
 

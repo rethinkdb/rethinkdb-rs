@@ -19,7 +19,7 @@ two parts:
 RethinkDB implements an efficient, distributed map/reduce
 infrastructure. Many ReQL operations automatically compile to a
 map/reduce query. However, you can also use map/reduce directly via
-the [grouped\_map\_reduce](http://www.rethinkdb.com/api/#py:aggregation-groupedmapreduce)
+the [grouped\_map\_reduce](/api/python/grouped_map_reduce/)
 command.
 
 {% infobox info%}
@@ -162,6 +162,6 @@ r.db("blog").table("posts").count().run()
 ```
 
 # Read more #
-- [The API documentation](/api/#py:aggregation-groupedmapreduce) for the `grouped_map_reduce` command.
+- [The API documentation](/api/python/grouped_map_reduce/) for the `grouped_map_reduce` command.
 - [The Wikipedia article](http://en.wikipedia.org/wiki/MapReduce) on map/reduce.
 - The [Hadoop tutorial](http://hadoop.apache.org/docs/stable/mapred_tutorial.html) for map/reduce.

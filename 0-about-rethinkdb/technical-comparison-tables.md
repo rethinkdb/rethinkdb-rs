@@ -78,7 +78,7 @@ Accessing data in MongoDB can be done using:
 RethinkDB provides a [unified chainable query language](/api) supporting:
 
 *   CRUD operations
-*	aggregations (including map/reduce and the more advanced [grouped\_map\_reduce](/api/#py:aggregation-groupedmapreduce))
+*	aggregations (including map/reduce and the more advanced [grouped\_map\_reduce](/api/python/grouped_map_reduce/))
 *	JOINs
 *	full sub-queries
 
@@ -93,7 +93,7 @@ for executing MapReduce
 operations](http://docs.mongodb.org/manual/applications/map-reduce/#concurrency). 
 
 RethinkDB allows embedding [JavaScript
-expressions](http://www.rethinkdb.com/api/#js:control_structures-js) anywhere
+expressions](http://www.rethinkdb.com/api/javascript/js/) anywhere
 as part of the [query language](/api). RethinkDB uses a pool of out-of-process
 V8 execution engines for isolation.
 
