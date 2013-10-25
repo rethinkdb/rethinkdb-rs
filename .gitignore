@@ -1,8 +1,8 @@
-4-rethinkdb-in-practice/examples/bottle-ember-todo/index.html
-4-rethinkdb-in-practice/examples/flask-backbone-todo/index.html
-4-rethinkdb-in-practice/examples/node-socket-chat/index.html
-4-rethinkdb-in-practice/examples/sinatra-pastie/index.html
-4-rethinkdb-in-practice/examples/webpy-blog/index.html
+4-rethinkdb-in-practice/examples/bottle-ember-todo/
+4-rethinkdb-in-practice/examples/flask-backbone-todo/
+4-rethinkdb-in-practice/examples/node-socket-chat/
+4-rethinkdb-in-practice/examples/sinatra-pastie/
+4-rethinkdb-in-practice/examples/webpy-blog/
 *.swp
 .DS_Store
 *~
