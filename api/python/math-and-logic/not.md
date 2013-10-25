@@ -18,7 +18,7 @@ bool.not_() &rarr; bool
 # Description #
 Compute the logical inverse (not).
 
-__Example:__ This query returns `False` since not `True` is `False`.
+__Example:__ Not true is false.
 
 ```py
 (~r.expr(True)).run(conn)
