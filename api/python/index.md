@@ -1586,6 +1586,7 @@ __Example:__ Is 2 less than or equal to 2?
 
 {% apibody %}
 ~bool &rarr; bool
+bool.not_() &rarr; bool
 {% endapibody %}
 Compute the logical inverse (not).
 
@@ -1594,6 +1595,8 @@ __Example:__ Not true is false.
 ```py
 (~r.expr(True)).run(conn)
 ```
+
+[Read more about this command &rarr;](not/)
 
 
 {% endapisection %}
