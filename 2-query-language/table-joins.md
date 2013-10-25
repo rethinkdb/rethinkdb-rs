@@ -134,7 +134,7 @@ __Want to learn more about indexes?__: Read about [using secondary indexes in Re
 
 {% infobox info %}
 __Note__: you can also join tables on arbitrary fields without
-creating an index using the [inner_join](/api/#py:joins-inner)
+creating an index using the [inner_join](/api/python/inner_join/)
 command. However, arbitrary inner joins are less efficient then
 equijoins.
 {% endinfobox %}
@@ -311,7 +311,7 @@ r.table("employees").eq_join("company_id", r.table("companies"))
 To learn more, read about [data modeling in RethinkDB](/docs/data-modeling/). For detailed information, take
 a look at the API documentation for the join commands:
 
-- [eq_join](/api/#py:joins-eqJoin)
-- [inner_join](/api/#py:joins-inner)
-- [outer_join](/api/#py:joins-outer)
-- [zip](/api/#py:joins-zip)
+- [eq_join](/api/python/eq_join/)
+- [inner_join](/api/python/inner_join/)
+- [outer_join](/api/python/outer_join/)
+- [zip](/api/python/zip/)

@@ -309,7 +309,7 @@ __A few things to note about this query:__
   once. Remember to call `run` only once on the complex query when
   you're ready for it to be executed.
 * You can also perform this query using the
-  [inner_join](/api/#py:joins-inner) command.
+  [inner_join](/api/python/inner_join/) command.
 {% endinfobox %}
 
 ## Expressions ##
