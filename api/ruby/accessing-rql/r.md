@@ -13,9 +13,9 @@ r &rarr; r
 
 # Description #
 
-The toplevel RQL namespace.
+The top-level RQL namespace.
 
-__Example:__ Setup your top level namespace.
+__Example:__ Setup your top-level namespace.
 
 ```rb
 require 'rethinkdb'

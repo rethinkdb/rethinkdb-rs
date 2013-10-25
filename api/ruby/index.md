@@ -17,7 +17,7 @@ All RQL queries begin from the top level module.
 r &rarr; r
 {% endapibody %}
 
-The toplevel RQL namespace.
+The top-level RQL namespace.
 
 __Example:__ Setup your top level namespace.
 
