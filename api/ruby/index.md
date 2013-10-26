@@ -2003,16 +2003,19 @@ argument returns null, returns its second argument. (Alternatively, the second a
 may be a function which will be called with either the text of the non-existence error
 or null.)
 
-__Example:__ Stark Industries made the mistake of trusting an intern with data entry,
-and now a bunch of fields are missing from some of their documents. Iron Man takes a
-break from fighting Mandarin to write some safe analytics queries.
+__Example:__ Suppose we want to retrieve the titles and authors of the table `posts`.
+In case the author field is missing or `None`, we want to retrieve the string `Anonymous`.
 
 ```rb
-r.table('projects').map {|p|
-    p[:staff].default(0) + p[:management].default(0)
+r.table("posts").map{ |post|
+    {
+        :title => post["title"],
+        :author => post["author"].default("Anonymous")
+    }
 }.run(conn)
 ```
 
+[Read more about this command &rarr;](default/)
 
 ## [expr](expr/) ##
 
