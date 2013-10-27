@@ -136,7 +136,9 @@ Check if there are more elements in the cursor.
 
 __Example:__ Are there more elements in the cursor?
 
+```js
 var hasMore = cur.hasNext();
+```
 
 
 ## [each](each/) ##
@@ -239,7 +241,7 @@ Create a database. A RethinkDB database is a collection of tables, similar to
 relational databases.
 
 If successful, the operation returns an object: `{created: 1}`. If a database with the
-same name already exists the operation throws RqlRuntimeError.
+same name already exists the operation throws `RqlRuntimeError`.
 Note: that you can only use alphanumeric characters and underscores for the database name.
 
 __Example:__ Create a database named 'superheroes'.
@@ -258,7 +260,7 @@ r.dbDrop(dbName) &rarr; object
 Drop a database. The database, all its tables, and corresponding data will be deleted.
 
 If successful, the operation returns the object `{dropped: 1}`. If the specified database
-doesn't exist a RqlRuntimeError is thrown.
+doesn't exist a `RqlRuntimeError` is thrown.
 
 __Example:__ Drop a database named 'superheroes'.
 
