@@ -3,6 +3,8 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/hasNext/
 command: hasNext 
+rb: false
+py: false
 io:
     -   - cursor
         - undefined
