@@ -267,7 +267,7 @@ the one of the company.  You can do it by removing the field
 
 ```py
 r.table("employees").eq_join("company_id", r.table("companies"))
-    .without({"right": {"id": True}) # Remove the field right.id
+    .without({"right": {"id": True}}) # Remove the field right.id
     .zip()
     .run()
 ```
