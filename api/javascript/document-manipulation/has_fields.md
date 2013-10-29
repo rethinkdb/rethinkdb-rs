@@ -13,7 +13,7 @@ io:
     -   - object
         - boolean
 related_commands:
-    '()': get_field/
+    '() (getField)': get_field/
     withFields: with_fields/
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: api-command 
 language: JavaScript
-permalink: api/javascript/toArray/
+permalink: api/javascript/to_array/
 command: toArray 
 py: false
 rb: false
@@ -10,7 +10,7 @@ io:
         - undefined
 related_commands:
     next: next/
-    hasNext: hasNext/
+    hasNext: has_next/
     each: each/
     close (cursor): close-cursor/
 ---

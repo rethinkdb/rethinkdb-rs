@@ -10,8 +10,8 @@ io:
         - undefined
 related_commands:
     next: next/
-    hasNext: hasNext/
-    toArray: toArray/
+    hasNext: has_next/
+    toArray: to_array/
     each: each/
 ---
 

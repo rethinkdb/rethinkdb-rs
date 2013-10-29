@@ -411,7 +411,7 @@ FROM users
 (r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/map/">map</a>(lambda user:
         user["age"]
-    ).<a href="api/python/reduce/">reduce</a>(lambda left, right:
+    ).<a href="/api/python/reduce/">reduce</a>(lambda left, right:
         left+right
     )/r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/count/">count</a>())
 </pre>
@@ -431,7 +431,7 @@ SELECT MAX("age")
 r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/map/">map</a>(lambda user:
         user["age"]
-    ).<a href="api/python/reduce/">reduce</a>(lambda left, right:
+    ).<a href="/api/python/reduce/">reduce</a>(lambda left, right:
         r.<a href="/api/python/branch/">branch</a>(
             left&gt;right,
             left,
@@ -455,7 +455,7 @@ SELECT MIN("age")
 r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/map/">map</a>(lambda user:
         user["age"]
-    ).<a href="api/python/reduce/">reduce</a>(lambda left, right:
+    ).<a href="/api/python/reduce/">reduce</a>(lambda left, right:
         r.<a href="/api/python/branch/">branch</a>(
             left>right,
             right,
@@ -478,7 +478,7 @@ SELECT SUM("num_posts")
 r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/map/">map</a>(lambda user:
         user["num_posts"]
-    ).<a href="api/python/reduce/">reduce</a>(lambda left, right:
+    ).<a href="/api/python/reduce/">reduce</a>(lambda left, right:
         left+right
     )
 </pre>
@@ -509,8 +509,8 @@ SELECT *
         
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    (r.row["age"] <a href="api/python/ge/">>=</a> 18)
-    & (r.row["age"] <a href="api/python/le/">>=</a> 65)
+    (r.row["age"] <a href="/api/python/ge/">>=</a> 18)
+    & (r.row["age"] <a href="/api/python/le/">>=</a> 65)
 </pre>
 
 If you have a secondary index built on the field <code>age</code>. you can run a 
