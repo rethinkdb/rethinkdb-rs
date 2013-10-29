@@ -25,7 +25,7 @@ array.each(callback[, onFinishedCallback])
 # Description #
 
 Lazily iterate over the result set one element at a time. The second callback is optional
-and is called when the iteration stops (when there is no more row or when the callback
+and is called when the iteration stops (when there are no more rows or when the callback
 returns `false`).
 
 __Example:__ Let's process all the elements!
@@ -37,7 +37,7 @@ cursor.each(function(err, row) {
 });
 ```
 
-__Example:__ If we need to know when iteration is complete each also accepts a second `onFinished` callback.
+__Example:__ If we need to know when the iteration is complete, `each` also accepts a second `onFinished` callback.
 
 ```js
 cursor.each(function(err, row) {
@@ -51,7 +51,7 @@ cursor.each(function(err, row) {
 
 
 __Example:__ Iteration can be stopped prematurely by returning `false` from the callback.
-For instance, if you want to stop the iteration as soon as `row` is negative, you can write:
+For instance, if you want to stop the iteration as soon as `row` is negative.
 
 ```js
 cursor.each(function(err, row) {

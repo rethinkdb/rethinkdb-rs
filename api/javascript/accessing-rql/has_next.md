@@ -58,7 +58,7 @@ query.run( conn, function(err, cursor) {
 ```
 
 __Example:__ If you want to retrieve elements as long as a function (let's call it
-`checkRow`) returns `true`, you just need to break the recursion.
+`checkRow`) returns `true`, you just need to break out of the recursive function.
 
 
 ```js
@@ -93,8 +93,8 @@ query.run( conn, function(err, cursor) {
 })
 ```
 
-__Note:__ If you don't retrieve all the documents in a cursor and don't need it anymore,
-you should manually close it. If you don't, the driver will keep some results in memory
+__Note:__ If you don't retrieve all documents using a cursor, and don't need that cursor, you
+should manually close it. If you don't, the driver will keep some results in memory
 which will result in a memory leak.
 
 
