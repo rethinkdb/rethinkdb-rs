@@ -4,6 +4,7 @@ title: "ReQL command reference"
 active: api
 no_footer: true
 permalink: api/javascript/
+alias: api/
 language: JavaScript
 ---
 
