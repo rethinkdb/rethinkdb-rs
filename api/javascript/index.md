@@ -668,7 +668,7 @@ __Example:__ Get all active users aged 30.
 r.table('users').filter({active: true, profile: {age: 30}}).run(conn, callback)
 ```
 
-[Read more about this command &rarr;](between/)
+[Read more about this command &rarr;](filter/)
 
 
 {% endapisection %}
