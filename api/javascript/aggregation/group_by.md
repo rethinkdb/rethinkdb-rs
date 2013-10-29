@@ -7,7 +7,7 @@ io:
     -   - sequence
         - value
 related_commands:
-    count: count-aggregation/
+    count: count-aggregator/
     sum: sum/
     avg: avg/
 ---

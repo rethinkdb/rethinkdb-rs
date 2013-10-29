@@ -164,4 +164,4 @@ r.db("blog").table("posts").count().run()
 # Read more #
 - [The API documentation](/api/python/grouped_map_reduce/) for the `grouped_map_reduce` command.
 - [The Wikipedia article](http://en.wikipedia.org/wiki/MapReduce) on map/reduce.
-- The [Hadoop tutorial](http://hadoop.apache.org/docs/stable/mapred_tutorial.html) for map/reduce.
+- The [Hadoop tutorial](http://hadoop.apache.org/docs/r1.2.1/mapred_tutorial.html) for map/reduce.
