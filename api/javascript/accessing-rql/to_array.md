@@ -19,6 +19,7 @@ related_commands:
 
 {% apibody %}
 cursor.toArray(callback)
+array.toArray(callback)
 {% endapibody %}
 
 # Description #
@@ -29,9 +30,22 @@ __Example:__ For small result sets it may be more convenient to process them at 
 an array.
 
 ```js
-cur.toArray(function(err, results) {
-    for(var i in results) {
-        processRow(results[i]);
-    }
+cursor.toArray(function(err, results) {
+    if (err) throw err;
+    processResults(results);
 });
 ```
+
+The equivalent query with the `each` command would be:
+
+```js
+var results = []
+cursor.each(function(err, row) {
+    if (err) throw err;
+    results.push(row);
+}, function(err, results) {
+    if (err) throw err;
+    processResults(results);
+});
+```
+

@@ -105,7 +105,7 @@ __Example:__ Call run on the connection with a query to execute the query. The c
 will get a cursor from which results may be retrieved.
 
 ```js
-r.table('marvel').run(conn, function(err, cur) { cur.each(console.log); })
+r.table('marvel').run(conn, function(err, cursor) { cursor.each(console.log); })
 ```
 
 [Read more about this command &rarr;](run/)
@@ -114,6 +114,7 @@ r.table('marvel').run(conn, function(err, cur) { cur.each(console.log); })
 
 {% apibody %}
 cursor.next(callback)
+array.next(callback)
 {% endapibody %}
 
 Get the next element in the cursor.
@@ -121,15 +122,20 @@ Get the next element in the cursor.
 __Example:__ Let's grab the next element!
 
 ```js
-cur.next(function(err, row) {
-    return processRow(row);
+cursor.next(function(err, row) {
+    if (err) throw err;
+    processRow(row);
 });
 ```
+
+[Read more about this command &rarr;](next/)
+
 
 ## [hasNext](has_next/) ##
 
 {% apibody %}
 cursor.hasNext() &rarr; bool
+array.hasNext() &rarr; bool
 {% endapibody %}
 
 Check if there are more elements in the cursor.
@@ -137,14 +143,17 @@ Check if there are more elements in the cursor.
 __Example:__ Are there more elements in the cursor?
 
 ```js
-var hasMore = cur.hasNext();
+var hasMore = cursor.hasNext();
 ```
+
+[Read more about this command &rarr;](has_next/)
 
 
 ## [each](each/) ##
 
 {% apibody %}
 cursor.each(callback[, onFinishedCallback])
+array.each(callback[, onFinishedCallback])
 {% endapibody %}
 
 Lazily iterate over the result set one element at a time.
@@ -152,7 +161,8 @@ Lazily iterate over the result set one element at a time.
 __Example:__ Let's process all the elements!
 
 ```js
-cur.each(function(err, row) {
+cursor.each(function(err, row) {
+    if (err) throw err;
     processRow(row);
 });
 ```
@@ -163,6 +173,7 @@ cur.each(function(err, row) {
 
 {% apibody %}
 cursor.toArray(callback)
+array.toArray(callback)
 {% endapibody %}
 
 Retrieve all results and pass them as an array to the given callback.
@@ -171,12 +182,13 @@ __Example:__ For small result sets it may be more convenient to process them at 
 an array.
 
 ```js
-cur.toArray(function(err, results) {
-    for(var i in results) {
-        processRow(results[i]);
-    }
+cursor.toArray(function(err, results) {
+    if (err) throw err;
+    processResults(results);
 });
 ```
+
+[Read more about this command &rarr;](to_array/)
 
 
 ## [close (cursor)](close-cursor/) ##

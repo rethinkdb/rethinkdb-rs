@@ -19,16 +19,20 @@ related_commands:
 
 {% apibody %}
 cursor.each(callback[, onFinishedCallback])
+array.each(callback[, onFinishedCallback])
 {% endapibody %}
 
 # Description #
 
-Lazily iterate over the result set one element at a time.
+Lazily iterate over the result set one element at a time. The second callback is optional
+and is called when the iteration stops (when there is no more row or when the callback
+returns `false`).
 
 __Example:__ Let's process all the elements!
 
 ```js
-cur.each(function(err, row) {
+cursor.each(function(err, row) {
+    if (err) throw err;
     processRow(row);
 });
 ```
@@ -36,20 +40,31 @@ cur.each(function(err, row) {
 __Example:__ If we need to know when iteration is complete each also accepts a second `onFinished` callback.
 
 ```js
-cur.each(function(err, row) {
-    return processRow(row);
-}, function() {
-    doneProcessing();
-});
+cursor.each(function(err, row) {
+        if (err) throw err;
+        processRow(row);
+    }, function() {
+        doneProcessing();
+    }
+);
 ```
 
 
 __Example:__ Iteration can be stopped prematurely by returning `false` from the callback.
+For instance, if you want to stop the iteration as soon as `row` is negative, you can write:
 
-```
-cur.each(function(err, row) {
-    if (processRow(row) < 0)
-    return false;
+```js
+cursor.each(function(err, row) {
+    if (err) throw err;
+
+    if (row < 0) {
+        cursor.close()
+        return false;
+    }
+    else {
+        processRow(row)
+    }
 });
 ```
 
+__Note:__ You need to manually close the cursor if you prematurely stop the iteration.
