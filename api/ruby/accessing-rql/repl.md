@@ -3,6 +3,7 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/repl/
 command: repl 
+js: false
 related_commands:
     connect: connect/
     use: use/

@@ -4,7 +4,7 @@ language: Ruby
 permalink: api/ruby/group_by/
 command: group_by 
 related_commands:
-    count: count-aggregation/
+    count: count-aggregator/
     sum: sum
     avg: avg
 ---

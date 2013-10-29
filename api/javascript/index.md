@@ -159,7 +159,7 @@ cur.each(function(err, row) {
 
 [Read more about this command &rarr;](each/)
 
-## [toArray](toArray/) ##
+## [toArray](to_array/) ##
 
 {% apibody %}
 cursor.toArray(callback)
@@ -1931,7 +1931,7 @@ r.now().dayOfWeek().run(conn, callback)
 
 
 
-## [dateOfYear](date_of_year/) ##
+## [dayOfYear](day_of_year/) ##
 
 {% apibody %}
 time.day_of_year() &rarr; number
