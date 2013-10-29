@@ -9,9 +9,9 @@ io:
     -   - cursor
         - undefined
 related_commands:
-    hasNext: hasNext/
+    hasNext: has_next/
     each: each/
-    toArray: toArray/
+    toArray: to_array/
     close (cursor): close-cursor/
 ---
 

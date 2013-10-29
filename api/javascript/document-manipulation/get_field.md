@@ -2,7 +2,7 @@
 layout: api-command 
 language: JavaScript
 permalink: api/javascript/get_field/
-command: ()
+command: () (get_field)
 io:
     -   - sequence
         - sequence

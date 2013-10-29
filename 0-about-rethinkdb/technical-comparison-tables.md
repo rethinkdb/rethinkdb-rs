@@ -282,7 +282,7 @@ write locks at the database level. MongoDB uses threads for handling client
 connections.
 
 RethinkDB implements [block-level multiversion concurrency
-control](/docs/query-routing/)
+control](/docs/architecture/#how-does-rethinkdb-execute-queries)
 . In case multiple writes are performed on documents that are close together in
 the B-Tree, RethinkDB does take exclusive block-level locks, but reads can
 still proceed.

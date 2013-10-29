@@ -126,7 +126,7 @@ cur.next(function(err, row) {
 });
 ```
 
-## [hasNext](hasNext/) ##
+## [hasNext](has_next/) ##
 
 {% apibody %}
 cursor.hasNext() &rarr; bool
@@ -1333,7 +1333,7 @@ r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_re
 ```
 
 
-## [()](get_attr) ##
+## [()](get_field/) ##
 
 {% apibody %}
 sequence(attr) &rarr; sequence

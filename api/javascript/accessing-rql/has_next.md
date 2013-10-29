@@ -1,7 +1,7 @@
 ---
 layout: api-command 
 language: JavaScript
-permalink: api/javascript/hasNext/
+permalink: api/javascript/has_next/
 command: hasNext 
 rb: false
 py: false
@@ -11,7 +11,7 @@ io:
 related_commands:
     next: next/
     each: each/
-    toArray: toArray/
+    toArray: to_array/
     close (cursor): close-cursor/
 ---
 
