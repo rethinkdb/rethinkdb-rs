@@ -128,12 +128,3 @@ query.run( conn, function(err, cursor) {
 
 })
 ```
-
-__Note:__ If you don't retrieve all documents using a cursor, and don't need that cursor, you
-should manually close it. If you don't, the driver will keep some results in memory
-which will result in a memory leak.
-
-
-Note: You should not have to worry about getting a `maximum call stack exceed` error.
-The stack will be reset every time the cursor fetches data. In case of an array, 
-the driver will call `setImmediate` every 100 rows.

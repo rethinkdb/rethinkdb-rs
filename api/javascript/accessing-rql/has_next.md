@@ -92,9 +92,3 @@ query.run( conn, function(err, cursor) {
 
 })
 ```
-
-__Note:__ If you don't retrieve all documents using a cursor, and don't need that cursor, you
-should manually close it. If you don't, the driver will keep some results in memory
-which will result in a memory leak.
-
-
