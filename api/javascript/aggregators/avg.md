@@ -7,7 +7,7 @@ io:
     -   - r
         - null
 related_commands:
-    groupBy: groupBy/
+    groupBy: group_by/
     sum: sum/
     count: count/
 ---
