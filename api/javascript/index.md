@@ -1331,7 +1331,7 @@ r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_re
 ```
 
 
-## [()](get_attr) ##
+## [()](get_field/) ##
 
 {% apibody %}
 sequence(attr) &rarr; sequence
@@ -1431,7 +1431,7 @@ __Example:__ Bruce Banner hulks out.
 r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
 ```
 
-## [keys](keys) ##
+## [keys](keys/) ##
 
 {% apibody %}
 singleSelection.keys() &rarr; array
@@ -1929,7 +1929,7 @@ r.now().dayOfWeek().run(conn, callback)
 
 
 
-## [dateOfYear](date_of_year/) ##
+## [dateOfYear](day_of_year/) ##
 
 {% apibody %}
 time.day_of_year() &rarr; number
@@ -2012,7 +2012,7 @@ r.now().toISO8601()
 ```
 
 
-## [toEpochTime](to_epoch_time) ##
+## [toEpochTime](to_epoch_time/) ##
 
 {% apibody %}
 time.to_epoch_time() &rarr; number
