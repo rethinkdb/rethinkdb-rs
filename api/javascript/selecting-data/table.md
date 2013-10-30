@@ -6,6 +6,9 @@ command: table
 related_commands:
     filter: filter/
     get: get/
+io:
+    -   - db
+        - table
 ---
 
 # Command syntax #

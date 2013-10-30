@@ -3,6 +3,9 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/run/
 command: run
+io:
+    -   - any
+        - null
 ---
 
 # Command syntax #
