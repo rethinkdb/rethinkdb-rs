@@ -32,8 +32,8 @@ __Example:__ Are there more elements in the cursor?
 var hasMore = cursor.hasNext();
 ```
 
-__Example:__ You can retrieve all the elements of a cursor with the `next` and `hasNext`
-commands using recursion.
+__Example:__ Retrieve all the elements of a cursor using the `next` and `hasNext`
+commands and recursion.
 
 ```js
 query.run( conn, function(err, cursor) {

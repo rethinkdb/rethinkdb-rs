@@ -66,7 +66,7 @@ query.run( conn, function(err, cursor) {
 })
 ```
 
-__Example:__ A similar way to retrieve all the documents is to catch a `RqlDriverError`.
+__Example:__ Another equivalent way to retrieve all the documents is to catch a `RqlDriverError`.
 
 ```js
 query.run( conn, function(err, cursor) {
@@ -83,7 +83,7 @@ query.run( conn, function(err, cursor) {
                 throw err;
             }
         }
-        else if (cursor.hasNext()) {
+        else {
             processRow(result);
             cursor.next(fetchNext);
         }

@@ -51,7 +51,7 @@ cursor.each(function(err, row) {
 
 
 __Example:__ Iteration can be stopped prematurely by returning `false` from the callback.
-For instance, if you want to stop the iteration as soon as `row` is negative.
+For instance, if you want to stop the iteration as soon as `row` is negative:
 
 ```js
 cursor.each(function(err, row) {
