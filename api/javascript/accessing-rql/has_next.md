@@ -57,9 +57,10 @@ query.run( conn, function(err, cursor) {
 })
 ```
 
-__Example:__ If you want to retrieve elements as long as a function (let's call it
-`checkRow`) returns `true`, you just need to break out of the recursive function.
-
+__Example:__ With `next` (and `hasNext`), you do not have to retrieve all the results,
+in which case you just have to break out of the recursive function. For instance, if
+you want to retrieve elements as long as a function (let's call it `checkRow`) returns
+`true`:
 
 ```js
 query.run( conn, function(err, cursor) {
