@@ -49,7 +49,7 @@ r.table('users').filter(r.row['magazines'] > 5).run(conn)
 __Example:__ Select all documents where the 'abilities' embedded document has an
 attribute called 'super-strength'.
 
-```
+```py
 r.table('marvel').filter(
     lambda hero: hero['abilities'].has_fields('super-strength')
 ).run(conn)
