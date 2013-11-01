@@ -549,23 +549,29 @@ r.table('marvel').between(10, 20).run(conn)
 ## [filter](filter/) ##
 
 {% apibody %}
-sequence.filter(predicate) &rarr; selection
-stream.filter(predicate) &rarr; stream
-array.filter(predicate) &rarr; array
+sequence.filter(predicate[, {:default => false}]) &rarr; selection
+stream.filter(predicate[, {:default => false}]) &rarr; stream
+array.filter(predicate[, {:default => false}]) &rarr; array
 {% endapibody %}
+
 
 Get all the documents for which the given predicate is true.
 
-filter can be called on a sequence, selection, or a field containing an array of
+`filter` can be called on a sequence, selection, or a field containing an array of
 elements. The return type is the same as the type on which the function was called on.
-The body of every filter is wrapped in an implicit `.default(false)`, and the default
-value can be changed by passing the optional argument `default`. Setting this optional
-argument to `r.error()` will cause any non-existence errors to abort the filter.
 
-__Example:__ Get all active users aged 30.
+The body of every filter is wrapped in an implicit `.default(false)`, which means that
+if a non-existence errors is thrown (when you try to access a field that does not exist
+in a document), RethinkDB will just ignore the document.
+The `default` value can be changed by passing the symbol `default`.
+Setting this optional argument to `r.error()` will cause any non-existence errors to
+return a `RqlRuntimeError`.
+
+
+__Example:__ Get all the users that are 30 years old.
 
 ```rb
-r.table('users').filter('active' => true, 'profile' => {'age' => 30}).run(conn)
+r.table('users').filter({:age => 30}).run(conn)
 ```
 
 [Read more about this command &rarr;](filter/)
