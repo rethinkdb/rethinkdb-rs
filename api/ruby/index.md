@@ -549,9 +549,9 @@ r.table('marvel').between(10, 20).run(conn)
 ## [filter](filter/) ##
 
 {% apibody %}
-sequence.filter(predicate[, {:default => false}]) &rarr; selection
-stream.filter(predicate[, {:default => false}]) &rarr; stream
-array.filter(predicate[, {:default => false}]) &rarr; array
+sequence.filter(predicate[, :default => false]) &rarr; selection
+stream.filter(predicate[, :default => false]) &rarr; stream
+array.filter(predicate[, :default => false]) &rarr; array
 {% endapibody %}
 
 

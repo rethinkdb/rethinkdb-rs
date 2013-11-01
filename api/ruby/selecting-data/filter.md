@@ -13,9 +13,10 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.filter(predicate) &rarr; selection
-stream.filter(predicate) &rarr; stream
-array.filter(predicate) &rarr; array
+sequence.filter(predicate[, :default => false]) &rarr; selection
+stream.filter(predicate[, :default => false]) &rarr; stream
+array.filter(predicate[, :default => false]) &rarr; array
+
 {% endapibody %}
 
 # Description #
