@@ -111,7 +111,7 @@ def add_io_field(file_name, result):
 
 def browse_files(base, result):
     subdirlist = []
-    for item in os.listdir(base):
+    for item in sorted(os.listdir(base)):
         if item[0] != '.' and item not in IGNORED_FILES:
             full_path = os.path.join(base, item)
             if os.path.isfile(full_path):
