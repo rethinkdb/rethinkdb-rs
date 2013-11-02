@@ -673,7 +673,7 @@ __Example:__ Get all the users that are 30 years old.
 r.table('users').filter({age: 30}).run(conn, callback)
 ```
 
-[Read more about this command &rarr;](between/)
+[Read more about this command &rarr;](filter/)
 
 {% endapisection %}
 
