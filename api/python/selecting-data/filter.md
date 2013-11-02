@@ -186,9 +186,9 @@ r.table("users").filter( lambda user:
 
 ```py
 r.table("users").filter( lambda user:
-    user["name"] == r.literal({
+    user["name"] == {
         "first": "William",
         "last": "Adama"
-    })
+    }
 ).run(conn)
 ```

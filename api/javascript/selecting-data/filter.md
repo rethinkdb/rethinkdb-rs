@@ -193,9 +193,9 @@ r.table("users").filter( function(user) {
 
 ```js
 r.table("users").filter( function(user) {
-    return user("name").eq( r.literal({
+    return user("name").eq({
         first: "William",
         last: "Adama"
-    }))
+    })
 }).run(conn, callback)
 ```

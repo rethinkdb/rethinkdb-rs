@@ -139,7 +139,7 @@ Suppose we have a table `users` containing documents with the following schema.
 
 ```rb
 {
-    "id": String
+    :id => String
     :name => {
         :first => String,
         :middle => String,
@@ -187,9 +187,9 @@ r.table("users").filter{ |user|
 
 ```rb
 r.table("users").filter{ |user|
-    user["name"].eq(r.literal({
+    user["name"].eq({
         :first => "William",
         :last => "Adama"
-    }))
+    })
 }.run(conn)
 ```
