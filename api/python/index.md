@@ -40,7 +40,6 @@ If the connection cannot be established, a `RqlDriverError` exception will be th
 __Example:__ Opens a connection using the default host and port but specifying the default database.
 
 
-
 ```py
 conn = r.connect(db='heroes')
 ```

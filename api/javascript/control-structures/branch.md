@@ -4,7 +4,7 @@ language: JavaScript
 permalink: api/javascript/branch/
 command: branch 
 io:
-    -   - any
+    -   - r
         - any
 related_commands:
     do: do/

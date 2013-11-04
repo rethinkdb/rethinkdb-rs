@@ -606,7 +606,7 @@ r.table('marvel').get('superman').run(conn, callback)
 ```
 
 
-## [getAll](get_all) ##
+## [getAll](get_all/) ##
 
 {% apibody %}
 table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
@@ -1377,7 +1377,7 @@ r.table('marvel').hasFields('spouse')
 [Read more about this command &rarr;](has_fields/)
 
 
-## [insertAt](insert_at) ##
+## [insertAt](insert_at/) ##
 
 {% apibody %}
 array.insertAt(index, value) &rarr; array
@@ -1392,7 +1392,7 @@ r.expr(["Iron Man", "Spider-Man"]).insertAt(1, "Hulk").run(conn, callback)
 ```
 
 
-## [spliceAt](splice_at) ##
+## [spliceAt](splice_at/) ##
 
 {% apibody %}
 array.spliceAt(index, array) &rarr; array
@@ -1437,7 +1437,7 @@ __Example:__ Bruce Banner hulks out.
 r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
 ```
 
-## [keys](keys) ##
+## [keys](keys/) ##
 
 {% apibody %}
 singleSelection.keys() &rarr; array
@@ -2018,7 +2018,7 @@ r.now().toISO8601()
 ```
 
 
-## [toEpochTime](to_epoch_time) ##
+## [toEpochTime](to_epoch_time/) ##
 
 {% apibody %}
 time.to_epoch_time() &rarr; number
