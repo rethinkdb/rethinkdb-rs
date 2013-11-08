@@ -33,6 +33,10 @@ alias: docs/guides/drivers/
         <img src="/assets/images/docs/driver-languages/csharp.png" />
         <p class="name">C# / .NET</p>
     </a>
+    <a class="mini icon-box driver-language" href="https://github.com/bitemyapp/revise">
+        <img src="/assets/images/docs/driver-languages/clojure.png" />
+        <p class="name smaller-font">Clojure</p>
+    </a>
     <a class="mini icon-box driver-language" href="https://github.com/orthecreedence/cl-rethinkdb">
         <img src="/assets/images/docs/driver-languages/commonlisp.png" />
         <p class="name smaller-font">Common Lisp</p>
@@ -88,6 +92,7 @@ another language, or join one of the existing projects.
 __Thanks to all our amazing driver contributors!__
 
 - The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C# / .NET): [https://github.com/mfenniak/rethinkdb-net](https://github.com/mfenniak/rethinkdb-net)
+- [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): [https://github.com/bitemyapp/revise](https://github.com/bitemyapp/revise)
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
 - [@christopherhesse](https://github.com/christopherhesse) (Go): [https://github.com/christopherhesse/rethinkgo](https://github.com/christopherhesse/rethinkgo)
 - [@danielmewes](https://github.com/danielmewes) (PHP): [https://github.com/danielmewes/php-rql](https://github.com/danielmewes/php-rql)
