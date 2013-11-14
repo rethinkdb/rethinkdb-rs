@@ -338,6 +338,17 @@ r.table("users").filter( function(user) {
 }).run( conn, callback)
 ```
 
+## Case insensitive filter ##
+
+Retrieve all the users whose name is "William" (case insensitive).
+
+```js
+// Will return william, William, WILLIAM, wiLLiam etc.
+r.table("users").filter( function(user) {
+    return user("name").match("(?i)^william$")
+}).run( conn, callback)
+```
+
 
 {% endfaqsection %}
 
