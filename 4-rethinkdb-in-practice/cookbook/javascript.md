@@ -340,7 +340,7 @@ r.table("users").filter( function(user) {
 
 ## Case insensitive filter ##
 
-Retrieve all the users whose name is "William" (case insensitive).
+Retrieve all users whose name is "William" (case insensitive).
 
 ```js
 // Will return william, William, WILLIAM, wiLLiam etc.

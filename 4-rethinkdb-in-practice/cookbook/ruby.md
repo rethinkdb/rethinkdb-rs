@@ -291,7 +291,7 @@ r.table("users").filter{ |user|
 
 ## Case insensitive filter ##
 
-Retrieve all the users whose name is "William" (case insensitive).
+Retrieve all users whose name is "William" (case insensitive).
 
 ```rb
 # Will return william, William, WILLIAM, wiLLiam etc.
