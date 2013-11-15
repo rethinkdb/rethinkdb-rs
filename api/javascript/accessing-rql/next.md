@@ -92,10 +92,9 @@ query.run( conn, function(err, cursor) {
 })
 ```
 
-
-__Example:__ With `next`, you do not have to retrieve all the results, in which case you
-just have to break out of the recursive function. For instance, if you want to retrieve
-elements as long as a function (let's call it `checkRow`) returns `true`:
+__Example:__ With next (and hasNext), not all results have to be retrieved from a cursor
+-- to stop retrieving results, break out of the recursive function. For example, this
+recursive function will stop retrieving results when the `checkRow` function returns true:
 
 ```js
 query.run( conn, function(err, cursor) {
