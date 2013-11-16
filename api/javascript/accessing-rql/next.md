@@ -92,7 +92,7 @@ query.run( conn, function(err, cursor) {
 })
 ```
 
-__Example:__ With next (and hasNext), not all results have to be retrieved from a cursor
+__Example:__ With `next`, not all results have to be retrieved from a cursor
 -- to stop retrieving results, break out of the recursive function. For example, this
 recursive function will stop retrieving results when the `checkRow` function returns true:
 

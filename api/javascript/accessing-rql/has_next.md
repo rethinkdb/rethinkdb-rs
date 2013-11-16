@@ -56,39 +56,3 @@ query.run( conn, function(err, cursor) {
     // else { conn.close() }
 })
 ```
-
-__Example:__ With next (and hasNext), not all results have to be retrieved from a cursor
--- to stop retrieving results, break out of the recursive function. For example, this
-recursive function will stop retrieving results when the `checkRow` function returns true:
-
-```js
-query.run( conn, function(err, cursor) {
-    if (err) throw err;
-
-    var fetchNext = function(err, result) {
-        if (err) throw err;
-
-        processRow(result);
-
-        if (checkRow(result)) {
-            if (cursor.hasNext()) {
-                cursor.next(fetchNext);
-            }
-            // If you use one connection per query, the connection should be closed.
-            // else { conn.close() }
-        }
-        else {
-            cursor.close()
-            // If you use one connection per query, the connection should be closed here.
-            // else { conn.close() }
-        }
-    }
-
-    if (cursor.hasNext()) {
-        cursor.next(fetchNext);
-    }
-    // If you use one connection per query, the connection should be closed.
-    // else { conn.close() }
-
-})
-```
