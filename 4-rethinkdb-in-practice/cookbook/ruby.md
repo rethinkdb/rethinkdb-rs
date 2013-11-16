@@ -289,6 +289,17 @@ r.table("users").filter{ |user|
 }.run(conn)
 ```
 
+## Case insensitive filter ##
+
+Retrieve all users whose name is "William" (case insensitive).
+
+```rb
+# Will return william, William, WILLIAM, wiLLiam etc.
+r.table("users").filter{ |user|
+    user["lastName"].match("(?i)^william$")
+}.run(conn)
+
+```
 
 
 {% endfaqsection %}
