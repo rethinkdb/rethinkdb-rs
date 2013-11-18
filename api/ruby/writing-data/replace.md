@@ -39,7 +39,7 @@ new value was the same as the old value
 - `inserted`: the number of new documents added. You can have new documents inserted if
 you do a point-replace on a key that isn't in the table or you do a replace on a
 selection and one of the documents you are replacing has been deleted
-- `deleted`: the number of deleted documents when doing a replace with null
+- `deleted`: the number of deleted documents when doing a replace with `nil` 
 - `errors`: the number of errors encountered while performing the replace; if errors
 occurred performing the replace, first_error contains the text of the first error encountered
 - `skipped`: 0 for a replace operation
