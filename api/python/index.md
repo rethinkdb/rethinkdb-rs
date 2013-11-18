@@ -671,7 +671,7 @@ Transform each element of the sequence by applying the given mapping function.
 __Example:__ Construct a sequence of hero power ratings.
 
 ```py
-r.table('marvel').map( lambda hero:
+r.table('marvel').map(lambda hero:
     hero['combatPower'] + hero['compassionPower'] * 2
 ).run(conn)
 ```
@@ -1700,7 +1700,7 @@ Return the timezone of the time object.
 __Example:__ Return all the users in the "-07:00" timezone.
 
 ```py
-r.table("users").filter( lambda user:
+r.table("users").filter(lambda user:
     user["subscriptionDate"].timezone() == "-07:00"
 )
 ```
@@ -2031,7 +2031,7 @@ __Exmple:__ Suppose we want to retrieve the titles and authors of the table `pos
 In case the author field is missing or `None`, we want to retrieve the string `Anonymous`.
 
 ```py
-r.table("posts").map( lambda post:
+r.table("posts").map(lambda post:
     {
         "title": post["title"],
         "author": post["author"].default("Anonymous")
