@@ -1999,12 +1999,14 @@ sequence.default(default_value) &rarr; any
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
 error related to the absence of a value is thrown in the process, or if its first
-argument returns null, returns its second argument. (Alternatively, the second argument
+argument returns `nil`, returns its second argument. (Alternatively, the second argument
 may be a function which will be called with either the text of the non-existence error
-or null.)
+or `nil`.)
 
 __Example:__ Suppose we want to retrieve the titles and authors of the table `posts`.
-In case the author field is missing or `None`, we want to retrieve the string `Anonymous`.
+In the case where the author field is missing or `nil`, we want to retrieve the string
+`Anonymous`.
+
 
 ```rb
 r.table("posts").map{ |post|
