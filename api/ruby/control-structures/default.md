@@ -84,8 +84,7 @@ the value `false` by passing an option in filter, so the previous query can also
 written like this.
 
 ```rb
-r.table("users").filter{ |user|
+r.table('users').filter(:default => true) {|user|
     (user[:age] < 18)
-, :default => true}.run(conn)
+}.run(conn)
 ```
-
