@@ -6,7 +6,7 @@ command: order_by
 related_commands:
     skip: skip/
     limit: limit/
-    []: slice/
+    '[]': slice/
 ---
 
 # Command syntax #
