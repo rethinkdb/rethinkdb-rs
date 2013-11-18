@@ -16,18 +16,19 @@ sequence.default(default_value) &rarr; any
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
 error related to the absence of a value is thrown in the process, or if its first
-argument returns null, returns its second argument. (Alternatively, the second argument
+argument returns `nil`, returns its second argument. (Alternatively, the second argument
 may be a function which will be called with either the text of the non-existence error
-or null.)
+or `nil`.)
 
 __Example:__ Suppose we want to retrieve the titles and authors of the table `posts`.
-In case the author field is missing or `None`, we want to retrieve the string `Anonymous`.
+In the case where the author field is missing or `nil`, we want to retrieve the string
+`Anonymous`.
 
 ```rb
 r.table("posts").map{ |post|
     {
-        :title => post["title"],
-        :author => post["author"].default("Anonymous")
+        :title => post[:title],
+        :author => post[:author].default("Anonymous")
     }
 }.run(conn)
 ```
@@ -37,13 +38,13 @@ We can rewrite the previous query with `r.branch` too.
 ```rb
 r.table("posts").map{ |post|
     r.branch(
-        post.has_fields("author") & (post["author"].ne(nil)),
+        post.has_fields("author"),
         {
-            :title => post["title"],
-            :author => post["author"]
+            :title => post[:title],
+            :author => post[:author]
         },
         {
-            :title => post["title"],
+            :title => post[:title],
             :author => "Anonymous" 
         }
     )
@@ -53,20 +54,20 @@ r.table("posts").map{ |post|
 
 __Example:__ The `default` command can be useful to filter documents too. Suppose
 we want to retrieve all our users who are not grown-ups or whose age is unknown
-(i.e the field `age` is missing or equals to `nil`). We can do it with this query:
+(i.e the field `age` is missing or equals `nil`). We can do it with this query:
 
 ```rb
 r.table("users").filter{ |user|
-    (user["age"] < 18).default(true)
+    (user[:age] < 18).default(true)
 }.run(conn)
 ```
 
-One more way to write the previous query is to set the age to be `-1` in case the
+One more way to write the previous query is to set the age to be `-1` when the
 field is missing.
 
 ```rb
 r.table("users").filter{ |user|
-    user["age"].default(-1) < 18
+    user[:age].default(-1) < 18
 }.run(conn)
 ```
 
@@ -74,7 +75,7 @@ One last way to do the same query is to use `has_fields`.
 
 ```rb
 r.table("users").filter{ |user|
-    user.has_fields("age").not() | (user["age"].eq(nil)) | (user["age"] < 18)
+    user.has_fields("age").not() | (user[:age] < 18)
 }.run(conn)
 ```
 
@@ -84,7 +85,7 @@ written like this.
 
 ```rb
 r.table("users").filter{ |user|
-    (user["age"] < 18)
+    (user[:age] < 18)
 , :default => true}.run(conn)
 ```
 

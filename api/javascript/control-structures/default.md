@@ -21,13 +21,14 @@ sequence.default(default_value) &rarr; any
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
 error related to the absence of a value is thrown in the process, or if its first
-argument returns null, returns its second argument. (Alternatively, the second argument
+argument returns `null`, returns its second argument. (Alternatively, the second argument
 may be a function which will be called with either the text of the non-existence error
-or null.)
+or `null`.)
 
 
 __Exmple:__ Suppose we want to retrieve the titles and authors of the table `posts`.
-In case the author field is missing or `null`, we want to retrieve the string `Anonymous`.
+In the case where the author field is missing or `null`, we want to retrieve the string
+`Anonymous`.
 
 ```js
 r.table("posts").map( function(post) {
@@ -43,7 +44,7 @@ We can rewrite the previous query with `r.branch` too.
 ```js
 r.table("posts").map( function(post) {
     return r.branch(
-        post.hasFields("author").and(post("author").ne(null)),
+        post.hasFields("author"),
         {
             title: post("title"),
             author: post("author")
@@ -59,7 +60,7 @@ r.table("posts").map( function(post) {
 
 __Example:__ The `default` command can be useful to filter documents too. Suppose
 we want to retrieve all our users who are not grown-ups or whose age is unknown
-(i.e the field `age` is missing or equals to `null`). We can do it with this query:
+(i.e the field `age` is missing or equals `null`). We can do it with this query:
 
 ```js
 r.table("users").filter( function(user) {
@@ -67,7 +68,7 @@ r.table("users").filter( function(user) {
 }).run(conn, callback)
 ```
 
-One more way to write the previous query is to set the age to be `-1` in case the
+One more way to write the previous query is to set the age to be `-1` when the
 field is missing.
 
 ```js
@@ -80,7 +81,7 @@ Another way to do the same query is to use `hasFields`.
 
 ```js
 r.table("users").filter( function(user) {
-    return user.hasFields("age").not().or(user("age").eq(null)).or(user("age").lt(18))
+    return user.hasFields("age").not().or(user("age").lt(18))
 }).run(conn, callback)
 ```
 
