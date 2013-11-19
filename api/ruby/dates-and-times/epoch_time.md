@@ -17,7 +17,8 @@ r.epoch_time(epoch_time) &rarr; time
 
 # Description #
 
-Create a time object based on seconds since epoch.
+Create a time object based on seconds since epoch. The first argument is a float and
+will be rounded to three decimal places (millisecond-precision).
 
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 
