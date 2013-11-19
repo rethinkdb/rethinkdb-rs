@@ -30,19 +30,30 @@ var r = require('rethinkdb');
 ## [connect](connect/) ##
 
 {% apibody %}
-r.connect(opts, callback)
+r.connect(options, callback)
+r.connect(host, callback)
 {% endapibody %}
 
-Create a new connection to the database server.
+Create a new connection to the database server. The available options are:
 
-If the connection cannot be established, a `RqlDriverError` exception will be thrown
+- `host`: host of the RethinkDB instance. The default value is `localhost`.
+- `port`: the driver port, by default `28015`.
+- `db`: the database used if not explicitly specified in a query, by default `test`.
+- `authKey`: the authentification key, by default the empty string.
+- `timeout`: timeout period for the connection to be opened, by default `20` (seconds).
 
 __Example:__ Opens a new connection to the database.
 
 ```js
-r.connect({host:'localhost', port:28015, db:'marvel', authKey:'hunter2'},
-   function(err, conn) { ... })
+r.connect({
+    host: "localhost",
+    port: 28015,
+    db: "marvel",
+    authKey: "level8password"
+}, function(err, conn) { ... })
 ```
+
+[Read more about this command &rarr;](connect/)
 
 
 ## [close](close/) ##
