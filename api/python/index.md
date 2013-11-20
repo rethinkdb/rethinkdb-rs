@@ -128,6 +128,23 @@ for doc in r.table('marvel').run(conn):
 
 [Read more about this command &rarr;](run/)
 
+## [noreply_wait](noreply_wait/) ##
+
+{% apibody %}
+conn.noreply_wait()
+{% endapibody %}
+
+Wait for outstanding no-reply requests on the given connection to finish. If you have
+previously run queries with the `noreply` flag set, it guarantees that those queries
+have been processed by the server.
+
+__Example:__ We have previously run queries with the `noreply` argument set. Now
+wait until the server has executed them.
+
+```py
+conn.noreply_wait()
+```
+
 
 {% endapisection %}
 

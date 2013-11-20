@@ -127,6 +127,24 @@ r.table('marvel').run(conn).each{|x| p x}
 
 [Read more about this command &rarr;](run/)
 
+## [noreply_wait](noreply_wait/) ##
+
+{% apibody %}
+conn.noreply_wait
+{% endapibody %}
+
+Wait for outstanding no-reply requests on the given connection to finish. If you have
+previously run queries with the `noreply` flag set, it guarantees that those queries
+have been processed by the server.
+
+__Example:__ We have previously run queries with the `noreply` argument set. Now
+wait until the server has executed them.
+
+```rb
+conn.noreply_wait
+```
+
+
 {% endapisection %}
 
 {% apisection Manipulating databases%}
@@ -457,7 +475,7 @@ r.table('marvel').get('superman').delete.run(conn)
 ## [sync](sync/) ##
 
 {% apibody %}
-table.sync()
+table.sync
     &rarr; object
 {% endapibody %}
 
@@ -472,7 +490,7 @@ __Example:__ After having updated multiple heroes with soft durability, we now w
 until these changes have been persisted.
 
 ```rb
-r.table('marvel').sync().run(conn)
+r.table('marvel').sync.run(conn)
 ```
 
 {% endapisection %}
