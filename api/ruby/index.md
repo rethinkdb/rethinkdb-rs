@@ -46,7 +46,7 @@ __Example:__ Opens a new connection to the database.
 
 ```rb
 conn = r.connect(:host => 'localhost', :port => 28015, :db => 'marvel',
-    :auth_key => 'level8password')
+    :auth_key => 'hunter2')
 ```
 
 [Read more about this command &rarr;](connect/)

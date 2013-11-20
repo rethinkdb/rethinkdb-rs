@@ -35,7 +35,7 @@ If the connection cannot be established, a `RqlDriverError` exception will be th
 __Example:__ Opens a new connection to the database.
 
 ```py
-conn = r.connect(host="localhost", port="28015", db="marvel", auth_key="level8password")
+conn = r.connect(host="localhost", port="28015", db="marvel", auth_key="hunter2")
 ```
 
 __Example:__ Opens a new connection to the database by just specifying the host.

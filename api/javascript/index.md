@@ -49,7 +49,7 @@ r.connect({
     host: "localhost",
     port: 28015,
     db: "marvel",
-    authKey: "level8password"
+    authKey: "hunter2"
 }, function(err, conn) { ... })
 ```
 
