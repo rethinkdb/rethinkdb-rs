@@ -22,6 +22,11 @@ Run a query on a connection.
 __Example:__ Call run on the connection with a query to execute the query. The callback
 will get a cursor from which results may be retrieved.
 
+```js
+r.table('marvel').run(conn, function(err, cursor) { cursor.each(console.log); })
+```
+
+
 
 __Example:__ If you are OK with potentially out of date data from all the tables involved
 in this query and want potentially faster reads, pass a flag allowing out of date data
