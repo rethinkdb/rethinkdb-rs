@@ -8,9 +8,8 @@ alias: api/
 language: JavaScript
 ---
 
-
-{% apisection Accessing RQL%}
-All RQL queries begin from the top level module.
+{% apisection Accessing ReQL%}
+All ReQL queries begin from the top level module.
 
 ## [r](r/) ##
 
@@ -18,14 +17,13 @@ All RQL queries begin from the top level module.
 r &rarr; r
 {% endapibody %}
 
-The top-level RQL namespace.
+The top-level ReQL namespace.
 
-__Example:__ Setup your top level namespace.
+__Example:__ Set up your top level namespace.
 
 ```js
 var r = require('rethinkdb');
 ```
-
 
 ## [connect](connect/) ##
 
@@ -33,49 +31,71 @@ var r = require('rethinkdb');
 r.connect(opts, callback)
 {% endapibody %}
 
-Create a new connection to the database server.
+Create a new connection to the database server.  Accepts the following
+options:
 
-If the connection cannot be established, a `RqlDriverError` exception will be thrown
+- `host`: the host to connect to (default `localhost`).
+- `port`: the port to connect on (default `28015`).
+- `db`: the default database (default `test`).
+- `authKey`: the authentication key (default none).
+
+If the connection cannot be established, a `RqlDriverError` will be
+passed to the callback instead of a connection.
 
 __Example:__ Opens a new connection to the database.
 
 ```js
 r.connect({host:'localhost', port:28015, db:'marvel', authKey:'hunter2'},
-   function(err, conn) { ... })
+          function(err, conn) { ... })
 ```
-
 
 ## [close](close/) ##
 
 {% apibody %}
-conn.close()
+conn.close([opts, ]callback)
 {% endapibody %}
 
-Close an open connection. Closing a connection cancels all outstanding requests and frees
-the memory associated with the open requests.
+Close an open connection.  Accepts the following options:
 
-__Example:__ Close an open connection.
+- `noreplyWait`: whether to wait for noreply writes to complete
+  before closing (default `true`).  If this is set to `false`, some
+  outstanding noreply writes may be aborted.
+
+Closing a connection cancels all outstanding requests and frees the
+memory associated with any open cursors.
+
+__Example:__ Close an open connection, waiting for noreply writes to finish.
 
 ```js
-conn.close()
+conn.close(function(err) { if (err) throw err; })
 ```
 
+__Example:__ Close an open connection immediately.
+
+```js
+conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
+```
 
 ## [reconnect](reconnect/) ##
 
 {% apibody %}
-conn.reconnect()
+conn.reconnect([opts, ]callback)
 {% endapibody %}
 
-Close and attempt to reopen a connection. Has the effect of canceling any outstanding
-request while keeping the connection open.
+Close and reopen a connection.  Accepts the following options:
+
+- `noreplyWait`: whether to wait for noreply writes to complete
+  before closing (default `true`).  If this is set to `false`, some
+  outstanding noreply writes may be aborted.
+
+Closing a connection cancels all outstanding requests and frees the
+memory associated with any open cursors.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```js
-conn.reconnect(function(errror, connection) { ... })
+conn.reconnect({noreplyWait: false}, function(errror, connection) { ... })
 ```
-
 
 ## [use](use/) ##
 
@@ -85,25 +105,32 @@ conn.use(dbName)
 
 Change the default database on this connection.
 
-__Example:__ Change the default database so that we don't need to specify the database
-when referencing a table.
+__Example:__ Change the default database so that we don't need to
+specify the database when referencing a table.
 
 ```js
-conn.use('heroes')
+conn.use('marvel')
+r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
 ```
-
 
 ## [run](run/) ##
 
 {% apibody %}
-query.run(connection, callback) 
+query.run(connection, callback)
 query.run(options[, callback])
 {% endapibody %}
 
-Run a query on a connection.
+Run a query on a connection.  Accepts the following options:
 
-__Example:__ Call run on the connection with a query to execute the query. The callback
-will get a cursor from which results may be retrieved.
+- `useOutdated`: whether or not outdated reads are OK (default: `false`).
+- `timeFormat`: what format to return times in (default: `'native'`).
+  Set this to `'raw'` if you want times returned as JSON objects for exporting.
+
+The callback will get either an error, a single JSON result, or a
+cursor, depending on the query.
+
+__Example:__ Run a query on the connection `conn` and log each row in
+the result to the console.
 
 ```js
 r.table('marvel').run(conn, function(err, cursor) { cursor.each(console.log); })
@@ -212,7 +239,7 @@ cursor.close()
 ## [addListener](add_listener/) ##
 
 {% apibody %}
-connection.addListener(event, listener)
+conn.addListener(event, listener)
 {% endapibody %}
 
 The connection object also supports the event emitter interface so you can listen for
@@ -463,7 +490,7 @@ singleSelection.update(json | expr[, {durability: 'soft', return_vals: true])
     &rarr; object
 {% endapibody %}
 
-Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
 combination of the two. You can pass options like `returnVals` that will return the old
 and new values of the row you have modified. 
 
@@ -500,7 +527,7 @@ singleSelection.replace(json | expr
         &rarr; object
 {% endapibody %}
 
-Replace documents in a table. Accepts a JSON document or a RQL expression, and replaces
+Replace documents in a table. Accepts a JSON document or a ReQL expression, and replaces
 the original document with the new one. The new document must have the same primary key
 as the original document. The optional argument durability with value 'hard' or 'soft'
 will override the table or query's default durability setting. The optional argument
@@ -2156,9 +2183,9 @@ r.table('projects').map(function(p) {
 r.expr(value) &rarr; value
 {% endapibody %}
 
-Construct a RQL JSON object from a native object.
+Construct a ReQL JSON object from a native object.
 
-__Example:__ Objects wrapped with expr can then be manipulated by RQL API functions.
+__Example:__ Objects wrapped with expr can then be manipulated by ReQL API functions.
 
 ```js
 r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)
@@ -2223,7 +2250,7 @@ r.expr("foo").typeOf().run(conn, callback)
 any.info() &rarr; object
 {% endapibody %}
 
-Get information about a RQL value.
+Get information about a ReQL value.
 
 __Example:__ Get information about a table such as primary key, or cache size.
 
