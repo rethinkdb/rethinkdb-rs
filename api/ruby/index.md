@@ -1620,7 +1620,7 @@ A few restrictions exist on the arguments:
 - `day` is an integer between 1 and 31.
 - `hour` is an integer.
 - `minutes` is an integer.
-- `seconds` is a float. Its value will be rounded to three decimal places
+- `seconds` is a double. Its value will be rounded to three decimal places
 (millisecond-precision).
 - `timezone` can be `'Z'` (for UTC) or a string with the format `±[hh]:[mm]`.
 
@@ -1639,7 +1639,7 @@ r.table("user").get("John").update(:birthdate => r.time(1986, 11, 3, 'Z')).run(c
 r.epoch_time(epoch_time) &rarr; time
 {% endapibody %}
 
-Create a time object based on seconds since epoch. The first argument is a float and
+Create a time object based on seconds since epoch. The first argument is a double and
 will be rounded to three decimal places (millisecond-precision).
 
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.

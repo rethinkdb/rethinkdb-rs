@@ -27,7 +27,7 @@ A few restrictions exist on the arguments:
 - `day` is an integer between 1 and 31.
 - `hour` is an integer.
 - `minutes` is an integer.
-- `seconds` is a float. Its value will be rounded to three decimal places
+- `seconds` is a double. Its value will be rounded to three decimal places
 (millisecond-precision).
 - `timezone` can be `'Z'` (for UTC) or a string with the format `±[hh]:[mm]`.
 
