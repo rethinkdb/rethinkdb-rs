@@ -133,12 +133,11 @@ r.table('marvel').run(conn).each{|x| p x}
 conn.noreply_wait
 {% endapibody %}
 
-Wait for outstanding no-reply requests on the given connection to finish. If you have
-previously run queries with the `noreply` flag set, it guarantees that those queries
-have been processed by the server.
+`noreply_wait` ensures that previous queries with the `noreply` flag have been processed
+by the server. Note that this guarantee only applies to queries run on the given connection.
 
-__Example:__ We have previously run queries with the `noreply` argument set. Now
-wait until the server has executed them.
+__Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
+wait until the server has processed them.
 
 ```rb
 conn.noreply_wait

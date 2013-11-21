@@ -116,12 +116,11 @@ r.table('marvel').run(conn, function(err, cur) { cur.each(console.log); })
 conn.noreplyWait(callback)
 {% endapibody %}
 
-Wait for outstanding no-reply requests on the given connection to finish. If you have
-previously run queries with the `noreply` flag set, it guarantees that those queries
-have been processed by the server.
+`noreplyWait` ensures that previous queries with the `noreply` flag have been processed
+by the server. Note that this guarantee only applies to queries run on the given connection.
 
-__Example:__ We have previously run queries with the `noreply` argument set. Now
-wait until the server has executed them.
+__Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
+wait until the server has processed them.
 
 ```js
 conn.noreplyWait(function(err) { ... })
