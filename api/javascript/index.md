@@ -110,6 +110,23 @@ r.table('marvel').run(conn, function(err, cur) { cur.each(console.log); })
 
 [Read more about this command &rarr;](run/)
 
+## [noreplyWait](noreply_wait/) ##
+
+{% apibody %}
+conn.noreplyWait(callback)
+{% endapibody %}
+
+`noreplyWait` ensures that previous queries with the `noreply` flag have been processed
+by the server. Note that this guarantee only applies to queries run on the given connection.
+
+__Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
+wait until the server has processed them.
+
+```js
+conn.noreplyWait(function(err) { ... })
+```
+
+
 ## [next](next/) ##
 
 {% apibody %}
@@ -552,6 +569,26 @@ r.table('marvel').get('superman').delete().run(conn, callback)
 ```
 
 [Read more about this command &rarr;](delete/)
+
+## [sync](sync/) ##
+
+{% apibody %}
+table.sync()
+    &rarr; object
+{% endapibody %}
+
+`sync` ensures that writes on a given table are written to permanent storage. Queries
+that specify soft durability (`{durability: 'soft'}`) do not give such guarantees, so
+`sync` can be used to ensure the state of these queries. A call to `sync` does not return
+until all previous writes to the table are persisted.
+
+
+__Example:__ After having updated multiple heroes with soft durability, we now want to wait
+until these changes are persisted.
+
+```js
+r.table('marvel').sync().run(conn, callback)
+```
 
 {% endapisection %}
 
