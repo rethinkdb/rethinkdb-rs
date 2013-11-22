@@ -338,7 +338,6 @@ __Example:__ Drop a table named 'dc_universe'.
 r.db('test').tableDrop('dc_universe').run(conn, callback)
 ```
 
-
 ## [tableList](table_list/) ##
 
 {% apibody %}
@@ -352,7 +351,6 @@ __Example:__ List all tables of the 'test' database.
 ```js
 r.db('test').tableList().run(conn, callback)
 ```
-
 
 ## [indexCreate](index_create/) ##
 
@@ -371,7 +369,6 @@ r.table('dc').indexCreate('code_name').run(conn, callback)
 
 [Read more about this command &rarr;](index_create/)
 
-
 ## [indexDrop](index_drop/) ##
 
 {% apibody %}
@@ -385,7 +382,6 @@ __Example:__ Drop a secondary index named 'code_name'.
 ```js
 r.table('dc').indexDrop('code_name').run(conn, callback)
 ```
-
 
 ## [indexList](index_list/) ##
 
@@ -401,7 +397,47 @@ __Example:__ List the available secondary indexes for this table.
 r.table('marvel').indexList().run(conn, callback)
 ```
 
+## [indexStatus](index_status/) ##
 
+{% apibody %}
+table.indexStatus([, index...])
+{% endapibody %}
+
+Get the status of the specified indexes on this table, or the status
+of all indexes on this table if no indexes are specified.
+
+__Example:__ Get the status of all the indexes on `test`:
+
+```js
+r.table('test').indexStatus().run(conn, callback)
+```
+
+__Example:__ Get the status of the `timestamp` index:
+
+```js
+r.table('test').indexStatus('timestamp').run(conn, callback)
+```
+
+## [indexWait](index_wait/) ##
+
+{% apibody %}
+table.indexWait([, index...])
+{% endapibody %}
+
+Wait for the specified indexes on this table to bready, or for all
+indexes on this table to be ready if no indexes are specified.
+
+__Example:__ Wait for all indexes on the table `test` to be ready:
+
+```js
+r.table('test').indexWait().run(conn, callback)
+```
+
+__Example:__ Wait for the index `timestamp` to be ready:
+
+```js
+r.table('test').indexWait('timestamp').run(conn, callback)
+```
 
 {% endapisection %}
 
