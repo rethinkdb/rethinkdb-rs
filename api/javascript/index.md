@@ -400,7 +400,7 @@ r.table('marvel').indexList().run(conn, callback)
 ## [indexStatus](index_status/) ##
 
 {% apibody %}
-table.indexStatus([, index...])
+table.indexStatus([, index...]) &rarr; array
 {% endapibody %}
 
 Get the status of the specified indexes on this table, or the status
@@ -421,10 +421,10 @@ r.table('test').indexStatus('timestamp').run(conn, callback)
 ## [indexWait](index_wait/) ##
 
 {% apibody %}
-table.indexWait([, index...])
+table.indexWait([, index...]) &rarr; array
 {% endapibody %}
 
-Wait for the specified indexes on this table to bready, or for all
+Wait for the specified indexes on this table to be ready, or for all
 indexes on this table to be ready if no indexes are specified.
 
 __Example:__ Wait for all indexes on the table `test` to be ready:
