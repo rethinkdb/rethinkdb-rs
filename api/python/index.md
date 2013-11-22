@@ -8,7 +8,7 @@ language: Python
 ---
 
 {% apisection Accessing ReQL%}
-All ReQL queries begin from the top level module.
+All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
 
@@ -18,7 +18,7 @@ r &rarr; r
 
 The top-level ReQL namespace.
 
-__Example:__ Set up your top level namespace.
+__Example:__ Set up your top-level namespace.
 
 ```py
 import rethinkdb as r
@@ -70,9 +70,10 @@ r.table('heroes').run()
 conn.close(noreply_wait=True)
 {% endapibody %}
 
-Close an open connection. By default, the connection remains open
-until all outstanding noreply writes have been processed.  This can be
-changed by setting `noreply_wait` to `False`.
+Close an open connection. Closing a connection waits until all
+outstanding requests have finished and then frees any open resources
+associated with the connection.  If `noreply_wait` is set to `false`,
+all outstanding requests are canceled immediately.
 
 Closing a connection cancels all outstanding requests and frees the
 memory associated with any open cursors.
@@ -95,12 +96,9 @@ conn.close(noreply_wait=False)
 conn.reconnect(noreply_wait=True)
 {% endapibody %}
 
-Close and reopen a connection. By default, this will wait to close the
-connection until all outstanding noreply writes have been processed.
-This can be changed by setting `noreply_wait` to `False`.
-
-Closing a connection cancels all outstanding requests and frees the
-memory associated with any open cursors.
+Close and reopen a connection. Closing a connection waits until all
+outstanding requests have finished.  If `noreply_wait` is set to
+`false`, all outstanding requests are canceled immediately.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
@@ -2065,7 +2063,7 @@ r.expr(value) &rarr; value
 
 Construct a ReQL JSON object from a native object.
 
-__Example:__ Objects wrapped with expr can then be manipulated by ReQL API functions.
+__Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 
 ```py
 r.expr({'a':'b'}).merge({'b':[1,2,3]}).run(conn)

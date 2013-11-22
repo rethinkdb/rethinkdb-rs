@@ -9,7 +9,7 @@ language: JavaScript
 ---
 
 {% apisection Accessing ReQL%}
-All ReQL queries begin from the top level module.
+All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
 
@@ -19,7 +19,7 @@ r &rarr; r
 
 The top-level ReQL namespace.
 
-__Example:__ Set up your top level namespace.
+__Example:__ Set up your top-level namespace.
 
 ```js
 var r = require('rethinkdb');
@@ -61,8 +61,10 @@ Close an open connection.  Accepts the following options:
   before closing (default `true`).  If this is set to `false`, some
   outstanding noreply writes may be aborted.
 
-Closing a connection cancels all outstanding requests and frees the
-memory associated with any open cursors.
+Closing a connection waits until all outstanding requests have
+finished and then frees any open resources associated with the
+connection.  If `noreplyWait` is set to `false`, all outstanding
+requests are canceled immediately.
 
 __Example:__ Close an open connection, waiting for noreply writes to finish.
 
@@ -88,8 +90,9 @@ Close and reopen a connection.  Accepts the following options:
   before closing (default `true`).  If this is set to `false`, some
   outstanding noreply writes may be aborted.
 
-Closing a connection cancels all outstanding requests and frees the
-memory associated with any open cursors.
+Closing a connection waits until all outstanding requests have
+finished.  If `noreplyWait` is set to `false`, all outstanding
+requests are canceled immediately.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
@@ -2185,7 +2188,7 @@ r.expr(value) &rarr; value
 
 Construct a ReQL JSON object from a native object.
 
-__Example:__ Objects wrapped with expr can then be manipulated by ReQL API functions.
+__Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 
 ```js
 r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)
