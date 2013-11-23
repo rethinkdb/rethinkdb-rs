@@ -11,30 +11,40 @@ permalink: docs/driver-performance/
 For faster performance, the JavaScript driver uses the `node-protobuf` library,
 which is a node module implemented in C++.
 
-The protobuf library and development files are required to install `node-protobuf`. These are
-available on Ubuntu in the `libprotobuf-dev` package. They can be installed from source
-at http://code.google.com/p/protobuf/downloads/list. Consult the `node-protobuf`
-[installation instructions](https://github.com/fuwaneko/node-protobuf) for more information.
+The protobuf library and development files are required to install
+`node-protobuf`. On Ubuntu, they can be installed by running this
+command:
 
-The Javascript driver will automatically use `node-protobuf` if it is installed:
+```
+sudo apt-get install libprotobuf-dev
+```
+
+On platforms other than Ubuntu, if the package manager does not have
+the protobuf development files, they can be downloaded from
+http://code.google.com/p/protobuf/downloads/list.
+
+The `node-protobuf` package can then be installed alongside the
+`rethinkdb` package:
 
 ```
 npm install rethinkdb
 npm install node-protobuf
 ```
 
-You can verify that you are running the C++ backend by checking the following:
+The Javascript driver will automatically use the `node-protobuf`
+package if it is installed. You can verify that it is being used
+by checking `r.protobuf_implementation`:
 
 ```javascript
 $ node
 r = require('rethinkdb')
 r.protobuf_implementation
 ```
+
 If the output is `'cpp'` then you are running the optimized C++ backend. Well done!
 
-If the output is `'js'` the driver will still work, but may have performance
-penalties. To build the required libraries,  on
-Github for details.
+If the output is `'js'` then the `node-protobuf` package was installed
+incorrectly.
 
 # Python #
 
@@ -42,39 +52,60 @@ For faster performance, the Python driver requires a protobuf library that
 uses a C++ backend. Out of the box, the Python driver will not use the
 optimized backend.
 
-To build the optimized backend, protobuf library and development files
-need to be installed.  On Ubuntu, they are available in these three
-packages: `libprotobuf-dev`, `protobuf-compiler` and
-`python-protobuf`. For more information, consult the [install
-instructions](https://code.google.com/p/protobuf/source/browse/trunk/python/README.txt?r=388#78)
-from Google Protobuf's project page.
+To build the optimized backend, first install the protobuf library and
+development files.  On Ubuntu, they can be installed by running this
+command:
 
-The C++ implementation will not be built unless the following variable is set:
+```
+sudo apt-get install libprotobuf-dev protobuf-compiler
+```
+
+On platforms other than Ubuntu, if the package manager does not have
+the protobuf development files, they can be downloaded from
+http://code.google.com/p/protobuf/downloads/list.
+
+The second step for building the C++ implementation is to set the
+following variable to `cpp`:
 
 ```
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 ```
 
-Run this command to download and build the C++ backend for the protobuf library, if needed:
+The third step is to install the C++ implementation of the protobuf
+python library. On most versions of Ubuntu, this command will install
+the library:
+
+```
+sudo apt-get install python-protobuf
+```
+
+Some versions of this package (notably, the one installed by pip) do
+not contain the C++ implementation. The protobuf python library needs
+to be installed from source. Run following command. It will download and
+build the protobuf library if the protobuf library is not installed or
+if it is installed without the C++ implementation.
 
 ```
 python -c 'from google.protobuf.internal import cpp_message' || \
   protoc --version && pbver=$(protoc --version | \
   awk '{ print $2 }') && wget http://protobuf.googlecode.com/files/protobuf-$pbver.tar.gz && \
   tar xf protobuf-$pbver.tar.gz && cd protobuf-$pbver/python && \
-  export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp && python setup.py build
+  PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp python setup.py build
 ```
 
-Then install it with this command:
+Once built, the protobuf library can be installed by using:
 
 ```
-python setup.py install --user
+PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp python setup.py install --user
 ```
 
-Now reinstall the rethinkdb package:
+The fourth and last step is to reinstall the `rethinkdb` python
+package. This step will fail if it cannot build the RethinkDB-specific
+C++ code.
 
 ```
-pip uninstall rethinkdb; pip install --user rethinkdb
+pip uninstall rethinkdb
+PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp pip install --user rethinkdb
 ```
 
 You can verify that you are running the C++ backend by checking the following:
