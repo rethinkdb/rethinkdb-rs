@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/r/
 command: r
@@ -16,7 +16,7 @@ r &rarr; r
 
 # Description #
 
-The top-level RQL namespace.
+The top-level ReQL namespace.
 
 __Example:__ Setup your top-level namespace.
 

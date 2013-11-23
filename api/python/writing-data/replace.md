@@ -1,11 +1,11 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/replace/
 command: replace
 related_commands:
     insert: insert/
-    update: update/ 
+    update: update/
     delete: delete/
 ---
 
@@ -22,7 +22,7 @@ singleSelection.replace(json | expr[, durability='soft', return_vals=true])
 
 # Description #
 
-Replace documents in a table. Accepts a JSON document or a RQL expression, and replaces
+Replace documents in a table. Accepts a JSON document or a ReQL expression, and replaces
 the original document with the new one. The new document must have the same primary key
 as the original document. The optional argument durability with value 'hard' or 'soft'
 will override the table or query's default durability setting. The optional argument

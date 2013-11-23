@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/r/
 command: r
@@ -13,7 +13,7 @@ r &rarr; r
 
 # Description #
 
-The top-level RQL namespace.
+The top-level ReQL namespace.
 
 __Example:__ Setup your top-level namespace.
 

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/update/
-command: update 
+command: update
 related_commands:
     insert: insert/
     replace: replace/
@@ -23,9 +23,9 @@ singleSelection.update(json | expr[, durability => 'soft', return_vals => true])
 
 # Description #
 
-Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
 combination of the two. You can pass options like `returnVals` that will return the old
-and new values of the row you have modified. 
+and new values of the row you have modified.
 
 Update returns an object that contains the following attributes:
 

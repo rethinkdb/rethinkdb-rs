@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/update/
 command: update
@@ -30,9 +30,9 @@ singleSelection.update(json | expr[, {durability: 'soft', return_vals: true])
 
 # Description #
 
-Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
 combination of the two. You can pass options like `returnVals` that will return the old
-and new values of the row you have modified. 
+and new values of the row you have modified.
 
 Update returns an object that contains the following attributes:
 
