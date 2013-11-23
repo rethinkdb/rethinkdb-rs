@@ -8,12 +8,12 @@ permalink: docs/driver-performance/
 
 # JavaScript #
 
-For faster performance, the JavaScript driver uses the `node-protobuf` library,
-which is a node module implemented in C++.
+To obtain faster performance, the JavaScript driver can use the
+`node-protobuf` library, which is a node module implemented in C++.
 
-The protobuf library and development files are required to install
-`node-protobuf`. On Ubuntu, they can be installed by running this
-command:
+Two different packages need to be installed. First, the protobuf
+library and development files. On Ubuntu, they can be installed by
+running this command:
 
 ```
 sudo apt-get install libprotobuf-dev
@@ -23,8 +23,8 @@ On platforms other than Ubuntu, if the package manager does not have
 the protobuf development files, they can be downloaded from
 http://code.google.com/p/protobuf/downloads/list.
 
-The `node-protobuf` package can then be installed alongside the
-`rethinkdb` package:
+Second, the `node-protobuf` npm package must be installed alongside
+the `rethinkdb` npm package:
 
 ```
 npm install rethinkdb
@@ -41,10 +41,11 @@ r = require('rethinkdb')
 r.protobuf_implementation
 ```
 
-If the output is `'cpp'` then you are running the optimized C++ backend. Well done!
+If the output is `'cpp'` then you are running the optimized C++
+backend. Well done!
 
-If the output is `'js'` then the `node-protobuf` package was installed
-incorrectly.
+If the output is `'js'` then the `node-protobuf` package was not
+installed correctly.
 
 # Python #
 
