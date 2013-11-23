@@ -2146,20 +2146,26 @@ sequence.default(default_value) &rarr; any
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
 error related to the absence of a value is thrown in the process, or if its first
-argument returns null, returns its second argument. (Alternatively, the second argument
+argument returns `null`, returns its second argument. (Alternatively, the second argument
 may be a function which will be called with either the text of the non-existence error
-or null.)
+or `null`.)
 
-__Example:__ Stark Industries made the mistake of trusting an intern with data entry,
-and now a bunch of fields are missing from some of their documents. Iron Man takes a
-break from fighting Mandarin to write some safe analytics queries.
+
+__Exmple:__ Suppose we want to retrieve the titles and authors of the table `posts`.
+In the case where the author field is missing or `null`, we want to retrieve the string
+`Anonymous`.
+
 
 ```js
-r.table('projects').map(function(p) {
-    return p('staff').default(0).add(p('management').default(0))
+r.table("posts").map( function(post) {
+    return {
+        title: post("title"),
+        author: post("author").default("Anonymous")
+    }
 }).run(conn, callback)
 ```
 
+[Read more about this command &rarr;](default/)
 
 ## [expr](expr/) ##
 

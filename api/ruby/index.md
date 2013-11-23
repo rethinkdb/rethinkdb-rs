@@ -365,7 +365,7 @@ Update returns an object that contains the following attributes:
 - `unchanged`: the number of documents that would have been modified except the new
 value was the same as the old value;
 - `skipped`: the number of documents that were left unmodified because there was nothing
-to do: either the row didn't exist or the new value is null;
+to do: either the row didn't exist or the new value is `nil`;
 - `errors`: the number of errors encountered while performing the update; if errors
 occured, first_error contains the text of the first error;
 - `deleted` and `inserted`: 0 for an update operation.
@@ -407,7 +407,7 @@ new value was the same as the old value
 - `inserted`: the number of new documents added. You can have new documents inserted if
 you do a point-replace on a key that isn't in the table or you do a replace on a
 selection and one of the documents you are replacing has been deleted
-- `deleted`: the number of deleted documents when doing a replace with null
+- `deleted`: the number of deleted documents when doing a replace with `nil` 
 - `errors`: the number of errors encountered while performing the replace; if errors
 occurred performing the replace, first_error contains the text of the first error encountered
 - `skipped`: 0 for a replace operation
@@ -1254,7 +1254,7 @@ object.has_fields([selector1, selector2...]) &rarr; boolean
 
 Test if an object has all of the specified fields. An object has a field if it has the
 specified key and that key maps to a non-null value. For instance, the object
-`{'a':1,'b':2,'c':null}` has the fields `a` and `b`.
+`{:a => 1, :b => 2, :c => nil}` has the fields `a` and `b`.
 
 __Example:__ Which heroes are married?
 
@@ -2011,20 +2011,25 @@ sequence.default(default_value) &rarr; any
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
 error related to the absence of a value is thrown in the process, or if its first
-argument returns null, returns its second argument. (Alternatively, the second argument
+argument returns `nil`, returns its second argument. (Alternatively, the second argument
 may be a function which will be called with either the text of the non-existence error
-or null.)
+or `nil`.)
 
-__Example:__ Stark Industries made the mistake of trusting an intern with data entry,
-and now a bunch of fields are missing from some of their documents. Iron Man takes a
-break from fighting Mandarin to write some safe analytics queries.
+__Example:__ Suppose we want to retrieve the titles and authors of the table `posts`.
+In the case where the author field is missing or `nil`, we want to retrieve the string
+`Anonymous`.
+
 
 ```rb
-r.table('projects').map {|p|
-    p[:staff].default(0) + p[:management].default(0)
+r.table("posts").map{ |post|
+    {
+        :title => post["title"],
+        :author => post["author"].default("Anonymous")
+    }
 }.run(conn)
 ```
 
+[Read more about this command &rarr;](default/)
 
 ## [expr](expr/) ##
 
