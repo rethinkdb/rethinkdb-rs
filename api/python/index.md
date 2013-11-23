@@ -124,7 +124,8 @@ r.table('heroes').run(conn) # refers to r.db('marvel').table('heroes')
 ## [run](run/) ##
 
 {% apibody %}
-query.run(conn[, use_outdated=False, time_format='native']) &rarr; cursor
+query.run(conn, use_outdated=False, time_format='native', profile=False) &rarr; cursor
+query.run(conn, use_outdated=False, time_format='native', profile=False) &rarr; object
 {% endapibody %}
 
 Run a query on a connection, returning either a single JSON result or
