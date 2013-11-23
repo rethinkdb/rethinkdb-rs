@@ -66,9 +66,9 @@ r.table('marvel')
 ```
 
 __Example:__ If you do not want a time object to be converted to a
-native date object, you can pass a time_format flag to prevent it
+native date object, you can pass a `time_format` flag to prevent it
 (valid flags are "raw" and "native").  This query returns an object
-with two fields (epoch_time and $reql_type$) instead of a native date
+with two fields (`epoch_time` and `$reql_type$`) instead of a native date
 object.
 
 ```rb
