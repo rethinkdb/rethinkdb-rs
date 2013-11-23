@@ -14,7 +14,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.connect(opts, callback)
+r.connect(options, callback)
+r.connect(host, callback)
 {% endapibody %}
 
 # Description #

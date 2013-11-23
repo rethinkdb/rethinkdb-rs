@@ -33,7 +33,7 @@ Update returns an object that contains the following attributes:
 - `unchanged`: the number of documents that would have been modified except the new
 value was the same as the old value;
 - `skipped`: the number of documents that were left unmodified because there was nothing
-to do: either the row didn't exist or the new value is null;
+to do: either the row didn't exist or the new value is `nil`;
 - `errors`: the number of errors encountered while performing the update; if errors
 occured, first_error contains the text of the first error;
 - `deleted` and `inserted`: 0 for an update operation.

@@ -27,11 +27,18 @@ import rethinkdb as r
 ## [connect](connect/) ##
 
 {% apibody %}
-r.connect(host='localhost', port=28015, db='test', auth_key='')
+r.connect(host="localhost", port=28015, db="test", auth_key="", timeout=20)
     &rarr; connection
+r.connect(host) &rarr; connection
 {% endapibody %}
 
-Create a new connection to the database server.
+Create a new connection to the database server. The keyword arguments are:
+
+- `host`: host of the RethinkDB instance. The default value is `localhost`.
+- `port`: the driver port, by default `28015`.
+- `db`: the database used if not explicitly specified in a query, by default `test`.
+- `auth_key`: the authentification key, by default the empty string.
+- `timeout`: timeout period for the connection to be opened, by default `20` (seconds).
 
 If the connection cannot be established, a `RqlDriverError` exception
 will be thrown.
@@ -42,6 +49,9 @@ specifying the default database.
 ```py
 conn = r.connect(db='marvel')
 ```
+
+[Read more about this command &rarr;](connect/)
+
 
 ## [repl](repl/) ##
 
@@ -434,7 +444,7 @@ Update returns an object that contains the following attributes:
 - `unchanged`: the number of documents that would have been modified except the new
 value was the same as the old value;
 - `skipped`: the number of documents that were left unmodified because there was nothing
-to do: either the row didn't exist or the new value is null;
+to do: either the row didn't exist or the new value is `None`;
 - `errors`: the number of errors encountered while performing the update; if errors
 occured, first_error contains the text of the first error;
 - `deleted` and `inserted`: 0 for an update operation.
@@ -475,7 +485,7 @@ new value was the same as the old value
 - `inserted`: the number of new documents added. You can have new documents inserted if
 you do a point-replace on a key that isn't in the table or you do a replace on a
 selection and one of the documents you are replacing has been deleted
-- `deleted`: the number of deleted documents when doing a replace with null
+- `deleted`: the number of deleted documents when doing a replace with `None` 
 - `errors`: the number of errors encountered while performing the replace; if errors
 occurred performing the replace, first_error contains the text of the first error encountered
 - `skipped`: 0 for a replace operation
@@ -765,7 +775,7 @@ Transform each element of the sequence by applying the given mapping function.
 __Example:__ Construct a sequence of hero power ratings.
 
 ```py
-r.table('marvel').map( lambda hero:
+r.table('marvel').map(lambda hero:
     hero['combatPower'] + hero['compassionPower'] * 2
 ).run(conn)
 ```
@@ -1353,7 +1363,7 @@ object.has_fields([selector1, selector2...]) &rarr; boolean
 
 Test if an object has all of the specified fields. An object has a field if it has the
 specified key and that key maps to a non-null value. For instance, the object
-`{'a':1,'b':2,'c':null}` has the fields `a` and `b`.
+`{'a':1,'b':2,'c': None}` has the fields `a` and `b`.
 
 __Example:__ Which heroes are married?
 
@@ -1724,6 +1734,18 @@ r.time(year, month, day[, hour, minute, second], timezone)
 
 Create a time object for a specific time.
 
+A few restrictions exist on the arguments:
+
+- `year` is an integer between 1400 and 9,999.
+- `month` is an integer between 1 and 12.
+- `day` is an integer between 1 and 31.
+- `hour` is an integer.
+- `minutes` is an integer.
+- `seconds` is a double. Its value will be rounded to three decimal places
+(millisecond-precision).
+- `timezone` can be `'Z'` (for UTC) or a string with the format `±[hh]:[mm]`.
+
+
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986 UTC.
 
 ```py
@@ -1738,7 +1760,8 @@ r.table("user").get("John").update({"birthdate": r.time(1986, 11, 3, 'Z')}).run(
 r.epoch_time(epoch_time) &rarr; time
 {% endapibody %}
 
-Create a time object based on seconds since epoch.
+Create a time object based on seconds since epoch. The first argument is a double and
+will be rounded to three decimal places (millisecond-precision).
 
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 
@@ -1794,7 +1817,7 @@ Return the timezone of the time object.
 __Example:__ Return all the users in the "-07:00" timezone.
 
 ```py
-r.table("users").filter( lambda user:
+r.table("users").filter(lambda user:
     user["subscriptionDate"].timezone() == "-07:00"
 )
 ```
@@ -2116,20 +2139,26 @@ sequence.default(default_value) &rarr; any
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
 error related to the absence of a value is thrown in the process, or if its first
-argument returns null, returns its second argument. (Alternatively, the second argument
+argument returns `None`, returns its second argument. (Alternatively, the second argument
 may be a function which will be called with either the text of the non-existence error
-or null.)
+or `None`.)
 
-__Example:__ Stark Industries made the mistake of trusting an intern with data entry,
-and now a bunch of fields are missing from some of their documents. Iron Man takes a
-break from fighting Mandarin to write some safe analytics queries.
+
+__Exmple:__ Suppose we want to retrieve the titles and authors of the table `posts`.
+In the case where the author field is missing or `None`, we want to retrieve the string
+`Anonymous`.
+
 
 ```py
-r.table('projects').map(
-    lambda p: p['staff'].default(0) + p['management'].default(0)
+r.table("posts").map(lambda post:
+    {
+        "title": post["title"],
+        "author": post["author"].default("Anonymous")
+    }
 ).run(conn)
 ```
 
+[Read more about this command &rarr;](default/)
 
 ## [expr](expr/) ##
 

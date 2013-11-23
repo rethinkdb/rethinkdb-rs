@@ -147,7 +147,7 @@ r.table("posts").filter(
     })
 ```
 
-You can also use the infix notation (passing all arguments to
+You can also use the prefix notation (passing all arguments to
 `r.and`), if that's what you prefer:
 
 ```javascript

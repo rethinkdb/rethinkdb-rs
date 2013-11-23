@@ -28,7 +28,8 @@ var r = require('rethinkdb');
 ## [connect](connect/) ##
 
 {% apibody %}
-r.connect(opts, callback)
+r.connect(options, callback)
+r.connect(host, callback)
 {% endapibody %}
 
 Create a new connection to the database server.  Accepts the following
@@ -1850,10 +1851,22 @@ r.time(year, month, day[, hour, minute, second], timezone)
 
 Create a time object for a specific time.
 
+A few restrictions exist on the arguments:
+
+- `year` is an integer between 1400 and 9,999.
+- `month` is an integer between 1 and 12.
+- `day` is an integer between 1 and 31.
+- `hour` is an integer.
+- `minutes` is an integer.
+- `seconds` is a double. Its value will be rounded to three decimal places
+(millisecond-precision).
+- `timezone` can be `'Z'` (for UTC) or a string with the format `±[hh]:[mm]`.
+
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986 UTC.
 
 ```js
-r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')}).run(conn, callback)
+r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')})
+    .run(conn, callback)
 ```
 
 
@@ -1864,12 +1877,14 @@ r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')}).run(co
 r.epochTime(epochTime) &rarr; time
 {% endapibody %}
 
-Create a time object based on seconds since epoch.
+Create a time object based on seconds since epoch. The first argument is a double and
+will be rounded to three decimal places (millisecond-precision).
 
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 
 ```js
-r.table("user").get("John").update({birthdate: r.epochTime(531360000)}).run(conn, callback)
+r.table("user").get("John").update({birthdate: r.epochTime(531360000)})
+    .run(conn, callback)
 ```
 
 
@@ -2240,20 +2255,26 @@ sequence.default(default_value) &rarr; any
 
 Handle non-existence errors. Tries to evaluate and return its first argument. If an
 error related to the absence of a value is thrown in the process, or if its first
-argument returns null, returns its second argument. (Alternatively, the second argument
+argument returns `null`, returns its second argument. (Alternatively, the second argument
 may be a function which will be called with either the text of the non-existence error
-or null.)
+or `null`.)
 
-__Example:__ Stark Industries made the mistake of trusting an intern with data entry,
-and now a bunch of fields are missing from some of their documents. Iron Man takes a
-break from fighting Mandarin to write some safe analytics queries.
+
+__Exmple:__ Suppose we want to retrieve the titles and authors of the table `posts`.
+In the case where the author field is missing or `null`, we want to retrieve the string
+`Anonymous`.
+
 
 ```js
-r.table('projects').map(function(p) {
-    return p('staff').default(0).add(p('management').default(0))
+r.table("posts").map( function(post) {
+    return {
+        title: post("title"),
+        author: post("author").default("Anonymous")
+    }
 }).run(conn, callback)
 ```
 
+[Read more about this command &rarr;](default/)
 
 ## [expr](expr/) ##
 

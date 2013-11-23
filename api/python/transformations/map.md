@@ -22,7 +22,7 @@ Transform each element of the sequence by applying the given mapping function.
 __Example:__ Construct a sequence of hero power ratings.
 
 ```py
-r.table('marvel').map( lambda hero:
+r.table('marvel').map(lambda hero:
     hero['combatPower'] + hero['compassionPower'] * 2
 ).run(conn)
 ```

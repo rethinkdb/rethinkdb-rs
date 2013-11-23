@@ -24,7 +24,7 @@ options:
 - `host`: the host to connect to (default `localhost`).
 - `port`: the port to connect on (default `28015`).
 - `db`: the default database (default `test`).
-- `authKey`: the authentication key (default none).
+- `auth_key`: the authentication key (default none).
 
 If the connection cannot be established, a `RqlDriverError` exception
 will be thrown.
