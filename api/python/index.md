@@ -39,7 +39,6 @@ will be thrown.
 __Example:__ Opens a connection using the default host and port but
 specifying the default database.
 
-
 ```py
 conn = r.connect(db='marvel')
 ```
