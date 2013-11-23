@@ -1,11 +1,14 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/table/
 command: table
 related_commands:
     filter: filter/
     get: get/
+io:
+    -   - db
+        - table
 ---
 
 # Command syntax #

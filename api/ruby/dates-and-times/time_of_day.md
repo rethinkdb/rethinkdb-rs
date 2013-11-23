@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/time_of_day/
 command: time_of_day

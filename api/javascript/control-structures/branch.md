@@ -1,10 +1,10 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/branch/
-command: branch 
+command: branch
 io:
-    -   - any
+    -   - r
         - any
 related_commands:
     do: do/

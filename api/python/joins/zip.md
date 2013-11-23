@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/zip/
-command: zip 
+command: zip
 related_commands:
     eq_join: eq_join/
     inner_join: inner_join/
@@ -22,6 +22,6 @@ Used to 'zip' up the result of a join by merging the 'right' fields into 'left' 
 
 __Example:__ 'zips up' the sequence by merging the left and right fields produced by a join.
 
-```
+```py
 r.table('marvel').eq_join('main_dc_collaborator', r.table('dc')).zip().run(conn)
 ```

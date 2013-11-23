@@ -1,12 +1,12 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/skip/
-command: skip 
+command: skip
 related_commands:
     order_by: order_by/
     limit: limit/
-    []: slice/
+    '[]': slice/
 ---
 
 # Command syntax #

@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/get_field/
 command: '[] (get_field)'

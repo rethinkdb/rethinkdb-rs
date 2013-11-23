@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/eq_join/
-command: eq_join 
+command: eq_join
 related_commands:
     inner_join: inner_join/
     outer_join: outer_join/

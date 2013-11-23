@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/sample/
-command: sample 
+command: sample
 io:
     -   - sequence
         - selection

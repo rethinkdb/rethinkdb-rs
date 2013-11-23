@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/close-cursor/
 command: close
@@ -10,8 +10,8 @@ io:
         - undefined
 related_commands:
     next: next/
-    hasNext: hasNext/
-    toArray: toArray/
+    hasNext: has_next/
+    toArray: to_array/
     each: each/
 ---
 

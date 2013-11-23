@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/match/
-command: match 
+command: match
 ---
 
 # Command syntax #

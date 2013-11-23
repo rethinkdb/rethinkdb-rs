@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/type_of/
-command: type_of 
+command: type_of
 ---
 
 # Command syntax #

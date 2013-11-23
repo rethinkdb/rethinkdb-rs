@@ -1,13 +1,13 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/sum/
-command: sum 
+command: sum
 io:
     -   - r
         - null
 related_commands:
-    groupBy: groupBy/
+    groupBy: group_by/
     count: count/
     avg: avg/
 ---

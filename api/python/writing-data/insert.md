@@ -1,10 +1,10 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/insert/
 command: insert
 related_commands:
-    update: update/ 
+    update: update/
     replace: replace/
     delete: delete/
 ---

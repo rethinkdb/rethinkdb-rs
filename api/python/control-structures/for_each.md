@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/for_each/
-command: for_each 
+command: for_each
 ---
 
 # Command syntax #

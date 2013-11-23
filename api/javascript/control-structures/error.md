@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/error/
-command: error 
+command: error
 io:
     -   - r
         - error

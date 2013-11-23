@@ -1,10 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/get_field/
 command: '[] (get_field)'
-related_commands:
-    row: row/
 ---
 
 # Command syntax #

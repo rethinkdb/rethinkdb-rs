@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/change_at/
-command: change_at 
+command: change_at
 related_commands:
     insert_at: insert_at/
     splice_at: splice_at/

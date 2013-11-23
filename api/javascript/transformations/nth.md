@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/nth/
-command: nth 
+command: nth
 io:
     -   - sequence
         - object

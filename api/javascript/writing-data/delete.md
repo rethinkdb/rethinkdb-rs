@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/delete/
 command: delete
@@ -52,7 +52,7 @@ r.table('marvel').get('superman').delete().run(conn, callback)
 ```
 
 
-__Example:__ Delete every document from the table 'marvel'. Also, don't wait for the 
+__Example:__ Delete every document from the table 'marvel'. Also, don't wait for the
 operation to be flushed to disk.
 
 ```js

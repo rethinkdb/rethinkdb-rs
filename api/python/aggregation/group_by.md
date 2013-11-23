@@ -1,10 +1,10 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/group_by/
 command: group_by
 related_commands:
-    count: count-aggregation/
+    count: count-aggregator
     sum: sum
     avg: avg
 ---

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/not/
-command: not 
+command: not
 io:
     -   - bool
         - bool

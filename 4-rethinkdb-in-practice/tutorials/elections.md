@@ -257,7 +257,7 @@ that addresses the question **how many voters the Democrat party would need to t
 ![Data analysis with RethinkDB](/assets/images/docs/reql-usecase-analyzing-polls.png)
 
 
-If you followed along, the queries above should have given you a taste of [ReQL](/api):
+If you followed along, the queries above should have given you a taste of [ReQL](/api/):
 **chaining**, [**projections**](/api/javascript/pluck/), [**order by**](/api/javascript/order_by/), 
 [**JOINs**](/api/javascript/eq_join/), [**grouped-map-reduce**](/api/javascript/grouped_map_reduce/).
 Of course this tutorial isn't statistically

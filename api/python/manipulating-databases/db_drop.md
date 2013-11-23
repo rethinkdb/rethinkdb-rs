@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/db_drop/
-command: db_drop 
+command: db_drop
 related_commands:
     db_create: db_create/
     db_list: db_list/

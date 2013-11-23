@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/table_list/
-command: table_list 
+command: table_list
 related_commands:
     table_create: table_create/
     table_drop: table_drop/

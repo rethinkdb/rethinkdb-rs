@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/count/
-command: count 
+command: count
 related_commands:
     map: map/
     reduce: reduce/

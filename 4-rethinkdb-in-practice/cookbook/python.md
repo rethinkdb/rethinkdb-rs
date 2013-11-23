@@ -286,6 +286,17 @@ r.table("users").filter( lambda user:
 ).run(conn)
 ```
 
+## Case insensitive filter ##
+
+Retrieve all users whose name is "William" (case insensitive).
+
+```py
+# Will return william, William, WILLIAM, wiLLiam etc.
+r.table("users").filter( lambda user:
+    user["lastName"].match("(?i)^william$")
+).run(conn)
+```
+
 
 
 {% endfaqsection %}

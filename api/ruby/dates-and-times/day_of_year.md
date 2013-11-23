@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/day_of_year/
-command: day_of_year 
+command: day_of_year
 related_commands:
     now: now/
     time: time/

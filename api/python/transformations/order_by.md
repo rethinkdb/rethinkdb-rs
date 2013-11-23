@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/order_by/
 command: order_by
@@ -56,12 +56,12 @@ r.table('marvel').order_by(
 __Example:__ You can use a function for ordering instead of just selecting an attribute.
 
 ```py
-r.table('marvel').order_by(lambda doc: doc['enemiesVanquished'] + doc['ramselsSaved']).run(conn)
+r.table('marvel').order_by(lambda doc: doc['enemiesVanquished'] + doc['damselsSaved']).run(conn)
 ```
 
 __Example:__ Functions can also be used descendingly.
 
 ```py
-r.table('marvel').order_by(r.desc(lambda doc: doc['enemiesVanquished'] + doc['ramselsSaved'])).run(conn)
+r.table('marvel').order_by(r.desc(lambda doc: doc['enemiesVanquished'] + doc['damselsSaved'])).run(conn)
 ```
 

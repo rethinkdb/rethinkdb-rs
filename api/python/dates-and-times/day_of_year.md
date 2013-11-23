@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/day_of_year/
 command: day_of_year

@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/db_list/
 command: db_list

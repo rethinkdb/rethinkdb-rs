@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/pluck/
-command: pluck 
+command: pluck
 related_commands:
     without: without/
     map: map/

@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/eq_join/
 command: eq_join
@@ -49,7 +49,7 @@ __Example:__ You can pass a function instead of an attribute to join on more
 complicated expressions. Here we join to the DC universe collaborator with whom the hero
 has the most appearances.
 
-```
+```py
 r.table('marvel').eq_join(lambda doc:
     doc['dc_collaborators'].order_by('appearances')[0]['name'],
     r.table('dc')).run(conn)

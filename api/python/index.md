@@ -7,9 +7,8 @@ permalink: api/python/
 language: Python
 ---
 
-
-{% apisection Accessing RQL%}
-All RQL queries begin from the top level module.
+{% apisection Accessing ReQL%}
+All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
 
@@ -17,14 +16,13 @@ All RQL queries begin from the top level module.
 r &rarr; r
 {% endapibody %}
 
-The top-level RQL namespace.
+The top-level ReQL namespace.
 
-__Example:__ Setup your top level namespace.
+__Example:__ Set up your top-level namespace.
 
 ```py
 import rethinkdb as r
 ```
-
 
 ## [connect](connect/) ##
 
@@ -35,91 +33,105 @@ r.connect(host='localhost', port=28015, db='test', auth_key='')
 
 Create a new connection to the database server.
 
-If the connection cannot be established, a `RqlDriverError` exception will be thrown
+If the connection cannot be established, a `RqlDriverError` exception
+will be thrown.
 
-__Example:__ Opens a connection using the default host and port but specifying the default database.
-
-
+__Example:__ Opens a connection using the default host and port but
+specifying the default database.
 
 ```py
-conn = r.connect(db='heroes')
+conn = r.connect(db='marvel')
 ```
 
 ## [repl](repl/) ##
 
 {% apibody %}
-connection.repl()
+conn.repl()
 {% endapibody %}
 
-Set the default connection to make REPL use easier. Allows calling run() without specifying a connection. 
+Set the default connection to make REPL use easier. Allows calling
+`.run()` on queries without specifying a connection.
 
-Connection objects are not thread safe and repl connections should not be used in multi-threaded environments.
+Connection objects are not thread-safe and REPL connections should not
+be used in multi-threaded environments.
 
-__Example:__ Set the default connection in REPL, and call `run()` without specifying the connection.
+__Example:__ Set the default connection for the REPL, then call
+`run()` without specifying the connection.
 
 ```py
-r.connect().repl()
-r.table('users').run()
+r.connect(db='marvel').repl()
+r.table('heroes').run()
 ```
-
 
 ## [close](close/) ##
 
 {% apibody %}
-conn.close()
+conn.close(noreply_wait=True)
 {% endapibody %}
 
-Close an open connection. Closing a connection cancels all outstanding requests and frees
-the memory associated with the open requests.
+Close an open connection. Closing a connection waits until all
+outstanding requests have finished and then frees any open resources
+associated with the connection.  If `noreply_wait` is set to `false`,
+all outstanding requests are canceled immediately.
 
-__Example:__ Close an open connection.
+Closing a connection cancels all outstanding requests and frees the
+memory associated with any open cursors.
+
+__Example:__ Close an open connection, waiting for noreply writes to finish.
 
 ```py
 conn.close()
 ```
 
+__Example:__ Close an open connection immediately.
+
+```py
+conn.close(noreply_wait=False)
+```
 
 ## [reconnect](reconnect/) ##
 
 {% apibody %}
-connection.reconnect()
+conn.reconnect(noreply_wait=True)
 {% endapibody %}
 
-Close and attempt to reopen a connection. Has the effect of canceling any outstanding
-request while keeping the connection open.
+Close and reopen a connection. Closing a connection waits until all
+outstanding requests have finished.  If `noreply_wait` is set to
+`false`, all outstanding requests are canceled immediately.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```py
-conn.reconnect()
+conn.reconnect(noreply_wait=False)
 ```
-
 
 ## [use](use/) ##
 
 {% apibody %}
-connection.use(db_name)
+conn.use(db_name)
 {% endapibody %}
 
 Change the default database on this connection.
 
-__Example:__ Change the default database so that we don't need to specify the database
-when referencing a table.
+__Example:__ Change the default database so that we don't need to
+specify the database when referencing a table.
 
 ```py
-conn.use('heroes')
+conn.use('marvel')
+r.table('heroes').run(conn) # refers to r.db('marvel').table('heroes')
 ```
-
 
 ## [run](run/) ##
 
 {% apibody %}
-query.run(conn[, use_outdated=False, time_format=<time_format>]) &rarr; cursor
+query.run(conn[, use_outdated=False, time_format='native']) &rarr; cursor
 {% endapibody %}
 
-Run a query on a connection.
+Run a query on a connection, returning either a single JSON result or
+a cursor, depending on the query.
 
-__Example:__ Call run on the connection with a query to execute the query.
+__Example:__ Run a query on the connection `conn` and print out every
+row in the result.
 
 ```py
 for doc in r.table('marvel').run(conn):
@@ -215,7 +227,7 @@ r.db_list().run(conn)
 db.table_create(table_name[, options]) &rarr; object
 {% endapibody %}
 
-Create a table. A RethinkDB table is a collection of JSON documents. 
+Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
 name already exists, the operation throws `RqlRuntimeError`.
@@ -411,9 +423,9 @@ singleSelection.update(json | expr[, durability='soft', return_vals=true])
     &rarr; object
 {% endapibody %}
 
-Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
 combination of the two. You can pass options like `returnVals` that will return the old
-and new values of the row you have modified. 
+and new values of the row you have modified.
 
 Update returns an object that contains the following attributes:
 
@@ -446,7 +458,7 @@ singleSelection.replace(json | expr[, durability='soft', return_vals=true])
     &rarr; object
 {% endapibody %}
 
-Replace documents in a table. Accepts a JSON document or a RQL expression, and replaces
+Replace documents in a table. Accepts a JSON document or a ReQL expression, and replaces
 the original document with the new one. The new document must have the same primary key
 as the original document. The optional argument durability with value 'hard' or 'soft'
 will override the table or query's default durability setting. The optional argument
@@ -627,23 +639,28 @@ r.table('marvel').between(10, 20).run(conn)
 ## [filter](filter/) ##
 
 {% apibody %}
-sequence.filter(predicate) &rarr; selection
-stream.filter(predicate) &rarr; stream
-array.filter(predicate) &rarr; array
+sequence.filter(predicate, default=False) &rarr; selection
+stream.filter(predicate, default=False) &rarr; stream
+array.filter(predicate, default=False) &rarr; array
 {% endapibody %}
 
 Get all the documents for which the given predicate is true.
 
-filter can be called on a sequence, selection, or a field containing an array of
+`filter` can be called on a sequence, selection, or a field containing an array of
 elements. The return type is the same as the type on which the function was called on.
-The body of every filter is wrapped in an implicit `.default(false)`, and the default
-value can be changed by passing the optional argument `default`. Setting this optional
-argument to `r.error()` will cause any non-existence errors to abort the filter.
 
-__Example:__ Get all active users aged 30.
+The body of every filter is wrapped in an implicit `.default(False)`, which means that
+if a non-existence errors is thrown (when you try to access a field that does not exist
+in a document), RethinkDB will just ignore the document.
+The `default` value can be changed by passing the named argument `default`.
+Setting this optional argument to `r.error()` will cause any non-existence errors to
+return a `RqlRuntimeError`.
+
+
+__Example:__ Get all the users that are 30 years old.
 
 ```py
-r.table('users').filter({'active': True, 'profile': {'age': 30}}).run(conn)
+r.table('users').filter({"age": 30}).run(conn)
 ```
 
 [Read more about this command &rarr;](filter/)
@@ -2119,9 +2136,9 @@ r.table('projects').map(
 r.expr(value) &rarr; value
 {% endapibody %}
 
-Construct a RQL JSON object from a native object.
+Construct a ReQL JSON object from a native object.
 
-__Example:__ Objects wrapped with expr can then be manipulated by RQL API functions.
+__Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 
 ```py
 r.expr({'a':'b'}).merge({'b':[1,2,3]}).run(conn)
@@ -2152,7 +2169,7 @@ array.coerce_to(type_name) &rarr; object
 object.coerce_to(type_name) &rarr; array
 {% endapibody %}
 
-Converts a value of one type into another. 
+Converts a value of one type into another.
 
 You can convert: a selection, sequence, or object into an ARRAY, an array of pairs into an OBJECT, and any DATUM into a STRING.
 
@@ -2184,7 +2201,7 @@ r.expr("foo").type_of().run(conn)
 any.info() &rarr; object
 {% endapibody %}
 
-Get information about a RQL value.
+Get information about a ReQL value.
 
 __Example:__ Get information about a table such as primary key, or cache size.
 

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/distinct/
-command: distinct 
+command: distinct
 related_commands:
     map: map/
     concat_map: concat_map/

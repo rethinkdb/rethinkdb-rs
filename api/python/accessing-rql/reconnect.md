@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/reconnect/
-command: reconnect 
+command: reconnect
 related_commands:
     connect: connect/
     use: use/
@@ -12,17 +12,17 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-connection.reconnect()
+conn.reconnect(noreply_wait=True)
 {% endapibody %}
 
 # Description #
 
-Close and attempt to reopen a connection. Has the effect of canceling any outstanding
-request while keeping the connection open.
+Close and reopen a connection. Closing a connection waits until all
+outstanding requests have finished.  If `noreply_wait` is set to
+`false`, all outstanding requests are canceled immediately.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```py
-conn.reconnect()
+conn.reconnect(noreply_wait=False)
 ```
-

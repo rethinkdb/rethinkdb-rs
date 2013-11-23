@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/map/
-command: map 
+command: map
 related_commands:
     concat_map: concat_map/
     reduce: reduce/

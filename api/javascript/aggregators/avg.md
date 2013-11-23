@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/avg/
 command: avg
@@ -7,7 +7,7 @@ io:
     -   - r
         - null
 related_commands:
-    groupBy: groupBy/
+    groupBy: group_by/
     sum: sum/
     count: count/
 ---

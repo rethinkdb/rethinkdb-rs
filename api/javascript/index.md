@@ -4,12 +4,12 @@ title: "ReQL command reference"
 active: api
 no_footer: true
 permalink: api/javascript/
+alias: api/
 language: JavaScript
 ---
 
-
-{% apisection Accessing RQL%}
-All RQL queries begin from the top level module.
+{% apisection Accessing ReQL%}
+All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
 
@@ -17,14 +17,13 @@ All RQL queries begin from the top level module.
 r &rarr; r
 {% endapibody %}
 
-The top-level RQL namespace.
+The top-level ReQL namespace.
 
-__Example:__ Setup your top level namespace.
+__Example:__ Set up your top-level namespace.
 
 ```js
 var r = require('rethinkdb');
 ```
-
 
 ## [connect](connect/) ##
 
@@ -32,49 +31,74 @@ var r = require('rethinkdb');
 r.connect(opts, callback)
 {% endapibody %}
 
-Create a new connection to the database server.
+Create a new connection to the database server.  Accepts the following
+options:
 
-If the connection cannot be established, a `RqlDriverError` exception will be thrown
+- `host`: the host to connect to (default `localhost`).
+- `port`: the port to connect on (default `28015`).
+- `db`: the default database (default `test`).
+- `authKey`: the authentication key (default none).
+
+If the connection cannot be established, a `RqlDriverError` will be
+passed to the callback instead of a connection.
 
 __Example:__ Opens a new connection to the database.
 
 ```js
 r.connect({host:'localhost', port:28015, db:'marvel', authKey:'hunter2'},
-   function(err, conn) { ... })
+          function(err, conn) { ... })
 ```
-
 
 ## [close](close/) ##
 
 {% apibody %}
-conn.close()
+conn.close([opts, ]callback)
 {% endapibody %}
 
-Close an open connection. Closing a connection cancels all outstanding requests and frees
-the memory associated with the open requests.
+Close an open connection.  Accepts the following options:
 
-__Example:__ Close an open connection.
+- `noreplyWait`: whether to wait for noreply writes to complete
+  before closing (default `true`).  If this is set to `false`, some
+  outstanding noreply writes may be aborted.
+
+Closing a connection waits until all outstanding requests have
+finished and then frees any open resources associated with the
+connection.  If `noreplyWait` is set to `false`, all outstanding
+requests are canceled immediately.
+
+__Example:__ Close an open connection, waiting for noreply writes to finish.
 
 ```js
-conn.close()
+conn.close(function(err) { if (err) throw err; })
 ```
 
+__Example:__ Close an open connection immediately.
+
+```js
+conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
+```
 
 ## [reconnect](reconnect/) ##
 
 {% apibody %}
-conn.reconnect()
+conn.reconnect([opts, ]callback)
 {% endapibody %}
 
-Close and attempt to reopen a connection. Has the effect of canceling any outstanding
-request while keeping the connection open.
+Close and reopen a connection.  Accepts the following options:
+
+- `noreplyWait`: whether to wait for noreply writes to complete
+  before closing (default `true`).  If this is set to `false`, some
+  outstanding noreply writes may be aborted.
+
+Closing a connection waits until all outstanding requests have
+finished.  If `noreplyWait` is set to `false`, all outstanding
+requests are canceled immediately.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```js
-conn.reconnect(function(errror, connection) { ... })
+conn.reconnect({noreplyWait: false}, function(errror, connection) { ... })
 ```
-
 
 ## [use](use/) ##
 
@@ -84,28 +108,35 @@ conn.use(dbName)
 
 Change the default database on this connection.
 
-__Example:__ Change the default database so that we don't need to specify the database
-when referencing a table.
+__Example:__ Change the default database so that we don't need to
+specify the database when referencing a table.
 
 ```js
-conn.use('heroes')
+conn.use('marvel')
+r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
 ```
-
 
 ## [run](run/) ##
 
 {% apibody %}
-query.run(connection, callback) 
+query.run(conn, callback)
 query.run(options[, callback])
 {% endapibody %}
 
-Run a query on a connection.
+Run a query on a connection.  Accepts the following options:
 
-__Example:__ Call run on the connection with a query to execute the query. The callback
-will get a cursor from which results may be retrieved.
+- `useOutdated`: whether or not outdated reads are OK (default: `false`).
+- `timeFormat`: what format to return times in (default: `'native'`).
+  Set this to `'raw'` if you want times returned as JSON objects for exporting.
+
+The callback will get either an error, a single JSON result, or a
+cursor, depending on the query.
+
+__Example:__ Run a query on the connection `conn` and log each row in
+the result to the console.
 
 ```js
-r.table('marvel').run(conn, function(err, cur) { cur.each(console.log); })
+r.table('marvel').run(conn, function(err, cursor) { cursor.each(console.log); })
 ```
 
 [Read more about this command &rarr;](run/)
@@ -131,6 +162,7 @@ conn.noreplyWait(function(err) { ... })
 
 {% apibody %}
 cursor.next(callback)
+array.next(callback)
 {% endapibody %}
 
 Get the next element in the cursor.
@@ -138,15 +170,20 @@ Get the next element in the cursor.
 __Example:__ Let's grab the next element!
 
 ```js
-cur.next(function(err, row) {
-    return processRow(row);
+cursor.next(function(err, row) {
+    if (err) throw err;
+    processRow(row);
 });
 ```
 
-## [hasNext](hasNext/) ##
+[Read more about this command &rarr;](next/)
+
+
+## [hasNext](has_next/) ##
 
 {% apibody %}
 cursor.hasNext() &rarr; bool
+array.hasNext() &rarr; bool
 {% endapibody %}
 
 Check if there are more elements in the cursor.
@@ -154,14 +191,17 @@ Check if there are more elements in the cursor.
 __Example:__ Are there more elements in the cursor?
 
 ```js
-var hasMore = cur.hasNext();
+var hasMore = cursor.hasNext();
 ```
+
+[Read more about this command &rarr;](has_next/)
 
 
 ## [each](each/) ##
 
 {% apibody %}
 cursor.each(callback[, onFinishedCallback])
+array.each(callback[, onFinishedCallback])
 {% endapibody %}
 
 Lazily iterate over the result set one element at a time.
@@ -169,17 +209,19 @@ Lazily iterate over the result set one element at a time.
 __Example:__ Let's process all the elements!
 
 ```js
-cur.each(function(err, row) {
+cursor.each(function(err, row) {
+    if (err) throw err;
     processRow(row);
 });
 ```
 
 [Read more about this command &rarr;](each/)
 
-## [toArray](toArray/) ##
+## [toArray](to_array/) ##
 
 {% apibody %}
 cursor.toArray(callback)
+array.toArray(callback)
 {% endapibody %}
 
 Retrieve all results and pass them as an array to the given callback.
@@ -188,12 +230,13 @@ __Example:__ For small result sets it may be more convenient to process them at 
 an array.
 
 ```js
-cur.toArray(function(err, results) {
-    for(var i in results) {
-        processRow(results[i]);
-    }
+cursor.toArray(function(err, results) {
+    if (err) throw err;
+    processResults(results);
 });
 ```
+
+[Read more about this command &rarr;](to_array/)
 
 
 ## [close (cursor)](close-cursor/) ##
@@ -216,7 +259,7 @@ cursor.close()
 ## [addListener](add_listener/) ##
 
 {% apibody %}
-connection.addListener(event, listener)
+conn.addListener(event, listener)
 {% endapibody %}
 
 The connection object also supports the event emitter interface so you can listen for
@@ -312,7 +355,7 @@ r.dbList().run(conn, callback)
 db.tableCreate(tableName[, options]) &rarr; object
 {% endapibody %}
 
-Create a table. A RethinkDB table is a collection of JSON documents. 
+Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
 name already exists, the operation throws `RqlRuntimeError`.
@@ -503,9 +546,9 @@ singleSelection.update(json | expr[, {durability: 'soft', return_vals: true])
     &rarr; object
 {% endapibody %}
 
-Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
 combination of the two. You can pass options like `returnVals` that will return the old
-and new values of the row you have modified. 
+and new values of the row you have modified.
 
 Update returns an object that contains the following attributes:
 
@@ -540,7 +583,7 @@ singleSelection.replace(json | expr
         &rarr; object
 {% endapibody %}
 
-Replace documents in a table. Accepts a JSON document or a RQL expression, and replaces
+Replace documents in a table. Accepts a JSON document or a ReQL expression, and replaces
 the original document with the new one. The new document must have the same primary key
 as the original document. The optional argument durability with value 'hard' or 'soft'
 will override the table or query's default durability setting. The optional argument
@@ -678,7 +721,7 @@ r.table('marvel').get('superman').run(conn, callback)
 ```
 
 
-## [getAll](get_all) ##
+## [getAll](get_all/) ##
 
 {% apibody %}
 table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
@@ -722,27 +765,30 @@ r.table('marvel').between(10, 20).run(conn, callback)
 ## [filter](filter/) ##
 
 {% apibody %}
-sequence.filter(predicate) &rarr; selection
-stream.filter(predicate) &rarr; stream
-array.filter(predicate) &rarr; array
+sequence.filter(predicate[, {default: false}]) &rarr; selection
+stream.filter(predicate[, {default: false}]) &rarr; stream
+array.filter(predicate[, {default: false}]) &rarr; array
 {% endapibody %}
 
 Get all the documents for which the given predicate is true.
 
-filter can be called on a sequence, selection, or a field containing an array of
+`filter` can be called on a sequence, selection, or a field containing an array of
 elements. The return type is the same as the type on which the function was called on.
-The body of every filter is wrapped in an implicit `.default(false)`, and the default
-value can be changed by passing the optional argument `default`. Setting this optional
-argument to `r.error()` will cause any non-existence errors to abort the filter.
 
-__Example:__ Get all active users aged 30.
+The body of every filter is wrapped in an implicit `.default(false)`, which means that
+if a non-existence errors is thrown (when you try to access a field that does not exist
+in a document), RethinkDB will just ignore the document.
+The `default` value can be changed by passing an object with a `default` field.
+Setting this optional argument to `r.error()` will cause any non-existence errors to
+return a `RqlRuntimeError`.
+
+__Example:__ Get all the users that are 30 years old.
 
 ```js
-r.table('users').filter({active: true, profile: {age: 30}}).run(conn, callback)
+r.table('users').filter({age: 30}).run(conn, callback)
 ```
 
-[Read more about this command &rarr;](between/)
-
+[Read more about this command &rarr;](filter/)
 
 {% endapisection %}
 
@@ -1406,7 +1452,7 @@ r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_re
 ```
 
 
-## [()](get_attr) ##
+## [()](get_field/) ##
 
 {% apibody %}
 sequence(attr) &rarr; sequence
@@ -1446,7 +1492,7 @@ r.table('marvel').hasFields('spouse')
 [Read more about this command &rarr;](has_fields/)
 
 
-## [insertAt](insert_at) ##
+## [insertAt](insert_at/) ##
 
 {% apibody %}
 array.insertAt(index, value) &rarr; array
@@ -1461,7 +1507,7 @@ r.expr(["Iron Man", "Spider-Man"]).insertAt(1, "Hulk").run(conn, callback)
 ```
 
 
-## [spliceAt](splice_at) ##
+## [spliceAt](splice_at/) ##
 
 {% apibody %}
 array.spliceAt(index, array) &rarr; array
@@ -1506,7 +1552,7 @@ __Example:__ Bruce Banner hulks out.
 r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
 ```
 
-## [keys](keys) ##
+## [keys](keys/) ##
 
 {% apibody %}
 singleSelection.keys() &rarr; array
@@ -2004,7 +2050,7 @@ r.now().dayOfWeek().run(conn, callback)
 
 
 
-## [dateOfYear](date_of_year/) ##
+## [dayOfYear](day_of_year/) ##
 
 {% apibody %}
 time.day_of_year() &rarr; number
@@ -2087,7 +2133,7 @@ r.now().toISO8601()
 ```
 
 
-## [toEpochTime](to_epoch_time) ##
+## [toEpochTime](to_epoch_time/) ##
 
 {% apibody %}
 time.to_epoch_time() &rarr; number
@@ -2213,9 +2259,9 @@ r.table('projects').map(function(p) {
 r.expr(value) &rarr; value
 {% endapibody %}
 
-Construct a RQL JSON object from a native object.
+Construct a ReQL JSON object from a native object.
 
-__Example:__ Objects wrapped with expr can then be manipulated by RQL API functions.
+__Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 
 ```js
 r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)
@@ -2248,7 +2294,7 @@ array.coerceTo(typeName) &rarr; object
 object.coerceTo(typeName) &rarr; array
 {% endapibody %}
 
-Converts a value of one type into another. 
+Converts a value of one type into another.
 
 You can convert: a selection, sequence, or object into an ARRAY, an array of pairs into an OBJECT, and any DATUM into a STRING.
 
@@ -2280,7 +2326,7 @@ r.expr("foo").typeOf().run(conn, callback)
 any.info() &rarr; object
 {% endapibody %}
 
-Get information about a RQL value.
+Get information about a ReQL value.
 
 __Example:__ Get information about a table such as primary key, or cache size.
 

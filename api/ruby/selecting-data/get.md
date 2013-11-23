@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/get/
-command: get 
+command: get
 related_commands:
     between: between/
     get_all: get_all/
