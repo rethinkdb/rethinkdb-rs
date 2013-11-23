@@ -18,7 +18,7 @@ r &rarr; r
 
 The top-level ReQL namespace.
 
-__Example:__ Setup your top-level namespace.
+__Example:__ Set up your top-level namespace.
 
 ```js
 var r = require('rethinkdb');

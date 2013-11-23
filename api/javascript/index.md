@@ -119,7 +119,7 @@ r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
 ## [run](run/) ##
 
 {% apibody %}
-query.run(connection, callback)
+query.run(conn, callback)
 query.run(options[, callback])
 {% endapibody %}
 
