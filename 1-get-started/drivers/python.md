@@ -13,13 +13,7 @@ permalink: docs/install-drivers/python/
 Install the driver with pip:
 
 ```bash
-$ sudo pip install rethinkdb
-```
-
-Make sure the following line appears at the end of the output:
-
-```
-Successfully installed rethinkdb
+$ pip install --user rethinkdb
 ```
 
 # Usage #
@@ -44,21 +38,6 @@ track progress for a better solution on [Github issue #901](https://github.com/r
 
 # Optional: optimized backend #
 
-During the installation, you can ignore errors similar to this one:
-
-```
-./rethinkdb/ql2.pb.h:9:10: fatal error: 'google/protobuf/stubs/common.h' file not found
-#include <google/protobuf/stubs/common.h>
-         ^
-1 error generated.
-*** WARNING: Unable to compile the C++ extension
-command 'clang' failed with exit status 1
-*** WARNING: Defaulting to the python implementation
-```
-
-The C++ errors above indicate the the faster C++ backend could not
-be compiled. The driver will use the slower Python backend.
-
 For faster Python driver performance, read about [using an
 optimized C++ protobuf backend](/docs/driver-performance/).
 
@@ -81,13 +60,13 @@ $
 $ # Download the Python 3 compatible fork of Google protobuf
 $ git clone https://github.com/malthe/google-protobuf.git
 $ cd google-protobuf
-$ 
+$
 $ # Build and install protoc to generate Python 3 sources
 $ ./autogen.sh
 $ ./configure --prefix=/usr
 $ make
 $ make install
-$ 
+$
 $ # Build and install the Python 3 compatible Python library
 $ cd python
 $ python setup.py build
