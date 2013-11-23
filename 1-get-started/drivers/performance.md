@@ -8,12 +8,11 @@ permalink: docs/driver-performance/
 
 # JavaScript #
 
-To obtain faster performance, the JavaScript driver can use the
-`node-protobuf` library, which is a node module implemented in C++.
+The JavaScript driver can take advantage of the C++ protocol buffer
+backend for faster performance.
 
-Two different packages need to be installed. First, the protobuf
-library and development files. On Ubuntu, they can be installed by
-running this command:
+First, install the protobuf library and development files. On Ubuntu,
+they can be installed by running this command:
 
 ```
 sudo apt-get install libprotobuf-dev
