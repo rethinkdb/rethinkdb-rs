@@ -12,6 +12,7 @@ related_commands:
 
 {% apibody %}
 query.run(conn[, opts]) &rarr; cursor
+query.run(conn[, opts]) &rarr; object
 {% endapibody %}
 
 # Description #

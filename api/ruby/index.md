@@ -143,7 +143,8 @@ r.table('heroes').run(conn) # refers to r.db('marvel').table('heroes')
 ## [run](run/) ##
 
 {% apibody %}
-query.run(conn[, opts])
+query.run(conn[, opts]) &rarr; cursor
+query.run(conn[, opts]) &rarr; object
 {% endapibody %}
 
 Run a query on a connection.  Accepts the following options:
