@@ -707,7 +707,7 @@ __Example:__ Return all documents in the table 'marvel' of the default database.
 r.table('marvel').run(conn, callback)
 ```
 
-[Read more about this command &rarr;](replace/)
+[Read more about this command &rarr;](table/)
 
 ## [get](get/) ##
 
