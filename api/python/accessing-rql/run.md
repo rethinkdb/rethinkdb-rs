@@ -10,9 +10,8 @@ related_commands:
 
 # Command syntax #
 
-
 {% apibody %}
-query.run(conn[, use_outdated=False, time_format='native']) &rarr; cursor
+query.run(conn, use_outdated=False, time_format='native', profile=False)
 {% endapibody %}
 
 # Description #
