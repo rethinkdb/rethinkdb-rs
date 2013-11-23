@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/type_of/
-command: typeOf 
+command: typeOf
 io:
     -   - any
         - string

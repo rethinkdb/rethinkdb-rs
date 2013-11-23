@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/has_fields/
-command: has_fields 
+command: has_fields
 related_commands:
     '[] (get_field)': get_field/
     with_fields: with_fields/

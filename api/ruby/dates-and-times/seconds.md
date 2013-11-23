@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/seconds/
-command: seconds 
+command: seconds
 related_commands:
     now: now/
     time: time/

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/year/
-command: year 
+command: year
 related_commands:
     now: now/
     time: time/

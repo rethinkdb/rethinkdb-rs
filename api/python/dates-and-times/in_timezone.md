@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/in_timezone/
-command: in_timezone 
+command: in_timezone
 related_commands:
     timezone: timezone/
     now: now/

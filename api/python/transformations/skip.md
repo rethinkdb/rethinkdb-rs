@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/skip/
-command: skip 
+command: skip
 related_commands:
     order_by: order_by/
     limit: limit/

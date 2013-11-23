@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/add_listener/
-command: addListener 
+command: addListener
 py: false
 rb: false
 io:

@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/delete_at/
 command: deleteAt

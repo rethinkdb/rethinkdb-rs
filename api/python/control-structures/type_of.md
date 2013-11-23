@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/type_of/
-command: type_of 
+command: type_of
 ---
 
 # Command syntax #

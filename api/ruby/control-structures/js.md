@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/js/
-command: js 
+command: js
 ---
 
 # Command syntax #

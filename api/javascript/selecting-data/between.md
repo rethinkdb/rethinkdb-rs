@@ -1,11 +1,11 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/between/
 command: between
 io:
     -   - table
-        - selection 
+        - selection
 related_commands:
     get: get/
     getAll: get_all/

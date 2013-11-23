@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/to_epoch_time/
-command: to_epoch_time 
+command: to_epoch_time
 related_commands:
     now: now/
     time: time/

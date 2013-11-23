@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/append/
-command: append 
+command: append
 related_commands:
 ---
 

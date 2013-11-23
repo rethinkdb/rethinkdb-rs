@@ -1,11 +1,11 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/get_all/
 command: getAll
 io:
     -   - table
-        - selection 
+        - selection
 related_commands:
     get: get/
     between: between/

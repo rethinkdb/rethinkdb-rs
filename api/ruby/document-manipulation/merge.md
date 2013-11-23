@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/merge/
-command: merge 
+command: merge
 related_commands:
     pluck: pluck/
     without: without/

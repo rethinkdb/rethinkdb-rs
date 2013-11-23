@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/with_fields/
-command: with_fields 
+command: with_fields
 related_commands:
     has_fields: has_fields/
     pluck: pluck/

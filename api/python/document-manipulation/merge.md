@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/merge/
-command: merge 
+command: merge
 related_commands:
     pluck: pluck/
     without: without/

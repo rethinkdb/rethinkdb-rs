@@ -338,7 +338,7 @@ r.dbList().run(conn, callback)
 db.tableCreate(tableName[, options]) &rarr; object
 {% endapibody %}
 
-Create a table. A RethinkDB table is a collection of JSON documents. 
+Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
 name already exists, the operation throws `RqlRuntimeError`.
@@ -495,7 +495,7 @@ singleSelection.update(json | expr[, {durability: 'soft', return_vals: true])
 
 Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
 combination of the two. You can pass options like `returnVals` that will return the old
-and new values of the row you have modified. 
+and new values of the row you have modified.
 
 Update returns an object that contains the following attributes:
 
@@ -2221,7 +2221,7 @@ array.coerceTo(typeName) &rarr; object
 object.coerceTo(typeName) &rarr; array
 {% endapibody %}
 
-Converts a value of one type into another. 
+Converts a value of one type into another.
 
 You can convert: a selection, sequence, or object into an ARRAY, an array of pairs into an OBJECT, and any DATUM into a STRING.
 

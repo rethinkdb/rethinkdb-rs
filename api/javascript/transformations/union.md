@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/union/
-command: union 
+command: union
 io:
     -   - sequence
         - array

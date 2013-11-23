@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/grouped_map_reduce/
 command: grouped_map_reduce

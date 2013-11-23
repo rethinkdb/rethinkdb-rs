@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/table_create/
 command: table_create
@@ -16,7 +16,7 @@ db.table_create(table_name[, options]) &rarr; object
 
 # Description #
 
-Create a table. A RethinkDB table is a collection of JSON documents. 
+Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
 name already exists, the operation throws `RqlRuntimeError`.

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/in_timezone/
-command: in_timezone 
+command: in_timezone
 related_commands:
     timezone: timezone/
     now: now/

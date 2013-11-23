@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/table_drop/
 command: table_drop

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/set_union/
-command: set_union 
+command: set_union
 related_commands:
     union: union/
     difference: difference/

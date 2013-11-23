@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/hours/
-command: hours 
+command: hours
 related_commands:
     now: now/
     time: time/

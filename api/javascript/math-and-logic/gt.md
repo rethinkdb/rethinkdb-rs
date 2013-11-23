@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/gt/
-command: gt 
+command: gt
 io:
     -   - value
         - bool

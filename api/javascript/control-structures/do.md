@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/do/
-command: do 
+command: do
 io:
     -   - any
         - any

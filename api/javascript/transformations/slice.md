@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/slice/
-command: slice 
+command: slice
 io:
     -   - sequence
         - stream

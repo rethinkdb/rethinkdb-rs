@@ -1,11 +1,11 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/filter/
 command: filter
 io:
     -   - sequence
-        - selection 
+        - selection
     -   - stream
         - stream
     -   - array

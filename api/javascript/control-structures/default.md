@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/default/
-command: default 
+command: default
 io:
     -   - value
         - any

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/splice_at/
-command: splice_at 
+command: splice_at
 related_commands:
     insert_at: insert_at/
     delete_at: delete_at/

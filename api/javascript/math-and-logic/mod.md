@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/mod/
-command: mod 
+command: mod
 io:
     -   - number
         - number

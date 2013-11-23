@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/inner_join/
-command: inner_join 
+command: inner_join
 related_commands:
     eq_join: eq_join/
     outer_join: outer_join/

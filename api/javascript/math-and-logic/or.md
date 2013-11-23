@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/or/
-command: or 
+command: or
 io:
     -   - bool
         - bool

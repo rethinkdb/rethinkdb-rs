@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/limit/
-command: limit 
+command: limit
 io:
     -   - sequence
         - stream

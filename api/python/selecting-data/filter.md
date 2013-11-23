@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/filter/
-command: filter 
+command: filter
 related_commands:
     get: get/
     get_all: get_all/
