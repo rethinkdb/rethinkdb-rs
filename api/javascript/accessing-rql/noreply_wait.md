@@ -3,6 +3,9 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/noreply_wait/
 command: noreplyWait
+io:
+  - - connection
+    - null
 related_commands:
     run: run/
     sync: sync/
