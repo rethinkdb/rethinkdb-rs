@@ -103,7 +103,7 @@ r.table("users").filter( lambda user:
 ```
 
 
-__Exmaple:__ Retrieve all the users who have a gmail account (whose field `email` ends
+__Example:__ Retrieve all the users who have a gmail account (whose field `email` ends
 with `@gmail.com`).
 
 
@@ -113,7 +113,7 @@ r.table("users").filter( lambda user:
 ).run(conn)
 ```
 
-__Exmaple:__ Filter based on the presence of a value in an array.
+__Example:__ Filter based on the presence of a value in an array.
 
 Suppose the table `users` has the following schema
 

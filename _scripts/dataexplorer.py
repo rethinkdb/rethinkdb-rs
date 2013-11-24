@@ -4,6 +4,7 @@ import os
 import sys
 import yaml
 import json
+import codecs
 
 IGNORED_FILES = "index.md"
 
@@ -20,7 +21,7 @@ def read_index(script_path, result):
     ignore_pattern = re.compile("(.*Read more about this command.*)|(.*apisection.*)")
     example_pattern = re.compile("(__Example:__.*)|(__Example__:.*)")
 
-    index_file = open(os.path.abspath(script_path+"/../api/javascript/index.md"), "r")
+    index_file = codecs.open(os.path.abspath(script_path+"/../api/javascript/index.md"), "r", "utf-8")
 
     current_method = None
     current_description = ""
@@ -90,7 +91,7 @@ def add_io_fields(script_path, result):
 
 def add_io_field(file_name, result):
     limiter_yaml = re.compile('---\s*')
-    details_file = open(file_name, "r")
+    details_file = codecs.open(file_name, "r", "utf-8")
 
     is_yaml = False
     yaml_raw = ""
@@ -134,6 +135,6 @@ if __name__ == "__main__":
     add_io_fields(script_path, result)
 
     # Dump result in a JSON format and write it in a file
-    result_file = open(script_path+"/reql_docs.json", "w")
+    result_file = codecs.open(script_path+"/reql_docs.json", "w", "utf-8")
     result_file.write(json.dumps(result, indent=2))
     result_file.close()

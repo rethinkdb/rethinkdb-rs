@@ -21,12 +21,12 @@ indexes on this table to be ready if no indexes are specified.
 
 __Example:__ Wait for all indexes on the table `test` to be ready:
 
-```js
+```rb
 r.table('test').index_wait.run(conn)
 ```
 
 __Example:__ Wait for the index `timestamp` to be ready:
 
-```js
+```rb
 r.table('test').index_wait('timestamp').run(conn)
 ```

@@ -4,6 +4,7 @@ import os
 import sys
 import yaml
 import json
+import codecs
 
 # We don't read the index
 IGNORED_FILES = "index.md"
@@ -20,7 +21,7 @@ def build_docs(script_path, result):
 
 # Add docs in result for one file
 def add_doc(file_name, result):
-    details_file = open(file_name, "r")
+    details_file = codecs.open(file_name, "r", "utf-8")
 
     ignore_pattern = re.compile("#.*#.*")
 
@@ -113,7 +114,7 @@ def add_doc(file_name, result):
     # Reading the JS file to extract the io data
     file_name = file_name.replace('python', 'javascript')
     try:
-        details_file_js = open(file_name, "r")
+        details_file_js = codecs.open(file_name, "r", "utf-8")
 
         yaml_header_js = ""
         for line in details_file_js:
@@ -166,7 +167,7 @@ if __name__ == "__main__":
 
     build_docs(script_path, result)
 
-    result_file = open(script_path+"/py_docs.json", "w")
+    result_file = codecs.open(script_path+"/py_docs.json", "w", "utf-8")
 
     result_file.write(json.dumps(result, indent=2))
     result_file.close()

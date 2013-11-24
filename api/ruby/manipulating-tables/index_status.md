@@ -20,12 +20,12 @@ of all indexes on this table if no indexes are specified.
 
 __Example:__ Get the status of all the indexes on `test`:
 
-```js
+```rb
 r.table('test').index_status.run(conn)
 ```
 
 __Example:__ Get the status of the `timestamp` index:
 
-```js
+```rb
 r.table('test').index_status('timestamp').run(conn)
 ```

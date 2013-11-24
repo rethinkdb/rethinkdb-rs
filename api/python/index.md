@@ -356,13 +356,13 @@ of all indexes on this table if no indexes are specified.
 
 __Example:__ Get the status of all the indexes on `test`:
 
-```js
+```py
 r.table('test').index_status().run(conn)
 ```
 
 __Example:__ Get the status of the `timestamp` index:
 
-```js
+```py
 r.table('test').index_status('timestamp').run(conn)
 ```
 
@@ -377,13 +377,13 @@ indexes on this table to be ready if no indexes are specified.
 
 __Example:__ Wait for all indexes on the table `test` to be ready:
 
-```js
+```py
 r.table('test').index_wait().run(conn)
 ```
 
 __Example:__ Wait for the index `timestamp` to be ready:
 
-```js
+```py
 r.table('test').index_wait('timestamp').run(conn)
 ```
 
