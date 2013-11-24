@@ -23,25 +23,16 @@ See [the Arch wiki article on RethinkDB](https://wiki.archlinux.org/index.php/Re
 To compile RethinkDB from source, you will need to install the following packages:
 
 ```bash
-sudo pacman -S make gcc boost-libs protobuf boost python2 libunwind gperftools java-runtime nodejs protobuf
+sudo pacman -S make gcc protobuf boost python2 gperftools nodejs
 ```
 
-You will also need an older version of the v8 library (see [this Github
-issue](https://github.com/rethinkdb/rethinkdb/issues/1195) to track progress).  
-Use the Arch Rollback Machine to get the package:
+You also need to install v8 from AUR (and `base-devel`, which is an implicit dependency
+of any AUR package).
 
+```bash
+pacman -S base-devel
+yaourt -S v8
 ```
-wget http://arm.konnichi.com/2013/05/15/community/os/x86_64/v8-3.16.4.1-3-x86_64.pkg.tar.xz
-```
-
-Then install it with:
-
-```
-sudo pacman -U v8-3.16.4.1-3-x86_64.pkg.tar.xz
-```
-
-_Note:_ If you use a different architecture than x86_64, get the appropriate
-package from the Arch Rollback Machine.
 
 ## Tweak the system ##
 
@@ -57,12 +48,20 @@ __Warning:__ This command will break all other applications that require
 ```bash
 sudo ln -s /usr/bin/python2 /usr/bin/python
 ```
+
+## Get the source code ##
+Clone the RethinkDB repository:
+
+```bash
+git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+```
+
 ## Build RethinkDB ##
 Kick off the build process:
 
 ```bash
 cd rethinkdb
-./configure PROTOBUF=/usr/lib/libprotobuf.so
+./configure --dynamic tcmalloc_minimal 
 make
 ```
 
