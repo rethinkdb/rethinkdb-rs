@@ -45,21 +45,6 @@ sudo apt-get install git g++ protobuf-compiler libprotobuf-dev libv8-dev \
 lib64ncurses5-dev libgoogle-perftools-dev libboost-dev curl
 ```
 
-RethinkDB also requires nodejs and npm. You can install them from wheezy-backports.
-As root, add the wheezy-backports to your sources (with `su`):
-
-```
-echo "deb http://ftp.us.debian.org/debian wheezy-backports main" >> /etc/apt/sources.list
-```
-
-Install nodejs and npm:
-
-```
-sudo apt-get update
-sudo apt-get install nodejs nodejs-legacy
-curl https://npmjs.org/install.sh | sudo sh
-```
-
 ## Get the source code ##
 
 Clone the RethinkDB repository:
@@ -74,8 +59,10 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb
-./configure
+./configure --fetch npm
 make
 ```
+
+_Note_: If you have `nodejs` and `npm` installed, you do not need the `--fetch npm` argument.
 
 {% include install-next-step.md %}
