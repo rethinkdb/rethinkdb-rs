@@ -38,21 +38,26 @@ sudo apt-get install rethinkdb
 
 ## Get the build dependencies ##
 
-```bash
-sudo apt-get install g++ protobuf-compiler protobuf-c-compiler libprotobuf-dev \
-libprotobuf-c0-dev libboost-dev libssl-dev libv8-dev libboost-program-options-dev \
-libgoogle-perftools-dev jsdoc-toolkit libprotoc-dev curl exuberant-ctags m4   \
-python-pip git-core libtinfo-dev
+Install the main dependencies:
+
+```
+sudo apt-get install git g++ protobuf-compiler libprotobuf-dev libv8-dev \
+lib64ncurses5-dev libgoogle-perftools-dev libboost-dev curl
 ```
 
-Debian does not provide Node.js, so it will be built alongside RethinkDB later
-in the build process.
+RethinkDB also requires nodejs and npm. You can install them from wheezy-backports.
+As root, add the wheezy-backports to your sources (with `su`):
 
-Install PyYAML, which is required for building the internal
-documentation:
+```
+echo "deb http://ftp.us.debian.org/debian wheezy-backports main" >> /etc/apt/sources.list
+```
 
-```bash
-sudo pip install pyyaml
+Install nodejs and npm:
+
+```
+sudo apt-get update
+sudo apt-get install nodejs nodejs-legacy
+curl https://npmjs.org/install.sh | sudo sh
 ```
 
 ## Get the source code ##
