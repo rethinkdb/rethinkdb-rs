@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/distinct/
-command: distinct 
+command: distinct
 io:
     -   - sequence
         - value

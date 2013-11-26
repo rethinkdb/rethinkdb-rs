@@ -1,10 +1,10 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/table/
 command: table
 related_commands:
-    filter: filter/ 
+    filter: filter/
     get: get/
 ---
 

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/time/
-command: time 
+command: time
 related_commands:
     now: now
     epoch_time: epoch_time/

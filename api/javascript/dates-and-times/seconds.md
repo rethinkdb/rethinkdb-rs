@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/seconds/
-command: seconds 
+command: seconds
 io:
     -   - time
         - number

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/set_difference/
-command: set_difference 
+command: set_difference
 related_commands:
     union: union/
     difference: difference/

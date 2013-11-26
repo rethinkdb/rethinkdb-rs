@@ -8,9 +8,8 @@ alias: api/
 language: JavaScript
 ---
 
-
-{% apisection Accessing RQL%}
-All RQL queries begin from the top level module.
+{% apisection Accessing ReQL%}
+All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
 
@@ -18,14 +17,13 @@ All RQL queries begin from the top level module.
 r &rarr; r
 {% endapibody %}
 
-The top-level RQL namespace.
+The top-level ReQL namespace.
 
-__Example:__ Setup your top level namespace.
+__Example:__ Set up your top-level namespace.
 
 ```js
 var r = require('rethinkdb');
 ```
-
 
 ## [connect](connect/) ##
 
@@ -34,59 +32,74 @@ r.connect(options, callback)
 r.connect(host, callback)
 {% endapibody %}
 
-Create a new connection to the database server. The available options are:
+Create a new connection to the database server.  Accepts the following
+options:
 
-- `host`: host of the RethinkDB instance. The default value is `localhost`.
-- `port`: the driver port, by default `28015`.
-- `db`: the database used if not explicitly specified in a query, by default `test`.
-- `authKey`: the authentification key, by default the empty string.
-- `timeout`: timeout period for the connection to be opened, by default `20` (seconds).
+- `host`: the host to connect to (default `localhost`).
+- `port`: the port to connect on (default `28015`).
+- `db`: the default database (default `test`).
+- `authKey`: the authentication key (default none).
+
+If the connection cannot be established, a `RqlDriverError` will be
+passed to the callback instead of a connection.
 
 __Example:__ Opens a new connection to the database.
 
 ```js
-r.connect({
-    host: "localhost",
-    port: 28015,
-    db: "marvel",
-    authKey: "hunter2"
-}, function(err, conn) { ... })
+r.connect({host:'localhost', port:28015, db:'marvel', authKey:'hunter2'},
+          function(err, conn) { ... })
 ```
-
-[Read more about this command &rarr;](connect/)
-
 
 ## [close](close/) ##
 
 {% apibody %}
-conn.close()
+conn.close([opts, ]callback)
 {% endapibody %}
 
-Close an open connection. Closing a connection cancels all outstanding requests and frees
-the memory associated with the open requests.
+Close an open connection.  Accepts the following options:
 
-__Example:__ Close an open connection.
+- `noreplyWait`: whether to wait for noreply writes to complete
+  before closing (default `true`).  If this is set to `false`, some
+  outstanding noreply writes may be aborted.
+
+Closing a connection waits until all outstanding requests have
+finished and then frees any open resources associated with the
+connection.  If `noreplyWait` is set to `false`, all outstanding
+requests are canceled immediately.
+
+__Example:__ Close an open connection, waiting for noreply writes to finish.
 
 ```js
-conn.close()
+conn.close(function(err) { if (err) throw err; })
 ```
 
+__Example:__ Close an open connection immediately.
+
+```js
+conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
+```
 
 ## [reconnect](reconnect/) ##
 
 {% apibody %}
-conn.reconnect()
+conn.reconnect([opts, ]callback)
 {% endapibody %}
 
-Close and attempt to reopen a connection. Has the effect of canceling any outstanding
-request while keeping the connection open.
+Close and reopen a connection.  Accepts the following options:
+
+- `noreplyWait`: whether to wait for noreply writes to complete
+  before closing (default `true`).  If this is set to `false`, some
+  outstanding noreply writes may be aborted.
+
+Closing a connection waits until all outstanding requests have
+finished.  If `noreplyWait` is set to `false`, all outstanding
+requests are canceled immediately.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```js
-conn.reconnect(function(errror, connection) { ... })
+conn.reconnect({noreplyWait: false}, function(errror, connection) { ... })
 ```
-
 
 ## [use](use/) ##
 
@@ -96,31 +109,57 @@ conn.use(dbName)
 
 Change the default database on this connection.
 
-__Example:__ Change the default database so that we don't need to specify the database
-when referencing a table.
+__Example:__ Change the default database so that we don't need to
+specify the database when referencing a table.
 
 ```js
-conn.use('heroes')
+conn.use('marvel')
+r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
 ```
-
 
 ## [run](run/) ##
 
 {% apibody %}
-query.run(connection, callback) 
+query.run(conn, callback)
 query.run(options[, callback])
 {% endapibody %}
 
-Run a query on a connection.
+Run a query on a connection.  Accepts the following options:
 
-__Example:__ Call run on the connection with a query to execute the query. The callback
-will get a cursor from which results may be retrieved.
+- `useOutdated`: whether or not outdated reads are OK (default: `false`).
+- `timeFormat`: what format to return times in (default: `'native'`).
+  Set this to `'raw'` if you want times returned as JSON objects for exporting.
+- `profile`: whether or not to return a profile of the query's
+  execution (default: `false`).
+
+The callback will get either an error, a single JSON result, or a
+cursor, depending on the query.
+
+__Example:__ Run a query on the connection `conn` and log each row in
+the result to the console.
 
 ```js
 r.table('marvel').run(conn, function(err, cursor) { cursor.each(console.log); })
 ```
 
 [Read more about this command &rarr;](run/)
+
+## [noreplyWait](noreply_wait/) ##
+
+{% apibody %}
+conn.noreplyWait(callback)
+{% endapibody %}
+
+`noreplyWait` ensures that previous queries with the `noreply` flag have been processed
+by the server. Note that this guarantee only applies to queries run on the given connection.
+
+__Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
+wait until the server has processed them.
+
+```js
+conn.noreplyWait(function(err) { ... })
+```
+
 
 ## [next](next/) ##
 
@@ -223,7 +262,7 @@ cursor.close()
 ## [addListener](add_listener/) ##
 
 {% apibody %}
-connection.addListener(event, listener)
+conn.addListener(event, listener)
 {% endapibody %}
 
 The connection object also supports the event emitter interface so you can listen for
@@ -319,7 +358,7 @@ r.dbList().run(conn, callback)
 db.tableCreate(tableName[, options]) &rarr; object
 {% endapibody %}
 
-Create a table. A RethinkDB table is a collection of JSON documents. 
+Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
 name already exists, the operation throws `RqlRuntimeError`.
@@ -362,7 +401,6 @@ __Example:__ Drop a table named 'dc_universe'.
 r.db('test').tableDrop('dc_universe').run(conn, callback)
 ```
 
-
 ## [tableList](table_list/) ##
 
 {% apibody %}
@@ -376,7 +414,6 @@ __Example:__ List all tables of the 'test' database.
 ```js
 r.db('test').tableList().run(conn, callback)
 ```
-
 
 ## [indexCreate](index_create/) ##
 
@@ -395,7 +432,6 @@ r.table('dc').indexCreate('code_name').run(conn, callback)
 
 [Read more about this command &rarr;](index_create/)
 
-
 ## [indexDrop](index_drop/) ##
 
 {% apibody %}
@@ -409,7 +445,6 @@ __Example:__ Drop a secondary index named 'code_name'.
 ```js
 r.table('dc').indexDrop('code_name').run(conn, callback)
 ```
-
 
 ## [indexList](index_list/) ##
 
@@ -425,7 +460,47 @@ __Example:__ List the available secondary indexes for this table.
 r.table('marvel').indexList().run(conn, callback)
 ```
 
+## [indexStatus](index_status/) ##
 
+{% apibody %}
+table.indexStatus([, index...]) &rarr; array
+{% endapibody %}
+
+Get the status of the specified indexes on this table, or the status
+of all indexes on this table if no indexes are specified.
+
+__Example:__ Get the status of all the indexes on `test`:
+
+```js
+r.table('test').indexStatus().run(conn, callback)
+```
+
+__Example:__ Get the status of the `timestamp` index:
+
+```js
+r.table('test').indexStatus('timestamp').run(conn, callback)
+```
+
+## [indexWait](index_wait/) ##
+
+{% apibody %}
+table.indexWait([, index...]) &rarr; array
+{% endapibody %}
+
+Wait for the specified indexes on this table to be ready, or for all
+indexes on this table to be ready if no indexes are specified.
+
+__Example:__ Wait for all indexes on the table `test` to be ready:
+
+```js
+r.table('test').indexWait().run(conn, callback)
+```
+
+__Example:__ Wait for the index `timestamp` to be ready:
+
+```js
+r.table('test').indexWait('timestamp').run(conn, callback)
+```
 
 {% endapisection %}
 
@@ -474,9 +549,9 @@ singleSelection.update(json | expr[, {durability: 'soft', return_vals: true])
     &rarr; object
 {% endapibody %}
 
-Update JSON documents in a table. Accepts a JSON document, a RQL expression, or a
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
 combination of the two. You can pass options like `returnVals` that will return the old
-and new values of the row you have modified. 
+and new values of the row you have modified.
 
 Update returns an object that contains the following attributes:
 
@@ -511,7 +586,7 @@ singleSelection.replace(json | expr
         &rarr; object
 {% endapibody %}
 
-Replace documents in a table. Accepts a JSON document or a RQL expression, and replaces
+Replace documents in a table. Accepts a JSON document or a ReQL expression, and replaces
 the original document with the new one. The new document must have the same primary key
 as the original document. The optional argument durability with value 'hard' or 'soft'
 will override the table or query's default durability setting. The optional argument
@@ -576,6 +651,26 @@ r.table('marvel').get('superman').delete().run(conn, callback)
 ```
 
 [Read more about this command &rarr;](delete/)
+
+## [sync](sync/) ##
+
+{% apibody %}
+table.sync()
+    &rarr; object
+{% endapibody %}
+
+`sync` ensures that writes on a given table are written to permanent storage. Queries
+that specify soft durability (`{durability: 'soft'}`) do not give such guarantees, so
+`sync` can be used to ensure the state of these queries. A call to `sync` does not return
+until all previous writes to the table are persisted.
+
+
+__Example:__ After having updated multiple heroes with soft durability, we now want to wait
+until these changes are persisted.
+
+```js
+r.table('marvel').sync().run(conn, callback)
+```
 
 {% endapisection %}
 
@@ -2187,9 +2282,9 @@ r.table("posts").map( function(post) {
 r.expr(value) &rarr; value
 {% endapibody %}
 
-Construct a RQL JSON object from a native object.
+Construct a ReQL JSON object from a native object.
 
-__Example:__ Objects wrapped with expr can then be manipulated by RQL API functions.
+__Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 
 ```js
 r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)
@@ -2222,7 +2317,7 @@ array.coerceTo(typeName) &rarr; object
 object.coerceTo(typeName) &rarr; array
 {% endapibody %}
 
-Converts a value of one type into another. 
+Converts a value of one type into another.
 
 You can convert: a selection, sequence, or object into an ARRAY, an array of pairs into an OBJECT, and any DATUM into a STRING.
 
@@ -2254,7 +2349,7 @@ r.expr("foo").typeOf().run(conn, callback)
 any.info() &rarr; object
 {% endapibody %}
 
-Get information about a RQL value.
+Get information about a ReQL value.
 
 __Example:__ Get information about a table such as primary key, or cache size.
 

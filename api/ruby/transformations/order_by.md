@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/order_by/
-command: order_by 
+command: order_by
 related_commands:
     skip: skip/
     limit: limit/

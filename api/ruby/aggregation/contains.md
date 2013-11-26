@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/contains/
-command: contains 
+command: contains
 related_commands:
     map: map/
     reduce: reduce/

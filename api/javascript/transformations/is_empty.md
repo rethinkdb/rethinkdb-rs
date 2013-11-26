@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/is_empty/
-command: isEmpty 
+command: isEmpty
 io:
     -   - sequence
         - bool

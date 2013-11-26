@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/info/
-command: info 
+command: info
 io:
     -   - any
         - object
@@ -16,7 +16,7 @@ any.info() &rarr; object
 
 # Description #
 
-Get information about a RQL value.
+Get information about a ReQL value.
 
 __Example:__ Get information about a table such as primary key, or cache size.
 

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/day/
-command: day 
+command: day
 io:
     -   - time
         - number

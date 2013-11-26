@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/grouped_map_reduce/
-command: grouped_map_reduce 
+command: grouped_map_reduce
 related_commands:
     map: map/
     concat_map: concat_map/

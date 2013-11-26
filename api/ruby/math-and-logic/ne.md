@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/ne/
-command: ne 
+command: ne
 related_commands:
     '&': and/
     '|': or/

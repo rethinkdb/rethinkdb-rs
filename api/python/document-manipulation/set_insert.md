@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/set_insert/
-command: set_insert 
+command: set_insert
 related_commands:
     union: union/
     difference: difference/

@@ -1,11 +1,11 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/filter/
 command: filter
 io:
     -   - sequence
-        - selection 
+        - selection
     -   - stream
         - stream
     -   - array
@@ -110,7 +110,7 @@ r.table("users").filter( function(user) {
 }).run( conn, callback)
 ```
 
-__Exmaple:__ Retrieve all the users who have a gmail account (whose field `email` ends
+__Example:__ Retrieve all the users who have a gmail account (whose field `email` ends
 with `@gmail.com`).
 
 
@@ -120,7 +120,7 @@ r.table("users").filter( function(user) {
 }).run( conn, callback)
 ```
 
-__Exmaple:__ Filter based on the presence of a value in an array.
+__Example:__ Filter based on the presence of a value in an array.
 
 Suppose the table `users` has the following schema
 

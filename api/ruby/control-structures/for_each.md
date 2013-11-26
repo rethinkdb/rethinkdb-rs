@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/for_each/
-command: for_each 
+command: for_each
 ---
 
 # Command syntax #

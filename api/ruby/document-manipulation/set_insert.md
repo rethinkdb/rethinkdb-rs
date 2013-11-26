@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/set_insert/
-command: set_insert 
+command: set_insert
 related_commands:
     union: union/
     difference: difference/

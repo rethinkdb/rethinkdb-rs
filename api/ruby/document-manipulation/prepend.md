@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/prepend/
-command: prepend 
+command: prepend
 related_commands:
 ---
 

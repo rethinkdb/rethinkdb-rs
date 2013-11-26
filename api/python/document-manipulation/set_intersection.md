@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/set_intersection/
-command: set_intersection 
+command: set_intersection
 related_commands:
     union: union/
     difference: difference/

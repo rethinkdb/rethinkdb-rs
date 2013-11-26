@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/difference/
-command: difference 
+command: difference
 io:
     -   - array
         - array

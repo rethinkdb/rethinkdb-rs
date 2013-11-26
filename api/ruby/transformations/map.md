@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/map/
-command: map 
+command: map
 related_commands:
     concat_map: concat_map/
     reduce: reduce/

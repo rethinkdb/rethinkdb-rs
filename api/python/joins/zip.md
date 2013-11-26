@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/zip/
-command: zip 
+command: zip
 related_commands:
     eq_join: eq_join/
     inner_join: inner_join/

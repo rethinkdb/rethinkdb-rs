@@ -1,10 +1,10 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/insert/
 command: insert
 related_commands:
-    update: update/ 
+    update: update/
     replace: replace/
     delete: delete/
 ---
@@ -60,7 +60,7 @@ r.table('marvel').insert(
     { 'superhero': 'Iron Man', 'superpower': 'Arc Reactor' },
     upsert=True
 ).run(conn)
-
+```
 
 __Example:__ Get back a copy of the new row, this is useful if you've done an upsert or generated an ID.
 

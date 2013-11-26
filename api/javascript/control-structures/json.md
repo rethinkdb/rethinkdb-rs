@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/json/
-command: json 
+command: json
 io:
     -   - r
         - value

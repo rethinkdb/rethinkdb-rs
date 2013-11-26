@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/change_at/
-command: changeAt 
+command: changeAt
 io:
     -   - array
         - array

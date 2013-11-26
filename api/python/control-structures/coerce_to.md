@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/coerce_to/
 command: coerce_to
@@ -16,7 +16,7 @@ object.coerce_to(type_name) &rarr; array
 
 # Description #
 
-Converts a value of one type into another. 
+Converts a value of one type into another.
 
 You can convert: a selection, sequence, or object into an ARRAY, an array of pairs into an OBJECT, and any DATUM into a STRING.
 

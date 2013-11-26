@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/for_each/
-command: forEach 
+command: forEach
 io:
     -   - sequence
         - object

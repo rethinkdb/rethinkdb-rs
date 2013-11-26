@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/error/
-command: error 
+command: error
 ---
 
 # Command syntax #

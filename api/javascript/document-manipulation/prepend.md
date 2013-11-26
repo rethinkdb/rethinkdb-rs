@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/prepend/
-command: prepend 
+command: prepend
 io:
     -   - array
         - array

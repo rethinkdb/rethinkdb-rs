@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/without/
-command: without 
+command: without
 related_commands:
     pluck: pluck/
     map: map/

@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/has_next/
-command: hasNext 
+command: hasNext
 rb: false
 py: false
 io:

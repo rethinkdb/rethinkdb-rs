@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/set_insert/
-command: setInsert 
+command: setInsert
 io:
     -   - array
         - array

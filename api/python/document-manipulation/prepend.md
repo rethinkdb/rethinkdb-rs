@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/prepend/
-command: prepend 
+command: prepend
 related_commands:
     append: append/
     merge: merge/

@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/connect/
 command: connect
@@ -13,32 +13,27 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.connect(options) &rarr; connection
-r.connect(host) &rarr; connection
+r.connect(opts={}) &rarr; connection
 {% endapibody %}
 
 # Description #
 
-Create a new connection to the database server. The available options are:
+Create a new connection to the database server.  Accepts the following
+options:
 
-- `host`: host of the RethinkDB instance. The default value is `localhost`.
-- `port`: the driver port, by default `28015`.
-- `db`: the database used if not explicitly specified in a query, by default `test`.
-- `auth_key`: the authentification key, by default the empty string.
+- `host`: the host to connect to (default `localhost`).
+- `port`: the port to connect on (default `28015`).
+- `db`: the default database (default `test`).
+- `auth_key`: the authentication key (default none).
 
-
-If the connection cannot be established, a `RqlDriverError` exception will be thrown
-
+If the connection cannot be established, a `RqlDriverError` exception
+will be thrown.
 
 __Example:__ Opens a new connection to the database.
 
 ```rb
-conn = r.connect(:host => 'localhost', :port => 28015, :db => 'marvel', :auth_key => 'hunter2')
-```
-
-
-__Example:__ Opens a new connection to the database by just specifying the host.
-
-```js
-conn = r.connect("localhost")
+conn = r.connect(:host => 'localhost',
+                 :port => 28015,
+                 :db => 'heroes',
+                 :auth_key => 'hunter2')
 ```

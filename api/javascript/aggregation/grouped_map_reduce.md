@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: JavaScript
 permalink: api/javascript/grouped_map_reduce/
-command: groupedMapReduce 
+command: groupedMapReduce
 io:
     -   - sequence
         - value

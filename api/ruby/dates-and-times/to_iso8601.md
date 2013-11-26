@@ -1,8 +1,8 @@
 ---
-layout: api-command 
+layout: api-command
 language: Ruby
 permalink: api/ruby/to_iso8601/
-command: to_iso8601 
+command: to_iso8601
 related_commands:
     now: now/
     time: time/

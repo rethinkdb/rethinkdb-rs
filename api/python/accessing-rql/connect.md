@@ -1,5 +1,5 @@
 ---
-layout: api-command 
+layout: api-command
 language: Python
 permalink: api/python/connect/
 command: connect
@@ -30,16 +30,12 @@ Create a new connection to the database server. The keyword arguments are:
 
 Create a new connection to the database server.
 
-If the connection cannot be established, a `RqlDriverError` exception will be thrown.
+If the connection cannot be established, a `RqlDriverError` exception
+will be thrown.
 
-__Example:__ Opens a new connection to the database.
+__Example:__ Opens a connection using the default host and port but
+specifying the default database.
 
 ```py
-conn = r.connect(host="localhost", port="28015", db="marvel", auth_key="hunter2")
-```
-
-__Example:__ Opens a new connection to the database by just specifying the host.
-
-```js
-conn = r.connect("localhost")
+conn = r.connect(db='marvel')
 ```
