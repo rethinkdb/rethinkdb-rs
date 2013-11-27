@@ -96,7 +96,7 @@ python -c 'from google.protobuf.internal import cpp_message' || \
 Once built, the protobuf library can be installed by using:
 
 ```
-PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp python setup.py install --user
+sudo PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp python setup.py install
 ```
 
 The fourth and last step is to reinstall the `rethinkdb` python
@@ -104,8 +104,8 @@ package. This step will fail if it cannot build the RethinkDB-specific
 C++ code.
 
 ```
-pip uninstall rethinkdb
-PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp pip install --user rethinkdb
+sudo pip uninstall rethinkdb
+sudo PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp pip install rethinkdb
 ```
 
 You can verify that you are running the C++ backend by checking the following:
