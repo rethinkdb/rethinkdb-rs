@@ -48,7 +48,7 @@ def read_index(script_path, result):
             current_url = title.group(2)
             current_description = ""
             current_body = ""
-            parsing_example = ""
+            current_example = ""
         else:
             # Check if we hit a body tag
             if start_body_pattern.match(line) != None:
@@ -112,7 +112,7 @@ def add_io_field(file_name, result):
 
 def browse_files(base, result):
     subdirlist = []
-    for item in sorted(os.listdir(base)):
+    for item in os.listdir(base):
         if item[0] != '.' and item not in IGNORED_FILES:
             full_path = os.path.join(base, item)
             if os.path.isfile(full_path):
@@ -136,5 +136,5 @@ if __name__ == "__main__":
 
     # Dump result in a JSON format and write it in a file
     result_file = codecs.open(script_path+"/reql_docs.json", "w", "utf-8")
-    result_file.write(json.dumps(result, indent=2))
+    result_file.write(json.dumps(result, sort_keys=True))
     result_file.close()
