@@ -13,17 +13,41 @@ r.branch(test, true_branch, false_branch) &rarr; any
 
 # Description #
 
-Evaluate one of two control paths based on the value of an expression. branch is effectively an if renamed due to language constraints.
+If the `test` expression returns `False` or `None`, the `false_branch` will be executed.
+In the other cases, the `true_branch` is the one that will be evaluated.
+   
+The `branch` command is effectively an `if` renamed due to language constraints.
 
-The type of the result is determined by the type of the branch that gets executed.
-
-__Example:__ Return the manlier of two heroes:
+__Example:__ Return heroes and superheroes.
 
 ```py
-r.table('marvel').map(r.branch(r.row['victories'] > 100,
-    r.row['name'] + ' is a superhero',
-    r.row['name'] + ' is a hero')
+r.table('marvel').map(
+    r.branch(
+        r.row['victories'] > 100,
+        r.row['name'] + ' is a superhero',
+        r.row['name'] + ' is a hero'
+    )
 ).run(conn)
 ```
 
+If the documents in the table `marvel` are:
 
+```py
+[{
+    "name": "Iron man",
+    "victories": 214
+},
+{
+    "name": "Jubilee",
+    "victories": 9
+}]
+```
+
+The results will be:
+
+```py
+[
+    "Iron man is a superhero",
+    "Jubilee is a hero"
+]
+```

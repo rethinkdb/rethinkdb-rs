@@ -2078,19 +2078,23 @@ r.do(r.table('marvel').get('IronMan')) { |ironman| ironman[:name] }.run(conn)
 r.branch(test, true_branch, false_branch) &rarr; any
 {% endapibody %}
 
-Evaluate one of two control paths based on the value of an expression. branch is effectively an if renamed due to language constraints.
-
+If the `test` expression returns `false` or `nil`, the `false_branch` will be executed.
+In the other cases, the `true_branch` is the one that will be evaluated.
+   
+The `branch` command is effectively an `if` renamed due to language constraints.
 The type of the result is determined by the type of the branch that gets executed.
 
-__Example:__ Return the manlier of two heroes:
+__Example:__ Return heroes and superheroes.
 
 ```rb
-r.table('marvel').map { |row|  r.branch(row[:victories] > 100,
-    row[:name] + ' is a superhero',
-    row[:name] + ' is a hero')
+r.table('marvel').map{ |hero|
+    r.branch(
+        hero['victories'] > 100,
+        hero['name'].add(' is a superhero'),
+        hero['name'].add(' is a hero')
+    )
 }.run(conn)
 ```
-
 
 ## [for_each](for_each/) ##
 

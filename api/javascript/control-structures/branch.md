@@ -18,17 +18,43 @@ r.branch(test, true_branch, false_branch) &rarr; any
 
 # Description #
 
-Evaluate one of two control paths based on the value of an expression. branch is effectively an if renamed due to language constraints.
+If the `test` expression returns `false` or `null`, the `false_branch` will be executed.
+In the other cases, the `true_branch` is the one that will be evaluated.
 
+The `branch` command is effectively an `if` renamed due to language constraints.
 The type of the result is determined by the type of the branch that gets executed.
 
-__Example:__ Return the manlier of two heroes:
+__Example:__ Return heroes and superheroes.
 
-```
-r.table('marvel').map(r.branch(r.row('victories').gt(100),
-    r.row('name').add(' is a superhero'),
-    r.row('name').add(' is a hero'))
+```js
+r.table('marvel').map(
+    r.branch(
+        r.row('victories').gt(100),
+        r.row('name').add(' is a superhero'),
+        r.row('name').add(' is a hero')
+    )
 ).run(conn, callback)
 ```
 
+If the documents in the table `marvel` are:
+
+```js
+[{
+    name: "Iron man",
+    victories: 214
+},
+{
+    name: "Jubilee",
+    victories: 9
+}]
+```
+
+The results will be:
+
+```js
+[
+    "Iron man is a superhero",
+    "Jubilee is a hero"
+]
+```
 
