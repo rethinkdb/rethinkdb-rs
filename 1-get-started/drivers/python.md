@@ -13,7 +13,7 @@ permalink: docs/install-drivers/python/
 Install the driver with pip:
 
 ```bash
-$ pip install --user rethinkdb
+$ sudo pip install rethinkdb
 ```
 
 # Usage #
