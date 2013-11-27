@@ -2196,8 +2196,8 @@ r.do(r.table('marvel').get('IronMan'),
 r.branch(test, true_branch, false_branch) &rarr; any
 {% endapibody %}
 
-If the `test` expression returns `false` or `null`, the `false_branch` will be executed.
-In the other cases, the `true_branch` is the one that will be evaluated.
+If the `test` expression returns `false` or `null`, the `false_branch` will be evaluated.
+Otherwise, the `true_branch` will be evaluated.
 
 The `branch` command is effectively an `if` renamed due to language constraints.
 The type of the result is determined by the type of the branch that gets executed.
