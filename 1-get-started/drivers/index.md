@@ -95,7 +95,7 @@ __Thanks to all our amazing driver contributors!__
 - [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): [https://github.com/bitemyapp/revise](https://github.com/bitemyapp/revise)
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
 - [@christopherhesse](https://github.com/christopherhesse) (Go): [https://github.com/christopherhesse/rethinkgo](https://github.com/christopherhesse/rethinkgo)
-- [@dancannon](https://github.com/dancanopn) (Go): [https://github.com/dancannon/gorethink](https://github.com/dancannon/gorethink)
+- [@dancannon](https://github.com/dancannon) (Go): [https://github.com/dancannon/gorethink](https://github.com/dancannon/gorethink)
 - [@danielmewes](https://github.com/danielmewes) (PHP): [https://github.com/danielmewes/php-rql](https://github.com/danielmewes/php-rql)
 - [@dkhenry](https://github.com/dkhenry) (Java): [https://github.com/dkhenry/rethinkjava](https://github.com/dkhenry/rethinkjava)
 - [@esycat](https://github.com/esycat) (Scala): [https://github.com/esycat/rql-scala](https://github.com/esycat/rql-scala)
