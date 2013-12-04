@@ -8,7 +8,7 @@ permalink: docs/install/mint/
 ---
 {% include install-docs-header.md %}
 {% include install-community-platform-warning.md %}
-The following instructions were tested on Linux Mint 14.1
+The following instructions were tested on Linux Mint 16.
 
 # With binaries #
 Add the [RethinkDB PPA](https://launchpad.net/~rethinkdb/+archive/ppa) to your list of
