@@ -16,6 +16,7 @@ These instructions have been tested on OpenSuse 13.1.
 ## Get the dependencies ##
 
 Install the main dependencies:
+
 ```
 sudo zypper in git-core make gcc gcc-c++ protobuf-devel nodejs v8-devel ncurses-devel gperftools-devel boost-devel
 ```
