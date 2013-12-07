@@ -8,20 +8,16 @@ permalink: docs/install/opensuse/
 ---
 {% include install-docs-header.md %}
 {% include install-community-platform-warning.md %}
+
+These instructions have been tested on OpenSuse 13.1.
+
 # Compile from source #
 
 ## Get the dependencies ##
 
 Install the main dependencies:
-
 ```
-sudo zypper in git-core gcc gcc-c++ nodejs protobuf-devel v8-devel gperftools-devel make python-pip boost-devel
-```
-
-Install PyYAML, which is required for building the internal documentation:
-
-```
-sudo pip install pyyaml
+sudo zypper in git-core make gcc gcc-c++ protobuf-devel nodejs v8-devel ncurses-devel gperftools-devel boost-devel
 ```
 
 ## Get the source code ##
@@ -37,7 +33,7 @@ Kick off the build process:
 
 ```
 cd rethinkdb
-./configure tcmalloc_minimal=-ltcmalloc_minimal
+./configure --dynamic tcmalloc_minimal
 make
 ```
 
