@@ -8,7 +8,7 @@ permalink: docs/install/mint/
 ---
 {% include install-docs-header.md %}
 {% include install-community-platform-warning.md %}
-The following instructions were tested on Linux Mint 14.1
+The following instructions were tested on Linux Mint 16.
 
 # With binaries #
 Add the [RethinkDB PPA](https://launchpad.net/~rethinkdb/+archive/ppa) to your list of
@@ -27,15 +27,8 @@ sudo apt-get install rethinkdb
 Install the main dependencies:
 
 ```
-sudo apt-get install g++ protobuf-compiler protobuf-c-compiler libprotobuf-dev
-libv8-dev libgoogle-perftools-dev make libprotoc-dev libboost-dev
-python-pip python-dev libyaml-dev nodejs npm git-core
-```
-
-Install Python's yaml library, which is required for building the internal documentation:
-
-```
-sudo pip install PyYAML
+sudo apt-get install git-core g++ nodejs npm libprotobuf-dev libncurses5-dev \
+    libgoogle-perftools-dev libboost-dev nodejs-legacy
 ```
 
 ## Get the source code ##
