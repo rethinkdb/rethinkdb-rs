@@ -184,6 +184,22 @@ wait until the server has processed them.
 conn.noreply_wait
 ```
 
+## [close (cursor)](close-cursor/) ##
+
+{% apibody %}
+cursor.close()
+{% endapibody %}
+
+
+Close a cursor. Closing a cursor cancels the corresponding query and frees the memory
+associated with the open request.
+
+__Example:__ Close a cursor.
+
+```rb
+cursor.close()
+```
+
 
 {% endapisection %}
 

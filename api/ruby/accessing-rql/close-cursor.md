@@ -1,16 +1,8 @@
 ---
 layout: api-command
-language: JavaScript
-permalink: api/javascript/close-cursor/
+language: Ruby
+permalink: api/ruby/close-cursor/
 command: close
-io:
-    -   - cursor
-        - undefined
-related_commands:
-    next: next/
-    hasNext: has_next/
-    toArray: to_array/
-    each: each/
 ---
 
 # Command syntax #
@@ -27,6 +19,6 @@ associated with the open request.
 
 __Example:__ Close a cursor.
 
-```js
+```rb
 cursor.close()
 ```
