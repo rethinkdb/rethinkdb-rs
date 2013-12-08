@@ -31,6 +31,7 @@ If you do not have the `add-apt-repository` command, install it first:
 
 # Compile from source on Ubuntu 13.10 #
 
+## Get the build dependencies ##
 Install the main dependencies:
 
 ```
