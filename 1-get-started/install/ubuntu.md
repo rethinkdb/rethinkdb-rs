@@ -28,22 +28,14 @@ If you do not have the `add-apt-repository` command, install it first:
 * Ubuntu Quantal and above (>= 12.10) &mdash; `sudo apt-get install software-properties-common`
 * Earlier Ubuntu versions (< 12.10) &mdash; `sudo apt-get install python-software-properties`
 
-# Compile from source #
 
-## Get the build dependencies ##
+# Compile from source on Ubuntu 13.10 #
 
-There are a number of packages required for the build process. On Ubuntu, you can install build dependencies with apt-get:
+Install the main dependencies:
 
-```bash
-sudo apt-get install g++ protobuf-compiler protobuf-c-compiler libprotobuf-dev
-libv8-dev libgoogle-perftools-dev make libprotoc-dev libboost-dev
-python-pip python-dev libyaml-dev nodejs npm git-core libtinfo-dev
 ```
-
-Install PyYAML, which is required for building the internal documentation:
-
-```bash
-sudo pip install pyyaml
+sudo apt-get install git-core g++ nodejs npm libprotobuf-dev libgoogle-perftools-dev \
+    libncurses5-dev libboost-all-dev nodejs-legacy
 ```
 
 ## Get the source code ##
@@ -63,6 +55,44 @@ cd rethinkdb
 make
 ```
 
+
+# Compile from source on Ubuntu 12.04 #
+
+## Get the build dependencies ##
+
+Install the main dependencies:
+
+```
+sudo apt-get install git-core g++ nodejs npm libprotobuf-dev libgoogle-perftools-dev \
+    libncurses5-dev libboost-all-dev
+```
+
+Then install a more recent version of `node` with `n`.
+
+```
+sudo npm install -g n
+sudo apt-get install curl
+sudo n stable
+```
+
+## Get the source code ##
+Clone the RethinkDB repository:
+
+```bash
+git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+```
+
+## Build RethinkDB ##
+
+Kick off the build process:
+
+```bash
+cd rethinkdb
+./configure npm=/usr/local/bin/npm
+make
+```
+
 You will find the `rethinkdb` binary in the `build/release/` subfolder.  
+
 
 {% include install-next-step.md %}
