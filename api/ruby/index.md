@@ -187,7 +187,7 @@ conn.noreply_wait
 ## [close (cursor)](close-cursor/) ##
 
 {% apibody %}
-cursor.close()
+cursor.close
 {% endapibody %}
 
 
@@ -197,7 +197,7 @@ associated with the open request.
 __Example:__ Close a cursor.
 
 ```rb
-cursor.close()
+cursor.close
 ```
 
 

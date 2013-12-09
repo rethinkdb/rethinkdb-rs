@@ -8,7 +8,7 @@ command: close
 # Command syntax #
 
 {% apibody %}
-cursor.close()
+cursor.close
 {% endapibody %}
 
 # Description #
@@ -20,5 +20,5 @@ associated with the open request.
 __Example:__ Close a cursor.
 
 ```rb
-cursor.close()
+cursor.close
 ```
