@@ -8,54 +8,50 @@ js: [fancybox]
 ---
 
 Secondary indexes are data structures that improve the speed of many
-read queries at the cost of increased storage space and decreased
+read queries at the slight cost of increased storage space and decreased
 write performance.
 
 RethinkDB supports different types of secondary indexes:
 
-- __Simple indexes__ based on the value of a single field.
+- __Single field indexes__ based on the value of a single field.
 - __Compound indexes__ based on multiple fields.
+- __Multi indexes__ based on arrays of values.
 - Indexes based on __arbitrary expressions__.
 
-# Basic index usage #
+# Indexes usage #
 
-## Creation and querying ##
+## Single field indexes ##
 
-```javascript
-// Create a secondary index on the last_name attribute
-r.table('users').indexCreate('last_name')
+Single field indexes can be used to retrieve documents or order them faster.
 
-// Get all users with the last name Smith
-r.table('users').getAll('Smith', { index: 'last_name' })
+### Creation ###
 
-// Get all users whose last names are between Smith and Wade
-r.table('users').between('Smith', 'Wade', { index: 'last_name' })
+```py
+# Create a secondary index on the last_name attribute
+r.table("users").index_create("last_name").run(conn)
+
+# Wait for the index to be ready to use
+r.table("users").index_wait("last_name").run(conn)
 ```
 
-## Administrative operations ##
+### Querying ###
 
-```javascript
-// list indexes on table 'users'
-r.table('users').indexList()
+```py
+# Get all users whose last name is "Smith"
+r.table("users").get_all("Smith", index="last_name").run(conn)
 
-// drop index 'last_name' on table 'users'
-r.table('users').indexDrop('last_name')
-```
+# Get all users whose last names are "Smith" or "Lewis"
+r.table("users").get_all("Smith", "Lewis", index="last_name").run(conn)
 
-# More advanced operations #
+# Get all users whose last names are between Smith and Wade
+r.table("users").between("Smith", "Wade", index="last_name").run(conn)
 
-## Compound indexes ##
+# Order users by last name
+r.table("users").order_by(index="last_name").run(conn)
 
-```javascript
-// Create a compound secondary index based on the last_name and first_name attributes
-r.table('users').indexCreate('full_name', [r.row('last_name'), r.row('first_name')])
-```
-
-## Efficient table joins ##
-
-```javascript
-// For each blog post, return the post and its author using the full_name index
-r.table('posts').eqJoin('author', r.table('users'), { index: 'full_name' })
+# For each blog post, return the post and its author using the last_name index
+r.table("posts").eq_join("author_last_name", r.table("users"), index="last_name") \
+    .zip().run(conn)
 ```
 
 {% infobox info %}
@@ -63,17 +59,124 @@ __Want to learn more about joins in RethinkDB?__ See [how to use joins](/docs/ta
 to query _one to many_ and _many to many_ relations.
 {% endinfobox %}
 
-## Indexes on arbitrary ReQL expressions ##
 
-```javascript
-// A different way to do a compound index
-r.table('users').indexCreate('full_name2',
-                             r.add(r.row('last_name'), '_', r.row('first_name')))
+
+## Compound indexes ##
+
+If you want to retrieve documents that match multiple fields, you cannot just create
+multiple single field indexes and chain `get_all` commands.  
+You need to create a compound index for that.
+
+
+### Creation ###
+
+```py
+# Create a compound secondary index based on the first_name and last_name attributes
+r.table("users").index_create("full_name", [r.row["first_name"], r.row["last_name"]]) \
+    .run(conn)
+
+# Wait for the index to be ready to use
+r.table("users").index_wait("full_name").run(conn)
 ```
 
-# Manipulating indexes with the web UI #
 
-The web UI supports creation and deletion of simple secondary
+### Querying ###
+
+```py
+# Get all users whose full name is John Smith.
+r.table("users").get_all(["John", "Smith"], index="full_name").run(conn)
+
+# Get all users whose full name is between "John Smith" and "Wade Welles"
+r.table("users").between(["John", "Smith"], ["Wade, Welles"], index="full_name") \
+    .run(conn)
+
+# Order users by first name and last name
+r.table("users").order_by(index="full_name").run(conn)
+
+# For each blog post, return the post and its author using the full_name index
+r.table("posts").eq_join("author_full_name", r.table("users"), index="full_name") \
+    .run(conn)
+```
+
+
+## Multi indexes ##
+
+If you want to bind a document to multiple values like for example a blog post to
+multiple tags, you need to use a multi index.
+
+### Creation ###
+Suppose each post has a field `tags` that maps to an array of tags. The schema of the
+table `posts` would be something like:
+
+```py
+{
+    "title": "...",
+    "content": "...",
+    "tags": [ <tag1>, <tag2>, ... ]
+}
+
+```
+
+```py
+# Create the multi index based on the field tags
+r.table("posts").index_create("tags", multi=True)
+
+# Wait for the index to be ready to use
+r.table("posts").index_wait("tags").run(conn)
+```
+
+### Querying ###
+
+```py
+# Get all posts with the tag "travel" (where the field tags contains "travel")
+r.table("posts").get_all("travel", index="tags").run(conn)
+
+# For each tag, return the tag and the posts that have such tag
+r.table("tags").eq_join("tag", r.table("posts"), index="tags").run(conn)
+```
+
+
+## Indexes on arbitrary ReQL expressions ##
+
+You can create an index on an arbitrary expressions by passing an anonymous
+function to `index_create`.
+
+
+```py
+# A different way to do a compound index
+r.table("users").index_create("full_name2", lambda user:
+    r.add(user["last_name"], "_", user["first_name"])).run(conn)
+```
+
+The function you give to `index_create` must be deterministic. In practice it means that
+that you cannot use a function that contains a sub-query or the `r.js` command.
+
+
+# Administrative operations #
+
+## With ReQL ##
+
+```py
+# list indexes on table "users"
+r.table("users").index_list().run(conn)
+
+# drop index "last_name" on table "users"
+r.table("users").index_drop("last_name").run(conn)
+
+# return the status of all indexes
+r.table("users").index_status().run(conn)
+
+# return the status of the index "last_name"
+r.table("users").index_status("last_name").run(conn)
+
+# return only when the index "last_name" is ready
+r.table("users").index_wait("last_name").run(conn)
+```
+
+
+## Manipulating indexes with the web UI ##
+
+The web UI supports creation and deletion of single field secondary
 indexes. In the table list, click on the table `users`. You can
 manipulate indexes through the secondary index panel in the table
 view.
@@ -82,37 +185,45 @@ view.
     <a href="/assets/images/docs/query-language/secondary-index-ui.png"><img src="/assets/images/docs/query-language/secondary-index-ui.png" style="width: 269px; height: 105px; "/></a>
 </div>
 
+
 # Limitations #
 
 Secondary indexes have the following limitations:
 
 - RethinkDB does not currently have an optimizer. As an example,
-  following query will not automatically use an index:
+  the following query will not automatically use an index:
 
   ```python
   # This query does not use a secondary index! Use get_all instead.
-  r.table("posts").filter( {"author_last_name": "Smith" }).run()
+  r.table("users").filter( {"last_name": "Smith" }).run(conn)
   ```
 
   You have to explicitly use the `get_all` command to take advantage
   of secondary indexes.
-- The `order_by` command does not currently use secondary
-  indexes. This will be resolved soon (see [Github issue #159](https://github.com/rethinkdb/rethinkdb/issues/159)
-  to track progress).
-- Currently, compound indexes cannot be queried by a prefix. See
-  [Github issue #955](https://github.com/rethinkdb/rethinkdb/issues/955)
+
+  ```python
+  # This query does not use a secondary index! Use get_all instead.
+  r.table("users").get_all("Smith", index="last_name").run(conn)
+  ```
+
+- Currently, compound indexes cannot be queried by a prefix.  
+  See [Github issue #955](https://github.com/rethinkdb/rethinkdb/issues/955)
   to track progress.
 
+- RethinkDB does not provide a geospatial index yet.
+  See [Github issue #1158](https://github.com/rethinkdb/rethinkdb/issues/1158)
+  to track progress.
+
+- RethinkDB does not support unique secondary indexes.
+  See [Github issue #1716](https://github.com/rethinkdb/rethinkdb/issues/1716)
+  to track progress.
 
 # More #
 
 Browse the API reference to learn more about secondary index commands:
 
-* [indexCreate](/api/python/index_create/)
-* [indexDrop](/api/python/index_drop/)
-* [indexList](/api/python/index_list/)
-* [getAll](/api/python/get_all/)
-* [between](/api/python/between/)
+* Manipulating indexe: [index_create](/api/python/index_create/), [index_drop](/api/python/index_drop/) and [index_list](/api/python/index_list/)
+* Using indexes: [get_all](/api/python/get_all/), [between](/api/python/between/), [eq_join](/api/python/eq_join/) and [order_by](/api/python/order_by/)
 
 
 
