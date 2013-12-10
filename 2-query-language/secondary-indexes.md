@@ -214,9 +214,7 @@ Secondary indexes have the following limitations:
   See [Github issue #1158](https://github.com/rethinkdb/rethinkdb/issues/1158)
   to track progress.
 
-- RethinkDB does not support unique secondary indexes.
-  See [Github issue #1716](https://github.com/rethinkdb/rethinkdb/issues/1716)
-  to track progress.
+- RethinkDB does not support unique secondary indexes even for non-sharded tables.
 
 # More #
 
