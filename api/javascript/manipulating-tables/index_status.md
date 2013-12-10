@@ -22,6 +22,26 @@ table.indexStatus([, index...]) &rarr; array
 Get the status of the specified indexes on this table, or the status
 of all indexes on this table if no indexes are specified.
 
+The result is an array where for each index, there will be an object like this one:
+
+```js
+{
+    index: <indexName>,
+    ready: true
+}
+```
+
+or this one:
+
+```js
+{
+    index: <indexName>,
+    ready: false,
+    blocks_processed: <int>,
+    blocks_total: <int>
+}
+```
+
 __Example:__ Get the status of all the indexes on `test`:
 
 ```js
