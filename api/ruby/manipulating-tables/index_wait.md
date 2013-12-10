@@ -19,6 +19,16 @@ table.index_wait([, index...]) &rarr; array
 Wait for the specified indexes on this table to be ready, or for all
 indexes on this table to be ready if no indexes are specified.
 
+The result is an array where for each index, there will be an object like:
+
+```rb
+{
+    :index => <index_name>,
+    :ready => true
+}
+```
+
+
 __Example:__ Wait for all indexes on the table `test` to be ready:
 
 ```rb
