@@ -83,7 +83,7 @@ Kick off the build process:
 
 ```
 cd rethinkdb
-./configure --fetch protoc
+./configure --fetch protoc --fetch npm --fetch tcmalloc_minimal
 make
 ```
 
