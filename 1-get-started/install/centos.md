@@ -19,11 +19,15 @@ sudo wget http://download.rethinkdb.com/centos/6/`uname -m`/rethinkdb.repo \
           -O /etc/yum.repos.d/rethinkdb.repo
 sudo yum install rethinkdb
 ```
-# Compile from source #
+# Compile from source with the Epel repository #
+
+These instructions have been tested on CentOS 6.5.
 
 ## Get the build dependencies ##
+
 CentOS provides neither a v8-devel package nor Node.js, so we need to get them
 from the Epel repository:
+
 
 ```bash
 sudo rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
@@ -31,14 +35,9 @@ sudo rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6
 
 Install the main dependencies:
 
-```bash
-sudo yum install git-core boost-static m4 gcc-c++ python-pip v8-devel nodejs npm ncurses-devel
 ```
-
-Install PyYAML, which is required for building the internal documentation:
-
-```bash
-sudo python-pip install pyyaml
+sudo yum install git-core gcc-c++ ncurses-devel boost-static protobuf-devel nodejs \
+    npm gperftools-devel
 ```
 
 ## Get the source code ##
@@ -54,16 +53,39 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb
-./configure --without-tcmalloc --fetch protoc --fetch protobuf
+./configure --dynamic tcmalloc_minimal
 make
 ```
 
-If you want to build faster and use multiple cores, you will have to use
-this command to avoid a bug in the unpatched `make` available on CentOS (see
-[https://github.com/rethinkdb/rethinkdb/issues/475](https://github.com/rethinkdb/rethinkdb/issues/475)):
+# Compile from source without the Epel repository #
+
+These instructions have been tested on CentOS 6.5.
+
+## Get the build dependencies ##
+
+Install the main dependencies:
 
 ```
-`make command-line` -j3
+sudo yum install git-core gcc-c++ ncurses-devel boost-static svn
 ```
+
+## Get the source code ##
+
+Clone RethinkDB repository:
+
+```bash
+git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+```
+
+## Build RethinkDB ##
+
+Kick off the build process:
+
+```
+cd rethinkdb
+./configure --fetch protoc --fetch npm --fetch tcmalloc_minimal
+make
+```
+
 
 {% include install-next-step.md %}
