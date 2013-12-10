@@ -18,7 +18,7 @@ RethinkDB supports different types of secondary indexes:
 - __Multi indexes__ based on arrays of values.
 - Indexes based on __arbitrary expressions__.
 
-# Indexes usage #
+# Using indexes #
 
 ## Single field indexes ##
 
@@ -43,7 +43,7 @@ r.table("users").get_all("Smith", index="last_name").run(conn)
 # Get all users whose last names are "Smith" or "Lewis"
 r.table("users").get_all("Smith", "Lewis", index="last_name").run(conn)
 
-# Get all users whose last names are between Smith and Wade
+# Get all users whose last names are between "Smith" and "Wade"
 r.table("users").between("Smith", "Wade", index="last_name").run(conn)
 
 # Order users by last name
@@ -148,7 +148,7 @@ r.table("users").index_create("full_name2", lambda user:
     r.add(user["last_name"], "_", user["first_name"])).run(conn)
 ```
 
-The function you give to `index_create` must be deterministic. In practice it means that
+The function you give to `index_create` must be deterministic. In practice this means that
 that you cannot use a function that contains a sub-query or the `r.js` command.
 
 
