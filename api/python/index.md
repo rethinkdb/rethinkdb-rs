@@ -784,8 +784,8 @@ r.table('marvel').map(lambda hero:
 ## [with_fields](with_fields/) ##
 
 {% apibody %}
-sequence.with_selectors([selector1, selector2...]) &rarr; stream
-array.with_selectors([selector1, selector2...]) &rarr; array
+sequence.with_fields([selector1, selector2...]) &rarr; stream
+array.with_fields([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
 Takes a sequence of objects and a list of fields. If any objects in the sequence don't
@@ -874,8 +874,8 @@ r.table('marvel').order_by('belovedness').limit(10).run(conn)
 ## [\[\]](slice/) ##
 
 {% apibody %}
-sequence[start_index[, end_index]] &rarr; stream
-array[start_index[, end_index]] &rarr; array
+sequence[start_index[:end_index]] &rarr; stream
+array[start_index[:end_index]] &rarr; array
 {% endapibody %}
 
 Trim the sequence to within the bounds provided.
@@ -889,6 +889,7 @@ r.table('marvel').order_by('strength')[5:10].run(conn)
 ## [\[\]](nth/) ##
 
 {% apibody %}
+sequence[index] &arr; object
 sequence.nth(index) &rarr; object
 {% endapibody %}
 
@@ -898,6 +899,7 @@ __Example:__ Select the second element in the array.
 
 ```py
 r.expr([1,2,3])[1].run(conn)
+r.expr([1,2,3]).nth(1).run(conn)
 ```
 
 

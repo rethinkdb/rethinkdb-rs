@@ -12,15 +12,13 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-bool & bool &rarr; bool
+value == value &rarr; bool
 {% endapibody %}
 
-# Description #
+Test if two values are equal.
 
-Compute the logical and of two values.
-
-__Example:__ True and false anded is false?
+__Example:__ Does 2 equal 2?
 
 ```py
-(r.expr(True) & False).run(conn)
+(r.expr(2) == 2).run(conn)
 ```
