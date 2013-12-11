@@ -1569,11 +1569,15 @@ __Example:__ It's as easy as 2 % 2 = 0.
 (r.expr(2) % 2).run(conn)
 ```
 
-## [&](and/) ##
+## [&, and_](and/) ##
 
 {% apibody %}
 bool & bool &rarr; bool
+r.and_(bool, bool) &rarr; bool
+bool.and_(bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Compute the logical and of two values.
 
@@ -1581,14 +1585,20 @@ __Example:__ True and false anded is false?
 
 ```py
 (r.expr(True) & False).run(conn)
+r.expr(True).and_(False).run(conn)
+r.and_(True, False).run(conn)
 ```
 
 
-## [|](or/) ##
+## [|, or_](or/) ##
 
 {% apibody %}
 bool | bool &rarr; bool
+bool.or_(bool) &rarr; bool
+r.or_(bool, bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Compute the logical or of two values.
 
@@ -1596,6 +1606,8 @@ __Example:__ True or false ored is true?
 
 ```py
 (r.expr(True) | False).run(conn)
+r.expr(True).or_(False).run(conn)
+r.or_(True, False).run(conn)
 ```
 
 
@@ -1686,17 +1698,22 @@ __Example:__ Is 2 less than or equal to 2?
 ```
 
 
-## [~](not/) ##
+## [~, not_](not/) ##
 
 {% apibody %}
 ~bool &rarr; bool
 bool.not_() &rarr; bool
+r.not_(bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 Compute the logical inverse (not).
 
 __Example:__ Not true is false.
 
 ```py
+r.not_(True).run(conn)
+r.expr(True).not_().run(conn)
 (~r.expr(True)).run(conn)
 ```
 
