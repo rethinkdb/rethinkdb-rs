@@ -4,8 +4,8 @@ language: Python
 permalink: api/python/ne/
 command: '!='
 related_commands:
-    '&': and/
-    '|': or/
+    '&, and_': and/
+    '|, or_': or/
     '==': eq/
 ---
 
