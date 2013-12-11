@@ -40,12 +40,6 @@ brew install boost
 brew install v8
 ```
 
-Install PyYAML, which is required for building the internal documentation:
-
-```bash
-sudo pip install pyyaml
-```
-
 ## Get the source code ##
 Clone the RethinkDB repository:
 
