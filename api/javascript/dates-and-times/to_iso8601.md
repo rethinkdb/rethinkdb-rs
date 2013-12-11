@@ -2,7 +2,7 @@
 layout: api-command
 language: JavaScript
 permalink: api/javascript/to_iso8601/
-command: to_iso8601
+command: toISO8601
 io:
     -   - time
         - string
