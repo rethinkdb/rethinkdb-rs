@@ -12,8 +12,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence[start_index[, end_index]] &rarr; stream
-array[start_index[, end_index]] &rarr; array
+sequence[start_index[..end_index]] &rarr; stream
+array[start_index[..end_index]] &rarr; array
 {% endapibody %}
 
 # Description #

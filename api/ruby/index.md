@@ -804,8 +804,8 @@ r.table('marvel').map {|hero|
 ## [with_fields](with_fields/) ##
 
 {% apibody %}
-sequence.with_selectors([selector1, selector2...]) &rarr; stream
-array.with_selectors([selector1, selector2...]) &rarr; array
+sequence.with_fields([selector1, selector2...]) &rarr; stream
+array.with_fields([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
 Takes a sequence of objects and a list of fields. If any objects in the sequence don't
@@ -897,8 +897,8 @@ r.table('marvel').order_by(:belovedness).limit(10).run(conn)
 ## [\[\]](slice/) ##
 
 {% apibody %}
-sequence[start_index[, end_index]] &rarr; stream
-array[start_index[, end_index]] &rarr; array
+sequence[start_index[..end_index]] &rarr; stream
+array[start_index[..end_index]] &rarr; array
 {% endapibody %}
 
 Trim the sequence to within the bounds provided.
@@ -1771,7 +1771,7 @@ r.table("user").get("John").update(:birthdate => r.epoch_time(531360000)).run(co
 ## [iso8601](iso8601/) ##
 
 {% apibody %}
-r.ISO8601(iso8601Date[, {default_timezone:''}]) &rarr; time
+r.iso8601(iso8601Date[, {default_timezone:''}]) &rarr; time
 {% endapibody %}
 
 Create a time object based on an iso8601 date-time string (e.g.
