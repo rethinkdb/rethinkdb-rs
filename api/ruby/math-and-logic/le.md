@@ -2,17 +2,18 @@
 layout: api-command
 language: Ruby
 permalink: api/ruby/le/
-command: <=
+command: '<=, le'
 related_commands:
-    '>': gt/
-    '>=': ge/
-    '<': lt/
+    '>, gt': gt/
+    '>=, ge': ge/
+    '<, lt': lt/
 ---
 
 # Command syntax #
 
 {% apibody %}
 value <= value &rarr; bool
+value.le(value) &rarr; bool
 {% endapibody %}
 
 # Description #
@@ -23,6 +24,7 @@ __Example:__ Is 2 less than or equal to 2?
 
 ```rb
 (r.expr(2) <= 2).run(conn)
+r.expr(2).le(2).run(conn)
 ```
 
 

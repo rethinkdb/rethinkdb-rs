@@ -1601,10 +1601,11 @@ __Example:__ True or false ored is true?
 ```
 
 
-## [==](eq/) ##
+## [==, eq](eq/) ##
 
 {% apibody %}
 value == value &rarr; bool
+value.eq(value) &rarr; bool
 {% endapibody %}
 
 Test if two values are equal.
@@ -1613,14 +1614,18 @@ __Example:__ Does 2 equal 2?
 
 ```py
 (r.expr(2) == 2).run(conn)
+r.expr(2).eq(2).run(conn)
 ```
 
 
-## [!=](ne/) ##
+## [!=, ne](ne/) ##
 
 {% apibody %}
 value != value &rarr; bool
+value.ne(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if two values are not equal.
 
@@ -1628,13 +1633,15 @@ __Example:__ Does 2 not equal 2?
 
 ```py
 (r.expr(2) != 2).run(conn)
+r.expr(2).ne(2).run(conn)
 ```
 
 
-## [>](gt/) ##
+## [>, gt](gt/) ##
 
 {% apibody %}
 value > value &rarr; bool
+value.gt(value) &rarr; bool
 {% endapibody %}
 
 Test if the first value is greater than other.
@@ -1643,13 +1650,17 @@ __Example:__ Is 2 greater than 2?
 
 ```py
 (r.expr(2) > 2).run(conn)
+r.expr(2).gt(2).run(conn)
 ```
 
-## [>=](ge/) ##
+## [>=, ge](ge/) ##
 
 {% apibody %}
 value >= value &rarr; bool
+value.ge(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if the first value is greater than or equal to other.
 
@@ -1657,13 +1668,17 @@ __Example:__ Is 2 greater than or equal to 2?
 
 ```py
 (r.expr(2) >= 2).run(conn)
+r.expr(2).ge(2).run(conn)
 ```
 
-## [<](lt/) ##
+## [<, lt](lt/) ##
 
 {% apibody %}
 value < value &rarr; bool
+value.lt(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if the first value is less than other.
 
@@ -1671,13 +1686,17 @@ __Example:__ Is 2 less than 2?
 
 ```py
 (r.expr(2) < 2).run(conn)
+r.expr(2).lt(2).run(conn)
 ```
 
-## [<=](le/) ##
+## [<=, le](le/) ##
 
 {% apibody %}
 value <= value &rarr; bool
+value.le(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if the first value is less than or equal to other.
 
@@ -1685,6 +1704,7 @@ __Example:__ Is 2 less than or equal to 2?
 
 ```py
 (r.expr(2) <= 2).run(conn)
+r.expr(2).le(2).run(conn)
 ```
 
 
