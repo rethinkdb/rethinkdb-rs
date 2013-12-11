@@ -543,11 +543,11 @@ r.table('marvel').insert({ superhero: 'Iron Man', superpower: 'Arc Reactor' })
 ## [update](update/) ##
 
 {% apibody %}
-table.update(json | expr[, {durability: 'soft', return_vals: true])
+table.update(json | expr[, {durability: 'soft', return_vals: true}])
     &rarr; object
-selection.update(json | expr[, {durability: 'soft', return_vals: true])
+selection.update(json | expr[, {durability: 'soft', return_vals: true}])
     &rarr; object
-singleSelection.update(json | expr[, {durability: 'soft', return_vals: true])
+singleSelection.update(json | expr[, {durability: 'soft', return_vals: true}])
     &rarr; object
 {% endapibody %}
 
@@ -2072,7 +2072,7 @@ r.now().dayOfWeek().run(conn, callback)
 ## [dayOfYear](day_of_year/) ##
 
 {% apibody %}
-time.day_of_year() &rarr; number
+time.dayOfYear() &rarr; number
 {% endapibody %}
 
 Return the day of the year of a time object as a number between 1 and 366 (following ISO 8601 standard).
@@ -2155,7 +2155,7 @@ r.now().toISO8601()
 ## [toEpochTime](to_epoch_time/) ##
 
 {% apibody %}
-time.to_epoch_time() &rarr; number
+time.toEpochTime() &rarr; number
 {% endapibody %}
 
 Convert a time object to its epoch time.

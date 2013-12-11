@@ -806,8 +806,8 @@ r.table('marvel').map {|hero|
 ## [with_fields](with_fields/) ##
 
 {% apibody %}
-sequence.with_selectors([selector1, selector2...]) &rarr; stream
-array.with_selectors([selector1, selector2...]) &rarr; array
+sequence.with_fields([selector1, selector2...]) &rarr; stream
+array.with_fields([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
 Takes a sequence of objects and a list of fields. If any objects in the sequence don't
@@ -899,8 +899,8 @@ r.table('marvel').order_by(:belovedness).limit(10).run(conn)
 ## [\[\]](slice/) ##
 
 {% apibody %}
-sequence[start_index[, end_index]] &rarr; stream
-array[start_index[, end_index]] &rarr; array
+sequence[start_index[..end_index]] &rarr; stream
+array[start_index[..end_index]] &rarr; array
 {% endapibody %}
 
 Trim the sequence to within the bounds provided.
@@ -1632,10 +1632,11 @@ r.expr(2).ne(2).run(conn)
 ```
 
 
-## [>](gt/) ##
+## [>, gt](gt/) ##
 
 {% apibody %}
 value > value &rarr; bool
+value.gt(value) &rarr; bool
 {% endapibody %}
 
 Test if the first value is greater than other.
@@ -1644,12 +1645,14 @@ __Example:__ Is 2 greater than 2?
 
 ```rb
 (r.expr(2) > 2).run(conn)
+r.expr(2).gt(2).run(conn)
 ```
 
-## [>=](ge/) ##
+## [>=, ge](ge/) ##
 
 {% apibody %}
 value >= value &rarr; bool
+value.ge(value) &rarr; bool
 {% endapibody %}
 
 Test if the first value is greater than or equal to other.
@@ -1658,12 +1661,14 @@ __Example:__ Is 2 greater than or equal to 2?
 
 ```rb
 (r.expr(2) >= 2).run(conn)
+r.expr(2).ge(2).run(conn)
 ```
 
-## [<](lt/) ##
+## [<, lt](lt/) ##
 
 {% apibody %}
 value < value &rarr; bool
+value.lt(value) &rarr; bool
 {% endapibody %}
 
 Test if the first value is less than other.
@@ -1672,12 +1677,14 @@ __Example:__ Is 2 less than 2?
 
 ```rb
 (r.expr(2) < 2).run(conn)
+r.expr(2).lt(2).run(conn)
 ```
 
-## [<=](le/) ##
+## [<=, le](le/) ##
 
 {% apibody %}
 value <= value &rarr; bool
+value.le(value) &rarr; bool
 {% endapibody %}
 
 Test if the first value is less than or equal to other.
@@ -1686,6 +1693,7 @@ __Example:__ Is 2 less than or equal to 2?
 
 ```rb
 (r.expr(2) <= 2).run(conn)
+r.expr(2).le(2).run(conn)
 ```
 
 
@@ -1773,7 +1781,7 @@ r.table("user").get("John").update(:birthdate => r.epoch_time(531360000)).run(co
 ## [iso8601](iso8601/) ##
 
 {% apibody %}
-r.ISO8601(iso8601Date[, {default_timezone:''}]) &rarr; time
+r.iso8601(iso8601Date[, {default_timezone:''}]) &rarr; time
 {% endapibody %}
 
 Create a time object based on an iso8601 date-time string (e.g.
