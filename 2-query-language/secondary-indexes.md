@@ -13,16 +13,16 @@ write performance.
 
 RethinkDB supports different types of secondary indexes:
 
-- __Single field indexes__ based on the value of a single field.
+- __Simple indexes__ based on the value of a single field.
 - __Compound indexes__ based on multiple fields.
 - __Multi indexes__ based on arrays of values.
 - Indexes based on __arbitrary expressions__.
 
 # Using indexes #
 
-## Single field indexes ##
+## Simple indexes ##
 
-Single field indexes can be used to retrieve documents or order them faster.
+Use simple indexes to efficiently retrieve and order documents by the value of a single field.
 
 ### Creation ###
 
@@ -46,7 +46,7 @@ r.table("users").get_all("Smith", "Lewis", index="last_name").run(conn)
 # Get all users whose last names are between "Smith" and "Wade"
 r.table("users").between("Smith", "Wade", index="last_name").run(conn)
 
-# Order users by last name
+# Efficiently order users by last name using an index
 r.table("users").order_by(index="last_name").run(conn)
 
 # For each blog post, return the post and its author using the last_name index
@@ -63,10 +63,7 @@ to query _one to many_ and _many to many_ relations.
 
 ## Compound indexes ##
 
-If you want to retrieve documents that match multiple fields, you cannot just create
-multiple single field indexes and chain `get_all` commands.  
-You need to create a compound index for that.
-
+Use compound indexes to efficiently retrieve documents by multiple fields.
 
 ### Creation ###
 
@@ -90,7 +87,7 @@ r.table("users").get_all(["John", "Smith"], index="full_name").run(conn)
 r.table("users").between(["John", "Smith"], ["Wade, Welles"], index="full_name") \
     .run(conn)
 
-# Order users by first name and last name
+# Efficiently order users by first name and last name using an index
 r.table("users").order_by(index="full_name").run(conn)
 
 # For each blog post, return the post and its author using the full_name index
@@ -101,8 +98,8 @@ r.table("posts").eq_join("author_full_name", r.table("users"), index="full_name"
 
 ## Multi indexes ##
 
-If you want to bind a document to multiple values like for example a blog post to
-multiple tags, you need to use a multi index.
+To index a single document multiple times by different values use a multi index. For
+example, you can index a blog post with an array of tags by each tag.
 
 ### Creation ###
 Suppose each post has a field `tags` that maps to an array of tags. The schema of the
@@ -176,7 +173,7 @@ r.table("users").index_wait("last_name").run(conn)
 
 ## Manipulating indexes with the web UI ##
 
-The web UI supports creation and deletion of single field secondary
+The web UI supports creation and deletion of simple secondary
 indexes. In the table list, click on the table `users`. You can
 manipulate indexes through the secondary index panel in the table
 view.
@@ -206,11 +203,14 @@ Secondary indexes have the following limitations:
   r.table("users").get_all("Smith", index="last_name").run(conn)
   ```
 
+- You cannot chain multiple `get_all` commands. Use a compound index to efficiently
+  retrieve documents by multiple fields.
+
 - Currently, compound indexes cannot be queried by a prefix.  
   See [Github issue #955](https://github.com/rethinkdb/rethinkdb/issues/955)
   to track progress.
 
-- RethinkDB does not provide a geospatial index yet.
+- RethinkDB does not provide a geospatial index yet.  
   See [Github issue #1158](https://github.com/rethinkdb/rethinkdb/issues/1158)
   to track progress.
 
