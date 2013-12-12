@@ -38,12 +38,11 @@ brew update && brew install rethinkdb
 There are a number of packages required for the build process. On OS X,
 [Xcode](https://developer.apple.com/xcode/) is required to build from source.
 
-You will also need to install two build dependencies with
+You will also need to install boost with
 [Homebrew](http://mxcl.github.com/homebrew/):
 
 ```bash
 brew install boost
-brew install v8
 ```
 
 ## Get the source code ##
@@ -59,7 +58,7 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb
-./configure --fetch protobuf --fetch protoc
+./configure --fetch protobuf --fetch v8
 make
 ```
 
