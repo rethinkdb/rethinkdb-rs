@@ -12,8 +12,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.with_selectors([selector1, selector2...]) &rarr; stream
-array.with_selectors([selector1, selector2...]) &rarr; array
+sequence.with_fields([selector1, selector2...]) &rarr; stream
+array.with_fields([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
 # Description #

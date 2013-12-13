@@ -4,8 +4,8 @@ language: Python
 permalink: api/python/not/
 command: '~, not_'
 related_commands:
-    '==': eq/
-    '!=': ne/
+    '==, eq': eq/
+    '!=, ne': ne/
 ---
 
 # Command syntax #

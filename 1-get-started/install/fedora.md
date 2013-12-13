@@ -14,21 +14,25 @@ permalink: docs/install/fedora/
 The <a href="/docs/install/centos/">Centos RPMs</a> are known to work with
 Fedora.
 
+To install the server, add the RethinkDB yum repository to your list of repositories and install:
+
+```bash
+sudo wget http://download.rethinkdb.com/centos/6/`uname -m`/rethinkdb.repo \
+    -O /etc/yum.repos.d/rethinkdb.repo
+sudo yum install rethinkdb
+```
+
+
 # Compile from source #
 
-The following instructions were tested on Fedora 18.
+The following instructions were tested on Fedora 19.
 
 ## Get the build dependencies ##
 Install the main dependencies:
 
 ```bash
-sudo yum install gcc-c++ protobuf-compiler protobuf-c protobuf-c-devel protobuf-devel boost-devel openssl-devel v8-devel gperftools-devel nodejs npm curl ctags-etags m4 protobuf-static boost-static git-core python-pip ncurses-devel
-```
-
-Install PyYAML, which is required for building the internal documentation:
-
-```bash
-sudo python-pip install pyyaml
+sudo yum install git-core gcc-c++ protobuf-devel nodejs npm ncurses-devel \
+    gperftools-devel boost-static
 ```
 
 ## Get the source code ##
@@ -44,7 +48,7 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb
-./configure --without-tcmalloc
+./configure --dynamic tcmalloc_minimal
 make
 ```
 

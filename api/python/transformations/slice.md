@@ -12,8 +12,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence[start_index[, end_index]] &rarr; stream
-array[start_index[, end_index]] &rarr; array
+sequence[start_index[:end_index]] &rarr; stream
+array[start_index[:end_index]] &rarr; array
 {% endapibody %}
 
 # Description #
@@ -25,5 +25,3 @@ __Example:__ For this fight, we need heroes with a good mix of strength and agil
 ```py
 r.table('marvel').order_by('strength')[5:10].run(conn)
 ```
-
-

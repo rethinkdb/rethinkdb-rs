@@ -14,7 +14,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-time.to_epoch_time() &rarr; number
+time.toEpochTime() &rarr; number
 {% endapibody %}
 
 # Description #

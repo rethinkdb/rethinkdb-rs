@@ -16,16 +16,14 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-number.div(number) &rarr; number
+number.mod(number) &rarr; number
 {% endapibody %}
 
-# Description #
+Find the remainder when dividing two numbers.
 
-Divide two numbers.
-
-__Example:__ It's as easy as 2 / 2 = 1.
+__Example:__ It's as easy as 2 % 2 = 0.
 
 ```js
-r.expr(2).div(2).run(conn, callback)
+r.expr(2).mod(2).run(conn, callback)
 ```
 

@@ -20,6 +20,7 @@ Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
 name already exists, the operation throws `RqlRuntimeError`.
+
 Note: that you can only use alphanumeric characters and underscores for the table name.
 
 When creating a table you can specify the following options:
