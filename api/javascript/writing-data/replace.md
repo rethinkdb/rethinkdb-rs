@@ -19,11 +19,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(json | expr[, {durability: 'soft', return_vals: true}])
+table.replace(json | expr[, {durability: 'soft', returnVals: true}])
     &rarr; object
-selection.replace(json | expr[, {durability: 'soft', return_vals: true}])
+selection.replace(json | expr[, {durability: 'soft', returnVals: true}])
     &rarr; object
-singleSelection.replace(json | expr[, {durability: 'soft', return_vals: true}])
+singleSelection.replace(json | expr[, {durability: 'soft', returnVals: true}])
     &rarr; object
 {% endapibody %}
 
@@ -33,7 +33,7 @@ Replace documents in a table. Accepts a JSON document or a ReQL expression, and 
 the original document with the new one. The new document must have the same primary key
 as the original document. The optional argument durability with value 'hard' or 'soft'
 will override the table or query's default durability setting. The optional argument
-`return_vals` will return the old and new values of the row you're modifying when set to
+`returnVals` will return the old and new values of the row you're modifying when set to
 true (only valid for single-row replacements). The optional argument `non_atomic` lets you
 permit non-atomic updates.
 
@@ -75,10 +75,10 @@ r.table('heroes').filter(r.row('universe').eq('marvel'))
     .run(conn, callback)
 ```
 
-__Example:__ You can get a copy of the previous value and the old value back using the return_vals flag.
+__Example:__ You can get a copy of the previous value and the old value back using the returnVals flag.
 
 ```js
 r.table('heroes').filter(r.row('universe').eq('marvel'))
-    .replace(function(doc) {return doc.merge({is_fav: true})}, { return_vals: true })
+    .replace(function(doc) {return doc.merge({is_fav: true})}, { returnVals: true })
     .run(conn, callback)
 ```
