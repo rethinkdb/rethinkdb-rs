@@ -19,49 +19,88 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.delete([{durability: 'soft', return_vals: true}])
+table.delete([{durability: "hard", returnVals: false}])
     &rarr; object
-selection.delete([{durability: 'soft', return_vals: true}])
+selection.delete([{durability: "hard", returnVals: false}])
     &rarr; object
-singleSelection.delete([{durability: 'soft', return_vals: true}])
+singleSelection.delete([{durability: "hard", returnVals: false}])
     &rarr; object
 {% endapibody %}
 
 # Description #
 
-Delete one or more documents from a table. The optional argument return_vals will return
-the old value of the row you're deleting when set to true (only valid for single-row
-deletes). The optional argument durability with value 'hard' or 'soft' will override the
-table or query's default durability setting.
+Delete one or more documents from a table.
+
+The optional arguments are:
+
+- `returnVals`: in case of a single row deletion, the deleted row will be returned.
+- `durability`: Possible values are `hard` and `soft`. It will override the table or
+query's default durability setting.
 
 Delete returns an object that contains the following attributes:
 
-- `deleted`: the number of documents that were deleted
-- `skipped`: the number of documents from the selection that were left unmodified because
-there was nothing to do. For example, if you delete a row that has already been deleted,
-that row will be skipped
-- `errors`L the number of errors encountered while deleting
-if errors occured, first_error contains the text of the first error
-- `inserted`, `replaced`, and `unchanged`: all 0 for a delete operation.
+- `deleted`: the number of documents that were deleted.
+- `skipped`: the number of documents that were skipped.  
+For example, if you delete a row that has already been deleted, that row will be skipped.
+- `errors`: the number of errors encountered while deleting.  
+If errors where encountered while deleting, `first_error` contains the text of the first
+error.
+- `inserted`, `replaced`, and `unchanged`: all 0 for a delete operation..
+- `old_val`: the deleted row if `returnVals` was set to true.
+- `new_val`: `null` if `returnVals` was set to true.
 
 
-__Example:__ Delete superman from the database.
+__Example:__ Delete a single row from the table `comments`.
 
 ```js
-r.table('marvel').get('superman').delete().run(conn, callback)
+r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn, callback)
 ```
 
 
-__Example:__ Delete every document from the table 'marvel'. Also, don't wait for the
+__Example:__ Delete all documents from the table `comments`.
+
+```js
+r.table("comments").delete().run(conn, callback)
+```
+
+
+__Example:__ Delete all comments where the field `idPost` is `3`.
+
+```js
+r.table("comments").filter({idPost: 3}).delete().run(conn, callback)
+```
+
+
+__Example:__ Delete a single row from the table `comments` and return its value.
+
+```js
+r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete({returnVals: true}).run(conn, callback)
+```
+
+The result look like:
+
+```js
+{
+    "deleted": 1,
+    "errors": 0,
+    "inserted": 0,
+    "new_val": null,
+    "old_val": {
+        "id": "7eab9e63-73f1-4f33-8ce4-95cbea626f59",
+        "author": "William",
+        "comment": "Great post",
+        "idPost": 3
+    },
+    "replaced": 0,
+    "skipped": 0,
+    "unchanged": 0
+}
+```
+
+
+__Example:__ Delete all documents from the table `comments` without waiting for the
 operation to be flushed to disk.
 
 ```js
-r.table('marvel').delete({durability: 'soft'}).run(conn, callback)
+r.table("comments").delete({durability: "soft"}).run(conn, callback)
 ```
-
-__Example:__ You can get back a copy of the row you delete from the database as well.
-
-```js
-r.table('marvel').delete({return_vals: true}).run(conn, callback)
-```
-
