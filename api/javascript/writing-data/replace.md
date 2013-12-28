@@ -19,11 +19,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(json | expr[, {durability: 'soft', returnVals: true}])
+table.replace(json | expr[, {durability: 'soft', returnVals: true, nonAtomic: false}])
     &rarr; object
-selection.replace(json | expr[, {durability: 'soft', returnVals: true}])
+selection.replace(json | expr[, {durability: 'soft', returnVals: true, nonAtomic: false}])
     &rarr; object
-singleSelection.replace(json | expr[, {durability: 'soft', returnVals: true}])
+singleSelection.replace(json | expr[, {durability: 'soft', returnVals: true, nonAtomic: false}])
     &rarr; object
 {% endapibody %}
 
@@ -39,6 +39,7 @@ The optional arguments are:
 query's default durability setting.
 - `returnVals`: when set to `true` and in case of a single update, the
 updated row will be returned.
+- `nonAtomic`: set to `true` if you want to perform non-atomic updates.
 
 
 Replace returns an object that contains the following attributes:

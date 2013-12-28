@@ -134,7 +134,7 @@ r.table("users").insert([
 
 __Example:__ Insert a row into the table `users`, updating the document if the document
 already exists.  
-_Note_: If the document exists, the `insert` command will behave like [update](../update/), not like [replace](../replace/) 
+_Note_: If the document exists, the `insert` command will behave like [replace](../replace/), not like [update](../update/) 
 
 ```js
 r.table("users").insert(
