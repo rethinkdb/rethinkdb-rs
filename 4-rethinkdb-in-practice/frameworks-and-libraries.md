@@ -27,6 +27,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
   a tool to help users create a new driver for RethinkDB, by
   [@neumino](https://github.com/neumino)
 - [flask-rethinkdb](https://github.com/linkyndy/flask-rethinkdb): a Flask extension that adds RethinkDB support, by [@linkyndy](https://github.com/linkyndy)
+- [rethinkdb-co](https://github.com/hden/rethinkdb-co): harness RethinkDB callbacks with ECMAScript 6 generators, by [@hden](https://github.com/hden)
 
 # Object-document mappers #
 - [thinky](https://github.com/neumino/thinky): JavaScript ORM for RethinkDB, by
