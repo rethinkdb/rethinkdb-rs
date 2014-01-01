@@ -191,7 +191,7 @@ MongoDB provides different mechanisms for backing up data:
 *   the [`mongodump`](http://docs.mongodb.org/manual/administration/backups/#database-dump-with-mongodump) utility can perform a live backup of data. 
 *   [disk/block level snapshots](http://docs.mongodb.org/manual/administration/backups/#backup-with-journaling) can be used to backup a MongoDB instance when journaling is enabled. When [journaling is disabled](http://docs.mongodb.org/manual/administration/backups/#backup-without-journaling), snapshots are possible after flushing all writes to disk and locking the database.
 
-RethinkDB provides `rethinkdb dump` -- [a dedicated live backup tool](http://www.rethinkdb.com/docs/backup/).
+RethinkDB provides `rethinkdb dump` -- [a dedicated live backup tool](/docs/backup/).
 
 <div class="comparison-section"><a name="scaling" class="comparison-anchor"></a></div>
 # Scaling #
