@@ -38,7 +38,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [RethinkDB-Backbone](https://github.com/paulmars/rethinkdb-backbone): an
   example of using RethinkDB as a backing store for Backbone.js on the server,
   by [@paulmars](https://github.com/paulmars).
-- [No Brainer](https://github.com/paulmars/rethinkdb-backbone): a Ruby ORM
+- [No Brainer](https://github.com/nviennot/nobrainer): a Ruby ORM
   designed for RethinkDB, by [@nviennot](https://github.com/nviennot)
 - [rwrapper](https://github.com/dparlevliet/rwrapper): an ORM designed to
   emulate the most common usages of Django's database abstraction, by
