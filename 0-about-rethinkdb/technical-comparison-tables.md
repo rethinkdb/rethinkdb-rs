@@ -145,7 +145,7 @@ service on dotCloud using
 | CLI tools | Admin CLI | JavaScript interactive shell |
 | UI tools  | Web-based admin UI | Simple HTTP interface |
 | Failover  | 1-click replication with customizable per-table acknowledgements | Replica-sets with auto primary re-election |
-| Backup    | Backup datacenter setup | `mongodump` or snapshotting |
+| Backup    | `rethinkdb dump` | `mongodump` or snapshotting |
 
 ## CLI Tools ##
 
@@ -191,11 +191,7 @@ MongoDB provides different mechanisms for backing up data:
 *   the [`mongodump`](http://docs.mongodb.org/manual/administration/backups/#database-dump-with-mongodump) utility can perform a live backup of data. 
 *   [disk/block level snapshots](http://docs.mongodb.org/manual/administration/backups/#backup-with-journaling) can be used to backup a MongoDB instance when journaling is enabled. When [journaling is disabled](http://docs.mongodb.org/manual/administration/backups/#backup-without-journaling), snapshots are possible after flushing all writes to disk and locking the database.
 
-RethinkDB [doesn't have yet a dedicated backup tool](
-https://github.com/rethinkdb/rethinkdb/issues/89). As a workaround, data from
-RethinkDB can be backed up by [setting up a backup
-datacenter](/docs/backup/).
-
+RethinkDB provides `rethinkdb dump` -- [a dedicated live backup tool](http://www.rethinkdb.com/docs/backup/).
 
 <div class="comparison-section"><a name="scaling" class="comparison-anchor"></a></div>
 # Scaling #
