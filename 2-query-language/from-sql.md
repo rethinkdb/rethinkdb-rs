@@ -343,7 +343,8 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
 more efficient query:
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/get_all/">get_all</a>("Peter", "John", index="name")
+    .<a href="/api/python/get_all/">get_all</a>("Peter", "John",
+        index="name")
 </pre>
 
         </td></tr>
