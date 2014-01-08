@@ -33,24 +33,27 @@ Delete one or more documents from a table.
 
 The optional arguments are:
 
-- `returnVals`: in case of a single row deletion, the deleted row will be returned.
-- `durability`: Possible values are `hard` and `soft`. It will override the table or
-query's default durability setting.
+- `durability`: possible values are `hard` and `soft`. It will override the table or
+query's durability setting (set in [run](../run)).
+- `returnVals`: if set to `true` and in case of a single document deletion, the deleted
+document will be returned.
+
 
 Delete returns an object that contains the following attributes:
 
 - `deleted`: the number of documents that were deleted.
 - `skipped`: the number of documents that were skipped.  
-For example, if you delete a row that has already been deleted, that row will be skipped.
+For example, if you attempt to delete a batch of documents, and another concurrent query
+deletes some of those documents first, they will be counted as skipped.
 - `errors`: the number of errors encountered while deleting.  
-If errors where encountered while deleting, `first_error` contains the text of the first
+If errors were encountered while deleting, `first_error` contains the text of the first
 error.
 - `inserted`, `replaced`, and `unchanged`: all 0 for a delete operation..
-- `old_val`: the deleted row if `returnVals` was set to true.
-- `new_val`: `null` if `returnVals` was set to true.
+- `old_val`: if `returnVals` is set to true, contains the deleted document.
+- `new_val`: set to `null`, only present if `returnVals` is set to `true`.
 
 
-__Example:__ Delete a single row from the table `comments`.
+__Example:__ Delete a single document from the table `comments`.
 
 ```js
 r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn, callback)
@@ -71,7 +74,7 @@ r.table("comments").filter({idPost: 3}).delete().run(conn, callback)
 ```
 
 
-__Example:__ Delete a single row from the table `comments` and return its value.
+__Example:__ Delete a single document from the table `comments` and return its value.
 
 ```js
 r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete({returnVals: true}).run(conn, callback)

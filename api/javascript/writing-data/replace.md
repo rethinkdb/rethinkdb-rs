@@ -19,11 +19,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(json | expr[, {durability: 'soft', returnVals: true, nonAtomic: false}])
+table.replace(json | expr[, {durability: "hard", returnVals: false, nonAtomic: false}])
     &rarr; object
-selection.replace(json | expr[, {durability: 'soft', returnVals: true, nonAtomic: false}])
+selection.replace(json | expr[, {durability: "hard", returnVals: false, nonAtomic: false}])
     &rarr; object
-singleSelection.replace(json | expr[, {durability: 'soft', returnVals: true, nonAtomic: false}])
+singleSelection.replace(json | expr[, {durability: "hard", returnVals: false, nonAtomic: false}])
     &rarr; object
 {% endapibody %}
 
@@ -36,10 +36,11 @@ as the original document.
 The optional arguments are:
 
 - `durability`: possible values are `hard` and `soft`. It will override the table or
-query's default durability setting.
-- `returnVals`: when set to `true` and in case of a single update, the
-updated row will be returned.
-- `nonAtomic`: set to `true` if you want to perform non-atomic updates.
+query's durability setting (set in [run](../run)).
+- `returnVals`: if set to `true` and in case of a single replace, the replaced document
+will be returned.
+- `nonAtomic`: set to `true` if you want to perform non-atomic replaces (replaces that
+require to fetch data from another document).
 
 
 Replace returns an object that contains the following attributes:
@@ -54,9 +55,8 @@ selection and one of the documents you are replacing has been deleted
 - `errors`: the number of errors encountered while performing the replace; if errors
 occurred performing the replace, first_error contains the text of the first error encountered
 - `skipped`: 0 for a replace operation
-- `old_val`: for a single replace, the old document.
-- `new_val`: for a single replace, the new document.
-
+- `old_val`: if `returnVals` is set to true, contains the old document.
+- `new_val`: if `returnVals` is set to true, contains the new document.
 
 __Example:__ Replace the document with the primary key `1`.
 
