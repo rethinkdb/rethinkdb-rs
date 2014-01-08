@@ -145,6 +145,13 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
 )
 </pre>
 
+<p>If you have a secondary index built on the field <code>name</code>, you can run a 
+more efficient query:
+<pre>
+r.<a href="/api/python/table/">table</a>("users")
+    .<a href="/api/python/get_all/">get_all</a>("Peter", index="name")
+</pre>
+
         </td></tr>
         <tr><td>
 
@@ -167,7 +174,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
 
 <pre>
 SELECT * FROM users
-WHERE name == "Peter"
+WHERE name = "Peter"
 AND age = 30
 </pre>
 
@@ -273,7 +280,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/order_by/
 
 <pre>
 SELECT user_id FROM users
-WHERE name = Peter
+WHERE name = "Peter"
 ORDER BY name DESC
 </pre>
 
@@ -330,6 +337,13 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
     r.<a href="/api/python/expr/"</a>expr</a>(["Peter", "John"])
         .<a href="/api/python/contains">contains</a>(r.<a href="/api/python/row/">row</a>["name"])
 )
+</pre>
+
+<p>If you have a secondary index built on the field <code>name</code>, you can run a 
+more efficient query:
+<pre>
+r.<a href="/api/python/table/">table</a>("users")
+    .<a href="/api/python/get_all/">get_all</a>("Peter", "John", index="name")
 </pre>
 
         </td></tr>
@@ -513,7 +527,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
     & (r.row["age"] <a href="/api/python/le/">>=</a> 65)
 </pre>
 
-If you have a secondary index built on the field <code>age</code>. you can run a 
+If you have a secondary index built on the field <code>age</code>, you can run a 
 more efficient query:
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
