@@ -34,7 +34,9 @@ Delete one or more documents from a table.
 The optional arguments are:
 
 - `durability`: possible values are `hard` and `soft`. It will override the table or
-query's durability setting (set in [run](../run)).
+query's durability setting (set in [run](../run)).  
+In soft durability mode RethinkDB will acknowledge the write immediately after
+receiving it, but before the write has been committed to disk.
 - `returnVals`: if set to `true` and in case of a single document deletion, the deleted
 document will be returned.
 

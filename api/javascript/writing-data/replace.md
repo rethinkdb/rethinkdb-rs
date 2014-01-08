@@ -36,7 +36,9 @@ as the original document.
 The optional arguments are:
 
 - `durability`: possible values are `hard` and `soft`. It will override the table or
-query's durability setting (set in [run](../run)).
+query's durability setting (set in [run](../run)).  
+In soft durability mode RethinkDB will acknowledge the write immediately after
+receiving it, but before the write has been committed to disk.
 - `returnVals`: if set to `true` and in case of a single replace, the replaced document
 will be returned.
 - `nonAtomic`: set to `true` if you want to perform non-atomic replaces (replaces that
