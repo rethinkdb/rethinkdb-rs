@@ -185,6 +185,7 @@ relational databases.
 
 If successful, the operation returns an object: `{"created": 1}`. If a database with the
 same name already exists the operation throws `RqlRuntimeError`.
+
 Note: that you can only use alphanumeric characters and underscores for the database name.
 
 __Example:__ Create a database named 'superheroes'.
@@ -242,6 +243,7 @@ Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
 name already exists, the operation throws `RqlRuntimeError`.
+
 Note: that you can only use alphanumeric characters and underscores for the table name.
 
 When creating a table you can specify the following options:
@@ -784,8 +786,8 @@ r.table('marvel').map(lambda hero:
 ## [with_fields](with_fields/) ##
 
 {% apibody %}
-sequence.with_selectors([selector1, selector2...]) &rarr; stream
-array.with_selectors([selector1, selector2...]) &rarr; array
+sequence.with_fields([selector1, selector2...]) &rarr; stream
+array.with_fields([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
 Takes a sequence of objects and a list of fields. If any objects in the sequence don't
@@ -874,8 +876,8 @@ r.table('marvel').order_by('belovedness').limit(10).run(conn)
 ## [\[\]](slice/) ##
 
 {% apibody %}
-sequence[start_index[, end_index]] &rarr; stream
-array[start_index[, end_index]] &rarr; array
+sequence[start_index[:end_index]] &rarr; stream
+array[start_index[:end_index]] &rarr; array
 {% endapibody %}
 
 Trim the sequence to within the bounds provided.
@@ -889,6 +891,7 @@ r.table('marvel').order_by('strength')[5:10].run(conn)
 ## [\[\]](nth/) ##
 
 {% apibody %}
+sequence[index] &arr; object
 sequence.nth(index) &rarr; object
 {% endapibody %}
 
@@ -898,6 +901,7 @@ __Example:__ Select the second element in the array.
 
 ```py
 r.expr([1,2,3])[1].run(conn)
+r.expr([1,2,3]).nth(1).run(conn)
 ```
 
 
@@ -1569,11 +1573,15 @@ __Example:__ It's as easy as 2 % 2 = 0.
 (r.expr(2) % 2).run(conn)
 ```
 
-## [&](and/) ##
+## [&, and_](and/) ##
 
 {% apibody %}
 bool & bool &rarr; bool
+r.and_(bool, bool) &rarr; bool
+bool.and_(bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Compute the logical and of two values.
 
@@ -1581,14 +1589,20 @@ __Example:__ True and false anded is false?
 
 ```py
 (r.expr(True) & False).run(conn)
+r.expr(True).and_(False).run(conn)
+r.and_(True, False).run(conn)
 ```
 
 
-## [|](or/) ##
+## [|, or_](or/) ##
 
 {% apibody %}
 bool | bool &rarr; bool
+bool.or_(bool) &rarr; bool
+r.or_(bool, bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Compute the logical or of two values.
 
@@ -1596,13 +1610,16 @@ __Example:__ True or false ored is true?
 
 ```py
 (r.expr(True) | False).run(conn)
+r.expr(True).or_(False).run(conn)
+r.or_(True, False).run(conn)
 ```
 
 
-## [==](eq/) ##
+## [==, eq](eq/) ##
 
 {% apibody %}
 value == value &rarr; bool
+value.eq(value) &rarr; bool
 {% endapibody %}
 
 Test if two values are equal.
@@ -1611,14 +1628,18 @@ __Example:__ Does 2 equal 2?
 
 ```py
 (r.expr(2) == 2).run(conn)
+r.expr(2).eq(2).run(conn)
 ```
 
 
-## [!=](ne/) ##
+## [!=, ne](ne/) ##
 
 {% apibody %}
 value != value &rarr; bool
+value.ne(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if two values are not equal.
 
@@ -1626,13 +1647,15 @@ __Example:__ Does 2 not equal 2?
 
 ```py
 (r.expr(2) != 2).run(conn)
+r.expr(2).ne(2).run(conn)
 ```
 
 
-## [>](gt/) ##
+## [>, gt](gt/) ##
 
 {% apibody %}
 value > value &rarr; bool
+value.gt(value) &rarr; bool
 {% endapibody %}
 
 Test if the first value is greater than other.
@@ -1641,13 +1664,17 @@ __Example:__ Is 2 greater than 2?
 
 ```py
 (r.expr(2) > 2).run(conn)
+r.expr(2).gt(2).run(conn)
 ```
 
-## [>=](ge/) ##
+## [>=, ge](ge/) ##
 
 {% apibody %}
 value >= value &rarr; bool
+value.ge(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if the first value is greater than or equal to other.
 
@@ -1655,13 +1682,17 @@ __Example:__ Is 2 greater than or equal to 2?
 
 ```py
 (r.expr(2) >= 2).run(conn)
+r.expr(2).ge(2).run(conn)
 ```
 
-## [<](lt/) ##
+## [<, lt](lt/) ##
 
 {% apibody %}
 value < value &rarr; bool
+value.lt(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if the first value is less than other.
 
@@ -1669,13 +1700,17 @@ __Example:__ Is 2 less than 2?
 
 ```py
 (r.expr(2) < 2).run(conn)
+r.expr(2).lt(2).run(conn)
 ```
 
-## [<=](le/) ##
+## [<=, le](le/) ##
 
 {% apibody %}
 value <= value &rarr; bool
+value.le(value) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Test if the first value is less than or equal to other.
 
@@ -1683,20 +1718,26 @@ __Example:__ Is 2 less than or equal to 2?
 
 ```py
 (r.expr(2) <= 2).run(conn)
+r.expr(2).le(2).run(conn)
 ```
 
 
-## [~](not/) ##
+## [~, not_](not/) ##
 
 {% apibody %}
 ~bool &rarr; bool
 bool.not_() &rarr; bool
+r.not_(bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 Compute the logical inverse (not).
 
 __Example:__ Not true is false.
 
 ```py
+r.not_(True).run(conn)
+r.expr(True).not_().run(conn)
 (~r.expr(True)).run(conn)
 ```
 

@@ -4,8 +4,8 @@ language: Ruby
 permalink: api/ruby/ne/
 command: ne
 related_commands:
-    '&': and/
-    '|': or/
+    '&, and': and/
+    '|, or': or/
     eq: eq/
 ---
 

@@ -2,17 +2,18 @@
 layout: api-command
 language: Ruby
 permalink: api/ruby/gt/
-command: '>'
+command: '>, gt'
 related_commands:
-    '>=': ge/
-    '<' : lt/
-    '<=': le/
+    '>=, ge': ge/
+    '<, lt' : lt/
+    '<=, le': le/
 ---
 
 # Command syntax #
 
 {% apibody %}
 value > value &rarr; bool
+value.gt(value) &rarr; bool
 {% endapibody %}
 
 # Description #
@@ -23,6 +24,7 @@ __Example:__ Is 2 greater than 2?
 
 ```rb
 (r.expr(2) > 2).run(conn)
+r.expr(2).gt(2).run(conn)
 ```
 
 

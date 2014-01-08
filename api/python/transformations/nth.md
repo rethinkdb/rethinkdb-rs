@@ -13,6 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
+sequence[index] &rarr; object
 sequence.nth(index) &rarr; object
 {% endapibody %}
 
@@ -24,6 +25,5 @@ __Example:__ Select the second element in the array.
 
 ```py
 r.expr([1,2,3])[1].run(conn)
+r.expr([1,2,3]).nth(1).run(conn)
 ```
-
-

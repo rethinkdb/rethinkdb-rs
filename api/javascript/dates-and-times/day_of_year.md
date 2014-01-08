@@ -14,7 +14,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-time.day_of_year() &rarr; number
+time.dayOfYear() &rarr; number
 {% endapibody %}
 
 # Description #

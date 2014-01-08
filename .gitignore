@@ -6,5 +6,5 @@
 *.swp
 .DS_Store
 *~
-_scripts/py_docs.json
+_scripts/docs.py
 _scripts/reql_docs.json

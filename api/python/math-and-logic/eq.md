@@ -2,25 +2,25 @@
 layout: api-command
 language: Python
 permalink: api/python/eq/
-command: '=='
+command: '==, eq'
 related_commands:
-    '&': and/
-    '|': or/
-    '!=': ne/
+    '&, and_': and/
+    '|, or_': or/
+    '!=, ne': ne/
 ---
 
 # Command syntax #
 
 {% apibody %}
-bool & bool &rarr; bool
+value == value &rarr; bool
+value.eq(value) &rarr; bool
 {% endapibody %}
 
-# Description #
+Test if two values are equal.
 
-Compute the logical and of two values.
-
-__Example:__ True and false anded is false?
+__Example:__ Does 2 equal 2?
 
 ```py
-(r.expr(True) & False).run(conn)
+(r.expr(2) == 2).run(conn)
+r.expr(2).eq(2).run(conn)
 ```
