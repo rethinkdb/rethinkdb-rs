@@ -33,8 +33,8 @@ Delete one or more documents from a table.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. It will override the table or
-query's durability setting (set in [run](../run)).  
+- `durability`: possible values are `hard` and `soft`. This option will override the
+table or query's durability setting (set in [run](/api/javascript/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
 - `returnVals`: if set to `true` and in case of a single document deletion, the deleted
@@ -47,12 +47,11 @@ Delete returns an object that contains the following attributes:
 - `skipped`: the number of documents that were skipped.  
 For example, if you attempt to delete a batch of documents, and another concurrent query
 deletes some of those documents first, they will be counted as skipped.
-- `errors`: the number of errors encountered while deleting.  
-If errors were encountered while deleting, `first_error` contains the text of the first
-error.
+- `errors`: the number of errors encountered while performing the delete.
+- `first_error`: If errors were encountered, contains the text of the first error.
 - `inserted`, `replaced`, and `unchanged`: all 0 for a delete operation..
 - `old_val`: if `returnVals` is set to true, contains the deleted document.
-- `new_val`: set to `null`, only present if `returnVals` is set to `true`.
+- `new_val`: if `returnVals` is set to true, contains `null`.
 
 
 __Example:__ Delete a single document from the table `comments`.

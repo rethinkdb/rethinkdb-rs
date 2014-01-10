@@ -35,14 +35,14 @@ as the original document.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. It will override the table or
-query's durability setting (set in [run](../run)).  
+- `durability`: possible values are `hard` and `soft`. This option will override the
+table or query's durability setting (set in [run](/api/javascript/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
 - `returnVals`: if set to `true` and in case of a single replace, the replaced document
 will be returned.
 - `nonAtomic`: set to `true` if you want to perform non-atomic replaces (replaces that
-require to fetch data from another document).
+require fetching data from another document).
 
 
 Replace returns an object that contains the following attributes:
@@ -54,8 +54,8 @@ new value was the same as the old value
 you do a point-replace on a key that isn't in the table or you do a replace on a
 selection and one of the documents you are replacing has been deleted
 - `deleted`: the number of deleted documents when doing a replace with null
-- `errors`: the number of errors encountered while performing the replace; if errors
-occurred performing the replace, first_error contains the text of the first error encountered
+- `errors`: the number of errors encountered while performing the replace.
+- `first_error`: If errors were encountered, contains the text of the first error.
 - `skipped`: 0 for a replace operation
 - `old_val`: if `returnVals` is set to true, contains the old document.
 - `new_val`: if `returnVals` is set to true, contains the new document.

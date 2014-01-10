@@ -29,8 +29,8 @@ documents.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. It will override the table or
-query's durability setting (set in [run](../run)).  
+- `durability`: possible values are `hard` and `soft`. This option will override the
+table or query's durability setting (set in [run](/api/javascript/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
 - `returnVals`: if set to `true` and in case of a single insert/upsert, the inserted/updated
@@ -44,16 +44,15 @@ Insert returns an object that contains the following attributes:
 - `replaced`: the number of documents that were updated when upsert is used.
 - `unchanged`: the number of documents that would have been modified, except that the
 new value was the same as the old value when doing an upsert.
-- `errors`: the number of errors encountered while inserting.  
-If errors were encountered while inserting, `first_error` contains the text of the first
-error.
+- `errors`: the number of errors encountered while performing the insert.
+- `first_error`: If errors were encountered, contains the text of the first error.
 - `deleted` and `skipped`: 0 for an insert operation.
 - `generated_keys`: a list of generated primary keys in case the primary keys for some
 documents were missing (capped to 100000).
 - `warnings`: if the field `generated_keys` is truncated, you will get the warning _"Too
 many generated keys (&lt;X&gt;), array truncated to 100000."_.
-- `old_val`: `null` if `returnVals` is set to `true".
-- `new_val`: the inserted/updated document if `returnVals` is set to `true`.
+- `old_val`: if `returnVals` is set to true, contains `null`.
+- `new_val`: if `returnVals` is set to true, contains the inserted/updated document.
 
 
 

@@ -35,14 +35,14 @@ combination of the two.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. It will override the table or
-query's durability setting (set in [run](../run)).  
+- `durability`: possible values are `hard` and `soft`. This option will override the
+table or query's durability setting (set in [run](/api/javascript/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
 - `returnVals`: if set to `true` and in case of a single update, the updated document
 will be returned.
 - `nonAtomic`: set to `true` if you want to perform non-atomic updates (updates that
-require to fetch data from another document).
+require fetching data from another document).
 
 
 Update returns an object that contains the following attributes:
@@ -51,8 +51,8 @@ Update returns an object that contains the following attributes:
 - `unchanged`: the number of documents that would have been modified except the new
 value was the same as the old value.
 - `skipped`: the number of documents that were skipped because the document didn't exist.
-- `errors`: the number of errors encountered while performing the update.  
-If errors occured, `first_error` contains the text of the first error;
+- `errors`: the number of errors encountered while performing the update.
+- `first_error`: If errors were encountered, contains the text of the first error.
 - `deleted` and `inserted`: 0 for an update operation.
 - `old_val`: if `returnVals` is set to true, contains the old document.
 - `new_val`: if `returnVals` is set to true, contains the new document.
