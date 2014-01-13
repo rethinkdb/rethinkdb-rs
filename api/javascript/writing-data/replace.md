@@ -53,12 +53,12 @@ new value was the same as the old value
 - `inserted`: the number of new documents added. You can have new documents inserted if
 you do a point-replace on a key that isn't in the table or you do a replace on a
 selection and one of the documents you are replacing has been deleted
-- `deleted`: the number of deleted documents when doing a replace with null
+- `deleted`: the number of deleted documents when doing a replace with `null`
 - `errors`: the number of errors encountered while performing the replace.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `skipped`: 0 for a replace operation
-- `old_val`: if `returnVals` is set to true, contains the old document.
-- `new_val`: if `returnVals` is set to true, contains the new document.
+- `old_val`: if `returnVals` is set to `true`, contains the old document.
+- `new_val`: if `returnVals` is set to `true`, contains the new document.
 
 __Example:__ Replace the document with the primary key `1`.
 
@@ -76,7 +76,7 @@ __Example:__ Remove the field `status` from all posts.
 ```js
 r.table("posts").replace(function(post) {
     return post.without("status")
-).run(conn, callback)
+}).run(conn, callback)
 ```
 
 __Example:__ Remove all the fields that are not `id`, `title` or `content`.
@@ -84,7 +84,7 @@ __Example:__ Remove all the fields that are not `id`, `title` or `content`.
 ```js
 r.table("posts").replace(function(post) {
     return post.pluck("id", "title", "content")
-).run(conn, callback)
+}).run(conn, callback)
 ```
 
 __Example:__ Replace the document with the primary key `1` using soft durability.
@@ -118,24 +118,24 @@ The result will have two fields `old_val` and `new_val`.
 
 ```js
 {
-    "deleted": 0,
-    "errors": 0,
-    "inserted":0,
-    "new_val":{
-        "id":1,
-        "title":"Lorem ipsum"
-        "content":"Aleas jacta est",
-        "status":"published",
+    deleted: 0,
+    errors: 0,
+    inserted: 0,
+    new_val: {
+        id:1,
+        title: "Lorem ipsum"
+        content: "Aleas jacta est",
+        status: "published",
     },
-    "old_val": {
-        "id":1,
-        "title":"Lorem ipsum"
-        "content":"TODO",
-        "status":"draft",
-        "author":"William",
+    old_val: {
+        id:1,
+        title: "Lorem ipsum"
+        content: "TODO",
+        status: "draft",
+        author: "William",
     },
-    "replaced":1,
-    "skipped":0,
-    "unchanged":0
+    replaced: 1,
+    skipped: 0,
+    unchanged: 0
 }
 ```

@@ -54,8 +54,8 @@ value was the same as the old value.
 - `errors`: the number of errors encountered while performing the update.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `deleted` and `inserted`: 0 for an update operation.
-- `old_val`: if `returnVals` is set to true, contains the old document.
-- `new_val`: if `returnVals` is set to true, contains the new document.
+- `old_val`: if `returnVals` is set to `true`, contains the old document.
+- `new_val`: if `returnVals` is set to `true`, contains the new document.
 
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
@@ -86,7 +86,7 @@ r.table("posts").get(1).update({
 }).run(conn, callback)
 ```
 
-__Example:__ Increment the field `view` of the post whose `id` is `1`.
+__Example:__ Increment the field `view` of the post with `id` of `1`.
 If the field `views` does not exist, it will be set to `0`.
 
 ```js
@@ -108,12 +108,12 @@ r.table("posts").get(1).update(function(post) {
 }).run(conn, callback)
 ```
 
-__Example:__ Update the field `num_comments` with the result of a sub-query. Because
+__Example:__ Update the field `numComments` with the result of a sub-query. Because
 this update is not atomic, you must pass the `nonAtomic` flag.
 
 ```js
 r.table("posts").get(1).update({
-    num_comments: r.table("comments").filter({idPost: 1}).count()
+    numComments: r.table("comments").filter({idPost: 1}).count()
 },{
     nonAtomic: true
 }).run(conn, callback)
@@ -125,7 +125,7 @@ If you forget to specify the `nonAtomic` flag, you will get a `RqlRuntimeError`.
 RqlRuntimeError: Could not prove function deterministic.  Maybe you want to use the non_atomic flag? 
 ```
 
-__Example:__ Update the field `num_comments` with a random value between 0 and 100.  
+__Example:__ Update the field `numComments` with a random value between 0 and 100.  
 This update cannot be proven deterministic because of `r.js` (and in fact is not), so you
 must pass the `nonAtomic` flag.
 
@@ -137,7 +137,7 @@ r.table("posts").get(1).update({
 }).run(conn, callback)
 ```
 
-__Example:__ Update the status of the post whose `id` is `1` using soft durability.
+__Example:__ Update the status of the post with `id` of `1` using soft durability.
 
 ```js
 r.table("posts").get(1).update({ status: "published" }, {durability: "soft"}).run(conn, callback)
@@ -158,26 +158,26 @@ The result will have two fields `old_val` and `new_val`.
 
 ```js
 {
-    "deleted": 1,
-    "errors": 0,
-    "inserted": 0,
-    "new_val": {
-        "id": 1,
-        "author": "Julius_Caesar",
-        "title": "Commentarii de Bello Gallico",
-        "content": "Aleas jacta est",
-        "views": 207
+    deleted: 1,
+    errors: 0,
+    inserted: 0,
+    new_val: {
+        id: 1,
+        author: "Julius_Caesar",
+        title: "Commentarii de Bello Gallico",
+        content: "Aleas jacta est",
+        views: 207
     },
-    "old_val": {
-        "id": 1,
-        "author": "Julius_Caesar",
-        "title": "Commentarii de Bello Gallico",
-        "content": "Aleas jacta est",
-        "views": 206
+    old_val: {
+        id: 1,
+        author: "Julius_Caesar",
+        title: "Commentarii de Bello Gallico",
+        content: "Aleas jacta est",
+        views: 206
     },
-    "replaced": 0,
-    "skipped": 0,
-    "unchanged": 0
+    replaced: 0,
+    skipped: 0,
+    unchanged: 0
 }
 ```
 

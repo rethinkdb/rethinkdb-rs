@@ -51,8 +51,8 @@ new value was the same as the old value when doing an upsert.
 documents were missing (capped to 100000).
 - `warnings`: if the field `generated_keys` is truncated, you will get the warning _"Too
 many generated keys (&lt;X&gt;), array truncated to 100000."_.
-- `old_val`: if `returnVals` is set to true, contains `null`.
-- `new_val`: if `returnVals` is set to true, contains the inserted/updated document.
+- `old_val`: if `returnVals` is set to `true`, contains `null`.
+- `new_val`: if `returnVals` is set to `true`, contains the inserted/updated document.
 
 
 
@@ -127,8 +127,8 @@ __Example:__ Insert multiple documents into the table `users`.
 
 ```js
 r.table("users").insert([
-    { id: "william", email: "william@rethinkdb.com" }
-    { id: "lara", email: "lara@rethinkdb.com" },
+    { id: "william", email: "william@rethinkdb.com" },
+    { id: "lara", email: "lara@rethinkdb.com" }
 ]).run(conn, callback)
 ```
 
@@ -156,7 +156,7 @@ __Example:__ Get back a copy of the inserted document (with its generated primar
 
 ```js
 r.table("posts").insert(
-    { title: "Lorem ipsum", content: "Dolor sit amet", }
+    { title: "Lorem ipsum", content: "Dolor sit amet" },
     { returnVals: true }
 ).run(conn, callback)
 ```
@@ -174,7 +174,7 @@ The result will be
     replaced: 0,
     skipped: 0,
     unchanged: 0,
-    old_val: true,
+    old_val: null,
     new_val: {
         id: "dd782b64-70a7-43e4-b65e-dd14ae61d947",
         title: "Lorem ipsum",
