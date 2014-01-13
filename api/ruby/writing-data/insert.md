@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, { :durability => "hard", :return_vals => false :upsert => false}])
+table.insert(json | [json][, :durability => "hard", :return_vals => false :upsert => false])
     &rarr; object
 {% endapibody %}
 
@@ -56,7 +56,7 @@ __Example:__ Insert a document into the table `posts`.
 r.table("posts").insert({
     :id => 1,
     :title => "Lorem ipsum",
-    :content => "Dolor sit amet",
+    :content => "Dolor sit amet"
 }).run(conn)
 ```
 
@@ -80,7 +80,7 @@ primary key is `id`.
 ```rb
 r.table("posts").insert({
     :title => "Lorem ipsum",
-    :content => "Dolor sit amet",
+    :content => "Dolor sit amet"
 }).run(conn)
 ```
 
@@ -112,7 +112,7 @@ And you will get back:
 {
     :id => "dd782b64-70a7-43e4-b65e-dd14ae61d947",
     :title => "Lorem ipsum",
-    :content => "Dolor sit amet",
+    :content => "Dolor sit amet"
 }
 ```
 
@@ -121,8 +121,8 @@ __Example:__ Insert multiple documents into the table `users`.
 
 ```rb
 r.table("users").insert([
-    { :id => "william", :email =>"william@rethinkdb.com" },
-    { :id => "lara", :email => "lara@rethinkdb.com" }
+    {:id => "william", :email =>"william@rethinkdb.com"},
+    {:id => "lara", :email => "lara@rethinkdb.com"}
 ]).run(conn)
 ```
 
@@ -133,7 +133,7 @@ _Note_: If the document exists, the `insert` command will behave like [replace](
 
 ```rb
 r.table("users").insert(
-    { :id => "william", :email => "william@rethinkdb.com" },
+    {:id => "william", :email => "william@rethinkdb.com"},
     :upsert => true
 ).run(conn)
 ```
@@ -150,7 +150,7 @@ __Example:__ Get back a copy of the inserted document (with its generated primar
 
 ```rb
 r.table("posts").insert(
-    { :title => "Lorem ipsum", :content => "Dolor sit amet" },
+    {:title => "Lorem ipsum", :content => "Dolor sit amet"},
     :return_vals => true
 ).run(conn)
 ```

@@ -398,105 +398,79 @@ r.table('test').index_wait('timestamp').run(conn)
 
 {% apibody %}
 table.insert(json | [json]
-    [, durability='soft', return_vals=True, upsert=True])
+    [, durability="hard", return_vals=False, upsert=False])
         &rarr; object
 {% endapibody %}
 
-Insert JSON documents into a table. Accepts a single JSON document or an array of
+Insert documents into a table. Accepts a single document or an array of
 documents.
 
-Insert returns an object that contains the following attributes:
-
-- `inserted`: the number of documents that were succesfully inserted
-- `replaced`: the number of documents that were updated when upsert is used
-- `unchanged`: the number of documents that would have been modified, except that the
-new value was the same as the old value when doing an upsert
-- `errors`: the number of errors encountered while inserting; if errors where
-encountered while inserting, `first_error` contains the text of the first error
-- `generated_keys`: a list of generated primary key values
-- `deleted` and `skipped`: 0 for an insert operation.
-
-__Example:__ Insert a row into a table named 'marvel'.
+__Example:__ Insert a document into the table `posts`.
 
 ```py
-r.table('marvel').insert(
-    { 'superhero': 'Iron Man', 'superpower':'Arc Reactor' }).run(conn)
+r.table("posts").insert({
+    "id": 1,
+    "title": "Lorem ipsum",
+    "content": "Dolor sit amet"
+}).run(conn)
 ```
 
 [Read more about this command &rarr;](insert/)
 
+
 ## [update](update/) ##
 
 {% apibody %}
-table.update(json | expr[, durability='soft', return_vals=true])
-    &rarr; object
-selection.update(json | expr[, durability='soft', return_vals=true])
-    &rarr; object
-singleSelection.update(json | expr[, durability='soft', return_vals=true])
-    &rarr; object
+table.update(json | exp
+    [, durability="hard", return_vals=False, non_atomic=False])
+        &rarr; object
+selection.update(json | exp
+    [, durability="hard", return_vals=False, non_atomic=False])
+        &rarr; object
+singleSelection.update(json | exp
+    [, durability="hard", return_vals=False, non_atomic=False])
+        &rarr; object
 {% endapibody %}
 
 Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
-combination of the two. You can pass options like `returnVals` that will return the old
-and new values of the row you have modified.
+combination of the two.
 
-Update returns an object that contains the following attributes:
-
-- `replaced`: the number of documents that were updated
-- `unchanged`: the number of documents that would have been modified except the new
-value was the same as the old value;
-- `skipped`: the number of documents that were left unmodified because there was nothing
-to do: either the row didn't exist or the new value is `None`;
-- `errors`: the number of errors encountered while performing the update; if errors
-occured, first_error contains the text of the first error;
-- `deleted` and `inserted`: 0 for an update operation.
-
-__Example:__ Update Superman's age to 30. If attribute 'age' doesn't exist, adds it to
-the document.
+__Example:__ Update the status of the post with `id` of `1` to `published`.
 
 ```py
-r.table('marvel').get('superman').update({ 'age': 30 }).run(conn)
+r.table("posts").get(1).update({"status": "published"}).run(conn)
 ```
 
 [Read more about this command &rarr;](update/)
 
+
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(json | expr[, durability='soft', return_vals=true])
-    &rarr; object
-selection.replace(json | expr[, durability='soft', return_vals=true])
-    &rarr; object
-singleSelection.replace(json | expr[, durability='soft', return_vals=true])
-    &rarr; object
+table.replace(json | expr
+    [, durability="hard", return_vals=False, non_atomic=False])
+        &rarr; object
+selection.replace(json | expr
+    [, durability="hard", return_vals=False, non_atomic=False])
+        &rarr; object
+singleSelection.replace(json | expr
+    [, durability="hard", return_vals=False, non_atomic=False])
+        &rarr; object
 {% endapibody %}
 
 Replace documents in a table. Accepts a JSON document or a ReQL expression, and replaces
 the original document with the new one. The new document must have the same primary key
-as the original document. The optional argument durability with value 'hard' or 'soft'
-will override the table or query's default durability setting. The optional argument
-`return_vals` will return the old and new values of the row you're modifying when set to
-true (only valid for single-row replacements). The optional argument `non_atomic` lets you
-permit non-atomic updates.
+as the original document.
 
-Replace returns an object that contains the following attributes:
-
-- `replaced`: the number of documents that were replaced
-- `unchanged`: the number of documents that would have been modified, except that the
-new value was the same as the old value
-- `inserted`: the number of new documents added. You can have new documents inserted if
-you do a point-replace on a key that isn't in the table or you do a replace on a
-selection and one of the documents you are replacing has been deleted
-- `deleted`: the number of deleted documents when doing a replace with `None` 
-- `errors`: the number of errors encountered while performing the replace; if errors
-occurred performing the replace, first_error contains the text of the first error encountered
-- `skipped`: 0 for a replace operation
-
-
-__Example:__ Remove all existing attributes from Superman's document, and add an attribute 'age'.
+__Example:__ Replace the document with the primary key `1`.
 
 ```py
-r.table('marvel').get('superman').replace({ 'id': 'superman', 'age': 30 }).run(conn)
+r.table("posts").get(1).replace({
+    "id": 1,
+    "title": "Lorem ipsum",
+    "content": "Aleas jacta est",
+    "status": "draft"
+}).run(conn)
 ```
 
 [Read more about this command &rarr;](replace/)
@@ -504,35 +478,23 @@ r.table('marvel').get('superman').replace({ 'id': 'superman', 'age': 30 }).run(c
 ## [delete](delete/) ##
 
 {% apibody %}
-table.delete([durability='soft', return_vals=true])
+table.delete([durability="hard", return_vals=False])
     &rarr; object
-selection.delete([durability='soft', return_vals=true])
+selection.delete([durability="hard", return_vals=False])
     &rarr; object
-singleSelection.delete([durability='soft', return_vals=true])
+singleSelection.delete([durability="hard", return_vals=False])
     &rarr; object
 {% endapibody %}
 
-Delete one or more documents from a table. The optional argument return_vals will return
-the old value of the row you're deleting when set to true (only valid for single-row
-deletes). The optional argument durability with value 'hard' or 'soft' will override the
-table or query's default durability setting.
 
-Delete returns an object that contains the following attributes:
+Delete one or more documents from a table.
 
-- `deleted`: the number of documents that were deleted
-- `skipped`: the number of documents from the selection that were left unmodified because
-there was nothing to do. For example, if you delete a row that has already been deleted,
-that row will be skipped
-- `errors`: the number of errors encountered while deleting
-if errors occured, first_error contains the text of the first error
-- `inserted`, `replaced`, and `unchanged`: all 0 for a delete operation.
-
-
-__Example:__ Delete superman from the database.
+__Example:__ Delete a single document from the table `comments`.
 
 ```py
-r.table('marvel').get('superman').delete().run(conn)
+r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn)
 ```
+
 
 [Read more about this command &rarr;](delete/)
 

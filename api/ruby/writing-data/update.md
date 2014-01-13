@@ -13,11 +13,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.update(json | expr[, :durability => "hard", :return_vals => false])
+table.update(json | expr[, :durability => "hard", :return_vals => false, :non_atomic => false])
     &rarr; object
-selection.update(json | expr[, :durability => "hard", :return_vals => false])
+selection.update(json | expr[, :durability => "hard", :return_vals => false, :non_atomic => false])
     &rarr; object
-singleSelection.update(json | expr[, :durability => "hard", :return_vals => false])
+singleSelection.update(json | expr[, :durability => "hard", :return_vals => false, :non_atomic => false])
     &rarr; object
 {% endapibody %}
 
@@ -55,19 +55,19 @@ value was the same as the old value.
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
 ```rb
-r.table("posts").get(1).update({ status: "published" }).run(conn)
+r.table("posts").get(1).update({:status => "published"}).run(conn)
 ```
 
 __Example:__ Update the status of all posts to `published`.
 
 ```rb
-r.table("posts").update({ status: "published" }).run(conn)
+r.table("posts").update({:status => "published"}).run(conn)
 ```
 
 __Example:__ Update the status of all the post written by William.
 
 ```rb
-r.table("posts").filter({author: "William"}).update({ status: "published" }).run(conn)
+r.table("posts").filter({:author => "William"}).update({:status => "published"}).run(conn)
 ```
 
 
@@ -76,7 +76,7 @@ This query will throw an error if the field `views` doesn't exist.
 
 ```rb
 r.table("posts").get(1).update{ |post|
-    { :views => post["views"]+1 }
+    {:views => post["views"]+1}
 }.run(conn)
 ```
 
@@ -85,7 +85,7 @@ If the field `views` does not exist, it will be set to `0`.
 
 ```rb
 r.table("posts").update{ |post|
-    { :views => (post["views"]+1).default(0) }
+    {:views => (post["views"]+1).default(0)}
 }.run(conn)
 ```
 
@@ -107,7 +107,7 @@ this update is not atomic, you must pass the `non_atomic` flag.
 
 ```rb
 r.table("posts").get(1).update({
-    num_comments: r.table("comments").filter({:id_post => 1}).count()
+    :num_comments => r.table("comments").filter({:id_post => 1}).count()
 }, :non_atomic => true ).run(conn)
 ```
 
@@ -130,7 +130,7 @@ r.table("posts").get(1).update({
 __Example:__ Update the status of the post with `id` of `1` using soft durability.
 
 ```rb
-r.table("posts").get(1).update({ :status => "published" }, :durability => "soft").run(conn)
+r.table("posts").get(1).update({:status => "published"}, :durability => "soft").run(conn)
 ```
 
 __Example:__ Increment the field `views` and return the values of the document before

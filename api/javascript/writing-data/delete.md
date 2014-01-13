@@ -85,19 +85,19 @@ The result look like:
 
 ```js
 {
-    "deleted": 1,
-    "errors": 0,
-    "inserted": 0,
-    "new_val": null,
-    "old_val": {
-        "id": "7eab9e63-73f1-4f33-8ce4-95cbea626f59",
-        "author": "William",
-        "comment": "Great post",
-        "idPost": 3
+    deleted: 1,
+    errors: 0,
+    inserted: 0,
+    new_val: null,
+    old_val: {
+        id: "7eab9e63-73f1-4f33-8ce4-95cbea626f59",
+        author: "William",
+        comment: "Great post",
+        idPost: 3
     },
-    "replaced": 0,
-    "skipped": 0,
-    "unchanged": 0
+    replaced: 0,
+    skipped: 0,
+    unchanged: 0
 }
 ```
 

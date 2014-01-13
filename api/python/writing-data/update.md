@@ -12,11 +12,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.update(json | expr[, durability="hard", return_vals=False])
+table.update(json | expr[, durability="hard", return_vals=False, non_atomic=False])
     &rarr; object
-selection.update(json | expr[, durability="hard", return_vals=False])
+selection.update(json | expr[, durability="hard", return_vals=False, non_atomic=False])
     &rarr; object
-singleSelection.update(json | expr[, durability="hard", return_vals=False])
+singleSelection.update(json | expr[, durability="hard", return_vals=False, non_atomic=False])
     &rarr; object
 {% endapibody %}
 
@@ -53,19 +53,19 @@ value was the same as the old value.
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
 ```py
-r.table("posts").get(1).update({ "status": "published" }).run(conn)
+r.table("posts").get(1).update({"status": "published"}).run(conn)
 ```
 
 __Example:__ Update the status of all posts to `published`.
 
 ```py
-r.table("posts").update({ "status": "published" }).run(conn)
+r.table("posts").update({"status": "published"}).run(conn)
 ```
 
 __Example:__ Update the status of all the post written by William.
 
 ```py
-r.table("posts").filter({"author": "William"}).update({ "status": "published" }).run(conn)
+r.table("posts").filter({"author": "William"}).update({"status": "published"}).run(conn)
 ```
 
 
@@ -128,7 +128,7 @@ r.table("posts").get(1).update({
 __Example:__ Update the status of the post with `id` of `1` using soft durability.
 
 ```py
-r.table("posts").get(1).update({ status: "published" }, durability="soft").run(conn)
+r.table("posts").get(1).update({status: "published"}, durability="soft").run(conn)
 ```
 
 __Example:__ Increment the field `views` and return the values of the document before

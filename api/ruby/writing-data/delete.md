@@ -44,8 +44,8 @@ deletes some of those documents first, they will be counted as skipped.
 - `errors`: the number of errors encountered while performing the delete.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `inserted`, `replaced`, and `unchanged`: all 0 for a delete operation..
-- `old_val`: if `return_vals` is set to true, contains the deleted document.
-- `new_val`: if `return_vals` is set to true, contains `nil`.
+- `old_val`: if `return_vals` is set to `true`, contains the deleted document.
+- `new_val`: if `return_vals` is set to `true`, contains `nil`.
 
 
 __Example:__ Delete a single document from the table `comments`.

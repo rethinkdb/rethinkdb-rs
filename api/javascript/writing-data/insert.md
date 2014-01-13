@@ -62,7 +62,7 @@ __Example:__ Insert a document into the table `posts`.
 r.table("posts").insert({
     id: 1,
     title: "Lorem ipsum",
-    content: "Dolor sit amet",
+    content: "Dolor sit amet"
 }).run(conn, callback)
 ```
 
@@ -86,7 +86,7 @@ primary key is `id`.
 ```js
 r.table("posts").insert({
     title: "Lorem ipsum",
-    content: "Dolor sit amet",
+    content: "Dolor sit amet"
 }).run(conn, callback)
 ```
 
@@ -127,8 +127,8 @@ __Example:__ Insert multiple documents into the table `users`.
 
 ```js
 r.table("users").insert([
-    { id: "william", email: "william@rethinkdb.com" },
-    { id: "lara", email: "lara@rethinkdb.com" }
+    {id: "william", email: "william@rethinkdb.com"},
+    {id: "lara", email: "lara@rethinkdb.com"}
 ]).run(conn, callback)
 ```
 
@@ -139,8 +139,8 @@ _Note_: If the document exists, the `insert` command will behave like [replace](
 
 ```js
 r.table("users").insert(
-    { id: "william", email: "william@rethinkdb.com" },
-    { upsert: true }
+    {id: "william", email: "william@rethinkdb.com"},
+    {upsert: true}
 ).run(conn, callback)
 ```
 
@@ -156,8 +156,8 @@ __Example:__ Get back a copy of the inserted document (with its generated primar
 
 ```js
 r.table("posts").insert(
-    { title: "Lorem ipsum", content: "Dolor sit amet" },
-    { returnVals: true }
+    {title: "Lorem ipsum", content: "Dolor sit amet"},
+    {returnVals: true}
 ).run(conn, callback)
 ```
 

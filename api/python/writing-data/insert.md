@@ -57,7 +57,7 @@ __Example:__ Insert a document into the table `posts`.
 r.table("posts").insert({
     "id": 1,
     "title": "Lorem ipsum",
-    "content": "Dolor sit amet",
+    "content": "Dolor sit amet"
 }).run(conn)
 ```
 
@@ -81,7 +81,7 @@ primary key is `id`.
 ```py
 r.table("posts").insert({
     "title": "Lorem ipsum",
-    "content": "Dolor sit amet",
+    "content": "Dolor sit amet"
 }).run(conn)
 ```
 
@@ -122,8 +122,8 @@ __Example:__ Insert multiple documents into the table `users`.
 
 ```py
 r.table("users").insert([
-    { "id": "william", "email": "william@rethinkdb.com" },
-    { "id": "lara", "email": "lara@rethinkdb.com" }
+    {"id": "william", "email": "william@rethinkdb.com"},
+    {"id": "lara", "email": "lara@rethinkdb.com"}
 ]).run(conn)
 ```
 
@@ -134,7 +134,7 @@ _Note_: If the document exists, the `insert` command will behave like [replace](
 
 ```py
 r.table("users").insert(
-    { "id": "william", "email": "william@rethinkdb.com" },
+    {"id": "william", "email": "william@rethinkdb.com"},
     upsert=True
 ).run(conn)
 ```
@@ -151,7 +151,7 @@ __Example:__ Get back a copy of the inserted document (with its generated primar
 
 ```py
 r.table("posts").insert(
-    { "title": "Lorem ipsum", "content": "Dolor sit amet" },
+    {"title": "Lorem ipsum", "content": "Dolor sit amet"},
     return_vals=True
 ).run(conn)
 ```

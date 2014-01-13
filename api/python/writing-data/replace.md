@@ -12,11 +12,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(json | expr[, durability="hard", return_vals=False])
+table.replace(json | expr[, durability="hard", return_vals=False, non_atomic=False])
     &rarr; object
-selection.replace(json | expr[, durability="hard", return_vals=False])
+selection.replace(json | expr[, durability="hard", return_vals=False, non_atomic=False])
     &rarr; object
-singleSelection.replace(json | expr[, durability="hard", return_vals=False])
+singleSelection.replace(json | expr[, durability="hard", return_vals=False, non_atomic=False])
     &rarr; object
 {% endapibody %}
 

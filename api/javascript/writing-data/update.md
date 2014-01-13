@@ -61,19 +61,19 @@ value was the same as the old value.
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
 ```js
-r.table("posts").get(1).update({ status: "published" }).run(conn, callback)
+r.table("posts").get(1).update({status: "published"}).run(conn, callback)
 ```
 
 __Example:__ Update the status of all posts to `published`.
 
 ```js
-r.table("posts").update({ status: "published" }).run(conn, callback)
+r.table("posts").update({status: "published"}).run(conn, callback)
 ```
 
 __Example:__ Update the status of all the post written by William.
 
 ```js
-r.table("posts").filter({author: "William"}).update({ status: "published" }).run(conn, callback)
+r.table("posts").filter({author: "William"}).update({status: "published"}).run(conn, callback)
 ```
 
 
@@ -140,7 +140,7 @@ r.table("posts").get(1).update({
 __Example:__ Update the status of the post with `id` of `1` using soft durability.
 
 ```js
-r.table("posts").get(1).update({ status: "published" }, {durability: "soft"}).run(conn, callback)
+r.table("posts").get(1).update({status: "published"}, {durability: "soft"}).run(conn, callback)
 ```
 
 __Example:__ Increment the field `views` and return the values of the document before
