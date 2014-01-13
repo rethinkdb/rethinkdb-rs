@@ -59,6 +59,8 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
   [@AVVSDevelopment](https://github.com/AVVSDevelopment)
 - [box-rethinkdb](https://github.com/mies/box-rethinkdb): Wercker box for
   RethinkDB, by [@mies](https://github.com/mies)
+- [RethinkDB on Dockerfile Project](http://dockerfile.github.io/#/rethinkdb):
+  Trusted Docker Build & instruction for deploying a RethinkDB cluster
 - [dockerfiles-examples](https://github.com/kstaken/dockerfile-examples):
   includes scripts for building an image for Docker with RethinkDB, by
   [@kstaken](https://github.com/kstaken)
