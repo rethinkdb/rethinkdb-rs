@@ -10,6 +10,8 @@ permalink: docs/install-drivers/python/
 
 # Installation #
 
+The Python driver for RethinkDB is compatible with Python 2.
+
 Install the driver with pip:
 
 ```bash
@@ -40,51 +42,6 @@ track progress for a better solution on [Github issue #901](https://github.com/r
 
 For faster Python driver performance, read about [using an
 optimized C++ protobuf backend](/docs/driver-performance/).
-
-# Optional: Python 3 #
-
-The RethinkDB Python driver itself is compatible with Python 3.3+ in
-addition to Python 2.6 and 2.7. However, the protocol buffers library
-that the driver relies on is not. While we wait for Google to update
-the protocol buffers library, it is possible to build and install a
-Python 3 compatible version of the library from source using the
-following instructions.
-
-These steps assume that Python 3.3 is already installed as the default
-Python environment on your system.
-
-```bash
-$ # Install dev dependencies for protobuf
-$ apt-get install git curl autoconf libtool
-$
-$ # Download the Python 3 compatible fork of Google protobuf
-$ git clone https://github.com/malthe/google-protobuf.git
-$ cd google-protobuf
-$
-$ # Build and install protoc to generate Python 3 sources
-$ ./autogen.sh
-$ ./configure --prefix=/usr
-$ make
-$ make install
-$
-$ # Build and install the Python 3 compatible Python library
-$ cd python
-$ python setup.py build
-$ python setup.py install
-$ cd ../../
-$
-$ # Download and install the RethinkDB Python driver
-$ git clone https://github.com/rethinkdb/rethinkdb.git
-$ cd rethinkdb drivers/python
-$ make
-$ make install
-```
-
-{% infobox info padded %}
-_Note_: The optimized protobuf serializer backend is not available
-for Python 3.  During compilation of the RethinkDB Python driver you
-will see a warning indicating a failure to build the C++ backend.
-{% endinfobox %}
 
 # Next steps #
 
