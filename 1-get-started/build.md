@@ -25,7 +25,7 @@ should be available for your operating system's repository. These packages are:
 - nodejs and npm
 
 
-On Ubuntu, you can install build dependencies with apt-get:
+On Ubuntu 13.10+, you can install build dependencies with apt-get ([see instructions for previous versions](/docs/install/ubuntu/)):
 
 ```bash
 sudo apt-get install git-core g++ nodejs npm libprotobuf-dev libgoogle-perftools-dev \
