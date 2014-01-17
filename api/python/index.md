@@ -1823,7 +1823,7 @@ __Example:__ Retrieve all the posts that were posted between December 1st, 2013 
 
 ```py
 r.table("posts").filter(
-    r.row['date'].during(r.time(2013, 12, 1), r.time(2013, 12, 10))
+    r.row['date'].during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
 ).run(conn)
 ```
 
