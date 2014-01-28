@@ -12,8 +12,9 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.order_by(key1, [key2...]) &rarr; stream
-array.order_by(key1, [key2...]) &rarr; array
+table.order_by([key1...], :index=> index_name) -> selection<stream>
+selection.order_by(key1, [key2...]) -> selection<array>
+sequence.order_by(key1, [key2...]) -> array
 {% endapibody %}
 
 # Description #
