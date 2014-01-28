@@ -35,7 +35,7 @@ In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
 - `returnVals`: if set to `true` and in case of a single insert/upsert, the inserted/updated
 document will be returned.
-- `upsert`: when set to `true`, performs an update if a document with the same primary key
+- `upsert`: when set to `true`, performs a [replace](/api/javascript/replace/) if a document with the same primary key
 exists.
 
 Insert returns an object that contains the following attributes:
@@ -135,7 +135,7 @@ r.table("users").insert([
 
 __Example:__ Insert a document into the table `users`, replacing the document if the document
 already exists.  
-_Note_: If the document exists, the `insert` command will behave like [replace](../replace/), not like [update](../update/) 
+_Note_: If the document exists, the `insert` command will behave like [replace](/api/javascript/replace/), not like [update](../update/) 
 
 ```js
 r.table("users").insert(
