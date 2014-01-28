@@ -8,13 +8,15 @@ io:
         - value
 related_commands:
     map: map/
-    groupedMapReduce: grouped_map_reduce/
+    concat_map: concat_map/
+    grouped_map_reduce: grouped_map_reduce/
+    group_by: group_by/
 ---
 
 # Command syntax #
 
 {% apibody %}
-sequence.reduce(reductionFunction[, base]) &rarr; value
+sequence.reduce(reductionFunction[, default]) &rarr; value
 {% endapibody %}
 
 # Description #
@@ -22,14 +24,56 @@ sequence.reduce(reductionFunction[, base]) &rarr; value
 Produce a single value from a sequence through repeated application of a reduction
 function.
 
-The reduce function gets invoked repeatedly not only for the input values but also for
-results of previous reduce invocations. The type and format of the object that is passed
-in to reduce must be the same with the one returned from reduce.
+The `reduce` method is distributed and parallelized across shards and CPU cores.
+This allows map/reduce queries to execute efficiently, but is a source of a common
+mistake: assuming an incorrect reduction order.  
+Read the [map-reduce in RethinkDB](/docs/map-reduce/) article if you are not familiar with
+map/reduce.
 
-__Example:__ How many enemies have our heroes defeated?
+
+The `default` value is returned only if you reduce an empty sequence.
+
+
+__Example:__ Return the number of documents in the table `posts.
 
 ```js
-r.table('marvel').map(r.row('monstersKilled')).reduce(function(acc, val) {
-    return acc.add(val)
-}, 0).run(conn, callback)
+r.table("posts").map(function(doc) {
+    return 1
+}).reduce(function(left, right) {
+    return left.add(right)
+}, 0).run(conn, callback);
+```
+
+A shorter way to execute this query is to use [count](/api/javascript/count).
+
+
+
+__Example:__ Suppose that each `post` has a field `comments` that is an array of
+comments.  
+Return the number of comments for all posts.
+
+```js
+r.table("posts").map(function(doc) {
+    return doc("comments").count()
+}).reduce(function(left, right) {
+    return left.add(right)
+}, 0).run(conn, callback);
+```
+
+
+
+__Example:__ Suppose that each `post` has a field `comments` that is an array of
+comments.  
+Return the maximum number comments per post.
+
+```js
+r.table("posts").map(function(doc) {
+    return doc("comments").count()
+}).reduce(function(left, right) {
+    return r.branch(
+        left.gt(right),
+        left,
+        right
+    )
+}, 0).run(conn, callback);
 ```

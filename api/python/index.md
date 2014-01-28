@@ -939,23 +939,29 @@ These commands are used to compute smaller values from large sequences.
 ## [reduce](reduce/) ##
 
 {% apibody %}
-sequence.reduce(reduction_function[, base]) &rarr; value
+sequence.reduce(reduction_function[, default]) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction
 function.
 
-The reduce function gets invoked repeatedly not only for the input values but also for
-results of previous reduce invocations. The type and format of the object that is passed
-in to reduce must be the same with the one returned from reduce.
+The `reduce` method is distributed and parallelized across shards and CPU cores.
+This allows map/reduce queries to execute efficiently, but is a source of a common
+mistake: assuming an incorrect reduction order.   
+Read the [map-reduce in RethinkDB](/docs/map-reduce/) article if you are not familiar with
+map/reduce.
 
-__Example:__ How many enemies have our heroes defeated?
+The `default` value is returned only if you reduce an empty sequence.
+
+
+__Example:__ Return the number of documents in the table `posts.
 
 ```py
-r.table('marvel').map(r.row['monstersKilled']).reduce(
-    lambda acc, val: acc + val, 0).run(conn)
+r.table("posts").map(lambda doc:
+    1
+).reduce(lambda left, right:
+    left+right , 0).run(conn);
 ```
-
 
 ## [count](count/) ##
 
