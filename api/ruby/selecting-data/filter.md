@@ -73,6 +73,13 @@ r.table("users").filter{|user|
 ```
 
 
+__Example:__ Get all the users that are more than 18 years old or have their parental consent.
+
+```rb
+r.table("users").filter{|user| (user["age"].lt(18)) | (user["hasParentalConsent"])}.run(conn)
+```
+
+
 __Example:__ Get all the users that are less than 18 years old or whose age is unknown
 (field `age` missing).
 

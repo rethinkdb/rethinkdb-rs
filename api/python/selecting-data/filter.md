@@ -76,6 +76,13 @@ r.table("users").filter((r.row["age"] < 18) & (r.row["age"] > 13)).run(conn, cal
 ```
 
 
+__Example:__ Get all the users that are more than 18 years old or have their parental consent.
+
+```py
+r.table("users").filter((r.row["age"].lt(18)) | (r.row["hasParentalConsent"])).run(conn)
+```
+
+
 
 __Example:__ Get all the users that are less than 18 years old or whose age is unknown
 (field `age` missing).
