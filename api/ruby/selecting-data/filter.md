@@ -43,7 +43,7 @@ r.table('users').filter({:age => 30}).run(conn)
 A more general way to write the previous query is to use Ruby's block.
 
 ```rb
-r.table('users').filter{ |user|
+r.table('users').filter{|user|
     user["age"].eq(30)
 }.run(conn)
 ```
@@ -59,10 +59,19 @@ Here the predicate is `user["age"].eq(30)`.
 __Example:__ Get all the users that are more than 18 years old.
 
 ```rb
-r.table("users").filter{ |user|
+r.table("users").filter{|user|
     user["age"] > 18
 }.run(conn)
 ```
+
+__Example:__ Get all the users that are less than 18 years old and more than 13 years old.
+
+```rb
+r.table("users").filter{|user|
+    (user["age"] < 18) & (user["age"] > 13)
+}.run(conn)
+```
+
 
 __Example:__ Get all the users that are less than 18 years old or whose age is unknown
 (field `age` missing).
@@ -89,7 +98,7 @@ __Example:__ Select all users who have given their phone number (all the documen
 whose field `phone_number` is defined and not `None`).
 
 ```rb
-r.table('users').filter{ |user|
+r.table('users').filter{|user|
     user.has_fields('phone_number')
 }.run(conn)
 ```
@@ -98,7 +107,7 @@ __Example:__ Retrieve all the users who subscribed between January 1st, 2012
 (included) and January 1st, 2013 (excluded).
 
 ```rb
-r.table("users").filter{ |user|
+r.table("users").filter{|user|
     user["subscription_date"].during( r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z') )
 }.run(conn)
 ```
@@ -109,7 +118,7 @@ with `@gmail.com`).
 
 
 ```rb
-r.table("users").filter{ |user|
+r.table("users").filter{|user|
     user["email"].match("@gmail.com$")
 }.run(conn)
 ```
@@ -128,7 +137,7 @@ Suppose the table `users` has the following schema
 Retrieve all the users whose field `places_visited` contains `France`.
 
 ```rb
-r.table("users").filter{ |user|
+r.table("users").filter{|user|
     user["places_visited"].contains("France")
 }.run(conn)
 ```
@@ -179,14 +188,14 @@ r.table("users").filter(r.literal({
 The equivalent queries with a lambda function.
 
 ```rb
-r.table("users").filter{ |user|
+r.table("users").filter{|user|
     (user["name"]["first"].eq("William")) &
     (user["name"]["last"].eq("Adama"))
 }.run(conn)
 ```
 
 ```rb
-r.table("users").filter{ |user|
+r.table("users").filter{|user|
     user["name"].eq({
         :first => "William",
         :last => "Adama"

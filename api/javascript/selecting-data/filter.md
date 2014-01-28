@@ -48,7 +48,7 @@ r.table('users').filter({age: 30}).run(conn, callback)
 A more general way to write the previous query is to use `r.row`.
 
 ```js
-r.table('users').filter( r.row("age").eq(30) ).run(conn, callback)
+r.table('users').filter(r.row("age").eq(30)).run(conn, callback)
 ```
 
 Here the predicate is `r.row("age").eq(30)`.
@@ -72,21 +72,29 @@ r.table('users').filter(function(user) {
 __Example:__ Get all the users that are more than 18 years old.
 
 ```js
-r.table("users").filter( r.row("age").gt(18) ).run(conn, callback)
+r.table("users").filter(r.row("age").gt(18)).run(conn, callback)
 ```
+
+
+__Example:__ Get all the users that are less than 18 years old and more than 13 years old.
+
+```js
+r.table("users").filter(r.row("age").lt(18).and(r.row("age").gt(13))).run(conn, callback)
+```
+
 
 __Example:__ Get all the users that are less than 18 years old or whose age is unknown
 (field `age` missing).
 
 ```js
-r.table("users").filter( r.row("age").lt(18), {default: true}).run(conn, callback)
+r.table("users").filter(r.row("age").lt(18), {default: true}).run(conn, callback)
 ```
 
 __Example:__ Get all the users that are more than 18 years old. Throw an error if a
 document is missing the field `age`.
 
 ```js
-r.table("users").filter( r.row("age").gt(18), {default: r.error()}).run(conn, callback)
+r.table("users").filter(r.row("age").gt(18), {default: r.error()}).run(conn, callback)
 ```
 
 
@@ -105,7 +113,7 @@ __Example:__ Retrieve all the users who subscribed between January 1st, 2012
 
 
 ```js
-r.table("users").filter( function(user) {
+r.table("users").filter(function(user) {
     return user("subscriptionDate").during( r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z') )
 }).run( conn, callback)
 ```
@@ -115,7 +123,7 @@ with `@gmail.com`).
 
 
 ```js
-r.table("users").filter( function(user) {
+r.table("users").filter(function(user) {
     return user("email").match("@gmail.com$")
 }).run( conn, callback)
 ```
@@ -134,7 +142,7 @@ Suppose the table `users` has the following schema
 Retrieve all the users whose field `placesVisited` contains `France`.
 
 ```js
-r.table("users").filter( function(user) {
+r.table("users").filter(function(user) {
     return user("placesVisited").contains("France")
 }).run( conn, callback)
 ```
@@ -185,14 +193,14 @@ r.table("users").filter(r.literal({
 The equivalent queries with an anonymous function.
 
 ```js
-r.table("users").filter( function(user) {
+r.table("users").filter(function(user) {
     return user("name")("first").eq("William")
         .and( user("name")("last").eq("Adama") )
 }).run(conn, callback)
 ```
 
 ```js
-r.table("users").filter( function(user) {
+r.table("users").filter(function(user) {
     return user("name").eq({
         first: "William",
         last: "Adama"
