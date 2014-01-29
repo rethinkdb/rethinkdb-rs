@@ -804,7 +804,7 @@ r.table('marvel').concat_map {|hero|
 ## [order_by](order_by/) ##
 
 {% apibody %}
-table.order_by([key1...], :index=> index_name) -> selection<stream>
+table.order_by([key1...], :index => index_name) -> selection<stream>
 selection.order_by(key1, [key2...]) -> selection<array>
 sequence.order_by(key1, [key2...]) -> array
 {% endapibody %}
