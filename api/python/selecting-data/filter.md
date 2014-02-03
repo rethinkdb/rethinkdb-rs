@@ -41,7 +41,7 @@ r.table('users').filter({"age": 30}).run(conn)
 A more general way to write the previous query is to use `r.row`.
 
 ```py
-r.table('users').filter( r.row["age"] == 30 ).run(conn)
+r.table('users').filter(r.row["age"] == 30).run(conn)
 ```
 
 Here the predicate is `r.row["age"] == 30`.
@@ -56,7 +56,7 @@ Read the documentation about [r.row](../row/) to know more about the differences
 between `r.row` and lambda functions in ReQL.
 
 ```py
-r.table('users').filter( lambda user:
+r.table('users').filter(lambda user:
     user["age"] == 30
 ).run(conn)
 ```
@@ -65,21 +65,37 @@ r.table('users').filter( lambda user:
 __Example:__ Get all the users that are more than 18 years old.
 
 ```py
-r.table("users").filter( r.row["age"] > 18 ).run(conn)
+r.table("users").filter(r.row["age"] > 18).run(conn)
 ```
+
+
+__Example:__ Get all the users that are less than 18 years old and more than 13 years old.
+
+```py
+r.table("users").filter((r.row["age"] < 18) & (r.row["age"] > 13)).run(conn, callback)
+```
+
+
+__Example:__ Get all the users that are more than 18 years old or have their parental consent.
+
+```py
+r.table("users").filter((r.row["age"].lt(18)) | (r.row["hasParentalConsent"])).run(conn)
+```
+
+
 
 __Example:__ Get all the users that are less than 18 years old or whose age is unknown
 (field `age` missing).
 
 ```py
-r.table("users").filter( r.row["age"] < 18, default=True).run(conn)
+r.table("users").filter(r.row["age"] < 18, default=True).run(conn)
 ```
 
 __Example:__ Get all the users that are more than 18 years old. Throw an error if a
 document is missing the field `age`.
 
 ```py
-r.table("users").filter( r.row["age"] > 18, default=r.error()).run(conn)
+r.table("users").filter(r.row["age"] > 18, default=r.error()).run(conn)
 ```
 
 
@@ -88,7 +104,7 @@ __Example:__ Select all users who have given their phone number (all the documen
 whose field `phone_number` is defined and not `None`).
 
 ```py
-r.table('users').filter( lambda user:
+r.table('users').filter(lambda user:
     user.has_fields('phone_number')
 ).run(conn)
 ```
@@ -97,7 +113,7 @@ __Example:__ Retrieve all the users who subscribed between January 1st, 2012
 (included) and January 1st, 2013 (excluded).
 
 ```py
-r.table("users").filter( lambda user:
+r.table("users").filter(lambda user:
     user["subscription_date"].during( r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z') )
 ).run(conn)
 ```
@@ -108,7 +124,7 @@ with `@gmail.com`).
 
 
 ```py
-r.table("users").filter( lambda user:
+r.table("users").filter(lambda user:
     user["email"].match("@gmail.com$")
 ).run(conn)
 ```
@@ -127,7 +143,7 @@ Suppose the table `users` has the following schema
 Retrieve all the users whose field `places_visited` contains `France`.
 
 ```py
-r.table("users").filter( lambda user:
+r.table("users").filter(lambda user:
     user["places_visited"].contains("France")
 ).run(conn)
 ```
@@ -178,14 +194,14 @@ r.table("users").filter(r.literal({
 The equivalent queries with a lambda function.
 
 ```py
-r.table("users").filter( lambda user:
+r.table("users").filter(lambda user:
     (user["name"]["first"] == "William")
         & (user["name"]["last"] == "Adama")
 ).run(conn)
 ```
 
 ```py
-r.table("users").filter( lambda user:
+r.table("users").filter(lambda user:
     user["name"] == {
         "first": "William",
         "last": "Adama"
