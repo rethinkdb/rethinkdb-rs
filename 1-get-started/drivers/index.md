@@ -33,6 +33,10 @@ alias: docs/guides/drivers/
         <img src="/assets/images/docs/driver-languages/csharp.png" />
         <p class="name">C# / .NET</p>
     </a>
+    <a class="mini icon-box driver-language" href="https://github.com/jurajmasar/rethink-db-cpp-driver">
+        <img src="/assets/images/docs/driver-languages/cpp.png" />
+        <p class="name">C++</p>
+    </a>    
     <a class="mini icon-box driver-language" href="https://github.com/bitemyapp/revise">
         <img src="/assets/images/docs/driver-languages/clojure.png" />
         <p class="name smaller-font">Clojure</p>
@@ -105,3 +109,4 @@ __Thanks to all our amazing driver contributors!__
 - [@taybin](https://github.com/taybin) (Erlang): [https://github.com/taybin/lethink](https://github.com/taybin/lethink)
 - [@nuxlli](https://github.com/nuxlli) (Elixir): [https://github.com/azukiapp/elixir-rethinkdb](https://github.com/azukiapp/elixir-rethinkdb)
 - [@unbit](https://github.com/unbit) (C): [https://github.com/unbit/librethinkdb](https://github.com/unbit/librethinkdb)
+- [@jurajmasar](https://github.com/jurajmasar) (C++): [https://github.com/jurajmasar/rethink-db-cpp-driver](https://github.com/jurajmasar/rethink-db-cpp-driver)
