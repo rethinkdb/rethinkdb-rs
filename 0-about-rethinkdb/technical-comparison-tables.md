@@ -55,6 +55,7 @@ RethinkDB has [binary packages](/docs/install/) available for:
 
 *   Ubuntu 10.04 and higher 32-bit/64-bit
 *   OS X 64-bit (>= 10.7)
+*   CentOS 6, 32-bit/64-bit
 
 ## Data model ##
 
@@ -145,7 +146,7 @@ service on dotCloud using
 | CLI tools | Admin CLI | JavaScript interactive shell |
 | UI tools  | Web-based admin UI | Simple HTTP interface |
 | Failover  | 1-click replication with customizable per-table acknowledgements | Replica-sets with auto primary re-election |
-| Backup    | `rethinkdb dump` | `mongodump` or snapshotting |
+| Backup    | `rethinkdb-dump` | `mongodump` or snapshotting |
 
 ## CLI Tools ##
 
@@ -191,7 +192,7 @@ MongoDB provides different mechanisms for backing up data:
 *   the [`mongodump`](http://docs.mongodb.org/manual/administration/backups/#database-dump-with-mongodump) utility can perform a live backup of data. 
 *   [disk/block level snapshots](http://docs.mongodb.org/manual/administration/backups/#backup-with-journaling) can be used to backup a MongoDB instance when journaling is enabled. When [journaling is disabled](http://docs.mongodb.org/manual/administration/backups/#backup-without-journaling), snapshots are possible after flushing all writes to disk and locking the database.
 
-RethinkDB provides `rethinkdb dump` -- [a dedicated live backup tool](/docs/backup/).
+RethinkDB supports [hot backup](http://www.rethinkdb.com/docs/backup/) on a live cluster via `dump` and `restore` commands.
 
 <div class="comparison-section"><a name="scaling" class="comparison-anchor"></a></div>
 # Scaling #
