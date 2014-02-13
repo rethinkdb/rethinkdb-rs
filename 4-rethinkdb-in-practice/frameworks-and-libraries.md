@@ -7,7 +7,7 @@ permalink: docs/frameworks-and-libraries/
 ---
 
 {% infobox info %}
-__Add your library:__ Have you written a cool library related RethinkDB and want us to showcase it?  
+__Add your library:__ Have you written a cool library related RethinkDB and want us to showcase it?
 Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 {% endinfobox %}
 
@@ -28,6 +28,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
   [@neumino](https://github.com/neumino)
 - [flask-rethinkdb](https://github.com/linkyndy/flask-rethinkdb): a Flask extension that adds RethinkDB support, by [@linkyndy](https://github.com/linkyndy)
 - [rethinkdb-co](https://github.com/hden/rethinkdb-co): harness RethinkDB callbacks with ECMAScript 6 generators, by [@hden](https://github.com/hden)
+- [koa-rethinkdb](https://github.com/hden/koa-rethinkdb): a Koa middleware that automatically manages connections via connection pool, by [@hden](https://github.com/hden)
 
 # Object-document mappers #
 - [thinky](https://github.com/neumino/thinky): JavaScript ORM for RethinkDB, by
