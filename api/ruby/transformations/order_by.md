@@ -31,7 +31,7 @@ r.table('marvel').order_by(:enemies_vanquished, :damsels_saved).run(conn)
 
 
 __Example:__ Indexes can be used to perform more efficient orderings. Notice that the
-index ordering always has highes precedence. Thus the following example is equivalent to the one above.
+index ordering always has highest precedence. Thus the following example is equivalent to the one above.
 
 ```rb
 r.table('marvel').order_by(:damsels_saved, :index => :enemies_vanquished).run(conn)
