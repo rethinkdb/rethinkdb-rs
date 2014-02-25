@@ -32,7 +32,7 @@ __Example:__ Order our heroes by a series of performance metrics.
 r.table('marvel').orderBy('enemiesVanquished', 'damselsSaved').run(conn, callback)
 ```
 
-__Example:__ Indexes can be used to perform more efficient orderings. Notice that the index ordering always has highes precedence. Thus the following example is equivalent to the one above.
+__Example:__ Indexes can be used to perform more efficient orderings. Notice that the index ordering always has highest precedence. Thus the following example is equivalent to the one above.
 
 ```js
 r.table('marvel').orderBy('damselsSaved', {index: 'enemiesVanquished'}).run(conn, callback)
