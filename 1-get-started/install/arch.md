@@ -8,14 +8,15 @@ permalink: docs/install/arch/
 ---
 {% include install-docs-header.md %}
 {% include install-community-platform-warning.md %}
-# With AUR #
-Using yaourt, you need to run this command: 
+# With binaries #
+RethinkDB is in the Community Repository. To install the server, run:
 
 ```bash
-yaourt -S rethinkdb
+sudo pacman -S rethinkdb
 ```
 
 See [the Arch wiki article on RethinkDB](https://wiki.archlinux.org/index.php/RethinkDB) for more information.
+
 
 # Compile from source #
 
