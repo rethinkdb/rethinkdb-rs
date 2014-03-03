@@ -78,7 +78,8 @@ data. A typical document in the `authors` table would look like this:
 ```json
 {
   "id": "7644aaf2-9928-4231-aa68-4e65e31bf219",
-  "name": "William Adama", "tv_show": "Battlestar Galactica"
+  "name": "William Adama",
+  "tv_show": "Battlestar Galactica"
 }
 ```
 
