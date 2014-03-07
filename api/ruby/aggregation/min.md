@@ -24,9 +24,9 @@ sequence.min([field_or_function]) &rarr; element
 Finds the minimum of a sequence.  If called with a field name, finds
 the element of that sequence with the smallest value in that field.
 If called with a function, calls that function on every element of the
-sequence and returns the element of that sequence which produced the
-smallest value, ignoring any elements where the function returns
-`null` or produces a non-existence error.
+sequence and returns the element which produced the smallest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
 
 Produces a non-existence error when called on an empty sequence.  You
 can handle this case with `default`.
