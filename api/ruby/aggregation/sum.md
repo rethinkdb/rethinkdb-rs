@@ -28,6 +28,8 @@ calls that function on every element of the sequence and sums the
 results, skipping elements of the sequence where that function returns
 `null` or a non-existence error.
 
+Returns 0 when called on an empty sequence.
+
 __Example:__ What's 3 + 5 + 7?
 
 ```rb
@@ -40,7 +42,9 @@ __Example:__ How many points have been scored across all games?
 r.table('games').sum('points').run(conn)
 ```
 
-__Example:__ How many points have been scored across all games, counting bonus points?
+__Example:__ How many points have been scored across all games,
+counting bonus points?
+
 ```rb
 r.table('games').sum{|game| game['points'] + game['bonus_points']}.run(conn)
 ```
