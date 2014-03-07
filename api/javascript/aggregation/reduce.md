@@ -9,8 +9,8 @@ io:
 related_commands:
     map: map/
     concat_map: concat_map/
-    grouped_map_reduce: grouped_map_reduce/
-    group_by: group_by/
+    groupedMapReduce: grouped_map_reduce/
+    groupBy: group_by/
 ---
 
 # Command syntax #
@@ -22,25 +22,29 @@ sequence.reduce(reductionFunction[, default]) &rarr; value
 # Description #
 
 Produce a single value from a sequence through repeated application of a reduction
-function.
+function.  
+The reduction function can be called on:
 
-The `reduce` method is distributed and parallelized across shards and CPU cores.
-This allows map/reduce queries to execute efficiently, but is a source of a common
-mistake: assuming an incorrect reduction order.  
-Read the [map-reduce in RethinkDB](/docs/map-reduce/) article if you are not familiar with
-map/reduce.
+- two elements of the sequence
+- one element of the sequence and one result of a previous reduction
+- two results of previous reductions
 
+The reduction function can be called on the results of two previous reductions because the
+`reduce` command is distributed and parallelized across shards and CPU cores. A common
+mistaken when using the `reduce` command is to suppose that the reduction is executed
+from left to right. Read the [map-reduce in RethinkDB](/docs/map-reduce/) article to
+see an example.
 
 The `default` value is returned only if you reduce an empty sequence.
 
 
-__Example:__ Return the number of documents in the table `posts.
+__Example:__ Return the number of documents in the table `posts`.
 
 ```js
 r.table("posts").map(function(doc) {
-    return 1
+    return 1;
 }).reduce(function(left, right) {
-    return left.add(right)
+    return left.add(right);
 }, 0).run(conn, callback);
 ```
 
@@ -54,9 +58,9 @@ Return the number of comments for all posts.
 
 ```js
 r.table("posts").map(function(doc) {
-    return doc("comments").count()
+    return doc("comments").count();
 }).reduce(function(left, right) {
-    return left.add(right)
+    return left.add(right);
 }, 0).run(conn, callback);
 ```
 
@@ -68,12 +72,12 @@ Return the maximum number comments per post.
 
 ```js
 r.table("posts").map(function(doc) {
-    return doc("comments").count()
+    return doc("comments").count();
 }).reduce(function(left, right) {
     return r.branch(
         left.gt(right),
         left,
         right
-    )
+    );
 }, 0).run(conn, callback);
 ```

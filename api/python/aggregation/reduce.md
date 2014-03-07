@@ -19,24 +19,27 @@ sequence.reduce(reduction_function[, default]) &rarr; value
 # Description #
 
 Produce a single value from a sequence through repeated application of a reduction
-function.
+function.  
+The reduction function can be called on:
 
-The `reduce` method is distributed and parallelized across shards and CPU cores.
-This allows map/reduce queries to execute efficiently, but is a source of a common
-mistake: assuming an incorrect reduction order.  
-Read the [map-reduce in RethinkDB](/docs/map-reduce/) article if you are not familiar with
-map/reduce.
+- two elements of the sequence
+- one element of the sequence and one result of a previous reduction
+- two results of previous reductions
+
+The reduction function can be called on the results of two previous reductions because the
+`reduce` command is distributed and parallelized across shards and CPU cores. A common
+mistaken when using the `reduce` command is to suppose that the reduction is executed
+from left to right. Read the [map-reduce in RethinkDB](/docs/map-reduce/) article to
+see an example.
 
 The `default` value is returned only if you reduce an empty sequence.
 
 
-__Example:__ Return the number of documents in the table `posts.
+__Example:__ Return the number of documents in the table `posts`.
 
 ```py
-r.table("posts").map(lambda doc:
-    1
-).reduce(lambda left, right:
-    left+right , 0).run(conn);
+r.table("posts").map(lambda doc: 1)
+    .reduce(lambda left, right: left+right , 0).run(conn)
 ```
 
 
@@ -51,7 +54,7 @@ Return the number of comments for all posts.
 r.table("posts").map(lambda doc:
     doc["comments"].count()
 ).reduce(lambda left, right:
-    left+right, 0).run(conn);
+    left+right, 0).run(conn)
 ```
 
 
@@ -67,6 +70,6 @@ r.table("posts").map(lambda doc:
         left > right,
         left,
         right
-    ), 0).run(conn);
+    ), 0).run(conn)
 ```
 
