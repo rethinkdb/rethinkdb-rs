@@ -4,6 +4,7 @@ language: Ruby
 permalink: api/ruby/group
 command: group
 related_commands:
+    ungroup: ungroup/
     map: map/
     reduce: reduce/
     count: count/
@@ -11,13 +12,12 @@ related_commands:
     avg: avg/
     min: min/
     max: max/
-    ungroup: ungroup/
 ---
 
 # Command syntax #
 
 {% apibody %}
-sequence.group(field_or_function...) &rarr grouped_stream
+sequence.group(field_or_function...) &rarr; grouped_stream
 {% endapibody %}
 
 # Description #
@@ -58,9 +58,9 @@ __Example:__ What is each player's best game?
 
 ```rb
 > r.table('games').group('player').max('points').run(conn)
-{ "Alice"=>{"id"=>5, "player"=>"Alice", "points"=>7, "type"=>"free"},
-  "Bob"=>{"id"=>2, "player"=>"Bob", "points"=>15, "type"=>"ranked"},
-  ... }
+{"Alice"=>{"id"=>5, "player"=>"Alice", "points"=>7, "type"=>"free"},
+ "Bob"=>{"id"=>2, "player"=>"Bob", "points"=>15, "type"=>"ranked"},
+ ...}
 ```
 
 __Example:__ What is the maximum number of points scored by each player?
@@ -75,19 +75,19 @@ player for each game type?
 
 ```rb
 > r.table('games').group('player', 'type').max('points')['points'].run(conn)
-{ ["Alice", "free"]=>7,
-  ["Alice", "ranked"]=>1,
-  ["Bob", "free"]=>11,
-  ["Bob", "ranked"]=>15,
-  ... }
+{["Alice", "free"]=>7,
+ ["Alice", "ranked"]=>1,
+ ["Bob", "free"]=>11,
+ ["Bob", "ranked"]=>15,
+ ...}
 > r.table('games') \
    .group{|game| game.pluck('player', 'type')} \
    .max('points')['points'].run(conn)
-{ {"player"=>"Alice", "type"=>"free"}=>7,
-  {"player"=>"Alice", "type"=>"ranked}=>1,
-  {"player"=>"Bob, "type"=>"free"}=>11,
-  {"player"=>Bob, "type"=>"ranked}=>15,
-  ... }
+{{"player"=>"Alice", "type"=>"free"}=>7,
+ {"player"=>"Alice", "type"=>"ranked}=>1,
+ {"player"=>"Bob, "type"=>"free"}=>11,
+ {"player"=>Bob, "type"=>"ranked}=>15,
+ ...}
 ```
 
 __Example:__ What is the maximum number of points scored by each
@@ -105,11 +105,11 @@ __Example:__ What is each player's highest even and odd score?
 > r.table('games') \
    .group('name', lambda {|game| game['points'] % 2}) \
    .max('points')['points'].run(conn)
-{ ["Alice", 0]=>4,
-  ["Alice", 1]=>7,
-  ["Bob", 0]=>12,
-  ["Bob", 1]=>15,
-  ... }
+{["Alice", 0]=>4,
+ ["Alice", 1]=>7,
+ ["Bob", 0]=>12,
+ ["Bob", 1]=>15,
+ ...}
 ```
 
 __Example:__ What is the maximum number of points scored by each
