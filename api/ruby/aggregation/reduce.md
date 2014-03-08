@@ -4,10 +4,13 @@ language: Ruby
 permalink: api/ruby/reduce/
 command: reduce
 related_commands:
+    group: group/
     map: map/
     concat_map: concat_map/
-    grouped_map_reduce: grouped_map_reduce/
-    group_by: group_by/
+    sum: sum/
+    avg: avg/
+    min: min/
+    max: max/
 ---
 
 # Command syntax #

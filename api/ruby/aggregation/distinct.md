@@ -6,7 +6,7 @@ command: distinct
 related_commands:
     map: map/
     concat_map: concat_map/
-    grouped_map_reduce: grouped_map_reduce/
+    group: group/
 ---
 
 
@@ -18,7 +18,8 @@ sequence.distinct() &rarr; array
 
 # Description #
 
-Remove duplicate elements from the sequence.
+Removes duplicate elements from a sequence.  Returns an array even
+when called on a stream.  Meant for use on small sequences.
 
 __Example:__ Which unique villains have been vanquished by marvel heroes?
 
