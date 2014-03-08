@@ -906,13 +906,13 @@ This is a list of queries for performing data aggregation.
         <tr><td>
 
 <pre>
-SELECT category 
+SELECT category
     FROM posts
     GROUP BY category
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/map/">map</a>(
     r.<a href="/api/python/row/">row</a>["category"]

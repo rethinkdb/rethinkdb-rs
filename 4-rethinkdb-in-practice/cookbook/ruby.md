@@ -463,24 +463,18 @@ You may be interested in retrieving the results in this format
 ]
 ```
 
-In this case, you can do a pivot operation with the `grouped_map_reduce` and
+In this case, you can do a pivot operation with the `group` and
 `coerce_to` commands.
 
 
 ```rb
-r.db('test').table('marks').grouped_map_reduce( lambda {|doc|
-        doc["name"]
-    },
-    lambda {|doc|
-        [[doc["course"], doc["mark"]]]
-    },
-    lambda {|left, right|
-        left.union(right)
-    }).map{ |result|
-        r.expr({
-            :name => result["group"]
-        }).merge( result["reduction"].coerce_to("OBJECT") )
-    }
+r.db('test').table('marks') \
+ .group('name') \
+ .map{|row| [[row['course'], row['mark']]]} \
+ .ungroup() \
+ .map{|res| r.expr({name: res['group']) \
+             .merge(res['reduction'].coerce_to('OBJECT'))} \
+ .run(conn)
 ```
 
 _Note:_ A nicer syntax will eventually be added. See the

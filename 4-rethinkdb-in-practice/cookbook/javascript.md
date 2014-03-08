@@ -537,24 +537,21 @@ You may be interested in retrieving the results in this format
 ]
 ```
 
-In this case, you can do a pivot operation with the `groupedMapReduce` and
+In this case, you can do a pivot operation with the `group` and
 `coerceTo` commands.
 
-
-```javascript
-r.db('test').table('marks').groupedMapReduce(function(doc) { 
-        return doc("name") 
-    },
-    function(doc) { 
-        return [[doc("course"), doc("mark")]]
-    },
-    function(left, right) { 
-        return left.union(right)
-    }).map(function(result) { 
-        return r.expr({
-            name: result("group")
-        }).merge( result("reduction").coerceTo("OBJECT") )
-    })
+```js
+r.db('test').table('marks') \
+ .group('name') \
+ .map(function(row){return [[row('course'), row('mark')]];}) \
+ .ungroup() \
+ .map(function(res){ \
+   return r.expr(name: res('group')) \
+           .merge(res('reduction').coerceTo('OBJECT')); \
+ }).run(conn)
+ lambda res: r.expr({'name': res['group']}) \
+                   .merge(res['reduction'].coerce_to('OBJECT'))) \
+ .run(conn)
 ```
 
 _Note:_ A nicer syntax will eventually be added. See the

@@ -25,7 +25,7 @@ we can. If you have written a cool app and want us to showcase it,
                     <ul>
                         <li>JavaScript</li>
                         <li>Data Explorer</li>
-                        <li><code>groupby</code>, <code>eqJoin</code>, map/reduce</li>
+                        <li><code>group</code>, <code>eqJoin</code>, map/reduce</li>
                     </ul>
                     <i class="tag javascript"></i>
                     <a class="action" href="/docs/tutorials/elections/">Go to the tutorial &raquo;</a>
