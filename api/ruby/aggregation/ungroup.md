@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Ruby
-permalink: api/ruby/ungroup
+permalink: api/ruby/ungroup/
 command: ungroup
 related_commands:
     group: group/
@@ -36,7 +36,7 @@ player, with the highest scorers first?
 [{"group"=>"Bob", "reduction"=>15}, {"group"=>"Alice", "reduction"=>7}, ...]
 ```
 
-__Example:__ Select one random players and all their games.
+__Example:__ Select one random player and all their games.
 
 ```rb
 > r.table('games').group('player').ungroup().sample(1).run(conn)

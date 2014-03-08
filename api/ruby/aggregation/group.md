@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Ruby
-permalink: api/ruby/group
+permalink: api/ruby/group/
 command: group
 related_commands:
     ungroup: ungroup/
@@ -36,7 +36,7 @@ result as JSON), you can specify `group_format: 'raw'` as an optional
 argument to `run`:
 
 ```rb
-> r.table('games').group('player).avg('points').run(conn)
+> r.table('games').group('player').avg('points').run(conn)
 {"Alice"=>3, "Bob"=>9, ...}
 > r.table('games').group('player').avg('points').run(conn, group_format:'raw')
 {"$reql_type$"=>"GROUPED_DATA", "data"=>[["Alice", 3], ["Bob", 9], ...]}
@@ -48,9 +48,9 @@ can use `ungroup` to turn a grouped stream or grouped data into an
 array of objects representing the groups.
 
 ```rb
-> r.table('games').group('player).avg('points').run(conn)
+> r.table('games').group('player').avg('points').run(conn)
 {"Alice"=>3, "Bob"=>9, ...}
-> r.table('games').group('player).avg('points').ungroup().run(conn)
+> r.table('games').group('player').avg('points').ungroup().run(conn)
 [{"group"=>"Alice", "reduction"=>3}, {"group"=>"Bob", "reduction"=>9}, ...]
 ```
 
@@ -74,6 +74,7 @@ __Example:__ What is the maximum number of points scored by each
 player for each game type?
 
 ```rb
+
 > r.table('games').group('player', 'type').max('points')['points'].run(conn)
 {["Alice", "free"]=>7,
  ["Alice", "ranked"]=>1,
@@ -83,11 +84,12 @@ player for each game type?
 > r.table('games') \
    .group{|game| game.pluck('player', 'type')} \
    .max('points')['points'].run(conn)
-{{"player"=>"Alice", "type"=>"free"}=>7,
- {"player"=>"Alice", "type"=>"ranked}=>1,
- {"player"=>"Bob, "type"=>"free"}=>11,
- {"player"=>Bob, "type"=>"ranked}=>15,
- ...}
+{ {"player"=>"Alice", "type"=>"free"}=>7,
+  {"player"=>"Alice", "type"=>"ranked"}=>1,
+  {"player"=>"Bob", "type"=>"free"}=>11,
+  {"player"=>"Bob", "type"=>"ranked"}=>15,
+ ... }
+
 ```
 
 __Example:__ What is the maximum number of points scored by each

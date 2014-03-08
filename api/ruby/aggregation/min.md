@@ -40,19 +40,19 @@ r([3, 5, 7]).min().run(conn)
 __Example:__ Which user has scored the fewest points?
 
 ```rb
-r.table('users).min('points').run(conn)
+r.table('users').min('points').run(conn)
 ```
 
 __Example:__ Which user has scored the fewest points, counting bonus points?
 
 ```rb
-r.table('users).min{|user| user['points'] + user['bonus_points']}.run(conn)
+r.table('users').min{|user| user['points'] + user['bonus_points']}.run(conn)
 ```
 
 __Example:__ What is the smallest number of points any user has ever scored?
 
 ```rb
-r.table('users).min('points')['points'].run(conn)
+r.table('users').min('points')['points'].run(conn)
 ```
 
 __Example:__ Which user has scored the fewest points?  (But return

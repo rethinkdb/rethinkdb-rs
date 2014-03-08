@@ -40,19 +40,19 @@ r([3, 5, 7]).max().run(conn)
 __Example:__ Which user has scored the most points?
 
 ```rb
-r.table('users).max('points').run(conn)
+r.table('users').max('points').run(conn)
 ```
 
 __Example:__ Which user has scored the most points, counting bonus points?
 
 ```rb
-r.table('users).max{|user| user['points'] + user['bonus_points']}.run(conn)
+r.table('users').max{|user| user['points'] + user['bonus_points']}.run(conn)
 ```
 
 __Example:__ What is the largest number of points any user has ever scored?
 
 ```rb
-r.table('users).max('points')['points'].run(conn)
+r.table('users').max('points')['points'].run(conn)
 ```
 
 __Example:__ Which user has scored the most points?  (But return

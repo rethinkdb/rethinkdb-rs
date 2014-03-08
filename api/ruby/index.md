@@ -1022,49 +1022,15 @@ __Example:__ Which unique villains have been vanquished by marvel heroes?
 r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)
 ```
 
-
-## [grouped\_map\_reduce](grouped_map_reduce) ##
-
-{% apibody %}
-sequence.grouped_map_reduce(grouping, mapping, reduction, base)
-    &rarr; value
-{% endapibody %}
-
-Partition the sequence into groups based on the `grouping` function. The elements of each
-group are then mapped using the `mapping` function and reduced using the `reduction`
-function.
-
-`grouped_map_reduce` is a generalized form of group by.
-
-__Example:__ It's only fair that heroes be compared against their weight class.
-
-```rb
-r.table('marvel').grouped_map_reduce(
-    lambda {|hero| hero[:weight_class]},  # grouping
-    lambda {|hero| hero.pluck(:name, :strength)},  #  mapping
-    {:name => 'none', :strength => 0},  # reduction base
-    lambda {|acc, hero| r.branch(acc[:strength] < hero[:strength], hero, acc)}
-).run(conn)
-```
-
-
-## [group_by](group_by/) ##
+## [group](group/) ##
 
 {% apibody %}
-sequence.group_by(selector1[, selector2...], reduction_object) &rarr; array
+sequence.group(field_or_function...) &rarr; grouped_stream
 {% endapibody %}
 
-Groups elements by the values of the given attributes and then applies the given
-reduction. Though similar to `groupedMapReduce`, `groupBy` takes a standardized object
-for specifying the reduction. Can be used with a number of predefined common reductions.
+PLACEHOLDER
 
-__Example:__ Using a predefined reduction we can easily find the average strength of members of each weight class.
-
-```rb
-r.table('marvel').group_by(:weight_class, r.avg(:strength)).run(conn)
-```
-
-[Read more about this command &rarr;](group_by/)
+[Read more about this command &rarr;](group/)
 
 
 ## [contains](contains/) ##

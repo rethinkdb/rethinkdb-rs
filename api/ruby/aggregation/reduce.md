@@ -34,6 +34,7 @@ r.table('games').get(7324)['bonus_multipliers'].reduce{|a,b| a*b}.run(conn)
 ```
 
 __Example:__ Return a string containing all usernames, one per line.
+
 ```rb
 r.table('users').map{|user| user['name']}.reduce{|a,b| a + "\n" + b}.run(conn)
 ```
