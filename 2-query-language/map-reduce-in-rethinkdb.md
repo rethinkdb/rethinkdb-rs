@@ -6,21 +6,26 @@ docs_active: map-reduce
 permalink: docs/map-reduce/
 ---
 
-Map/reduce is an operation on a sequence of documents that allows
-performing distributed data processing at scale. Originally designed
-by [Google](http://research.google.com/archive/mapreduce.html) and
-later implemented in systems like [Apache
-Hadoop](http://hadoop.apache.org/), a map/reduce query is composed of
-two parts:
+Map/reduce is a way to process distributed data at scale.
+It was originally designed by
+[Google](http://research.google.com/archive/mapreduce.html) and later
+implemented in many systems
+(e.g. [Apache Hadoop](http://hadoop.apache.org/)).
 
-- A __map__ operation &mdash; each document is mapped to a key/value pair.
-- A __reduce__ operation &mdash; an aggregation operation (such as counting or summation) that operates on values grouped by key.
+In RethinkDB, map/reduce queries operate on sequences, and are
+composed of three parts:
 
-RethinkDB implements an efficient, distributed map/reduce
-infrastructure. Many ReQL operations automatically compile to a
-map/reduce query. However, you can also use map/reduce directly via
-the [grouped\_map\_reduce](/api/python/grouped_map_reduce/)
-command.
+* An optional__group__ operation which partitions the elements of the
+  sequence into multiple groups.
+* A __map__ operation which maps the elements of the sequence to a
+  desired value.
+* A __reduce__ operation which aggregates the values produced by
+  __map__ into a single value.
+
+RethinkDB implements efficient, distributed map/reduce over
+tables. Many ReQL commands automatically compile to map/reduce
+queries. You can also write your own map/reduce queries with the
+`map`, `reduce`, and `group` commands.
 
 {% infobox info%}
 __Want to learn more about map/reduce?__ Read the [Wikipedia article](http://en.wikipedia.org/wiki/MapReduce).
@@ -32,10 +37,10 @@ Let's suppose you are running a blog and would like to retrieve the
 number of posts per category. A map/reduce query to perform this
 operation would consist of the following steps:
 
-- A __map__ step that returns a key/value pair for each post, where
-  the key is the category of the post and the value is `1` (since each
-  post needs to counted once).
-- A __reduce__ step that sums the values for each category.
+* A __group__ step that groups the bosts based on their category.
+* A __map__ step that transforms each post into the number `1` (since
+  we're counting each post once).
+* A __reduce__ step that sums the number of posts for each group.
 
 # Map/reduce in RethinkDB #
 
@@ -51,14 +56,6 @@ an example document from the table:
 }
 ```
 
-Let's compute the number of posts per category. The
-`grouped_map_reduce` command requires three arguments: a grouping
-function, a mapping function, and a reduction function.
-
-- __A grouping function__ must return a group of a given document.
-- __A map function__ must return a value for a given document that will be aggregated.
-- __A reduce function__ specifies how to reduce all the values.
-
 {% infobox info%}
 __Note__: Hadoop combines the grouping stage and the mapping stage
 into a single, slightly more complicated mapping function. For ease of
@@ -66,51 +63,61 @@ use, RethinkDB breaks up the complex mapping function into two simpler
 operations.
 {% endinfobox %}
 
-To compute the number of posts per category, we would write:
+Let's first compute the number of posts per category by explicit calls
+to `group`, `map`, and `reduce`:
 
 ```python
-r.table("post").grouped_map_reduce(
-    lambda post: post["category"],   # Returns the group (category) for each post
-    lambda post: 1,                  # Each post will counted once
-    lambda x, y: x + y               # Sum two values
-).run()
+r.table('posts') \
+  .group(lambda post: post['category']) \
+  .map(lambda post: 1) \
+  .reduce(lambda a,b: a+b) \
+  .run(conn)
 ```
 
-This map/reduce query is equivalent to a simpler ReQL command:
+This works, but the query is unwieldy.  Fortunately, RethinKDB offser
+several shortcuts.  First, grouping by a field is very common, so if
+you provide `group` with the name of a field rather than a function,
+it will group by that field:
 
 ```python
-r.table("post").grouped_by("category", r.count).run()
+r.table('posts') \
+  .group('category') \
+  .map(lambda post: 1) \
+  .reduce(lambda a,b: a+b) \
+  .run(conn)
 ```
 
-{% infobox info%}
-__Note__: a more user friendly map/reduce syntax will be available soon &mdash;
-see [Github issue #1096](https://github.com/rethinkdb/rethinkdb/issues/1096).
-{% endinfobox %}
+Second, counting is so common that there is a specialized command
+`count` for it.  So we can simply write:
+
+```python
+r.table('posts').group('category').count().run(conn)
+```
+
+RethinkDB has built-in commands for five common map/reduce operations:
+`count`, `sum`, `avg`, `min`, and `max`.  If you want to do something
+more complicated than any of those, you have to use `map` and `reduce`
+explicitly.
 
 # How map/reduce queries are executed #
 
-One important aspect of the `grouped_map_reduce` is that it is
-distributed and parallelized across shards and CPU cores. This allows
-map/reduce queries to execute efficiently, but is a source of a common
-mistake: assuming an __incorrect__ reduction order.
+RethinkDB's map/reduce queries are distributed and parallelized across
+shards and CPU cores whenever possible.  This allows map/reduce
+queries to execute efficiently, but leads to a common mistake.  The
+function provided to `reduce` is __not__ called successively on the
+elements of the stream from left to right -- it's called on either the
+elements of the stream, in any order, or on the output of previous
+calls to the function.
 
-Since the reduction step is performed in parallel, the summation
-operation above may be performed in the following way:
-
-```python
-(1 + 1) + (1 + 1)
-```
-
-In other words, the reduction is __not__ always performed from left to
-right. Here is an example of an incorrect way to write the
-`grouped_map_reduce` query:
+Here is an example of an __incorrect__ way to write the previous
+grouped map/reduce query:
 
 ```python
-r.table("post").grouped_map_reduce(
-    lambda post: post["category"],
-    lambda post: 1,
-    lambda x, y: x + 1 # Will not work! `x` is not an aggregator!
-).run()
+r.table('posts') \
+  .group(lambda post: post['category']) \
+  .map(lambda post: 1) \
+  .reduce(lambda a,b: a+1) \ # INCORRECT
+  .run(conn)
 ```
 
 If we have four documents in a single category in a sharded table,
@@ -135,33 +142,20 @@ reduction step executes from left to right!
 # Simplified map/reduce #
 
 In cases where you need to do simpler computations, the grouping stage
-may not be necessary. If you don't need a grouping function you can
-use the simpler `map` and `reduce` commands directly:
+may not be necessary. If you don't need a grouping function, you can
+just leave off the `group` command.
 
-For example, to count the number of posts in a table you can run the
-following query:
-
-```python
-r.db("blog").table("posts").map(lambda row: 1).reduce(lambda x, y: x + y).run()
-```
-
-An equivalent full map/reduce query would look like this:
+For example, to count the number of posts in a table you can run
+either of the following queries:
 
 ```python
-r.table("post").grouped_map_reduce(
-    lambda post: 1,       # We only have one group
-    lambda post: 1,       # Each post will counted once
-    lambda x, y: x + y    # Sum two values
-).run()
-```
-
-Both of these queries are equivalent to the following ReQL query:
-
-```python
-r.db("blog").table("posts").count().run()
+r.table('posts').map(lambda row: 1).reduce(lambda a,b: a+b).run(conn)
+r.table('posts').count().run(conn)
 ```
 
 # Read more #
-- [The API documentation](/api/python/grouped_map_reduce/) for the `grouped_map_reduce` command.
+- [The API documentation](/api/python/group/) for the `group` command.
+- [The API documentation](/api/python/map/) for the `map` command.
+- [The API documentation](/api/python/reduce/) for the `reduce` command.
 - [The Wikipedia article](http://en.wikipedia.org/wiki/MapReduce) on map/reduce.
 - The [Hadoop tutorial](http://hadoop.apache.org/docs/r1.2.1/mapred_tutorial.html) for map/reduce.

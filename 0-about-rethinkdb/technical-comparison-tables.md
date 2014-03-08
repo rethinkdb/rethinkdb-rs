@@ -79,7 +79,7 @@ Accessing data in MongoDB can be done using:
 RethinkDB provides a [unified chainable query language](/api) supporting:
 
 *   CRUD operations
-*	aggregations (including map/reduce and the more advanced [grouped\_map\_reduce](/api/python/grouped_map_reduce/))
+*	aggregations (including map/reduce and the more advanced group/map/reduce)
 *	JOINs
 *	full sub-queries
 
@@ -233,7 +233,7 @@ B-Tree diff algorithms and doesn't require log-shipping.
 MongoDB can be configured to run in multiple datacenters via [different
 mechanisms](http://www.mongodb.org/display/DOCS/Data+Center+Awareness):
 
-- assigning priorities to members of replica-sets 
+- assigning priorities to members of replica-sets
 - support for nearby replication
 - tagging (version 2.0+)
 
@@ -253,12 +253,13 @@ implementation make uses of different locks and the [JavaScript code is
 executed in a single
 thread](http://docs.mongodb.org/manual/applications/map-reduce/#concurrency).
 
-RethinkDB supports multiple MapReduce-like operations: `map`, `reduce`,
-`groupBy`, `groupedMapReduce` that allow processing data using both ReQL and
-JavaScript. RethinkDB operations are transparently and fully distributed. None
-of these operations require any locks. RethinkDB MapReduce functions can be
-part of chained queries, by preceding, following, or being sub-queries of other
-operations.
+RethinkDB supports MapReduce with the `map` and `reduce` commands, as
+well as grouped MapReduce with the `group` command.  MapReduce queries
+can process data using both ReQL and JavaScript. RethinkDB operations
+are transparently and fully distributed. None of these operations
+require any locks. RethinkDB MapReduce functions can be part of
+chained queries, by preceding, following, or being sub-queries of
+other operations.
 
 Neither MongoDB nor RethinkDB support incremental MapReduce by default.
 
@@ -268,7 +269,7 @@ MongoDB doesn't publish any official performance numbers.
 
 RethinkDB's performance has degraded significantly after the addition of the
 clustering layer, but we hope we'll be able to restore it over the next several
-releases. 
+releases.
 
 ## Concurrency ##
 
