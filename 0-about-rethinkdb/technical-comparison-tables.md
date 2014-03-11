@@ -79,7 +79,7 @@ Accessing data in MongoDB can be done using:
 RethinkDB provides a [unified chainable query language](/api) supporting:
 
 *   CRUD operations
-*	aggregations (including map/reduce and the more advanced group/map/reduce)
+*	aggregations (including map/reduce and the more advanced [group/map/reduce](/docs/map-reduce))
 *	JOINs
 *	full sub-queries
 
