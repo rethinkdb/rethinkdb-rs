@@ -71,7 +71,7 @@ floating-point), string, boolean, array, object, null.
 
 ## Query language ##
 
-Accessing data in MongoDB can be done using: 
+Accessing data in MongoDB can be done using:
 
 *   [CRUD operations using BSON objects](http://docs.mongodb.org/master/single/#queries-in-mongodb) for inserting, bulk inserting, filtering, and updating documents
 *   aggregations using [map/reduce](http://docs.mongodb.org/master/single/index.html#mapReduce)  or the  [aggregation framework](http://docs.mongodb.org/master/single/#aggregation) (starting with ver.2.2)

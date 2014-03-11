@@ -37,7 +37,7 @@ Let's suppose you are running a blog and would like to retrieve the
 number of posts per category. A map/reduce query to perform this
 operation would consist of the following steps:
 
-* A __group__ step that groups the bosts based on their category.
+* A __group__ step that groups the posts based on their category.
 * A __map__ step that transforms each post into the number `1` (since
   we're counting each post once).
 * A __reduce__ step that sums the number of posts for each group.
@@ -96,7 +96,7 @@ r.table('posts').group('category').count().run(conn)
 
 RethinkDB has built-in commands for five common map/reduce operations:
 `count`, `sum`, `avg`, `min`, and `max`.  If you want to do something
-more complicated than any of those, you have to use `map` and `reduce`
+more complicated than any of those, you can use `map` and `reduce`
 explicitly.
 
 # How map/reduce queries are executed #
