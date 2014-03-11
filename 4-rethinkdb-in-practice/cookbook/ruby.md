@@ -384,17 +384,10 @@ r.table("posts").count.run
 
 ## Computing the average value of a field ##
 
-To compute the average of a field, you can use a combination of `map`
-and `reduce` commands. For example, to compute the average number of
-comments per post, we would use `map` and `reduce` to add up the total
-number of comments and then divide that by the total number of posts.
+You can compute the average value of a field with the `avg` command.
 
 ```ruby
-r.table("posts").
-  map{|post| post["num_comments"]}.
-  reduce{|n, m| n + m}.
-  div(r.table("posts").count).
-  run
+r.table("posts").avg("num_comments").run
 ```
 
 ## Using subqueries to return additional fields ##
