@@ -145,7 +145,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
 )
 </pre>
 
-<p>If you have a secondary index built on the field <code>name</code>, you can run a 
+<p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
@@ -161,7 +161,7 @@ WHERE name = "Peter"
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>({
     "name": "Peter"
@@ -179,7 +179,7 @@ AND age = 30
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>({
     "name": "Peter",
@@ -205,7 +205,7 @@ WHERE age &gt; 30
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
     r.<a href="/api/python/row/">row</a>["age"] <a href="/api/python/gt/">&gt;</a> 30
@@ -226,7 +226,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
     r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("^P")}
 )
 </pre>
-        
+
         </td></tr>
         <tr><td>
 
@@ -236,7 +236,7 @@ WHERE name LIKE "%er"
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
     r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("er$")}
@@ -252,7 +252,7 @@ ORDER BY name ASC
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/order_by/">order_by</a>("name")
 </pre>
@@ -267,7 +267,7 @@ ORDER BY name DESC
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/order_by/">order_by</a>(
     r.desc("name")
@@ -285,7 +285,7 @@ ORDER BY name DESC
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>({
     "name": "Peter"
@@ -302,13 +302,13 @@ SELECT * FROM users LIMIT 5
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/limit/">limit</a>(5)
 </pre>
 
         </td></tr>
- 
+
         <tr><td>
 
 <pre>
@@ -316,7 +316,7 @@ SELECT * FROM users LIMIT 5 SKIP 10
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/skip/">skip</a>(10).<a href="/api/python/limit/">limit</a>(5)
 </pre>
@@ -331,7 +331,7 @@ WHERE name IN {'Peter', 'John'}
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
     r.<a href="/api/python/expr/"</a>expr</a>(["Peter", "John"])
@@ -339,7 +339,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
 )
 </pre>
 
-<p>If you have a secondary index built on the field <code>name</code>, you can run a 
+<p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
@@ -357,7 +357,7 @@ WHERE name NOT IN {'Peter', 'John'}
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
     r.<a href="/api/python/expr/"</a>expr</a>(["Peter", "John"])
@@ -374,7 +374,7 @@ SELECT COUNT(*) FROM users
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/count/">count</a>()
 </pre>
@@ -387,7 +387,7 @@ SELECT COUNT(name) FROM users
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(lambda doc:
     doc.<a href="/api/python/has_fields/">has_fields</a>("name")
@@ -404,7 +404,7 @@ WHERE age &gt; 18
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
     (r.<a href="/api/python/row/">row</a>.<a href="/api/python/has_fields/">has_fields</a>("name"))
@@ -421,7 +421,7 @@ FROM users
 </pre>
 
         </td><td>
-        
+
 <pre>
 (r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/map/">map</a>(lambda user:
@@ -441,7 +441,7 @@ SELECT MAX("age")
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/map/">map</a>(lambda user:
@@ -465,7 +465,7 @@ SELECT MIN("age")
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/map/">map</a>(lambda user:
@@ -488,7 +488,7 @@ SELECT SUM("num_posts")
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/map/">map</a>(lambda user:
@@ -506,7 +506,7 @@ SELECT DISTINCT(name) FROM users
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/pluck/">pluck</a>("name").<a href="/api/python/distinct/">distinct</a>()
 </pre>
@@ -521,14 +521,14 @@ SELECT *
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
     (r.row["age"] <a href="/api/python/ge/">>=</a> 18)
     & (r.row["age"] <a href="/api/python/le/">>=</a> 65)
 </pre>
 
-If you have a secondary index built on the field <code>age</code>, you can run a 
+If you have a secondary index built on the field <code>age</code>, you can run a
 more efficient query:
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
@@ -548,7 +548,7 @@ FROM users
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/map/">map</a>({
     "name": r.<a href="/api/python/row/">row</a>["name"],
@@ -587,7 +587,7 @@ SELECT *
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("posts")
   .<a href="/api/python/filter/">filter</a>(lambda post:
@@ -624,7 +624,7 @@ UPDATE users
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
     r.<a href="/api/python/row/">row</a>["age"] < 18
@@ -652,7 +652,7 @@ UPDATE users
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/update/">update</a>(
     { "age": r.<a href="/api/python/row/">row</a>["age"]+1 }
@@ -732,7 +732,7 @@ tables.
 <pre>
 SELECT *
 FROM posts
-JOIN users 
+JOIN users
 ON posts.user_id = users.id
 </pre>
 
@@ -763,18 +763,18 @@ r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/eq_join/"
 <pre>
 SELECT posts.id AS post_id,
        user.name,
-       users.id AS user_id 
+       users.id AS user_id
     FROM posts
-    JOIN users 
+    JOIN users
         ON posts.user_id = users.id
 </pre>
 
 <pre>
 SELECT posts.id AS post_id,
        user.name,
-       users.id AS user_id 
+       users.id AS user_id
     FROM posts
-    INNER JOIN users 
+    INNER JOIN users
         ON posts.user_id = users.id
 </pre>
 
@@ -800,14 +800,14 @@ r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/inner_joi
 <pre>
 SELECT *
     FROM posts
-    RIGHT JOIN users 
+    RIGHT JOIN users
         ON posts.user_id = users.id
 </pre>
 
 <pre>
 SELECT *
     FROM posts
-    RIGHT OUTER JOIN users 
+    RIGHT OUTER JOIN users
         ON posts.user_id = users.id
 </pre>
 
@@ -839,7 +839,7 @@ r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/concat_ma
             "right": user
           }
         )
-      ) 
+      )
     )
 ).<a href="/api/python/zip/">zip</a>()
 </pre>
@@ -850,13 +850,13 @@ r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/concat_ma
 <pre>
 SELECT *
     FROM posts
-    LEFT JOIN users 
+    LEFT JOIN users
         ON posts.user_id = users.id
 </pre>
 <pre>
 SELECT *
     FROM posts
-    LEFT OUTER JOIN users 
+    LEFT OUTER JOIN users
         ON posts.user_id = users.id
 </pre>
 
@@ -885,7 +885,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/concat_ma
             "right": post
           }
         )
-      ) 
+      )
     )
 ).<a href="/api/python/zip/">zip</a>()
 </pre>
@@ -937,7 +937,7 @@ SELECT category,
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("posts")
   .<a href="/api/python/group_by/">group_by</a>('category',
@@ -962,7 +962,7 @@ SELECT category,
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("posts")
   .<a href="/api/python/grouped_map_reduce">grouped_map_reduce</a>(
@@ -994,7 +994,7 @@ SELECT id,
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("posts")
   .<a href="/api/python/filter/">filter</a>( r.<a href="/api/python/row/">row</a>["num_comments"]&gt;7
@@ -1031,7 +1031,7 @@ CREATE DATABASE my_database;
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/db_create/">db_create</a>('my_database')
 </pre>
@@ -1045,7 +1045,7 @@ DROP DATABASE my_database;
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/db_drop/">db_drop</a>('my_database')
 </pre>
@@ -1064,7 +1064,7 @@ CREATE TABLE users
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table_create/">table_create</a>('users', primary_key="id")
 </pre>
@@ -1085,7 +1085,7 @@ TRUNCATE TABLE users;
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/delete/">delete</a>()
 </pre>
@@ -1101,7 +1101,7 @@ DROP TABLE users;
 </pre>
 
         </td><td>
-        
+
 <pre>
 r.<a href="/api/python/table_drop/">table_drop</a>("users")
 </pre>
