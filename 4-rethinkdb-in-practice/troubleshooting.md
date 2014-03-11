@@ -89,10 +89,15 @@ systems.
   ```python
   r.db("foo").table("bar").insert(document).run(durability="soft", noreply=True)
   ```
+## How can I order the output of `group`? ##
+
+Commands chained after `group` operate on each group separately.  If
+you want to operate on all the groups at once (e.g. to order them),
+you need to call [**ungroup**](/api/python/ungroup/) before doing so.
 
 ## What does 'received invalid clustering header' mean? ##
 
-{% include troubleshootingcluster.md %} 
+{% include troubleshootingcluster.md %}
 
 ## Does the web UI support my browser? ##
 
