@@ -973,22 +973,23 @@ These commands are used to compute smaller values from large sequences.
 ## [reduce](reduce/) ##
 
 {% apibody %}
-sequence.reduce(reduction_function[, base]) &rarr; value
+sequence.reduce(reduction_function) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction
 function.
 
-The reduce function gets invoked repeatedly not only for the input values but also for
-results of previous reduce invocations. The type and format of the object that is passed
-in to reduce must be the same with the one returned from reduce.
+Produces a single value from a sequence by repeatedly calling the
+reduction function.  The reduction function should take two arguments
+and combine them together.  The arguments to the reduction function
+can be either elements of the stream, or the results of a previous
+call to the reduction function.
 
-__Example:__ How many enemies have our heroes defeated?
+__Example:__ What's the product of all the bonus multipliers in game 7324?
 
 ```rb
-r.table('marvel').order_by(:strength)[5..10].run(conn)
+r.table('games').get(7324)['bonus_multipliers'].reduce{|a,b| a*b}.run(conn)
 ```
-
 
 ## [count](count/) ##
 
