@@ -541,13 +541,13 @@ In this case, you can do a pivot operation with the `group` and
 `coerceTo` commands.
 
 ```js
-r.db('test').table('marks') \
- .group('name') \
+r.db('test').table('marks')                                  \
+ .group('name')                                              \
  .map(function(row){return [[row('course'), row('mark')]];}) \
- .ungroup() \
- .map(function(res){ \
-   return r.expr(name: res('group')) \
-           .merge(res('reduction').coerceTo('OBJECT')); \
+ .ungroup()                                                  \
+ .map(function(res){                                         \
+   return r.expr(name: res('group'))                         \
+           .merge(res('reduction').coerceTo('OBJECT'));      \
  }).run(conn)
 ```
 

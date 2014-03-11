@@ -465,11 +465,11 @@ In this case, you can do a pivot operation with the `group` and
 
 
 ```py
-r.db('test').table('marks') \
- .group('name') \
- .map(lambda row: [[row['course'], row['mark']]]) \
- .ungroup() \
- .map(lambda res: r.expr({'name': res['group']}) \
+r.db('test').table('marks')                                      \
+ .group('name')                                                  \
+ .map(lambda row: [[row['course'], row['mark']]])                \
+ .ungroup()                                                      \
+ .map(lambda res: r.expr({'name': res['group']})                 \
                    .merge(res['reduction'].coerce_to('OBJECT'))) \
  .run(conn)
 ```
