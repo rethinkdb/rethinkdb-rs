@@ -160,6 +160,7 @@ __Example:__ Efficient operation.
 ```
 
 __Example:__ Inefficient operation.
+
 ```rb
 > r.table('games').group('player').order_by('score').type_of().run(conn)
 "GROUPED_DATA"

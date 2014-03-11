@@ -16,11 +16,11 @@ grouped_data.ungroup() &rarr; array
 
 # Description #
 
-`ungroup` takes a grouped stream or grouped data and turns it into an
-array of objects representing the groups.  Any commands chained after
-`ungroup` will operate on this array, rather than operating on each
-group individually.  This is useful if you want to e.g. order the
-groups by the value of their reduction.
+Takes a grouped stream or grouped data and turns it into an array of
+objects representing the groups.  Any commands chained after `ungroup`
+will operate on this array, rather than operating on each group
+individually.  This is useful if you want to e.g. order the groups by
+the value of their reduction.
 
 The format of the array returned by `ungroup` is the same as the
 default native format of grouped data in the javascript driver and

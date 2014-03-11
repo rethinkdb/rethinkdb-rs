@@ -1029,7 +1029,45 @@ r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)
 sequence.group(field_or_function...) &rarr; grouped_stream
 {% endapibody %}
 
-PLACEHOLDER
+Takes a stream and partitions it into multiple groups based on the
+fields or functions provided.  Commands chained after `group` will be
+called on each of these grouped sub-streams, producing grouped data.
+
+__Example:__ What is each player's best game?
+
+```rb
+> r.table('games').group('player').max('points').run(conn)
+{"Alice"=>{"id"=>5, "player"=>"Alice", "points"=>7, "type"=>"free"},
+ "Bob"=>{"id"=>2, "player"=>"Bob", "points"=>15, "type"=>"ranked"},
+ ...}
+```
+
+## [ungroup](ungroup/) ##
+
+{% apibody %}
+grouped_stream.ungroup() &rarr; array
+grouped_data.ungroup() &rarr; array
+{% endapibody %}
+
+Takes a grouped stream or grouped data and turns it into an array of
+objects representing the groups.  Any commands chained after `ungroup`
+will operate on this array, rather than operating on each group
+individually.  This is useful if you want to e.g. order the groups by
+the value of their reduction.
+
+The format of the array returned by `ungroup` is the same as the
+default native format of grouped data in the javascript driver and
+data explorer.
+
+__Example:__ What is the maximum number of points scored by each
+player, with the highest scorers first?
+
+```rb
+> r.table('games') \
+   .group('player').max('points')['points'] \
+   .ungroup().order_by(r.desc('reduction')).run(conn)
+[{"group"=>"Bob", "reduction"=>15}, {"group"=>"Alice", "reduction"=>7}, ...]
+```
 
 [Read more about this command &rarr;](group/)
 
