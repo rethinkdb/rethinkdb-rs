@@ -81,8 +81,8 @@ player for each game type?
  ["Bob", "free"]=>11,
  ["Bob", "ranked"]=>15,
  ...}
-> r.table('games') \
-   .group{|game| game.pluck('player', 'type')} \
+> r.table('games')                                    \
+   .group{|game| game.pluck('player', 'type')}        \
    .max('points')['points'].run(conn)
 { {"player"=>"Alice", "type"=>"free"}=>7,
   {"player"=>"Alice", "type"=>"ranked"}=>1,
@@ -104,7 +104,7 @@ player in free games?
 __Example:__ What is each player's highest even and odd score?
 
 ```rb
-> r.table('games') \
+> r.table('games')                                    \
    .group('name', lambda {|game| game['points'] % 2}) \
    .max('points')['points'].run(conn)
 {["Alice", 0]=>4,
@@ -118,8 +118,8 @@ __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
 ```rb
-> r.table('games') \
-   .group('player').max('points')['points'] \
+> r.table('games')                                    \
+   .group('player').max('points')['points']           \
    .ungroup().order_by(r.desc('reduction')).run(conn)
 [{"group"=>"Bob", "reduction"=>15}, {"group"=>"Alice", "reduction"=>7}, ...]
 ```

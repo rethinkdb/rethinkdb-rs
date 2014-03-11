@@ -468,11 +468,11 @@ In this case, you can do a pivot operation with the `group` and
 
 
 ```rb
-r.db('test').table('marks') \
- .group('name') \
- .map{|row| [[row['course'], row['mark']]]} \
- .ungroup() \
- .map{|res| r.expr({name: res['group']) \
+r.db('test').table('marks')                                \
+ .group('name')                                            \
+ .map{|row| [[row['course'], row['mark']]]}                \
+ .ungroup()                                                \
+ .map{|res| r.expr({name: res['group'])                    \
              .merge(res['reduction'].coerce_to('OBJECT'))} \
  .run(conn)
 ```

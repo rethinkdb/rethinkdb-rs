@@ -67,10 +67,10 @@ Let's first compute the number of posts per category by explicit calls
 to `group`, `map`, and `reduce`:
 
 ```python
-r.table('posts') \
+r.table('posts')                        \
   .group(lambda post: post['category']) \
-  .map(lambda post: 1) \
-  .reduce(lambda a,b: a+b) \
+  .map(lambda post: 1)                  \
+  .reduce(lambda a,b: a+b)              \
   .run(conn)
 ```
 
@@ -80,10 +80,10 @@ you provide `group` with the name of a field rather than a function,
 it will group by that field:
 
 ```python
-r.table('posts') \
-  .group('category') \
-  .map(lambda post: 1) \
-  .reduce(lambda a,b: a+b) \
+r.table('posts')                        \
+  .group('category')                    \
+  .map(lambda post: 1)                  \
+  .reduce(lambda a,b: a+b)              \
   .run(conn)
 ```
 
@@ -113,10 +113,10 @@ Here is an example of an __incorrect__ way to write the previous
 grouped map/reduce query:
 
 ```python
-r.table('posts') \
+r.table('posts')                        \
   .group(lambda post: post['category']) \
-  .map(lambda post: 1) \
-  .reduce(lambda a,b: a+1) \ # INCORRECT
+  .map(lambda post: 1)                  \
+  .reduce(lambda a,b: a+1)              \ # INCORRECT
   .run(conn)
 ```
 
