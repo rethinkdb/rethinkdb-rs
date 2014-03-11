@@ -417,18 +417,14 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
 
 <pre>
 SELECT AVG("age")
-FROM users
+    FROM users
 </pre>
 
         </td><td>
 
 <pre>
-(r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/map/">map</a>(lambda user:
-        user["age"]
-    ).<a href="/api/python/reduce/">reduce</a>(lambda left, right:
-        left+right
-    )/r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/count/">count</a>())
+r.<a href="/api/python/table/">table</a>("users")
+ .<a href="/api/python/avg/">avg</a>("age")
 </pre>
 
         </td></tr>
@@ -443,16 +439,8 @@ SELECT MAX("age")
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/map/">map</a>(lambda user:
-        user["age"]
-    ).<a href="/api/python/reduce/">reduce</a>(lambda left, right:
-        r.<a href="/api/python/branch/">branch</a>(
-            left&gt;right,
-            left,
-            right
-        )
-    )
+r.<a href="/api/python/table/">table</a>("users")["age"]
+ .<a href="/api/python/max/">max</a>()
 </pre>
 
         </td></tr>
@@ -467,16 +455,8 @@ SELECT MIN("age")
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/map/">map</a>(lambda user:
-        user["age"]
-    ).<a href="/api/python/reduce/">reduce</a>(lambda left, right:
-        r.<a href="/api/python/branch/">branch</a>(
-            left>right,
-            right,
-            left
-        )
-    )
+r.<a href="/api/python/table/">table</a>("users")["age"]
+ .<a href="/api/python/min/">min</a>()
 </pre>
 
         </td></tr>
@@ -491,11 +471,7 @@ SELECT SUM("num_posts")
 
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/map/">map</a>(lambda user:
-        user["num_posts"]
-    ).<a href="/api/python/reduce/">reduce</a>(lambda left, right:
-        left+right
-    )
+ .<a href="/api/python/sum/">sum</a>("num_posts")
 </pre>
 
         </td></tr>
@@ -920,7 +896,7 @@ r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/map/">map
 </pre>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/map/">map</a>(lambda user
+r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/map/">map</a>(lambda user:
     user["category"]
 ).<a href="/api/python/distinct/">distinct</a>()
 </pre>
@@ -931,7 +907,6 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/map/">map
 <pre>
 SELECT category,
        SUM('num_comments')
-           AS total
     FROM posts
     GROUP BY category
 </pre>
@@ -939,13 +914,9 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts")
-  .<a href="/api/python/group_by/">group_by</a>('category',
-    r.sum('num_comments')
-  ).<a href="/api/python/map/">map</a>({
-    "category": r.<a href="/api/python/row/">row</a>["group"],
-    "total": r.<a href="/api/python/row/">row</a>["reduction"]
-})
+r.<a href="/api/python/table/">table</a>('posts')
+ .<a href="/api/python/group/">group</a>('category')
+ .<a href="/api/python/sum/">sum</a>('num_comments')
 </pre>
 
         </td></tr>
@@ -956,7 +927,6 @@ r.<a href="/api/python/table/">table</a>("posts")
 SELECT category,
        status,
        SUM('num_comments')
-           AS total
     FROM posts
     GROUP BY category, status
 </pre>
@@ -965,31 +935,19 @@ SELECT category,
 
 <pre>
 r.<a href="/api/python/table/">table</a>("posts")
-  .<a href="/api/python/grouped_map_reduce">grouped_map_reduce</a>(
-    lambda post:
-      [post["category"],
-       post["status"]],
-    lambda post:
-      post["num_comments"],
-    lambda left, right:
-      left + right
-  ).<a href="/api/python/map/">map</a>({
-    "category": r.<a href="/api/python/row/">row</a>["group"][0],
-    "status": r.<a href="/api/python/row/">row</a>["group"][1],
-    "total": r.<a href="/api/python/row/">row</a>["reduction"]
-})
+ .<a href="/api/python/group/">group</a>('category', 'status')
+ .<a href="/api/python/sum/">sum</a>('num_comments')
 </pre>
         </td></tr>
 
         <tr><td>
 
 <pre>
-SELECT id,
-    SUM(num_comments)
-        AS "total"
+SELECT category,
+       SUM(num_comments)
     FROM posts
-    GROUP BY category, num_comments
-        HAVING num_comments &gt; 7
+    GROUP BY category
+    HAVING num_comments &gt; 7
 
 </pre>
 
@@ -997,18 +955,9 @@ SELECT id,
 
 <pre>
 r.<a href="/api/python/table/">table</a>("posts")
-  .<a href="/api/python/filter/">filter</a>( r.<a href="/api/python/row/">row</a>["num_comments"]&gt;7
-  .<a href="/api/python/grouped_map_reduce">grouped_map_reduce</a>(
-    lambda post:
-      post["category"],
-    lambda post:
-      post["num_comments"],
-    lambda left, right:
-      left + right
-  ).<a href="/api/python/map/">map</a>({
-    "category": r.<a href="/api/python/row/">row</a>["group"],
-    "total": r.<a href="/api/python/row/">row</a>["reduction"]
-})
+ .<a href="/api/python/filter/">filter</a>(r.row['num_comments']>7)
+ .<a href="/api/python/group/">group</a>('category')
+ .<a href="/api/python/sum/">sum</a>('num_comments')
 </pre>
 
         </td></tr>
