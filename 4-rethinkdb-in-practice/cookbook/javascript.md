@@ -549,9 +549,6 @@ r.db('test').table('marks') \
    return r.expr(name: res('group')) \
            .merge(res('reduction').coerceTo('OBJECT')); \
  }).run(conn)
- lambda res: r.expr({'name': res['group']}) \
-                   .merge(res['reduction'].coerce_to('OBJECT'))) \
- .run(conn)
 ```
 
 _Note:_ A nicer syntax will eventually be added. See the
