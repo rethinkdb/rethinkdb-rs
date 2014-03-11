@@ -21,10 +21,10 @@ js: faq_index
 ## What is RethinkDB? ##
 
 RethinkDB is an open-source, distributed database built to store JSON
-documents and scale to multiple machines with very little effort. It
-has a pleasant query language that supports really useful queries like
-table joins, groupings, and aggregations, and it's easy to set up and
-learn.
+documents and scale to multiple machines with very little effort. It's
+easy to set up and learn, and it has a pleasant query language that
+supports really useful queries like table joins, groupings, and
+aggregations.
 
 {% infobox info %}
     <p><strong>RethinkDB in under two minutes:</strong> see the <a href="/videos/what-is-rethinkdb">highlights video</a>.</p>
