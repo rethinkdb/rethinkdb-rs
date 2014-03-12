@@ -451,20 +451,13 @@ r.table("posts").count().run(connection, function(err, result) {
 
 ## Computing the average value of a field ##
 
-To compute the average of a field, you can use a combination of `map`
-and `reduce` commands. For example, to compute the average number of
-comments per post, we would use `map` and `reduce` to add up the total
-number of comments and then divide that by the total number of posts.
+You can compute the average value of a field with the `avg` command.
 
 ```javascript
-r.table("posts").
-  map(r.row("num_comments")).
-  reduce(function(n, m) { return n.add(m) }).
-  div(r.table("posts").count()).
-  run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-  })
+r.table("posts").avg("num_comments").run(connection, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+})
 ```
 
 ## Using subqueries to return additional fields ##
@@ -537,24 +530,18 @@ You may be interested in retrieving the results in this format
 ]
 ```
 
-In this case, you can do a pivot operation with the `groupedMapReduce` and
+In this case, you can do a pivot operation with the `group` and
 `coerceTo` commands.
 
-
-```javascript
-r.db('test').table('marks').groupedMapReduce(function(doc) { 
-        return doc("name") 
-    },
-    function(doc) { 
-        return [[doc("course"), doc("mark")]]
-    },
-    function(left, right) { 
-        return left.union(right)
-    }).map(function(result) { 
-        return r.expr({
-            name: result("group")
-        }).merge( result("reduction").coerceTo("OBJECT") )
-    })
+```js
+r.db('test').table('marks')                                  \
+ .group('name')                                              \
+ .map(function(row){return [[row('course'), row('mark')]];}) \
+ .ungroup()                                                  \
+ .map(function(res){                                         \
+   return r.expr(name: res('group'))                         \
+           .merge(res('reduction').coerceTo('OBJECT'));      \
+ }).run(conn)
 ```
 
 _Note:_ A nicer syntax will eventually be added. See the

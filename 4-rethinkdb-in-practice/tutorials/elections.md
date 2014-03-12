@@ -13,9 +13,9 @@ permalink: docs/tutorials/elections/
 
 
 Given the timeliness of the 2012 US Presidential Election and the inherent
-intricacies of the [electoral process](http://en.wikipedia.org/wiki/United_States_presidential_election), 
+intricacies of the [electoral process](http://en.wikipedia.org/wiki/United_States_presidential_election),
 we internally used an interesting dataset on poll results to test RethinkDB's query language support
-in the [Javascript][js_install], [Python][python_install], and [Ruby client libraries][ruby_install]. 
+in the [Javascript][js_install], [Python][python_install], and [Ruby client libraries][ruby_install].
 
 We'll use this dataset to walk through RethinkDB's [JavaScript query language][js_reql] using the Data Explorer.
 
@@ -124,7 +124,7 @@ You will get back something with this schema:
 * * * * *
 
 
-## Data cleanup: chaining, grouped-map-reduce, simple map  ##
+## Data cleanup: chaining, group/map/reduce, simple map  ##
 
 We'll first clean up the data in `input_polls`, as we want to calculate the average results of various
 polls at the state level. We'll also get rid of unnecessary/empty
@@ -141,38 +141,28 @@ average score for each party.
 
 ```javascript
 r.table("polls").insert(
-    r.table("input_polls").groupedMapReduce(
-        // We group per `id`, `id` being a state name
-        function(poll) {
-            return poll("id")
-        },
-        // For each poll, we keep the results and add a field polls with the value 1
-        function(poll) {
-            return {
-                Dem: poll("Dem"),
-                GOP: poll("GOP"),
-                polls: 1,
-            }
-        },
-        // We reduce each group doing the sum for all fields
-        function(left, right) {
-            return {
-                Dem: left("Dem").add(right("Dem")),
-                GOP: left("GOP").add(right("GOP")),
-                polls: left("polls").add(right("polls")),
-            }
-        }
-    ).map( function(poll) {
-        // We previously did the sum
-        // Now we divide the fields `Dem` and `GOP` or each group
-        // by the number of polls to get the average result
+    r.table("input_polls")
+     .group("id")         // We group the table by `id`, which is the state name.
+     .pluck('Dem', 'GOP') // We pluck out the poll results we care about.
+     .merge({polls: 1})   // And finally, we add an extra field `polls: 1` to each row.
+     .reduce(function(left, right){
+        // We reduce over the polls, adding up the results and keeping
+        // track of the total number of polls.
         return {
-            Dem: poll("reduction")("Dem").div(poll("reduction")("polls")),
-            GOP: poll("reduction")("GOP").div(poll("reduction")("polls")),
-            polls: poll("reduction")("polls"),
-            id: poll("group")
-        }
-    })
+            Dem: left("Dem").add(right("Dem")),
+            GOP: left("GOP").add(right("GOP")),
+            polls: left("polls").add(right("polls"))
+        };
+     }).ungroup().map(function(state){
+         // We ungroup and divide the fields `Dem` and `GOP` for each state
+         // by the number of polls to get the average result per state.
+         return {
+             Dem: state("reduction")("Dem").div(state("reduction")("polls)),
+             GOP: state("reduction")("GOP).div(state("reduction")(polls)),
+             polls: state("reduction")("polls),
+             id: state("group")
+         };
+     })
 )
 ```
 
@@ -206,12 +196,14 @@ You should get back this document:
 }
 ```
 
-## Data analysis: projections, JOINs, orderby, group-map-reduce ##
+## Data analysis: projections, JOINs, orderby, group/map/reduce ##
 
-Based on this data let's try to see if we can figure out **how many voters a party would need to turn to win the states.** 
-For the sake of this post, we'll go with the Democrats.
+Based on this data let's try to see if we can figure out **how many
+voters a party would need to turn to win the states.** For the sake of
+this post, we'll go with the Democrats.
 
-Let's start with what estimates polls project at the county level by **JOIN**ing the `polls` and `county_stats` tables:
+Let's start with what estimates polls project at the county level by
+**JOIN**ing the `polls` and `county_stats` tables:
 
 ```javascript
 r.table('county_stats').eqJoin('Stname', r.table('polls')) // equi join of the two tables
@@ -219,11 +211,12 @@ r.table('county_stats').eqJoin('Stname', r.table('polls')) // equi join of the t
 	.pluck('Stname', 'state', 'county', 'ctyname', 'CENSUS2010POP', 'POPESTIMATE2011', 'Dem', 'GOP') // projection
 ```
 
-Building on this query, next we can find the counties where the Democrats are in minority: 
+Building on this query, next we can find the counties where the
+Democrats are in minority:
 
 ```javascript
 r.table('county_stats').eqJoin('Stname', r.table('polls'))
-	.zip() 
+	.zip()
 	.pluck('Stname', 'state', 'county', 'ctyname', 'CENSUS2010POP', 'POPESTIMATE2011', 'Dem', 'GOP')
 	.filter(function(doc) { return doc('Dem').lt(doc('GOP')) })
 ```
@@ -232,35 +225,38 @@ Or even better where Democrats are within 15% of the Republicans:
 
 ```javascript
 r.table('county_stats').eqJoin('Stname', r.table('polls'))
-	.zip() 
+	.zip()
 	.pluck('Stname', 'state', 'county', 'ctyname', 'CENSUS2010POP', 'POPESTIMATE2011', 'Dem', 'GOP')
 	.filter(function(doc) { return doc('Dem').lt(doc('GOP')).and(doc('GOP').sub(doc('Dem')).lt(15)) })
 ```
 
-The last step in answering the initial question of how many voters should the Democrats win to turn the results is just a `groupedMapReduce` away:
+The last step in answering the initial question of how many voters
+should the Democrats win to turn the results is just a group/map/sum
+away:
 
 ```javascript
-r.table('county_stats').eqJoin('Stname', r.table('polls'))
-	.zip() 
-	.pluck('Stname', 'state', 'county', 'ctyname', 'CENSUS2010POP', 'POPESTIMATE2011', 'Dem', 'GOP')
-	.filter(function(doc) { return doc('Dem').lt(doc('GOP')).and(doc('GOP').sub(doc('Dem')).lt(15)) })
-	.groupedMapReduce(
-		function(doc){ return doc('Stname') }, 
-		function(doc){ return doc('POPESTIMATE2011').mul(doc("GOP").sub(doc("Dem")).div(100)) }, 
-		function(acc, val) {return acc.add(val)})
-	.orderBy('reduction')
+r.table('county_stats').eqJoin('Stname', r.table('polls')).zip()
+    .pluck('Stname', 'state', 'county', 'ctyname', 'CENSUS2010POP', 'POPESTIMATE2011', 'Dem', 'GOP')
+    .filter(function(doc) { return doc('Dem').lt(doc('GOP')).and(doc('GOP').sub(doc('Dem')).lt(15)) })
+    .group('Stname')
+    .map(function(doc){return doc('POPESTIMATE2011').mul(doc("GOP").sub(doc("Dem"))).div(100);})
+    .sum()
 ```
 
-And the outcome of our quick presidential election data analysis 
-that addresses the question **how many voters the Democrat party would need to turn to win the states** (this assumes 100% turnout of the entire population of a state):
+And the outcome of our quick presidential election data analysis that
+addresses the question **how many voters the Democrat party would need
+to turn to win the states** (this assumes 100% turnout of the entire
+population of a state):
 
 ![Data analysis with RethinkDB](/assets/images/docs/reql-usecase-analyzing-polls.png)
 
 
-If you followed along, the queries above should have given you a taste of [ReQL](/api/):
-**chaining**, [**projections**](/api/javascript/pluck/), [**order by**](/api/javascript/order_by/), 
-[**JOINs**](/api/javascript/eq_join/), [**grouped-map-reduce**](/api/javascript/grouped_map_reduce/).
-Of course this tutorial isn't statistically
-significant. If you interested in statistically significant results,
-checkout the election statistics superhero [Nate
-Silver](http://fivethirtyeight.blogs.nytimes.com/).
+If you followed along, the queries above should have given you a taste
+of [ReQL](/api/): **chaining**,
+[**projections**](/api/javascript/pluck/),
+[**order by**](/api/javascript/order_by/),
+[**JOINs**](/api/javascript/eq_join/),
+[**group**](/api/javascript/group/).  Of course this tutorial isn't
+statistically significant. If you interested in statistically
+significant results, checkout the election statistics superhero
+[Nate Silver](http://fivethirtyeight.blogs.nytimes.com/).

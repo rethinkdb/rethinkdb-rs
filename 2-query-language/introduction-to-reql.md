@@ -321,7 +321,7 @@ salary and bonus don't exceed $90,000, and increase their salary by
 10%:
 
 ```python
-r.table('users').filter(lambda user: user['salary'] + user['bonus'] < 80000)
+r.table('users').filter(lambda user: user['salary'] + user['bonus'] < 90000)
  .update(lambda user: {'salary': user['salary'] + user['salary'] * 0.1})
 ```
 

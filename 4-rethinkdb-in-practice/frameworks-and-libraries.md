@@ -7,7 +7,7 @@ permalink: docs/frameworks-and-libraries/
 ---
 
 {% infobox info %}
-__Add your library:__ Have you written a cool library related RethinkDB and want us to showcase it?  
+__Add your library:__ Have you written a cool library related RethinkDB and want us to showcase it?
 Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 {% endinfobox %}
 
@@ -26,6 +26,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [rethinkdb-driver-development](https://github.com/neumino/rethinkdb-driver-development):
   a tool to help users create a new driver for RethinkDB, by
   [@neumino](https://github.com/neumino)
+- [flask-rethinkdb](https://github.com/linkyndy/flask-rethinkdb): a Flask extension that adds RethinkDB support, by [@linkyndy](https://github.com/linkyndy)
+- [rethinkdb-co](https://github.com/hden/rethinkdb-co): harness RethinkDB callbacks with ECMAScript 6 generators, by [@hden](https://github.com/hden)
+- [koa-rethinkdb](https://github.com/hden/koa-rethinkdb): a Koa middleware that automatically manages connections via connection pool, by [@hden](https://github.com/hden)
 
 # Object-document mappers #
 - [thinky](https://github.com/neumino/thinky): JavaScript ORM for RethinkDB, by
@@ -36,7 +39,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [RethinkDB-Backbone](https://github.com/paulmars/rethinkdb-backbone): an
   example of using RethinkDB as a backing store for Backbone.js on the server,
   by [@paulmars](https://github.com/paulmars).
-- [No Brainer](https://github.com/paulmars/rethinkdb-backbone): a Ruby ORM
+- [No Brainer](https://github.com/nviennot/nobrainer): a Ruby ORM
   designed for RethinkDB, by [@nviennot](https://github.com/nviennot)
 - [rwrapper](https://github.com/dparlevliet/rwrapper): an ORM designed to
   emulate the most common usages of Django's database abstraction, by
@@ -57,6 +60,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
   [@AVVSDevelopment](https://github.com/AVVSDevelopment)
 - [box-rethinkdb](https://github.com/mies/box-rethinkdb): Wercker box for
   RethinkDB, by [@mies](https://github.com/mies)
+- [dockerfile/rethinkdb](http://dockerfile.github.io/#/rethinkdb):
+  Trusted Docker Build & instruction for deploying a RethinkDB cluster, by
+  [@pilwon](https://github.com/pilwon)
 - [dockerfiles-examples](https://github.com/kstaken/dockerfile-examples):
   includes scripts for building an image for Docker with RethinkDB, by
   [@kstaken](https://github.com/kstaken)

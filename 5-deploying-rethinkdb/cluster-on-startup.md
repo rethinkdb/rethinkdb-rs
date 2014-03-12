@@ -133,7 +133,7 @@ config file without the `.conf` extension.
   database tables will be stored. This location must be readable and
   writable by the user or group (or both) specified by `runuser`
   and `rungroup`. Note, it is best to create the database manually via
-  `rethinkdb create --directory=...` as `runuser` or `rungroup` before
+  `rethinkdb create --directory ...` as `runuser` or `rungroup` before
   enabling auto-start.  
   **Default**: `/var/lib/rethinkdb/<name>/`
 

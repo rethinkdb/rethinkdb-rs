@@ -6,38 +6,41 @@ command: count
 related_commands:
     map: map/
     reduce: reduce/
-    grouped_map_reduce: grouped_map_reduce/
+    sum: sum/
+    avg: avg/
+    min: min/
+    max: max/
+    group: group/
 ---
 
 # Command syntax #
 
 {% apibody %}
-sequence.count([filter]) &rarr; number
+sequence.count([value_or_predicate]) &rarr; number
 {% endapibody %}
 
 # Description #
 
-Count the number of elements in the sequence. With a single argument, count the number
-of elements equal to it. If the argument is a function, it is equivalent to calling
-filter before count.
+Counts the number of elements in a sequence.  If called with a value,
+counts the number of times that value occurs in the sequence.  If
+called with a predicate function, counts the number of elements in the
+sequence where that function returns true.
 
-__Example:__ Just how many super heroes are there?
-
-```rb
-(r.table('marvel').count() + r.table('dc').count()).run(conn)
-```
-
-
-__Example:__ Just how many super heroes have invisibility?
+__Example:__ Count the number of users.
 
 ```rb
-r.table('marvel').concat_map{ |row| row[:superpowers] }.count('invisibility').run(conn)
+r.table('users').count().run(conn)
 ```
 
-
-__Example:__ Just how many super heroes have defeated the Sphinx?
+__Example:__ Count the number of 18 year old users.
 
 ```rb
-r.table('marvel').count{ |row| row['monstersKilled'].contains('Sphinx') }.run(conn)
+r.table('users')['age'].count(18).run(conn)
 ```
 
+__Example:__ Count the number of users over 18.
+
+```rb
+r.table('users')['age'].count{|age| age > 18}.run(conn)
+r.table('users').count{|user| user['age'] > 18}.run(conn)
+```
