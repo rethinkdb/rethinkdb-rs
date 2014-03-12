@@ -1026,7 +1026,7 @@ r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)
 ## [group](group/) ##
 
 {% apibody %}
-sequence.group(field_or_function...) &rarr; grouped_stream
+sequence.group(field_or_function..., [:index => nil]) &rarr; grouped_stream
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the

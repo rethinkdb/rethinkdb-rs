@@ -17,7 +17,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.group(field_or_function...) &rarr; grouped_stream
+sequence.group(field_or_function..., [:index => nil]) &rarr; grouped_stream
 {% endapibody %}
 
 # Description #
@@ -66,7 +66,7 @@ __Example:__ What is the maximum number of points scored by each player?
 {"Alice"=>7, "Bob"=>15, ...}
 ```
 
-You can also group by more than one field, or by a function.
+You can also group by more than one field, by a function, or by an index.
 
 __Example:__ What is the maximum number of points scored by each
 player for each game type?
@@ -87,7 +87,8 @@ player for each game type?
   {"player"=>"Bob", "type"=>"free"}=>11,
   {"player"=>"Bob", "type"=>"ranked"}=>15,
  ... }
-
+> r.table('games').group(index:'type').max('points')['points'].run(conn)
+{"free"=>7.25, "ranked"=>8.22}
 ```
 
 If you want to operate on all the groups rather than operating on each
