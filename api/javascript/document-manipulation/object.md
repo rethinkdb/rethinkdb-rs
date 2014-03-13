@@ -4,7 +4,7 @@ language: JavaScript
 permalink: api/javascript/object/
 command: object
 io:
-    -   - array
+    -   - r
         - object
 related_commands:
     coerce_to: coerce_to/
