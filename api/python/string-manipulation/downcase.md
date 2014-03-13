@@ -1,7 +1,7 @@
 ---
 layout: api-command
-language: Ruby
-permalink: api/ruby/downcase/
+language: Python
+permalink: api/python/downcase/
 command: downcase
 related_commands:
     upcase: upcase/

@@ -1,8 +1,11 @@
 ---
 layout: api-command
-language: Ruby
-permalink: api/ruby/downcase/
+language: JavaScript
+permalink: api/javascript/downcase/
 command: downcase
+io:
+    -   - string
+        - array
 related_commands:
     upcase: upcase/
     match: match/
@@ -22,6 +25,6 @@ Downcases a string.
 __Example:__
 
 ```rb
-> r.expr("Sentence about LaTeX.").downcase().run(conn)
+> r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 "sentence about latex."
 ```
