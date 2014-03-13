@@ -1536,6 +1536,27 @@ __Example:__ Get all the keys of a row.
 r.table('marvel').get('ironman').keys().run(conn, callback)
 ```
 
+## [object](object/) ##
+
+{% apibody %}
+r.object([key, value,]...) &rarr; object
+{% endapibody %}
+
+Creates an object from a list of key-value pairs, where the keys must
+be strings.  `r.object(A, B, C, D)` is equivalent to
+`r.expr([[A, B], [C, D]]).coerce_to('OBJECT')`.
+
+__Example:__ Create a simple object.
+
+```js
+r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
+```
+
+Result:
+
+```js
+{data: ["foo", "bar"], id: 5}
+```
 
 {% endapisection %}
 
@@ -1562,6 +1583,78 @@ r.table('users').filter(function(row){return row('name').match("^A")}).run(conn,
 ```
 
 [Read more about this command &rarr;](match/)
+
+## [split](split/) ##
+
+{% apibody %}
+string.split([separator, [max_splits]]) &rarr; array
+{% endapibody %}
+
+Splits a string into substrings.  Splits on whitespace when called
+with no arguments.  When called with a separator, splits on that
+separator.  When called with a separator and a maximum number of
+splits, splits on that separator at most `max_splits` times.  (Can be
+called with NULL as the separator if you want to split on whitespace
+while still specifying `max_splits`.)
+
+Mimics the behavior of Python's `string.split` in edge cases, except
+for splitting on the empty string, which instead produces an array of
+single-character strings.
+
+__Example:__ Split on whitespace.
+
+```js
+r.expr("foo  bar bax").split().run(conn, callback)
+```
+
+Result:
+
+```js
+["foo", "bar", "bax"]
+```
+
+[Read more about this command &rarr;](split/)
+
+## [upcase](upcase/) ##
+
+{% apibody %}
+string.upcase() &rarr; string
+{% endapibody %}
+
+
+Upcases a string.
+
+__Example:__
+
+```js
+r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
+```
+
+Result:
+
+```js
+"SENTENCE ABOUT LATEX."
+```
+
+## [downcase](downcase/) ##
+
+{% apibody %}
+string.downcase() &rarr; string
+{% endapibody %}
+
+Downcases a string.
+
+__Example:__
+
+```js
+r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
+```
+
+Result:
+
+```js
+"sentence about latex."
+```
 
 {% endapisection %}
 
