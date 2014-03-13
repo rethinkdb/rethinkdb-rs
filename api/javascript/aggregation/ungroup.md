@@ -31,7 +31,7 @@ player, with the highest scorers first?
 
 ```js
 r.table('games')
-   .group('player').max('points')['points']
+   .group('player').max('points')('points')
    .ungroup().order_by(r.desc('reduction')).run(conn, callback)
 ```
 
