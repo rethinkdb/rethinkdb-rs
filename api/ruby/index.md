@@ -1447,16 +1447,72 @@ These commands provide string operators.
 string.match(regexp) &rarr; array
 {% endapibody %}
 
-Match against a regular expression. Returns a match object containing the matched string,
-that string's start/end position, and the capture groups. Accepts RE2 syntax
+Match against a regular expression. Returns a match object containing
+the matched string, that string's start/end position, and the capture
+groups. Accepts RE2 syntax
 ([https://code.google.com/p/re2/wiki/Syntax](https://code.google.com/p/re2/wiki/Syntax)).
-You can enable case-insensitive matching by prefixing the regular expression with
-`(?i)`. (See linked RE2 documentation for more flags.)
+You can enable case-insensitive matching by prefixing the regular
+expression with `(?i)`. (See linked RE2 documentation for more flags.)
 
 __Example:__ Get all users whose name starts with A.
 
 ```rb
 r.table('users').filter{|row| row[:name].match("^A")}.run(conn)
+```
+
+## [split](split/) ##
+
+{% apibody %}
+string.split([separator, [max_splits]]) &rarr; array
+{% endapibody %}
+
+Splits a string into substrings.  Splits on whitespace when called
+with no arguments.  When called with a separator, splits on that
+separator.  When called with a separator and a maximum number of
+splits, splits on that separator at most `max_splits` times.  (Can be
+called with NULL as the separator if you want to split on whitespace
+while still specifying `max_splits`.)
+
+Mimics the behavior of Python's `string.split` in edge cases, except
+for splitting on the empty string, which instead produces an array of
+single-character strings.
+
+__Example:__ Split on whitespace.
+
+```rb
+> r.expr("foo  bar bax").split().run(conn)
+["foo", "bar", "bax"]
+```
+
+## [upcase](upcase/) ##
+
+{% apibody %}
+string.upcase() &rarr; string
+{% endapibody %}
+
+
+Upcases a string.
+
+__Example:__
+
+```rb
+> r.expr("Sentence about LaTeX.").upcase().run(conn)
+"SENTENCE ABOUT LATEX."
+```
+
+## [downcase](downcase/) ##
+
+{% apibody %}
+string.downcase() &rarr; string
+{% endapibody %}
+
+Downcases a string.
+
+__Example:__
+
+```rb
+> r.expr("Sentence about LaTeX.").downcase().run(conn)
+"sentence about latex."
 ```
 
 [Read more about this command &rarr;](match/)
