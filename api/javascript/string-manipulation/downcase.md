@@ -25,6 +25,11 @@ Downcases a string.
 __Example:__
 
 ```js
-> r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
+r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
+```
+
+Result:
+
+```
 "sentence about latex."
 ```

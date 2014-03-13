@@ -1549,7 +1549,12 @@ be strings.  `r.object(A, B, C, D)` is equivalent to
 __Example:__ Create a simple object.
 
 ```js
-> r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
+r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
+```
+
+Result:
+
+```
 {data: ["foo", "bar"], id: 5}
 ```
 
@@ -1599,7 +1604,12 @@ single-character strings.
 __Example:__ Split on whitespace.
 
 ```js
-> r.expr("foo  bar bax").split().run(conn, callback)
+r.expr("foo  bar bax").split().run(conn, callback)
+```
+
+Result:
+
+```
 ["foo", "bar", "bax"]
 ```
 
@@ -1617,7 +1627,12 @@ Upcases a string.
 __Example:__
 
 ```js
-> r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
+r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
+```
+
+Result:
+
+```
 "SENTENCE ABOUT LATEX."
 ```
 
@@ -1632,7 +1647,12 @@ Downcases a string.
 __Example:__
 
 ```js
-> r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
+r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
+```
+
+Result:
+
+```
 "sentence about latex."
 ```
 

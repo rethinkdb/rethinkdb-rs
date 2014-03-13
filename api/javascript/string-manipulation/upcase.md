@@ -25,6 +25,11 @@ Upcases a string.
 __Example:__
 
 ```js
-> r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
+r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
+```
+
+Result:
+
+```
 "SENTENCE ABOUT LATEX."
 ```
