@@ -33,21 +33,21 @@ single-character strings.
 
 __Example:__ Split on whitespace.
 
-```rb
+```js
 > r.expr("foo  bar bax").split().run(conn, callback)
 ["foo", "bar", "bax"]
 ```
 
 __Example:__ Split the entries in a CSV file.
 
-```rb
+```js
 > r.expr("12,37,,22,").split(",").run(conn, callback)
 ["12", "37", "", "22", ""]
 ```
 
 __Example:__ Split a string into characters.
 
-```rb
+```js
 > r.expr("mlucy").split("").run(conn, callback)
 ["m", "l", "u", "c", "y"]
 ```
@@ -55,14 +55,14 @@ __Example:__ Split a string into characters.
 __Example:__ Split the entries in a CSV file, but only at most 3
 times.
 
-```rb
+```js
 > r.expr("12,37,,22,").split(",", 3).run(conn, callback)
 ["12", "37", "", "22,"]
 ```
 
 __Example:__ Split on whitespace at most once (i.e. get the first word).
 
-```rb
+```js
 > r.expr("foo  bar bax").split(nil, 1).run(conn, callback)
 ["foo", "bar bax"]
 ```

@@ -24,7 +24,7 @@ Downcases a string.
 
 __Example:__
 
-```rb
+```js
 > r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 "sentence about latex."
 ```

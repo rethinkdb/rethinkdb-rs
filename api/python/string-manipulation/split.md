@@ -30,21 +30,21 @@ single-character strings.
 
 __Example:__ Split on whitespace.
 
-```rb
+```py
 > r.expr("foo  bar bax").split().run(conn)
 ["foo", "bar", "bax"]
 ```
 
 __Example:__ Split the entries in a CSV file.
 
-```rb
+```py
 > r.expr("12,37,,22,").split(",").run(conn)
 ["12", "37", "", "22", ""]
 ```
 
 __Example:__ Split a string into characters.
 
-```rb
+```py
 > r.expr("mlucy").split("").run(conn)
 ["m", "l", "u", "c", "y"]
 ```
@@ -52,14 +52,14 @@ __Example:__ Split a string into characters.
 __Example:__ Split the entries in a CSV file, but only at most 3
 times.
 
-```rb
+```py
 > r.expr("12,37,,22,").split(",", 3).run(conn)
 ["12", "37", "", "22,"]
 ```
 
 __Example:__ Split on whitespace at most once (i.e. get the first word).
 
-```rb
+```py
 > r.expr("foo  bar bax").split(nil, 1).run(conn)
 ["foo", "bar bax"]
 ```
