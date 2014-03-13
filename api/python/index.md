@@ -957,21 +957,22 @@ These commands are used to compute smaller values from large sequences.
 ## [reduce](reduce/) ##
 
 {% apibody %}
-sequence.reduce(reduction_function[, base]) &rarr; value
+sequence.reduce(reduction_function) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction
 function.
 
-The reduce function gets invoked repeatedly not only for the input values but also for
-results of previous reduce invocations. The type and format of the object that is passed
-in to reduce must be the same with the one returned from reduce.
+Produces a single value from a sequence by repeatedly calling the
+reduction function.  The reduction function should take two arguments
+and combine them together.  The arguments to the reduction function
+can be either elements of the stream, or the results of a previous
+call to the reduction function.
 
-__Example:__ How many enemies have our heroes defeated?
+__Example:__ What's the product of all the bonus multipliers in game 7324?
 
 ```py
-r.table('marvel').map(r.row['monstersKilled']).reduce(
-    lambda acc, val: acc + val, 0).run(conn)
+r.table('games').get(7324)['bonus_multipliers'].reduce(lambda a, b: a*b).run(conn)
 ```
 
 
@@ -1008,50 +1009,71 @@ __Example:__ Which unique villains have been vanquished by marvel heroes?
 r.table('marvel').concat_map(lambda hero: hero['villainList']).distinct().run(conn)
 ```
 
-
-## [grouped\_map\_reduce](grouped_map_reduce/) ##
-
-{% apibody %}
-sequence.grouped_map_reduce(grouping, mapping, reduction, base)
-    &rarr; value
-{% endapibody %}
-
-Partition the sequence into groups based on the `grouping` function. The elements of each
-group are then mapped using the `mapping` function and reduced using the `reduction`
-function.
-
-`grouped_map_reduce` is a generalized form of group by.
-
-__Example:__ It's only fair that heroes be compared against their weight class.
-
-```py
-r.table('marvel').grouped_map_reduce(
-    lambda hero: hero['weightClass'],  # grouping
-    lambda hero: hero.pluck('name', 'strength'),  # mapping
-    lambda acc, hero: r.branch(acc['strength'] < hero['strength'], hero, acc),
-    {'name':'none', 'strength':0}  # base
-).run(conn)
-```
-
-
-## [group_by](group_by/) ##
+## [group](group/) ##
 
 {% apibody %}
-sequence.group_by(selector1[, selector2...], reduction_object)
-    &rarr; array
+sequence.group(field_or_function..., [index='index_name']) &rarr; grouped_stream
 {% endapibody %}
 
-Groups elements by the values of the given attributes and then applies the given
-reduction. Though similar to `groupedMapReduce`, `groupBy` takes a standardized object
-for specifying the reduction. Can be used with a number of predefined common reductions.
+Takes a stream and partitions it into multiple groups based on the
+fields or functions provided.  Commands chained after `group` will be
+called on each of these grouped sub-streams, producing grouped data.
 
-__Example:__ Using a predefined reduction we can easily find the average strength of members of each weight class.
+__Example:__ What is each player's best game?
 
 ```py
-r.table('marvel').group_by('weightClass', r.avg('strength')).run(conn)
+r.table('games').group('player').max('points').run(conn)
 ```
 
-[Read more about this command &rarr;](group_by/)
+Result:
+
+```py
+{
+    "Alice": {"id": 5, "player": "Alice", "points": 7,  "type": "free"},
+    "Bob":   {"id": 2, "player": "Bob",   "points": 15, "type": "ranked"}
+}
+```
+
+[Read more about this command &rarr;](group/)
+
+## [ungroup](ungroup/) ##
+
+{% apibody %}
+grouped_stream.ungroup() &rarr; array
+grouped_data.ungroup() &rarr; array
+{% endapibody %}
+
+Takes a grouped stream or grouped data and turns it into an array of
+objects representing the groups.  Any commands chained after `ungroup`
+will operate on this array, rather than operating on each group
+individually.  This is useful if you want to e.g. order the groups by
+the value of their reduction.
+
+The format of the array returned by `ungroup` is the same as the
+default native format of grouped data in the javascript driver and
+data explorer.
+
+__Example:__ What is the maximum number of points scored by each
+player, with the highest scorers first?
+
+```py
+r.table('games')
+    .group('player').max('points')['points']
+    .ungroup().order_by(r.desc('reduction')).run(conn)
+```
+
+Result:
+
+```py
+[{
+    "group": "Bob",
+    "reduction": 15
+}, {
+    "group": "Alice",
+    "reduction": 7
+}]
+```
+
 
 
 ## [contains](contains/) ##

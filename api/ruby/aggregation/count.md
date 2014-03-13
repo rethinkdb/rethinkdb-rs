@@ -24,7 +24,7 @@ sequence.count([value_or_predicate]) &rarr; number
 Counts the number of elements in a sequence.  If called with a value,
 counts the number of times that value occurs in the sequence.  If
 called with a predicate function, counts the number of elements in the
-sequence where that function returns true.
+sequence where that function returns `true`.
 
 __Example:__ Count the number of users.
 
@@ -42,5 +42,8 @@ __Example:__ Count the number of users over 18.
 
 ```rb
 r.table('users')['age'].count{|age| age > 18}.run(conn)
+```
+
+```rb
 r.table('users').count{|user| user['age'] > 18}.run(conn)
 ```
