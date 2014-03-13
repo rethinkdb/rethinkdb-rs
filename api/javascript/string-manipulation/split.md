@@ -83,7 +83,7 @@ Result:
 __Example:__ Split on whitespace at most once (i.e. get the first word).
 
 ```js
-r.expr("foo  bar bax").split(nil, 1).run(conn, callback)
+r.expr("foo  bar bax").split(null, 1).run(conn, callback)
 ```
 
 Result:

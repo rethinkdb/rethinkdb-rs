@@ -60,6 +60,6 @@ times.
 __Example:__ Split on whitespace at most once (i.e. get the first word).
 
 ```py
-> r.expr("foo  bar bax").split(nil, 1).run(conn)
+> r.expr("foo  bar bax").split(None, 1).run(conn)
 ["foo", "bar bax"]
 ```
