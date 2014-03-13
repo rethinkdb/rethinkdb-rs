@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Python
-Permalink: api/python/upcase/
+permalink: api/python/upcase/
 command: upcase
 related_commands:
     downcase: downcase/
