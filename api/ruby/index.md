@@ -1434,6 +1434,22 @@ __Example:__ Get all the keys of a row.
 r.table('marvel').get('ironman').keys.run(conn)
 ```
 
+## [object](object/) ##
+
+{% apibody %}
+r.object([key, value,]...) &rarr; object
+{% endapibody %}
+
+Creates an object from a list of key-value pairs, where the keys must
+be strings.  `r.object(A, B, C, D)` is equivalent to
+`r.expr([[A, B], [C, D]]).coerce_to('OBJECT')`.
+
+__Example:__ Create a simple object.
+
+```rb
+> r.object('id', 5, 'data', ['foo', 'bar']).run(conn)
+{data: ["foo", "bar"], id: 5}
+```
 
 {% endapisection %}
 
@@ -1460,6 +1476,8 @@ __Example:__ Get all users whose name starts with A.
 r.table('users').filter{|row| row[:name].match("^A")}.run(conn)
 ```
 
+[Read more about this command &rarr;](match/)
+
 ## [split](split/) ##
 
 {% apibody %}
@@ -1483,6 +1501,8 @@ __Example:__ Split on whitespace.
 > r.expr("foo  bar bax").split().run(conn)
 ["foo", "bar", "bax"]
 ```
+
+[Read more about this command &rarr;](split/)
 
 ## [upcase](upcase/) ##
 
@@ -1514,8 +1534,6 @@ __Example:__
 > r.expr("Sentence about LaTeX.").downcase().run(conn)
 "sentence about latex."
 ```
-
-[Read more about this command &rarr;](match/)
 
 {% endapisection %}
 
