@@ -1,8 +1,11 @@
 ---
 layout: api-command
-language: Ruby
-permalink: api/ruby/split/
+language: JavaScript
+permalink: api/javascript/split/
 command: split
+io:
+    -   - string
+        - array
 related_commands:
     upcase: upcase/
     downcase: downcase/
@@ -31,21 +34,21 @@ single-character strings.
 __Example:__ Split on whitespace.
 
 ```rb
-> r.expr("foo  bar bax").split().run(conn)
+> r.expr("foo  bar bax").split().run(conn, callback)
 ["foo", "bar", "bax"]
 ```
 
 __Example:__ Split the entries in a CSV file.
 
 ```rb
-> r.expr("12,37,,22,").split(",").run(conn)
+> r.expr("12,37,,22,").split(",").run(conn, callback)
 ["12", "37", "", "22", ""]
 ```
 
 __Example:__ Split a string into characters.
 
 ```rb
-> r.expr("mlucy").split("").run(conn)
+> r.expr("mlucy").split("").run(conn, callback)
 ["m", "l", "u", "c", "y"]
 ```
 
@@ -53,13 +56,13 @@ __Example:__ Split the entries in a CSV file, but only at most 3
 times.
 
 ```rb
-> r.expr("12,37,,22,").split(",", 3).run(conn)
+> r.expr("12,37,,22,").split(",", 3).run(conn, callback)
 ["12", "37", "", "22,"]
 ```
 
 __Example:__ Split on whitespace at most once (i.e. get the first word).
 
 ```rb
-> r.expr("foo  bar bax").split(nil, 1).run(conn)
+> r.expr("foo  bar bax").split(nil, 1).run(conn, callback)
 ["foo", "bar bax"]
 ```

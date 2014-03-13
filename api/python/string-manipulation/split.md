@@ -1,7 +1,7 @@
 ---
 layout: api-command
-language: Ruby
-permalink: api/ruby/split/
+language: Python
+permalink: api/python/split/
 command: split
 related_commands:
     upcase: upcase/
