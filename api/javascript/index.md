@@ -1134,7 +1134,7 @@ Result:
 [{
     group: "Alice",
     reduction: {id: 5, player: "Alice", points: 7,  type: "free"}
-},{
+}, {
     group: "Bob",
     reduction: {id: 2, player: "Bob",   points: 15, type: "ranked"}
 }]
