@@ -101,8 +101,8 @@ Result:
 __Example:__ Types!
 
 ```js
-r.table('games').group('player').type_of().run(conn, callback) // Returns "GROUPED_STREAM"
-r.table('games').group('player').ungroup().type_of().run(conn, callback) // Returns "ARRAY"
+r.table('games').group('player').typeOf().run(conn, callback) // Returns "GROUPED_STREAM"
+r.table('games').group('player').ungroup().typeOf().run(conn, callback) // Returns "ARRAY"
 r.table('games').group('player').avg('points').run(conn, callback) // Returns "GROUPED_DATA"
 r.table('games').group('player').avg('points').ungroup().run(conn, callback) // Returns "ARRAY"
 ```

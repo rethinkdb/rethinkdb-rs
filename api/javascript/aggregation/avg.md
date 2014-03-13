@@ -48,7 +48,7 @@ counting bonus points?
 
 ```js
 r.table('games').avg(function(game) {
-    game('points').add(game('bonus_points'))
+    return game('points').add(game('bonus_points'))
 }).run(conn, callback)
 ```
 

@@ -76,7 +76,7 @@ Result:
 
 ```py
 {
-    "Alice": { "id": 5, "player": "Alice", "points": 7, "type": "free"},
+    "Alice": {"id": 5, "player": "Alice", "points": 7, "type": "free"},
     "Bob": {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
     ...
 }
@@ -90,6 +90,8 @@ __Example:__ What is the maximum number of points scored by each player?
 ```py
 r.table('games').group('player').max('points')['points'].run(conn)
 ```
+
+Result:
 
 ```py
 {
@@ -161,7 +163,7 @@ r.table('games').group(index='type').max('points')['points'].run(conn)
 
 If you want to operate on all the groups rather than operating on each
 group (e.g. if you want to order the groups by their reduction), you
-can use [**ungroup**](/api/ruby/ungroup/) to turn a grouped stream or
+can use [ungroup](/api/python/ungroup/) to turn a grouped stream or
 grouped data into an array of objects representing the groups.
 
 __Example:__ Ungrouping grouped data.
@@ -218,7 +220,11 @@ r.table('games')
 When grouped data are returned to the client, they are transformed
 into a client-specific native type.  (Something similar is done with
 [times](/docs/dates-and-times/).)  In Python, grouped data are
-transformed into a `Hash`.  If you instead want to receive the raw
+transformed into a `dictionary`. If the group value is an `array`, the
+key is converted to a `tuple`. If the group value is a `dictionary`,
+it will be converted to a `frozenset`.
+
+If you instead want to receive the raw
 pseudotype from the server (e.g. if you're planning to serialize the
 result as JSON), you can specify `group_format: 'raw'` as an optional
 argument to `run`:
@@ -301,8 +307,9 @@ __Example:__ What is the maximum number of points scored by each
 player in free games?
 
 ```py
-r.table('games').filter{|game| game['type'].eq('free')}
-    .group('player').max('points')['points'].run(conn)
+r.table('games').filter(lambda game:
+        game['type'] = 'free'
+    ).group('player').max('points')['points'].run(conn)
 ```
 
 ```py
@@ -317,8 +324,9 @@ __Example:__ What is each player's highest even and odd score?
 
 ```py
 r.table('games')
-   .group('name', lambda {|game| game['points'] % 2})
-   .max('points')['points'].run(conn)
+    .group('name', lambda game:
+        game['points'] % 2
+    ).max('points')['points'].run(conn)
 ```
 
 ```py

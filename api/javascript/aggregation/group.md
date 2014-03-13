@@ -105,6 +105,8 @@ __Example:__ What is the maximum number of points scored by each player?
 r.table('games').group('player').max('points')('points').run(conn, callback)
 ```
 
+Result:
+
 ```js
 [
     {
@@ -264,7 +266,7 @@ r.table('games')
 When grouped data are returned to the client, they are transformed
 into a client-specific native type.  (Something similar is done with
 [times](/docs/dates-and-times/).)  In JavaScript, grouped data are
-transformed into a `Hash`.  If you instead want to receive the raw
+transformed into an `Array`.  If you instead want to receive the raw
 pseudotype from the server, you can specify `groupFormat: 'raw'` as an optional
 argument to `run`:
 
@@ -317,13 +319,13 @@ can't have more than 100,000 groups or 100,000 rows in the output).
 
 In general, operations on grouped streams will be efficiently
 distributed, and operations on grouped data won't be.  You can figure
-out what you're working with by putting `type_of` on the end of your
+out what you're working with by putting `typeOf` on the end of your
 query.  Below are efficient and inefficient examples.
 
 __Example:__ Efficient operation.
 
 ```js
-// r.table('games').group('player').type_of().run(conn, callback)
+// r.table('games').group('player').typeOf().run(conn, callback)
 // Returns "GROUPED_STREAM"
 r.table('games').group('player').min('points').run(conn, callback) // EFFICIENT
 ```
@@ -331,7 +333,7 @@ r.table('games').group('player').min('points').run(conn, callback) // EFFICIENT
 __Example:__ Inefficient operation.
 
 ```js
-// r.table('games').group('player').orderBy('score').type_of().run(conn, callback)
+// r.table('games').group('player').orderBy('score').typeOf().run(conn, callback)
 // Returns "GROUPED_DATA"
 r.table('games').group('player').orderBy('score').nth(0) // INEFFICIENT
 ```
