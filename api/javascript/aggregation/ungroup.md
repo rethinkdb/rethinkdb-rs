@@ -1,7 +1,7 @@
 ---
 layout: api-command
-language: Ruby
-permalink: api/ruby/ungroup/
+language: JavaScript
+permalink: api/javascript/ungroup/
 command: ungroup
 related_commands:
     group: group/
@@ -29,23 +29,23 @@ data explorer.
 __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
-```rb
+```js
 r.table('games')
    .group('player').max('points')['points']
-   .ungroup().order_by(r.desc('reduction')).run(conn)
+   .ungroup().order_by(r.desc('reduction')).run(conn, callback)
 ```
 
 Result: 
 
-```rb
+```js
 [
     {
-        "group" => "Bob",
-        "reduction" => 15
+        group: "Bob",
+        reduction: 15
     },
     {
-        "group" => "Alice",
-        "reduction" => 7
+        group: "Alice",
+        reduction: 7
     },
     ...
 ]
@@ -53,51 +53,56 @@ Result:
 
 __Example:__ Select one random player and all their games.
 
-```rb
-r.table('games').group('player').ungroup().sample(1).run(conn)
+```js
+r.table('games').group('player').ungroup().sample(1).run(conn, callback)
 ```
 
 Result:
 
-```rb
+```js
 [
     {
-        "group" => "Bob",
-        "reduction" => [
-            {"id" => 0, "player" => "Bob", "points" => 1},
-            {"id" => 2, "player" => "Bob", "points" => 15},
+        group: "Bob",
+        reduction: [
+            {id: 0, player: "Bob", points: 1},
+            {id: 2, player: "Bob", points: 15},
             ...
         ]
     }
+
 ]
 ```
 
 Note that if you didn't call `ungroup`, you would instead select one
 random game from each player:
 
-```rb
+```py
 r.table('games').group('player').sample(1).run(conn)
 ```
 
 Result:
 
-```rb
-{
-    "Alice" => [
-        {"id" => 5, "player" => "Alice", "points" => 7}
-    ],
-    "Bob" => [
-        {"id" => 2, "player" => "Bob", "points" => 15}
-    ],
+```py
+[
+    {
+        group: "Alice",
+        reduction: {"id": 5, "player": "Alice", "points": 7}
+    },
+    {
+        group: "Bob",
+        reduction: {"id": 2, "player": "Bob", "points": 15}
+    },
     ...
 }
 ```
 
+
+
 __Example:__ Types!
 
-```rb
-r.table('games').group('player').type_of().run(conn) # Returns "GROUPED_STREAM"
-r.table('games').group('player').ungroup().type_of().run(conn) # Returns "ARRAY"
-r.table('games').group('player').avg('points').run(conn) # Returns "GROUPED_DATA"
-r.table('games').group('player').avg('points').ungroup().run(conn) #Returns "ARRAY"
+```js
+r.table('games').group('player').type_of().run(conn, callback) // Returns "GROUPED_STREAM"
+r.table('games').group('player').ungroup().type_of().run(conn, callback) // Returns "ARRAY"
+r.table('games').group('player').avg('points').run(conn, callback) // Returns "GROUPED_DATA"
+r.table('games').group('player').avg('points').ungroup().run(conn, callback) // Returns "ARRAY"
 ```

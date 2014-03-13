@@ -8,8 +8,8 @@ io:
         - value
 related_commands:
     map: map/
-    reduce: reduce/
-    groupedMapReduce: grouped_map_reduce/
+    concat_map: concat_map/
+    group: group/
 ---
 
 # Command syntax #
@@ -20,11 +20,13 @@ sequence.distinct() &rarr; array
 
 # Description #
 
-Remove duplicate elements from the sequence.
+Removes duplicate elements from a sequence.  Returns an array even
+when called on a stream.  Meant for use on small sequences.
 
 __Example:__ Which unique villains have been vanquished by marvel heroes?
 
 ```js
-r.table('marvel').concatMap(function(hero) {return hero('villainList')}).distinct()
-    .run(conn, callback)
+r.table('marvel').concatMap(function(hero) {
+    return hero('villainList')
+}).distinct().run(conn, callback)
 ```

@@ -1,7 +1,7 @@
 ---
 layout: api-command
-language: Ruby
-permalink: api/ruby/ungroup/
+language: Python
+permalink: api/python/ungroup/
 command: ungroup
 related_commands:
     group: group/
@@ -29,7 +29,7 @@ data explorer.
 __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
-```rb
+```py
 r.table('games')
    .group('player').max('points')['points']
    .ungroup().order_by(r.desc('reduction')).run(conn)
@@ -37,15 +37,15 @@ r.table('games')
 
 Result: 
 
-```rb
+```py
 [
     {
-        "group" => "Bob",
-        "reduction" => 15
+        "group": "Bob",
+        "reduction": 15
     },
     {
-        "group" => "Alice",
-        "reduction" => 7
+        "group": "Alice",
+        "reduction": 7
     },
     ...
 ]
@@ -53,19 +53,19 @@ Result:
 
 __Example:__ Select one random player and all their games.
 
-```rb
+```py
 r.table('games').group('player').ungroup().sample(1).run(conn)
 ```
 
 Result:
 
-```rb
+```py
 [
     {
-        "group" => "Bob",
-        "reduction" => [
-            {"id" => 0, "player" => "Bob", "points" => 1},
-            {"id" => 2, "player" => "Bob", "points" => 15},
+        "group": "Bob",
+        "reduction": [
+            {"id": 0, "player": "Bob", "points": 1},
+            {"id": 2, "player": "Bob", "points": 15},
             ...
         ]
     }
@@ -75,19 +75,19 @@ Result:
 Note that if you didn't call `ungroup`, you would instead select one
 random game from each player:
 
-```rb
+```py
 r.table('games').group('player').sample(1).run(conn)
 ```
 
 Result:
 
-```rb
+```py
 {
-    "Alice" => [
-        {"id" => 5, "player" => "Alice", "points" => 7}
+    "Alice": [
+        {"id": 5, "player": "Alice", "points": 7}
     ],
-    "Bob" => [
-        {"id" => 2, "player" => "Bob", "points" => 15}
+    "Bob": [
+        {"id": 2, "player": "Bob", "points": 15}
     ],
     ...
 }
@@ -95,7 +95,7 @@ Result:
 
 __Example:__ Types!
 
-```rb
+```py
 r.table('games').group('player').type_of().run(conn) # Returns "GROUPED_STREAM"
 r.table('games').group('player').ungroup().type_of().run(conn) # Returns "ARRAY"
 r.table('games').group('player').avg('points').run(conn) # Returns "GROUPED_DATA"
