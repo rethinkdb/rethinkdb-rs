@@ -29,6 +29,19 @@ data explorer.
 __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
+Suppose that the table `games` has the following data:
+
+```js
+[
+    {id: 2, player: "Bob", points: 15, type: "ranked"},
+    {id: 5, player: "Alice", points: 7, type: "free"},
+    {id: 11, player: "Bob", points: 10, type: "free"},
+    {id: 12, player: "Alice", points: 2, type: "free"}
+]
+```
+
+We can use this query:
+
 ```js
 r.table('games')
    .group('player').max('points')('points')
@@ -46,8 +59,7 @@ Result:
     {
         group: "Alice",
         reduction: 7
-    },
-    ...
+    }
 ]
 ```
 
@@ -64,9 +76,9 @@ Result:
     {
         group: "Bob",
         reduction: [
-            {id: 0, player: "Bob", points: 1},
-            {id: 2, player: "Bob", points: 15},
-            ...
+            {id: 2, player: "Bob", points: 15, type: "ranked"},
+            {id: 11, player: "Bob", points: 10, type: "free"},
+
         ]
     }
 
@@ -86,13 +98,16 @@ Result:
 [
     {
         group: "Alice",
-        reduction: {"id": 5, "player": "Alice", "points": 7}
+        reduction: [
+            {id: 5, player: "Alice", points: 7, type: "free"}
+        ]
     },
     {
         group: "Bob",
-        reduction: {"id": 2, "player": "Bob", "points": 15}
-    },
-    ...
+        reduction: [
+            {id: 11, player: "Bob", points: 10, type: "free"}
+        ]
+    }
 }
 ```
 
