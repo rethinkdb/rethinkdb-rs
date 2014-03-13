@@ -3,6 +3,10 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/split/
 command: split
+related_commands:
+    upcase: upcase/
+    downcase: downcase/
+    match: match/
 ---
 
 # Command syntax #
