@@ -5,7 +5,7 @@ permalink: api/javascript/object/
 command: object
 io:
     -   - array
-        - array
+        - object
 related_commands:
     coerce_to: coerce_to/
     merge: merge/

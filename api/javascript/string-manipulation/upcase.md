@@ -5,7 +5,7 @@ permalink: api/javascript/upcase/
 command: upcase
 io:
     -   - string
-        - array
+        - string
 related_commands:
     downcase: downcase/
     match: match/
