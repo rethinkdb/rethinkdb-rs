@@ -7,7 +7,7 @@ io:
     -   - r
         - object
 related_commands:
-    coerce_to: coerce_to/
+    coerceTo: coerce_to/
     merge: merge/
     keys: keys/
 ---
