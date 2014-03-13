@@ -1,8 +1,8 @@
 ---
 layout: api-command
 language: Ruby
-permalink: api/ruby/merge/
-command: merge
+permalink: api/ruby/object/
+command: object
 related_commands:
     coerce_to: coerce_to/
     merge: merge/

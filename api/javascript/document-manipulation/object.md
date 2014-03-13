@@ -1,8 +1,11 @@
 ---
 layout: api-command
-language: Ruby
-permalink: api/ruby/merge/
-command: merge
+language: JavaScript
+permalink: api/javascript/object/
+command: object
+io:
+    -   - array
+        - array
 related_commands:
     coerce_to: coerce_to/
     merge: merge/
@@ -24,6 +27,6 @@ be strings.  `r.object(A, B, C, D)` is equivalent to
 __Example:__ Create a simple object.
 
 ```rb
-> r.object('id', 5, 'data', ['foo', 'bar']).run(conn)
+> r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
 {data: ["foo", "bar"], id: 5}
 ```

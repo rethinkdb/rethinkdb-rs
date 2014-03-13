@@ -1,8 +1,8 @@
 ---
 layout: api-command
-language: Ruby
-permalink: api/ruby/merge/
-command: merge
+language: Python
+permalink: api/python/object/
+command: object
 related_commands:
     coerce_to: coerce_to/
     merge: merge/
@@ -25,5 +25,5 @@ __Example:__ Create a simple object.
 
 ```rb
 > r.object('id', 5, 'data', ['foo', 'bar']).run(conn)
-{data: ["foo", "bar"], id: 5}
+{'data': ["foo", "bar"], 'id': 5}
 ```
