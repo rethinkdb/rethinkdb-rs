@@ -1026,7 +1026,7 @@ r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)
 ## [group](group/) ##
 
 {% apibody %}
-sequence.group(field_or_function..., [:index => nil]) &rarr; grouped_stream
+sequence.group(field_or_function..., [:index => 'index_name']) &rarr; grouped_stream
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the
@@ -1036,11 +1036,19 @@ called on each of these grouped sub-streams, producing grouped data.
 __Example:__ What is each player's best game?
 
 ```rb
-> r.table('games').group('player').max('points').run(conn)
-{"Alice"=>{"id"=>5, "player"=>"Alice", "points"=>7, "type"=>"free"},
- "Bob"=>{"id"=>2, "player"=>"Bob", "points"=>15, "type"=>"ranked"},
- ...}
+r.table('games').group('player').max('points').run(conn)
 ```
+
+Result: 
+
+```rb
+{
+    "Alice" => {"id"=>5, "player"=>"Alice", "points"=>7,  "type"=>"free"},
+    "Bob"   => {"id"=>2, "player"=>"Bob",   "points"=>15, "type"=>"ranked"},
+}
+```
+
+[Read more about this command &rarr;](group/)
 
 ## [ungroup](ungroup/) ##
 
@@ -1063,13 +1071,24 @@ __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
 ```rb
-> r.table('games') \
-   .group('player').max('points')['points'] \
+r.table('games')
+   .group('player').max('points')['points']
    .ungroup().order_by(r.desc('reduction')).run(conn)
-[{"group"=>"Bob", "reduction"=>15}, {"group"=>"Alice", "reduction"=>7}, ...]
 ```
 
-[Read more about this command &rarr;](group/)
+Result:
+
+```rb
+[{
+    "group"=>"Bob",
+    "reduction"=>15
+}, {
+    "group"=>"Alice",
+    "reduction"=>7
+}]
+```
+
+[Read more about this command &rarr;](ungroup/)
 
 
 ## [contains](contains/) ##
