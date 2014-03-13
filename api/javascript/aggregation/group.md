@@ -34,9 +34,10 @@ Suppose that the table `games` has the following data:
 
 ```js
 [
-    {id: 5, player: "Alice", points: 7, type: "free"},
     {id: 2, player: "Bob", points: 15, type: "ranked"},
-    ...
+    {id: 5, player: "Alice", points: 7, type: "free"},
+    {id: 11, player: "Bob", points: 10, type: "free"},
+    {id: 12, player: "Alice", points: 2, type: "free"}
 ]
 ```
 
@@ -54,19 +55,16 @@ Result:
         group: "Alice",
         reduction: [
             {id: 5, player: "Alice", points: 7, type: "free"},
-            {id: 12, player: "Alice", points: 2, type: "free"},
-            ...
+            {id: 12, player: "Alice", points: 2, type: "free"}
         ]
     },
     {
         group: "Bob",
         reduction: [
             {id: 2, player: "Bob", points: 15, type: "ranked"},
-            {id: 11, player: "Bob", points: 10, type: "free"},
-            ...
+            {id: 11, player: "Bob", points: 10, type: "free"}
         ]
-    },
-    ...
+    }
 ]
 ```
 
@@ -91,8 +89,7 @@ Result:
     {
         group: "Bob",
         reduction: {id: 2, player: "Bob", points: 15, type: "ranked"}
-    },
-    ...
+    }
 ]
 ```
 
@@ -116,8 +113,7 @@ Result:
     {
         group: "Bob",
         reduction: 15
-    },
-    ...
+    }
 ]
 ```
 
@@ -135,20 +131,15 @@ r.table('games').group('player', 'type').max('points')('points').run(conn, callb
     {
         group: ["Alice", "free"],
         reduction: 7
-    },
-    {
-        group: ["Alice", "ranked"],
-        reduction: 1,
-    },
+    }
     {
         group: ["Bob", "free"],
-        reduction: 11,
+        reduction: 10,
     },
     {
         group: ["Bob", "ranked"],
         reduction: 15,
-    },
-    ...
+    }
 ]
 ```
 
@@ -165,6 +156,8 @@ r.table('games')
     }).max('points')('points').run(conn, callback)
 ```
 
+Result:
+
 ```js
 [
     {
@@ -172,18 +165,13 @@ r.table('games')
         reduction: 7
     },
     {
-        group: {"player": "Alice", "type": "ranked"},
-        reduction: 1
-    },
-    {
         group: {"player": "Bob", "type": "free"}
-        reduction: 11
+        reduction: 10
     },
     {
         group: {"player": "Bob", "type": "ranked"},
         reduction: 15
-    },
-    ...
+    }
 ]
 ```
 
@@ -229,8 +217,7 @@ r.table('games').group('player').max('points')('points').ungroup().run(conn, cal
     {
         group: "Bob",
         reduction: 15
-    },
-    ...
+    }
 ]
 ```
 
@@ -255,8 +242,7 @@ r.table('games')
     {
         group: "Alice",
         reduction: 7
-    },
-    ...
+    }
 ]
 ```
 
@@ -280,9 +266,8 @@ r.table('games').group('player').avg('points').run(conn, {groupFormat:'raw'}, ca
 {
     $reql_type$: "GROUPED_DATA",
     data: [
-        ["Alice", 3],
-        ["Bob", 9],
-        ...
+        ["Alice", 4.5],
+        ["Bob", 12.5]
     ]
 }
 ```
@@ -293,13 +278,12 @@ Not passing the `group_format` flag would return:
 [
     {
         group: "Alice":
-        reduction: 3
+        reduction: 4.5
     },
     {
         group: "Bob"
-        reduction: 9
-    },
-    ...
+        reduction: 12.5
+    }
 ]
 ```
 
@@ -335,7 +319,7 @@ __Example:__ Inefficient operation.
 ```js
 // r.table('games').group('player').orderBy('score').typeOf().run(conn, callback)
 // Returns "GROUPED_DATA"
-r.table('games').group('player').orderBy('score').nth(0) // INEFFICIENT
+r.table('games').group('player').orderBy('score').nth(0).run(conn, callback) // INEFFICIENT
 ```
 
 What does it mean to be inefficient here?  When operating on grouped
@@ -369,9 +353,8 @@ Result:
     },
     {
         group: "Bob",
-        reduction: 11
-    },
-    ...
+        reduction: 10
+    }
 ]
 ```
 
@@ -389,21 +372,16 @@ Result:
 ```js
 [
     {
-        group: ["Alice", 0]
-        reduction: 4
-    },
-    {
         group: ["Alice", 1]
         reduction: 7,
     },
     {
         group: ["Bob", 0],
-        reduction: 12
+        reduction: 10
     },
     {
         group: ["Bob", 1],
         reduction: 15
     }
-    ...
 ]
 ```

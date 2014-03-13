@@ -31,9 +31,10 @@ Suppose that the table `games` has the following data:
 
 ```rb
 [
-    {"id" => 5, "player" => "Alice", "points" => 7, "type" => "free"},
     {"id" => 2, "player" => "Bob", "points" => 15, "type" => "ranked"},
-    ...
+    {"id" => 5, "player" => "Alice", "points" => 7, "type" => "free"},
+    {"id" => 11, "player" => "Bob", "points" => 10, "type" => "free"},
+    {"id" => 12, "player" => "Alice", "points" => 2, "type" => "free"}
 ]
 ```
 
@@ -49,15 +50,12 @@ Result:
 {
     "Alice" => [
         {"id" => 5, "player" => "Alice", "points" => 7, "type" => "free"},
-        {"id" => 12, "player" => "Alice", "points" => 2, "type" => "free"},
-        ...
+        {"id" => 12, "player" => "Alice", "points" => 2, "type" => "free"}
     ],
     "Bob" => [
         {"id" => 2, "player" => "Bob", "points" => 15, "type" => "ranked"},
-        {"id" => 11, "player" => "Bob", "points" => 10, "type" => "free"},
-        ...
-    ],
-    ...
+        {"id" => 11, "player" => "Bob", "points" => 10, "type" => "free"}
+    ]
 }
 ```
 
@@ -75,8 +73,7 @@ Result:
 ```rb
 {
     "Alice" => {"id" => 5, "player" => "Alice", "points" => 7, "type" => "free"},
-    "Bob" => {"id" => 2, "player" => "Bob", "points" => 15, "type" => "ranked"},
-    ...
+    "Bob" => {"id" => 2, "player" => "Bob", "points" => 15, "type" => "ranked"}
 }
 ```
 
@@ -94,8 +91,7 @@ Result:
 ```rb
 {
     "Alice" => 7,
-    "Bob" => 15,
-    ...
+    "Bob" => 15
 }
 ```
 
@@ -113,8 +109,7 @@ Result:
 ```rb
 {
     ["Alice", "free"] => 7,
-    ["Alice", "ranked"] => 1,
-    ["Bob", "free"] => 11,
+    ["Bob", "free"] => 10,
     ["Bob", "ranked"] => 15,
     ...
 }
@@ -137,10 +132,8 @@ Result:
 ```rb
 {
     {"player" => "Alice", "type" => "free"} => 7,
-    {"player" => "Alice", "type" => "ranked"} => 1,
-    {"player" => "Bob", "type" => "free"} => 11,
-    {"player" => "Bob", "type" => "ranked"} => 15,
-    ...
+    {"player" => "Bob", "type" => "free"} => 10,
+    {"player" => "Bob", "type" => "ranked"} => 15
 }
 ```
 
@@ -185,7 +178,6 @@ Result:
         "group" => "Bob",
         "reduction" => 15
     }
-    ...
 ]
 ```
 
@@ -212,8 +204,7 @@ Result:
     {
         "group" => "Alice",
         "reduction" => 7
-    },
-    ...
+    }
 ]
 ```
 
@@ -239,9 +230,8 @@ r.table('games').group('player').avg('points').run(conn, group_format:'raw')
 {
     "$reql_type$" => "GROUPED_DATA",
     "data" => [
-        ["Alice", 3],
-        ["Bob", 9],
-        ...
+        ["Alice", 4.5],
+        ["Bob", 12.5]
     ]
 }
 ```
@@ -250,9 +240,8 @@ Not passing the `group_format` flag would return:
 
 ```rb
 {
-    "Alice" => 3,
-    "Bob" => 9,
-    ...
+    "Alice" => 4.5,
+    "Bob" => 12.5
 }
 ```
 
@@ -288,7 +277,7 @@ __Example:__ Inefficient operation.
 ```rb
 # r.table('games').group('player').order_by('score').type_of().run(conn)
 # Returns "GROUPED_DATA"
-r.table('games').group('player').order_by('score').nth(0) # INEFFICIENT
+r.table('games').group('player').order_by('score').nth(0).run(conn) # INEFFICIENT
 ```
 
 What does it mean to be inefficient here?  When operating on grouped
@@ -316,8 +305,7 @@ Result:
 ```rb
 {
     "Alice" => 7,
-    "Bob" => 11,
-    ...
+    "Bob" => 10
 }
 ```
 
@@ -333,11 +321,9 @@ Result:
 
 ```rb
 {
-    ["Alice", 0] => 4,
     ["Alice", 1] => 7,
-    ["Bob", 0] => 12,
-    ["Bob", 1] => 15,
-    ...
+    ["Bob", 0] => 10,
+    ["Bob", 1] => 15
 }
 ```
 

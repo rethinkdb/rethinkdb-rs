@@ -31,9 +31,10 @@ Suppose that the table `games` has the following data:
 
 ```py
 [
-    {"id": 5, "player": "Alice", "points": 7, "type": "free"},
     {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
-    ...
+    {"id": 5, "player": "Alice", "points": 7, "type": "free"},
+    {"id": 11, "player": "Bob", "points": 10, "type": "free"},
+    {"id": 12, "player": "Alice", "points": 2, "type": "free"}
 ]
 ```
 
@@ -51,15 +52,12 @@ Result:
 {
     "Alice": [
         {"id": 5, "player": "Alice", "points": 7, "type": "free"},
-        {"id": 12, "player": "Alice", "points": 2, "type": "free"},
-        ...
+        {"id": 12, "player": "Alice", "points": 2, "type": "free"}
     ],
     "Bob": [
         {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
-        {"id": 11, "player": "Bob", "points": 10, "type": "free"},
-        ...
-    ],
-    ...
+        {"id": 11, "player": "Bob", "points": 10, "type": "free"}
+    ]
 }
 ```
 
@@ -77,8 +75,7 @@ Result:
 ```py
 {
     "Alice": {"id": 5, "player": "Alice", "points": 7, "type": "free"},
-    "Bob": {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
-    ...
+    "Bob": {"id": 2, "player": "Bob", "points": 15, "type": "ranked"}
 }
 ```
 
@@ -96,8 +93,7 @@ Result:
 ```py
 {
     "Alice": 7,
-    "Bob": 15,
-    ...
+    "Bob": 15
 }
 ```
 
@@ -115,10 +111,8 @@ Result:
 ```py
 {
     ("Alice", "free"): 7,
-    ("Alice", "ranked"): 1,
-    ("Bob", "free"): 11,
-    ("Bob", "ranked"): 15,
-    ...
+    ("Bob", "free"): 10,
+    ("Bob", "ranked"): 15
 }
 ```
 
@@ -140,8 +134,7 @@ Result:
 ```py
 {
     frozenset([('player', 'Alice'), ('type', 'free')]): 7,
-    frozenset([('player', 'Alice'), ('type', 'ranked')]): 1,
-    frozenset([('player', 'Bob'), ('type', 'free')]): 11,
+    frozenset([('player', 'Bob'), ('type', 'free')]): 10,
     frozenset([('player', 'Bob'), ('type', 'ranked')]): 15,
 }
 ```
@@ -183,8 +176,7 @@ Result:
     {
         "group": "Bob",
         "reduction": 15
-    },
-    ...
+    }
 ]
 ```
 
@@ -209,8 +201,7 @@ r.table('games')
     {
         "group": "Alice",
         "reduction": 7
-    },
-    ...
+    }
 ]
 ```
 
@@ -239,9 +230,8 @@ r.table('games').group('player').avg('points').run(conn, group_format='raw')
 {
     "$reql_type$": "GROUPED_DATA",
     "data": [
-        ["Alice", 3],
-        ["Bob", 9],
-        ...
+        ["Alice", 4.5],
+        ["Bob", 12.5]
     ]
 }
 ```
@@ -250,9 +240,8 @@ Not passing the `group_format` flag would return:
 
 ```py
 {
-    "Alice": 3,
-    "Bob": 9,
-    ...
+    "Alice": 4.5,
+    "Bob": 12.5
 }
 ```
 
@@ -288,7 +277,7 @@ __Example:__ Inefficient operation.
 ```py
 # r.table('games').group('player').order_by('score').type_of().run(conn)
 # Returns "GROUPED_DATA"
-r.table('games').group('player').order_by('score').nth(0) # INEFFICIENT
+r.table('games').group('player').order_by('score').nth(0).run(conn) # INEFFICIENT
 ```
 
 What does it mean to be inefficient here?  When operating on grouped
@@ -315,8 +304,7 @@ r.table('games').filter(lambda game:
 ```py
 {
     "Alice": 7,
-    "Bob": 11,
-    ...
+    "Bob": 10
 }
 ```
 
@@ -331,10 +319,8 @@ r.table('games')
 
 ```py
 {
-    ("Alice", 0): 4,
     ("Alice", 1): 7,
-    ("Bob", 0): 12,
-    ("Bob", 1): 15,
-    ...
+    ("Bob", 0): 10,
+    ("Bob", 1): 15
 }
 ```
