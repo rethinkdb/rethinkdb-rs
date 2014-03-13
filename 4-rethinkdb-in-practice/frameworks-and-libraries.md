@@ -11,91 +11,91 @@ __Add your library:__ Have you written a cool library related RethinkDB and want
 Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 {% endinfobox %}
 
-# Node.js - Libraries
+# Node.js libraries
 
 ## Drivers and extensions
 
 - [rethinkdbdash](https://github.com/neumino/rethinkdbdash) by [@neumino](https://github.com/neumino)  
   An alternative Node.js driver with native promises and a connection pool.
 
-- [RQL Promise](https://github.com/guillaumervls/rql-promise) by [@guillaumervls](https://github.com/guillaumervls)   
-   Wrap RethinkDB driver with [when](https://github.com/cujojs/when) to return promises.
+- [RQL Promise](https://github.com/guillaumervls/rql-promise) by [@guillaumervls](https://github.com/guillaumervls)
+   Wraps the RethinkDB driver with [when](https://github.com/cujojs/when) to return promises.
 
 - [rethinkdb-co](https://github.com/hden/rethinkdb-co) by [@hden](https://github.com/hden)  
-  harness RethinkDB callbacks with ECMAScript 6 generators
+  Allows using ECMAScript 6 generators with RethinkDB callbacks.
 
-- [rdb-cursor-stream](https://github.com/guillaumervls/rdb-cursor-stream) by [@guillaumervls](https://github.com/guillaumervls)   
-  Replace cursors with streams
+- [rdb-cursor-stream](https://github.com/guillaumervls/rdb-cursor-stream) by [@guillaumervls](https://github.com/guillaumervls)
+  Replaces cursors with streams.
 
-- [connect-rethinkdb](https://github.com/guillaumervls/connect-rethinkdb) by [@guillaumervls](https://github.com/guillaumervls)   
+- [connect-rethinkdb](https://github.com/guillaumervls/connect-rethinkdb) by [@guillaumervls](https://github.com/guillaumervls)
   A RethinkDB session store for Connect, similar to connect-redis.
 
 - [Rethinkdb-pool](https://github.com/hden/rethinkdb-pool) by [@hden](https://github.com/hden)  
-  Connection pool for connections.
+  Connection pool for RethinkDB connections.
 
 
-## ORM
+## ORMs
 
 - [reheat](https://github.com/jmdobry/reheat) by [@jmdobry](https://github.com/jmdobry)  
-  JavaScript ORM for RethinkDB with promises
+  JavaScript ORM for RethinkDB with promises.
 
 - [thinky](https://github.com/neumino/thinky) by [@neumino](https://github.com/neumino)  
   JavaScript ORM for RethinkDB
 
 - [JugglingDB-RethinkDB](https://github.com/fuwaneko/jugglingdb-rethink) by [@fuwaneko](https://github.com/fuwaneko)  
-  A RethinkDB adapter for the [JugglingDB](https://github.com/1602/jugglingdb) multi-database ORM for Node.js
+  A RethinkDB adapter for [JugglingDB](https://github.com/1602/jugglingdb), a multi-database ORM for Node.js.
 
 - [Osmos](https://github.com/mtabini/osmos) by [@mtabini](https://github.com/mtabini)  
-  A store-agnostic object data mapper for Node.js with support for RethinkDB
+  A store-agnostic object data mapper for Node.js with support for RethinkDB.
 
 
-## Integration
+## Integrations
 
 - [koa-rethinkdb](https://github.com/hden/koa-rethinkdb) by [@hden](https://github.com/hden)  
-  A Koa middleware that automatically manages connections via connection pool.
+  Koa middleware that automatically manages connections via a connection pool.
 
 
 
-# Python - Libraries
+# Python libraries
 
 
-## ORM
+## ORMs
 
 - [rwrapper](https://github.com/dparlevliet/rwrapper) by [@dparlevliet](https://github.com/dparlevliet)  
-  An ORM designed to emulate the most common usages of Django's database abstraction
+  An ORM designed to emulate the most common usages of Django's database abstraction.
 
 - [pyRethinkORM](https://github.com/JoshAshby/pyRethinkORM) by [@JoshAshby](https://github.com/JoshAshby)  
-  Python ORM for RethinkDB
+  A Python ORM for RethinkDB.
 
 __Integration__
 
 - [flask-rethinkdb](https://github.com/linkyndy/flask-rethinkdb) by [@linkyndy](https://github.com/linkyndy)  
-  a Flask extension that adds RethinkDB support -- [Pip package](https://pypi.python.org/pypi/Flask-RethinkDB/)
+  A Flask extension that adds RethinkDB support (also see the [pip package](https://pypi.python.org/pypi/Flask-RethinkDB/)).
 
 
 
-# Ruby - Libraries
+# Ruby libraries
 
 
-## ORM
+## ORMs
 
 - [NoBrainer](https://github.com/nviennot/nobrainer) by [@nviennot](https://github.com/nviennot)  
-  A Ruby ORM designed for RethinkDB, 
+  A Ruby ORM designed for RethinkDB.
 
 
- 
+
 # Tools and utilities
 
 
 ## Administration
 - [Chateau](https://github.com/neumino/chateau) by [@neumino](https://github.com/neumino)  
-  An administrative interface for your data (like a PhpMyAdmin for RethinkDB)
+  An administrative interface for your data (like phpMyAdmin for RethinkDB).
 
 - [Methink](https://github.com/Calder/methink) by [@Calder](https://github.com/Calder)  
-  A MySQL to RethinkDB migration script, 
+  A MySQL to RethinkDB migration script.
 
 - [rethink-miner](https://github.com/baruch/rethink-miner) by [@baruch](https://github.com/baruch)  
-  Store queries and their results from a web interface.
+  Stores queries and their results, and displays them from a web interface.
 
 - [recli](https://github.com/stiang/recli)  
   CLI to run ReQL queries in JavaScript.
@@ -114,7 +114,7 @@ __Integration__
   Lets you install RethinkDB using Vagrant.
 
 - [puppet-rethinkdb](https://github.com/tmont/puppet-rethinkdb) by [@tmont](https://github.com/tmont)  
-  RethinkDB + Puppet.
+  A Puppet module for RethinkDB.
 
 - [chef-rethinkdb](https://github.com/AVVSDevelopment/chef-rethinkdb) by [@AVVSDevelopment](https://github.com/AVVSDevelopment)  
   A RethinkDB cookbook for Chef deployment.
@@ -123,10 +123,10 @@ __Integration__
   Wercker box for RethinkDB, by [@mies](https://github.com/mies).
 
 - [Dockerfile/rethinkdb](http://dockerfile.github.io/#/rethinkdb) by [@pilwon](https://github.com/pilwon)  
-  Trusted Docker Build & instruction for deploying a RethinkDB cluster.
-  
+  Trusted Docker build and instruction for deploying a RethinkDB cluster.
+
 - [Dockerfiles-examples](https://github.com/kstaken/dockerfile-examples) by [@kstaken](https://github.com/kstaken)  
   Includes scripts for building an image for Docker with RethinkDB (and other things).
-  
+
 - [Docker-cookbooks](https://github.com/crosbymichael/docker-cookbooks) by [@crosbymichael](https://github.com/crosbymichael)  
-  Includes scripts for building an image for Docker with RethinkDB (and other things).
+  A collection of Dockerfiles and configurations to build images for RethinkDB.
