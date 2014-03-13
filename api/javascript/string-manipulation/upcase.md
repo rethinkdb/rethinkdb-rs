@@ -30,6 +30,6 @@ r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 
 Result:
 
-```
+```js
 "SENTENCE ABOUT LATEX."
 ```

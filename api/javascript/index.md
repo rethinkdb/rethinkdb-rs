@@ -1554,7 +1554,7 @@ r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
 
 Result:
 
-```
+```js
 {data: ["foo", "bar"], id: 5}
 ```
 
@@ -1609,7 +1609,7 @@ r.expr("foo  bar bax").split().run(conn, callback)
 
 Result:
 
-```
+```js
 ["foo", "bar", "bax"]
 ```
 
@@ -1632,7 +1632,7 @@ r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 
 Result:
 
-```
+```js
 "SENTENCE ABOUT LATEX."
 ```
 
@@ -1652,7 +1652,7 @@ r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 
 Result:
 
-```
+```js
 "sentence about latex."
 ```
 

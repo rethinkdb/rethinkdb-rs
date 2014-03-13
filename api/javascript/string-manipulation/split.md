@@ -51,7 +51,7 @@ r.expr("12,37,,22,").split(",").run(conn, callback)
 
 Result:
 
-```
+```js
 ["12", "37", "", "22", ""]
 ```
 
@@ -63,7 +63,7 @@ r.expr("mlucy").split("").run(conn, callback)
 
 Result:
 
-```
+```js
 ["m", "l", "u", "c", "y"]
 ```
 
@@ -76,7 +76,7 @@ r.expr("12,37,,22,").split(",", 3).run(conn, callback)
 
 Result:
 
-```
+```js
 ["12", "37", "", "22,"]
 ```
 
@@ -88,6 +88,6 @@ r.expr("foo  bar bax").split(null, 1).run(conn, callback)
 
 Result:
 
-```
+```js
 ["foo", "bar bax"]
 ```
