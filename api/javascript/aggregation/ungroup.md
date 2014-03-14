@@ -5,6 +5,9 @@ permalink: api/javascript/ungroup/
 command: ungroup
 related_commands:
     group: group/
+io:
+    -   - grouped_stream
+        - grouped_data
 ---
 
 # Command syntax #
