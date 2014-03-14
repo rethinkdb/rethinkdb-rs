@@ -1113,58 +1113,6 @@ r.table('marvel').get('ironman')[:opponents].contains('superman').run(conn)
 {% endapisection %}
 
 
-{% apisection Aggregators%}
-These standard aggregator objects are to be used in conjunction with groupBy.
-
-## [count]](count-aggregator/) ##
-
-{% apibody %}
-r.count
-{% endapibody %}
-
-Count the total size of the group.
-
-__Example:__ Just how many heroes do we have at each strength level?
-
-```rb
-r.table('marvel').group_by(:strength, r.count).run(conn)
-```
-
-
-## [sum](sum/) ##
-
-{% apibody %}
-r.sum(attr)
-{% endapibody %}
-
-Compute the sum of the given field in the group.
-
-__Example:__ How many enemies have been vanquished by heroes at each strength level?
-
-```rb
-r.table('marvel').group_by(:strength, r.sum(:enemies_vanquished)).run(conn)
-```
-
-
-## [avg](avg/) ##
-
-{% apibody %}
-r.avg(attr)
-{% endapibody %}
-
-Compute the average value of the given attribute for the group.
-
-__Example:__ What's the average agility of heroes at each strength level?
-
-```rb
-r.table('marvel').group_by(:strength, r.avg(:agility)).run(conn)
-```
-
-
-
-{% endapisection %}
-
-
 {% apisection Document manipulation%}
 
 ## [pluck](pluck/) ##
