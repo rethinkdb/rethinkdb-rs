@@ -1128,18 +1128,6 @@ __Example:__ What is each player's best game?
 r.table('games').group('player').max('points').run(conn, callback)
 ```
 
-Result:
-
-```js
-[{
-    group: "Alice",
-    reduction: {id: 5, player: "Alice", points: 7,  type: "free"}
-}, {
-    group: "Bob",
-    reduction: {id: 2, player: "Bob",   points: 15, type: "ranked"}
-}]
-```
-
 [Read more about this command &rarr;](group/)
 
 
@@ -1163,18 +1151,6 @@ player, with the highest scorers first?
 r.table('games')
     .group('player').max('points')['points']
     .ungroup().order_by(r.desc('reduction')).run(conn)
-```
-
-Result:
-
-```js
-[{
-    group: "Bob",
-    reduction: 15
-}, {
-    group: "Alice",
-    reduction: 7
-}]
 ```
 
 [Read more about this command &rarr;](ungroup/)
@@ -1619,12 +1595,6 @@ __Example:__ Create a simple object.
 r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
 ```
 
-Result:
-
-```js
-{data: ["foo", "bar"], id: 5}
-```
-
 {% endapisection %}
 
 
@@ -1674,12 +1644,6 @@ __Example:__ Split on whitespace.
 r.expr("foo  bar bax").split().run(conn, callback)
 ```
 
-Result:
-
-```js
-["foo", "bar", "bax"]
-```
-
 [Read more about this command &rarr;](split/)
 
 ## [upcase](upcase/) ##
@@ -1697,12 +1661,6 @@ __Example:__
 r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 ```
 
-Result:
-
-```js
-"SENTENCE ABOUT LATEX."
-```
-
 ## [downcase](downcase/) ##
 
 {% apibody %}
@@ -1715,12 +1673,6 @@ __Example:__
 
 ```js
 r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
-```
-
-Result:
-
-```js
-"sentence about latex."
 ```
 
 {% endapisection %}

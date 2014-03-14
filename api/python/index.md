@@ -1025,15 +1025,6 @@ __Example:__ What is each player's best game?
 r.table('games').group('player').max('points').run(conn)
 ```
 
-Result:
-
-```py
-{
-    "Alice": {"id": 5, "player": "Alice", "points": 7,  "type": "free"},
-    "Bob":   {"id": 2, "player": "Bob",   "points": 15, "type": "ranked"}
-}
-```
-
 [Read more about this command &rarr;](group/)
 
 ## [ungroup](ungroup/) ##
@@ -1060,18 +1051,6 @@ player, with the highest scorers first?
 r.table('games')
     .group('player').max('points')['points']
     .ungroup().order_by(r.desc('reduction')).run(conn)
-```
-
-Result:
-
-```py
-[{
-    "group": "Bob",
-    "reduction": 15
-}, {
-    "group": "Alice",
-    "reduction": 7
-}]
 ```
 
 [Read more about this command &rarr;](ungroup/)
