@@ -32,20 +32,20 @@ Returns `0` when called on an empty sequence.
 
 __Example:__ What's 3 + 5 + 7?
 
-```rb
+```py
 r.expr([3, 5, 7]).sum().run(conn)
 ```
 
 __Example:__ How many points have been scored across all games?
 
-```rb
+```py
 r.table('games').sum('points').run(conn)
 ```
 
 __Example:__ How many points have been scored across all games,
 counting bonus points?
 
-```rb
+```py
 r.table('games').sum(lambda game:
     game['points'] + game['bonus_points']
 ).run(conn)

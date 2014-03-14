@@ -32,20 +32,20 @@ Returns `0` when called on an empty sequence.
 
 __Example:__ What's 3 + 5 + 7?
 
-```rb
+```js
 r.expr([3, 5, 7]).sum().run(conn, callback)
 ```
 
 __Example:__ How many points have been scored across all games?
 
-```rb
+```js
 r.table('games').sum('points').run(conn, callback)
 ```
 
 __Example:__ How many points have been scored across all games,
 counting bonus points?
 
-```rb
+```js
 r.table('games').sum(function(game) {
     return game('points').add(game('bonus_points'))
 }).run(conn, callback)

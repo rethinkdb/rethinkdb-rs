@@ -1110,6 +1110,99 @@ r.table('marvel').get('ironman')[:opponents].contains('superman').run(conn)
 [Read more about this command &rarr;](contains/)
 
 
+## [avg](avg/) ##
+
+{% apibody %}
+sequence.avg([field_or_function]) &rarr; number
+{% endapibody %}
+
+Averages all the elements of a sequence.  If called with a field name,
+averages all the values of that field in the sequence, skipping
+elements of the sequence that lack that field.  If called with a
+function, calls that function on every element of the sequence and
+averages the results, skipping elements of the sequence where that
+function returns `null` or a non-existence error.
+
+
+__Example:__ What's the average of 3, 5, and 7?
+
+```rb
+r([3, 5, 7]).avg().run(conn)
+```
+
+
+[Read more about this command &rarr;](avg/)
+
+
+## [max](max/) ##
+
+{% apibody %}
+sequence.max([field_or_function]) &rarr; element
+{% endapibody %}
+
+Finds the maximum of a sequence.  If called with a field name, finds
+the element of that sequence with the largest value in that field.  If
+called with a function, calls that function on every element of the
+sequence and returns the element which produced the largest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
+
+
+__Example:__ What's the maximum of 3, 5, and 7?
+
+```rb
+r([3, 5, 7]).max().run(conn)
+```
+
+[Read more about this command &rarr;](max/)
+
+
+## [min](min/) ##
+
+{% apibody %}
+sequence.min([field_or_function]) &rarr; element
+{% endapibody %}
+
+Finds the minimum of a sequence.  If called with a field name, finds
+the element of that sequence with the smallest value in that field.
+If called with a function, calls that function on every element of the
+sequence and returns the element which produced the smallest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
+
+__Example:__ What's the minimum of 3, 5, and 7?
+
+```rb
+r([3, 5, 7]).sum().run(conn)
+```
+
+
+[Read more about this command &rarr;](min/)
+
+
+## [sum](sum/) ##
+
+{% apibody %}
+sequence.sum([field_or_function]) &rarr; number
+{% endapibody %}
+
+Sums all the elements of a sequence.  If called with a field name,
+sums all the values of that field in the sequence, skipping elements
+of the sequence that lack that field.  If called with a function,
+calls that function on every element of the sequence and sums the
+results, skipping elements of the sequence where that function returns
+`null` or a non-existence error.
+
+__Example:__ What's 3 + 5 + 7?
+
+```rb
+r([3, 5, 7]).sum().run(conn)
+```
+
+[Read more about this command &rarr;](sum/)
+
+
+
 {% endapisection %}
 
 

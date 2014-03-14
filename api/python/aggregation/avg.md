@@ -49,7 +49,7 @@ counting bonus points?
 ```py
 r.table('games').avg(lambda game:
     game['points'] + game['bonus_points']
-).run(conn, callback)
+).run(conn)
 ```
 
 __Example:__ What's the average number of points scored in a game?
@@ -57,5 +57,5 @@ __Example:__ What's the average number of points scored in a game?
 points have been scored.)
 
 ```py
-r.table('games').avg('points').default(None).run(conn, callback)
+r.table('games').avg('points').default(None).run(conn)
 ```
