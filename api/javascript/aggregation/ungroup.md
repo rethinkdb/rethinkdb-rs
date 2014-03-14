@@ -7,7 +7,7 @@ related_commands:
     group: group/
 io:
     -   - grouped_stream
-        - grouped_data
+        - array
 ---
 
 # Command syntax #
