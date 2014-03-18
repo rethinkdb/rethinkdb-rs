@@ -5,7 +5,7 @@ permalink: api/javascript/avg/
 command: avg
 io:
     -   - sequence
-        - value
+        - number
 related_commands:
     map: map/
     reduce: reduce/
