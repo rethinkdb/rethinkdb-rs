@@ -5,7 +5,7 @@ permalink: api/javascript/sum/
 command: sum
 io:
     -   - sequence
-        - value
+        - number
 related_commands:
     map: map/
     reduce: reduce/

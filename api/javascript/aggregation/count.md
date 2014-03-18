@@ -5,7 +5,7 @@ permalink: api/javascript/count/
 command: count
 io:
     -   - sequence
-        - value
+        - number
 related_commands:
     map: map/
     reduce: reduce/
