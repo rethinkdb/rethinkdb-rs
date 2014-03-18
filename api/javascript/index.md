@@ -1055,62 +1055,6 @@ r.table('marvel').sample(3).run(conn, callback)
 {% apisection Aggregation%}
 These commands are used to compute smaller values from large sequences.
 
-## [reduce](reduce/) ##
-
-{% apibody %}
-sequence.reduce(reduction_function) &rarr; value
-{% endapibody %}
-
-Produce a single value from a sequence through repeated application of a reduction
-function.
-
-Produces a single value from a sequence by repeatedly calling the
-reduction function.  The reduction function should take two arguments
-and combine them together.  The arguments to the reduction function
-can be either elements of the stream, or the results of a previous
-call to the reduction function.
-
-__Example:__ What's the product of all the bonus multipliers in game 7324?
-
-```js
-r.table('games').get(7324)('bonus_multipliers').reduce(function(a, b) {
-    return a.mul(b)
-}).run(conn, callback)
-```
-
-
-## [count](count/) ##
-
-{% apibody %}
-sequence.count([filter]) &rarr; number
-{% endapibody %}
-
-Count the number of elements in the sequence. With a single argument, count the number
-of elements equal to it. If the argument is a function, it is equivalent to calling
-filter before count.
-
-__Example:__ Just how many super heroes are there?
-
-```js
-r.table('marvel').count().add(r.table('dc').count()).run(conn, callback)
-```
-
-[Read more about this command &rarr;](count/)
-
-## [distinct](distinct/) ##
-
-{% apibody %}
-sequence.distinct() &rarr; array
-{% endapibody %}
-
-Remove duplicate elements from the sequence.
-
-__Example:__ Which unique villains have been vanquished by marvel heroes?
-
-```js
-r.table('marvel').concatMap(function(hero) {return hero('villainList')}).distinct()
-    .run(conn, callback)
-```
 
 ## [group](group/) ##
 
@@ -1157,23 +1101,73 @@ r.table('games')
 
 
 
-## [contains](contains/) ##
+
+## [reduce](reduce/) ##
 
 {% apibody %}
-sequence.contains(value1[, value2...]) &rarr; bool
+sequence.reduce(reduction_function) &rarr; value
 {% endapibody %}
 
-Returns whether or not a sequence contains all the specified values, or if functions are
-provided instead, returns whether or not a sequence contains values matching all the
-specified functions.
+Produce a single value from a sequence through repeated application of a reduction
+function.
 
-__Example:__ Has Iron Man ever fought Superman?
+Produces a single value from a sequence by repeatedly calling the
+reduction function.  The reduction function should take two arguments
+and combine them together.  The arguments to the reduction function
+can be either elements of the stream, or the results of a previous
+call to the reduction function.
+
+__Example:__ What's the product of all the bonus multipliers in game 7324?
 
 ```js
-r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, callback)
+r.table('games').get(7324)('bonus_multipliers').reduce(function(a, b) {
+    return a.mul(b)
+}).run(conn, callback)
 ```
 
-[Read more about this command &rarr;](contains/)
+[Read more about this command &rarr;](reduce/)
+
+
+## [count](count/) ##
+
+{% apibody %}
+sequence.count([filter]) &rarr; number
+{% endapibody %}
+
+Count the number of elements in the sequence. With a single argument, count the number
+of elements equal to it. If the argument is a function, it is equivalent to calling
+filter before count.
+
+__Example:__ Just how many super heroes are there?
+
+```js
+r.table('marvel').count().add(r.table('dc').count()).run(conn, callback)
+```
+
+[Read more about this command &rarr;](count/)
+
+
+
+## [sum](sum/) ##
+
+{% apibody %}
+sequence.sum([fieldOrFunction]) &rarr; number
+{% endapibody %}
+
+Sums all the elements of a sequence.  If called with a field name,
+sums all the values of that field in the sequence, skipping elements
+of the sequence that lack that field.  If called with a function,
+calls that function on every element of the sequence and sums the
+results, skipping elements of the sequence where that function returns
+`null` or a non-existence error.
+
+__Example:__ What's 3 + 5 + 7?
+
+```js
+r.expr([3, 5, 7]).sum().run(conn, callback)
+```
+
+[Read more about this command &rarr;](sum/)
 
 
 ## [avg](avg/) ##
@@ -1196,31 +1190,7 @@ __Example:__ What's the average of 3, 5, and 7?
 r.expr([3, 5, 7]).avg().run(conn, callback)
 ```
 
-
 [Read more about this command &rarr;](avg/)
-
-
-## [max](max/) ##
-
-{% apibody %}
-sequence.max([fieldOrFunction]) &rarr; element
-{% endapibody %}
-
-Finds the maximum of a sequence.  If called with a field name, finds
-the element of that sequence with the largest value in that field.  If
-called with a function, calls that function on every element of the
-sequence and returns the element which produced the largest value,
-ignoring any elements where the function returns `null` or produces a
-non-existence error.
-
-
-__Example:__ What's the maximum of 3, 5, and 7?
-
-```js
-r.expr([3, 5, 7]).max().run(conn, callback)
-```
-
-[Read more about this command &rarr;](max/)
 
 
 ## [min](min/) ##
@@ -1246,28 +1216,66 @@ r.expr([3, 5, 7]).min().run(conn, callback)
 [Read more about this command &rarr;](min/)
 
 
-## [sum](sum/) ##
+
+## [max](max/) ##
 
 {% apibody %}
-sequence.sum([fieldOrFunction]) &rarr; number
+sequence.max([fieldOrFunction]) &rarr; element
 {% endapibody %}
 
-Sums all the elements of a sequence.  If called with a field name,
-sums all the values of that field in the sequence, skipping elements
-of the sequence that lack that field.  If called with a function,
-calls that function on every element of the sequence and sums the
-results, skipping elements of the sequence where that function returns
-`null` or a non-existence error.
+Finds the maximum of a sequence.  If called with a field name, finds
+the element of that sequence with the largest value in that field.  If
+called with a function, calls that function on every element of the
+sequence and returns the element which produced the largest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
 
-__Example:__ What's 3 + 5 + 7?
+
+__Example:__ What's the maximum of 3, 5, and 7?
 
 ```js
-r.expr([3, 5, 7]).sum().run(conn, callback)
+r.expr([3, 5, 7]).max().run(conn, callback)
 ```
 
-[Read more about this command &rarr;](sum/)
+[Read more about this command &rarr;](max/)
 
 
+
+## [distinct](distinct/) ##
+
+{% apibody %}
+sequence.distinct() &rarr; array
+{% endapibody %}
+
+Remove duplicate elements from the sequence.
+
+__Example:__ Which unique villains have been vanquished by marvel heroes?
+
+```js
+r.table('marvel').concatMap(function(hero) {return hero('villainList')}).distinct()
+    .run(conn, callback)
+```
+
+[Read more about this command &rarr;](distinct/)
+
+
+## [contains](contains/) ##
+
+{% apibody %}
+sequence.contains(value1[, value2...]) &rarr; bool
+{% endapibody %}
+
+Returns whether or not a sequence contains all the specified values, or if functions are
+provided instead, returns whether or not a sequence contains values matching all the
+specified functions.
+
+__Example:__ Has Iron Man ever fought Superman?
+
+```js
+r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, callback)
+```
+
+[Read more about this command &rarr;](contains/)
 
 
 
