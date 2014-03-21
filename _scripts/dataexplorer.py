@@ -49,6 +49,8 @@ def read_index(script_path, result):
             current_description = ""
             current_body = ""
             current_example = ""
+            parsing_example = False
+            parsing_body = False
         else:
             # Check if we hit a body tag
             if start_body_pattern.match(line) != None:

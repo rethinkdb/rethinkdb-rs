@@ -5,7 +5,7 @@ permalink: api/javascript/group/
 command: group
 io:
     -   - sequence
-        - sequence
+        - grouped_stream
 related_commands:
     ungroup: ungroup/
     map: map/

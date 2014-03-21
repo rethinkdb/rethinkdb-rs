@@ -1055,62 +1055,6 @@ r.table('marvel').sample(3).run(conn, callback)
 {% apisection Aggregation%}
 These commands are used to compute smaller values from large sequences.
 
-## [reduce](reduce/) ##
-
-{% apibody %}
-sequence.reduce(reduction_function) &rarr; value
-{% endapibody %}
-
-Produce a single value from a sequence through repeated application of a reduction
-function.
-
-Produces a single value from a sequence by repeatedly calling the
-reduction function.  The reduction function should take two arguments
-and combine them together.  The arguments to the reduction function
-can be either elements of the stream, or the results of a previous
-call to the reduction function.
-
-__Example:__ What's the product of all the bonus multipliers in game 7324?
-
-```js
-r.table('games').get(7324)('bonus_multipliers').reduce(function(a, b) {
-    return a.mul(b)
-}).run(conn, callback)
-```
-
-
-## [count](count/) ##
-
-{% apibody %}
-sequence.count([filter]) &rarr; number
-{% endapibody %}
-
-Count the number of elements in the sequence. With a single argument, count the number
-of elements equal to it. If the argument is a function, it is equivalent to calling
-filter before count.
-
-__Example:__ Just how many super heroes are there?
-
-```js
-r.table('marvel').count().add(r.table('dc').count()).run(conn, callback)
-```
-
-[Read more about this command &rarr;](count/)
-
-## [distinct](distinct/) ##
-
-{% apibody %}
-sequence.distinct() &rarr; array
-{% endapibody %}
-
-Remove duplicate elements from the sequence.
-
-__Example:__ Which unique villains have been vanquished by marvel heroes?
-
-```js
-r.table('marvel').concatMap(function(hero) {return hero('villainList')}).distinct()
-    .run(conn, callback)
-```
 
 ## [group](group/) ##
 
@@ -1126,18 +1070,6 @@ __Example:__ What is each player's best game?
 
 ```js
 r.table('games').group('player').max('points').run(conn, callback)
-```
-
-Result:
-
-```js
-[{
-    group: "Alice",
-    reduction: {id: 5, player: "Alice", points: 7,  type: "free"}
-}, {
-    group: "Bob",
-    reduction: {id: 2, player: "Bob",   points: 15, type: "ranked"}
-}]
 ```
 
 [Read more about this command &rarr;](group/)
@@ -1165,20 +1097,166 @@ r.table('games')
     .ungroup().order_by(r.desc('reduction')).run(conn)
 ```
 
-Result:
-
-```js
-[{
-    group: "Bob",
-    reduction: 15
-}, {
-    group: "Alice",
-    reduction: 7
-}]
-```
-
 [Read more about this command &rarr;](ungroup/)
 
+
+
+
+## [reduce](reduce/) ##
+
+{% apibody %}
+sequence.reduce(reduction_function) &rarr; value
+{% endapibody %}
+
+Produce a single value from a sequence through repeated application of a reduction
+function.
+
+Produces a single value from a sequence by repeatedly calling the
+reduction function.  The reduction function should take two arguments
+and combine them together.  The arguments to the reduction function
+can be either elements of the stream, or the results of a previous
+call to the reduction function.
+
+__Example:__ What's the product of all the bonus multipliers in game 7324?
+
+```js
+r.table('games').get(7324)('bonus_multipliers').reduce(function(a, b) {
+    return a.mul(b)
+}).run(conn, callback)
+```
+
+[Read more about this command &rarr;](reduce/)
+
+
+## [count](count/) ##
+
+{% apibody %}
+sequence.count([filter]) &rarr; number
+{% endapibody %}
+
+Count the number of elements in the sequence. With a single argument, count the number
+of elements equal to it. If the argument is a function, it is equivalent to calling
+filter before count.
+
+__Example:__ Just how many super heroes are there?
+
+```js
+r.table('marvel').count().add(r.table('dc').count()).run(conn, callback)
+```
+
+[Read more about this command &rarr;](count/)
+
+
+
+## [sum](sum/) ##
+
+{% apibody %}
+sequence.sum([fieldOrFunction]) &rarr; number
+{% endapibody %}
+
+Sums all the elements of a sequence.  If called with a field name,
+sums all the values of that field in the sequence, skipping elements
+of the sequence that lack that field.  If called with a function,
+calls that function on every element of the sequence and sums the
+results, skipping elements of the sequence where that function returns
+`null` or a non-existence error.
+
+__Example:__ What's 3 + 5 + 7?
+
+```js
+r.expr([3, 5, 7]).sum().run(conn, callback)
+```
+
+[Read more about this command &rarr;](sum/)
+
+
+## [avg](avg/) ##
+
+{% apibody %}
+sequence.avg([fieldOrFunction]) &rarr; number
+{% endapibody %}
+
+Averages all the elements of a sequence.  If called with a field name,
+averages all the values of that field in the sequence, skipping
+elements of the sequence that lack that field.  If called with a
+function, calls that function on every element of the sequence and
+averages the results, skipping elements of the sequence where that
+function returns `null` or a non-existence error.
+
+
+__Example:__ What's the average of 3, 5, and 7?
+
+```js
+r.expr([3, 5, 7]).avg().run(conn, callback)
+```
+
+[Read more about this command &rarr;](avg/)
+
+
+## [min](min/) ##
+
+{% apibody %}
+sequence.min([fieldOrFunction]) &rarr; element
+{% endapibody %}
+
+Finds the minimum of a sequence.  If called with a field name, finds
+the element of that sequence with the smallest value in that field.
+If called with a function, calls that function on every element of the
+sequence and returns the element which produced the smallest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
+
+__Example:__ What's the minimum of 3, 5, and 7?
+
+```js
+r.expr([3, 5, 7]).min().run(conn, callback)
+```
+
+
+[Read more about this command &rarr;](min/)
+
+
+
+## [max](max/) ##
+
+{% apibody %}
+sequence.max([fieldOrFunction]) &rarr; element
+{% endapibody %}
+
+Finds the maximum of a sequence.  If called with a field name, finds
+the element of that sequence with the largest value in that field.  If
+called with a function, calls that function on every element of the
+sequence and returns the element which produced the largest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
+
+
+__Example:__ What's the maximum of 3, 5, and 7?
+
+```js
+r.expr([3, 5, 7]).max().run(conn, callback)
+```
+
+[Read more about this command &rarr;](max/)
+
+
+
+## [distinct](distinct/) ##
+
+{% apibody %}
+sequence.distinct() &rarr; array
+{% endapibody %}
+
+Remove duplicate elements from the sequence.
+
+__Example:__ Which unique villains have been vanquished by marvel heroes?
+
+```js
+r.table('marvel').concatMap(function(hero) {return hero('villainList')}).distinct()
+    .run(conn, callback)
+```
+
+[Read more about this command &rarr;](distinct/)
 
 
 ## [contains](contains/) ##
@@ -1198,57 +1276,6 @@ r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, cal
 ```
 
 [Read more about this command &rarr;](contains/)
-
-
-{% endapisection %}
-
-
-{% apisection Aggregators%}
-These standard aggregator objects are to be used in conjunction with groupBy.
-
-## [count](count-aggregator/) ##
-
-{% apibody %}
-r.count
-{% endapibody %}
-
-Count the total size of the group.
-
-__Example:__ Just how many heroes do we have at each strength level?
-
-```js
-r.table('marvel').groupBy('strength', r.count).run(conn, callback)
-```
-
-
-## [sum](sum/) ##
-
-{% apibody %}
-r.sum(attr)
-{% endapibody %}
-
-Compute the sum of the given field in the group.
-
-__Example:__ How many enemies have been vanquished by heroes at each strength level?
-
-```js
-r.table('marvel').groupBy('strength', r.sum('enemiesVanquished')).run(conn, callback)
-```
-
-
-## [avg](avg/) ##
-
-{% apibody %}
-r.avg(attr)
-{% endapibody %}
-
-Compute the average value of the given attribute for the group.
-
-__Example:__ What's the average agility of heroes at each strength level?
-
-```js
-r.table('marvel').groupBy('strength', r.avg('agility')).run(conn, callback)
-```
 
 
 
@@ -1576,12 +1603,6 @@ __Example:__ Create a simple object.
 r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
 ```
 
-Result:
-
-```js
-{data: ["foo", "bar"], id: 5}
-```
-
 {% endapisection %}
 
 
@@ -1631,12 +1652,6 @@ __Example:__ Split on whitespace.
 r.expr("foo  bar bax").split().run(conn, callback)
 ```
 
-Result:
-
-```js
-["foo", "bar", "bax"]
-```
-
 [Read more about this command &rarr;](split/)
 
 ## [upcase](upcase/) ##
@@ -1654,12 +1669,6 @@ __Example:__
 r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 ```
 
-Result:
-
-```js
-"SENTENCE ABOUT LATEX."
-```
-
 ## [downcase](downcase/) ##
 
 {% apibody %}
@@ -1672,12 +1681,6 @@ __Example:__
 
 ```js
 r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
-```
-
-Result:
-
-```js
-"sentence about latex."
 ```
 
 {% endapisection %}

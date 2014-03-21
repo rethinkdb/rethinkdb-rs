@@ -72,7 +72,7 @@ r.table("users").filter(r.row["age"] > 18).run(conn)
 __Example:__ Get all the users that are less than 18 years old and more than 13 years old.
 
 ```py
-r.table("users").filter((r.row["age"] < 18) & (r.row["age"] > 13)).run(conn, callback)
+r.table("users").filter((r.row["age"] < 18) & (r.row["age"] > 13)).run(conn)
 ```
 
 

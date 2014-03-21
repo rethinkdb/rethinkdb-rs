@@ -954,60 +954,6 @@ r.table('marvel').sample(3).run(conn)
 {% apisection Aggregation%}
 These commands are used to compute smaller values from large sequences.
 
-## [reduce](reduce/) ##
-
-{% apibody %}
-sequence.reduce(reduction_function) &rarr; value
-{% endapibody %}
-
-Produce a single value from a sequence through repeated application of a reduction
-function.
-
-Produces a single value from a sequence by repeatedly calling the
-reduction function.  The reduction function should take two arguments
-and combine them together.  The arguments to the reduction function
-can be either elements of the stream, or the results of a previous
-call to the reduction function.
-
-__Example:__ What's the product of all the bonus multipliers in game 7324?
-
-```py
-r.table('games').get(7324)['bonus_multipliers'].reduce(lambda a, b: a*b).run(conn)
-```
-
-
-## [count](count/) ##
-
-{% apibody %}
-sequence.count([filter]) &rarr; number
-{% endapibody %}
-
-Count the number of elements in the sequence. With a single argument, count the number
-of elements equal to it. If the argument is a function, it is equivalent to calling
-filter before count.
-
-__Example:__ Just how many super heroes are there?
-
-```py
-(r.table('marvel').count() + r.table('dc').count()).run(conn)
-```
-
-[Read more about this command &rarr;](count/)
-
-
-## [distinct](distinct/) ##
-
-{% apibody %}
-sequence.distinct() &rarr; array
-{% endapibody %}
-
-Remove duplicate elements from the sequence.
-
-__Example:__ Which unique villains have been vanquished by marvel heroes?
-
-```py
-r.table('marvel').concat_map(lambda hero: hero['villainList']).distinct().run(conn)
-```
 
 ## [group](group/) ##
 
@@ -1023,15 +969,6 @@ __Example:__ What is each player's best game?
 
 ```py
 r.table('games').group('player').max('points').run(conn)
-```
-
-Result:
-
-```py
-{
-    "Alice": {"id": 5, "player": "Alice", "points": 7,  "type": "free"},
-    "Bob":   {"id": 2, "player": "Bob",   "points": 15, "type": "ranked"}
-}
 ```
 
 [Read more about this command &rarr;](group/)
@@ -1062,19 +999,163 @@ r.table('games')
     .ungroup().order_by(r.desc('reduction')).run(conn)
 ```
 
-Result:
+[Read more about this command &rarr;](ungroup/)
+
+
+
+## [reduce](reduce/) ##
+
+{% apibody %}
+sequence.reduce(reduction_function) &rarr; value
+{% endapibody %}
+
+Produce a single value from a sequence through repeated application of a reduction
+function.
+
+Produces a single value from a sequence by repeatedly calling the
+reduction function.  The reduction function should take two arguments
+and combine them together.  The arguments to the reduction function
+can be either elements of the stream, or the results of a previous
+call to the reduction function.
+
+__Example:__ What's the product of all the bonus multipliers in game 7324?
 
 ```py
-[{
-    "group": "Bob",
-    "reduction": 15
-}, {
-    "group": "Alice",
-    "reduction": 7
-}]
+r.table('games').get(7324)['bonus_multipliers'].reduce(lambda a, b: a*b).run(conn)
 ```
 
-[Read more about this command &rarr;](ungroup/)
+[Read more about this command &rarr;](reduce/)
+
+
+## [count](count/) ##
+
+{% apibody %}
+sequence.count([filter]) &rarr; number
+{% endapibody %}
+
+Count the number of elements in the sequence. With a single argument, count the number
+of elements equal to it. If the argument is a function, it is equivalent to calling
+filter before count.
+
+__Example:__ Just how many super heroes are there?
+
+```py
+(r.table('marvel').count() + r.table('dc').count()).run(conn)
+```
+
+[Read more about this command &rarr;](count/)
+
+
+## [sum](sum/) ##
+
+{% apibody %}
+sequence.sum([field_or_function]) &rarr; number
+{% endapibody %}
+
+Sums all the elements of a sequence.  If called with a field name,
+sums all the values of that field in the sequence, skipping elements
+of the sequence that lack that field.  If called with a function,
+calls that function on every element of the sequence and sums the
+results, skipping elements of the sequence where that function returns
+`null` or a non-existence error.
+
+__Example:__ What's 3 + 5 + 7?
+
+```py
+r.expr([3, 5, 7]).sum().run(conn)
+```
+
+[Read more about this command &rarr;](sum/)
+
+
+
+## [avg](avg/) ##
+
+{% apibody %}
+sequence.avg([field_or_function]) &rarr; number
+{% endapibody %}
+
+Averages all the elements of a sequence.  If called with a field name,
+averages all the values of that field in the sequence, skipping
+elements of the sequence that lack that field.  If called with a
+function, calls that function on every element of the sequence and
+averages the results, skipping elements of the sequence where that
+function returns `null` or a non-existence error.
+
+
+__Example:__ What's the average of 3, 5, and 7?
+
+```py
+r.expr([3, 5, 7]).avg().run(conn)
+```
+
+
+[Read more about this command &rarr;](avg/)
+
+
+## [min](min/) ##
+
+{% apibody %}
+sequence.min([field_or_function]) &rarr; element
+{% endapibody %}
+
+Finds the minimum of a sequence.  If called with a field name, finds
+the element of that sequence with the smallest value in that field.
+If called with a function, calls that function on every element of the
+sequence and returns the element which produced the smallest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
+
+__Example:__ What's the minimum of 3, 5, and 7?
+
+```py
+r.expr([3, 5, 7]).min().run(conn)
+```
+
+
+[Read more about this command &rarr;](min/)
+
+
+## [max](max/) ##
+
+{% apibody %}
+sequence.max([field_or_function]) &rarr; element
+{% endapibody %}
+
+Finds the maximum of a sequence.  If called with a field name, finds
+the element of that sequence with the largest value in that field.  If
+called with a function, calls that function on every element of the
+sequence and returns the element which produced the largest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
+
+
+__Example:__ What's the maximum of 3, 5, and 7?
+
+```py
+r.expr([3, 5, 7]).max().run(conn)
+```
+
+[Read more about this command &rarr;](max/)
+
+
+
+## [distinct](distinct/) ##
+
+{% apibody %}
+sequence.distinct() &rarr; array
+{% endapibody %}
+
+Remove duplicate elements from the sequence.
+
+__Example:__ Which unique villains have been vanquished by marvel heroes?
+
+```py
+r.table('marvel').concat_map(lambda hero: hero['villainList']).distinct().run(conn)
+```
+
+[Read more about this command &rarr;](distinct/)
+
 
 ## [contains](contains/) ##
 
@@ -1095,55 +1176,6 @@ r.table('marvel').get('ironman')['opponents'].contains('superman').run(conn)
 [Read more about this command &rarr;](contains/)
 
 
-{% endapisection %}
-
-
-{% apisection Aggregators%}
-These standard aggregator objects are to be used in conjunction with groupBy.
-
-## [count](count-aggregator/) ##
-
-{% apibody %}
-r.count
-{% endapibody %}
-
-Count the total size of the group.
-
-__Example:__ Just how many heroes do we have at each strength level?
-
-```py
-r.table('marvel').group_by('strength', r.count).run(conn)
-```
-
-
-## [sum](sum/) ##
-
-{% apibody %}
-r.sum(attr)
-{% endapibody %}
-
-Compute the sum of the given field in the group.
-
-__Example:__ How many enemies have been vanquished by heroes at each strength level?
-
-```py
-r.table('marvel').group_by('strength', r.sum('enemiesVanquished')).run(conn)
-```
-
-
-## [avg](avg/) ##
-
-{% apibody %}
-r.avg(attr)
-{% endapibody %}
-
-Compute the average value of the given attribute for the group.
-
-__Example:__ What's the average agility of heroes at each strength level?
-
-```py
-r.table('marvel').group_by('strength', r.avg('agility')).run(conn)
-```
 
 
 

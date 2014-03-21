@@ -5,6 +5,9 @@ permalink: api/javascript/ungroup/
 command: ungroup
 related_commands:
     group: group/
+io:
+    -   - grouped_stream
+        - array
 ---
 
 # Command syntax #
@@ -88,13 +91,13 @@ Result:
 Note that if you didn't call `ungroup`, you would instead select one
 random game from each player:
 
-```py
+```js
 r.table('games').group('player').sample(1).run(conn)
 ```
 
 Result:
 
-```py
+```js
 [
     {
         group: "Alice",

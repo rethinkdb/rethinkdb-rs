@@ -970,6 +970,55 @@ r.table('marvel').sample(3).run(conn)
 {% apisection Aggregation%}
 These commands are used to compute smaller values from large sequences.
 
+
+## [group](group/) ##
+
+{% apibody %}
+sequence.group(field_or_function..., [:index => 'index_name']) &rarr; grouped_stream
+{% endapibody %}
+
+Takes a stream and partitions it into multiple groups based on the
+fields or functions provided.  Commands chained after `group` will be
+called on each of these grouped sub-streams, producing grouped data.
+
+__Example:__ What is each player's best game?
+
+```rb
+r.table('games').group('player').max('points').run(conn)
+```
+
+[Read more about this command &rarr;](group/)
+
+## [ungroup](ungroup/) ##
+
+{% apibody %}
+grouped_stream.ungroup() &rarr; array
+grouped_data.ungroup() &rarr; array
+{% endapibody %}
+
+Takes a grouped stream or grouped data and turns it into an array of
+objects representing the groups.  Any commands chained after `ungroup`
+will operate on this array, rather than operating on each group
+individually.  This is useful if you want to e.g. order the groups by
+the value of their reduction.
+
+The format of the array returned by `ungroup` is the same as the
+default native format of grouped data in the javascript driver and
+data explorer.
+
+__Example:__ What is the maximum number of points scored by each
+player, with the highest scorers first?
+
+```rb
+r.table('games')
+   .group('player').max('points')['points']
+   .ungroup().order_by(r.desc('reduction')).run(conn)
+```
+
+[Read more about this command &rarr;](ungroup/)
+
+
+
 ## [reduce](reduce/) ##
 
 {% apibody %}
@@ -1009,6 +1058,99 @@ __Example:__ Just how many super heroes are there?
 
 [Read more about this command &rarr;](count/)
 
+
+## [sum](sum/) ##
+
+{% apibody %}
+sequence.sum([field_or_function]) &rarr; number
+{% endapibody %}
+
+Sums all the elements of a sequence.  If called with a field name,
+sums all the values of that field in the sequence, skipping elements
+of the sequence that lack that field.  If called with a function,
+calls that function on every element of the sequence and sums the
+results, skipping elements of the sequence where that function returns
+`null` or a non-existence error.
+
+__Example:__ What's 3 + 5 + 7?
+
+```rb
+r([3, 5, 7]).sum().run(conn)
+```
+
+[Read more about this command &rarr;](sum/)
+
+
+
+## [avg](avg/) ##
+
+{% apibody %}
+sequence.avg([field_or_function]) &rarr; number
+{% endapibody %}
+
+Averages all the elements of a sequence.  If called with a field name,
+averages all the values of that field in the sequence, skipping
+elements of the sequence that lack that field.  If called with a
+function, calls that function on every element of the sequence and
+averages the results, skipping elements of the sequence where that
+function returns `null` or a non-existence error.
+
+
+__Example:__ What's the average of 3, 5, and 7?
+
+```rb
+r([3, 5, 7]).avg().run(conn)
+```
+
+
+[Read more about this command &rarr;](avg/)
+
+
+## [min](min/) ##
+
+{% apibody %}
+sequence.min([field_or_function]) &rarr; element
+{% endapibody %}
+
+Finds the minimum of a sequence.  If called with a field name, finds
+the element of that sequence with the smallest value in that field.
+If called with a function, calls that function on every element of the
+sequence and returns the element which produced the smallest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
+
+__Example:__ What's the minimum of 3, 5, and 7?
+
+```rb
+r([3, 5, 7]).min().run(conn)
+```
+
+[Read more about this command &rarr;](min/)
+
+
+## [max](max/) ##
+
+{% apibody %}
+sequence.max([field_or_function]) &rarr; element
+{% endapibody %}
+
+Finds the maximum of a sequence.  If called with a field name, finds
+the element of that sequence with the largest value in that field.  If
+called with a function, calls that function on every element of the
+sequence and returns the element which produced the largest value,
+ignoring any elements where the function returns `null` or produces a
+non-existence error.
+
+
+__Example:__ What's the maximum of 3, 5, and 7?
+
+```rb
+r([3, 5, 7]).max().run(conn)
+```
+
+[Read more about this command &rarr;](max/)
+
+
 ## [distinct](distinct/) ##
 
 {% apibody %}
@@ -1022,74 +1164,6 @@ __Example:__ Which unique villains have been vanquished by marvel heroes?
 ```rb
 r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)
 ```
-
-## [group](group/) ##
-
-{% apibody %}
-sequence.group(field_or_function..., [:index => 'index_name']) &rarr; grouped_stream
-{% endapibody %}
-
-Takes a stream and partitions it into multiple groups based on the
-fields or functions provided.  Commands chained after `group` will be
-called on each of these grouped sub-streams, producing grouped data.
-
-__Example:__ What is each player's best game?
-
-```rb
-r.table('games').group('player').max('points').run(conn)
-```
-
-Result: 
-
-```rb
-{
-    "Alice" => {"id"=>5, "player"=>"Alice", "points"=>7,  "type"=>"free"},
-    "Bob"   => {"id"=>2, "player"=>"Bob",   "points"=>15, "type"=>"ranked"},
-}
-```
-
-[Read more about this command &rarr;](group/)
-
-## [ungroup](ungroup/) ##
-
-{% apibody %}
-grouped_stream.ungroup() &rarr; array
-grouped_data.ungroup() &rarr; array
-{% endapibody %}
-
-Takes a grouped stream or grouped data and turns it into an array of
-objects representing the groups.  Any commands chained after `ungroup`
-will operate on this array, rather than operating on each group
-individually.  This is useful if you want to e.g. order the groups by
-the value of their reduction.
-
-The format of the array returned by `ungroup` is the same as the
-default native format of grouped data in the javascript driver and
-data explorer.
-
-__Example:__ What is the maximum number of points scored by each
-player, with the highest scorers first?
-
-```rb
-r.table('games')
-   .group('player').max('points')['points']
-   .ungroup().order_by(r.desc('reduction')).run(conn)
-```
-
-Result:
-
-```rb
-[{
-    "group"=>"Bob",
-    "reduction"=>15
-}, {
-    "group"=>"Alice",
-    "reduction"=>7
-}]
-```
-
-[Read more about this command &rarr;](ungroup/)
-
 
 ## [contains](contains/) ##
 
@@ -1110,55 +1184,6 @@ r.table('marvel').get('ironman')[:opponents].contains('superman').run(conn)
 [Read more about this command &rarr;](contains/)
 
 
-{% endapisection %}
-
-
-{% apisection Aggregators%}
-These standard aggregator objects are to be used in conjunction with groupBy.
-
-## [count]](count-aggregator/) ##
-
-{% apibody %}
-r.count
-{% endapibody %}
-
-Count the total size of the group.
-
-__Example:__ Just how many heroes do we have at each strength level?
-
-```rb
-r.table('marvel').group_by(:strength, r.count).run(conn)
-```
-
-
-## [sum](sum/) ##
-
-{% apibody %}
-r.sum(attr)
-{% endapibody %}
-
-Compute the sum of the given field in the group.
-
-__Example:__ How many enemies have been vanquished by heroes at each strength level?
-
-```rb
-r.table('marvel').group_by(:strength, r.sum(:enemies_vanquished)).run(conn)
-```
-
-
-## [avg](avg/) ##
-
-{% apibody %}
-r.avg(attr)
-{% endapibody %}
-
-Compute the average value of the given attribute for the group.
-
-__Example:__ What's the average agility of heroes at each strength level?
-
-```rb
-r.table('marvel').group_by(:strength, r.avg(:agility)).run(conn)
-```
 
 
 
