@@ -120,11 +120,10 @@ r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
 ## [run](run/) ##
 
 {% apibody %}
-query.run(conn, callback)
-query.run(options[, callback])
+query.run(conn[, options], callback)
 {% endapibody %}
 
-Run a query on a connection.  Accepts the following options:
+Run a query on a connection. Accepts the following options:
 
 - `useOutdated`: whether or not outdated reads are OK (default: `false`).
 - `timeFormat`: what format to return times in (default: `'native'`).
