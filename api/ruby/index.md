@@ -145,19 +145,12 @@ r.table('heroes').run(conn) # refers to r.db('marvel').table('heroes')
 ## [run](run/) ##
 
 {% apibody %}
-query.run(conn[, opts]) &rarr; cursor
-query.run(conn[, opts]) &rarr; object
+query.run(conn[, options]) &rarr; cursor
+query.run(conn[, options]) &rarr; object
 {% endapibody %}
 
-Run a query on a connection.  Accepts the following options:
-
-- `use_outdated`: whether or not outdated reads are OK (default: `false`).
-- `time_format`: what format to return times in (default: `'native'`).
-  Set this to `'raw'` if you want times returned as JSON objects for exporting.
-- `profile`: whether or not to return a profile of the query's
-  execution (default: `false`).
-
-Returns either a single JSON result or a cursor, depending on the query.
+Run a query on a connection, returning either a single JSON result or
+a cursor, depending on the query.
 
 __Example:__ Run a query on the connection `conn` and print out every
 row in the result.

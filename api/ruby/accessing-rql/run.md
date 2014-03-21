@@ -11,19 +11,25 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-query.run(conn[, opts]) &rarr; cursor
-query.run(conn[, opts]) &rarr; object
+query.run(conn[, options]) &rarr; cursor
+query.run(conn[, options]) &rarr; object
 {% endapibody %}
 
 # Description #
 
-Run a query on a connection.  Accepts the following options:
+Run a query on a connection, returning either a single JSON result or
+a cursor, depending on the query.
+
+The options can be:
 
 - `use_outdated`: whether or not outdated reads are OK (default: `false`).
 - `time_format`: what format to return times in (default: `'native'`).
   Set this to `'raw'` if you want times returned as JSON objects for exporting.
 - `profile`: whether or not to return a profile of the query's
   execution (default: `false`).
+- `durability`: possible values are `hard` and `soft`. In soft durability mode RethinkDB
+will acknowledge the write immediately after receiving it, but before the write has
+been committed to disk.
 
 Returns either a single JSON result or a cursor, depending on the query.
 

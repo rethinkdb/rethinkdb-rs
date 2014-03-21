@@ -16,16 +16,20 @@ query.run(conn[, options], callback)
 
 # Description #
 
-Run a query on a connection. Accepts the following options:
+Run a query on a connection. The callback will get either an error, a single JSON
+result, or a cursor, depending on the query.
+
+The options can be:
 
 - `useOutdated`: whether or not outdated reads are OK (default: `false`).
 - `timeFormat`: what format to return times in (default: `'native'`).
   Set this to `'raw'` if you want times returned as JSON objects for exporting.
 - `profile`: whether or not to return a profile of the query's
   execution (default: `false`).
+- `durability`: possible values are `hard` and `soft`. In soft durability mode RethinkDB
+will acknowledge the write immediately after receiving it, but before the write has
+been committed to disk.
 
-The callback will get either an error, a single JSON result, or a
-cursor, depending on the query.
 
 __Example:__ Run a query on the connection `conn` and log each row in
 the result to the console.
