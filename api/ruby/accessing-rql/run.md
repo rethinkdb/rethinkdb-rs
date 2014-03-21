@@ -27,7 +27,7 @@ The options can be:
   Set this to `'raw'` if you want times returned as JSON objects for exporting.
 - `profile`: whether or not to return a profile of the query's
   execution (default: `false`).
-- `durability`: possible values are `hard` and `soft`. In soft durability mode RethinkDB
+- `durability`: possible values are `'hard'` and `'soft'`. In soft durability mode RethinkDB
 will acknowledge the write immediately after receiving it, but before the write has
 been committed to disk.
 - `group_format`: what format to return `grouped_data` and `grouped_streams` in (default: `'native'`).
