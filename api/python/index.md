@@ -2233,6 +2233,7 @@ The `branch` command is effectively an `if` renamed due to language constraints.
 
 __Example:__ Return heroes and superheroes.
 
+```
 r.table('marvel').map(
     r.branch(
         r.row['victories'] > 100,
