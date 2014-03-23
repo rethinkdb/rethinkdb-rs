@@ -38,6 +38,6 @@ r.expr('id:0,name:mlucy,foo:bar').match('name:(\w+)')('groups').nth(0)('str').ru
 __Example:__ Fail to parse out a name (returns null).
 
 ```js
-r.expr('id:0,foo:bar').match('name:(\w+)')('groups').nth(0)('str').run(conn, callback)
+r.expr('id:0,foo:bar').match('name:(\w+)').run(conn, callback)
 ```
 
