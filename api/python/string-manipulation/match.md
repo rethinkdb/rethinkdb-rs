@@ -33,7 +33,7 @@ r.expr('id:0,name:mlucy,foo:bar').match('name:(\w+)')['groups'][0]['str'].run(co
 ```
 
 
-__Example:__ Fail to parse out a name (returns None).
+__Example:__ Fail to parse out a name (returns `None`).
 
 ```py
 r.expr('id:0,foo:bar').match('name:(\w+)').run(conn)
