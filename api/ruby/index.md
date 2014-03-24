@@ -1670,8 +1670,6 @@ bool.and(bool) &rarr; bool
 r.and(bool, bool) &rarr; bool
 {% endapibody %}
 
-# Description #
-
 Compute the logical and of two values.
 
 __Example:__ True and false anded is false?
@@ -1690,8 +1688,6 @@ bool | bool &rarr; bool
 bool.or(bool) &rarr; bool
 r.or(bool, bool) &rarr; bool
 {% endapibody %}
-
-# Description #
 
 Compute the logical or of two values.
 
