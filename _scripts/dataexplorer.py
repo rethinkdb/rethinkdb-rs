@@ -146,5 +146,5 @@ if __name__ == "__main__":
 
     # Dump result in a JSON format and write it in a file
     result_file = codecs.open(script_path+"/reql_docs.json", "w", "utf-8")
-    result_file.write(json.dumps(result, sort_keys=True))
+    result_file.write(json.dumps(result, indent=2, sort_keys=True))
     result_file.close()
