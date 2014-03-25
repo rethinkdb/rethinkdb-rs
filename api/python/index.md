@@ -1514,19 +1514,24 @@ These commands provide string operators.
 ## [match](match/) ##
 
 {% apibody %}
-string.match(regexp) &rarr; array
+string.match(regexp) &rarr; None/object
 {% endapibody %}
 
-Match against a regular expression. Returns a match object containing the matched string,
-that string's start/end position, and the capture groups. Accepts RE2 syntax
-([https://code.google.com/p/re2/wiki/Syntax](https://code.google.com/p/re2/wiki/Syntax)).
-You can enable case-insensitive matching by prefixing the regular expression with
-`(?i)`. (See linked RE2 documentation for more flags.)
+Match against a regular expression. If there is a match, returns an object with the fields:
 
-__Example:__ Get all users whose name starts with A.
+- `str`: The matched string
+- `start`: The matched string's start
+- `end`: The matched string's end
+- `groups`: The capture groups defined with parentheses
+
+If no match is found, returns `None`.
+
+__Example:__ Get all users whose name starts with "A".
 
 ```py
-r.table('users').filter(lambda row:row['name'].match("^A")).run(conn)
+r.table('users').filter(lambda doc:
+    doc['name'].match("^A")
+).run(conn)
 ```
 
 [Read more about this command &rarr;](match/)
