@@ -48,8 +48,10 @@ __Exporting from a version before RethinkDB 1.7?__ Use the deprecated
 
 # Upgrading RethinkDB
 
-__First__, upgrade RethinkDB to the latest version. See [specific install
-instructions](/install) for your platform.
+__First__, upgrade the RethinkDB server and drivers to the latest version:
+
+- See [server install instructions](/install) for your platform.
+- See [driver install instructions](/docs/install-drivers/) for your language.
 
 __Then__, make sure to move or delete the old RethinkDB data directory
 (`rethinkdb_data` by default), since the new version will not be able
