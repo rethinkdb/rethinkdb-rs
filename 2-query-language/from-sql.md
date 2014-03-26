@@ -946,8 +946,8 @@ r.<a href="/api/python/table/">table</a>("posts")
 SELECT category,
        SUM(num_comments)
     FROM posts
+    WHERE num_comments &gt; 7
     GROUP BY category
-    HAVING num_comments &gt; 7
 
 </pre>
 
@@ -961,6 +961,29 @@ r.<a href="/api/python/table/">table</a>("posts")
 </pre>
 
         </td></tr>
+
+        <tr><td>
+
+<pre>
+SELECT category,
+       SUM(num_comments)
+    FROM posts
+    GROUP BY category
+    HAVING num_comments &gt; 7
+
+</pre>
+
+        </td><td>
+
+<pre>
+r.<a href="/api/python/table/">table</a>("posts")
+ .<a href="/api/python/group/">group</a>('category')
+ .<a href="/api/python/sum/">sum</a>('num_comments')
+ .<a href="/api/python/filter/">filter</a>(r.row>7)
+</pre>
+
+        </td></tr>
+
     </tbody>
 </table>
 
