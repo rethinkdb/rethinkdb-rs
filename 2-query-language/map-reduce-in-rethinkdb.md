@@ -15,7 +15,7 @@ implemented in many systems
 In RethinkDB, map/reduce queries operate on sequences, and are
 composed of three parts:
 
-* An optional__group__ operation which partitions the elements of the
+* An optional __group__ operation which partitions the elements of the
   sequence into multiple groups.
 * A __map__ operation which maps the elements of the sequence to a
   desired value.
@@ -74,7 +74,7 @@ r.table('posts')                        \
   .run(conn)
 ```
 
-This works, but the query is unwieldy.  Fortunately, RethinKDB offser
+This works, but the query is unwieldy.  Fortunately, RethinkDB offers
 several shortcuts.  First, grouping by a field is very common, so if
 you provide `group` with the name of a field rather than a function,
 it will group by that field:
