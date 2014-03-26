@@ -23,7 +23,7 @@ individually.  This is useful if you want to e.g. order the groups by
 the value of their reduction.
 
 The format of the array returned by `ungroup` is the same as the
-default native format of grouped data in the javascript driver and
+default native format of grouped data in the JavaScript driver and
 data explorer.
 
 __Example:__ What is the maximum number of points scored by each
