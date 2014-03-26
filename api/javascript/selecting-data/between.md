@@ -40,7 +40,7 @@ r.table('marvel').between(10, 20, {'right_bound':'closed'}).run(conn, callback)
 ```
 
 
-__Example:__ Find all users with primary key < 20. (You can use `NULL` to mean "unbounded" for either endpoint.)
+__Example:__ Find all users with primary key < 20. (You can use `null` to mean "unbounded" for either endpoint.)
 
 ```js
 r.table('marvel').between(null, 20, {'right_bound':'closed'}).run(conn, callback)

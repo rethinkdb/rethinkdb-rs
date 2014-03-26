@@ -27,7 +27,7 @@ r.table('marvel').get_all('man_of_steel', :index => 'code_name').run(conn)
 ```
 
 
-__Example:__ Without an index argument, we default to the primary index. While `get` will either return the document or `null` when no document with such a primary key value exists, this will return either a one or zero length stream.
+__Example:__ Without an index argument, we default to the primary index. While `get` will either return the document or `nil` when no document with such a primary key value exists, this will return either a one or zero length stream.
 
 ```rb
 r.table('dc').get_all('superman').run(conn)

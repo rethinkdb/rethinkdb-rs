@@ -1061,7 +1061,7 @@ sums all the values of that field in the sequence, skipping elements
 of the sequence that lack that field.  If called with a function,
 calls that function on every element of the sequence and sums the
 results, skipping elements of the sequence where that function returns
-`null` or a non-existence error.
+`nil` or a non-existence error.
 
 __Example:__ What's 3 + 5 + 7?
 
@@ -1084,7 +1084,7 @@ averages all the values of that field in the sequence, skipping
 elements of the sequence that lack that field.  If called with a
 function, calls that function on every element of the sequence and
 averages the results, skipping elements of the sequence where that
-function returns `null` or a non-existence error.
+function returns `nil` or a non-existence error.
 
 
 __Example:__ What's the average of 3, 5, and 7?
@@ -1107,7 +1107,7 @@ Finds the minimum of a sequence.  If called with a field name, finds
 the element of that sequence with the smallest value in that field.
 If called with a function, calls that function on every element of the
 sequence and returns the element which produced the smallest value,
-ignoring any elements where the function returns `null` or produces a
+ignoring any elements where the function returns `nil` or produces a
 non-existence error.
 
 __Example:__ What's the minimum of 3, 5, and 7?
@@ -1129,7 +1129,7 @@ Finds the maximum of a sequence.  If called with a field name, finds
 the element of that sequence with the largest value in that field.  If
 called with a function, calls that function on every element of the
 sequence and returns the element which produced the largest value,
-ignoring any elements where the function returns `null` or produces a
+ignoring any elements where the function returns `nil` or produces a
 non-existence error.
 
 
@@ -1382,7 +1382,7 @@ object.has_fields([selector1, selector2...]) &rarr; boolean
 {% endapibody %}
 
 Test if an object has all of the specified fields. An object has a field if it has the
-specified key and that key maps to a non-null value. For instance, the object
+specified key and that key maps to a non-nil value. For instance, the object
 `{:a => 1, :b => 2, :c => nil}` has the fields `a` and `b`.
 
 __Example:__ Which heroes are married?
@@ -1528,7 +1528,7 @@ Splits a string into substrings.  Splits on whitespace when called
 with no arguments.  When called with a separator, splits on that
 separator.  When called with a separator and a maximum number of
 splits, splits on that separator at most `max_splits` times.  (Can be
-called with NULL as the separator if you want to split on whitespace
+called with `nil` as the separator if you want to split on whitespace
 while still specifying `max_splits`.)
 
 Mimics the behavior of Python's `string.split` in edge cases, except
