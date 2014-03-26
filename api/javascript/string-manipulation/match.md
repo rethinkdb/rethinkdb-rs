@@ -16,7 +16,7 @@ string.match(regexp) &rarr; null/object
 
 # Description #
 
-Match against a regular expression. If there is a match, returns an object with the fields:
+Matches against a regular expression. If there is a match, returns an object with the fields:
 
 - `str`: The matched string
 - `start`: The matched string's start
@@ -93,7 +93,7 @@ Result:
 ```js
 {
     start: 0,
-    end:20,
+    end: 20,
     str: "name@domain.com",
     groups: [
         {

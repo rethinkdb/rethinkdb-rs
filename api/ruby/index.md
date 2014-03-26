@@ -1500,7 +1500,7 @@ These commands provide string operators.
 string.match(regexp) &rarr; nil/object
 {% endapibody %}
 
-Match against a regular expression. If there is a match, returns an object with the fields:
+Matches against a regular expression. If there is a match, returns an object with the fields:
 
 - `str`: The matched string
 - `start`: The matched string's start

@@ -13,7 +13,7 @@ string.match(regexp) &rarr; None/object
 
 # Description #
 
-Match against a regular expression. If there is a match, returns an object with the fields:
+Matches against a regular expression. If there is a match, returns an object with the fields:
 
 - `str`: The matched string
 - `start`: The matched string's start
@@ -103,7 +103,7 @@ Result:
 }
 ```
 
-You can then retrieve only the domain with the [\(\)](/api/javascript/get_field) selector and [nth](/api/javascript/nth).
+You can then retrieve only the domain with the [\[\]](/api/python/get_field) selector.
 
 ```py
 r.expr("name@domain.com").match(".*@(.*)")["groups"][0]["str"].run(conn)
