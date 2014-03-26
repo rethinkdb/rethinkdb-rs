@@ -155,6 +155,7 @@ r.table('posts').count().run(conn)
 
 # Read more #
 - [The API documentation](/api/python/group/) for the `group` command.
+- [The API documentation](/api/python/ungroup/) for the `ungroup` command.
 - [The API documentation](/api/python/map/) for the `map` command.
 - [The API documentation](/api/python/reduce/) for the `reduce` command.
 - [The Wikipedia article](http://en.wikipedia.org/wiki/MapReduce) on map/reduce.
