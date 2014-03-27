@@ -3,7 +3,10 @@ layout: documentation
 title: Using secondary indexes in RethinkDB
 active: docs
 docs_active: secondary-indexes
-permalink: docs/secondary-indexes/
+permalink: docs/secondary-indexes/python/
+alias: docs/secondary-indexes/
+switcher: true
+language : Python
 js: [fancybox]
 ---
 
@@ -192,14 +195,14 @@ Secondary indexes have the following limitations:
 
   ```python
   # This query does not use a secondary index! Use get_all instead.
-  r.table("users").filter( {"last_name": "Smith" }).run(conn)
+  r.table("users").filter({"last_name": "Smith" }).run(conn)
   ```
 
   You have to explicitly use the `get_all` command to take advantage
   of secondary indexes.
 
   ```python
-  # This query does not use a secondary index! Use get_all instead.
+  # This query uses a secondary index.
   r.table("users").get_all("Smith", index="last_name").run(conn)
   ```
 
