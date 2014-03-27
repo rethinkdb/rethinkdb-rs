@@ -134,8 +134,8 @@ r.table('heroes').run(conn) # refers to r.db('marvel').table('heroes')
 ## [run](run/) ##
 
 {% apibody %}
-query.run(conn, use_outdated=False, time_format='native', profile=False) &rarr; cursor
-query.run(conn, use_outdated=False, time_format='native', profile=False) &rarr; object
+query.run(conn, use_outdated=False, time_format='native', profile=False, durability="hard") &rarr; cursor
+query.run(conn, use_outdated=False, time_format='native', profile=False, durability="hard") &rarr; object
 {% endapibody %}
 
 Run a query on a connection, returning either a single JSON result or
@@ -166,6 +166,23 @@ wait until the server has processed them.
 ```py
 conn.noreply_wait()
 ```
+
+## [close (cursor)](close-cursor/) ##
+
+{% apibody %}
+cursor.close()
+{% endapibody %}
+
+
+Close a cursor. Closing a cursor cancels the corresponding query and frees the memory
+associated with the open request.
+
+__Example:__ Close a cursor.
+
+```py
+cursor.close()
+```
+
 
 
 {% endapisection %}
@@ -249,12 +266,10 @@ Note: that you can only use alphanumeric characters and underscores for the tabl
 When creating a table you can specify the following options:
 
 - `primary_key`: the name of the primary key. The default primary key is id;
-- `durability`: if set to `soft`, this enables _soft durability_ on this table:
+- `durability`: if set to `'soft'`, this enables _soft durability_ on this table:
 writes will be acknowledged by the server immediately and flushed to disk in the
-background. Default is `hard` (acknowledgement of writes happens after data has been
+background. Default is `'hard'` (acknowledgement of writes happens after data has been
 written to disk);
-- `cache_size`: set the cache size (in bytes) to be used by the table. The
-default is 1073741824 (1024MB);
 - `datacenter`: the name of the datacenter this table should be assigned to.
 
 
@@ -786,8 +801,9 @@ r.table('marvel').concat_map(lambda hero: hero['defeatedMonsters']).run(conn)
 ## [order_by](order_by/) ##
 
 {% apibody %}
-sequence.order_by(key1, [key2...]) &rarr; stream
-array.order_by(key1, [key2...]) &rarr; array
+table.order_by([key1...], index=index_name) -> selection<stream>
+selection.order_by(key1, [key2...]) -> selection<array>
+sequence.order_by(key1, [key2...]) -> array
 {% endapibody %}
 
 Sort the sequence by document values of the given key(s). `orderBy` defaults to ascending
@@ -936,23 +952,63 @@ r.table('marvel').sample(3).run(conn)
 {% apisection Aggregation%}
 These commands are used to compute smaller values from large sequences.
 
+
+## [group](group/) ##
+
+{% apibody %}
+sequence.group(field_or_function..., [index='index_name']) &rarr; grouped_stream
+{% endapibody %}
+
+Takes a stream and partitions it into multiple groups based on the
+fields or functions provided.  Commands chained after `group` will be
+called on each of these grouped sub-streams, producing grouped data.
+
+__Example:__ What is each player's best game?
+
+```py
+r.table('games').group('player').max('points').run(conn)
+```
+
+[Read more about this command &rarr;](group/)
+
+## [ungroup](ungroup/) ##
+
+{% apibody %}
+grouped_stream.ungroup() &rarr; array
+grouped_data.ungroup() &rarr; array
+{% endapibody %}
+
+Takes a grouped stream or grouped data and turns it into an array of
+objects representing the groups.  Any commands chained after `ungroup`
+will operate on this array, rather than operating on each group
+individually.  This is useful if you want to e.g. order the groups by
+the value of their reduction.
+
+The format of the array returned by `ungroup` is the same as the
+default native format of grouped data in the javascript driver and
+data explorer.
+
+__Example:__ What is the maximum number of points scored by each
+player, with the highest scorers first?
+
+```py
+r.table('games')
+    .group('player').max('points')['points']
+    .ungroup().order_by(r.desc('reduction')).run(conn)
+```
+
+[Read more about this command &rarr;](ungroup/)
+
+
+
 ## [reduce](reduce/) ##
 
 {% apibody %}
-sequence.reduce(reduction_function[, default]) &rarr; value
+sequence.reduce(reduction_function) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction
 function.
-
-The `reduce` method is distributed and parallelized across shards and CPU cores.
-This allows map/reduce queries to execute efficiently, but is a source of a common
-mistake: assuming an incorrect reduction order.   
-Read the [map-reduce in RethinkDB](/docs/map-reduce/) article if you are not familiar with
-map/reduce.
-
-The `default` value is returned only if you reduce an empty sequence.
-
 
 __Example:__ Return the number of documents in the table `posts.
 
@@ -960,8 +1016,12 @@ __Example:__ Return the number of documents in the table `posts.
 r.table("posts").map(lambda doc:
     1
 ).reduce(lambda left, right:
-    left+right , 0).run(conn);
+    left+right
+).run(conn);
 ```
+
+[Read more about this command &rarr;](reduce/)
+
 
 ## [count](count/) ##
 
@@ -982,6 +1042,100 @@ __Example:__ Just how many super heroes are there?
 [Read more about this command &rarr;](count/)
 
 
+## [sum](sum/) ##
+
+{% apibody %}
+sequence.sum([field_or_function]) &rarr; number
+{% endapibody %}
+
+Sums all the elements of a sequence.  If called with a field name,
+sums all the values of that field in the sequence, skipping elements
+of the sequence that lack that field.  If called with a function,
+calls that function on every element of the sequence and sums the
+results, skipping elements of the sequence where that function returns
+`None` or a non-existence error.
+
+__Example:__ What's 3 + 5 + 7?
+
+```py
+r.expr([3, 5, 7]).sum().run(conn)
+```
+
+[Read more about this command &rarr;](sum/)
+
+
+
+## [avg](avg/) ##
+
+{% apibody %}
+sequence.avg([field_or_function]) &rarr; number
+{% endapibody %}
+
+Averages all the elements of a sequence.  If called with a field name,
+averages all the values of that field in the sequence, skipping
+elements of the sequence that lack that field.  If called with a
+function, calls that function on every element of the sequence and
+averages the results, skipping elements of the sequence where that
+function returns `None` or a non-existence error.
+
+
+__Example:__ What's the average of 3, 5, and 7?
+
+```py
+r.expr([3, 5, 7]).avg().run(conn)
+```
+
+
+[Read more about this command &rarr;](avg/)
+
+
+## [min](min/) ##
+
+{% apibody %}
+sequence.min([field_or_function]) &rarr; element
+{% endapibody %}
+
+Finds the minimum of a sequence.  If called with a field name, finds
+the element of that sequence with the smallest value in that field.
+If called with a function, calls that function on every element of the
+sequence and returns the element which produced the smallest value,
+ignoring any elements where the function returns `None` or produces a
+non-existence error.
+
+__Example:__ What's the minimum of 3, 5, and 7?
+
+```py
+r.expr([3, 5, 7]).min().run(conn)
+```
+
+
+[Read more about this command &rarr;](min/)
+
+
+## [max](max/) ##
+
+{% apibody %}
+sequence.max([field_or_function]) &rarr; element
+{% endapibody %}
+
+Finds the maximum of a sequence.  If called with a field name, finds
+the element of that sequence with the largest value in that field.  If
+called with a function, calls that function on every element of the
+sequence and returns the element which produced the largest value,
+ignoring any elements where the function returns `None` or produces a
+non-existence error.
+
+
+__Example:__ What's the maximum of 3, 5, and 7?
+
+```py
+r.expr([3, 5, 7]).max().run(conn)
+```
+
+[Read more about this command &rarr;](max/)
+
+
+
 ## [distinct](distinct/) ##
 
 {% apibody %}
@@ -996,50 +1150,7 @@ __Example:__ Which unique villains have been vanquished by marvel heroes?
 r.table('marvel').concat_map(lambda hero: hero['villainList']).distinct().run(conn)
 ```
 
-
-## [grouped\_map\_reduce](grouped_map_reduce/) ##
-
-{% apibody %}
-sequence.grouped_map_reduce(grouping, mapping, reduction, base)
-    &rarr; value
-{% endapibody %}
-
-Partition the sequence into groups based on the `grouping` function. The elements of each
-group are then mapped using the `mapping` function and reduced using the `reduction`
-function.
-
-`grouped_map_reduce` is a generalized form of group by.
-
-__Example:__ It's only fair that heroes be compared against their weight class.
-
-```py
-r.table('marvel').grouped_map_reduce(
-    lambda hero: hero['weightClass'],  # grouping
-    lambda hero: hero.pluck('name', 'strength'),  # mapping
-    lambda acc, hero: r.branch(acc['strength'] < hero['strength'], hero, acc),
-    {'name':'none', 'strength':0}  # base
-).run(conn)
-```
-
-
-## [group_by](group_by/) ##
-
-{% apibody %}
-sequence.group_by(selector1[, selector2...], reduction_object)
-    &rarr; array
-{% endapibody %}
-
-Groups elements by the values of the given attributes and then applies the given
-reduction. Though similar to `groupedMapReduce`, `groupBy` takes a standardized object
-for specifying the reduction. Can be used with a number of predefined common reductions.
-
-__Example:__ Using a predefined reduction we can easily find the average strength of members of each weight class.
-
-```py
-r.table('marvel').group_by('weightClass', r.avg('strength')).run(conn)
-```
-
-[Read more about this command &rarr;](group_by/)
+[Read more about this command &rarr;](distinct/)
 
 
 ## [contains](contains/) ##
@@ -1061,55 +1172,6 @@ r.table('marvel').get('ironman')['opponents'].contains('superman').run(conn)
 [Read more about this command &rarr;](contains/)
 
 
-{% endapisection %}
-
-
-{% apisection Aggregators%}
-These standard aggregator objects are to be used in conjunction with groupBy.
-
-## [count](count-aggregator/) ##
-
-{% apibody %}
-r.count
-{% endapibody %}
-
-Count the total size of the group.
-
-__Example:__ Just how many heroes do we have at each strength level?
-
-```py
-r.table('marvel').group_by('strength', r.count).run(conn)
-```
-
-
-## [sum](sum/) ##
-
-{% apibody %}
-r.sum(attr)
-{% endapibody %}
-
-Compute the sum of the given field in the group.
-
-__Example:__ How many enemies have been vanquished by heroes at each strength level?
-
-```py
-r.table('marvel').group_by('strength', r.sum('enemiesVanquished')).run(conn)
-```
-
-
-## [avg](avg/) ##
-
-{% apibody %}
-r.avg(attr)
-{% endapibody %}
-
-Compute the average value of the given attribute for the group.
-
-__Example:__ What's the average agility of heroes at each strength level?
-
-```py
-r.table('marvel').group_by('strength', r.avg('agility')).run(conn)
-```
 
 
 
@@ -1334,7 +1396,7 @@ object.has_fields([selector1, selector2...]) &rarr; boolean
 {% endapibody %}
 
 Test if an object has all of the specified fields. An object has a field if it has the
-specified key and that key maps to a non-null value. For instance, the object
+specified key and that key maps to a non-None value. For instance, the object
 `{'a':1,'b':2,'c': None}` has the fields `a` and `b`.
 
 __Example:__ Which heroes are married?
@@ -1422,6 +1484,22 @@ __Example:__ Get all the keys of a row.
 r.table('marvel').get('ironman').keys().run(conn)
 ```
 
+## [object](object/) ##
+
+{% apibody %}
+r.object([key, value,]...) &rarr; object
+{% endapibody %}
+
+Creates an object from a list of key-value pairs, where the keys must
+be strings.  `r.object(A, B, C, D)` is equivalent to
+`r.expr([[A, B], [C, D]]).coerce_to('OBJECT')`.
+
+__Example:__ Create a simple object.
+
+```py
+> r.object('id', 5, 'data', ['foo', 'bar']).run(conn)
+{"data": ["foo", "bar"], "id": 5}
+```
 
 {% endapisection %}
 
@@ -1432,23 +1510,83 @@ These commands provide string operators.
 ## [match](match/) ##
 
 {% apibody %}
-string.match(regexp) &rarr; array
+string.match(regexp) &rarr; None/object
 {% endapibody %}
 
-Match against a regular expression. Returns a match object containing the matched string,
-that string's start/end position, and the capture groups. Accepts RE2 syntax
-([https://code.google.com/p/re2/wiki/Syntax](https://code.google.com/p/re2/wiki/Syntax)).
-You can enable case-insensitive matching by prefixing the regular expression with
-`(?i)`. (See linked RE2 documentation for more flags.)
+Matches against a regular expression. If there is a match, returns an object with the fields:
 
-__Example:__ Get all users whose name starts with A.
+- `str`: The matched string
+- `start`: The matched string's start
+- `end`: The matched string's end
+- `groups`: The capture groups defined with parentheses
+
+If no match is found, returns `None`.
+
+__Example:__ Get all users whose name starts with "A".
 
 ```py
-r.table('users').filter(lambda row:row['name'].match("^A")).run(conn)
+r.table('users').filter(lambda doc:
+    doc['name'].match("^A")
+).run(conn)
 ```
 
 [Read more about this command &rarr;](match/)
 
+## [split](split/) ##
+
+{% apibody %}
+string.split([separator, [max_splits]]) &rarr; array
+{% endapibody %}
+
+Splits a string into substrings.  Splits on whitespace when called
+with no arguments.  When called with a separator, splits on that
+separator.  When called with a separator and a maximum number of
+splits, splits on that separator at most `max_splits` times.  (Can be
+called with `None` as the separator if you want to split on whitespace
+while still specifying `max_splits`.)
+
+Mimics the behavior of Python's `string.split` in edge cases, except
+for splitting on the empty string, which instead produces an array of
+single-character strings.
+
+__Example:__ Split on whitespace.
+
+```py
+> r.expr("foo  bar bax").split().run(conn)
+["foo", "bar", "bax"]
+```
+
+[Read more about this command &rarr;](split/)
+
+## [upcase](upcase/) ##
+
+{% apibody %}
+string.upcase() &rarr; string
+{% endapibody %}
+
+Upcases a string.
+
+__Example:__
+
+```py
+> r.expr("Sentence about LaTeX.").upcase().run(conn)
+"SENTENCE ABOUT LATEX."
+```
+
+## [downcase](downcase/) ##
+
+{% apibody %}
+string.downcase() &rarr; string
+{% endapibody %}
+
+Downcases a string.
+
+__Example:__
+
+```py
+> r.expr("Sentence about LaTeX.").downcase().run(conn)
+"sentence about latex."
+```
 
 {% endapisection %}
 
@@ -1541,11 +1679,15 @@ __Example:__ It's as easy as 2 % 2 = 0.
 (r.expr(2) % 2).run(conn)
 ```
 
-## [&](and/) ##
+## [&, and_](and/) ##
 
 {% apibody %}
 bool & bool &rarr; bool
+r.and_(bool, bool) &rarr; bool
+bool.and_(bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Compute the logical and of two values.
 
@@ -1553,14 +1695,20 @@ __Example:__ True and false anded is false?
 
 ```py
 (r.expr(True) & False).run(conn)
+r.expr(True).and_(False).run(conn)
+r.and_(True, False).run(conn)
 ```
 
 
-## [|](or/) ##
+## [|, or_](or/) ##
 
 {% apibody %}
 bool | bool &rarr; bool
+bool.or_(bool) &rarr; bool
+r.or_(bool, bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 
 Compute the logical or of two values.
 
@@ -1568,6 +1716,8 @@ __Example:__ True or false ored is true?
 
 ```py
 (r.expr(True) | False).run(conn)
+r.expr(True).or_(False).run(conn)
+r.or_(True, False).run(conn)
 ```
 
 
@@ -1678,17 +1828,22 @@ r.expr(2).le(2).run(conn)
 ```
 
 
-## [~](not/) ##
+## [~, not_](not/) ##
 
 {% apibody %}
 ~bool &rarr; bool
 bool.not_() &rarr; bool
+r.not_(bool) &rarr; bool
 {% endapibody %}
+
+# Description #
 Compute the logical inverse (not).
 
 __Example:__ Not true is false.
 
 ```py
+r.not_(True).run(conn)
+r.expr(True).not_().run(conn)
 (~r.expr(True)).run(conn)
 ```
 
@@ -2079,6 +2234,7 @@ The `branch` command is effectively an `if` renamed due to language constraints.
 
 __Example:__ Return heroes and superheroes.
 
+```
 r.table('marvel').map(
     r.branch(
         r.row['victories'] > 100,

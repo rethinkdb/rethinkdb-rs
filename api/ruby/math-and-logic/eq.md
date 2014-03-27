@@ -4,8 +4,8 @@ language: Ruby
 permalink: api/ruby/eq/
 command: eq
 related_commands:
-    '&': and/
-    '|': or/
+    '&, and': and/
+    '|, or': or/
     ne: ne/
 ---
 

@@ -7,16 +7,19 @@ io:
     -   - sequence
         - value
 related_commands:
+    group: group/
     map: map/
     concat_map: concat_map/
-    groupedMapReduce: grouped_map_reduce/
-    groupBy: group_by/
+    sum: sum/
+    avg: avg/
+    min: min/
+    max: max/
 ---
 
 # Command syntax #
 
 {% apibody %}
-sequence.reduce(reductionFunction[, default]) &rarr; value
+sequence.reduce(reductionFunction) &rarr; value
 {% endapibody %}
 
 # Description #
@@ -35,8 +38,9 @@ mistaken when using the `reduce` command is to suppose that the reduction is exe
 from left to right. Read the [map-reduce in RethinkDB](/docs/map-reduce/) article to
 see an example.
 
-The `default` value is returned only if you reduce an empty sequence.
-
+If the sequence is empty, the server will produce a `RqlRuntimeError` that can be
+caught with `default`.  
+If the sequence has only one element, the first element will be returned.
 
 __Example:__ Return the number of documents in the table `posts`.
 
@@ -45,11 +49,10 @@ r.table("posts").map(function(doc) {
     return 1;
 }).reduce(function(left, right) {
     return left.add(right);
-}, 0).run(conn, callback);
+}).default(0).run(conn, callback);
 ```
 
 A shorter way to execute this query is to use [count](/api/javascript/count).
-
 
 
 __Example:__ Suppose that each `post` has a field `comments` that is an array of
@@ -61,7 +64,7 @@ r.table("posts").map(function(doc) {
     return doc("comments").count();
 }).reduce(function(left, right) {
     return left.add(right);
-}, 0).run(conn, callback);
+}).default(0).run(conn, callback);
 ```
 
 
@@ -79,5 +82,5 @@ r.table("posts").map(function(doc) {
         left,
         right
     );
-}, 0).run(conn, callback);
+}).default(0).run(conn, callback);
 ```

@@ -39,7 +39,7 @@ r.table('marvel').between(10, 20, right_bound='closed').run(conn)
 ```
 
 
-__Example:__ Find all users with primary key < 20. (You can use `NULL` to mean
+__Example:__ Find all users with primary key < 20. (You can use `None` to mean
 "unbounded" for either endpoint.)
 
 ```py

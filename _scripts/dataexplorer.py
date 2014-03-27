@@ -19,6 +19,7 @@ def read_index(script_path, result):
     start_body_pattern = re.compile("{%\s*apibody\s*%}\s*")
     end_body_pattern = re.compile("{%\s*endapibody\s*%}\s*")
     ignore_pattern = re.compile("(.*Read more about this command.*)|(.*apisection.*)")
+    open_apisection = re.compile(".* apisection.*")
     example_pattern = re.compile("(__Example:__.*)|(__Example__:.*)")
 
     index_file = codecs.open(os.path.abspath(script_path+"/../api/javascript/index.md"), "r", "utf-8")
@@ -27,7 +28,13 @@ def read_index(script_path, result):
     current_description = ""
     parsing_body = False
     parsing_example = False
+    just_opened_api = False
+
     for line in index_file:
+        # If we just opened an api section, we are going to ignore everything until we hit a new method
+        if open_apisection.match(line) != None:
+            just_opened_api = True
+
         # Ignore the "read more about this command" lines
         if ignore_pattern.match(line) != None:
            continue 
@@ -49,7 +56,10 @@ def read_index(script_path, result):
             current_description = ""
             current_body = ""
             current_example = ""
-        else:
+            parsing_example = False
+            parsing_body = False
+            just_opened_api = False
+        elif just_opened_api == False:
             # Check if we hit a body tag
             if start_body_pattern.match(line) != None:
                 parsing_body = True
@@ -136,5 +146,5 @@ if __name__ == "__main__":
 
     # Dump result in a JSON format and write it in a file
     result_file = codecs.open(script_path+"/reql_docs.json", "w", "utf-8")
-    result_file.write(json.dumps(result, sort_keys=True))
+    result_file.write(json.dumps(result, indent=2, sort_keys=True))
     result_file.close()

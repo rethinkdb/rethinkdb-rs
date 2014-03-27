@@ -55,6 +55,7 @@ RethinkDB has [binary packages](/docs/install/) available for:
 
 *   Ubuntu 10.04 and higher 32-bit/64-bit
 *   OS X 64-bit (>= 10.7)
+*   CentOS 6, 32-bit/64-bit
 
 ## Data model ##
 
@@ -70,7 +71,7 @@ floating-point), string, boolean, array, object, null.
 
 ## Query language ##
 
-Accessing data in MongoDB can be done using: 
+Accessing data in MongoDB can be done using:
 
 *   [CRUD operations using BSON objects](http://docs.mongodb.org/master/single/#queries-in-mongodb) for inserting, bulk inserting, filtering, and updating documents
 *   aggregations using [map/reduce](http://docs.mongodb.org/master/single/index.html#mapReduce)  or the  [aggregation framework](http://docs.mongodb.org/master/single/#aggregation) (starting with ver.2.2)
@@ -78,7 +79,7 @@ Accessing data in MongoDB can be done using:
 RethinkDB provides a [unified chainable query language](/api) supporting:
 
 *   CRUD operations
-*	aggregations (including map/reduce and the more advanced [grouped\_map\_reduce](/api/python/grouped_map_reduce/))
+*	aggregations (including map/reduce and the more advanced [group/map/reduce](/docs/map-reduce))
 *	JOINs
 *	full sub-queries
 
@@ -145,7 +146,7 @@ service on dotCloud using
 | CLI tools | Admin CLI | JavaScript interactive shell |
 | UI tools  | Web-based admin UI | Simple HTTP interface |
 | Failover  | 1-click replication with customizable per-table acknowledgements | Replica-sets with auto primary re-election |
-| Backup    | `rethinkdb dump` | `mongodump` or snapshotting |
+| Backup    | `rethinkdb-dump` | `mongodump` or snapshotting |
 
 ## CLI Tools ##
 
@@ -191,7 +192,7 @@ MongoDB provides different mechanisms for backing up data:
 *   the [`mongodump`](http://docs.mongodb.org/manual/administration/backups/#database-dump-with-mongodump) utility can perform a live backup of data. 
 *   [disk/block level snapshots](http://docs.mongodb.org/manual/administration/backups/#backup-with-journaling) can be used to backup a MongoDB instance when journaling is enabled. When [journaling is disabled](http://docs.mongodb.org/manual/administration/backups/#backup-without-journaling), snapshots are possible after flushing all writes to disk and locking the database.
 
-RethinkDB provides `rethinkdb dump` -- [a dedicated live backup tool](/docs/backup/).
+RethinkDB supports [hot backup](http://www.rethinkdb.com/docs/backup/) on a live cluster via `dump` and `restore` commands.
 
 <div class="comparison-section"><a name="scaling" class="comparison-anchor"></a></div>
 # Scaling #
@@ -232,7 +233,7 @@ B-Tree diff algorithms and doesn't require log-shipping.
 MongoDB can be configured to run in multiple datacenters via [different
 mechanisms](http://www.mongodb.org/display/DOCS/Data+Center+Awareness):
 
-- assigning priorities to members of replica-sets 
+- assigning priorities to members of replica-sets
 - support for nearby replication
 - tagging (version 2.0+)
 
@@ -252,12 +253,13 @@ implementation make uses of different locks and the [JavaScript code is
 executed in a single
 thread](http://docs.mongodb.org/manual/applications/map-reduce/#concurrency).
 
-RethinkDB supports multiple MapReduce-like operations: `map`, `reduce`,
-`groupBy`, `groupedMapReduce` that allow processing data using both ReQL and
-JavaScript. RethinkDB operations are transparently and fully distributed. None
-of these operations require any locks. RethinkDB MapReduce functions can be
-part of chained queries, by preceding, following, or being sub-queries of other
-operations.
+RethinkDB supports MapReduce with the `map` and `reduce` commands, as
+well as grouped MapReduce with the `group` command.  MapReduce queries
+can process data using both ReQL and JavaScript. RethinkDB operations
+are transparently and fully distributed. None of these operations
+require any locks. RethinkDB MapReduce functions can be part of
+chained queries, by preceding, following, or being sub-queries of
+other operations.
 
 Neither MongoDB nor RethinkDB support incremental MapReduce by default.
 
@@ -267,7 +269,7 @@ MongoDB doesn't publish any official performance numbers.
 
 RethinkDB's performance has degraded significantly after the addition of the
 clustering layer, but we hope we'll be able to restore it over the next several
-releases. 
+releases.
 
 ## Concurrency ##
 

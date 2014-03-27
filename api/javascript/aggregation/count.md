@@ -5,41 +5,53 @@ permalink: api/javascript/count/
 command: count
 io:
     -   - sequence
-        - value
+        - number
 related_commands:
     map: map/
     reduce: reduce/
-    groupedMapReduce: grouped_map_reduce/
-
+    sum: sum/
+    avg: avg/
+    min: min/
+    max: max/
+    group: group/
 ---
 
 # Command syntax #
 
 {% apibody %}
-sequence.count([filter]) &rarr; number
+sequence.count([value_or_predicate]) &rarr; number
 {% endapibody %}
 
 # Description #
 
-Count the number of elements in the sequence. With a single argument, count the number
-of elements equal to it. If the argument is a function, it is equivalent to calling
-filter before count.
+Counts the number of elements in a sequence.  If called with a value,
+counts the number of times that value occurs in the sequence.  If
+called with a predicate function, counts the number of elements in the
+sequence where that function returns `true`.
 
-__Example:__ Just how many super heroes are there?
 
-```js
-r.table('marvel').count().add(r.table('dc').count()).run(conn, callback)
-```
-
-__Example:__ Just how many super heroes have invisibility?
+__Example:__ Count the number of users.
 
 ```js
-r.table('marvel').concatMap(r.row('superpowers')).count('invisibility').run(conn, callback)
+r.table('users').count().run(conn, callback)
 ```
 
-__Example:__ Just how many super heroes have defeated the Sphinx?
+__Example:__ Count the number of 18 year old users.
 
 ```js
-r.table('marvel').count(r.row('monstersKilled').contains('Sphinx')).run(conn, callback)
+r.table('users')('age').count(18).run(conn, callback)
 ```
 
+__Example:__ Count the number of users over 18.
+
+```js
+r.table('users')('age').count(function(age) { 
+    return age.gt(18)
+}).run(conn, callback)
+```
+
+```js
+r.table('users').count(function(user) {
+    return user('age').gt(18)
+}).run(conn, callback)
+```

@@ -11,14 +11,28 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-query.run(conn, use_outdated=False, time_format='native', profile=False) &rarr; cursor
-query.run(conn, use_outdated=False, time_format='native', profile=False) &rarr; object
+query.run(conn, use_outdated=False, time_format='native', profile=False, durability="hard") &rarr; cursor
+query.run(conn, use_outdated=False, time_format='native', profile=False, durability="hard") &rarr; object
 {% endapibody %}
 
 # Description #
 
 Run a query on a connection, returning either a single JSON result or
 a cursor, depending on the query.
+
+The optional arguments are:
+
+- `use_outdated`: whether or not outdated reads are OK (default: `False`).
+- `time_format`: what format to return times in (default: `'native'`).
+  Set this to `'raw'` if you want times returned as JSON objects for exporting.
+- `profile`: whether or not to return a profile of the query's
+  execution (default: `false`).
+- `durability`: possible values are `'hard'` and `'soft'`. In soft durability mode RethinkDB
+will acknowledge the write immediately after receiving it, but before the write has
+been committed to disk.
+- `group_format`: what format to return `grouped_data` and `grouped_streams` in (default: `'native'`).
+  Set this to `'raw'` if you want the raw pseudotype.
+
 
 __Example:__ Run a query on the connection `conn` and print out every
 row in the result.

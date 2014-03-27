@@ -4,10 +4,13 @@ language: Python
 permalink: api/python/reduce/
 command: reduce
 related_commands:
+    group: group/
     map: map/
     concat_map: concat_map/
-    grouped_map_reduce: grouped_map_reduce/
-    group_by: group_by/
+    sum: sum/
+    avg: avg/
+    min: min/
+    max: max/
 ---
 
 # Command syntax #
@@ -32,14 +35,16 @@ mistaken when using the `reduce` command is to suppose that the reduction is exe
 from left to right. Read the [map-reduce in RethinkDB](/docs/map-reduce/) article to
 see an example.
 
-The `default` value is returned only if you reduce an empty sequence.
-
+If the sequence is empty, the server will produce a `RqlRuntimeError` that can be
+caught with `default`.  
+If the sequence has only one element, the first element will be returned.
 
 __Example:__ Return the number of documents in the table `posts`.
 
 ```py
 r.table("posts").map(lambda doc: 1)
-    .reduce(lambda left, right: left+right , 0).run(conn)
+    .reduce(lambda left, right: left+right)
+    .default(0).run(conn)
 ```
 
 
@@ -54,7 +59,8 @@ Return the number of comments for all posts.
 r.table("posts").map(lambda doc:
     doc["comments"].count()
 ).reduce(lambda left, right:
-    left+right, 0).run(conn)
+    left+right
+).default(0).run(conn)
 ```
 
 
@@ -70,6 +76,7 @@ r.table("posts").map(lambda doc:
         left > right,
         left,
         right
-    ), 0).run(conn)
+    )
+).default(0).run(conn)
 ```
 

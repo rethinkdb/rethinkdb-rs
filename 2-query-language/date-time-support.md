@@ -293,7 +293,7 @@ r.table('sales').filter {|sale|
   # Weekdays outside 9-5 are overtime.
   (sale['time'].hours() < 9) |
   (sale['time'].hours() >= 17)
-}.map{|sale| sale['dollars']}.reduce{|a,b| a+b}.run(conn)
+}.sum('dollars').run(conn)
 ```
 
 If your timestamps are stored with time zones, this query will work even if you
@@ -303,10 +303,9 @@ have sales from different offices in different countries (assuming they all work
 Since this query is pure ReQL, the entire query will be distributed efficiently
 over the cluster without any computation being done on the client.
 
-Further, because it's ReQL, the query's individual pieces are easily composable.
-If you decide you want those numbers on a per-month basis, you can easily switch
-TO create
-to a `grouped_map_reduce` query:
+Further, because it's ReQL, the query's individual pieces are easily
+composable.  If you decide you want those numbers on a per-month
+basis, you can just throw a `group` in there:
 
 ```ruby
 r.table('sales').filter {|sale|
@@ -316,11 +315,7 @@ r.table('sales').filter {|sale|
   # Weekdays outside 9-5 are overtime.
   (sale['time'].hours() < 9) |
   (sale['time'].hours() >= 17)
-}.grouped_map_reduce(
-  lambda {|sale| sale['time'].month()},
-  lambda {|sale| sale['dollars']},
-  lambda {|a,b| a+b}
-).run(conn)
+}.group{|sale| sale['time'].month()}.sum('dollars').run(conn)
 ```
 
 <a id="native-time-objects"></a>

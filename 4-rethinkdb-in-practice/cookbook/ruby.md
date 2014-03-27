@@ -384,17 +384,10 @@ r.table("posts").count.run
 
 ## Computing the average value of a field ##
 
-To compute the average of a field, you can use a combination of `map`
-and `reduce` commands. For example, to compute the average number of
-comments per post, we would use `map` and `reduce` to add up the total
-number of comments and then divide that by the total number of posts.
+You can compute the average value of a field with the `avg` command.
 
 ```ruby
-r.table("posts").
-  map{|post| post["num_comments"]}.
-  reduce{|n, m| n + m}.
-  div(r.table("posts").count).
-  run
+r.table("posts").avg("num_comments").run
 ```
 
 ## Using subqueries to return additional fields ##
@@ -463,24 +456,18 @@ You may be interested in retrieving the results in this format
 ]
 ```
 
-In this case, you can do a pivot operation with the `grouped_map_reduce` and
+In this case, you can do a pivot operation with the `group` and
 `coerce_to` commands.
 
 
 ```rb
-r.db('test').table('marks').grouped_map_reduce( lambda {|doc|
-        doc["name"]
-    },
-    lambda {|doc|
-        [[doc["course"], doc["mark"]]]
-    },
-    lambda {|left, right|
-        left.union(right)
-    }).map{ |result|
-        r.expr({
-            :name => result["group"]
-        }).merge( result["reduction"].coerce_to("OBJECT") )
-    }
+r.db('test').table('marks')                                \
+ .group('name')                                            \
+ .map{|row| [[row['course'], row['mark']]]}                \
+ .ungroup()                                                \
+ .map{|res| r.expr({name: res['group'])                    \
+             .merge(res['reduction'].coerce_to('OBJECT'))} \
+ .run(conn)
 ```
 
 _Note:_ A nicer syntax will eventually be added. See the

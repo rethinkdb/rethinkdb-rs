@@ -77,7 +77,10 @@ RethinkDB on FreeBSD by testing the build!
 
 ## Other architectures ##
 Currently the RethinkDB server only supports x86 and x86\_64 architectures on
-Unix-based platforms. Our long-term goal is to port RethinkDB to every
-widely-used platform. [Get involved](/community/) in the development
-effort and help port RethinkDB to more platforms.
+Unix-based platforms, and has experimental ARM support (thanks to the effort of
+[@davidthomas426](http://github.com/davidthomas426)).
+
+Our long-term goal is to port RethinkDB to every widely-used platform. [Get
+involved](/community/) in the development effort and help port RethinkDB to
+more platforms.
 

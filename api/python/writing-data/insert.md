@@ -30,8 +30,9 @@ In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
 - `return_vals`: if set to `True` and in case of a single insert/upsert, the inserted/updated
 document will be returned.
-- `upsert`: when set to `True`, performs an update if a document with the same primary key
-exists.
+- `upsert`: when set to `True`, performs a [replace](/api/python/replace/) if a
+document with the same primary key exists.
+
 
 Insert returns an object that contains the following attributes:
 

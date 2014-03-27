@@ -4,16 +4,19 @@ language: Ruby
 permalink: api/ruby/reduce/
 command: reduce
 related_commands:
+    group: group/
     map: map/
     concat_map: concat_map/
-    grouped_map_reduce: grouped_map_reduce/
-    group_by: group_by/
+    sum: sum/
+    avg: avg/
+    min: min/
+    max: max/
 ---
 
 # Command syntax #
 
 {% apibody %}
-sequence.reduce(reduction_function[, default]) &rarr; value
+sequence.reduce(reduction_function) &rarr; value
 {% endapibody %}
 
 # Description #
@@ -32,13 +35,15 @@ mistaken when using the `reduce` command is to suppose that the reduction is exe
 from left to right. Read the [map-reduce in RethinkDB](/docs/map-reduce/) article to
 see an example.
 
-The `default` value is returned only if you reduce an empty sequence.
+If the sequence is empty, the server will produce a `RqlRuntimeError` that can be
+caught with `default`.  
+If the sequence has only one element, the first element will be returned.
 
 
 __Example:__ Return the numbers of documents in the table `posts`.
 
 ```rb
-r.table("posts").map{|doc| 1 }.reduce(0), { left, right: left+right }.run(conn)
+r.table("posts").map{|doc| 1 }.reduce{ |left, right|: left+right }.default(0).run(conn)
 ```
 
 A shorter way to execute this query is to use [count](/api/ruby/count).
@@ -51,9 +56,9 @@ Return the number of comments for all posts.
 ```rb
 r.table("posts").map{|doc|
     doc["comments"].count()
-}.reduce(0), { left, right:
+}.reduce{ left, right:
     left+right
-}.run(conn)
+}.default(0).run(conn)
 ```
 
 
@@ -64,12 +69,11 @@ Return the maximum number comments per post.
 ```rb
 r.table("posts").map{|doc|
     doc["comments"].count()
-}.reduce(0) { left, right:
+}.reduce{ left, right:
     r.branch(
         left > right,
         left,
         right
     )
-}.run(conn)
+}.default(0).run(conn)
 ```
-
