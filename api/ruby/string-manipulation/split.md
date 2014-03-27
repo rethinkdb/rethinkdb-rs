@@ -21,7 +21,7 @@ Splits a string into substrings.  Splits on whitespace when called
 with no arguments.  When called with a separator, splits on that
 separator.  When called with a separator and a maximum number of
 splits, splits on that separator at most `max_splits` times.  (Can be
-called with NULL as the separator if you want to split on whitespace
+called with `nil` as the separator if you want to split on whitespace
 while still specifying `max_splits`.)
 
 Mimics the behavior of Python's `string.split` in edge cases, except

@@ -20,7 +20,7 @@ object.has_fields([selector1, selector2...]) &rarr; boolean
 # Description #
 
 Test if an object has all of the specified fields. An object has a field if it has the
-specified key and that key maps to a non-null value. For instance, the object
+specified key and that key maps to a non-nil value. For instance, the object
 `{:a => 1, :b => 2, :c => nil}` has the fields `a` and `b`.
 
 

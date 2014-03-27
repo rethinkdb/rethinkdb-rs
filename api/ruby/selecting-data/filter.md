@@ -102,7 +102,7 @@ r.table("users").filter(
 
 
 __Example:__ Select all users who have given their phone number (all the documents
-whose field `phone_number` is defined and not `None`).
+whose field `phone_number` is defined and not `nil`).
 
 ```rb
 r.table('users').filter{|user|
