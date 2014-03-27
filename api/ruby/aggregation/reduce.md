@@ -43,7 +43,9 @@ If the sequence has only one element, the first element will be returned.
 __Example:__ Return the numbers of documents in the table `posts`.
 
 ```rb
-r.table("posts").map{|doc| 1 }.reduce{ |left, right|: left+right }.default(0).run(conn)
+r.table("posts").map{|doc| 1 }
+    .reduce{ |left, right| left+right }
+    .default(0).run(conn)
 ```
 
 A shorter way to execute this query is to use [count](/api/ruby/count).
@@ -56,7 +58,7 @@ Return the number of comments for all posts.
 ```rb
 r.table("posts").map{|doc|
     doc["comments"].count()
-}.reduce{ left, right:
+}.reduce{ |left, right|
     left+right
 }.default(0).run(conn)
 ```
@@ -69,7 +71,7 @@ Return the maximum number comments per post.
 ```rb
 r.table("posts").map{|doc|
     doc["comments"].count()
-}.reduce{ left, right:
+}.reduce{ |left, right|
     r.branch(
         left > right,
         left,
