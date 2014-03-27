@@ -80,3 +80,4 @@ r.table("posts").map(lambda doc:
 ).default(0).run(conn)
 ```
 
+A shorter way to execute this query is to use [max](/api/python/max).

@@ -84,3 +84,5 @@ r.table("posts").map(function(doc) {
     );
 }).default(0).run(conn, callback);
 ```
+
+A shorter way to execute this query is to use [max](/api/javascript/max).

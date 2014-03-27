@@ -77,3 +77,5 @@ r.table("posts").map{|doc|
     )
 }.default(0).run(conn)
 ```
+
+A shorter way to execute this query is to use [max](/api/ruby/max).
