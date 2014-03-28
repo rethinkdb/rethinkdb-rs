@@ -333,9 +333,9 @@ WHERE name IN {'Peter', 'John'}
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
+r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(lambda doc:
     r.<a href="/api/python/expr/"</a>expr</a>(["Peter", "John"])
-        .<a href="/api/python/contains">contains</a>(r.<a href="/api/python/row/">row</a>["name"])
+        .<a href="/api/python/contains">contains</a>(doc["name"])
 )
 </pre>
 
@@ -359,9 +359,9 @@ WHERE name NOT IN {'Peter', 'John'}
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
+r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(lambda doc:
     r.<a href="/api/python/expr/"</a>expr</a>(["Peter", "John"])
-        .<a href="/api/python/contains/">contains</a>(r.<a href="/api/python/row/">row</a>["name"])
+        .<a href="/api/python/contains/">contains</a>(doc["name"])
         .not()
 )
 </pre>
