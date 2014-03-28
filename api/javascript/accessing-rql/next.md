@@ -26,6 +26,8 @@ array.next(callback)
 
 Get the next element in the cursor.
 
+Calling `next` the first time on a cursor provides the first element of the cursor.
+
 __Example:__ Let's grab the next element!
 
 ```js
