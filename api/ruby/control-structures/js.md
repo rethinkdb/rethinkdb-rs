@@ -8,12 +8,14 @@ command: js
 # Command syntax #
 
 {% apibody %}
-r.js(jsString) &rarr; value
+r.js(js_string[, :timeout => <number>]) &rarr; value
 {% endapibody %}
 
 # Description #
 
 Create a javascript expression.
+
+`timeout` is the number of seconds before `r.js` times out. The default value is 5 seconds.
 
 __Example:__ Concatenate two strings using Javascript'
 

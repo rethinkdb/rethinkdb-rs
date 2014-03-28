@@ -8,7 +8,7 @@ command: js
 # Command syntax #
 
 {% apibody %}
-r.js(jsString) &rarr; value
+r.js(js_string[, timeout=<number>]) &rarr; value
 {% endapibody %}
 
 # Description #
@@ -16,6 +16,8 @@ r.js(jsString) &rarr; value
 Create a javascript expression.
 
 __Example:__ Concatenate two strings using Javascript'
+
+`timeout` is the number of seconds before `r.js` times out. The default value is 5 seconds.
 
 ```py
 r.js("'str1' + 'str2'").run(conn)
