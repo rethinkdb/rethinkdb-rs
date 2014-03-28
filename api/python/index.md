@@ -1010,16 +1010,14 @@ sequence.reduce(reduction_function) &rarr; value
 Produce a single value from a sequence through repeated application of a reduction
 function.
 
-Produces a single value from a sequence by repeatedly calling the
-reduction function.  The reduction function should take two arguments
-and combine them together.  The arguments to the reduction function
-can be either elements of the stream, or the results of a previous
-call to the reduction function.
-
-__Example:__ What's the product of all the bonus multipliers in game 7324?
+__Example:__ Return the number of documents in the table `posts.
 
 ```py
-r.table('games').get(7324)['bonus_multipliers'].reduce(lambda a, b: a*b).run(conn)
+r.table("posts").map(lambda doc:
+    1
+).reduce(lambda left, right:
+    left+right
+).run(conn);
 ```
 
 [Read more about this command &rarr;](reduce/)

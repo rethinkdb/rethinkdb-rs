@@ -6,7 +6,11 @@ command: count
 related_commands:
     map: map/
     reduce: reduce/
-    grouped_map_reduce: grouped_map_reduce/
+    sum: sum/
+    avg: avg/
+    min: min/
+    max: max/
+    group: group/
 ---
 
 # Command syntax #

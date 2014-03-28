@@ -1096,28 +1096,23 @@ r.table('games')
 ## [reduce](reduce/) ##
 
 {% apibody %}
-sequence.reduce(reduction_function) &rarr; value
+sequence.reduce(reductionFunction) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction
 function.
 
-Produces a single value from a sequence by repeatedly calling the
-reduction function.  The reduction function should take two arguments
-and combine them together.  The arguments to the reduction function
-can be either elements of the stream, or the results of a previous
-call to the reduction function.
-
-__Example:__ What's the product of all the bonus multipliers in game 7324?
+__Example:__ Return the number of documents in the table `posts.
 
 ```js
-r.table('games').get(7324)('bonus_multipliers').reduce(function(a, b) {
-    return a.mul(b)
-}).run(conn, callback)
+r.table("posts").map(function(doc) {
+    return 1
+}).reduce(function(left, right) {
+    return left.add(right)
+}).run(conn, callback);
 ```
 
 [Read more about this command &rarr;](reduce/)
-
 
 ## [count](count/) ##
 

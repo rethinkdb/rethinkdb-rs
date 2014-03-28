@@ -9,8 +9,11 @@ io:
 related_commands:
     map: map/
     reduce: reduce/
-    groupedMapReduce: grouped_map_reduce/
-
+    sum: sum/
+    avg: avg/
+    min: min/
+    max: max/
+    group: group/
 ---
 
 # Command syntax #
