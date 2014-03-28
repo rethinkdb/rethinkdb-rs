@@ -4,6 +4,8 @@ language: Ruby
 permalink: api/ruby/index_create/
 command: index_create
 related_commands:
+    index_wait: index_wait/
+    index_status: index_status/
     index_list: index_list/
     index_drop: index_drop/
 ---
@@ -11,58 +13,66 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.index_create(index_name[, index_function]) &rarr; object
+table.index_create(index_name[, index_function][, :muti => true]) &rarr; object
 {% endapibody %}
 
 # Description #
 
 Create a new secondary index on this table.
 
-__Example:__ To efficiently query our heroes by name we can create a secondary index
-based on the value of that field. We can already quickly query heroes by name with the
-primary index but to do the same based on hero code names we'll have to create a
-secondary index based on that attribute.
+RethinkDB supports different types of secondary indexes:
+
+- Simple indexes based on the value of a single field.
+- Compound indexes based on multiple fields.
+- Multi indexes based on arrays of values.
+- Indexes based on arbitrary expressions.
+
+If you are not familiar with secondary indexes, read
+[the article about secondary indexes](http://www.rethinkdb.com/docs/secondary-indexes/)
+to learn more about them.
+
+__Example:__ Create a simple index based on the field `post_id`.
 
 ```rb
-r.table('dc').index_create('code_name').run(conn)
+r.table('comments').index_create('post_id').run(conn)
 ```
+__Example:__ Create a simple index based on the nested field `author > name`.
 
-
-__Example:__ You can also create a secondary index based on an arbitrary function on
-the document.
 
 ```rb
-r.table('dc').index_create('power_rating') {|hero|
-    hero['combat_power'] + (2 * hero['compassion_power'])
+r.table('comments').index_create('author_name'){ |doc|
+    doc["author"]["name"]
 }.run(conn)
 ```
 
 
-__Example:__ A compound index can be created by returning an array of values to use as
-the secondary index key.
+__Example:__ Create a compount index based on the fields `post_id` and `date`.
 
 ```rb
-r.table('dc').index_create('parental_planets') {|hero|
-    [hero['mothers_home_planet'], hero['fathers_home_planet']]
+r.table('comments').index_create('post_and_date'){ |doc|
+    [doc["post_id"], doc["date"]]
 }.run(conn)
 ```
 
-
-__Example:__ A multi index can be created by passing an optional multi argument. Multi
+__Example:__ Create a multi index based on the field `authors`.
 index functions should return arrays and allow you to query based on whether a value
 is present in the returned array. The example would allow us to get heroes who possess
 a specific ability (the field 'abilities' is an array).
 
 
 ```rb
-r.table('dc').index_create('abilities', :multi => true).run(conn)
+r.table('posts').index_create('authors', :multi=>true).run(conn)
 ```
 
-__Example:__ The above can be combined to create a multi index on a function that
+__Example:__ Create a multi index based on an arbitrary expression.
 returns an array of values.
 
 ```rb
-r.table('dc').index_create('parental_planets', :multi => true) {|hero|
-    [hero['mothers_home_planet'], hero['fathers_home_planet']]
+r.table('posts').index_create('authors'){ |doc|
+    r.branch(
+        doc.has_fields("updated_at"),
+        doc["updated_at"],
+        doc["created_at"]
+    )
 }.run(conn)
 ```

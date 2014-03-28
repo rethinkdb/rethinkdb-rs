@@ -4,45 +4,52 @@ language: Python
 permalink: api/python/index_create/
 command: index_create
 related_commands:
-    index_drop: index_drop/
+    index_wait: index_wait/
+    index_status: index_status/
     index_list: index_list/
+    index_drop: index_drop/
 ---
 
 # Command syntax #
 
 {% apibody %}
-table.index_create(index_name[, index_function]) &rarr; object
+table.index_create(index_name[, index_function][, multi=True]) &rarr; object
 {% endapibody %}
 
 # Description #
 
 Create a new secondary index on this table.
 
-__Example:__ To efficiently query our heroes by code name we have to create a secondary
-index.
+RethinkDB supports different types of secondary indexes:
+
+- Simple indexes based on the value of a single field.
+- Compound indexes based on multiple fields.
+- Multi indexes based on arrays of values.
+- Indexes based on arbitrary expressions.
+
+If you are not familiar with secondary indexes, read
+[the article about secondary indexes](http://www.rethinkdb.com/docs/secondary-indexes/)
+to learn more about them.
+
+__Example:__ Create a simple index based on the field `post_id`.
 
 ```py
-r.table('dc').index_create('code_name').run(conn)
+r.table('comments').index_create('post_id').run(conn)
+```
+__Example:__ Create a simple index based on the nested field `author > name`.
+
+
+```py
+r.table('comments').index_create('author_name', r.row["author"]["name"]).run(conn)
 ```
 
 
-__Example:__ You can also create a secondary index based on an arbitrary function on the document.
+__Example:__ Create a compount index based on the fields `post_id` and `date`.
 
 ```py
-r.table('dc').index_create('power_rating',
-    lambda hero: hero['combat_power'] + (2 * hero['compassion_power'])
-    ).run(conn)
+r.table('comments').index_create('post_and_date', [r.row["post_id"], r.row["date"]]).run(conn)
 ```
-
-
-__Example:__ A compound index can be created by returning an array of values to use as
-the secondary index key.
-
-```py
-r.table('dc').index_create('parental_planets',
-    lambda hero: [hero['mothers_home_planet'], hero['fathers_home_planet']]
-    ).run(conn)
-```
+__Example:__ Create a multi index based on the field `authors`.
 
 
 __Example:__ A multi index can be created by passing an optional multi argument. Multi
@@ -51,14 +58,17 @@ is present in the returned array. The example would allow us to get heroes who p
 specific ability (the field 'abilities' is an array).
 
 ```py
-r.table('dc').index_create('abilities', multi=True).run(conn)
+r.table('posts').index_create('authors', multi=True).run(conn)
 ```
 
-__Example:__ The above can be combined to create a multi index on a function that
-returns an array of values.
+__Example:__ Create a multi index based on an arbitrary expression.
 
 ```py
-r.table('dc').index_create('parental_planets',
-    lambda hero: [hero['mothers_home_planet'], hero['fathers_home_planet']],
-    multi=True).run(conn)
+r.table('posts').index_create('authors', lambda doc:
+    r.branch(
+        doc.has_fields("updated_at"),
+        doc["updated_at"],
+        doc["created_at"]
+    )
+).run(conn)
 ```

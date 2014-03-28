@@ -7,6 +7,8 @@ io:
     -   - table
         - object
 related_commands:
+    indexWait: index_wait/
+    indexStatus: index_status/
     indexList: index_list/
     indexDrop: index_drop/
 
@@ -15,46 +17,58 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.indexCreate(indexName[, indexFunction]) &rarr; object
+table.indexCreate(indexName[, indexFunction][, {multi: true}]) &rarr; object
 {% endapibody %}
 
 # Description #
 
 Create a new secondary index on this table.
 
-__Example:__ To efficiently query our heroes by code name we have to create a secondary
-index.
+RethinkDB supports different types of secondary indexes:
+
+- Simple indexes based on the value of a single field.
+- Compound indexes based on multiple fields.
+- Multi indexes based on arrays of values.
+- Indexes based on arbitrary expressions.
+
+If you are not familiar with secondary indexes, read
+[the article about secondary indexes](http://www.rethinkdb.com/docs/secondary-indexes/)
+to learn more about them.
+
+__Example:__ Create a simple index based on the field `postId`.
 
 ```js
-r.table('dc').indexCreate('code_name').run(conn, callback)
+r.table('comments').indexCreate('postId').run(conn, callback)
+```
+
+__Example:__ Create a simple index based on the nested field `author > name`.
+
+```js
+r.table('comments').indexCreate('authorName', r.row("author")("name")).run(conn, callback)
 ```
 
 
-__Example:__ A compound index can be created by returning an array of values to use as
-the secondary index key.
+__Example:__ Create a compount index based on the fields `postId` and `date`.
 
 ```js
-r.table('dc').indexCreate('parental_planets', function(hero) {
-    return [hero('mothers_home_planet'), hero('fathers_home_planet')];
-}).run(conn, callback)
+r.table('comments').indexCreate('postAndDate', [r.row("postId"), r.row("date")]).run(conn, callback)
 ```
 
-
-__Example:__ A multi index can be created by passing an optional multi argument. Multi
-index functions should return arrays and allow you to query based on whether a value
-is present in the returned array. The example would allow us to get heroes who possess
-a specific ability (the field 'abilities' is an array).
-
+__Example:__ Create a multi index based on the field `authors`.
 
 ```js
-r.table('dc').indexCreate('abilities', {multi:true}).run(conn, callback)
+r.table('posts').indexCreate('authors', {multi: true}).run(conn, callback)
 ```
 
-__Example:__ The above can be combined to create a multi index on a function that
+__Example:__ Create a multi index based on an arbitrary expression.
 returns an array of values.
 
 ```js
-r.table('dc').indexCreate('parental_planets', function(hero) {
-    return [hero('mothers_home_planet'), hero('fathers_home_planet')];
-}, {multi:true}).run(conn, callback)
+r.table('posts').indexCreate('authors', function(doc) {
+    return r.branch(
+        doc.hasFields("updatedAt"),
+        doc("updatedAt"),
+        doc("createdAt")
+    )
+}).run(conn, callback)
 ```

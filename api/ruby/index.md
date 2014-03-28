@@ -321,16 +321,15 @@ r.db('test').table_list().run(conn)
 ## [index_create](index_create/) ##
 
 {% apibody %}
-table.index_create(index_name[, index_function]) &rarr; object
+table.index_create(index_name[, index_function][, :muti => true]) &rarr; object
 {% endapibody %}
 
 Create a new secondary index on this table.
 
-__Example:__ To efficiently query our heros by code name we have to create a secondary
-index.
+__Example:__ Create a simple index based on the field `post_id`.
 
 ```rb
-r.table('dc').index_create('code_name').run(conn)
+r.table('comments').index_create('post_id').run(conn)
 ```
 
 [Read more about this command &rarr;](index_create/)
