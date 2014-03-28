@@ -2291,7 +2291,7 @@ r.expr({:a => 'b'}).merge({:b => [1,2,3]}).run(conn)
 ## [js](js/) ##
 
 {% apibody %}
-r.js(jsString) &rarr; value
+r.js(js_string[, :timeout => <number>]) &rarr; value
 {% endapibody %}
 
 Create a javascript expression.

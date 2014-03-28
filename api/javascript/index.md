@@ -2378,7 +2378,7 @@ r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)
 ## [js](js/) ##
 
 {% apibody %}
-r.js(jsString) &rarr; value
+r.js(jsString[, {timeout: <number>}]) &rarr; value
 {% endapibody %}
 
 Create a javascript expression.
