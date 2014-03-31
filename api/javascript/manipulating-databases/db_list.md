@@ -5,7 +5,7 @@ permalink: api/javascript/db_list/
 command: dbList
 io:
     -   - r
-        - object
+        - array
 related_commands:
     dbCreate: db_create/
     dbDrop: db_drop/
