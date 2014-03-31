@@ -32,7 +32,7 @@ rethinkdb dump --connect <host>:<port> [--auth <auth_key>]
 where:
 
 - `host` is the IP address of any machine of your RethinkDB cluster
-- `port` is the port for driver connections (by default 29015)
+- `port` is the port for driver connections (by default 28015)
 - `auth_key` is an optional [authentication key](/docs/security) to connect to the cluster
 
 This command will export all your data to a `tar.gz` file named
@@ -69,7 +69,7 @@ where:
 
 - `exported_file` is the data file exported with `rethinkdb dump`: by default named `rethinkdb_dump_<timestamp>.tar.gz` (this may vary depending on your platform)
 - `host` is the IP address of any machine of your RethinkDB cluster
-- `port` is the port for driver connections (by default 29015)
+- `port` is the port for driver connections (by default 28015)
 - `auth_key` is an optional [authentication key](/docs/security) to connect to the cluster
 
 Use `rethinkdb restore --help` to see the complete list of options for importing your data.
