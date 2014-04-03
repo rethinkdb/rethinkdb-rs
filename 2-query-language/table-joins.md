@@ -186,7 +186,7 @@ And here is example data for the `authors_posts` table:
 }
 ```
 
-In a many to many relation, we can multiple `eq_join` commands to join
+In a many to many relation, we can use multiple `eq_join` commands to join
 the data from all three tables:
 
 ```python
