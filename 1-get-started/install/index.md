@@ -50,6 +50,10 @@ alias: install/
         <img src="/assets/images/docs/install-platforms/mint.png" />
         <p class="name">Linux Mint</p>
     </a>
+    <a class="mini icon-box install-platform" href="raspbian/">
+        <img src="/assets/images/docs/install-platforms/raspbian.png" />
+        <p class="name">Raspbian</p>
+    </a>
 </div>
 
 {% infobox info %}
