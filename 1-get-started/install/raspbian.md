@@ -65,4 +65,6 @@ In the make file, remove all the text -m32 that you can find in the first part o
 make
 ```
 
+_Note_: Make sure you have more than 1GB of swap space available
+
 {% include install-next-step.md %}
