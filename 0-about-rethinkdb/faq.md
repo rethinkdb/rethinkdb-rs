@@ -85,18 +85,13 @@ Javascript, as well as [community supported](/docs/install-drivers/)
 client drivers can run on any platform where these languages are
 supported.
 
-RethinkDB doesn't have other strict requirements. It has a custom
-caching engine and can run on low-memory nodes with large amounts of
-on-disk data, Amazon EC2 instances, etc. It also has specialized
-support for high-end hardware and does a great job on high-memory
-nodes with many cores, solid-state storage, and high-throughput
-network hardware.
-
-_Note_: With the default settings (cache of 1GB per table), we
-recommend using servers with at least 2GB of RAM. This requirement
-will go away as soon as the
-[new cache memory manager](https://github.com/rethinkdb/rethinkdb/issues/97)
-will be available.
+It's best to run RethinkDB on nodes with at least 2GB of RAM, but
+there are no other strict hardware requirements. RethinkDB has a
+custom caching engine and can run on low-memory nodes with large
+amounts of on-disk data, Amazon EC2 instances, etc. It also has
+specialized support for high-end hardware and does a great job on
+high-memory nodes with many cores, solid-state storage, and
+high-throughput network hardware.
 
 ## Does RethinkDB support SQL? ##
 

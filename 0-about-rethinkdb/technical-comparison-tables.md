@@ -371,4 +371,4 @@ MongoDB can use all free memory on the server for cache space automatically
 without any configuration of a cache size.
 
 RethinkDB implements a custom B-tree aware caching mechanism. The cache size
-can be configured on a per-table basis.
+can be configured on a per-machine basis.
