@@ -53,6 +53,6 @@ r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn, callback
 __Example:__ Create a table to log the very fast actions of the heroes.
 
 ```js
-r.db('test').tableCreate('dc_universe', {hardDurability: false}).run(conn, callback)
+r.db('test').tableCreate('dc_universe', {durability: 'soft'}).run(conn, callback)
 ```
 

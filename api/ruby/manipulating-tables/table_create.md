@@ -39,3 +39,16 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 r.db('test').table_create('dc_universe').run(conn)
 ```
 
+__Example:__ Create a table named 'dc_universe' using the field 'name' as primary key.
+
+```rb
+r.db('test').table_create('dc_universe', :primary_key=>'name').run(conn)
+```
+
+
+__Example:__ Create a table to log the very fast actions of the heroes.
+
+```rb
+r.db('test').table_create('hero_actions', :durability=>'soft').run(conn)
+```
+
