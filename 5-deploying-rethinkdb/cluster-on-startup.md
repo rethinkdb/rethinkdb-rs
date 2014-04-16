@@ -161,7 +161,7 @@ config file without the `.conf` extension.
 * `cores` &mdash; Number of cores to use.  
   *Default*: Number of cores of the CPU.
 
-* `cache_size` &mdash; Size of the cache in MB.  
+* `cache-size` &mdash; Size of the cache in MB.  
   *Default*: Half of the available RAM on startup.
 
 * `io-threads` &mdash; Number of simultaneous I/O operations can happen at the same time.  
