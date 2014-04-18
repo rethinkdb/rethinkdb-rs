@@ -124,7 +124,7 @@ def add_doc(file_name, result_file):
     details_file = codecs.open(file_name, "r", "utf-8")
 
     # Define some regex that we will use
-    ignore_pattern = re.compile("#.*#.*") # Used to skip the titles like Description, Related commands etc.
+    ignore_pattern = re.compile("#.*#.*|<img.*/>") # Used to skip the titles like Description, Related commands etc.
 
     # Used to skip the body (command syntax)
     start_body_pattern = re.compile("{%\s*apibody\s*%}\s*")
