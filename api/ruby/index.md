@@ -2153,7 +2153,7 @@ time.to_epoch_time() &rarr; number
 
 Convert a time object to its epoch time.
 
-__Example:__ Return the current time in an ISO8601 format.
+__Example:__ Return the current time in seconds since the Unix Epoch with millisecond-precision.
 
 ```rb
 r.now().to_epoch_time()
