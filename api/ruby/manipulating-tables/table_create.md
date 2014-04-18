@@ -16,6 +16,8 @@ db.table_create(table_name[, options]) &rarr; object
 
 # Description #
 
+<img src="/assets/images/docs/api_illustrations/table_create_ruby.png" class="api_command_illustration" />
+
 Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
