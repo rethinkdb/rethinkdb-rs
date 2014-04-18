@@ -12,6 +12,7 @@ io:
 
 {% apibody %}
 query.run(conn[, options], callback)
+query.run(conn[, options]) &rarr; promise
 {% endapibody %}
 
 # Description #
@@ -32,6 +33,7 @@ been committed to disk.
 - `groupFormat`: what format to return `grouped_data` and `grouped_streams` in (default: `'native'`).
   Set this to `'raw'` if you want the raw pseudotype.
 
+If no callback is provided, a promise will be returned.
 
 __Example:__ Run a query on the connection `conn` and log each row in
 the result to the console.
@@ -41,6 +43,20 @@ r.table('marvel').run(conn, function(err, cursor) {
     cursor.each(console.log);
 })
 ```
+
+__Example:__ Run a query on the connection `conn`, retrieve all the rows and log
+all of them.
+
+```js
+r.table('marvel').run(conn).then(function(cursor) {
+    cursor.toArray().then(function(result) {
+        console.log(result);
+    })
+}).error(function(err) {
+    // process error
+})
+```
+
 
 __Example:__ If you are OK with potentially out of date data from all
 the tables involved in this query and want potentially faster reads,

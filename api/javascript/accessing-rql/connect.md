@@ -16,6 +16,9 @@ related_commands:
 {% apibody %}
 r.connect(options, callback)
 r.connect(host, callback)
+r.connect(options) &rarr; promise
+r.connect(host) &rarr; promise
+
 {% endapibody %}
 
 # Description #
@@ -31,9 +34,22 @@ options:
 If the connection cannot be established, a `RqlDriverError` will be
 passed to the callback instead of a connection.
 
+If no callback is provided, a promise will be returned.
+
 __Example:__ Opens a new connection to the database.
 
 ```js
 r.connect({host:'localhost', port:28015, db:'marvel', authKey:'hunter2'},
           function(err, conn) { ... })
+```
+
+__Example:__ Opens a new connection to the database and using promises.
+
+```js
+var p = r.connect({host:'localhost', port:28015, db:'marvel', authKey:'hunter2'});
+p.then(function(conn) {
+    // ...
+}).error(function(error) {
+    // ...
+})
 ```

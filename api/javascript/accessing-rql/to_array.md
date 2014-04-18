@@ -20,6 +20,8 @@ related_commands:
 {% apibody %}
 cursor.toArray(callback)
 array.toArray(callback)
+cursor.toArray() &rarr; promise
+array.toArray() &rarr; promise
 {% endapibody %}
 
 # Description #
@@ -47,5 +49,13 @@ cursor.each(function(err, row) {
     if (err) throw err;
     processResults(results);
 });
+```
+
+__Example:__ Using promises.
+
+```js
+cursor.toArray().then(function(results) {
+    processResults(results);
+}).error(console.log);
 ```
 

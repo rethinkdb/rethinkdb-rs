@@ -20,6 +20,9 @@ related_commands:
 {% apibody %}
 cursor.next(callback)
 array.next(callback)
+cursor.next() &rarr; promise
+array.next() &rarr; promise
+
 {% endapibody %}
 
 # Description #
@@ -129,3 +132,27 @@ query.run( conn, function(err, cursor) {
 
 })
 ```
+
+__Example:__ You can retrieve all the elements of a cursor with the `next`
+command using recursion and promises.
+
+```js
+query.run(conn).then(function(cursor) {
+    var fetchNext = function(result) {
+        if (cursor.hasNext()) {
+            processRow(result);
+            cursor.next().then(fetchNext).error(console.log);
+        }
+        // If you use one connection per query, the connection should be closed.
+        // else { conn.close() }
+    }
+
+    if (cursor.hasNext()) {
+        cursor.next(fetchNext);
+    }
+    // If you use one connection per query, the connection should be closed.
+    // else { conn.close() }
+}).error(console.log);
+```
+
+
