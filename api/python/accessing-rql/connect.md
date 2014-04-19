@@ -12,12 +12,13 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.connect(host="localhost", port=28015, db="test", auth_key="", timeout=20)
-    &rarr; connection
+r.connect(host="localhost", port=28015, db="test", auth_key="", timeout=20) &rarr; connection
 r.connect(host) &rarr; connection
 {% endapibody %}
 
 # Description #
+
+<img src="/assets/images/docs/api_illustrations/connect_python.png" class="api_command_illustration" />
 
 Create a new connection to the database server. The keyword arguments are:
 
@@ -27,15 +28,20 @@ Create a new connection to the database server. The keyword arguments are:
 - `auth_key`: the authentification key, by default the empty string.
 - `timeout`: timeout period for the connection to be opened, by default `20` (seconds).
 
+If the connection cannot be established, a `RqlDriverError` exception will be thrown.
 
-Create a new connection to the database server.
-
-If the connection cannot be established, a `RqlDriverError` exception
-will be thrown.
-
-__Example:__ Opens a connection using the default host and port but
-specifying the default database.
+__Example:__ Opens a connection using the default host and port but specifying the default database.
 
 ```py
 conn = r.connect(db='marvel')
 ```
+
+__Example:__ Opens a new connection to the database.
+
+```py
+conn = r.connect(host = 'localhost',
+                 port = 28015,
+                 db = 'heroes',
+                 auth_key = 'hunter2')
+```
+

@@ -18,6 +18,8 @@ r.connect(opts={}) &rarr; connection
 
 # Description #
 
+<img src="/assets/images/docs/api_illustrations/connect_ruby.png" class="api_command_illustration" />
+
 Create a new connection to the database server.  Accepts the following
 options:
 
@@ -26,8 +28,13 @@ options:
 - `db`: the default database (default `test`).
 - `auth_key`: the authentication key (default none).
 
-If the connection cannot be established, a `RqlDriverError` exception
-will be thrown.
+If the connection cannot be established, a `RqlDriverError` exception will be thrown.
+
+__Example:__ Opens a connection using the default host and port but specifying the default database.
+
+```rb
+conn = r.connect(:db => 'marvel')
+```
 
 __Example:__ Opens a new connection to the database.
 
