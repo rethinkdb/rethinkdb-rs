@@ -24,6 +24,8 @@ table.insert(json | [json][, {durability: "hard", returnVals: false, upsert: fal
 
 # Description #
 
+<img src="/assets/images/docs/api_illustrations/insert_javascript.png" class="api_command_illustration" />
+
 Insert documents into a table. Accepts a single document or an array of
 documents.
 
