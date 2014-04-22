@@ -61,8 +61,6 @@ __Want to learn more about joins in RethinkDB?__ See [how to use joins](/docs/ta
 to query _one to many_ and _many to many_ relations.
 {% endinfobox %}
 
-
-
 ## Compound indexes ##
 
 Use compound indexes to efficiently retrieve documents by multiple fields.
@@ -78,7 +76,6 @@ r.table("users").index_create("full_name"){ |row|
 # Wait for the index to be ready to use
 r.table("users").index_wait("full_name").run(conn)
 ```
-
 
 ### Querying ###
 
@@ -98,13 +95,13 @@ r.table("posts").eq_join("author_full_name", r.table("users"), :index => "full_n
     .run(conn)
 ```
 
-
 ## Multi indexes ##
 
 To index a single document multiple times by different values use a multi index. For
 example, you can index a blog post with an array of tags by each tag.
 
 ### Creation ###
+
 Suppose each post has a field `tags` that maps to an array of tags. The schema of the
 table `posts` would be something like:
 
@@ -135,10 +132,9 @@ r.table("posts").get_all("travel", :index => "tags").run(conn)
 r.table("tags").eq_join("tag", r.table("posts"), :index => "tags").run(conn)
 ```
 
-
 ## Indexes on arbitrary ReQL expressions ##
 
-You can create an index on an arbitrary expressions by passing an anonymous
+You can create an index on an arbitrary expression by passing an anonymous
 function to `index_create`.
 
 
@@ -152,6 +148,16 @@ r.table("users").index_create("full_name2"){ |user|
 The function you give to `index_create` must be deterministic. In practice this means that
 that you cannot use a function that contains a sub-query or the `r.js` command.
 
+### Using multi indexes and arbitrary expressions together ###
+
+You can create a multi index on an arbitrary expression in similar fashion,
+by passing the multi option as the last parameter to `indexCreate`.
+
+```rb
+# Create a multi index on an ReQL expression
+r.table("users").index_create("activities", r.row("hobbies").add(r.row("sports")),
+    :multi => true).run(conn)
+```
 
 # Administrative operations #
 
@@ -173,7 +179,6 @@ r.table("users").index_status("last_name").run(conn)
 # return only when the index "last_name" is ready
 r.table("users").index_wait("last_name").run(conn)
 ```
-
 
 ## Manipulating indexes with the web UI ##
 
@@ -224,7 +229,7 @@ Secondary indexes have the following limitations:
 
 Browse the API reference to learn more about secondary index commands:
 
-* Manipulating indexe: [index_create](/api/ruby/index_create/), [index_drop](/api/ruby/index_drop/) and [index_list](/api/ruby/index_list/)
+* Manipulating indexes: [index_create](/api/ruby/index_create/), [index_drop](/api/ruby/index_drop/) and [index_list](/api/ruby/index_list/)
 * Using indexes: [get_all](/api/ruby/get_all/), [between](/api/ruby/between/), [eq_join](/api/ruby/eq_join/) and [order_by](/api/ruby/order_by/)
 
 
