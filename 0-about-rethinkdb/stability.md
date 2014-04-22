@@ -1,50 +1,57 @@
 ---
 layout: documentation
-title: "RethinkDB stability information"
-short_title: RethinkDB stability
+title: "Stability report"
+short_title: Stability report
 active: docs
 docs_active: stability
 permalink: stability/
 alias: docs/stability/
-js: faq_index
 ---
 
-<div id="faqcontents"></div>
----
-{% faqsection Stability under specific scenarios %}
+RethinkDB has been publicly available for a little over a year and is still a young product under heavy development. There are hundreds of successful deployments, and we constantly get stability reports from users in production and development environments.
 
-## RethinkDB on a single node ##
+Since all complex software systems are quickly evolving, we use the following terminology to refer to potential issues:
 
-RethinkDB is an open-source, distributed database built to store JSON
-documents and scale to multiple machines with very little effort. It's
-easy to set up and learn, and it has a pleasant query language that
-supports really useful queries like table joins, groupings, and
-aggregations.
+- No `systemic` issues means there are no underlying architectural problems that would prevent us from quickly fixing a reported bug.
+- No `required` missing features means we can suggest workarounds for potential problems.
 
 {% infobox info %}
-    <p><strong>RethinkDB in under two minutes:</strong> see the <a href="/videos/what-is-rethinkdb">highlights video</a>.</p>
+<strong>Found a problem?</strong> Help make RethinkDB better &mdash; <a href="/community">ask a question</a> or <a href="https://github.com/rethinkdb/rethinkdb/issues/new">submit a bug report</a>.
 {% endinfobox %}
 
-## RethinkDB in small clusters ##
+# Single node deployments #
 
-Find out how RethinkDB compares to other NoSQL databases:
+|                        | Single node stability report |
+| :--------------------- | --------- |
+| Data integrity               | There are no known data integrity issues. |
+| Crash reports                | You may encounter crashes under certain workloads, but there are no systemic issues that we're aware of. |
+| Query performance            | You may encounter slowdowns for certain queries, but there are no systemic issues that we're aware of. |
+| Memory allocation            | There are no known memory leaks or systemic memory issues. |
+| Performance under heavy load | There is no systemic performance degradation under heavy load. |
+| Features                     | All of the required features are available. |
+| Extent of testing            | Single node deployments have been extensively tested. |
 
-- [RethinkDB compared to MongoDB](/docs/comparison-tables/) &mdash; an unbiased technical comparison between RethinkDB and MongoDB.
-- [RethinkDB vs today's NoSQL](/docs/rethinkdb-vs-mongodb/) &mdash; our biased, but more personal take on what makes RethinkDB different.
+# Deployments of small clusters #
 
-## RethinkDB in large clusters ##
+|                        | Small cluster stability report (five machines or fewer) |
+| :--------------------- | --------- |
+| Data integrity               | There are no known data integrity issues. |
+| Crash reports                | You may encounter crashes under certain workloads, but there are no systemic issues that we're aware of. |
+| Query performance            | You may encounter slowdowns for certain queries, but there are no systemic issues that we're aware of. |
+| Memory allocation            | There are no known memory leaks or systemic memory issues. |
+| Performance under heavy load | There is no systemic performance degradation under heavy load. |
+| Features                     | All of the required features are available. |
+| Extent of testing            | Small cluster deployments are still undergoing heavy testing. |
 
-- RethinkDB is a great choice if you need flexible schemas, value ease of use,
-  and are planning to run anywhere from a single node to a sixteen-node
-  cluster.
-- If you periodically copy your data into a separate system to do analytics
-  (such as Hadoop), but your analytics are not incredibly computationally
-  intensive, you can significantly simplify things by running your analytical
-  queries in RethinkDB directly. RethinkDB will _not_ lock your database.
-- Finally, if you are already running a database cluster and are overwhelmed by
-  cluster administration and the complexities of sharding, replication, and
-  failover, you will love RethinkDB. Sharding and replication can be done in a
-  few clicks in the Web UI or on the command line.
+# Deployments of large clusters #
 
-{% endfaqsection %}
+|                        | Large cluster stability report (more than five machines) |
+| :--------------------- | --------- |
+| Data integrity               | There are no known data integrity issues. |
+| Crash reports                | You may encounter crashes under certain workloads, but there are no systemic issues that we're aware of. |
+| Query performance            | You may encounter slowdowns for certain queries, but there are no systemic issues that we're aware of. |
+| Memory allocation            | There are no known memory leaks or systemic memory issues. |
+| Performance under heavy load | There may be systemic performance issues in large cluster deployments. See <a href="https://github.com/rethinkdb/rethinkdb/issues/1861">#1861</a> and <a href="https://github.com/rethinkdb/rethinkdb/issues/1944">#1944</a> for details. |
+| Features                     | Required features are still under development. See <a href="https://github.com/rethinkdb/rethinkdb/issues/1911">#1911</a> for details. |
+| Extent of testing            | Large cluster deployments have not been extensively tested. |
 
