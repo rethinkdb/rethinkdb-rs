@@ -152,7 +152,7 @@ by passing the multi option as the last parameter to `indexCreate`.
 
 ```py
 # Create a multi index on an ReQL expression
-r.table("users").index_create("activities", r.row("hobbies").add(r.row("sports")),
+r.table("users").index_create("activities", r.row["hobbies"] + r.row["sports"]),
     multi=True).run(conn)
 ```
 
