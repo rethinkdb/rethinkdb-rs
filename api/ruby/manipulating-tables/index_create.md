@@ -18,8 +18,8 @@ table.index_create(index_name[, index_function]) &rarr; object
 
 Create a new secondary index on this table.
 
-__Example:__ To efficiently query our heros by name we can create a secondary index
-based on the value of that field. We can already quickly query heros by name with the
+__Example:__ To efficiently query our heroes by name we can create a secondary index
+based on the value of that field. We can already quickly query heroes by name with the
 primary index but to do the same based on hero code names we'll have to create a
 secondary index based on that attribute.
 

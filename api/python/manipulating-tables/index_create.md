@@ -18,7 +18,7 @@ table.index_create(index_name[, index_function]) &rarr; object
 
 Create a new secondary index on this table.
 
-__Example:__ To efficiently query our heros by code name we have to create a secondary
+__Example:__ To efficiently query our heroes by code name we have to create a secondary
 index.
 
 ```py
