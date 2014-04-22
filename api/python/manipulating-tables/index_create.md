@@ -30,8 +30,8 @@ __Example:__ You can also create a secondary index based on an arbitrary functio
 
 ```py
 r.table('dc').index_create('power_rating',
-lambda hero: hero['combat_power'] + (2 * hero['compassion_power'])
-).run(conn)
+    lambda hero: hero['combat_power'] + (2 * hero['compassion_power'])
+    ).run(conn)
 ```
 
 
@@ -40,8 +40,8 @@ the secondary index key.
 
 ```py
 r.table('dc').index_create('parental_planets',
-lambda hero: [hero['mothers_home_planet'], hero['fathers_home_planet']]
-).run(conn)
+    lambda hero: [hero['mothers_home_planet'], hero['fathers_home_planet']]
+    ).run(conn)
 ```
 
 
@@ -59,6 +59,6 @@ returns an array of values.
 
 ```py
 r.table('dc').index_create('parental_planets',
-lambda hero: [hero['mothers_home_planet'], hero['fathers_home_planet']],
-multi=True).run(conn)
+    lambda hero: [hero['mothers_home_planet'], hero['fathers_home_planet']],
+    multi=True).run(conn)
 ```
