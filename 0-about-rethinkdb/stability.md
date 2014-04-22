@@ -32,7 +32,7 @@ Single node deployments have been extensively tested and all known systemic issu
 | Sustained load               | There is no systemic degradation under sustained load. |
 | Features                     | All of the required features are available. |
 | Extent of testing            | Single node deployments have been extensively tested. |
-| Migration                    | You will have to <a href="/docs/migration/">migrate your data</a> for major feature releases. |
+| Migration                    | You will have to <a href="/docs/migration/">migrate your data</a> for major feature releases (1.x -> 1.y). |
 
 # Deployments of small clusters #
 
@@ -48,7 +48,7 @@ Small cluster deployments are still undergoing heavy testing, but most known sys
 | Scalability                  | There are no known systemic scalability issues in small cluster deployments. |
 | Features                     | All of the required features are available. Some convenience features are still under development (e.g. resharding without loss of availability). See <a href="https://github.com/rethinkdb/rethinkdb/issues/1911">#1911</a> for details. |
 | Extent of testing            | Small cluster deployments are still undergoing heavy testing. |
-| Migration                    | You will have to <a href="/docs/migration/">migrate your data</a> for major feature releases. |
+| Migration                    | You will have to <a href="/docs/migration/">migrate your data</a> for major feature releases (1.x -> 1.y). |
 
 # Deployments of large clusters #
 
@@ -64,5 +64,5 @@ Large cluster deployments have not been sufficiently tested, and required featur
 | Scalability                  | There may be systemic scalability issues in large cluster deployments. See <a href="https://github.com/rethinkdb/rethinkdb/issues/1861">#1861</a> and <a href="https://github.com/rethinkdb/rethinkdb/issues/1944">#1944</a> for details. |
 | Features                     | Required features are still under development. See <a href="https://github.com/rethinkdb/rethinkdb/issues/1911">#1911</a> for details. |
 | Extent of testing            | Large cluster deployments have not been sufficiently tested. |
-| Migration                    | You will have to <a href="/docs/migration/">migrate your data</a> for major feature releases. |
+| Migration                    | You will have to <a href="/docs/migration/">migrate your data</a> for major feature releases (1.x -> 1.y). |
 
