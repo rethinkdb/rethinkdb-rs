@@ -155,8 +155,9 @@ by passing the multi option as the last parameter to `indexCreate`.
 
 ```rb
 # Create a multi index on an ReQL expression
-r.table("users").index_create("activities", r.row("hobbies").add(r.row("sports")),
-    :multi => true).run(conn)
+r.table("users").index_create("activities", :multi => true){ |activity|
+    activity["hobbies"] + activity["sports"]
+}.run(conn)
 ```
 
 # Administrative operations #
