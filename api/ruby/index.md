@@ -31,16 +31,14 @@ include RethinkDB::Shortcuts
 r.connect(opts={}) &rarr; connection
 {% endapibody %}
 
-Create a new connection to the database server.  Accepts the following
-options:
+Create a new connection to the database server.  Accepts the following options:
 
 - `host`: the host to connect to (default `localhost`).
 - `port`: the port to connect on (default `28015`).
 - `db`: the default database (default `test`).
 - `auth_key`: the authentication key (default none).
 
-If the connection cannot be established, a `RqlDriverError` exception
-will be thrown.
+If the connection cannot be established, a `RqlDriverError` exception will be thrown.
 
 __Example:__ Opens a new connection to the database.
 
@@ -2153,7 +2151,7 @@ time.to_epoch_time() &rarr; number
 
 Convert a time object to its epoch time.
 
-__Example:__ Return the current time in an ISO8601 format.
+__Example:__ Return the current time in seconds since the Unix Epoch with millisecond-precision.
 
 ```rb
 r.now().to_epoch_time()

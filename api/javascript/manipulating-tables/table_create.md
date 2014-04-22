@@ -19,6 +19,8 @@ db.tableCreate(tableName[, options]) &rarr; object
 
 # Description #
 
+<img src="/assets/images/docs/api_illustrations/table_create_javascript.png" class="api_command_illustration" />
+
 Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
@@ -53,6 +55,6 @@ r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn, callback
 __Example:__ Create a table to log the very fast actions of the heroes.
 
 ```js
-r.db('test').tableCreate('dc_universe', {hardDurability: false}).run(conn, callback)
+r.db('test').tableCreate('dc_universe', {durability: 'soft'}).run(conn, callback)
 ```
 

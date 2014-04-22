@@ -16,6 +16,8 @@ db.table_create(table_name[, options]) &rarr; object
 
 # Description #
 
+<img src="/assets/images/docs/api_illustrations/table_create_ruby.png" class="api_command_illustration" />
+
 Create a table. A RethinkDB table is a collection of JSON documents.
 
 If successful, the operation returns an object: `{created: 1}`. If a table with the same
@@ -37,5 +39,18 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```rb
 r.db('test').table_create('dc_universe').run(conn)
+```
+
+__Example:__ Create a table named 'dc_universe' using the field 'name' as primary key.
+
+```rb
+r.db('test').table_create('dc_universe', :primary_key=>'name').run(conn)
+```
+
+
+__Example:__ Create a table to log the very fast actions of the heroes.
+
+```rb
+r.db('test').table_create('hero_actions', :durability=>'soft').run(conn)
 ```
 
