@@ -156,7 +156,7 @@ You can create a multi index on an arbitrary expression in similar fashion,
 by passing the multi option as the last parameter to `indexCreate`.
 
 ```js
-// Create a multi index on an ReQL expression
+// Create a multi index on a ReQL expression
 r.table("users").indexCreate("activities", r.row("hobbies").add(r.row("sports")),
     {multi: true}).run(conn, callback)
 ```

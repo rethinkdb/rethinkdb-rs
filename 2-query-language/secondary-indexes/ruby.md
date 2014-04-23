@@ -154,7 +154,7 @@ You can create a multi index on an arbitrary expression in similar fashion,
 by passing the multi option as the last parameter to `indexCreate`.
 
 ```rb
-# Create a multi index on an ReQL expression
+# Create a multi index on a ReQL expression
 r.table("users").index_create("activities", :multi => true){ |activity|
     activity["hobbies"] + activity["sports"]
 }.run(conn)
