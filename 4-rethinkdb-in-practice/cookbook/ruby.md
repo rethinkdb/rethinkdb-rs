@@ -398,12 +398,13 @@ the comments for the relevant post retrieved from the `comments`
 table. We could do this using a subquery:
 
 ```ruby
-r.table("posts").map{|post|
-    post.merge({"comments" => r.table("comments").filter{|comment|
-                comment["id_post"].eq(post["id"])
-            }
-        })
-    }.run
+r.table("posts").merge{ |post|
+    {
+        "comments" => r.table("comments").filter{ |comment|
+            comment["id_post"].eq(post["id"])
+        }.coerceTo("ARRAY")
+    }
+}.run
 ```
 
 ## Performing a pivot operation ##
