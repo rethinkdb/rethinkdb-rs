@@ -18,7 +18,7 @@ table.index_create(index_name[, index_function]) &rarr; object
 
 Create a new secondary index on this table.
 
-__Example:__ To efficiently query our heros by code name we have to create a secondary
+__Example:__ To efficiently query our heroes by code name we have to create a secondary
 index.
 
 ```py
@@ -30,8 +30,8 @@ __Example:__ You can also create a secondary index based on an arbitrary functio
 
 ```py
 r.table('dc').index_create('power_rating',
-lambda hero: hero['combat_power'] + (2 * hero['compassion_power'])
-).run(conn)
+    lambda hero: hero['combat_power'] + (2 * hero['compassion_power'])
+    ).run(conn)
 ```
 
 
@@ -40,13 +40,13 @@ the secondary index key.
 
 ```py
 r.table('dc').index_create('parental_planets',
-lambda hero: [hero['mothers_home_planet'], hero['fathers_home_planet']]
-).run(conn)
+    lambda hero: [hero['mothers_home_planet'], hero['fathers_home_planet']]
+    ).run(conn)
 ```
 
 
 __Example:__ A multi index can be created by passing an optional multi argument. Multi
-indexes functions should return arrays and allow you to query based on whether a value
+index functions should return arrays and allow you to query based on whether a value
 is present in the returned array. The example would allow us to get heroes who possess a
 specific ability (the field 'abilities' is an array).
 
@@ -54,3 +54,11 @@ specific ability (the field 'abilities' is an array).
 r.table('dc').index_create('abilities', multi=True).run(conn)
 ```
 
+__Example:__ The above can be combined to create a multi index on a function that
+returns an array of values.
+
+```py
+r.table('dc').index_create('parental_planets',
+    lambda hero: [hero['mothers_home_planet'], hero['fathers_home_planet']],
+    multi=True).run(conn)
+```

@@ -63,8 +63,6 @@ __Want to learn more about joins in RethinkDB?__ See [how to use joins](/docs/ta
 to query _one to many_ and _many to many_ relations.
 {% endinfobox %}
 
-
-
 ## Compound indexes ##
 
 Use compound indexes to efficiently retrieve documents by multiple fields.
@@ -81,7 +79,6 @@ r.table("users").indexCreate("full_name", [r.row("first_name"), r.row("last_name
 // Wait for the index to be ready to use
 r.table("users").indexWait("full_name").run(conn, callback)
 ```
-
 
 ### Querying ###
 
@@ -101,13 +98,13 @@ r.table("posts").eqJoin("author_full_name", r.table("users"), {index: "full_name
     .run(conn, callback)
 ```
 
-
 ## Multi indexes ##
 
 To index a single document multiple times by different values use a multi index. For
 example, you can index a blog post with an array of tags by each tag.
 
 ### Creation ###
+
 Suppose each post has a field `tags` that maps to an array of tags. The schema of the
 table `posts` would be something like:
 
@@ -138,23 +135,31 @@ r.table("posts").getAll("travel", {index: "tags"}).run(conn, callback)
 r.table("tags").eqJoin("tag", r.table("posts"), {index: "tags"}).run(conn, callback)
 ```
 
-
 ## Indexes on arbitrary ReQL expressions ##
 
-You can create an index on an arbitrary expressions by passing an anonymous
+You can create an index on an arbitrary expression by passing an anonymous
 function to `indexCreate`.
-
 
 ```js
 // A different way to do a compound index
 r.table("users").indexCreate("full_name2", function(user) {
-    r.add(user("last_name"), "_", user("first_name"))
+    return r.add(user("last_name"), "_", user("first_name"))
 }).run(conn, callback)
 ```
 
 The function you give to `indexCreate` must be deterministic. In practice this means that
 that you cannot use a function that contains a sub-query or the `r.js` command.
 
+### Using multi indexes and arbitrary expressions together ###
+
+You can create a multi index on an arbitrary expression in similar fashion,
+by passing the multi option as the last parameter to `indexCreate`.
+
+```js
+// Create a multi index on a ReQL expression
+r.table("users").indexCreate("activities", r.row("hobbies").add(r.row("sports")),
+    {multi: true}).run(conn, callback)
+```
 
 # Administrative operations #
 
@@ -176,7 +181,6 @@ r.table("users").indexStatus("last_name").run(conn, callback)
 // return only when the index "last_name" is ready
 r.table("users").indexWait("last_name").run(conn, callback)
 ```
-
 
 ## Manipulating indexes with the web UI ##
 
@@ -227,7 +231,7 @@ Secondary indexes have the following limitations:
 
 Browse the API reference to learn more about secondary index commands:
 
-* Manipulating indexe: [indexCreate](/api/javascript/index_create/), [indexDrop](/api/javascript/index_drop/) and [indexList](/api/javascript/index_list/)
+* Manipulating indexes: [indexCreate](/api/javascript/index_create/), [indexDrop](/api/javascript/index_drop/) and [indexList](/api/javascript/index_list/)
 * Using indexes: [getAll](/api/javascript/get_all/), [between](/api/javascript/between/), [eqJoin](/api/javascript/eq_join/) and [orderBy](/api/javascript/order_by/)
 
 

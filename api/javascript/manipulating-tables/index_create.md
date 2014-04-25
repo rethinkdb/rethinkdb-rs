@@ -22,7 +22,7 @@ table.indexCreate(indexName[, indexFunction]) &rarr; object
 
 Create a new secondary index on this table.
 
-__Example:__ To efficiently query our heros by code name we have to create a secondary
+__Example:__ To efficiently query our heroes by code name we have to create a secondary
 index.
 
 ```js
@@ -41,7 +41,7 @@ r.table('dc').indexCreate('parental_planets', function(hero) {
 
 
 __Example:__ A multi index can be created by passing an optional multi argument. Multi
-indexes functions should return arrays and allow you to query based on whether a value
+index functions should return arrays and allow you to query based on whether a value
 is present in the returned array. The example would allow us to get heroes who possess
 a specific ability (the field 'abilities' is an array).
 
@@ -50,3 +50,11 @@ a specific ability (the field 'abilities' is an array).
 r.table('dc').indexCreate('abilities', {multi:true}).run(conn, callback)
 ```
 
+__Example:__ The above can be combined to create a multi index on a function that
+returns an array of values.
+
+```js
+r.table('dc').indexCreate('parental_planets', function(hero) {
+    return [hero('mothers_home_planet'), hero('fathers_home_planet')];
+}, {multi:true}).run(conn, callback)
+```

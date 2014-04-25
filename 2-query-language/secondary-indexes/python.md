@@ -62,8 +62,6 @@ __Want to learn more about joins in RethinkDB?__ See [how to use joins](/docs/ta
 to query _one to many_ and _many to many_ relations.
 {% endinfobox %}
 
-
-
 ## Compound indexes ##
 
 Use compound indexes to efficiently retrieve documents by multiple fields.
@@ -78,7 +76,6 @@ r.table("users").index_create("full_name", [r.row["first_name"], r.row["last_nam
 # Wait for the index to be ready to use
 r.table("users").index_wait("full_name").run(conn)
 ```
-
 
 ### Querying ###
 
@@ -97,7 +94,6 @@ r.table("users").order_by(index="full_name").run(conn)
 r.table("posts").eq_join("author_full_name", r.table("users"), index="full_name") \
     .run(conn)
 ```
-
 
 ## Multi indexes ##
 
@@ -135,12 +131,10 @@ r.table("posts").get_all("travel", index="tags").run(conn)
 r.table("tags").eq_join("tag", r.table("posts"), index="tags").run(conn)
 ```
 
-
 ## Indexes on arbitrary ReQL expressions ##
 
-You can create an index on an arbitrary expressions by passing an anonymous
+You can create an index on an arbitrary expression by passing an anonymous
 function to `index_create`.
-
 
 ```py
 # A different way to do a compound index
@@ -151,6 +145,16 @@ r.table("users").index_create("full_name2", lambda user:
 The function you give to `index_create` must be deterministic. In practice this means that
 that you cannot use a function that contains a sub-query or the `r.js` command.
 
+### Using multi indexes and arbitrary expressions together ###
+
+You can create a multi index on an arbitrary expression in similar fashion,
+by passing the multi option as the last parameter to `indexCreate`.
+
+```py
+# Create a multi index on a ReQL expression
+r.table("users").index_create("activities", r.row["hobbies"] + r.row["sports"]),
+    multi=True).run(conn)
+```
 
 # Administrative operations #
 
@@ -223,7 +227,7 @@ Secondary indexes have the following limitations:
 
 Browse the API reference to learn more about secondary index commands:
 
-* Manipulating indexe: [index_create](/api/python/index_create/), [index_drop](/api/python/index_drop/) and [index_list](/api/python/index_list/)
+* Manipulating indexes: [index_create](/api/python/index_create/), [index_drop](/api/python/index_drop/) and [index_list](/api/python/index_list/)
 * Using indexes: [get_all](/api/python/get_all/), [between](/api/python/between/), [eq_join](/api/python/eq_join/) and [order_by](/api/python/order_by/)
 
 
