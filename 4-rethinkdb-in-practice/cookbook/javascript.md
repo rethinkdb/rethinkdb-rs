@@ -468,16 +468,16 @@ the comments for the relevant post retrieved from the `comments`
 table. We could do this using a subquery:
 
 ```javascript
-r.table("posts").map(function(post) {
-    return post.merge({
-            comments: r.table("comments").filter(function(comment) {
-                return comment("id_post").eq(post("id"))
-            })
-        })
-    }).run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-    })
+r.table("posts").merge(function(post) {
+    return {
+        comments: r.table("comments").filter(function(comment) {
+            return comment("id_post").eq(post("id"))
+        }).coerceTo("ARRAY")
+    }
+}).run(connection, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+})
 ```
 
 ## Performing a pivot operation ##
