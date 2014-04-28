@@ -545,9 +545,6 @@ Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or
 combination of the two. You can pass options like `returnVals` that will return the old
 and new values of the row you have modified.
 
-__Example:__ Update Superman's age to 30. If attribute 'age' doesn't exist, adds it to
-the document.
-
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
 ```js
