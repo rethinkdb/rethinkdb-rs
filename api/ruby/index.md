@@ -814,14 +814,23 @@ selection.order_by(key1, [key2...]) -> selection<array>
 sequence.order_by(key1, [key2...]) -> array
 {% endapibody %}
 
-Sort the sequence by document values of the given key(s). `orderBy` defaults to ascending
-ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
+Sort the sequence by document values of the given key(s).   
+Sorting without an index is limited to 100.000 documents because it requires the server to hold
+the whole sequence in memory.
+
+The `order_by` command defaults to ascending ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
 `r.desc`.
 
-__Example:__ Order our heroes by a series of performance metrics.
+__Example:__ Order all the posts using the index `date`.   
 
 ```rb
-r.table('marvel').order_by(:enemies_vanquished, :damsels_saved).run(conn)
+r.table('posts').order_by(:index => 'date').run(conn)
+```
+
+The index must be previously created with [index_create](/api/ruby/index_create/).
+
+```rb
+r.table('posts').index_create('date').run(conn)
 ```
 
 [Read more about this command &rarr;](order_by/)
