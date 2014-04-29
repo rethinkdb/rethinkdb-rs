@@ -106,8 +106,7 @@ protocol is TCP based and uses
 BSON](http://api.mongodb.org/wiki/current/Mongo%20Wire%20Protocol.html).
 
 RethinkDB provides official libraries for Javascript/Node.js, Python, Ruby.
-Community contributed projects are [listed in the GitHub
-wiki.](https://github.com/rethinkdb/rethinkdb/wiki/Community-contributions)
+In addition, there are [community supported client drivers](http://www.rethinkdb.com/docs/install-drivers/) for more than half a dozen other languages.
 RethinkDB uses [Protocol Buffers](http://code.google.com/p/protobuf/) over TCP
 for client-server communications.
 
