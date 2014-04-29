@@ -20,7 +20,7 @@ sequence.order_by(key1, [key2...]) -> array
 # Description #
 
 Sort the sequence by document values of the given key(s).   
-Sorting without an index is limited to 100.000 documents because it requires the server to hold
+Sorting without an index is limited to 100,000 documents because it requires the server to hold
 the whole sequence in memory.
 
 Sorting with an index can be done only on a table or after a `between` command using the same index.

@@ -907,7 +907,7 @@ sequence.orderBy(key1, [key2...]) -> array
 {% endapibody %}
 
 Sort the sequence by document values of the given key(s).   
-Sorting without an index is limited to 100.000 documents because it requires the server to hold
+Sorting without an index is limited to 100,000 documents because it requires the server to hold
 the whole sequence in memory.
 
 The `orderBy` command defaults to ascending ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
