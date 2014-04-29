@@ -90,7 +90,7 @@ r.table('small_table').orderBy('date', r.desc('title'))
 ```
 
 __Example:__ Notice that an index ordering always has highest
-precedence. The following query orders post by date, and if multiple
+precedence. The following query orders posts by date, and if multiple
 posts were published on the same date, they will be ordered by title.
 
 ```js
