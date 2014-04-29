@@ -814,12 +814,13 @@ selection.order_by(key1, [key2...]) -> selection<array>
 sequence.order_by(key1, [key2...]) -> array
 {% endapibody %}
 
-Sort the sequence by document values of the given key(s).   
-Sorting without an index is limited to 100,000 documents because it requires the server to hold
-the whole sequence in memory.
+Sort the sequence by document values of the given key(s).
 
-The `order_by` command defaults to ascending ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
-`r.desc`.
+Sorting without an index is limited to 100,000 documents because it requires the server
+to hold the whole sequence in memory. Sorting with an index can be done only on a table
+or after a `between` command using the same index. The `order_by` command defaults to
+ascending ordering. To explicitly specify the ordering, wrap the attribute with either
+`r.asc` or `r.desc`.
 
 __Example:__ Order all the posts using the index `date`.   
 
@@ -827,7 +828,7 @@ __Example:__ Order all the posts using the index `date`.
 r.table('posts').order_by(:index => 'date').run(conn)
 ```
 
-The index must be previously created with [index_create](/api/ruby/index_create/).
+The index must have been previously created with [index_create](/api/ruby/index_create/).
 
 ```rb
 r.table('posts').index_create('date').run(conn)

@@ -9,7 +9,9 @@ io:
     -   - array
         - array
 related_commands:
-    table: table/
+    skip: skip/
+    limit: limit/
+    slice: slice/
 ---
 
 # Command syntax #
@@ -22,14 +24,14 @@ sequence.orderBy(key1, [key2...]) -> array
 
 # Description #
 
-Sort the sequence by document values of the given key(s).   
-Sorting without an index is limited to 100,000 documents because it requires the server to hold
-the whole sequence in memory.
+Sort the sequence by document values of the given key(s).
 
-Sorting with an index can be done only on a table or after a `between` command using the same index.
+Sorting without an index is limited to 100,000 documents because it requires the server
+to hold the whole sequence in memory. Sorting with an index can be done only on a table
+or after a `between` command using the same index. The `orderBy` command defaults to
+ascending ordering. To explicitly specify the ordering, wrap the attribute with either
+`r.asc` or `r.desc`.
 
-The `orderBy` command defaults to ascending ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
-`r.desc`.
 
 
 __Example:__ Order all the posts using the index `date`.   
@@ -38,7 +40,7 @@ __Example:__ Order all the posts using the index `date`.
 r.table('posts').orderBy({index: 'date'}).run(conn, callback)
 ```
 
-The index must be previously created with [indexCreate](/api/javascript/index_create/).
+The index must have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
 r.table('posts').indexCreate('date').run(conn, callback)
@@ -52,13 +54,23 @@ sort your data with arbitrary expressions.
 r.table('posts').orderBy({index: 'votes'}).run(conn, callback)
 ```
 
-The index must be previously created with [indexCreate](/api/javascript/index_create/).
+The index must have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
 r.table('posts').indexCreate('votes', function(post) {
     return post("upvotes").sub(post("downvotes"))
 }).run(conn, callback)
 ```
+
+__Example:__ If you have a sequence with less than 100.000 documents, you can sort it
+without an index.  
+Return the comments of the post with `id` of `1`, ordered by date.
+
+```js
+r.table("posts").get(1)("comments").orderBy("date")
+```
+
+
 
 __Example:__ You can efficiently order using multiple fields by using a
 [compound index](http://www.rethinkdb.com/docs/secondary-indexes/javascript/).  
@@ -68,7 +80,7 @@ Order by date and title.
 r.table('posts').orderBy({index: 'dateAndTitle'}).run(conn, callback)
 ```
 
-The index must be previously created with [indexCreate](/api/javascript/index_create/).
+The index must have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
 r.table('posts').indexCreate('dateAndTitle', [r.row("date"), r.row("title")]).run(conn, callback)
@@ -99,14 +111,7 @@ r.table("posts").between(r.time(2013, 1, 1, '+00:00'), r.time(2013, 1, 1, '+00:0
     .orderBy({index: "date"}).run(conn, callback);
 ```
 
-__Example:__ If you have a small sequence to sort, you can sort it without an index.   
-Return the comments of the post with `id` of `1`, ordered by date.
-
-```js
-r.table("posts").get(1)("comments").orderBy("date")
-```
-
-__Example:__ If you have a small sequence to sort, you can also sort with an arbitrary function.   
+__Example:__ If you have a sequence with less than 100.000 documents, you can sort it with an arbitrary function.   
 Return the comments of the post with `id` of `1`, ordered by the sum of `upvotes` minus the sum of `downvotes`.
 
 ```js

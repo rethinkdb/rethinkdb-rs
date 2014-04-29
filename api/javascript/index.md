@@ -906,12 +906,13 @@ selection.orderBy(key1, [key2...]) -> selection<array>
 sequence.orderBy(key1, [key2...]) -> array
 {% endapibody %}
 
-Sort the sequence by document values of the given key(s).   
-Sorting without an index is limited to 100,000 documents because it requires the server to hold
-the whole sequence in memory.
+Sort the sequence by document values of the given key(s).
 
-The `orderBy` command defaults to ascending ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
-`r.desc`.
+Sorting without an index is limited to 100,000 documents because it requires the server
+to hold the whole sequence in memory. Sorting with an index can be done only on a table
+or after a `between` command using the same index. The `orderBy` command defaults to
+ascending ordering. To explicitly specify the ordering, wrap the attribute with either
+`r.asc` or `r.desc`.
 
 __Example:__ Order all the posts using the index `date`.   
 
@@ -919,7 +920,7 @@ __Example:__ Order all the posts using the index `date`.
 r.table('posts').orderBy({index: 'date'}).run(conn, callback)
 ```
 
-The index must be previously created with [indexCreate](/api/javascript/index_create/).
+The index must have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
 r.table('posts').indexCreate('date').run(conn, callback)

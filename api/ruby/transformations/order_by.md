@@ -19,15 +19,13 @@ sequence.order_by(key1, [key2...]) -> array
 
 # Description #
 
-Sort the sequence by document values of the given key(s).   
-Sorting without an index is limited to 100,000 documents because it requires the server to hold
-the whole sequence in memory.
+Sort the sequence by document values of the given key(s).
 
-Sorting with an index can be done only on a table or after a `between` command using the same index.
-
-The `order_by` command defaults to ascending ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
-`r.desc`.
-
+Sorting without an index is limited to 100,000 documents because it requires the server
+to hold the whole sequence in memory. Sorting with an index can be done only on a table
+or after a `between` command using the same index. The `order_by` command defaults to
+ascending ordering. To explicitly specify the ordering, wrap the attribute with either
+`r.asc` or `r.desc`.
 
 __Example:__ Order all the posts using the index `date`.   
 
@@ -35,7 +33,7 @@ __Example:__ Order all the posts using the index `date`.
 r.table('posts').order_by(:index => 'date').run(conn)
 ```
 
-The index must be previously created with [index_create](/api/ruby/index_create/).
+The index must have been previously created with [index_create](/api/ruby/index_create/).
 
 ```rb
 r.table('posts').index_create('date').run(conn)
@@ -49,12 +47,20 @@ sort your data with arbitrary expressions.
 r.table('posts').order_by(:index => 'votes').run(conn)
 ```
 
-The index must be previously created with [index_create](/api/ruby/index_create/).
+The index must have been previously created with [index_create](/api/ruby/index_create/).
 
 ```rb
 r.table('posts').index_create('votes') {|post|
     post["upvotes"]-post["downvotes"]
 }.run(conn)
+```
+
+__Example:__ If you have a sequence with less than 100.000 documents, you can sort it
+without an index.   
+Return the comments of the post with `id` of `1`, ordered by date.
+
+```rb
+r.table("posts").get(1)["comments"].order_by("date")
 ```
 
 __Example:__ You can efficiently order using multiple fields by using a
@@ -65,7 +71,7 @@ Order by date and title.
 r.table('posts').order_by(:index => 'date_and_title').run(conn)
 ```
 
-The index must be previously created with [index_create](/api/ruby/index_create/).
+The index must have been previously created with [index_create](/api/ruby/index_create/).
 
 ```rb
 r.table('posts').index_create('date_and_title') {|post| [post["date"], post["title"]]}.run(conn)
@@ -96,14 +102,7 @@ r.table("posts").between(r.time(2013, 1, 1, '+00:00'), r.time(2013, 1, 1, '+00:0
     .order_by(:index => "date").run(conn);
 ```
 
-__Example:__ If you have a small sequence to sort, you can sort it without an index.   
-Return the comments of the post with `id` of `1`, ordered by date.
-
-```rb
-r.table("posts").get(1)["comments"].order_by("date")
-```
-
-__Example:__ If you have a small sequence to sort, you can also sort with an arbitrary function.   
+__Example:__ If you have a sequence with less than 100.000 documents, you can sort it with an arbitrary function.   
 Return the comments of the post with `id` of `1`, ordered by the sum of `upvotes` minus the sum of `downvotes`.
 
 ```rb
