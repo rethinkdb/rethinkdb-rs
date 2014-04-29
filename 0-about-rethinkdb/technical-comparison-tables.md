@@ -106,7 +106,7 @@ protocol is TCP based and uses
 BSON](http://api.mongodb.org/wiki/current/Mongo%20Wire%20Protocol.html).
 
 RethinkDB provides official libraries for Javascript/Node.js, Python, Ruby.
-In addition, there are [community supported client drivers](http://www.rethinkdb.com/docs/install-drivers/) for more than half a dozen other languages.
+In addition, there are [community supported client drivers](/docs/install-drivers/) for more than half a dozen other languages.
 RethinkDB uses [Protocol Buffers](http://code.google.com/p/protobuf/) over TCP
 for client-server communications.
 
@@ -191,7 +191,7 @@ MongoDB provides different mechanisms for backing up data:
 *   the [`mongodump`](http://docs.mongodb.org/manual/administration/backups/#database-dump-with-mongodump) utility can perform a live backup of data. 
 *   [disk/block level snapshots](http://docs.mongodb.org/manual/administration/backups/#backup-with-journaling) can be used to backup a MongoDB instance when journaling is enabled. When [journaling is disabled](http://docs.mongodb.org/manual/administration/backups/#backup-without-journaling), snapshots are possible after flushing all writes to disk and locking the database.
 
-RethinkDB supports [hot backup](http://www.rethinkdb.com/docs/backup/) on a live cluster via `dump` and `restore` commands.
+RethinkDB supports [hot backup](/docs/backup/) on a live cluster via `dump` and `restore` commands.
 
 <div class="comparison-section"><a name="scaling" class="comparison-anchor"></a></div>
 # Scaling #
