@@ -927,6 +927,13 @@ The index must have been previously created with [indexCreate](/api/javascript/i
 r.table('posts').indexCreate('date').run(conn, callback)
 ```
 
+You can also select a descending ordering:
+
+```js
+r.table('posts').orderBy({index: r.desc('date')}).run(conn, callback)
+```
+
+
 [Read more about this command &rarr;](order_by/)
 
 ## [skip](skip/) ##

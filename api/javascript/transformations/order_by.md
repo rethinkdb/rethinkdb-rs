@@ -48,7 +48,7 @@ r.table('posts').indexCreate('date').run(conn, callback)
 You can also select a descending ordering:
 
 ```js
-r.table('posts').orderBy(r.desc({index: 'date'})).run(conn, callback)
+r.table('posts').orderBy({index: r.desc('date')}).run(conn, callback)
 ```
 
 __Example:__ If you have a sequence with less than 100,000 documents, you can order it

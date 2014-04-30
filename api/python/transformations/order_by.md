@@ -85,9 +85,16 @@ r.table('posts').index_create('date_and_title', lambda post:
 _Note_: You cannot specify multiple orders in a compound index. See [issue #2306](https://github.com/rethinkdb/rethinkdb/issues/2306)
 to track progress.
 
-__Example:__ Notice that an index ordering always has highest precedence.    
-So the following query orders post by date, and if multiple posts were published on the
-same date, they will be ordered by title.
+__Example:__ If you have a sequence with less than 100,000 documents, you can order it
+by multiple fields without an index.
+
+```js
+r.table('small_table').orderBy('date', r.desc('title'))
+```
+
+__Example:__ Notice that an index ordering always has highest
+precedence. The following query orders posts by date, and if multiple
+posts were published on the same date, they will be ordered by title.
 
 ```py
 r.table('post').order_by('title', index='date').run(conn)
