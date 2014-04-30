@@ -55,17 +55,24 @@ __Example:__ If you have a sequence with less than 100,000 documents, you can or
 without an index.
 
 ```js
-r.table('small_table').orderBy('date')
+r.table('posts').get(1)('comments').orderBy('date')
 ```
 
 You can also select a descending ordering:
 
 ```js
-r.table('small_table').orderBy(r.desc('date'))
+r.table('posts').get(1)('comments').orderBy(r.desc('date'))
+```
+
+If you're doing ad-hoc analysis and know your table won't have more then 100,000
+elements you can run `orderBy` without an index:
+
+```js
+r.table('small_table').orderBy('date')
 ```
 
 __Example:__ You can efficiently order using multiple fields by using a
-[compound index](http://www.rethinkdb.com/docs/secondary-indexes/javascript/).  
+[compound index](http://www.rethinkdb.com/docs/secondary-indexes/javascript/).
 
 Order by date and title.
 
@@ -114,16 +121,16 @@ r.table('posts').indexCreate('votes', function(post) {
 __Example:__ If you have a sequence with less than 100,000 documents, you can order it with an arbitrary function directly.
 
 ```js
-r.table('small_table').orderBy(function(comment) {
-    return comment('upvotes').sub(comment('downvotes'))
+r.table('small_table').orderBy(function(doc) {
+    return doc('upvotes').sub(doc('downvotes'))
 });
 ```
 
 You can also select a descending ordering:
 
 ```js
-r.table('small_table').orderBy(r.desc(function(comment) {
-    return comment('upvotes').sub(comment('downvotes'))
+r.table('small_table').orderBy(r.desc(function(doc) {
+    return doc('upvotes').sub(doc('downvotes'))
 }));
 ```
 
