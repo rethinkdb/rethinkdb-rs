@@ -903,15 +903,33 @@ selection.orderBy(key1, [key2...]) -> selection<array>
 sequence.orderBy(key1, [key2...]) -> array
 {% endapibody %}
 
-Sort the sequence by document values of the given key(s). `orderBy` defaults to ascending
-ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
-`r.desc`.
+Sort the sequence by document values of the given key(s). To specify
+the ordering, wrap the attribute with either `r.asc` or `r.desc`
+(defaults to ascending).
 
-__Example:__ Order our heroes by a series of performance metrics.
+Sorting without an index requires the server to hold the sequence in
+memory, and is limited to 100,000 documents. Sorting with an index can
+be done on arbitrarily large tables, or after a `between` command
+using the same index.
+
+__Example:__ Order all the posts using the index `date`.   
 
 ```js
-r.table('marvel').orderBy('enemiesVanquished', 'damselsSaved').run(conn, callback)
+r.table('posts').orderBy({index: 'date'}).run(conn, callback)
 ```
+
+The index must have been previously created with [indexCreate](/api/javascript/index_create/).
+
+```js
+r.table('posts').indexCreate('date').run(conn, callback)
+```
+
+You can also select a descending ordering:
+
+```js
+r.table('posts').orderBy({index: r.desc('date')}).run(conn, callback)
+```
+
 
 [Read more about this command &rarr;](order_by/)
 

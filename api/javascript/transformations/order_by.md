@@ -9,7 +9,9 @@ io:
     -   - array
         - array
 related_commands:
-    table: table/
+    skip: skip/
+    limit: limit/
+    slice: slice/
 ---
 
 # Command syntax #
@@ -22,44 +24,120 @@ sequence.orderBy(key1, [key2...]) -> array
 
 # Description #
 
-Sort the sequence by document values of the given key(s). `orderBy` defaults to ascending
-ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
-`r.desc`.
+Sort the sequence by document values of the given key(s). To specify
+the ordering, wrap the attribute with either `r.asc` or `r.desc`
+(defaults to ascending).
 
-__Example:__ Order our heroes by a series of performance metrics.
+Sorting without an index requires the server to hold the sequence in
+memory, and is limited to 100,000 documents. Sorting with an index can
+be done on arbitrarily large tables, or after a `between` command
+using the same index.
+
+__Example:__ Order all the posts using the index `date`.   
 
 ```js
-r.table('marvel').orderBy('enemiesVanquished', 'damselsSaved').run(conn, callback)
+r.table('posts').orderBy({index: 'date'}).run(conn, callback)
 ```
 
-__Example:__ Indexes can be used to perform more efficient orderings. Notice that the index ordering always has highest precedence. Thus the following example is equivalent to the one above.
+The index must have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
-r.table('marvel').orderBy('damselsSaved', {index: 'enemiesVanquished'}).run(conn, callback)
+r.table('posts').indexCreate('date').run(conn, callback)
 ```
 
-__Example:__ You can also specify a descending order when using an index.
+You can also select a descending ordering:
 
 ```js
-r.table('marvel').orderBy({index: r.desc('enemiesVanquished')}).run(conn, callback)
+r.table('posts').orderBy({index: r.desc('date')}).run(conn, callback)
 ```
 
-__Example:__ Let's lead with our best vanquishers by specify descending ordering.
+__Example:__ If you have a sequence with less than 100,000 documents, you can order it
+without an index.
 
 ```js
-r.table('marvel').orderBy(r.desc('enemiesVanquished'), r.asc('damselsSaved'))
-.run(conn, callback)
+r.table('posts').get(1)('comments').orderBy('date')
 ```
 
-__Example:__ You can use a function for ordering instead of just selecting an attribute.
+You can also select a descending ordering:
 
 ```js
-r.table('marvel').orderBy(function (doc) { return doc('enemiesVanquished') + doc('damselsSaved'); }).run(conn, callback)
+r.table('posts').get(1)('comments').orderBy(r.desc('date'))
 ```
 
-__Example:__ Functions can also be used descendingly.
+If you're doing ad-hoc analysis and know your table won't have more then 100,000
+elements you can run `orderBy` without an index:
 
 ```js
-r.table('marvel').orderBy(r.desc(function (doc) { return doc('enemiesVanquished') + doc('damselsSaved'); })).run(conn, callback)
+r.table('small_table').orderBy('date')
+```
+
+__Example:__ You can efficiently order using multiple fields by using a
+[compound index](http://www.rethinkdb.com/docs/secondary-indexes/javascript/).
+
+Order by date and title.
+
+```js
+r.table('posts').orderBy({index: 'dateAndTitle'}).run(conn, callback)
+```
+
+The index must have been previously created with [indexCreate](/api/javascript/index_create/).
+
+```js
+r.table('posts').indexCreate('dateAndTitle', [r.row('date'), r.row('title')]).run(conn, callback)
+```
+
+_Note_: You cannot specify multiple orders in a compound index. See [issue #2306](https://github.com/rethinkdb/rethinkdb/issues/2306)
+to track progress.
+
+__Example:__ If you have a sequence with less than 100,000 documents, you can order it
+by multiple fields without an index.
+
+```js
+r.table('small_table').orderBy('date', r.desc('title'))
+```
+
+__Example:__ Notice that an index ordering always has highest
+precedence. The following query orders posts by date, and if multiple
+posts were published on the same date, they will be ordered by title.
+
+```js
+r.table('post').orderBy('title', {index: 'date'}).run(conn, callback)
+```
+
+__Example:__ You can efficiently order data on arbitrary expressions using indexes.
+
+```js
+r.table('posts').orderBy({index: 'votes'}).run(conn, callback)
+```
+
+The index must have been previously created with [indexCreate](/api/javascript/index_create/).
+
+```js
+r.table('posts').indexCreate('votes', function(post) {
+    return post('upvotes').sub(post('downvotes'))
+}).run(conn, callback)
+```
+
+__Example:__ If you have a sequence with less than 100,000 documents, you can order it with an arbitrary function directly.
+
+```js
+r.table('small_table').orderBy(function(doc) {
+    return doc('upvotes').sub(doc('downvotes'))
+});
+```
+
+You can also select a descending ordering:
+
+```js
+r.table('small_table').orderBy(r.desc(function(doc) {
+    return doc('upvotes').sub(doc('downvotes'))
+}));
+```
+
+__Example:__ Ordering after a `between` command can be done as long as the same index is being used.
+
+```js
+r.table('posts').between(r.time(2013, 1, 1, '+00:00'), r.time(2013, 1, 1, '+00:00'), {index: 'date'})
+    .orderBy({index: 'date'}).run(conn, callback);
 ```
 

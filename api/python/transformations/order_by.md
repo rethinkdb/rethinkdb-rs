@@ -4,8 +4,8 @@ language: Python
 permalink: api/python/order_by/
 command: order_by
 related_commands:
-    skip: skip
-    limit: limit
+    skip: skip/
+    limit: limit/
     '[]': slice/
 ---
 
@@ -19,50 +19,122 @@ sequence.order_by(key1, [key2...]) -> array
 
 # Description #
 
-Sort the sequence by document values of the given key(s). `orderBy` defaults to ascending
-ordering. To explicitly specify the ordering, wrap the attribute with either `r.asc` or
-`r.desc`.
+Sort the sequence by document values of the given key(s). To specify
+the ordering, wrap the attribute with either `r.asc` or `r.desc`
+(defaults to ascending).
 
-__Example:__ Order our heroes by a series of performance metrics.
+Sorting without an index requires the server to hold the sequence in
+memory, and is limited to 100,000 documents. Sorting with an index can
+be done on arbitrarily large tables, or after a `between` command
+using the same index.
+
+__Example:__ Order all the posts using the index `date`.   
 
 ```py
-r.table('marvel').order_by('enemies_vanquished', 'damsels_saved').run(conn)
+r.table('posts').order_by(index='date').run(conn)
 ```
 
-__Example:__ Indexes can be used to perform more efficient orderings. Notice that the
-index ordering always has highest precedence. Thus the following example is equivalent to
-the one above.
+The index must have been previously created with [index_create](/api/python/index_create/).
 
 ```py
-r.table('marvel').order_by('damsels_saved', index='enemies_vanquished').run(conn)
+r.table('posts').index_create('date').run(conn)
 ```
 
-
-__Example:__ You can also specify a descending order when using an index.
+You can also select a descending ordering:
 
 ```py
-r.table('marvel').order_by(index=r.desc('enemies_vanquished')).run(conn)
+r.table('posts').order_by(index=r.desc('date')).run(conn, callback)
 ```
 
-
-__Example:__ Let's lead with our best vanquishers by specify descending ordering.
+__Example:__ If you have a sequence with less than 100,000 documents, you can order it
+without an index.
 
 ```py
-r.table('marvel').order_by(
-    r.desc('enemies_vanquished'),
-    r.asc('damsels_saved')
+r.table('posts').get(1)['comments'].order_by('date')
+```
+
+You can also select a descending ordering:
+
+```py
+r.table('posts').get(1)['comments'].order_by(r.desc('date'))
+```
+
+If you're doing ad-hoc analysis and know your table won't have more then 100,000
+elements you can run `order_by` without an index:
+
+```py
+r.table('small_table').order_by('date')
+```
+
+__Example:__ You can efficiently order using multiple fields by using a
+[compound index](http://www.rethinkdb.com/docs/secondary-indexes/python/).
+
+Order by date and title.
+
+```py
+r.table('posts').order_by(index='date_and_title').run(conn)
+```
+
+The index must have been previously created with [index_create](/api/python/index_create/).
+
+```py
+r.table('posts').index_create('date_and_title', lambda post:
+    [post["date"], post["title"]]).run(conn)
+```
+
+_Note_: You cannot specify multiple orders in a compound index. See [issue #2306](https://github.com/rethinkdb/rethinkdb/issues/2306)
+to track progress.
+
+__Example:__ If you have a sequence with less than 100,000 documents, you can order it
+by multiple fields without an index.
+
+```js
+r.table('small_table').orderBy('date', r.desc('title'))
+```
+
+__Example:__ Notice that an index ordering always has highest
+precedence. The following query orders posts by date, and if multiple
+posts were published on the same date, they will be ordered by title.
+
+```py
+r.table('post').order_by('title', index='date').run(conn)
+```
+
+__Example:__ You can efficiently order data on arbitrary expressions using indexes.
+
+```py
+r.table('posts').order_by(index='votes').run(conn)
+```
+
+The index must have been previously created with [index_create](/api/ruby/index_create/).
+
+```py
+r.table('posts').index_create('votes', lambda post:
+    post["upvotes"]-post["downvotes"]
 ).run(conn)
 ```
 
-__Example:__ You can use a function for ordering instead of just selecting an attribute.
+__Example:__ If you have a sequence with less than 100,000 documents, you can order it with an arbitrary function directly.
 
 ```py
-r.table('marvel').order_by(lambda doc: doc['enemiesVanquished'] + doc['damselsSaved']).run(conn)
+r.table('small_table').order_by(lambda doc:
+    doc['upvotes']-doc['downvotes']
+);
 ```
 
-__Example:__ Functions can also be used descendingly.
+You can also select a descending ordering:
 
 ```py
-r.table('marvel').order_by(r.desc(lambda doc: doc['enemiesVanquished'] + doc['damselsSaved'])).run(conn)
+r.table('small_table').order_by(r.desc(lambda doc:
+    doc['upvotes']-doc['downvotes']
+));
 ```
+
+__Example:__ Ordering after a `between` command can be done as long as the same index is being used.
+
+```py
+r.table("posts").between(r.time(2013, 1, 1, '+00:00'), r.time(2013, 1, 1, '+00:00'), index='date')
+    .order_by(index='date').run(conn);
+```
+
 
