@@ -1,6 +1,6 @@
 ---
 layout: documentation
-title: Install RethinkDB on Rapsbian
+title: Install RethinkDB on Raspbian
 title_image: /assets/images/docs/install-platforms/raspbian.png
 active: docs
 docs_active: install
@@ -8,28 +8,7 @@ permalink: docs/install/raspbian/
 ---
 {% include install-docs-header.md %}
 {% include install-community-platform-warning.md %}
-The following instructions were tested on Rasbian January 2014 (Debian Wheezy
-
-# With Launchpad binaries #
-
-## Add the RethinkDB PPA ##
-This approach is inspired by [Anant
-Shrivastava](http://blog.anantshri.info/howto-add-ppa-in-debian/)'s
-instructions for adding PPAs to Debian systems.
-
-```bash
-wget http://blog.anantshri.info/content/uploads/2010/09/add-apt-repository.sh.txt
-sudo mv add-apt-repository.sh.txt /usr/sbin/add-apt-repository
-sudo chmod o+x /usr/sbin/add-apt-repository
-sudo chown root:root /usr/sbin/add-apt-repository
-```
-
-## Install RethinkDB ##
-```bash
-sudo add-apt-repository ppa:rethinkdb/ppa
-sudo apt-get update
-sudo apt-get install rethinkdb
-```
+The following instructions were tested on Raspbian January 2014 (Debian Wheezy)
 
 # Compile from source #
 
