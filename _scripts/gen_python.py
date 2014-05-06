@@ -20,6 +20,7 @@ parents = {
     'sequence': query,
     'query': query,
     'stream': query,
+    'grouped_stream': query,
     'singleSelection': query,
     'array': query,
     'number': query,
@@ -179,6 +180,8 @@ def add_doc(file_name, result_file):
                             text += "... "+line
                     else:
                         text += line
+            else:
+                text += line.replace('&rarr;', '->')
  
     # If the command has multiple name, parents
     if name in tags:
