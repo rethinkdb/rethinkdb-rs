@@ -474,8 +474,8 @@ progress.
 
 ## Performing an unpivot operation ##
 
-Doing an unpivot operation to "cancel" a pivot one can be done with the `concatMap`,
-`map` and `coerceTo` commands:
+Doing an unpivot operation to "cancel" a pivot one can be done with the `concat_map`,
+`map` and `coerce_to` commands:
 
 ```py
 r.table("pivoted_marks").concat_map(lambda doc:

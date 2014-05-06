@@ -478,7 +478,7 @@ progress.
 
 ## Performing an unpivot operation ##
 
-Doing an unpivot operation to "cancel" a pivot one can be done with the `concatMap`,
+Doing an unpivot operation to "cancel" a pivot one can be done with the `concat_map`,
 `map` and `coerce_to` commands:
 
 ```rb
