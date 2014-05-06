@@ -398,7 +398,7 @@ table. We could do this using a subquery:
 r.table("posts").merge(lambda post:
     {
         "comments": r.table("comments").filter(lambda comment:
-            comment["id_post"] == post["id"]).coerceTo("ARRAY")
+            comment["id_post"] == post["id"]).coerce_to("ARRAY")
     }
 ).run()
 ```
