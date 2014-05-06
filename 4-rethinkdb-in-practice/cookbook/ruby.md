@@ -402,7 +402,7 @@ r.table("posts").merge{ |post|
     {
         "comments" => r.table("comments").filter{ |comment|
             comment["id_post"].eq(post["id"])
-        }.coerceTo("ARRAY")
+        }.coerce_to("ARRAY")
     }
 }.run
 ```
