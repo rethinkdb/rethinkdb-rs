@@ -34,13 +34,6 @@ The basic setup is complete &mdash; __you've now got a working server!__
 The init.d script supports starting multiple instances on the same machine via
 multiple `.conf` files in `/etc/rethinkdb/instances.d`.
 
-_Note_: that the init.d script produces a feedback line for each registered instance when
-queried. This is not standard behavior for an init.d script, so if you have a tool that
-depends upon standard init.d script output, you might need to limit each machine to
-only one RethinkDB instance.
-
-
-
 ## Installing from source ##
 
 If you compiled from source, you can get the init.d script from
