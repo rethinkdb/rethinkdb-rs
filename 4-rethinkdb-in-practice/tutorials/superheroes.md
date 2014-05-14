@@ -201,11 +201,12 @@ This is something we could also verify with the query:
 ```
 
 For the last query example let's retrieve the characters that appeared in a
-specific magazine:
+specific magazine. This demonstrates using `filter` on a nested list in a
+document:
 
 ```python
 >>> heroes.filter(
-        lambda row: row['magazine_titles'].filter(lambda mag: mag == 'Amazing Spider-Man vs. Wolverine').count() > 0
+        r.row['magazine_titles'].filter(lambda mag: mag == 'Amazing Spider-Man vs. Wolverine').count() > 0
     ).pluck('hero').run()
 ```
 
