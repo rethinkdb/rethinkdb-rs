@@ -197,15 +197,16 @@ As you see only 1 of the characters has appeared in more than 90 magazines.
 This is something we could also verify with the query:
 
 ```python
->>> heroes.filter(row['appearances_count'] >= 90).pluck('hero', 'name', 'appearances_count').run()
+>>> heroes.filter(r.row['appearances_count'] >= 90).pluck('hero', 'name', 'appearances_count').run()
 ```
 
 For the last query example let's retrieve the characters that appeared in a
-specific magazine:
+specific magazine. This demonstrates using `filter` on a nested list in a
+document:
 
 ```python
 >>> heroes.filter(
-        lambda row: row['magazine_titles'].filter(lambda mag: mag == 'Amazing Spider-Man vs. Wolverine').count() > 0
+        r.row['magazine_titles'].filter(lambda mag: mag == 'Amazing Spider-Man vs. Wolverine').count() > 0
     ).pluck('hero').run()
 ```
 
@@ -216,9 +217,9 @@ characters and also updating their number of appearances:
 
 ```python
 heroes.update({
-    'appearances_count': row['appearances_count'] + 1, 
-    'magazine_titles': row['magazines'].append('The Fantastic RethinkDB')
-})
+    'appearances_count': r.row['appearances_count'] + 1,
+    'magazine_titles': r.row['magazine_titles'].append('The Fantastic RethinkDB')
+}).run()
 
 {u'errors': 0, u'skipped': 0, u'updated': 4}
 ```
