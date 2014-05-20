@@ -21,12 +21,12 @@ not(bool) &rarr; bool
 # Description #
 Compute the logical inverse (not) of an expression.
 
-`not` can be called either postfix-style, immediately after an expression that evaluates as a boolean value, or infix-style, passing the expression as a parameter to `not`.
+`not` can be called either via method chaining, immediately after an expression that evaluates as a boolean value, or by passing the expression as a parameter to `not`.
 
 __Example:__ Not true is false.
 
 ```js
-r.expr(true).not().run(conn, callback)
+r(true).not().run(conn, callback)
 r.not(true).run(conn, callback)
 ```
 
@@ -40,7 +40,7 @@ r.table('users').filter(function(user) {
 }).run(conn, callback)
 ```
 
-__Example:__ As above, but infix style.
+__Example:__ As above, but prefix-style.
 
 ```js
 r.table('users').filter(function(user) {

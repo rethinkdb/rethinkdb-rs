@@ -1827,7 +1827,7 @@ Compute the logical inverse (not) of an expression.
 __Example:__ Not true is false.
 
 ```ruby
-r.expr(true).not().run(conn)
+r(true).not().run(conn)
 r.not(true).run(conn)
 ```
 

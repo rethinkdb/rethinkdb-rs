@@ -1917,7 +1917,7 @@ Compute the logical inverse (not) of an expression.
 __Example:__ Not true is false.
 
 ```js
-r.expr(true).not().run(conn, callback)
+r(true).not().run(conn, callback)
 r.not(true).run(conn, callback)
 ```
 
