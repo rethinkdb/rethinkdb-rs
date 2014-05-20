@@ -1850,13 +1850,16 @@ r.expr(2).le(2).run(conn)
 ## [~, not_](not/) ##
 
 {% apibody %}
-~bool &rarr; bool
 bool.not_() &rarr; bool
-r.not_(bool) &rarr; bool
+not_(bool) &rarr; bool
+(~bool) &rarr; bool
 {% endapibody %}
 
-# Description #
-Compute the logical inverse (not).
+Compute the logical inverse (not) of an expression.
+
+`not_` can be called either postfix-style, immediately after an expression that evaluates as a boolean value, or infix-style, passing the expression as a parameter to `not_`.
+
+You may also use `~` as a shorthand operator.
 
 __Example:__ Not true is false.
 
