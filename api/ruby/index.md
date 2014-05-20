@@ -1825,7 +1825,7 @@ not(bool) &rarr; bool
 
 Compute the logical inverse (not) of an expression.
 
-`not` can be called either postfix-style, immediately after an expression that evaluates as a boolean value, or infix-style, passing the expression as a parameter to `not`.
+`not` can be called either via method chaining, immediately after an expression that evaluates as a boolean value, or by passing the expression as a parameter to `not`.
 
 __Example:__ Not true is false.
 
