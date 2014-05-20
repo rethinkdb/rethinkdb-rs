@@ -582,12 +582,15 @@ table.get(key) &rarr; singleRowSelection
 
 Get a document by primary key.
 
-__Example:__ Find a document with the primary key 'superman'.
+If no document exists with that primary key, `get` will return `nil`.
+
+__Example:__ Find a document by UUID.
 
 ```rb
-r.table('marvel').get('superman').run(conn)
+r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn)
 ```
 
+[Read more about this command &rarr;](get/)
 
 ## [get_all](get_all/) ##
 

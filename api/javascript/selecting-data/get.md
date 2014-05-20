@@ -21,9 +21,18 @@ table.get(key) &rarr; singleRowSelection
 
 Get a document by primary key.
 
-__Example:__ Find a document with the primary key 'superman'.
+If no document exists with that primary key, `get` will return `null`.
+
+__Example:__ Find a document by UUID.
 
 ```js
-r.table('marvel').get('superman').run(conn, callback)
+r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn, callback)
 ```
 
+__Example:__ Find a document and merge another document with it.
+
+```js
+r.table('heroes').get(3).merge(
+    { powers: ['invisibility', 'speed'] }
+).run(conn, callback)
+```
