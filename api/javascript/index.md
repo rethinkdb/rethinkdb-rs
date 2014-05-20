@@ -679,6 +679,9 @@ __Example:__ Find a document with the primary key 'superman'.
 r.table('marvel').get('superman').run(conn, callback)
 ```
 
+If no document exists with that primary key, `get` will return `null`.
+
+[Read more about this command &rarr;](get/)
 
 ## [getAll](get_all/) ##
 

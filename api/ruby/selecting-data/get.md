@@ -25,3 +25,13 @@ __Example:__ Find a document with the primary key 'superman'.
 ```rb
 r.table('marvel').get('superman').run(conn)
 ```
+
+If no document exists with that primary key, `get` will return `nil`.
+
+__Example:__ Find a document and apply a function to it using [do](/api/ruby/do).
+
+```rb
+r.table('users').get(3).do{ |user|
+    user.merge({ 'powers' => ['invisibility', 'speed'] })
+}.run(conn)
+```

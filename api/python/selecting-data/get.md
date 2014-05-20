@@ -25,4 +25,12 @@ __Example:__ Find a document with the primary key 'superman'.
 r.table('marvel').get('superman').run(conn)
 ```
 
+If no document exists with that primary key, `get` will return `None`.
 
+__Example:__ Find a document and apply a function to it using [do](/api/python/do).
+
+```py
+r.table('users').get(3).do(
+    lambda user: user.merge({ 'powers': ['invisibility', 'speed'] })
+).run(conn)
+```
