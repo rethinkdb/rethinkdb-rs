@@ -19,18 +19,18 @@ table.get(key) &rarr; singleRowSelection
 
 Get a document by primary key.
 
-__Example:__ Find a document with the primary key 'superman'.
-
-```py
-r.table('marvel').get('superman').run(conn)
-```
-
 If no document exists with that primary key, `get` will return `None`.
 
-__Example:__ Find a document and apply a function to it using [do](/api/python/do).
+__Example:__ Find a document by UUID.
 
 ```py
-r.table('users').get(3).do(
-    lambda user: user.merge({ 'powers': ['invisibility', 'speed'] })
+r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn)
+```
+
+__Example:__ Find a document and merge another document with it.
+
+```py
+r.table('heroes').get(3).merge(
+    { 'powers': ['invisibility', 'speed'] }
 ).run(conn)
 ```
