@@ -37,4 +37,4 @@ r.do(r.table('players').get(id1), r.table('players').get(id2)) { |player1, playe
 }.run(conn)
 ```
 
-(Note that `branch`, the ReQL conditional command, is used instead of `if`.)
+Note that `branch`, the ReQL conditional command, must be used instead of `if`. See the `branch` [documentation](/api/ruby/branch) for more.

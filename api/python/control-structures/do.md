@@ -33,10 +33,10 @@ __Example:__ Return the name of the best scoring player in a two-player golf mat
 ```py
 r.do(r.table('players').get(id1), r.table('players').get(id2),
     (lambda player1, player2:
-     r.branch(player1['gross_score'].lt(player2['gross_score']),
-     player1, player2))
+        r.branch(player1['gross_score'].lt(player2['gross_score']),
+        player1, player2))
 ).run(conn)
 
 ```
 
-(Note that `branch`, the ReQL conditional command, is used instead of `if`.)
+Note that `branch`, the ReQL conditional command, must be used instead of `if`. See the `branch` [documentation](/api/python/branch) for more.
