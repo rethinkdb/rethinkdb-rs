@@ -2231,20 +2231,22 @@ r.now().to_epoch_time()
 ## [do](do/) ##
 
 {% apibody %}
-any.do(arg [, args]*, expr) &rarr; any
+any.do(function) &rarr; any
+r.do([args]*, function) &rarr; any
+any.do(expr) &rarr; any
+r.do([args]*, expr) &rarr; any
 {% endapibody %}
 
-Evaluate the expr in the context of one or more value bindings.
+Evaluate an expression and pass its values as arguments to a function or to an expression.
 
-The type of the result is the type of the value returned from expr.
-
-__Example:__ The object(s) passed to do() can be bound to name(s). The last argument is the expression to evaluate in the context of the bindings.
+__Example:__ Compute a golfer's net score for a game.
 
 ```py
-r.do(r.table('marvel').get('IronMan'),
-    lambda ironman: ironman['name']).run(conn)
+r.table('players').get('86be93eb-a112-48f5-a829-15b2cb49de1d').do(
+    lambda player: player['gross_score'] - player['course_handicap']
+).run(conn)
 ```
-
+[Read more about this command &rarr;](do/)
 
 ## [branch](branch/) ##
 
