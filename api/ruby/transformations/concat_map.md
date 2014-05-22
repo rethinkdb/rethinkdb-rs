@@ -17,7 +17,17 @@ array.concat_map(mapping_function) &rarr; array
 
 # Description #
 
-Concatenate one or more sequences into a single sequence using a mapping function. This works in a similar fashion as `map`, but each element of the sequence the mapping function is applied to is itself a sequence rather than a single value. The return value will be the same type as the input value.
+Concatenate one or more elements into a single sequence using a mapping function.
+
+`concat_map` works in a similar fashion to `map`, applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
+
+    [[1, 2], [3, 4], [5, 6]]
+
+Whereas `concat_map` with the same mapping function would merge those sequences:
+
+    [1, 2, 3, 4, 5, 6]
+
+The return value, array or stream, will be the same type as the input.
 
 __Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The field "defeatedMonsters" is an array of one or more monster names.
 
