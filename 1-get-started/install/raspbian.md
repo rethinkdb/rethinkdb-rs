@@ -36,9 +36,12 @@ sudo fdisk /dev/sda
 ```
 
 Then hit `n` to create a new partition, `p` to set it as primary, and write `+1G` to set the size
-of the swap.
+of the swap to 1GB.
+
+Change the type of the new partition. Hit `t`, select your partition, and enter `82` for `Linux swap/Solaris`.
 
 Activate the swap.
+
 ```
 sudo mkswap /dev/sda1
 sudo swapon /dev/sda1
@@ -47,7 +50,7 @@ sudo swapon /dev/sda1
 ### Disk ###
 
 The default root partition does not have enough space to build RethinkDB. Make sure to create a
-bigger partition with at least 800MB available.
+bigger partition with at least 1GB available.
 
 
 For example, if you want to create a partition on a USB key on `/dev/sda`
@@ -60,6 +63,7 @@ Then hit `n` to create a new partition, `p` to set it as primary, and write `+1G
 of the partition.
 
 Format the partition
+
 ```
 sudo mkfs.ext4 /dev/sda1
 sudo mkdir /mnt/usbkey
