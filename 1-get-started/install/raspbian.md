@@ -89,4 +89,7 @@ cd rethinkdb
 make
 ```
 
+The binary will be in `build/release_notcmalloc/`.
+
+
 {% include install-next-step.md %}
