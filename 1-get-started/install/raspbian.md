@@ -18,8 +18,54 @@ Install the main dependencies:
 
 ```
 sudo apt-get install git g++ protobuf-compiler libprotobuf-dev libv8-dev \
-lib64ncurses5-dev libgoogle-perftools-dev libboost-dev curl
+libboost-dev curl
 ```
+
+## Prepare the raspberrypi ##
+
+### SWAP ###
+
+Building RethinkDB requires more RAM than what the raspberrypi can provide. To build
+from source, you must have a SWAP partition of at least 1GB.
+
+
+If you want to create a SWAP partition on a USB key on `/dev/sda`, you can run:
+
+```
+sudo fdisk /dev/sda
+```
+
+Then hit `n` to create a new partition, `p` to set it as primary, and write `+1G` to set the size
+of the swap.
+
+Activate the swap.
+```
+sudo mkswap /dev/sda1
+sudo swapon /dev/sda1
+```
+
+### Disk ###
+
+The default root partition does not have enough space to build RethinkDB. Make sure to create a
+bigger partition with at least 800MB available.
+
+
+For example, if you want to create a partition on a USB key on `/dev/sda`
+
+```
+sudo fdisk /dev/sda
+```
+
+Then hit `n` to create a new partition, `p` to set it as primary, and write `+1G` to set the size
+of the partition.
+
+Format the partition
+```
+sudo mkfs.ext4 /dev/sda1
+sudo mkdir /mnt/usbkey
+sudo mount /dev/sda1 /mnt/usbkey
+```
+
 
 ## Get the source code ##
 
@@ -36,14 +82,7 @@ Kick off the build process:
 ```bash
 cd rethinkdb
 ./configure --without-tcmalloc --allow-fetch
-nano external/v8_3.22.24.17/third_party/icu/make
-```
-In the make file, remove all the text -m32 that you can find in the first part of the document
-
-```bash
 make
 ```
-
-_Note_: Make sure you have more than 1GB of swap space available
 
 {% include install-next-step.md %}
