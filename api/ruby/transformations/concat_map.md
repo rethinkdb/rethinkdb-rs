@@ -53,7 +53,7 @@ r.table('marvel').concat_map { |hero|
 }.run(conn)
 ```
 
-__Example:__ Simulate an `eqJoin` using `concat_map`. (This is how ReQL joins are implemented internally.)
+__Example:__ Simulate an `eq_join` using `concat_map`. (This is how ReQL joins are implemented internally.)
 
 ```rb
 r.table('posts').concat_map { |post|
