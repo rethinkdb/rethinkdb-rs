@@ -786,19 +786,19 @@ r.table('marvel').with_fields('id', 'nemesis')
 ## [concat_map](concat_map/) ##
 
 {% apibody %}
-sequence.concat_map(mapping_function) &rarr; stream
+stream.concat_map(mapping_function) &rarr; stream
 array.concat_map(mapping_function) &rarr; array
 {% endapibody %}
 
-Flattens a sequence of arrays returned by the mappingFunction into a single sequence.
+Concatenate one or more elements into a single sequence using a mapping function.
 
-__Example:__ Construct a sequence of all monsters defeated by Marvel heroes. Here the field
-'defeatedMonsters' is a list that is concatenated to the sequence.
+__Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The field "defeatedMonsters" is an array of one or more monster names.
 
 ```py
 r.table('marvel').concat_map(lambda hero: hero['defeatedMonsters']).run(conn)
 ```
 
+[Read more about this command &rarr;](concat_map/)
 
 ## [order_by](order_by/) ##
 
