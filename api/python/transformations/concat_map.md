@@ -51,7 +51,7 @@ __Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The
 r.table('marvel').concat_map(lambda hero: hero['defeatedMonsters']).run(conn)
 ```
 
-__Example:__ Simulate an `eq_join` using `concat_map`. (This is how ReQL joins are implemented internally.)
+__Example:__ Simulate an [eq_join](/api/python/eq_join/) using `concat_map`. (This is how ReQL joins are implemented internally.)
 
 ```py
 r.table('posts').concat_map(

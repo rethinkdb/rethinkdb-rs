@@ -57,7 +57,7 @@ r.table('marvel').concatMap(function(hero) {
 }).run(conn, callback)
 ```
 
-__Example:__ Simulate an `eqJoin` using `concatMap`. (This is how ReQL joins are implemented internally.)
+__Example:__ Simulate an [eqJoin](/api/javascript/eq_join/) using `concatMap`. (This is how ReQL joins are implemented internally.)
 
 ```js
 r.table("posts").concatMap(function(post) {
