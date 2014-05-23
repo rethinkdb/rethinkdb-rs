@@ -34,14 +34,14 @@ When applied to a single object, `hasFields` returns `true` if the object has th
 __Example:__ Return the players who have won games.
 
 ```js
-r.table('players').hasFields('games_won')
+r.table('players').hasFields('games_won').run(conn, callback)
 ```
 
 __Example:__ Test if a specific player has won any games.
 
 ```js
-r.table('players').get('b5ec9714-837e-400c-aa74-dbd35c9a7c4c
-').hasFields('games_won')
+r.table('players').get('b5ec9714-837e-400c-aa74-dbd35c9a7c4c'
+    ).hasFields('games_won').run(conn, callback)
 ```
 
 **Nested Fields**
@@ -50,21 +50,25 @@ r.table('players').get('b5ec9714-837e-400c-aa74-dbd35c9a7c4c
 
 __Example:__ In the `players` table, the `games_won` field contains one or more fields for kinds of games won:
 
-    {
-        games_won: {
-            playoffs: 2,
-            championships: 1
-        }
+```
+{
+    games_won: {
+        playoffs: 2,
+        championships: 1
     }
+}
+```
 
 Return players who have the "championships" field.
 
 ```js
-r.table('players').hasFields({'games_won': {'championships': true}})
+r.table('players').hasFields({'games_won': {'championships': true}}
+    ).run(conn, callback)
 ```
 
 Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See `pluck` for more details on this.)
 
 ```js
-r.table('players').hasFields({'games_won': 'championships'})
+r.table('players').hasFields({'games_won': 'championships'}
+    ).run(conn, callback)
 ```
