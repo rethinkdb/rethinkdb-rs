@@ -32,8 +32,7 @@ __Example:__ Test if a specific player has won any games.
 
 ```py
 r.table('players').get(
-    'b5ec9714-837e-400c-aa74-dbd35c9a7c4c'
-).has_fields('games_won').run(conn)
+    'b5ec9714-837e-400c-aa74-dbd35c9a7c4c').has_fields('games_won').run(conn)
 ```
 
 **Nested Fields**
@@ -54,12 +53,10 @@ __Example:__ In the `players` table, the `games_won` field contains one or more 
 Return players who have the "championships" field.
 
 ```py
-r.table('players').has_fields(
-    {'games_won': {'championships': true}}
-).run(conn)
+r.table('players').has_fields({'games_won': {'championships': true}}).run(conn)
 ```
 
-Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See `pluck` for more details on this.)
+Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See [pluck](/api/python/pluck) for more details on this.)
 
 ```py
 r.table('players').has_fields({'games_won': 'championships'}).run(conn)

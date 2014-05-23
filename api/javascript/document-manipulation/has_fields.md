@@ -66,7 +66,7 @@ r.table('players').hasFields({'games_won': {'championships': true}}
     ).run(conn, callback)
 ```
 
-Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See `pluck` for more details on this.)
+Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See [pluck](/api/javascript/pluck) for more details on this.)
 
 ```js
 r.table('players').hasFields({'games_won': 'championships'}
