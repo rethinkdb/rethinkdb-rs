@@ -23,52 +23,10 @@ libboost-dev curl
 
 ## Prepare the raspberrypi ##
 
-### SWAP ###
+Building RethinkDB require more memory than what is available on a Raspberry Pi.
+Make sure you have a SWAP partition of at least 1GB.
 
-Building RethinkDB requires more RAM than what the raspberrypi can provide. To build
-from source, you must have a SWAP partition of at least 1GB.
-
-
-If you want to create a SWAP partition on a USB key on `/dev/sda`, you can run:
-
-```
-sudo fdisk /dev/sda
-```
-
-Then hit `n` to create a new partition, `p` to set it as primary, and write `+1G` to set the size
-of the swap to 1GB.
-
-Change the type of the new partition. Hit `t`, select your partition, and enter `82` for `Linux swap/Solaris`.
-
-Activate the swap.
-
-```
-sudo mkswap /dev/sda1
-sudo swapon /dev/sda1
-```
-
-### Disk ###
-
-The default root partition does not have enough space to build RethinkDB. Make sure to create a
-bigger partition with at least 1GB available.
-
-
-For example, if you want to create a partition on a USB key on `/dev/sda`
-
-```
-sudo fdisk /dev/sda
-```
-
-Then hit `n` to create a new partition, `p` to set it as primary, and write `+1G` to set the size
-of the partition.
-
-Format the partition
-
-```
-sudo mkfs.ext4 /dev/sda1
-sudo mkdir /mnt/usbkey
-sudo mount /dev/sda1 /mnt/usbkey
-```
+Make also sure that you have at least 1GB available on your SD card.
 
 
 ## Get the source code ##
