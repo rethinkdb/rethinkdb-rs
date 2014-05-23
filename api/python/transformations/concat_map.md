@@ -21,11 +21,27 @@ Concatenate one or more elements into a single sequence using a mapping function
 
 `concat_map` works in a similar fashion to `map`, applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
 
-    [[1, 2], [3, 4], [5, 6]]
+```py
+r.expr([1, 2, 3]).map(lambda x: [x, x.mul(2)]).run(conn)
+```
 
-Whereas `concat_map` with the same mapping function would merge those sequences:
+Result:
 
-    [1, 2, 3, 4, 5, 6]
+```js
+[[1, 2], [2, 4], [3, 6]]
+```
+
+Whereas `concat_map` with the same mapping function would merge those sequences into one:
+
+```py
+r.expr([1, 2, 3]).concat_map(lambda x: [x, x.mul(2)]).run(conn)
+```
+
+Result:
+
+```js
+[1, 2, 2, 4, 3, 6]
+```
 
 The return value, array or stream, will be the same type as the input.
 
@@ -33,4 +49,16 @@ __Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The
 
 ```py
 r.table('marvel').concat_map(lambda hero: hero['defeatedMonsters']).run(conn)
+```
+
+__Example:__ Simulate an `eqJoin` using `concat_map`. (This is how ReQL joins are implemented internally.)
+
+```py
+r.table('posts').concat_map(
+    lambda post: r.table('comments').get_all(
+        post['id'],
+        index='post_id').map(
+            lambda comment: {
+                'left': post,
+                'right': comment})).run(conn)
 ```
