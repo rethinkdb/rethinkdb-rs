@@ -41,11 +41,11 @@ r.table('players').get(
 
 __Example:__ In the `players` table, the `games_won` field contains one or more fields for kinds of games won:
 
-```js
+```py
 {
-    games_won: {
-        playoffs: 2,
-        championships: 1
+    'games_won': {
+        'playoffs': 2,
+        'championships': 1
     }
 }
 ```
