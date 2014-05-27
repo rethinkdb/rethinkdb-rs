@@ -25,17 +25,24 @@ This article will talk only about the server-side code and more precisely the fi
 
 This example is built with Express 4.0 and will not work with previous version of Express.
 
+Express will be started by default on the port `3000`. The Node server will try to connect to
+RethinkDB on `localhost:28015`.   
+You can change these parameters in `config.js`.
+
+
 
 # Code and comments
 
 The server has two functions:
 
-- serve static files (HTML, CSS, JavaScript files).
-- provide a REST API to save/edit/delete todos.
+- Serve static files (HTML, CSS, JavaScript files)
+- Provide a REST API to retrieve/save/update/delete todos
 
 
-We first have to import some modules `express`, `rethinkdb` and `body-parser`. The `body-parser` module will be used
-to parse the parameters of a HTTP request.
+## Import modules
+
+We first have to import some modules &mdash; `express`, `rethinkdb` and `body-parser`.
+The `body-parser` module will be used to parse the parameters of a HTTP request.
 
 We also import the file `config.js` that contains some parameters for RethinkDB and Express.
 
@@ -54,6 +61,8 @@ var app = express();
 ```
 
 
+## Sequence of middlewares
+
 Express will pass each request through the middlewares. A middleware usually has one function
 like parsing the cookie, parsing the header, opening a connection to the database, reading a static file
 etc.
@@ -61,14 +70,22 @@ etc.
 In our example, for each request we will look if there is a static file in the
 directory `public` that matches the route. If we find such file, we will serve it. If
 we do not, we will pass the request to the next middleware.
-The next middleware will parse the body and save it in the `request` object.
 
+The next middlewares will form the REST API. Each request will go through:
+
+- `bodyParser`: Parse the body and save it in `req.body`
+- `createConnection`: Create a connection to RethinKDB and save it in `req._rdbConn`
+- `get`/`create`/`update`/`del`: Perform an operation on the database depending on the route
+- `closeConnection`: Close the connection to the database.
+
+
+This is how the sequence of middlewares is defined.
 
 ```js
 app.use(express.static(__dirname + '/public')); // Serve static content
-app.use(bodyParser());                          // Parse data sent to the server
 
-app.use('/todo', createConnection);             // Create a RethinkDB connection
+app.use(bodyParser());                          // Parse data sent to the server
+app.use(createConnection);                      // Create a RethinkDB connection
 
 // Define the main routes
 app.route('/todo/get').get(get);                // Retrieve all the todos
@@ -76,49 +93,67 @@ app.route('/todo/new').put(create);             // Create a new todo
 app.route('/todo/update').post(update);         // Update a todo
 app.route('/todo/delete').post(del);            // Delete a todo
 
-app.use('/todo', closeConnection);              // Close the RethinkDB connection previously opened
+app.use(closeConnection);              // Close the RethinkDB connection previously opened
 ```
 
 
+## Implement the middlewares
 
+Each middleware is a function that takes three arguments:
+
+- `req`: The request we are currently serving.
+- `res`: The response object that we will send back to the user.
+- `next`: The function to call when the current middleware has finished his work.
+
+
+_Create a connection_
+
+Create a RethinkDB connection, and save it in `req._rdbConn`.
 
 ```js
-/*
- * Create a RethinkDB connection, and save it in req._rdbConn
- */
 function createConnection(req, res, next) {
-console.log('creating');
     r.connect(config.rethinkdb, function(error, conn) {
         if (error) {
             handleError(res, error);
         }
         else {
+            // Save the connection in `req`
             req._rdbConn = conn;
+            // Pass the current request to the next middleware
             next();
         }
     });
 }
-
-
 ```
 
-Retrieve all the documents from the table `todos`. The function takes 3 arguments:
+`handleError` is a function that will return a 500 error to the client.
 
-- `req`: The request object, it can be used to pass data between middlewares.
-- `res`: The response object that the server will send back.
-- `next`: The function to call once we are done with this middleware.
+```js
+function handleError(res, error) {
+    return res.send(500, {error: error.message});
+}
+```
 
-The query consists of 3 parts:
+
+_Retrieve all the todos_
+
+The next middleware retrieves all the todos from the database ordered by date.
+
+The ReQL query consists of 3 parts:
 
 - `r.table('todos')`: selects all the documents from the table `todos`.
-- `orderBy({index: "createdAt"}): order the todos with the field `createdAt`.
+- `orderBy({index: "createdAt"})`: order the todos with the index `createdAt`.
 - `run(...)`: Execute the query
+
+Because there can be many todos, the server returns a cursor. In our case, we just
+retrieve all the elements of the cursor and save it in an array using the `toArray` command.
 
 ```js
 function get(req, res, next) {
     r.table('todos').orderBy({index: "createdAt"}).run(req._rdbConn, function(error, cursor) {
         if (error) {
             handleError(res, error) 
+            next();
         }
         else {
             // Retrieve all the todos in an array
@@ -127,20 +162,23 @@ function get(req, res, next) {
                     handleError(res, error) 
                 }
                 else {
+                    // Send back the data
                     res.send(JSON.stringify(result));
                 }
             });
         }
-        next();
     });
 }
 ```
 
+_Insert a todo_
+
 Insert a new document in the table `todos`.
+
 ```js
 function create(req, res, next) {
-    var todo = req.body;
-    todo.createdAt = r.now(); // Set the field `createdAt` to the current time
+    var todo = req.body;         // req.body was created by `bodyParser`
+    todo.createdAt = r.now();    // Set the field `createdAt` to the current time
 
     r.table('todos').insert(todo, {returnVals: true}).run(req._rdbConn, function(error, result) {
         if (error) {
@@ -155,10 +193,14 @@ function create(req, res, next) {
         next();
     });
 }
+```
 
-/*
- * Update a todo
- */
+
+_Update a todo_
+
+Update an existing todo.
+
+```js
 function update(req, res, next) {
     var todo = req.body;
     if ((todo != null) && (todo.id != null)) {
@@ -177,10 +219,15 @@ function update(req, res, next) {
         next();
     }
 }
+```
 
-/*
- * Delete a todo
- */
+
+
+### Delete a todo
+
+Delete a todo.
+
+```js
 function del(req, res, next) {
     var todo = req.body;
     if ((todo != null) && (todo.id != null)) {
@@ -199,21 +246,26 @@ function del(req, res, next) {
         next();
     }
 }
+```
 
-/*
- * Send back a 500 error
- */
-function handleError(res, error) {
-    return res.send(500, {error: error.message});
-}
 
-/*
- * Close the RethinkDB connection
- */
+### Close the connection to the database
+
+Close the connection to RethinkDB.
+
+```js
 function closeConnection(req, res, next) {
     req._rdbConn.close();
 }
+```
 
+
+
+
+
+## Initialize the database and start Express.
+
+```js
 /*
  * Create tables/indexes then start express
  */
