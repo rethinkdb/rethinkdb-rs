@@ -1502,18 +1502,15 @@ r.table('marvel').get('IronMan')('firstAppearance').run(conn, callback)
 {% apibody %}
 sequence.hasFields([selector1, selector2...]) &rarr; stream
 array.hasFields([selector1, selector2...]) &rarr; array
-singleSelection.hasFields([selector1, selector2...]) &rarr; boolean
 object.hasFields([selector1, selector2...]) &rarr; boolean
 {% endapibody %}
 
-Test if an object has all of the specified fields. An object has a field if it has the
-specified key and that key maps to a non-null value. For instance, the object
-`{'a':1,'b':2,'c':null}` has the fields `a` and `b`.
+Test if an object has one or more fields. An object has a field if it has that key and the key has a non-null value. For instance, the object `{'a': 1,'b': 2,'c': null}` has the fields `a` and `b`.
 
-__Example:__ Which heroes are married?
+__Example:__ Return the players who have won games.
 
 ```js
-r.table('marvel').hasFields('spouse')
+r.table('players').hasFields('games_won').run(conn, callback)
 ```
 
 [Read more about this command &rarr;](has_fields/)

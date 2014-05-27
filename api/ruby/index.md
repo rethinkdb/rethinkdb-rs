@@ -1396,18 +1396,15 @@ r.table('marvel').get('IronMan')[:first_appearance].run(conn)
 {% apibody %}
 sequence.has_fields([selector1, selector2...]) &rarr; stream
 array.has_fields([selector1, selector2...]) &rarr; array
-singleSelection.has_fields([selector1, selector2...]) &rarr; boolean
 object.has_fields([selector1, selector2...]) &rarr; boolean
 {% endapibody %}
 
-Test if an object has all of the specified fields. An object has a field if it has the
-specified key and that key maps to a non-nil value. For instance, the object
-`{:a => 1, :b => 2, :c => nil}` has the fields `a` and `b`.
+Test if an object has one or more fields. An object has a field if it has that key and the key has a non-null value. For instance, the object `{'a': 1,'b': 2,'c': null}` has the fields `a` and `b`.
 
-__Example:__ Which heroes are married?
+__Example:__ Return the players who have won games.
 
 ```rb
-r.table('marvel').has_fields(:spouse).run(conn)
+r.table('players').has_fields(:games_won).run(conn)
 ```
 
 [Read more about this command &rarr;](has_fields/)
