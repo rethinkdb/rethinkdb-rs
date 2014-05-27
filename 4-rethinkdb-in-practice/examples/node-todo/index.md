@@ -7,6 +7,9 @@ docs_active: examples
 permalink: docs/examples/node-todo/
 ---
 
+
+# About
+
 You can find all the code for this example on ritHub in the
 [rethinkdb-example-nodejs repository](https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express).
 
@@ -17,10 +20,24 @@ a server running on Node.js with ExpressJS.
 This article will talk only about the server-side code and more precisely the file
 [app.js](https://github.com/rethinkdb/rethinkdb-example-nodejs/blob/master/todo-angular-express/app.js)
 
--------------------
+
+# Note
+
+This example is built with Express 4.0 and will not work with previous version of Express.
 
 
-Import dependencies and the configuration file.
+# Code and comments
+
+The server has two functions:
+
+- serve static files (HTML, CSS, JavaScript files).
+- provide a REST API to save/edit/delete todos.
+
+
+We first have to import some modules `express`, `rethinkdb` and `body-parser`. The `body-parser` module will be used
+to parse the parameters of a HTTP request.
+
+We also import the file `config.js` that contains some parameters for RethinkDB and Express.
 
 ```js
 var express = require('express');
@@ -30,22 +47,26 @@ var r = require('rethinkdb');
 var config = require(__dirname+"/config.js")
 ```
 
-Create an http server with Express.
+Create an HTTP server with Express.
 
 ```js
 var app = express();
 ```
 
 
-Express will pass each request through all middlewares. A middleware usually has one function
+Express will pass each request through the middlewares. A middleware usually has one function
 like parsing the cookie, parsing the header, opening a connection to the database, reading a static file
 etc.
 
-All the middlewares are defined in the next lines.
+In our example, for each request we will look if there is a static file in the
+directory `public` that matches the route. If we find such file, we will serve it. If
+we do not, we will pass the request to the next middleware.
+The next middleware will parse the body and save it in the `request` object.
+
 
 ```js
-app.use(express.static(__dirname + '/public')); // To server static content
-app.use(bodyParser());                          // To parse data sent to the server
+app.use(express.static(__dirname + '/public')); // Serve static content
+app.use(bodyParser());                          // Parse data sent to the server
 
 app.use('/todo', createConnection);             // Create a RethinkDB connection
 
@@ -58,6 +79,28 @@ app.route('/todo/delete').post(del);            // Delete a todo
 app.use('/todo', closeConnection);              // Close the RethinkDB connection previously opened
 ```
 
+
+
+
+```js
+/*
+ * Create a RethinkDB connection, and save it in req._rdbConn
+ */
+function createConnection(req, res, next) {
+console.log('creating');
+    r.connect(config.rethinkdb, function(error, conn) {
+        if (error) {
+            handleError(res, error);
+        }
+        else {
+            req._rdbConn = conn;
+            next();
+        }
+    });
+}
+
+
+```
 
 Retrieve all the documents from the table `todos`. The function takes 3 arguments:
 
@@ -162,21 +205,6 @@ function del(req, res, next) {
  */
 function handleError(res, error) {
     return res.send(500, {error: error.message});
-}
-
-/*
- * Create a RethinkDB connection, and save it in req._rdbConn
- */
-function createConnection(req, res, next) {
-    r.connect(config.rethinkdb, function(error, conn) {
-        if (error) {
-            handleError(res, error);
-        }
-        else {
-            req._rdbConn = conn;
-            next();
-        }
-    });
 }
 
 /*
