@@ -27,6 +27,8 @@ singleSelection.delete([{durability: "hard", returnVals: false}])
     &rarr; object
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/delete-vector.png" class="api_command_illustration" />
+
 # Description #
 
 Delete one or more documents from a table.

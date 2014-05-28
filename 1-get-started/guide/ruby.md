@@ -17,6 +17,8 @@ language: Ruby
 * Read the <a href="/docs/quickstart/">thirty-second quickstart</a>.
 {% endinfobox %}
 
+<img src="/assets/images/docs/api_illustrations/10-minute-guide-ruby.png" class="api_command_illustration" />
+
 # Import the driver #
 
 First, start a Ruby shell:

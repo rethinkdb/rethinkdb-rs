@@ -18,8 +18,6 @@ query.run(conn[, options], callback)
 
 # Description #
 
-<img src="/assets/images/docs/api_illustrations/run_javascript.png" class="api_command_illustration" />
-
 Run a query on a connection. The callback will get either an error, a single JSON
 result, or a cursor, depending on the query.
 

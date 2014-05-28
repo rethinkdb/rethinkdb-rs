@@ -17,6 +17,8 @@ related_commands:
 table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/get-all.png" class="api_command_illustration" />
+
 # Description #
 
 Get all documents where the given value matches the value of the requested index.
