@@ -17,13 +17,13 @@ This application was originally an example to illustrate AngularJS taken from
 [todomvc.com](http://todomvc.com/). The code was slightly modified to persist data with
 a server running on Node.js with ExpressJS.
 
-This article will talk only about the server-side code and more precisely the file
+This article discusses only about the server-side code and more precisely the file
 [app.js](https://github.com/rethinkdb/rethinkdb-example-nodejs/blob/master/todo-angular-express/app.js)
 
 
 # Note
 
-This example is built with Express 4.0 and will not work with previous version of Express.
+This example is built with Express 4.0 and does not work with previous version of Express.
 
 Express will be started by default on the port `3000`. The Node server will try to connect to
 RethinkDB on `localhost:28015`.   
@@ -42,7 +42,7 @@ The server has two functions:
 ## Import modules
 
 We first have to import some modules &mdash; `express`, `rethinkdb` and `body-parser`.
-The `body-parser` module will be used to parse the parameters of a HTTP request.
+The `body-parser` module is used to parse the parameters of a HTTP request.
 
 We also import the file `config.js` that contains some parameters for RethinkDB and Express.
 
@@ -67,16 +67,16 @@ Express will pass each request through the middlewares. A middleware usually has
 like parsing the cookie, parsing the header, opening a connection to the database, reading a static file
 etc.
 
-In our example, for each request we will look if there is a static file in the
-directory `public` that matches the route. If we find such file, we will serve it. If
-we do not, we will pass the request to the next middleware.
+In our example, for each request we look if there is a file in the directory `public`
+that matches the route. If we find such file, we serve it. If we do not, we will pass
+the request to the next middleware.
 
 The next middlewares will form the REST API. Each request will go through:
 
 - `bodyParser`: Parse the body and save it in `req.body`
 - `createConnection`: Create a connection to RethinKDB and save it in `req._rdbConn`
 - `get`/`create`/`update`/`del`: Perform an operation on the database depending on the route
-- `closeConnection`: Close the connection to the database.
+- `closeConnection`: Close the connection to the database
 
 
 This is how the sequence of middlewares is defined.
@@ -93,7 +93,7 @@ app.route('/todo/new').put(create);             // Create a new todo
 app.route('/todo/update').post(update);         // Update a todo
 app.route('/todo/delete').post(del);            // Delete a todo
 
-app.use(closeConnection);              // Close the RethinkDB connection previously opened
+app.use(closeConnection);                       // Close the RethinkDB connection previously opened
 ```
 
 
@@ -126,7 +126,7 @@ function createConnection(req, res, next) {
 }
 ```
 
-`handleError` is a function that will return a 500 error to the client.
+`handleError` is a function that returns a 500 error to the client.
 
 ```js
 function handleError(res, error) {
@@ -173,7 +173,7 @@ function get(req, res, next) {
 
 _Insert a todo_
 
-Insert a new document in the table `todos`.
+Insert a new document in the table `todos` with the `insert` command.
 
 ```js
 function create(req, res, next) {
@@ -200,6 +200,8 @@ _Update a todo_
 
 Update an existing todo.
 
+We first select the todo with the `get` command, then call `update` on it.
+
 ```js
 function update(req, res, next) {
     var todo = req.body;
@@ -223,9 +225,11 @@ function update(req, res, next) {
 
 
 
-### Delete a todo
+_Delete a todo_
 
-Delete a todo.
+Delete a todo given its `id`.
+
+In a similar way as for the `update`, we first select the todo to delete, and then call `delete` on it.
 
 ```js
 function del(req, res, next) {
@@ -249,13 +253,14 @@ function del(req, res, next) {
 ```
 
 
-### Close the connection to the database
+_Close the connection to the database_
 
 Close the connection to RethinkDB.
 
 ```js
 function closeConnection(req, res, next) {
     req._rdbConn.close();
+    next();
 }
 ```
 
@@ -265,10 +270,9 @@ function closeConnection(req, res, next) {
 
 ## Initialize the database and start Express.
 
+Create the table and index then start express.
+
 ```js
-/*
- * Create tables/indexes then start express
- */
 r.connect(config.rethinkdb, function(err, conn) {
     if (err) {
         console.log("Could not open a connection to initialize the database");
