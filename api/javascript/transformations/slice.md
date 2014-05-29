@@ -9,7 +9,7 @@ io:
     -   - array
         - array
 related_commands:
-	order_by: order_by/
+    order_by: order_by/
     skip: skip/
     limit: limit/
     nth: nth/
@@ -18,23 +18,25 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
+selection.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
 stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
 array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
 {% endapibody %}
 
 # Description #
 
-Return the elements within a sequence within the specified range.
+Return the elements of a sequence within the specified range.
 
 `slice` returns the range between `startIndex` and `endIndex`. If only `startIndex` is specified, `slice` returns the range from that index to the end of the sequence. Specify `leftBound` or `rightBound` as `open` or `closed` to indicate whether to include that endpoint of the range by default: `closed` returns that endpoint, while `open` does not. By default, `leftBound` is closed and `rightBound` is open, so the range `(10,13)` will return the tenth, eleventh and twelfth elements in the sequence.
 
-If `endIndex` is past the end of the sequence, all elements from `startIndex` to the end of the sequence will be returned. If `startIndex` is past the end of the sequence, a zero-element sequence will be returned. An error will be raised on a negative `startIndex` or `endIndex`. (An `endIndex` of &minus;1 *is* allowed if `rightBound` is closed; this behaves as if no `endIndex` was specified.)
+If `endIndex` is past the end of the sequence, all elements from `startIndex` to the end of the sequence will be returned. If `startIndex` is past the end of the sequence or `endIndex` is less than `startIndex`, a zero-element sequence will be returned (although see below for negative `endIndex` values). An error will be raised on a negative `startIndex`.
 
-**Example:** Return players 11-20 (index positions 10 through 19) in the amateur class.
+A negative `endIndex` is allowed with arrays; in that case, the returned range counts backward from the array's end. That is, the range of `(2,-1)` returns the second element through the next-to-last element of the range. A negative `endIndex` is not allowed with a stream. (An `endIndex` of &minus;1 *is* allowed with a stream if `rightBound` is closed; this behaves as if no `endIndex` was specified.)
+
+**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```js
-r.table('players').filter({class: 'amateur'}).slice(10, 20).run(conn, callback)
+r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback)
 ```
 
 **Example:** Return all but the top three players who have a red flag.
@@ -47,4 +49,10 @@ r.table('players').filter({flag: 'red'}).orderBy(r.desc('score')).slice(3).run(c
 
 ```js
 r.table('users').orderBy('ticket').slice(x, y, {right_bound: 'closed'}).run(conn, callback)
+```
+
+**Example:** Return the elements of an array from the second through two from the end (that is, not including the last two).
+
+```js
+r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn, callback)
 ```

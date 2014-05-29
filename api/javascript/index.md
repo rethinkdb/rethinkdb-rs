@@ -971,17 +971,17 @@ r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
 ## [slice](slice/) ##
 
 {% apibody %}
-sequence.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
+selection.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
 stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
 array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
 {% endapibody %}
 
-Return the elements within a sequence within the specified range.
+Return the elements of a sequence within the specified range.
 
-**Example:** Return players 11-20 (index positions 10 through 19) in the amateur class.
+**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```js
-r.table('players').filter({class: 'amateur'}).slice(10, 20).run(conn, callback)
+r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback)
 ```
 
 ## [nth](nth/) ##

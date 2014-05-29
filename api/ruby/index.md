@@ -883,17 +883,17 @@ r.table('marvel').order_by(:belovedness).limit(10).run(conn)
 ## [slice](slice/) ##
 
 {% apibody %}
-sequence.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; selection
+selection.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; selection
 stream.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
 array.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
 {% endapibody %}
 
-Return the elements within a sequence within the specified range.
+Return the elements of a sequence within the specified range.
 
-**Example:** Return players 11-20 (index positions 10 through 19) in the amateur class.
+**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```rb
-r.table('players').filter(:class => 'amateur'}).slice(10, 20).run(conn)
+r.table('players').order_by(:index => 'age').slice(3,6).run(conn)
 ```
 
 ## [nth](nth/) ##
