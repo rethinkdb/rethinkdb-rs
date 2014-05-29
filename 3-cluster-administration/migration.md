@@ -18,7 +18,7 @@ binaries for previous versions on the [download
 archive](http://download.rethinkdb.com).
 
 {% infobox info %}
-__Note:__ RethinkDB file formats are currently not compatible between versions.
+__Note:__ RethinkDB file formats are currently not compatible between major versions (1.x -> 1.y).  
 A better migration experience is on the roadmap (follow [Github issue #1010](https://github.com/rethinkdb/rethinkdb/issues/1010) to track progress).
 {% endinfobox %}
 
