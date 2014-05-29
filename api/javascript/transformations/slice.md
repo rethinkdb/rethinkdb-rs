@@ -56,3 +56,9 @@ r.table('users').orderBy('ticket').slice(x, y, {right_bound: 'closed'}).run(conn
 ```js
 r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn, callback)
 ```
+
+Result:
+
+```js
+[2,3]
+```

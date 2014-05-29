@@ -59,3 +59,9 @@ r.table('users').order_by(:index => 'ticket').slice(x, y, :right_bound => 'close
 ```rb
 r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn)
 ```
+
+Result:
+
+```rb
+[2,3]
+```
