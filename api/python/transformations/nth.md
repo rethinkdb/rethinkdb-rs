@@ -21,12 +21,13 @@ selection.nth(index) &rarr; selection&lt;object&gt;
 
 Get the *nth* element of a sequence.
 
-You may also use Python's list syntax, `[]`, as a shorthand for `nth`.
+In Python, you can use `[]` with an integer as a shorthand for `nth`.
 
 __Example:__ Select the second element in the array.
 
 ```py
 r.expr([1,2,3]).nth(1).run(conn)
+r.expr([1,2,3])[1].run(conn)
 ```
 
 **Example:** Select the bronze medalist from the competitors.

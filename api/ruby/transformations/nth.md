@@ -21,7 +21,7 @@ selection.nth(index) &rarr; selection&lt;object&gt;
 
 Get the *nth* element of a sequence.
 
-You may also use Ruby's array syntax, `[]`, as a shorthand for `nth`.
+In Ruby, you can use `[]` with an integer as a shorthand for `nth`.
 
 __Example:__ Select the second element in the array.
 

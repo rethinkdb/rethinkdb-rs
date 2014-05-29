@@ -908,7 +908,6 @@ __Example:__ Select the second element in the array.
 
 ```rb
 r.expr([1,2,3]).nth(1).run(conn)
-r.expr([1,2,3])[1].run(conn)
 ```
 
 ## [indexes_of](indexes_of/) ##
