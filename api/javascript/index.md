@@ -988,9 +988,10 @@ r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback)
 
 {% apibody %}
 sequence.nth(index) &rarr; object
+selection.nth(index) &rarr; selection&lt;object&gt;
 {% endapibody %}
 
-Get the nth element of a sequence.
+Get the *nth* element of a sequence.
 
 __Example:__ Select the second element in the array.
 
