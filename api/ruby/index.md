@@ -895,20 +895,21 @@ __Example:__ For this fight, we need heroes with a good mix of strength and agil
 r.table('marvel').order_by(:strength)[5..10].run(conn)
 ```
 
-## [\[\]](nth/) ##
+## [nth](nth/) ##
 
 {% apibody %}
-sequence[index] &rarr; object
+sequence.nth(index) &rarr; object
+selection.nth(index) &rarr; selection&lt;object&gt;
 {% endapibody %}
 
-Get the nth element of a sequence.
+Get the *nth* element of a sequence.
 
 __Example:__ Select the second element in the array.
 
 ```rb
+r.expr([1,2,3]).nth(1).run(conn)
 r.expr([1,2,3])[1].run(conn)
 ```
-
 
 ## [indexes_of](indexes_of/) ##
 

@@ -987,9 +987,10 @@ r.table('marvel').orderBy('strength').slice(5, 10).run(conn, callback)
 
 {% apibody %}
 sequence.nth(index) &rarr; object
+selection.nth(index) &rarr; selection&lt;object&gt;
 {% endapibody %}
 
-Get the nth element of a sequence.
+Get the *nth* element of a sequence.
 
 __Example:__ Select the second element in the array.
 
