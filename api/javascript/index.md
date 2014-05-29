@@ -971,16 +971,17 @@ r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
 ## [slice](slice/) ##
 
 {% apibody %}
-sequence.slice(startIndex[, endIndex]) &rarr; stream
-array.slice(startIndex[, endIndex]) &rarr; array
+sequence.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
+stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
+array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
 {% endapibody %}
 
-Trim the sequence to within the bounds provided.
+Return the elements within a sequence within the specified range.
 
-__Example:__ For this fight, we need heroes with a good mix of strength and agility.
+**Example:** Return players 11-20 (index positions 10 through 19) in the amateur class.
 
 ```js
-r.table('marvel').orderBy('strength').slice(5, 10).run(conn, callback)
+r.table('players').filter({class: 'amateur'}).slice(10, 20).run(conn, callback)
 ```
 
 ## [nth](nth/) ##
