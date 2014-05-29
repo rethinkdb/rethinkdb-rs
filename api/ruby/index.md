@@ -880,22 +880,23 @@ __Example:__ Only so many can fit in our Pantheon of heroes.
 r.table('marvel').order_by(:belovedness).limit(10).run(conn)
 ```
 
-## [\[\]](slice/) ##
+## [slice](slice/) ##
 
 {% apibody %}
-sequence[start_index[..end_index]] &rarr; stream
-array[start_index[..end_index]] &rarr; array
+selection.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; selection
+stream.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
+array.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
 {% endapibody %}
 
-Trim the sequence to within the bounds provided.
+Return the elements of a sequence within the specified range.
 
-__Example:__ For this fight, we need heroes with a good mix of strength and agility.
+**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```rb
-r.table('marvel').order_by(:strength)[5..10].run(conn)
+r.table('players').order_by(:index => 'age').slice(3,6).run(conn)
 ```
 
-## [\[\]](nth/) ##
+## [nth](nth/) ##
 
 {% apibody %}
 sequence[index] &rarr; object
