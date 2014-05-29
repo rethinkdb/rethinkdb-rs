@@ -23,34 +23,34 @@ array.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; array
 
 # Description #
 
-An efficient join that looks up elements in the right table by primary key.
+Join tables using an attribute on the left table matching primary keys or secondary indexes on the right table.
 
-__Example:__ Let our heroes join forces to battle evil!
+Documents in the right table missing the joined attribute or that have that attribute present with a value of `null` will not be returned by `eqJoin`.
+
+**Example:** Look up all of a player's matches.
 
 ```js
-r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc')).run(conn, callback)
+r.table('players').eqJoin('game_id', r.table('games')).run(conn, callback)
 ```
 
-__Example:__ The above query is equivalent to this inner join but runs in O(n log(m)) time rather than the O(n * m) time the inner join takes.
+This is equivalent to the following `innerJoin,` but runs in *O(n &times; log(m))* time rather than *O( n &times; m)* time.
 
 ```js
-r.table('marvel').innerJoin(r.table('dc'), function(left, right) {
-    return left('main_dc_collaborator').eq(right('hero_name'));
+r.table('players').innerJoin(r.table('games'), function(left, right) {
+    return left('game_id').eq(right('id'));
 }).run(conn, callback)
 ```
 
-
-__Example:__ You can take advantage of a secondary index on the second table by giving an optional index parameter.
-
-```js
-r.table('marvel').eqJoin('main_weapon_origin',
-r.table('mythical_weapons'), {index:'origin'}).run(conn, callback)
-```
-
-__Example:__ You can pass a function instead of an attribute to join on more complicated expressions. Here we join to the DC universe collaborator with whom the hero has the most appearances.
+**Example:** Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
 
 ```js
-r.table('marvel').eqJoin(function (doc) { return doc('dcCollaborators').orderBy('appearances').nth(0)('name'); },
-r.table('dc')).run(conn, callback)
+r.table('arenas').eqJoin('city_id', r.table('arenas'), {index: 'city_id'}).run(conn, callback)
 ```
 
+**Example:** Use a function instead of an attribute to join on a more complicated expression.
+
+```js
+r.table('players').eqJoin(function (player) {
+    return player('bestScores').orderBy({index: r.desc('scores')}).limit(3)('game_id');
+}, r.table('games')).run(conn, callback)
+```
