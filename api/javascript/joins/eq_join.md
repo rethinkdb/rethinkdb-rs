@@ -18,15 +18,14 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; stream
-array.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; array
+sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
 {% endapibody %}
 
 # Description #
 
-Join tables using an attribute on the left table matching primary keys or secondary indexes on the right table.
+Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the right-hand table are returned by `eqJoin` if they contain the specified field, matched to the left-hand counterpart where the two fields are the same value.
 
-Documents in the right table missing the joined attribute or that have that attribute present with a value of `null` will not be returned by `eqJoin`.
+*New in v1.13: Previous versions of RethinkDB would raise an error if the join field in the right-hand table existed with a value of `null`. This is no longer `eqJoin`'s behavior.*
 
 The result set of `eqJoin` is a stream or array of objects. Each object in the returned set will be an object of the form `{ left: <left-document>, right: <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the <code><a href="/api/javascript/zip/">zip</a></code> command to merge the `left` and `right` fields together.
 
@@ -108,7 +107,7 @@ r.table('arenas').eqJoin('cityId', r.table('arenas'), {index: 'cityId'}).run(con
 ...
 ```
 
-Simply specify the attribute using the `row` command instead of a string.
+Simply specify the field using the `row` command instead of a string.
 
 ```js
 r.table('players').eqJoin(r.row('game')('id'), r.table('games')).without({right: 'id'}).zip()
@@ -120,7 +119,7 @@ r.table('players').eqJoin(r.row('game')('id'), r.table('games')).without({right:
 ]
 ```
 
-**Example:** Use a function instead of an attribute to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
+**Example:** Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
 
 ```js
 r.table('players').eqJoin(function (player) {
