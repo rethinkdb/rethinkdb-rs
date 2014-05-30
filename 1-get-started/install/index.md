@@ -61,6 +61,9 @@ alias: install/
 {% endinfobox %}
 
 - - -
+
+<img src="/assets/images/docs/api_illustrations/install.png" class="api_command_illustration" />
+
 # Other platforms #
 
 ## Building from source ##
@@ -80,6 +83,7 @@ RethinkDB on FreeBSD by testing the build!
 -->
 
 ## Other architectures ##
+
 Currently the RethinkDB server only supports x86 and x86\_64 architectures on
 Unix-based platforms, and has experimental ARM support (thanks to the effort of
 [@davidthomas426](http://github.com/davidthomas426)).

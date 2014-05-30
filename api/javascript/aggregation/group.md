@@ -23,6 +23,8 @@ related_commands:
 sequence.group(fieldOrFunction..., [{index: "indexName"}]) &rarr; grouped_stream
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/group.png" class="api_command_illustration" />
+
 # Description #
 
 Takes a stream and partitions it into multiple groups based on the
