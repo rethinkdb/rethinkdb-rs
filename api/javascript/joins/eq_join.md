@@ -23,9 +23,7 @@ sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
 
 # Description #
 
-Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the right-hand table are returned by `eqJoin` if they contain the specified field, matched to the left-hand counterpart where the two fields are the same value.
-
-*New in v1.13: Previous versions of RethinkDB would raise an error if the join field in the right-hand table existed with a value of `null`. This is no longer `eqJoin`'s behavior.*
+Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
 The result set of `eqJoin` is a stream or array of objects. Each object in the returned set will be an object of the form `{ left: <left-document>, right: <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the <code><a href="/api/javascript/zip/">zip</a></code> command to merge the `left` and `right` fields together.
 

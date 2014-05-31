@@ -803,16 +803,15 @@ r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
 ## [eqJoin](eq_join/) ##
 
 {% apibody %}
-sequence.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; stream
-array.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; array
+sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
 {% endapibody %}
 
-An efficient join that looks up elements in the right table by primary key.
+Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
-__Example:__ Let our heroes join forces to battle evil!
+**Example:** Match players with the games they've played against one another.
 
 ```js
-r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc')).run(conn, callback)
+r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
 ```
 
 [Read more about this command &rarr;](eq_join/)
