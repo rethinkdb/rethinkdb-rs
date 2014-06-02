@@ -51,9 +51,9 @@ all of them.
 
 ```js
 r.table('marvel').run(conn).then(function(cursor) {
-    cursor.toArray().then(function(result) {
-        console.log(result);
-    })
+    return cursor.toArray()
+}).then(function(results) {
+    // process the results
 }).error(function(err) {
     // process error
 })
