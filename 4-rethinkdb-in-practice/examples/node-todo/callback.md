@@ -1,6 +1,6 @@
 ---
 layout: example-app 
-title: "Node.js TODO with Angular.js, Express and RethinkDB"
+title: "Node.js TODO with Express and RethinkDB"
 github_url: "https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express"
 active: docs
 docs_active: examples
@@ -18,7 +18,13 @@ This application was originally an example to illustrate AngularJS taken from
 a server running on Node.js with ExpressJS.
 
 This article discusses only the server-side code and more precisely the file
-[app.js](https://github.com/rethinkdb/rethinkdb-example-nodejs/blob/master/todo-angular-express/app.js)
+[app.js](https://github.com/rethinkdb/rethinkdb-example-nodejs/blob/master/todo-angular-express/app.js).
+
+This example uses Express and callbacks. Variants of this example are available:
+
+- [With Express and promises](/docs/examples/node-todo-promises/)
+- [With Koa](/docs/examples/node-todo-koa/)
+
 
 
 # Note
@@ -41,7 +47,7 @@ The server has two functions:
 
 ## Import modules
 
-We first have to import some modules &mdash; `express`, `rethinkdb` and `body-parser`.
+We first have to import some modules: `express`, `rethinkdb` and `body-parser`.
 The `body-parser` module is used to parse the parameters of a HTTP request.
 
 We also import the file `config.js` that contains some parameters for RethinkDB and Express.
