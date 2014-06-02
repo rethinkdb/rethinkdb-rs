@@ -1,6 +1,6 @@
 ---
 layout: example-app 
-title: "Node.js todo application"
+title: "Node.js TODO with Angular.js, Express and RethinkDB"
 github_url: "https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express"
 active: docs
 docs_active: examples
@@ -10,14 +10,14 @@ permalink: docs/examples/node-todo/
 
 # About
 
-You can find all the code for this example on ritHub in the
+You can find all the code for this example on GitHub in the
 [rethinkdb-example-nodejs repository](https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express).
 
 This application was originally an example to illustrate AngularJS taken from
 [todomvc.com](http://todomvc.com/). The code was slightly modified to persist data with
 a server running on Node.js with ExpressJS.
 
-This article discusses only about the server-side code and more precisely the file
+This article discusses only the server-side code and more precisely the file
 [app.js](https://github.com/rethinkdb/rethinkdb-example-nodejs/blob/master/todo-angular-express/app.js)
 
 
@@ -61,9 +61,9 @@ var app = express();
 ```
 
 
-## Sequence of middlewares
+## Sequence of middleware
 
-Express will pass each request through the middlewares. A middleware usually has one function
+Express will pass each request through the middleware. A middleware usually has one function
 like parsing the cookie, parsing the header, opening a connection to the database, reading a static file
 etc.
 
@@ -71,7 +71,7 @@ In our example, for each request we look if there is a file in the directory `pu
 that matches the route. If we find such file, we serve it. If we do not, we will pass
 the request to the next middleware.
 
-The next middlewares will form the REST API. Each request will go through:
+The next middleware will form the REST API. Each request will go through:
 
 - `bodyParser`: Parse the body and save it in `req.body`
 - `createConnection`: Create a connection to RethinKDB and save it in `req._rdbConn`
@@ -79,7 +79,7 @@ The next middlewares will form the REST API. Each request will go through:
 - `closeConnection`: Close the connection to the database
 
 
-This is how the sequence of middlewares is defined.
+This is how the sequence of middleware is defined.
 
 ```js
 app.use(express.static(__dirname + '/public')); // Serve static content
@@ -97,7 +97,7 @@ app.use(closeConnection);                       // Close the RethinkDB connectio
 ```
 
 
-## Implement the middlewares
+## Implement the middleware
 
 Each middleware is a function that takes three arguments:
 
