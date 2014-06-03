@@ -32,7 +32,7 @@ wait until the server has processed them.
 conn.noreplyWait(function(err) { ... })
 ```
 
-__Example:__ Alternatively, you can use promises.
+Alternatively, you can use promises.
 
 ```js
 conn.noreplyWait().then(function() {

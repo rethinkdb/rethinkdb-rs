@@ -39,7 +39,7 @@ __Example:__ Cancel outstanding requests/queries that are no longer needed.
 conn.reconnect({noreplyWait: false}, function(errror, connection) { ... })
 ```
 
-__Example:__ Alternatively, you can use promises.
+Alternatively, you can use promises.
 
 ```js
 conn.reconnect({noreplyWait: false}).then(function(conn) {

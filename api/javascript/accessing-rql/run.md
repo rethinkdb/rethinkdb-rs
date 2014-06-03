@@ -46,7 +46,7 @@ r.table('marvel').run(conn, function(err, cursor) {
 })
 ```
 
-__Example:__ Run a query on the connection `conn`, retrieve all the rows in an
+__Example:__ Run a query on the connection `conn` and retrieve all the rows in an
 array.
 
 ```js
@@ -67,7 +67,7 @@ r.table('marvel').run(conn, function(err, cursor) {
 })
 ```
 
-__Example:__ Alternatively, you can use promises.
+Alternatively, you can use promises.
 
 ```js
 r.table('marvel').run(conn).then(function(cursor) {
