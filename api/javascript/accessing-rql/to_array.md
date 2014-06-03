@@ -51,7 +51,7 @@ cursor.each(function(err, row) {
 });
 ```
 
-__Example:__ Using promises.
+__Example:__ An equivalent query using promises.
 
 ```js
 cursor.toArray().then(function(results) {

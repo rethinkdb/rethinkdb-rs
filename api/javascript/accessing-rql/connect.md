@@ -54,7 +54,7 @@ r.connect({ host: 'localhost',
           function(err, conn) { ... })
 ```
 
-__Example:__ Opens a new connection to the database and using promises.
+__Example:__ Alternatively, you can use promises.
 
 ```js
 var p = r.connect({host:'localhost', port:28015, db:'marvel', authKey:'hunter2'});

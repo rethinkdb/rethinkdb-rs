@@ -32,8 +32,7 @@ wait until the server has processed them.
 conn.noreplyWait(function(err) { ... })
 ```
 
-__Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
-wait until the server has processed them, using promises.
+__Example:__ Alternatively, you can use promises.
 
 ```js
 conn.noreplyWait().then(function() {

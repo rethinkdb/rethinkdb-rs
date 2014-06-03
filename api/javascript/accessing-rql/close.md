@@ -39,8 +39,7 @@ __Example:__ Close an open connection, waiting for noreply writes to finish.
 conn.close(function(err) { if (err) throw err; })
 ```
 
-__Example:__ Close an open connection, waiting for noreply writes to finish, and
-using promises
+__Example:__ Alternatively, you can use promises.
 
 ```js
 p = conn.close();
@@ -57,7 +56,7 @@ __Example:__ Close an open connection immediately.
 conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
 ```
 
-__Example:__ Close an open connection immediately, using promises.
+__Example:__ Alternatively, you can use promises.
 
 ```js
 conn.close({noreplyWait: false}).then(function() {

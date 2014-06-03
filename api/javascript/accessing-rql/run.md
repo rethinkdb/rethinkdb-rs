@@ -46,8 +46,28 @@ r.table('marvel').run(conn, function(err, cursor) {
 })
 ```
 
-__Example:__ Run a query on the connection `conn`, retrieve all the rows and log
-all of them.
+__Example:__ Run a query on the connection `conn`, retrieve all the rows in an
+array.
+
+```js
+r.table('marvel').run(conn, function(err, cursor) {
+    if (err) {
+        // process error
+    }
+    else {
+        cursor.toArray(function(err, results) {
+            if (err) {
+                // process error
+            }
+            else {
+                // process the results
+            }
+        })
+    }
+})
+```
+
+__Example:__ Alternatively, you can use promises.
 
 ```js
 r.table('marvel').run(conn).then(function(cursor) {
