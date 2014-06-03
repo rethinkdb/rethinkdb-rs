@@ -2,8 +2,6 @@
 <p><strong>Before you start:</strong> make sure you've <a href="/install">installed RethinkDB</a> &mdash; it should only take a minute!</p>
 {% endinfobox %}
 
-<img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
-
 # Start the server #
 
 First, start the RethinkDB server like this:
