@@ -30,6 +30,8 @@ var r = require('rethinkdb');
 {% apibody %}
 r.connect(options, callback)
 r.connect(host, callback)
+r.connect(options) &rarr; promise
+r.connect(host) &rarr; promise
 {% endapibody %}
 
 Create a new connection to the database server.  Accepts the following options:
@@ -57,6 +59,7 @@ r.connect({ host: 'localhost',
 
 {% apibody %}
 conn.close([opts, ]callback)
+conn.close([opts]) &rarr; promise
 {% endapibody %}
 
 Close an open connection.  Accepts the following options:
@@ -86,6 +89,7 @@ conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
 
 {% apibody %}
 conn.reconnect([opts, ]callback)
+conn.reconnect([opts]) &rarr; promise
 {% endapibody %}
 
 Close and reopen a connection.  Accepts the following options:
@@ -124,6 +128,7 @@ r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
 
 {% apibody %}
 query.run(conn[, options], callback)
+query.run(conn[, options]) &rarr; promise
 {% endapibody %}
 
 Run a query on a connection. 
@@ -144,6 +149,7 @@ r.table('marvel').run(conn, function(err, cursor) { cursor.each(console.log); })
 
 {% apibody %}
 conn.noreplyWait(callback)
+conn.noreplyWait() &rarr; promise
 {% endapibody %}
 
 `noreplyWait` ensures that previous queries with the `noreply` flag have been processed
@@ -162,6 +168,8 @@ conn.noreplyWait(function(err) { ... })
 {% apibody %}
 cursor.next(callback)
 array.next(callback)
+cursor.next() &rarr; promise
+array.next() &rarr; promise
 {% endapibody %}
 
 Get the next element in the cursor.
@@ -221,6 +229,8 @@ cursor.each(function(err, row) {
 {% apibody %}
 cursor.toArray(callback)
 array.toArray(callback)
+cursor.toArray() &rarr; promise
+array.toArray() &rarr; promise
 {% endapibody %}
 
 Retrieve all results and pass them as an array to the given callback.
@@ -901,9 +911,9 @@ r.table('marvel').concatMap(function(hero) {
 ## [orderBy](order_by/) ##
 
 {% apibody %}
-table.orderBy([key1...], {index: index_name}) -> selection<stream>
-selection.orderBy(key1, [key2...]) -> selection<array>
-sequence.orderBy(key1, [key2...]) -> array
+table.orderBy([key1...], {index: index_name}) &rarr; selection<stream>
+selection.orderBy(key1, [key2...]) &rarr; selection<array>
+sequence.orderBy(key1, [key2...]) &rarr; array
 {% endapibody %}
 
 Sort the sequence by document values of the given key(s). To specify
