@@ -16,6 +16,8 @@ io:
 query.run(conn[, options], callback)
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/run.png" class="api_command_illustration" />
+
 # Description #
 
 Run a query on a connection. The callback will get either an error, a single JSON
