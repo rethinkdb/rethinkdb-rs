@@ -59,7 +59,7 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb
-./configure --fetch npm --allow-fetch
+./configure --allow-fetch
 make
 ```
 
