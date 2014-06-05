@@ -42,7 +42,7 @@ Install the main dependencies:
 
 ```
 sudo apt-get install git g++ protobuf-compiler libprotobuf-dev libv8-dev \
-lib64ncurses5-dev libgoogle-perftools-dev libboost-dev curl
+libncurses5-dev libgoogle-perftools-dev libboost-dev curl
 ```
 
 ## Get the source code ##
@@ -59,7 +59,7 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb
-./configure --fetch npm
+./configure --fetch npm --allow-fetch
 make
 ```
 
