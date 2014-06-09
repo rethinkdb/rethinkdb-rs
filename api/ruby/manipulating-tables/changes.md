@@ -25,7 +25,8 @@ be `nil`.
 If the client is slow to consume changes, the server will buffer them,
 up to 100,000 stream elements.  After that, early changes will be
 discarded, and the client will instead receive an object of the form
-`{error: ...}` describing how many elements were skipped.
+`{error: "Changefeed cache over array size limit, skipped X
+elements."}` where `X` is the number of elements skipped.
 
 If the table becomes unavailable, the changefeed will be disconnected,
 and a runtime exception will be thrown by the driver.
@@ -36,16 +37,21 @@ need to consume the entire stream before returning (such as `reduce`
 or `count`), which cannot.  (`changes` produces an infinite stream, so
 such commands would never terminate.)
 
-__Example:__ Subscribing to the changes on a table.
+It's usually a good idea to open changefeeds on their own connection.
+If you don't, other queries run on the same connection will experience
+unpredictable latency spikes while the connection blocks on more
+changes.
+
+__Example:__ Subscribe to the changes on a table.
 
 If you were to write this in one client:
 
 ```rb
-r.table('games').changes().run(conn)
+r.table('games').changes().run(conn).each{|change| p(change)}
 ```
 
-Then performing these queries in a second client would add the objects
-in the comments to the stream returned in the first client:
+Then performing these queries in a second client would cause the first
+client to print the objects in the comments:
 
 ```rb
 > r.table('games').insert({id: 1}).run(conn)
@@ -61,15 +67,25 @@ in the comments to the stream returned in the first client:
 # client 1: RUNTIME ERROR
 ```
 
+__Example:__ Return all the changes that increase a player's score.
+
+```rb
+r.table('test').changes().filter{|row|
+  row['new_val']['score'] > row['old_val']['score']
+}
+```
+
+__Example:__ Return all the changes to Bob's score.
+
+```rb
+# Note that this will have to look at and discard all the changes to
+# rows besides Bob's.  This is currently no way to filter with an index
+# on change feeds.
+r.table('test').changes().filter{|row| row['new_val]['name'].eq('Bob')}
+```
+
 __Example:__ Return all the inserts on a table.
 
 ```rb
 r.table('test').changes().filter{|row| row['old_val'].eq(nil)}.run(conn)
-```
-
-__Example:__ `changes` produces an infinite stream, so terminals
-cannot be chained on the end.
-
-```rb
-r.table('test').changes().count().run(conn) # Produces an error.
 ```
