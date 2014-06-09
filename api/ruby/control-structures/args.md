@@ -8,7 +8,7 @@ command: args
 # Command syntax #
 
 {% apibody %}
-r.args(array) -> special
+r.args(array) &rarr; special
 {% endapibody %}
 
 # Description #
