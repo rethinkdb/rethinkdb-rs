@@ -17,12 +17,12 @@ r.args(array) &rarr; special
 into another term.  This is useful when you want to call a variadic
 term such as `get_all` with a set of arguments produced at runtime.
 
-This is analagous to the splat operator in Ruby.
+This is analagous to the **splat operator** in Ruby.
 
 __Example:__ Get Alice and Bob from the table `people`.
 
 ```rb
-r.table('peopl').get_all('Alice', 'Bob').run(conn)
+r.table('people').get_all('Alice', 'Bob').run(conn)
 # or
 r.table('people').get_all(r.args(['Alice', 'Bob'])).run(conn)
 ```
