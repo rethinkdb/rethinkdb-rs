@@ -30,5 +30,6 @@ r.table('people').get_all(r.args(['Alice', 'Bob'])).run(conn)
 __Example:__ Get all of Alice's children from the table `people`.
 
 ```rb
+# r.table('people').get('Alice') returns {id: 'Alice', children: ['Bob', 'Carol']}
 r.table('people').get_all(r.args(r.table('people').get('Alice')['children'])).run(conn)
 ```
