@@ -14,10 +14,10 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.connect(options, callback)
-r.connect(host, callback)
-r.connect(options) &rarr; promise
-r.connect(host) &rarr; promise
+r.connect([options, ]callback)
+r.connect([host, ]callback)
+r.connect([options]) &rarr; promise
+r.connect([host]) &rarr; promise
 
 {% endapibody %}
 
