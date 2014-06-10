@@ -186,24 +186,6 @@ cursor.next(function(err, row) {
 [Read more about this command &rarr;](next/)
 
 
-## [hasNext](has_next/) ##
-
-{% apibody %}
-cursor.hasNext() &rarr; bool
-array.hasNext() &rarr; bool
-{% endapibody %}
-
-Check if there are more elements in the cursor.
-
-__Example:__ Are there more elements in the cursor?
-
-```js
-var hasMore = cursor.hasNext();
-```
-
-[Read more about this command &rarr;](has_next/)
-
-
 ## [each](each/) ##
 
 {% apibody %}

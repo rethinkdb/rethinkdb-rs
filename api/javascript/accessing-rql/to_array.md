@@ -10,7 +10,6 @@ io:
         - undefined
 related_commands:
     next: next/
-    hasNext: has_next/
     each: each/
     close (cursor): close-cursor/
 ---
