@@ -75,34 +75,6 @@ manipulation tasks. Since ReQL is explicitly designed for JSON
 querying and modification, it's also an excellent language for
 operating on web services!
 
-# Pagination #
-
-The calls above only return a few dozen stargazers while RethinkDB has
-thousands. Most APIs paginate large result sets and GitHub is no
-exception. The `r.http` command has built-in support for pagination
-via the `page` and `pageLimit` arguments. Let's get ten pages of
-stargazers from GitHub instead of one:
-
-```javascript
-r.http('https://api.github.com/repos/rethinkdb/rethinkdb/stargazers',
-       { page: 'link-next', pageLimit: 10 })
-```
-
-The `page` argument takes the type of pagination mechanism used by the
-API &mdash; in this case GitHub uses the standard link header
-mechanism `link-next`, but you can also specify custom pagination
-schemes for unusual APIs &mdash. The `page-limit` argument specifies
-the number of pages you'd like to get. See the [API
-reference](/api/javascript/http/) for more details.
-
-When you turn on pagination in `r.http`, instead of returning an array
-of documents, RethinkDB returns a stream which you can access in the
-driver via the usual cursor API. This is significant because
-pagination happens lazily &mdash; RethinkDB will request new pages as
-you iterate through the cursor to minimize the number of API
-calls. RethinkDB drivers will even use prefetching techniques to
-overlap operations for increased performance!
-
 # Storing and enriching API data #
 
 Since you'll be doing more manipulation on the data, you might want to
@@ -132,13 +104,60 @@ The update command will go through every row and issue an API request
 to the GitHub URL for the given user, grab the relevant data, and
 update the user information with that data!
 
-We can now sort the stargazers by the number of their followers:
+We can now sort the stargazers by the number of their followers!
 
 ```javascript
 r.table('stargazers').orderBy(r.desc('followers'))
 ```
 
+# Pagination #
+
+The calls above only return a few dozen stargazers while RethinkDB has
+thousands. Most APIs paginate large result sets and GitHub is no
+exception. The `r.http` command has built-in support for pagination
+via the `page` and `pageLimit` arguments. Let's get ten pages of
+stargazers from GitHub instead of one:
+
+```javascript
+r.http('https://api.github.com/repos/rethinkdb/rethinkdb/stargazers',
+       { page: 'link-next', pageLimit: 10 })
+```
+
+The `page` argument takes the type of pagination mechanism used by the
+API. In this case GitHub uses the standard link header mechanism
+`link-next`, but you can also specify custom pagination schemes for
+unusual APIs. The `page-limit` argument specifies the number of
+pages you'd like to get. See the [API
+reference](/api/javascript/http/) for more details.
+
+When you turn on pagination in `r.http`, instead of returning an array
+of documents, RethinkDB returns a stream which you can access in the
+driver via the usual cursor API. This is significant because
+pagination happens lazily &mdash; RethinkDB will request new pages as
+you iterate through the cursor to minimize the number of API
+calls. RethinkDB drivers will even use prefetching techniques to
+overlap operations for increased performance!
+
 # Authentication #
 
-foo
+Most APIs support some form of authentication and rate limiting. The
+`r.http` command supports common forms of authentication (see the
+[reference](/api/javascript/http/) for more details). For example,
+here is how you can use GitHub tokens with basic auth:
 
+```javascript
+r.http('https://api.github.com/users/coffeemug', {
+       auth: {
+           user: GITHUB_TOKEN,
+           pass: 'x-oauth-basic'
+       }
+})
+```
+
+# Read more #
+
+Browse the following resources to learn more about ReQL and `r.http`:
+
+- [r.http API reference](/api/javascript/http)
+- [Introduction to ReQL](/docs/introduction-to-reql/)
+- [Lambda functions in RethinkDB](/blog/lambda-functions/)
