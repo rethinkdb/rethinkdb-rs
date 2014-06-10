@@ -2319,7 +2319,7 @@ may be a function which will be called with either the text of the non-existence
 or `None`.)
 
 
-__Exmple:__ Suppose we want to retrieve the titles and authors of the table `posts`.
+__Example:__ Suppose we want to retrieve the titles and authors of the table `posts`.
 In the case where the author field is missing or `None`, we want to retrieve the string
 `Anonymous`.
 
