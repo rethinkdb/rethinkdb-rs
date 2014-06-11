@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Javascript
-Permalink: api/javascript/changes/
+permalink: api/javascript/changes/
 command: changes
 related_commands:
     table: table/

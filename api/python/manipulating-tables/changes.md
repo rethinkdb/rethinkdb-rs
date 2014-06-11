@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Python
-Permalink: api/python/changes/
+permalink: api/python/changes/
 command: changes
 related_commands:
     table: table/
