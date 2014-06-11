@@ -6,10 +6,12 @@ docs_active: changefeeds
 permalink: docs/changefeeds/
 ---
 
-Changefeeds provide a way for a database client to get a view of all
-changes occurring on the database cluster. RethinkDB implements
-changefeeds via the [r.changes](/api/python/changes) command. Changefeeds
-offer a convenient way to perform certain tasks:
+Changefeeds are a way for clients to subscribe to changes on a
+table. Any time a document in the table is inserted, updated, or
+deleted, the client driver can get notified about the
+change. RethinkDB implements changefeeds via the
+[r.changes](/api/python/changes) command. Changefeeds offer a
+convenient way to perform certain tasks:
 
 - Integrate with other databases or middleware such as ElasticSearch or RabbitMQ.
 - Write applications where clients are notified of changes in realtime.
@@ -19,17 +21,16 @@ cursor, and is very powerful and easy to use.
 
 {% infobox info %}
 <strong>Note:</strong> the following examples use the Python
-driver. See the [r.changes command reference](/api/python/changes/) for
-documentation for other languages.
+driver. See the [r.changes](/api/python/changes/) command reference
+for documentation for other languages.
 {% endinfobox %}
 
 # Basic usage #
 
-You can subscribe to a feed of changes by chaining `.changes()` to a
-table:
+You can subscribe to a feed by calling `.changes()` on a table:
 
 ```python
-feed = r.table('users').changes().run()
+feed = r.table('users').changes().run(conn)
 for change in feed:
     print change
 ```
@@ -40,11 +41,11 @@ other cursors, the cursor returned by the `changes` command doesn't
 terminate &mdash; when you iterate through all the elements, the
 cursor blocks until more elements are available.
 
-Every time you insert, update, or delete a document in a table, a
-change document will be posted to relevant changefeeds. For example,
-if you insert a user `{ 'id': 1, 'name': 'Slava', 'age': 31}` into the
-`users` table, RethinkDB will post the following document into the
-feeds subscribed to `users`:
+Every time you insert, update, or delete a document in a table, an
+object describing the change will be added to relevant
+changefeeds. For example, if you insert a user `{ 'id': 1, 'name':
+'Slava', 'age': 31 }` into the `users` table, RethinkDB will post the
+following document into the feeds subscribed to `users`:
 
 ```python
 {
@@ -62,7 +63,7 @@ RethinkDB sets `new_val` to `None`. When a document is updated, both
 You can then grab the old version or the new version of the document
 (or both), and do anything you like &mdash; log them to a file, send
 them to a queueing system or another database, or perform other
-commands on RethinkDB.
+queries on RethinkDB.
 
 # Filtering events #
 
@@ -76,24 +77,25 @@ posting messages to different chat rooms. You can create feeds that
 subscribe to messages posted to a specific room:
 
 ```python
-r.table('messages').changes().filter(r.row['new_val']['room_id'] == ROOM_ID).run()
+r.table('messages').changes().filter(r.row['new_val']['room_id'] == ROOM_ID).run(conn)
 ```
 
-You can also do more complicated expressions. Let's say you have a
+You can also use more complicated expressions. Let's say you have a
 table `scores` that contains the latest game score for every user of
 your game. You can create a feed of all games where a user beats their
 previous score, and get only the new value:
 
 ```python
-r.table('scores').changes().filter(lambda change:
-    change['new_val']['score'] > change['old_val']['score'])['new_val'].run()
+r.table('scores').changes().filter(
+    lambda change: change['new_val']['score'] > change['old_val']['score']
+)['new_val'].run(conn)
 ```
 
 # Read More #
 
 Browse the following resources to learn more about ReQL and `r.changes`:
 
-- [r.changes API reference](/api/python/changes)
+- [r.changes](/api/python/changes) API reference
 - [Introduction to ReQL](/docs/introduction-to-reql/)
 - [ReQL data types](/docs/data-types/)
 
