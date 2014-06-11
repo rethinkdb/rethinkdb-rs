@@ -5,6 +5,9 @@ permalink: api/javascript/random/
 command: random
 related_commands:
     'sample': sample/
+io:
+    - r
+    - number
 ---
 
 # Command syntax #
