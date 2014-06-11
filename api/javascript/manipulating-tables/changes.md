@@ -57,16 +57,16 @@ client to print the objects in the comments:
 
 ```js
 > r.table('games').insert({id: 1}).run(conn, callback)
-# client 1: {old_val: null, new_val: {id: 1}}
+// client 1: {old_val: null, new_val: {id: 1}}
 > r.table('games').get(1).update({player1: 'Bob'}).run(conn, callback)
-# client 1: {old_val: {id: 1}, new_val: {id: 1, player1: 'Bob'}}
+// client 1: {old_val: {id: 1}, new_val: {id: 1, player1: 'Bob'}}
 > r.table('games').get(1).replace({id: 1, player1: 'Bob', player2: 'Alice'}).run(conn, callback)
-# client 1: {old_val: {id: 1, player1: 'Bob'},
-#            new_val: {id: 1, player1: 'Bob', player2: 'Alice'}}
+// client 1: {old_val: {id: 1, player1: 'Bob'},
+//            new_val: {id: 1, player1: 'Bob', player2: 'Alice'}}
 > r.table('games').get(1).delete().run(conn, callback)
-# client 1: {old_val: {id: 1, player1: 'Bob', player2: 'Alice'}, new_val: null}
+// client 1: {old_val: {id: 1, player1: 'Bob', player2: 'Alice'}, new_val: null}
 > r.table_drop('games').run(conn, callback)
-# client 1: RUNTIME ERROR
+// client 1: RUNTIME ERROR
 ```
 
 __Example:__ Return all the changes that increase a player's score.
@@ -80,9 +80,9 @@ r.table('test').changes().filter(
 __Example:__ Return all the changes to Bob's score.
 
 ```js
-# Note that this will have to look at and discard all the changes to
-# rows besides Bob's.  This is currently no way to filter with an index
-# on change feeds.
+// Note that this will have to look at and discard all the changes to
+// rows besides Bob's.  This is currently no way to filter with an index
+// on change feeds.
 r.table('test').changes().filter(r.row('new_val)('name').eq('Bob')).run(conn, callback)
 ```
 
