@@ -2189,6 +2189,26 @@ r.now().to_epoch_time()
 
 {% apisection Control structures%}
 
+## [args](args/) ##
+
+{% apibody %}
+r.args(array) &rarr; special
+{% endapibody %}
+
+`r.args` is a special term that's used to splice an array of arguments
+into another term.  This is useful when you want to call a variadic
+term such as `get_all` with a set of arguments produced at runtime.
+
+This is analagous to the **splat operator** in Ruby.
+
+__Example:__ Get Alice and Bob from the table `people`.
+
+```rb
+r.table('people').get_all('Alice', 'Bob').run(conn)
+# or
+r.table('people').get_all(r.args(['Alice', 'Bob'])).run(conn)
+```
+
 ## [do](do/) ##
 
 {% apibody %}
