@@ -713,7 +713,7 @@ r.table('marvel').outer_join(r.table('dc')) {|marvel_row, dc_row|
 ## [eq_join](eq_join/) ##
 
 {% apibody %}
-sequence.eq_join(left_field, right_table[, {index:'id'}]) &rarr; sequence
+sequence.eq_join(left_field, right_table[, :index => 'id']) &rarr; sequence
 {% endapibody %}
 
 Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other Re_qL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.

@@ -12,7 +12,7 @@ related_commands:
 
 
 {% apibody %}
-sequence.eq_join(left_field, right_table[, {index:'id'}]) &rarr; sequence
+sequence.eq_join(left_field, right_table[, :index => 'id']) &rarr; sequence
 {% endapibody %}
 
 # Description #
@@ -57,12 +57,12 @@ This will return a result set such as the following:
 ```rb
 [
     {
-        :left => { :game_id => 3, :id => 2, :player => "Agatha" },
-        :right => { :id => 3, :field => "Bucklebury" }
+        'left' => { 'game_id' => 3, 'id' => 2, 'player' => "Agatha" },
+        'right' => { 'id' => 3, 'field' => "Bucklebury" }
     },
     {
-        :left => { :game_id => 2, :id => 3, :player => "Fred" },
-        :right => { :id => 2, :field => "Rushock Bog" }
+        'left' => { 'game_id' => 2, 'id' => 3, 'player' => "Fred" },
+        'right' => { 'id' => 2, 'field' => "Rushock Bog" }
     },
     ...
 ]
@@ -74,12 +74,12 @@ What you likely want is the result of using `zip` with that. For clarity, we'll 
 r.table('players').eq_join('game_id', r.table('games')).without({:right => "id"}).zip().order_by('game_id').run(conn)
 
 [
-    { :field => "Little Delving", :game_id => 1, :id => 5, :player => "Earnest" },
-    { :field => "Little Delving", :game_id => 1, :id => 1, :player => "George" },
-    { :field => "Rushock Bog", :game_id => 2, :id => 3, :player => "Fred" },
-    { :field => "Rushock Bog", :game_id => 2, :id => 4, :player => "Marie" },
-    { :field => "Bucklebury", :game_id => 3, :id => 6, :player => "Beth" },
-    { :field => "Bucklebury", :game_id => 3, :id => 2, :player => "Agatha" }
+    { 'field' => "Little Delving", 'game_id' => 1, 'id' => 5, 'player' => "Earnest" },
+    { 'field' => "Little Delving", 'game_id' => 1, 'id' => 1, 'player' => "George" },
+    { 'field' => "Rushock Bog", 'game_id' => 2, 'id' => 3, 'player' => "Fred" },
+    { 'field' => "Rushock Bog", 'game_id' => 2, 'id' => 4, 'player' => "Marie" },
+    { 'field' => "Bucklebury", 'game_id' => 3, 'id' => 6, 'player' => "Beth" },
+    { 'field' => "Bucklebury", 'game_id' => 3, 'id' => 2, 'player' => "Agatha" }
 ]
 ```
 
@@ -102,11 +102,14 @@ r.table('arenas').eq_join('city_id', r.table('arenas'), {:index => 'city_id'}).r
 Simply specify the field using a block instead of a string.
 
 ```rb
-r.table('players').eq_join(lambda { |player| player['game']['id'] }, r.table('games')).without({:right => 'id'}).zip().run(conn)
+r.table('players').eq_join(
+    lambda { |player| player['game']['id'] },
+    r.table('games')).without({:right => 'id'}
+).zip().run(conn)
 
 [
-    { :field => "Little Delving", :game => { :id => 1 }, :id => 5, :player => "Earnest" },
-    { :field => "Little Delving", :game => { :id => 1 }, :id => 1, :player => "George" },
+    { 'field' => "Little Delving", 'game' => { 'id' => 1 }, 'id' => 5, 'player' => "Earnest" },
+    { 'field' => "Little Delving", 'game' => { 'id' => 1 }, 'id' => 1, 'player' => "George" },
     ...
 ]
 ```
@@ -114,18 +117,18 @@ r.table('players').eq_join(lambda { |player| player['game']['id'] }, r.table('ga
 **Example:** Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
 
 ```rb
-r.table('players3').eq_join(lambda { |player| player['favorites'].nth(0) },
-    r.table('games')).without(
-        [{:left => ['favorites', 'game_id', 'id']}, {:right => 'id'}]
-    ).zip()
+r.table('players3').eq_join(
+    lambda { |player| player['favorites'].nth(0) },
+    r.table('games')
+).without([{:left => ['favorites', 'game_id', 'id']}, {:right => 'id'}]).zip()
 ```
 
 Result:
 
 ```rb
 [
-	{ :field => "Rushock Bog", :name => "Fred" },
-	{ :field => "Little Delving", :name => "George" },
+	{ 'field' => "Rushock Bog", 'name' => "Fred" },
+	{ 'field' => "Little Delving", 'name' => "George" },
 	...
 ]
 ```

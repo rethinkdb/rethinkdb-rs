@@ -12,14 +12,14 @@ related_commands:
 
 
 {% apibody %}
-sequence.eq_join(left_field, right_table[, {index:'id'}]) &rarr; sequence
+sequence.eq_join(left_field, right_table[, index='id']) &rarr; sequence
 {% endapibody %}
 
 # Description #
 
 Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other Re_qL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
-The result set of `eq_join` is a stream or array of objects. Each object in the returned set will be an object of the form `{ left: <left-document>, right: <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the <code><a href="/api/javascript/zip/">zip</a></code> command to merge the `left` and `right` fields together.
+The result set of `eq_join` is a stream or array of objects. Each object in the returned set will be an object of the form `{ left: <left-document>, right: <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the <code><a href="/api/python/zip/">zip</a></code> command to merge the `left` and `right` fields together.
 
 **Example:** Match players with the games they've played against one another.
 
@@ -88,7 +88,7 @@ For more information, see [Table joins in Rethink_dB](/docs/table-joins/).
 **Example:** Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
 
 ```py
-r.table('arenas').eq_join('city_id', r.table('arenas'), {index='city_id'}).run(conn)
+r.table('arenas').eq_join('city_id', r.table('arenas'), index='city_id').run(conn)
 ```
 
 **Example:** Use a nested key as the join field. Suppose the documents in the players table were structured like this:
@@ -111,13 +111,13 @@ r.table('players').eq_join(r.row['game']['id'], r.table('games')).without({'righ
 ]
 ```
 
-**Example:** Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
+**Example:** Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `"favorites": [3, 2, 1]`. Get a list of players and their top favorite:
 
 ```py
-r.table('players3').eq_join(lambda player: player['favorites'].nth(0),
-    r.table('games')).without(
-        [{'left': ['favorites', 'game_id', 'id']}, {'right': 'id'}]
-    ).zip()
+r.table('players3').eq_join(
+    lambda player: player['favorites'].nth(0),
+    r.table('games')
+).without([{'left': ['favorites', 'game_id', 'id']}, {'right': 'id'}]).zip()
 ```
 
 Result:
