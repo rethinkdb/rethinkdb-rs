@@ -713,16 +713,15 @@ r.table('marvel').outer_join(r.table('dc')) {|marvel_row, dc_row|
 ## [eq_join](eq_join/) ##
 
 {% apibody %}
-sequence.eq_join(left_attr, other_table[, index='id']) &rarr; stream
-array.eq_join(left_attr, other_table[, index='id']) &rarr; array
+sequence.eq_join(left_field, right_table[, :index => 'id']) &rarr; sequence
 {% endapibody %}
 
-An efficient join that looks up elements in the right table by primary key.
+Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other Re_qL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
-__Example:__ Let our heroes join forces to battle evil!
+**Example:** Match players with the games they've played against one another.
 
 ```rb
-r.table('marvel').eq_join(:main_dc_collaborator, r.table('dc')).run(conn)
+r.table('players').eq_join('game_id', r.table('games')).run(conn)
 ```
 
 [Read more about this command &rarr;](eq_join/)

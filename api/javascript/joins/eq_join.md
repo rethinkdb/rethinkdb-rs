@@ -11,46 +11,126 @@ io:
 related_commands:
     innerJoin: inner_join/
     outerJoin: outer_join/
+    without: without/
     zip: zip/
 ---
 
 # Command syntax #
 
 {% apibody %}
-sequence.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; stream
-array.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; array
+sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
 {% endapibody %}
 
 # Description #
 
-An efficient join that looks up elements in the right table by primary key.
+Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
-__Example:__ Let our heroes join forces to battle evil!
+The result set of `eqJoin` is a stream or array of objects. Each object in the returned set will be an object of the form `{ left: <left-document>, right: <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the <code><a href="/api/javascript/zip/">zip</a></code> command to merge the `left` and `right` fields together.
 
-```js
-r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc')).run(conn, callback)
-```
+**Example:** Match players with the games they've played against one another.
 
-__Example:__ The above query is equivalent to this inner join but runs in O(n log(m)) time rather than the O(n * m) time the inner join takes.
+The players table contains these documents:
 
 ```js
-r.table('marvel').innerJoin(r.table('dc'), function(left, right) {
-    return left('main_dc_collaborator').eq(right('hero_name'));
-}).run(conn, callback)
+[
+    { id: 1, player: 'George', gameId: 1 },
+    { id: 2, player: 'Agatha', gameId: 3 },
+    { id: 3, player: 'Fred', gameId: 2 },
+    { id: 4, player: 'Marie', gameId: 2 },
+    { id: 5, player: 'Earnest', gameId: 1 },
+    { id: 6, player: 'Beth', gameId: 3 }
+]
 ```
 
-
-__Example:__ You can take advantage of a secondary index on the second table by giving an optional index parameter.
+The games table contains these documents:
 
 ```js
-r.table('marvel').eqJoin('main_weapon_origin',
-r.table('mythical_weapons'), {index:'origin'}).run(conn, callback)
+[
+    { id: 1, field: 'Little Delving' },
+    { id: 2, field: 'Rushock Bog' },
+    { id: 3, field: 'Bucklebury' }
+]
 ```
 
-__Example:__ You can pass a function instead of an attribute to join on more complicated expressions. Here we join to the DC universe collaborator with whom the hero has the most appearances.
+Join these tables using `gameId` on the player table and `id` on the games table:
 
 ```js
-r.table('marvel').eqJoin(function (doc) { return doc('dcCollaborators').orderBy('appearances').nth(0)('name'); },
-r.table('dc')).run(conn, callback)
+r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
 ```
 
+This will return a result set such as the following:
+
+```js
+[
+    {
+        "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
+        "right" : { "id" : 3, "field" : "Bucklebury" }
+    },
+    {
+        "left" : { "gameId" : 2, "id" : 3, "player" : "Fred" },
+        "right" : { "id" : 2, "field" : "Rushock Bog" }
+    },
+    ...
+]
+```
+
+What you likely want is the result of using `zip` with that. For clarity, we'll use `without` to drop the `id` field from the games table (it conflicts with the `id` field for the players and it's redundant anyway), and we'll order it by the games.
+
+```js
+r.table('players').eqJoin('gameId', r.table('games')).without({right: "id"}).zip().orderBy('gameId').run(conn, callback)
+
+[
+    { "field": "Little Delving", "gameId": 1, "id": 5, "player": "Earnest" },
+    { "field": "Little Delving", "gameId": 1, "id": 1, "player": "George" },
+    { "field": "Rushock Bog", "gameId": 2, "id": 3, "player": "Fred" },
+    { "field": "Rushock Bog", "gameId": 2, "id": 4, "player": "Marie" },
+    { "field": "Bucklebury", "gameId": 3, "id": 6, "player": "Beth" },
+    { "field": "Bucklebury", "gameId": 3, "id": 2, "player": "Agatha" }
+]
+```
+
+For more information, see [Table joins in RethinkDB](/docs/table-joins/).
+
+**Example:** Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
+
+```js
+r.table('arenas').eqJoin('cityId', r.table('arenas'), {index: 'cityId'}).run(conn, callback)
+```
+
+**Example:** Use a nested key as the join field. Suppose the documents in the players table were structured like this:
+
+```js
+{ id: 1, player: 'George', game: {id: 1} },
+{ id: 2, player: 'Agatha', game: {id: 3} },
+...
+```
+
+Simply specify the field using the `row` command instead of a string.
+
+```js
+r.table('players').eqJoin(r.row('game')('id'), r.table('games')).without({right: 'id'}).zip()
+
+[
+    { "field": "Little Delving", "game": { "id": 1 }, "id": 5, "player": "Earnest" },
+    { "field": "Little Delving", "game": { "id": 1 }, "id": 1, "player": "George" },
+    ...
+]
+```
+
+**Example:** Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
+
+```js
+r.table('players').eqJoin(function (player) {
+    return player('favorites').nth(0)
+}, r.table('games')).without([{left: ['favorites', 'gameId', 'id']}, {right: 'id'}]).zip()
+```
+
+Result:
+
+```js
+[
+	{ "field": "Rushock Bog", "name": "Fred" },
+	{ "field": "Little Delving", "name": "George" },
+	...
+]
+```
