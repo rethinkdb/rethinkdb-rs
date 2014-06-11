@@ -1,7 +1,7 @@
 ---
 layout: api-command
-language: Ruby
-permalink: api/ruby/changes/
+language: javascript
+Permalink: api/javascript/changes/
 command: changes
 related_commands:
     table: table/
