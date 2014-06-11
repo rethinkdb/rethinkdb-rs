@@ -8,7 +8,7 @@ permalink: docs/external-api-access/
 
 RethinkDB provides an [r.http](/api/javascript/http/) command for
 accessing external APIs directly from the database. Since many APIs
-operate via streams of JSON, RethinkDB is a convenient platform for
+accept and return JSON, RethinkDB is a convenient platform for
 manipulating and analyzing API data, both interactively and in running
 applications.
 
@@ -17,7 +17,7 @@ common task &mdash; influencer analysis.
 
 {% infobox info %}
 <strong>Note:</strong> the following examples use the JavaScript
-driver. See the [r.http command reference](/api/javascript/http/) for
+driver. See the [r.http](/api/javascript/http/) command reference for
 documentation for other languages.
 {% endinfobox %}
 
@@ -40,21 +40,21 @@ homepage.
 Now let's access a real JSON API. In this example we're going to use
 GitHub &mdash; a collaborative development platform that hosts
 thousands of open-source projects. Users on GitHub can indicate
-interest by following projects and other users (GitHub calls them
-stargazers). Let's find the most influential GitHub users who showed
-interest in RethinkDB.
+interest by starring projects and following other users. GitHub calls
+users who starred other projects "stargazers".
 
-First, let's grab the list of RethinkDB stargazers:
+Let's find the most influential GitHub users who showed interest in
+RethinkDB. First, let's grab the list of RethinkDB stargazers:
 
 ```javascript
 r.http('https://api.github.com/repos/rethinkdb/rethinkdb/stargazers')
 ```
 
 This query makes a call to GitHub and returns an array of JSON
-documents. RethinkDB natively operates on JSON, and what's really cool
-about `r.http` is that its output is no different from any other
-query. You can use ReQL commands to perform operations on the output
-of `r.http`, just like on a standard RethinkDB table!
+documents. RethinkDB natively operates on JSON, and what's really
+convenient about `r.http` is that its output is no different from any
+other query. You can use ReQL commands to perform operations on the
+output of `r.http`, just like on a standard RethinkDB table!
 
 For example, let's count the number of results returned by the API:
 
@@ -66,7 +66,7 @@ Or, let's pluck out usernames and IDs, and sort the array in ascending
 order by user IDs:
 
 ```javascript
-r.http('https://api.github.com/repos/rethinkdb/rethinkdb/stargazers') \
+r.http('https://api.github.com/repos/rethinkdb/rethinkdb/stargazers')
  .pluck('login', 'id').orderBy('id')
 ```
 
@@ -90,9 +90,9 @@ r.table('stargazers').insert(
 Now we'd like to sort RethinkDB stargazers by influence. When you
 request stargazers from GitHub, the GitHub API doesn't include the
 number of followers for each stargazer, but it does include a field
-`url` which contains the address of the detailed API request for that
-user. If you follow this URL, the GitHub API will return additional
-information for the user, including the number of their followers.
+`url` specific to each stargazer. If you follow this URL, the GitHub
+API will return additional information for the user, including the
+number of their followers.
 
 Let's update our stargazer data with this additional information:
 
@@ -135,8 +135,7 @@ of documents, RethinkDB returns a stream which you can access in the
 driver via the usual cursor API. This is significant because
 pagination happens lazily &mdash; RethinkDB will request new pages as
 you iterate through the cursor to minimize the number of API
-calls. RethinkDB drivers will even use prefetching techniques to
-overlap operations for increased performance!
+calls.
 
 # Authentication #
 
@@ -158,6 +157,6 @@ r.http('https://api.github.com/users/coffeemug', {
 
 Browse the following resources to learn more about ReQL and `r.http`:
 
-- [r.http API reference](/api/javascript/http)
+- [r.http](/api/javascript/http) API reference
 - [Introduction to ReQL](/docs/introduction-to-reql/)
 - [Lambda functions in RethinkDB](/blog/lambda-functions/)
