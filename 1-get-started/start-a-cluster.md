@@ -10,6 +10,8 @@ permalink: docs/start-a-cluster/
 <strong>Want to set up a production cluster?</strong> See the [production cluster setup page](/docs/cluster-on-startup/) to learn how to set up RethinkDB with `init.d` or `systemd`.
 {% endinfobox %}
 
+<img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
+
 Adding a node to a RethinkDB cluster is as easy as starting a new
 RethinkDB process and pointing it to an existing node in the
 cluster. Everything else is handled by the system without any
