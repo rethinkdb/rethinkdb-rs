@@ -407,6 +407,25 @@ __Example:__ Wait for the index `timestamp` to be ready:
 r.table('test').index_wait('timestamp').run(conn)
 ```
 
+## [changes](changes/) ##
+
+{% apibody %}
+table.changes() &rarr; stream
+{% endapibody %}
+
+Takes a table and returns an infinite stream of objects representing
+changes to that table.  Whenever an `insert`, `delete`, `update` or
+`replace` is performed on the table, an object of the form
+`{old_val:..., new_val:...}` will be added to the stream.  For an
+`insert`, `old_val` will be `nil`, and for a `delete`, `new_val` will
+be `nil`.
+
+__Example:__ Subscribe to the changes on a table.
+
+```rb
+r.table('games').changes().run(conn).each{|change| p(change)}
+```
+
 {% endapisection %}
 
 
