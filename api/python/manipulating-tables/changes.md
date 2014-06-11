@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: python
+language: Python
 Permalink: api/python/changes/
 command: changes
 related_commands:
