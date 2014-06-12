@@ -16,12 +16,12 @@ convenient way to perform certain tasks:
 - Integrate with other databases or middleware such as ElasticSearch or RabbitMQ.
 - Write applications where clients are notified of changes in realtime.
 
-In RethinkDB `r.changes` returns a stream of changes in a regular
-cursor, and is very powerful and easy to use.
+In RethinkDB the `changes` command returns a stream of changes in a
+regular cursor, and is very powerful and easy to use.
 
 {% infobox info %}
 <strong>Note:</strong> the following examples use the Python
-driver. See the [r.changes](/api/python/changes/) command reference
+driver. See the [changes](/api/python/changes/) command reference
 for documentation for other languages.
 {% endinfobox %}
 
@@ -93,7 +93,8 @@ r.table('scores').changes().filter(
 
 # Read More #
 
-Browse the following resources to learn more about ReQL and `r.changes`:
+Browse the following resources to learn more about ReQL and the
+`changes` command:
 
 - The [changes](/api/python/changes) command API reference
 - [Introduction to ReQL](/docs/introduction-to-reql/)
