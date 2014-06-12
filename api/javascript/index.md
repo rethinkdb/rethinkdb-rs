@@ -490,6 +490,27 @@ __Example:__ Wait for the index `timestamp` to be ready:
 r.table('test').indexWait('timestamp').run(conn, callback)
 ```
 
+## [changes](changes/) ##
+
+{% apibody %}
+table.changes() &rarr; stream
+{% endapibody %}
+
+Takes a table and returns an infinite stream of objects representing
+changes to that table.  Whenever an `insert`, `delete`, `update` or
+`replace` is performed on the table, an object of the form
+`{old_val:..., new_val:...}` will be added to the stream.  For an
+`insert`, `old_val` will be `null`, and for a `delete`, `new_val` will
+be `null`.
+
+__Example:__ Subscribe to the changes on a table.
+
+```js
+r.table('games').changes().run(conn, function(err, cursor) {
+  cursor.each(console.log)
+})
+```
+
 {% endapisection %}
 
 
@@ -2294,6 +2315,26 @@ r.now().toEpochTime()
 
 
 {% apisection Control structures%}
+
+## [args](args/) ##
+
+{% apibody %}
+r.args(array) &rarr; special
+{% endapibody %}
+
+`r.args` is a special term that's used to splice an array of arguments
+into another term.  This is useful when you want to call a variadic
+term such as `getAll` with a set of arguments produced at runtime.
+
+This is analagous to using **apply** in Javascript.
+
+__Example:__ Get Alice and Bob from the table `people`.
+
+```js
+r.table('people').getAll('Alice', 'Bob').run(conn, callback)
+// or
+r.table('people').getAll(r.args(['Alice', 'Bob'])).run(conn, callback)
+```
 
 ## [do](do/) ##
 

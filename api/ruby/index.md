@@ -407,6 +407,25 @@ __Example:__ Wait for the index `timestamp` to be ready:
 r.table('test').index_wait('timestamp').run(conn)
 ```
 
+## [changes](changes/) ##
+
+{% apibody %}
+table.changes() &rarr; stream
+{% endapibody %}
+
+Takes a table and returns an infinite stream of objects representing
+changes to that table.  Whenever an `insert`, `delete`, `update` or
+`replace` is performed on the table, an object of the form
+`{old_val:..., new_val:...}` will be added to the stream.  For an
+`insert`, `old_val` will be `nil`, and for a `delete`, `new_val` will
+be `nil`.
+
+__Example:__ Subscribe to the changes on a table.
+
+```rb
+r.table('games').changes().run(conn).each{|change| p(change)}
+```
+
 {% endapisection %}
 
 
@@ -2216,6 +2235,26 @@ r.now().to_epoch_time()
 
 
 {% apisection Control structures%}
+
+## [args](args/) ##
+
+{% apibody %}
+r.args(array) &rarr; special
+{% endapibody %}
+
+`r.args` is a special term that's used to splice an array of arguments
+into another term.  This is useful when you want to call a variadic
+term such as `get_all` with a set of arguments produced at runtime.
+
+This is analagous to the **splat operator** in Ruby.
+
+__Example:__ Get Alice and Bob from the table `people`.
+
+```rb
+r.table('people').get_all('Alice', 'Bob').run(conn)
+# or
+r.table('people').get_all(r.args(['Alice', 'Bob'])).run(conn)
+```
 
 ## [do](do/) ##
 
