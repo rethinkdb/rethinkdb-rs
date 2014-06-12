@@ -1705,8 +1705,6 @@ r.and_(bool, bool) &rarr; bool
 bool.and_(bool) &rarr; bool
 {% endapibody %}
 
-# Description #
-
 Compute the logical and of two values.
 
 __Example:__ True and false anded is false?
@@ -1725,8 +1723,6 @@ bool | bool &rarr; bool
 bool.or_(bool) &rarr; bool
 r.or_(bool, bool) &rarr; bool
 {% endapibody %}
-
-# Description #
 
 Compute the logical or of two values.
 
@@ -1763,8 +1759,6 @@ value != value &rarr; bool
 value.ne(value) &rarr; bool
 {% endapibody %}
 
-# Description #
-
 Test if two values are not equal.
 
 __Example:__ Does 2 not equal 2?
@@ -1798,8 +1792,6 @@ value >= value &rarr; bool
 value.ge(value) &rarr; bool
 {% endapibody %}
 
-# Description #
-
 Test if the first value is greater than or equal to other.
 
 __Example:__ Is 2 greater than or equal to 2?
@@ -1816,8 +1808,6 @@ value < value &rarr; bool
 value.lt(value) &rarr; bool
 {% endapibody %}
 
-# Description #
-
 Test if the first value is less than other.
 
 __Example:__ Is 2 less than 2?
@@ -1833,8 +1823,6 @@ r.expr(2).lt(2).run(conn)
 value <= value &rarr; bool
 value.le(value) &rarr; bool
 {% endapibody %}
-
-# Description #
 
 Test if the first value is less than or equal to other.
 
@@ -1878,8 +1866,6 @@ r.random(integer) &rarr integer
 r.random(integer, integer) &rarr integer
 r.random(number, number, float=True}) &rarr number
 {% endapibody %}
-
-# Description #
 
 Generate a random number between the given bounds. If no arguments are given, the result
 will be a floating-point number in the range `[0,1)`.
