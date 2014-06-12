@@ -10,7 +10,7 @@ Changefeeds are a way for clients to subscribe to changes on a
 table. Any time a document in the table is inserted, updated, or
 deleted, the client driver can get notified about the
 change. RethinkDB implements changefeeds via the
-[r.changes](/api/python/changes) command. Changefeeds offer a
+[changes](/api/python/changes) command. Changefeeds offer a
 convenient way to perform certain tasks:
 
 - Integrate with other databases or middleware such as ElasticSearch or RabbitMQ.
@@ -95,7 +95,7 @@ r.table('scores').changes().filter(
 
 Browse the following resources to learn more about ReQL and `r.changes`:
 
-- [r.changes](/api/python/changes) API reference
+- The [changes](/api/python/changes) command API reference
 - [Introduction to ReQL](/docs/introduction-to-reql/)
 - [ReQL data types](/docs/data-types/)
 
