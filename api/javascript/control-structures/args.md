@@ -3,6 +3,9 @@ layout: api-command
 language: Javascript
 permalink: api/javascript/args/
 command: args
+io:
+    - r
+    - special
 ---
 
 # Command syntax #
