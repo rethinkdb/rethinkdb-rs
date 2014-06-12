@@ -1843,8 +1843,6 @@ r.random(integer, integer) &rarr integer
 r.random(number, number, :float => true) &rarr number
 {% endapibody %}
 
-# Description #
-
 Generate a random number between the given bounds. If no arguments are given, the result
 will be a floating-point number in the range `[0,1)`.
 
