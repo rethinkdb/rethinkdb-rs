@@ -5,6 +5,9 @@ permalink: api/javascript/changes/
 command: changes
 related_commands:
     table: table/
+io:
+    -   - table
+        - stream
 ---
 
 # Command syntax #
