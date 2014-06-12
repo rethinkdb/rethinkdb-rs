@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import re
 import markdown
 import os
@@ -198,7 +201,7 @@ def add_doc(file_name, result_file):
 
             result_file.write("\n")
             result_file.write(parent + name + func + ".__doc__" + " = ")
-            result_file.write(repr(re.sub("(__Example:__)|(__Example__:)", "*Example:*", re.sub("^\n+", "", re.sub("\n{2,}", "\n\n", text)))))
+            result_file.write(repr(re.sub("(__Example:__)|(__Example__:)", "*Example:*", re.sub("^\n+", "", re.sub("\n{2,}", "\n\n", text))).encode('utf-8')))
     else: # If the command has just one name and one parent
         if has_methods.get(parent, True):
             func = '.__func__'
@@ -207,7 +210,7 @@ def add_doc(file_name, result_file):
 
         result_file.write("\n")
         result_file.write(parent + name + func + ".__doc__" + " = ")
-        result_file.write(repr(re.sub("(__Example:__)|(__Example__:)", "*Example*", re.sub("^\n+", "", re.sub("\n{2,}", "\n\n", text)))))
+        result_file.write(repr(re.sub("(__Example:__)|(__Example__:)", "*Example*", re.sub("^\n+", "", re.sub("\n{2,}", "\n\n", text))).encode('utf-8')))
 
 
 if __name__ == "__main__":
