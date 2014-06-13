@@ -16,12 +16,13 @@ related_commands:
 
 {% apibody %}
 cursor.close()
+feed.close()
 {% endapibody %}
 
 # Description #
 
 
-Close a cursor. Closing a cursor cancels the corresponding query and frees the memory
+Close a cursor or a feed. Closing a cursor cancels the corresponding query and frees the memory
 associated with the open request.
 
 __Example:__ Close a cursor.

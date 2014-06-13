@@ -8,6 +8,8 @@ rb: false
 io:
     -   - cursor
         - undefined
+    -   - feed
+        - undefined
 related_commands:
     next: next/
     toArray: to_array/
@@ -19,6 +21,7 @@ related_commands:
 {% apibody %}
 cursor.each(callback[, onFinishedCallback])
 array.each(callback[, onFinishedCallback])
+feed.each(callback)
 {% endapibody %}
 
 # Description #

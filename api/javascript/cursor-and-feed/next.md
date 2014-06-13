@@ -19,9 +19,10 @@ related_commands:
 {% apibody %}
 cursor.next(callback)
 array.next(callback)
+feed.next(callback)
 cursor.next() &rarr; promise
 array.next() &rarr; promise
-
+feed.next() &rarr; promise
 {% endapibody %}
 
 # Description #

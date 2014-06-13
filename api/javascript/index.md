@@ -163,13 +163,58 @@ conn.noreplyWait(function(err) { ... })
 ```
 
 
+## [EventEmitter's methods](event_emitter/) ##
+
+{% apibody %}
+connection.addListener(event, listener)
+connection.on(event, listener)
+connection.once(event, listener)
+connection.removeListener(event, listener)
+connection.removeAllListeners([event])
+connection.setMaxListeners(n)
+connection.listeners(event)
+connection.emit(event, [arg1], [arg2], [...])
+{% endapibody %}
+
+The connection object supports the event emitter interface so you can listen for
+changes in connection state.
+
+__Example:__ Monitor connection state with events 'connect', 'close', and 'error'.
+
+
+```js
+r.connect({}, function(err, conn) {
+    if (err) throw err;
+
+    conn.addListener('error', function(e) {
+        processNetworkError(e);
+    });
+
+    conn.addListener('close', function() {
+        cleanup();
+    });
+
+    runQueries(conn);
+});
+
+```
+
+[Read more about this command &rarr;](add_listener/)
+
+
+{% endapisection %}
+
+{% apisection Cursor and feed%}
+
 ## [next](next/) ##
 
 {% apibody %}
 cursor.next(callback)
 array.next(callback)
+feed.next(callback)
 cursor.next() &rarr; promise
 array.next() &rarr; promise
+feed.next() &rarr; promise
 {% endapibody %}
 
 Get the next element in the cursor.
@@ -191,6 +236,7 @@ cursor.next(function(err, row) {
 {% apibody %}
 cursor.each(callback[, onFinishedCallback])
 array.each(callback[, onFinishedCallback])
+feed.each(callback)
 {% endapibody %}
 
 Lazily iterate over the result set one element at a time.
@@ -230,10 +276,11 @@ cursor.toArray(function(err, results) {
 [Read more about this command &rarr;](to_array/)
 
 
-## [close (cursor)](close-cursor/) ##
+## [close](close-cursor/) ##
 
 {% apibody %}
 cursor.close()
+feed.close()
 {% endapibody %}
 
 
@@ -247,41 +294,61 @@ cursor.close()
 ```
 
 
-## [addListener](add_listener/) ##
+## [EventEmitter's methods](event_emitter-cursor/) ##
 
 {% apibody %}
-conn.addListener(event, listener)
+cursor.addListener(event, listener)
+cursor.on(event, listener)
+cursor.once(event, listener)
+cursor.removeListener(event, listener)
+cursor.removeAllListeners([event])
+cursor.setMaxListeners(n)
+cursor.listeners(event)
+cursor.emit(event, [arg1], [arg2], [...])
+feed.addListener(event, listener)
+feed.on(event, listener)
+feed.once(event, listener)
+feed.removeListener(event, listener)
+feed.removeAllListeners([event])
+feed.setMaxListeners(n)
+feed.listeners(event)
+feed.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
-The connection object also supports the event emitter interface so you can listen for
-changes in connection state.
+Cursors and feeds implement the same interface as [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
-__Example:__ Monitor connection state with events 'connect', 'close', and 'error'.
+There are a few things to know about this interface:
 
+- Two events can be emited, `data` and `error`.
+- Once you start using the EventEmitter interface, the other commands like `next`,
+`toArray`, `each` will not be available anymore.
+- The first time you call one of the EventEmitter's methods, the cursor or feed will
+emit data just after the I/O events callbacks and before `setTimeout` and `setInterval`
+callbacks.
+
+
+__Example:__ Broadcast all messages with [socket.io](http://socket.io).
 
 ```js
-r.connect({}, function(err, conn) {
-    if (err) throw err;
+r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
+    if (err) {
+        // Handle error
+        return
+    }
 
-    conn.addListener('error', function(e) {
-        processNetworkError(e);
-    });
-
-    conn.addListener('close', function() {
-        cleanup();
-    });
-
-    runQueries(conn);
+    cursor.on("error", function(error) {
+        // Handle error
+    })
+    cursor.on("data", function(message) {
+        socket.broadcast.emit("message", message)
+    })
 });
-
 ```
-
-[Read more about this command &rarr;](add_listener/)
-
 
 {% endapisection %}
 
 {% apisection Manipulating databases%}
+
 ## [dbCreate](db_create/) ##
 
 {% apibody %}
