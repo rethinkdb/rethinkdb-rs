@@ -89,9 +89,14 @@ alias: docs/guides/drivers/
 ---
 
 # Contribute a driver #
-Help make RethinkDB available on more platforms&mdash; consider [contributing a
-driver](https://groups.google.com/forum/?fromgroups=#!forum/rethinkdb-dev) for
-another language, or join one of the existing projects.
+
+Help make RethinkDB available on more platforms &mdash; contribute a
+driver for another language, or join one of the existing projects. To
+get started with driver development:
+
+- [Subscribe](https://groups.google.com/forum/?fromgroups=#!forum/rethinkdb-dev) to the RethinkDB driver developers group
+- [Read](/docs/driver-spec/) the driver protocol specification
+- [Browse](https://github.com/rethinkdb/rethinkdb/tree/next/drivers) the source code for existing drivers
 
 __Thanks to all our amazing driver contributors!__
 
