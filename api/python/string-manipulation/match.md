@@ -11,6 +11,8 @@ command: match
 string.match(regexp) &rarr; None/object
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/match.png" class="api_command_illustration" />
+
 # Description #
 
 Matches against a regular expression. If there is a match, returns an object with the fields:

@@ -157,9 +157,9 @@ r.table("polls").insert(
          // We ungroup and divide the fields `Dem` and `GOP` for each state
          // by the number of polls to get the average result per state.
          return {
-             Dem: state("reduction")("Dem").div(state("reduction")("polls)),
-             GOP: state("reduction")("GOP).div(state("reduction")(polls)),
-             polls: state("reduction")("polls),
+             Dem: state("reduction")("Dem").div(state("reduction")("polls")),
+             GOP: state("reduction")("GOP").div(state("reduction")("polls")),
+             polls: state("reduction")("polls"),
              id: state("group")
          };
      })

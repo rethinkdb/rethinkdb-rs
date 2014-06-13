@@ -30,6 +30,8 @@ var r = require('rethinkdb');
 {% apibody %}
 r.connect(options, callback)
 r.connect(host, callback)
+r.connect(options) &rarr; promise
+r.connect(host) &rarr; promise
 {% endapibody %}
 
 Create a new connection to the database server.  Accepts the following options:
@@ -57,6 +59,7 @@ r.connect({ host: 'localhost',
 
 {% apibody %}
 conn.close([opts, ]callback)
+conn.close([opts]) &rarr; promise
 {% endapibody %}
 
 Close an open connection.  Accepts the following options:
@@ -86,6 +89,7 @@ conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
 
 {% apibody %}
 conn.reconnect([opts, ]callback)
+conn.reconnect([opts]) &rarr; promise
 {% endapibody %}
 
 Close and reopen a connection.  Accepts the following options:
@@ -124,6 +128,7 @@ r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
 
 {% apibody %}
 query.run(conn[, options], callback)
+query.run(conn[, options]) &rarr; promise
 {% endapibody %}
 
 Run a query on a connection. 
@@ -144,6 +149,7 @@ r.table('marvel').run(conn, function(err, cursor) { cursor.each(console.log); })
 
 {% apibody %}
 conn.noreplyWait(callback)
+conn.noreplyWait() &rarr; promise
 {% endapibody %}
 
 `noreplyWait` ensures that previous queries with the `noreply` flag have been processed
@@ -162,6 +168,8 @@ conn.noreplyWait(function(err) { ... })
 {% apibody %}
 cursor.next(callback)
 array.next(callback)
+cursor.next() &rarr; promise
+array.next() &rarr; promise
 {% endapibody %}
 
 Get the next element in the cursor.
@@ -176,24 +184,6 @@ cursor.next(function(err, row) {
 ```
 
 [Read more about this command &rarr;](next/)
-
-
-## [hasNext](has_next/) ##
-
-{% apibody %}
-cursor.hasNext() &rarr; bool
-array.hasNext() &rarr; bool
-{% endapibody %}
-
-Check if there are more elements in the cursor.
-
-__Example:__ Are there more elements in the cursor?
-
-```js
-var hasMore = cursor.hasNext();
-```
-
-[Read more about this command &rarr;](has_next/)
 
 
 ## [each](each/) ##
@@ -221,6 +211,8 @@ cursor.each(function(err, row) {
 {% apibody %}
 cursor.toArray(callback)
 array.toArray(callback)
+cursor.toArray() &rarr; promise
+array.toArray() &rarr; promise
 {% endapibody %}
 
 Retrieve all results and pass them as an array to the given callback.
@@ -496,6 +488,27 @@ __Example:__ Wait for the index `timestamp` to be ready:
 
 ```js
 r.table('test').indexWait('timestamp').run(conn, callback)
+```
+
+## [changes](changes/) ##
+
+{% apibody %}
+table.changes() &rarr; stream
+{% endapibody %}
+
+Takes a table and returns an infinite stream of objects representing
+changes to that table.  Whenever an `insert`, `delete`, `update` or
+`replace` is performed on the table, an object of the form
+`{old_val:..., new_val:...}` will be added to the stream.  For an
+`insert`, `old_val` will be `null`, and for a `delete`, `new_val` will
+be `null`.
+
+__Example:__ Subscribe to the changes on a table.
+
+```js
+r.table('games').changes().run(conn, function(err, cursor) {
+  cursor.each(console.log)
+})
 ```
 
 {% endapisection %}
@@ -803,16 +816,15 @@ r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
 ## [eqJoin](eq_join/) ##
 
 {% apibody %}
-sequence.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; stream
-array.eqJoin(leftAttr, otherTable[, {index:'id'}]) &rarr; array
+sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
 {% endapibody %}
 
-An efficient join that looks up elements in the right table by primary key.
+Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
-__Example:__ Let our heroes join forces to battle evil!
+**Example:** Match players with the games they've played against one another.
 
 ```js
-r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc')).run(conn, callback)
+r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
 ```
 
 [Read more about this command &rarr;](eq_join/)
@@ -882,14 +894,13 @@ r.table('marvel').withFields('id', 'nemesis')
 ## [concatMap](concat_map/) ##
 
 {% apibody %}
-sequence.concatMap(mappingFunction) &rarr; stream
+stream.concatMap(mappingFunction) &rarr; stream
 array.concatMap(mappingFunction) &rarr; array
 {% endapibody %}
 
-Flattens a sequence of arrays returned by the mappingFunction into a single sequence.
+Concatenate one or more elements into a single sequence using a mapping function.
 
-__Example:__ Construct a sequence of all monsters defeated by Marvel heroes. Here the field
-'defeatedMonsters' is a list that is concatenated to the sequence.
+__Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The field "defeatedMonsters" is an array of one or more monster names.
 
 ```js
 r.table('marvel').concatMap(function(hero) {
@@ -897,13 +908,14 @@ r.table('marvel').concatMap(function(hero) {
 }).run(conn, callback)
 ```
 
+[Read more about this command &rarr;](concat_map/)
 
 ## [orderBy](order_by/) ##
 
 {% apibody %}
-table.orderBy([key1...], {index: index_name}) -> selection<stream>
-selection.orderBy(key1, [key2...]) -> selection<array>
-sequence.orderBy(key1, [key2...]) -> array
+table.orderBy([key1...], {index: index_name}) &rarr; selection<stream>
+selection.orderBy(key1, [key2...]) &rarr; selection<array>
+sequence.orderBy(key1, [key2...]) &rarr; array
 {% endapibody %}
 
 Sort the sequence by document values of the given key(s). To specify
@@ -971,25 +983,27 @@ r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
 ## [slice](slice/) ##
 
 {% apibody %}
-sequence.slice(startIndex[, endIndex]) &rarr; stream
-array.slice(startIndex[, endIndex]) &rarr; array
+selection.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
+stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
+array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
 {% endapibody %}
 
-Trim the sequence to within the bounds provided.
+Return the elements of a sequence within the specified range.
 
-__Example:__ For this fight, we need heroes with a good mix of strength and agility.
+**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```js
-r.table('marvel').orderBy('strength').slice(5, 10).run(conn, callback)
+r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback)
 ```
 
 ## [nth](nth/) ##
 
 {% apibody %}
 sequence.nth(index) &rarr; object
+selection.nth(index) &rarr; selection&lt;object&gt;
 {% endapibody %}
 
-Get the nth element of a sequence.
+Get the *nth* element of a sequence.
 
 __Example:__ Select the second element in the array.
 
@@ -1502,18 +1516,15 @@ r.table('marvel').get('IronMan')('firstAppearance').run(conn, callback)
 {% apibody %}
 sequence.hasFields([selector1, selector2...]) &rarr; stream
 array.hasFields([selector1, selector2...]) &rarr; array
-singleSelection.hasFields([selector1, selector2...]) &rarr; boolean
 object.hasFields([selector1, selector2...]) &rarr; boolean
 {% endapibody %}
 
-Test if an object has all of the specified fields. An object has a field if it has the
-specified key and that key maps to a non-null value. For instance, the object
-`{'a':1,'b':2,'c':null}` has the fields `a` and `b`.
+Test if an object has one or more fields. An object has a field if it has that key and the key has a non-null value. For instance, the object `{'a': 1,'b': 2,'c': null}` has the fields `a` and `b`.
 
-__Example:__ Which heroes are married?
+__Example:__ Return the players who have won games.
 
 ```js
-r.table('marvel').hasFields('spouse')
+r.table('players').hasFields('games_won').run(conn, callback)
 ```
 
 [Read more about this command &rarr;](has_fields/)
@@ -1905,7 +1916,6 @@ __Example:__ Is 2 less than or equal to 2?
 r.expr(2).le(2).run(conn, callback)
 ```
 
-
 ## [not](not/) ##
 
 {% apibody %}
@@ -1925,6 +1935,35 @@ r.not(true).run(conn, callback)
 ```
 
 [Read more about this command &rarr;](not/)
+
+## [random](random/) ##
+
+{% apibody %}
+r.random() &rarr number
+r.random(integer) &rarr integer
+r.random(integer, integer) &rarr integer
+r.random(number, number, {float: true}) &rarr number
+{% endapibody %}
+
+Generate a random number between the given bounds. If no arguments are given, the result
+will be a floating-point number in the range `[0,1)`.
+
+When passing a single argument, `r.random(x)`, the result will be in the range `[0,x)`,
+and when passing two arguments, `r.random(x,y)`, the range is `[x,y)`. If `x` and `y` are
+equal, an error will occur, unless generating a floating-point number, for which `x` will
+be returned.
+
+Note: The last argument given will always be the 'open' side of the range, but when
+generating a floating-point number, the 'open' side may be less than the 'closed' side.
+
+__Example:__ Generate a random integer in the range `[0,100)`
+
+```js
+r.random(100).run(conn, callback)
+r.random(0, 100).run(conn, callback)
+```
+
+[Read more about this command &rarr;](random/)
 
 {% endapisection %}
 
@@ -2277,6 +2316,26 @@ r.now().toEpochTime()
 
 {% apisection Control structures%}
 
+## [args](args/) ##
+
+{% apibody %}
+r.args(array) &rarr; special
+{% endapibody %}
+
+`r.args` is a special term that's used to splice an array of arguments
+into another term.  This is useful when you want to call a variadic
+term such as `getAll` with a set of arguments produced at runtime.
+
+This is analagous to using **apply** in Javascript.
+
+__Example:__ Get Alice and Bob from the table `people`.
+
+```js
+r.table('people').getAll('Alice', 'Bob').run(conn, callback)
+// or
+r.table('people').getAll(r.args(['Alice', 'Bob'])).run(conn, callback)
+```
+
 ## [do](do/) ##
 
 {% apibody %}
@@ -2374,7 +2433,7 @@ may be a function which will be called with either the text of the non-existence
 or `null`.)
 
 
-__Exmple:__ Suppose we want to retrieve the titles and authors of the table `posts`.
+__Example:__ Suppose we want to retrieve the titles and authors of the table `posts`.
 In the case where the author field is missing or `null`, we want to retrieve the string
 `Anonymous`.
 

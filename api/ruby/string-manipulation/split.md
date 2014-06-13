@@ -15,6 +15,8 @@ related_commands:
 string.split([separator, [max_splits]]) &rarr; array
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/split.png" class="api_command_illustration" />
+
 # Description #
 
 Splits a string into substrings.  Splits on whitespace when called

@@ -17,6 +17,8 @@ object.pluck([selector1, selector2...]) &rarr; object
 singleSelection.pluck([selector1, selector2...]) &rarr; object
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/pluck.png" class="api_command_illustration" />
+
 # Description #
 
 Plucks out one or more attributes from either an object or a sequence of objects

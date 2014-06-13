@@ -21,6 +21,8 @@ language: Python
 <strong>There is currently no support for Python 3.</strong> A Python 3 port is in progress, see [Github issue #1050](https://github.com/rethinkdb/rethinkdb/issues/1050).
 {% endinfobox %}
 
+<img src="/assets/images/docs/api_illustrations/10-minute-guide-python.png" class="api_command_illustration" />
+
 # Import the driver #
 
 First, start a Python shell:

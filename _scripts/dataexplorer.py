@@ -116,7 +116,11 @@ def add_io_field(file_name, result):
                 yaml_raw += line
 
     yaml_data = yaml.load(yaml_raw)
-    result[yaml_data["permalink"]]["io"] = yaml_data["io"]
+    if "io" in yaml_data:
+        result[yaml_data["permalink"]]["io"] = yaml_data["io"]
+    else:
+        raise Exception("`io` field not found %s", file_name)
+
 
     details_file.close()
 

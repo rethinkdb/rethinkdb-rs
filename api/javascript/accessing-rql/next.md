@@ -9,7 +9,6 @@ io:
     -   - cursor
         - undefined
 related_commands:
-    hasNext: has_next/
     each: each/
     toArray: to_array/
     close (cursor): close-cursor/
@@ -20,6 +19,9 @@ related_commands:
 {% apibody %}
 cursor.next(callback)
 array.next(callback)
+cursor.next() &rarr; promise
+array.next() &rarr; promise
+
 {% endapibody %}
 
 # Description #
@@ -45,30 +47,6 @@ retrieve all the elements of a cursor or want to delay some operations.
 
 __Example:__ You can retrieve all the elements of a cursor with the `next`
 command using recursion.
-
-```js
-query.run( conn, function(err, cursor) {
-    if (err) throw err;
-
-    var fetchNext = function(err, result) {
-        if (err) throw err;
-        if (cursor.hasNext()) {
-            processRow(result);
-            cursor.next(fetchNext);
-        }
-        // If you use one connection per query, the connection should be closed.
-        // else { conn.close() }
-    }
-
-    if (cursor.hasNext()) {
-        cursor.next(fetchNext);
-    }
-    // If you use one connection per query, the connection should be closed.
-    // else { conn.close() }
-})
-```
-
-__Example:__ Another equivalent way to retrieve all the documents is to catch a `RqlDriverError`.
 
 ```js
 query.run( conn, function(err, cursor) {
@@ -103,29 +81,53 @@ query.run( conn, function(err, cursor) {
     if (err) throw err;
 
     var fetchNext = function(err, result) {
-        if (err) throw err;
-
-        processRow(result);
-
-        if (checkRow(result)) {
-            if (cursor.hasNext()) {
-                cursor.next(fetchNext);
+        if (err) {
+            if (((err.name === "RqlDriverError") && err.message === "No more rows in the cursor.")) {
+                console.log("No more data to process")
+                // If you use one connection per query, the connection should be closed here.
+                // conn.close()
             }
-            // If you use one connection per query, the connection should be closed.
-            // else { conn.close() }
+            else {
+                throw err;
+            }
         }
         else {
-            cursor.close()
-            // If you use one connection per query, the connection should be closed here.
-            // else { conn.close() }
+            if (checkRow(result)) {
+                cursor.next(fetchNext);
+            }
+            else {
+                cursor.close()
+                // If you use one connection per query, the connection should be closed here.
+                // conn.close()
+            }
         }
     }
-
-    if (cursor.hasNext()) {
-        cursor.next(fetchNext);
-    }
-    // If you use one connection per query, the connection should be closed.
-    // else { conn.close() }
-
+    cursor.next(fetchNext);
 })
+```
+
+__Example:__ You can retrieve all the elements of a cursor with the `next`
+command using recursion and promises.
+
+```js
+query.run(conn).then(function(cursor) {
+    var errorHandler = function(err) {
+        if (((err.name === "RqlDriverError") && err.message === "No more rows in the cursor.")) {
+            console.log("No more data to process")
+            // If you use one connection per query, the connection should be closed here.
+            // conn.close()
+        }
+        else {
+            throw err;
+        }
+    }
+    var fetchNext = function(result) {
+        processRow(result);
+        cursor.next().then(fetchNext).error(errorHandler);
+    }
+
+    cursor.next().then(fetchNext).error(errorHandler);
+}).error(function(err) {
+    throw err;
+});
 ```

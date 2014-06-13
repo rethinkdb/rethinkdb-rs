@@ -14,11 +14,12 @@ io:
 
 {% apibody %}
 query.run(conn[, options], callback)
+query.run(conn[, options]) &rarr; promise
 {% endapibody %}
 
-# Description #
+<img src="/assets/images/docs/api_illustrations/run.png" class="api_command_illustration" />
 
-<img src="/assets/images/docs/api_illustrations/run_javascript.png" class="api_command_illustration" />
+# Description #
 
 Run a query on a connection. The callback will get either an error, a single JSON
 result, or a cursor, depending on the query.
@@ -36,6 +37,7 @@ been committed to disk.
 - `groupFormat`: what format to return `grouped_data` and `grouped_streams` in (default: `'native'`).
   Set this to `'raw'` if you want the raw pseudotype.
 
+If no callback is provided, a promise will be returned.
 
 __Example:__ Run a query on the connection `conn` and log each row in
 the result to the console.
@@ -45,6 +47,40 @@ r.table('marvel').run(conn, function(err, cursor) {
     cursor.each(console.log);
 })
 ```
+
+__Example:__ Run a query on the connection `conn` and retrieve all the rows in an
+array.
+
+```js
+r.table('marvel').run(conn, function(err, cursor) {
+    if (err) {
+        // process error
+    }
+    else {
+        cursor.toArray(function(err, results) {
+            if (err) {
+                // process error
+            }
+            else {
+                // process the results
+            }
+        })
+    }
+})
+```
+
+Alternatively, you can use promises.
+
+```js
+r.table('marvel').run(conn).then(function(cursor) {
+    return cursor.toArray()
+}).then(function(results) {
+    // process the results
+}).error(function(err) {
+    // process error
+})
+```
+
 
 __Example:__ If you are OK with potentially out of date data from all
 the tables involved in this query and want potentially faster reads,

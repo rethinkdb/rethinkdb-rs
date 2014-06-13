@@ -21,6 +21,8 @@ singleSelection.delete[({:durability => "hard", :return_vals => false})]
     &rarr; object
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/delete-vector.png" class="api_command_illustration" />
+
 # Description #
 
 Delete one or more documents from a table.

@@ -15,9 +15,9 @@ query.run(conn[, options]) &rarr; cursor
 query.run(conn[, options]) &rarr; object
 {% endapibody %}
 
-# Description #
+<img src="/assets/images/docs/api_illustrations/run.png" class="api_command_illustration" />
 
-<img src="/assets/images/docs/api_illustrations/run_ruby.png" class="api_command_illustration" />
+# Description #
 
 Run a query on a connection, returning either a single JSON result or
 a cursor, depending on the query.
