@@ -12,8 +12,9 @@ accept and return JSON, RethinkDB is a convenient platform for
 manipulating and analyzing API data, both interactively and in running
 applications.
 
-Let's see how you can use `r.http` and the GitHub API to perform a
-common task &mdash; influencer analysis.
+Let's look at how we use `r.http` and the GitHub API at RethinkDB to
+find the most influential members of the RethinkDB community so we can
+reach out and thank them for their help and support.
 
 {% infobox info %}
 <strong>Note:</strong> the following examples use the JavaScript
