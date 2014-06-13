@@ -6,14 +6,12 @@ permalink: docs/driver-spec/
 ---
 {{ 'RethinkDB client driver protocol' | page_title }}
 
-# RethinkDB JSON Protocol
-
-## Stage 0: Connect
+# Stage 0: Connect
 
 Open a TCP connection to the server on the driver port.  The default
 driver port is `28015`.
 
-## Stage 1: Driver Handshake
+# Stage 1: Driver Handshake
 
 At the start of every connection, the driver needs to send some
 information to the server and get back a response indicating whether
@@ -48,7 +46,7 @@ may proceed to stage 2 and begin sending queries.  Any other string
 indicates an error.  The server will close the connection, and the
 driver should report this error to the user.
 
-### Example 1: No auth key.
+## Example 1: No auth key.
 
 | Step | Direction | Semantic Command | Value | Bytes on Wire |
 | --- | --- | --- | --- | --- |
@@ -58,7 +56,7 @@ driver should report this error to the user.
 | 4 | SEND | JSON | 0x7e6970c7 | `c7 70 69 7e` |
 | 5 | RECV | success | "SUCCESS" | `53 55 43 43 45 53 53` |
 
-### Example 2: Auth key.
+## Example 2: Auth key.
 
 | Step | Direction | Semantic Command | Value | Bytes on Wire |
 | --- | --- | --- | --- | --- |
@@ -68,7 +66,7 @@ driver should report this error to the user.
 | 4 | SEND | JSON | 0x7e6970c7 | `c7 70 69 7e` |
 | 5 | RECV | success | "SUCCESS" | `53 55 43 43 45 53 53` |
 
-## Stage 2: Query
+# Stage 2: Query
 
 Each query you send to the server has the following form:
 
@@ -81,7 +79,7 @@ Each query you send to the server has the following form:
 The server will reply with the JSON encoding of a response.  More
 details on the query and response are below.
 
-#### The Query
+## The Query
 
 A `Query` is a 1 or 3 element array:
 
@@ -106,7 +104,7 @@ the query.  The valid keys for this object are:
   you want for writes.
 * `profile` -- true if profiling should be enabled.
 
-##### Example 1: Send a STOP query for token 5
+### Example 1: Send a STOP query for token 5
 
 If we send `r.table('test')` to the server with token 5, we get back a
 stream.  If we read a few rows from that stream and then want to close
@@ -121,7 +119,7 @@ https://github.com/rethinkdb/rethinkdb/blob/next/src/rdb_protocol/ql2.proto
 | 2 | SEND | query length | 3 | `03 00 00 00` |
 | 3 | SEND | query | "[3]" | `5b 33 5d` |
 
-#### The Term
+## The Term
 
 A `Term` is just a JSON expression, with the exception that arrays
 represent function calls rather than literal arrays.  (There is a
@@ -137,21 +135,21 @@ https://github.com/rethinkdb/rethinkdb/blob/next/src/rdb_protocol/ql2.proto
 .  The `Args` should be an array of arguments, themselves terms, and
 the `Optargs` should be an object mapping from optarg names to terms.
 
-##### Example 1: r.table('test').insert({})
+### Example 1: r.table('test').insert({})
 
 ```
 # [INSERT, [[TABLE, ['test']], {}]]
 [56, [[15, ['test']], {}]]
 ```
 
-##### Example 2: r.table('test').insert([{}, {}], durability:'soft')
+### Example 2: r.table('test').insert([{}, {}], durability:'soft')
 
 ```
 # [INSERT, [[TABLE, ['test']], [MAKE_ARRAY, [{}, {}]]], {durability: 'soft'}]
 [56, [[15, ['test']]], [2, [{}, {}]], {durability: 'soft'}]
 ```
 
-## Stage 3: The Response
+# Stage 3: The Response
 
 The server's response to your query will take the following form:
 
@@ -168,7 +166,7 @@ A `Response` is a JSON object with the following fields:
 * `r` -- An array of JSON expressions representing the query's result.
 * `b` -- A backtrace in the case where `t` is an error type.
 
-### Example 1: A response to `r.table('test').count()`
+## Example 1: A response to `r.table('test').count()`
 
 Assuming `r.table('test').count()` returns `7`:
 
