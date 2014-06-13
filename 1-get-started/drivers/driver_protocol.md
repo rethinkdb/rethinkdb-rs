@@ -19,7 +19,7 @@ it's OK to go ahead and send queries.
 
 1. Send the protocol version to the server as a 4-byte little-endian-encoded integer.
   - Versions can be found in the `Version` enum in
-    https://github.com/rethinkdb/rethinkdb/blob/next/src/rdb_protocol/ql2.proto
+    https://github.com/rethinkdb/rethinkdb/blob/v{{site.version.major}}.x/src/rdb_protocol/ql2.proto
     .
   - The first version to support the JSON protocol is `V0_3`.  All
     instructions below assume a protocol of `V0_3` or higher.
@@ -31,7 +31,7 @@ it's OK to go ahead and send queries.
     string is 0.
 4. Send the protocol type as a 4-byte little-endian-encoded integer.
   - Protocol types can be found in the `Protocol` enum in
-    https://github.com/rethinkdb/rethinkdb/blob/next/src/rdb_protocol/ql2.proto
+    https://github.com/rethinkdb/rethinkdb/blob/v{{site.version.major}}.x/src/rdb_protocol/ql2.proto
     .
   - This guide assumes you send the `JSON` protocol type, but if
     you're updating a driver from `V0_2` you can specify `PROTOBUF` to
@@ -90,7 +90,7 @@ A `Query` is a 1 or 3 element array:
 ```
 
 The available `QueryType`s are documented in
-https://github.com/rethinkdb/rethinkdb/blob/next/src/rdb_protocol/ql2.proto
+https://github.com/rethinkdb/rethinkdb/blob/v{{site.version.major}}.x/src/rdb_protocol/ql2.proto
 .  Only a `START` query needs a `Term` and
 `Optargs`.  `Term` is the body of the query, described below, and
 `Optargs` is an object representing the global optional arguments for
@@ -110,7 +110,7 @@ If we send `r.table('test')` to the server with token 5, we get back a
 stream.  If we read a few rows from that stream and then want to close
 the stream on the server, we need to send a `STOP` query for that same
 token.  `Query::QueryType::STOP` is `3` in
-https://github.com/rethinkdb/rethinkdb/blob/next/src/rdb_protocol/ql2.proto
+https://github.com/rethinkdb/rethinkdb/blob/v{{site.version.major}}.x/src/rdb_protocol/ql2.proto
 , so we want to send `[3]` for token 5.
 
 | Step | Direction | Semantic Command | Value | Bytes on Wire |
@@ -131,7 +131,7 @@ The function call is a 1-3 element array of the following form:
 ```
 
 The available `QueryType`s and their legal optargs are documented in
-https://github.com/rethinkdb/rethinkdb/blob/next/src/rdb_protocol/ql2.proto
+https://github.com/rethinkdb/rethinkdb/blob/v{{site.version.major}}.x/src/rdb_protocol/ql2.proto
 .  The `Args` should be an array of arguments, themselves terms, and
 the `Optargs` should be an object mapping from optarg names to terms.
 
@@ -161,7 +161,7 @@ integer.
 A `Response` is a JSON object with the following fields:
 
 * `t` -- the `ResponseType` from
-  https://github.com/rethinkdb/rethinkdb/blob/next/src/rdb_protocol/ql2.proto
+  https://github.com/rethinkdb/rethinkdb/blob/v{{site.version.major}}.x/src/rdb_protocol/ql2.proto
   .
 * `r` -- An array of JSON expressions representing the query's result.
 * `b` -- A backtrace in the case where `t` is an error type.
