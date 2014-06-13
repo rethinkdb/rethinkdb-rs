@@ -20,9 +20,10 @@ should be available for your operating system's repository. These packages are:
 - g++
 - protobuf
 - gperftools
-- libncurses5
+- ncurses
 - boost
 - nodejs and npm
+- Python 2
 
 
 On Ubuntu 13.10+, you can install build dependencies with apt-get ([see instructions for previous versions](/docs/install/ubuntu/)):
