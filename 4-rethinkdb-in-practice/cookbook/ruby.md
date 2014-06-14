@@ -10,6 +10,8 @@ language : Ruby
 ---
 {% include recipe-forms.html %}
 
+<img src="/assets/images/docs/api_illustrations/cookbook.png" class="api_command_illustration" />
+
 <div id="faqcontents"></div>
 ---
 {% faqsection Basic commands %}

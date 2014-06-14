@@ -10,7 +10,6 @@ io:
         - undefined
 related_commands:
     next: next/
-    hasNext: has_next/
     each: each/
     close (cursor): close-cursor/
 ---
@@ -20,6 +19,8 @@ related_commands:
 {% apibody %}
 cursor.toArray(callback)
 array.toArray(callback)
+cursor.toArray() &rarr; promise
+array.toArray() &rarr; promise
 {% endapibody %}
 
 # Description #
@@ -47,5 +48,13 @@ cursor.each(function(err, row) {
     if (err) throw err;
     processResults(results);
 });
+```
+
+An equivalent query using promises.
+
+```js
+cursor.toArray().then(function(results) {
+    processResults(results);
+}).error(console.log);
 ```
 

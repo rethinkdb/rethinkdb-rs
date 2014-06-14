@@ -15,6 +15,8 @@ related_commands:
 string.match(regexp) &rarr; nil/object
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/match.png" class="api_command_illustration" />
+
 # Description #
 
 

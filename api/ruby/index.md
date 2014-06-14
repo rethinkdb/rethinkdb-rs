@@ -407,6 +407,25 @@ __Example:__ Wait for the index `timestamp` to be ready:
 r.table('test').index_wait('timestamp').run(conn)
 ```
 
+## [changes](changes/) ##
+
+{% apibody %}
+table.changes() &rarr; stream
+{% endapibody %}
+
+Takes a table and returns an infinite stream of objects representing
+changes to that table.  Whenever an `insert`, `delete`, `update` or
+`replace` is performed on the table, an object of the form
+`{old_val:..., new_val:...}` will be added to the stream.  For an
+`insert`, `old_val` will be `nil`, and for a `delete`, `new_val` will
+be `nil`.
+
+__Example:__ Subscribe to the changes on a table.
+
+```rb
+r.table('games').changes().run(conn).each{|change| p(change)}
+```
+
 {% endapisection %}
 
 
@@ -713,16 +732,15 @@ r.table('marvel').outer_join(r.table('dc')) {|marvel_row, dc_row|
 ## [eq_join](eq_join/) ##
 
 {% apibody %}
-sequence.eq_join(left_attr, other_table[, index='id']) &rarr; stream
-array.eq_join(left_attr, other_table[, index='id']) &rarr; array
+sequence.eq_join(left_field, right_table[, :index => 'id']) &rarr; sequence
 {% endapibody %}
 
-An efficient join that looks up elements in the right table by primary key.
+Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other Re_qL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
-__Example:__ Let our heroes join forces to battle evil!
+**Example:** Match players with the games they've played against one another.
 
 ```rb
-r.table('marvel').eq_join(:main_dc_collaborator, r.table('dc')).run(conn)
+r.table('players').eq_join('game_id', r.table('games')).run(conn)
 ```
 
 [Read more about this command &rarr;](eq_join/)
@@ -792,14 +810,13 @@ r.table('marvel').with_fields('id', 'nemesis')
 ## [concat_map](concat_map/) ##
 
 {% apibody %}
-sequence.concat_map(mapping_function) &rarr; stream
+stream.concat_map(mapping_function) &rarr; stream
 array.concat_map(mapping_function) &rarr; array
 {% endapibody %}
 
-Flattens a sequence of arrays returned by the mappingFunction into a single sequence.
+Concatenate one or more elements into a single sequence using a mapping function.
 
-__Example:__ Construct a sequence of all monsters defeated by Marvel heroes. Here the field
-'defeatedMonsters' is a list that is concatenated to the sequence.
+__Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The field "defeatedMonsters" is an array of one or more monster names.
 
 ```rb
 r.table('marvel').concat_map {|hero|
@@ -807,6 +824,8 @@ r.table('marvel').concat_map {|hero|
 }.run(conn)
 
 ```
+
+[Read more about this command &rarr;](concat_map/)
 
 
 ## [order_by](order_by/) ##
@@ -879,35 +898,36 @@ __Example:__ Only so many can fit in our Pantheon of heroes.
 r.table('marvel').order_by(:belovedness).limit(10).run(conn)
 ```
 
-## [\[\]](slice/) ##
+## [slice](slice/) ##
 
 {% apibody %}
-sequence[start_index[..end_index]] &rarr; stream
-array[start_index[..end_index]] &rarr; array
+selection.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; selection
+stream.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
+array.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
 {% endapibody %}
 
-Trim the sequence to within the bounds provided.
+Return the elements of a sequence within the specified range.
 
-__Example:__ For this fight, we need heroes with a good mix of strength and agility.
+**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```rb
-r.table('marvel').order_by(:strength)[5..10].run(conn)
+r.table('players').order_by(:index => 'age').slice(3,6).run(conn)
 ```
 
-## [\[\]](nth/) ##
+## [nth](nth/) ##
 
 {% apibody %}
-sequence[index] &rarr; object
+sequence.nth(index) &rarr; object
+selection.nth(index) &rarr; selection&lt;object&gt;
 {% endapibody %}
 
-Get the nth element of a sequence.
+Get the *nth* element of a sequence.
 
 __Example:__ Select the second element in the array.
 
 ```rb
-r.expr([1,2,3])[1].run(conn)
+r.expr([1,2,3]).nth(1).run(conn)
 ```
-
 
 ## [indexes_of](indexes_of/) ##
 
@@ -1395,18 +1415,15 @@ r.table('marvel').get('IronMan')[:first_appearance].run(conn)
 {% apibody %}
 sequence.has_fields([selector1, selector2...]) &rarr; stream
 array.has_fields([selector1, selector2...]) &rarr; array
-singleSelection.has_fields([selector1, selector2...]) &rarr; boolean
 object.has_fields([selector1, selector2...]) &rarr; boolean
 {% endapibody %}
 
-Test if an object has all of the specified fields. An object has a field if it has the
-specified key and that key maps to a non-nil value. For instance, the object
-`{:a => 1, :b => 2, :c => nil}` has the fields `a` and `b`.
+Test if an object has one or more fields. An object has a field if it has that key and the key has a non-null value. For instance, the object `{'a': 1,'b': 2,'c': null}` has the fields `a` and `b`.
 
-__Example:__ Which heroes are married?
+__Example:__ Return the players who have won games.
 
 ```rb
-r.table('marvel').has_fields(:spouse).run(conn)
+r.table('players').has_fields(:games_won).run(conn)
 ```
 
 [Read more about this command &rarr;](has_fields/)
@@ -1836,6 +1853,35 @@ r.not(true).run(conn)
 
 [Read more about this command &rarr;](not/)
 
+## [random](random/) ##
+
+{% apibody %}
+r.random() &rarr number
+r.random(integer) &rarr integer
+r.random(integer, integer) &rarr integer
+r.random(number, number, :float => true) &rarr number
+{% endapibody %}
+
+Generate a random number between the given bounds. If no arguments are given, the result
+will be a floating-point number in the range `[0,1)`.
+
+When passing a single argument, `r.random(x)`, the result will be in the range `[0,x)`,
+and when passing two arguments, `r.random(x,y)`, the range is `[x,y)`. If `x` and `y` are
+equal, an error will occur, unless generating a floating-point number, for which `x` will
+be returned.
+
+Note: The last argument given will always be the 'open' side of the range, but when
+generating a floating-point number, the 'open' side may be less than the 'closed' side.
+
+__Example:__ Generate a random integer in the range `[0,100)`
+
+```rb
+r.random(100).run(conn)
+r.random(0, 100).run(conn)
+```
+
+[Read more about this command &rarr;](random/)
+
 {% endapisection %}
 
 
@@ -2190,6 +2236,26 @@ r.now().to_epoch_time()
 
 {% apisection Control structures%}
 
+## [args](args/) ##
+
+{% apibody %}
+r.args(array) &rarr; special
+{% endapibody %}
+
+`r.args` is a special term that's used to splice an array of arguments
+into another term.  This is useful when you want to call a variadic
+term such as `get_all` with a set of arguments produced at runtime.
+
+This is analagous to the **splat operator** in Ruby.
+
+__Example:__ Get Alice and Bob from the table `people`.
+
+```rb
+r.table('people').get_all('Alice', 'Bob').run(conn)
+# or
+r.table('people').get_all(r.args(['Alice', 'Bob'])).run(conn)
+```
+
 ## [do](do/) ##
 
 {% apibody %}
@@ -2391,11 +2457,27 @@ r.json(json_string) &rarr; value
 
 Parse a JSON string on the server.
 
-__Example:__ Send an array to the server'
+__Example:__ Send an array to the server.
 
 ```rb
 r.json("[1,2,3]").run(conn)
 ```
+
+## [http](http/) ##
+
+{% apibody %}
+r.http(url [, options]) &rarr; value
+{% endapibody %}
+
+Retrieve data from the specified URL over HTTP.  The return type depends on the `result_format` option, which checks the `Content-Type` of the response by default.
+
+__Example:__ Perform a simple HTTP `GET` request, and store the result in a table.
+
+```rb
+r.table('posts').insert(r.http('httpbin.org/get')).run(conn)
+```
+
+[Read more about this command &rarr;](http/)
 
 
 {% endapisection %}

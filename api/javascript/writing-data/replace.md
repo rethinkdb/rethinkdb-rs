@@ -27,6 +27,8 @@ singleSelection.replace(json | expr[, {durability: "hard", returnVals: false, no
     &rarr; object
 {% endapibody %}
 
+<img src="/assets/images/docs/api_illustrations/replace.png" class="api_command_illustration" />
+
 # Description #
 
 Replace documents in a table. Accepts a JSON document or a ReQL expression, and replaces

@@ -39,11 +39,6 @@ r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
 });
 ```
 
-# Optional: optimized backend #
-
-For faster JavaScript driver performance, read about [using an
-optimized C++ protobuf backend](/docs/driver-performance/).
-
 # Next steps #
 
 {% include install-driver-docs-footer.md %}

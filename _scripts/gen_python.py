@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import re
 import markdown
 import os
@@ -20,6 +23,7 @@ parents = {
     'sequence': query,
     'query': query,
     'stream': query,
+    'grouped_stream': query,
     'singleSelection': query,
     'array': query,
     'number': query,
@@ -37,8 +41,8 @@ parents = {
 # The real python names for names used in the docs
 tags = {
     '[] (get_field)': [(query, '__getitem__')],
-    '[] (nth)': [(query, 'nth')],
-    '[] (slice)': [(query, 'slice')],
+    'nth, []': [(query, 'nth')],
+    'slice, []': [(query, 'slice')],
     '+': [(query, '__add__'), ('rethinkdb.', 'add')],
     '-': [(query, '__sub__'), ('rethinkdb.', 'sub')],
     '*': [(query, '__mul__'), ('rethinkdb.', 'mul')],
@@ -179,6 +183,8 @@ def add_doc(file_name, result_file):
                             text += "... "+line
                     else:
                         text += line
+            else:
+                text += line.replace('&rarr;', '->')
  
     # If the command has multiple name, parents
     if name in tags:
@@ -195,7 +201,7 @@ def add_doc(file_name, result_file):
 
             result_file.write("\n")
             result_file.write(parent + name + func + ".__doc__" + " = ")
-            result_file.write(repr(re.sub("(__Example:__)|(__Example__:)", "*Example:*", re.sub("^\n+", "", re.sub("\n{2,}", "\n\n", text)))))
+            result_file.write(repr(re.sub("(__Example:__)|(__Example__:)", "*Example:*", re.sub("^\n+", "", re.sub("\n{2,}", "\n\n", text))).encode('utf-8')))
     else: # If the command has just one name and one parent
         if has_methods.get(parent, True):
             func = '.__func__'
@@ -204,7 +210,7 @@ def add_doc(file_name, result_file):
 
         result_file.write("\n")
         result_file.write(parent + name + func + ".__doc__" + " = ")
-        result_file.write(repr(re.sub("(__Example:__)|(__Example__:)", "*Example*", re.sub("^\n+", "", re.sub("\n{2,}", "\n\n", text)))))
+        result_file.write(repr(re.sub("(__Example:__)|(__Example__:)", "*Example*", re.sub("^\n+", "", re.sub("\n{2,}", "\n\n", text))).encode('utf-8')))
 
 
 if __name__ == "__main__":
