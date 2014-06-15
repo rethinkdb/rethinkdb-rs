@@ -1,4 +1,4 @@
---
+---
 layout: example-app 
 title: "Node.js TODO with AngularJS, Koa and RethinkDB"
 github_url: "https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-koa"
@@ -119,7 +119,7 @@ function* createConnection(next) {
     try{
         // Open a connection and wait for r.connect(...) to be resolve
         var conn = yield r.connect(config.rethinkdb);
-        // Save the connection in the current context (will be pased to the next middleware)
+        // Save the connection in the current context (will be passed to the next middleware)
         this._rdbConn = conn;
     }
     catch(err) {
