@@ -104,7 +104,7 @@ get started with driver development:
 
 __Thanks to all our amazing driver contributors!__
 
-- [@dbettin](https://github.com/dbettin) (Dart): <https://github.com/dbettin/rethinkdb>
+- [@dbettin](https://github.com/dbettin) (Dart): [https://github.com/dbettin/rethinkdb](https://github.com/dbettin/rethinkdb)
 - The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C# / .NET): [https://github.com/mfenniak/rethinkdb-net](https://github.com/mfenniak/rethinkdb-net)
 - [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): [https://github.com/bitemyapp/revise](https://github.com/bitemyapp/revise)
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
