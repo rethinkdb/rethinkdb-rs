@@ -20,9 +20,11 @@ array.deleteAt(index [,endIndex]) &rarr; array
 
 # Description #
 
-Remove one or more elements from an array at a given index. Returns the modified array.
+Remove one or more elements from an array at a given index. Returns the modified array. (Note: `deleteAt` operates on arrays, not documents; to delete documents, see the <code><a href="/api/javascript/delete">delete</a></code> command.)
 
 If only `index` is specified, `deleteAt` removes the element at that index. If both `index` and `endIndex` are specified, `deleteAt` removes the range of elements between `index` and `endIndex`, inclusive of `index` but not inclusive of `endIndex`.
+
+If `endIndex` is specified, it must not be less than `index`. Both `index` and `endIndex` must be within the array's bounds (i.e., if the array has 10 elements, an `index` or `endIndex` of 10 or higher is invalid).
 
 __Example:__ Delete the second element of an array.
 
