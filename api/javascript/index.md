@@ -8,7 +8,7 @@ alias: api/
 language: JavaScript
 ---
 
-{% apisection Accessing ReQL%}
+{% apisection Accessing ReQL %}
 All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
@@ -204,7 +204,7 @@ r.connect({}, function(err, conn) {
 
 {% endapisection %}
 
-{% apisection Cursors%}
+{% apisection Cursors %}
 
 ## [next](next/) ##
 
@@ -281,7 +281,7 @@ cursor.close()
 {% endapibody %}
 
 
-Close a cursor or a feed. Closing a cursor cancels the corresponding query and frees the memory
+Close a cursor. Closing a cursor cancels the corresponding query and frees the memory
 associated with the open request.
 
 __Example:__ Close a cursor.
@@ -336,7 +336,7 @@ r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
 
 {% endapisection %}
 
-{% apisection Manipulating databases%}
+{% apisection Manipulating databases %}
 
 ## [dbCreate](db_create/) ##
 
@@ -396,7 +396,7 @@ r.dbList().run(conn, callback)
 
 
 
-{% apisection Manipulating tables%}
+{% apisection Manipulating tables %}
 ## [tableCreate](table_create/) ##
 
 {% apibody %}
@@ -570,7 +570,7 @@ r.table('games').changes().run(conn, function(err, cursor) {
 {% endapisection %}
 
 
-{% apisection Writing data%}
+{% apisection Writing data %}
 
 ## [insert](insert/) ##
 
@@ -700,7 +700,7 @@ r.table('marvel').sync().run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Selecting data%}
+{% apisection Selecting data %}
 
 ## [db](db/) ##
 
@@ -824,7 +824,7 @@ r.table('users').filter({age: 30}).run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Joins%}
+{% apisection Joins %}
 These commands allow the combination of multiple sequences into a single sequence
 
 ## [innerJoin](inner_join/) ##
@@ -906,7 +906,7 @@ r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc'))
 
 {% endapisection %}
 
-{% apisection Transformations%}
+{% apisection Transformations %}
 These commands are used to transform data in a sequence.
 
 ## [map](map/) ##
@@ -1134,7 +1134,7 @@ r.table('marvel').sample(3).run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Aggregation%}
+{% apisection Aggregation %}
 These commands are used to compute smaller values from large sequences.
 
 
@@ -1359,7 +1359,7 @@ r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, cal
 {% endapisection %}
 
 
-{% apisection Document manipulation%}
+{% apisection Document manipulation %}
 
 ## [row](row/) ##
 
@@ -1680,7 +1680,7 @@ r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
 {% endapisection %}
 
 
-{% apisection String manipulation%}
+{% apisection String manipulation %}
 These commands provide string operators.
 
 ## [match](match/) ##
@@ -1767,7 +1767,7 @@ r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Math and logic%}
+{% apisection Math and logic %}
 
 ## [add](add/) ##
 
@@ -2024,7 +2024,7 @@ r.random(0, 100).run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Dates and times%}
+{% apisection Dates and times %}
 
 ## [now](now/) ##
 
@@ -2370,7 +2370,7 @@ r.now().toEpochTime()
 {% endapisection %}
 
 
-{% apisection Control structures%}
+{% apisection Control structures %}
 
 ## [args](args/) ##
 

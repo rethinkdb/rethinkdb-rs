@@ -27,8 +27,9 @@ array.toArray() &rarr; promise
 
 Retrieve all results and pass them as an array to the given callback.
 
-_Note:_ Because a feed is a cursor that will never ends, calling `toArray` on a feed
-will throw an error.
+_Note:_ Because a feed is a cursor that never terminates, calling `toArray` on a feed
+will throw an error. See the [changes](/api/javascript/changes) command for more
+information on feeds.
 
 __Example:__ For small result sets it may be more convenient to process them at once as
 an array.
