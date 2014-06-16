@@ -45,6 +45,10 @@ alias: docs/guides/drivers/
         <img src="/assets/images/docs/driver-languages/commonlisp.png" />
         <p class="name smaller-font">Common Lisp</p>
     </a>
+    <a class="mini icon-box driver-language" href="https://github.com/dbettin/rethinkdb">
+        <img src="/assets/images/docs/driver-languages/dart.png" />
+        <p class="name smaller-font">Dart</p>
+    </a>
     <a class="mini icon-box driver-language" href="https://github.com/azukiapp/elixir-rethinkdb">
         <img src="/assets/images/docs/driver-languages/elixir.png" />
         <p class="name">Elixir</p>
@@ -100,6 +104,7 @@ get started with driver development:
 
 __Thanks to all our amazing driver contributors!__
 
+- [@dbettin](https://github.com/dbettin) (Dart): <https://github.com/dbettin/rethinkdb>
 - The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C# / .NET): [https://github.com/mfenniak/rethinkdb-net](https://github.com/mfenniak/rethinkdb-net)
 - [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): [https://github.com/bitemyapp/revise](https://github.com/bitemyapp/revise)
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
