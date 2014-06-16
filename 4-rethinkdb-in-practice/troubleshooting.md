@@ -20,12 +20,6 @@ documentation for [orderBy](/api/javascript/order_by/) for more information.
 
 ## My insert queries are slow. How can I speed them up? ##
 
-{% infobox info %}
-__Have you installed optimized `protobuf` libraries?__ [See this
-document](/docs/driver-performance/) to learn how to use optimized
-`protobuf` libraries with the client drivers.
-{% endinfobox %}
-
 RethinkDB uses a safe default configuration for write
 acknowledgement. Each write is committed to disk before the server
 acknowledges it to the client. If you're running a single thread that

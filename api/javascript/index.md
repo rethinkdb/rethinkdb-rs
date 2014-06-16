@@ -2538,17 +2538,28 @@ r.json(json_string) &rarr; value
 
 Parse a JSON string on the server.
 
-__Example:__ Send an array to the server'
+__Example:__ Send an array to the server.
 
 ```js
 r.json("[1,2,3]").run(conn, callback)
 ```
 
+## [http](http/) ##
+
+{% apibody %}
+r.http(url [, options]) &rarr; value
+{% endapibody %}
+
+Retrieve data from the specified URL over HTTP.  The return type depends on the `resultFormat` option, which checks the `Content-Type` of the response by default.
+
+__Example:__ Perform a simple HTTP `GET` request, and store the result in a table.
+
+```js
+r.table('posts').insert(r.http('httpbin.org/get')).run(conn, callback)
+```
+
+[Read more about this command &rarr;](http/)
+
 
 {% endapisection %}
-
-
-
-
-
 
