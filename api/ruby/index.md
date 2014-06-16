@@ -7,7 +7,7 @@ permalink: api/ruby/
 language: Ruby
 ---
 
-{% apisection Accessing ReQL%}
+{% apisection Accessing ReQL %}
 All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
@@ -194,7 +194,7 @@ cursor.close
 
 {% endapisection %}
 
-{% apisection Manipulating databases%}
+{% apisection Manipulating databases %}
 ## [db_create](db_create/) ##
 
 {% apibody %}
@@ -253,7 +253,7 @@ r.db_list.run(conn)
 
 
 
-{% apisection Manipulating tables%}
+{% apisection Manipulating tables %}
 ## [table_create](table_create/) ##
 
 {% apibody %}
@@ -429,7 +429,7 @@ r.table('games').changes().run(conn).each{|change| p(change)}
 {% endapisection %}
 
 
-{% apisection Writing data%}
+{% apisection Writing data %}
 
 ## [insert](insert/) ##
 
@@ -559,7 +559,7 @@ r.table('marvel').sync.run(conn)
 {% endapisection %}
 
 
-{% apisection Selecting data%}
+{% apisection Selecting data %}
 
 ## [db](db/) ##
 
@@ -684,7 +684,7 @@ r.table('users').filter({:age => 30}).run(conn)
 {% endapisection %}
 
 
-{% apisection Joins%}
+{% apisection Joins %}
 These commands allow the combination of multiple sequences into a single sequence
 
 ## [inner_join](inner_join/) ##
@@ -765,7 +765,7 @@ r.table('marvel').eq_join(:main_dc_collaborator, r.table('dc')).zip.run(conn)
 
 {% endapisection %}
 
-{% apisection Transformations%}
+{% apisection Transformations %}
 These commands are used to transform data in a sequence.
 
 ## [map](map/) ##
@@ -996,7 +996,7 @@ r.table('marvel').sample(3).run(conn)
 {% endapisection %}
 
 
-{% apisection Aggregation%}
+{% apisection Aggregation %}
 These commands are used to compute smaller values from large sequences.
 
 
@@ -1219,7 +1219,7 @@ r.table('marvel').get('ironman')[:opponents].contains('superman').run(conn)
 {% endapisection %}
 
 
-{% apisection Document manipulation%}
+{% apisection Document manipulation %}
 
 ## [pluck](pluck/) ##
 
@@ -1524,7 +1524,7 @@ __Example:__ Create a simple object.
 {% endapisection %}
 
 
-{% apisection String manipulation%}
+{% apisection String manipulation %}
 These commands provide string operators.
 
 ## [match](match/) ##
@@ -1613,7 +1613,7 @@ __Example:__
 {% endapisection %}
 
 
-{% apisection Math and logic%}
+{% apisection Math and logic %}
 
 ## [+](add/) ##
 
@@ -1885,7 +1885,7 @@ r.random(0, 100).run(conn)
 {% endapisection %}
 
 
-{% apisection Dates and times%}
+{% apisection Dates and times %}
 
 ## [now](now/) ##
 
@@ -2234,7 +2234,7 @@ r.now().to_epoch_time()
 {% endapisection %}
 
 
-{% apisection Control structures%}
+{% apisection Control structures %}
 
 ## [args](args/) ##
 
