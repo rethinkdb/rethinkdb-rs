@@ -163,7 +163,7 @@ conn.noreplyWait(function(err) { ... })
 ```
 
 
-## [EventEmitter's methods](event_emitter/) ##
+## [EventEmitter methods](event_emitter/) ##
 
 {% apibody %}
 connection.addListener(event, listener)
@@ -204,17 +204,15 @@ r.connect({}, function(err, conn) {
 
 {% endapisection %}
 
-{% apisection Cursor and feed%}
+{% apisection Cursors%}
 
 ## [next](next/) ##
 
 {% apibody %}
 cursor.next(callback)
 array.next(callback)
-feed.next(callback)
 cursor.next() &rarr; promise
 array.next() &rarr; promise
-feed.next() &rarr; promise
 {% endapibody %}
 
 Get the next element in the cursor.
@@ -280,11 +278,10 @@ cursor.toArray(function(err, results) {
 
 {% apibody %}
 cursor.close()
-feed.close()
 {% endapibody %}
 
 
-Close a cursor. Closing a cursor cancels the corresponding query and frees the memory
+Close a cursor or a feed. Closing a cursor cancels the corresponding query and frees the memory
 associated with the open request.
 
 __Example:__ Close a cursor.
@@ -294,7 +291,7 @@ cursor.close()
 ```
 
 
-## [EventEmitter's methods](event_emitter-cursor/) ##
+## [EventEmitter methods](event_emitter-cursor/) ##
 
 {% apibody %}
 cursor.addListener(event, listener)
@@ -305,14 +302,6 @@ cursor.removeAllListeners([event])
 cursor.setMaxListeners(n)
 cursor.listeners(event)
 cursor.emit(event, [arg1], [arg2], [...])
-feed.addListener(event, listener)
-feed.on(event, listener)
-feed.once(event, listener)
-feed.removeListener(event, listener)
-feed.removeAllListeners([event])
-feed.setMaxListeners(n)
-feed.listeners(event)
-feed.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
 Cursors and feeds implement the same interface as [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).

@@ -16,7 +16,6 @@ related_commands:
 
 {% apibody %}
 cursor.close()
-feed.close()
 {% endapibody %}
 
 # Description #

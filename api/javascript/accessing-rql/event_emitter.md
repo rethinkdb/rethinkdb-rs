@@ -10,7 +10,7 @@ alias:
     - api/javascript/remove_all_listeners/
     - api/javascript/listeners/
     - api/javascript/emit/
-command: "EventEmitter's methods"
+command: "EventEmitter methods"
 py: false
 rb: false
 io:

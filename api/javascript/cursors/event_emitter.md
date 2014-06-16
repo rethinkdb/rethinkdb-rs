@@ -10,13 +10,11 @@ alias:
     - api/javascript/remove_all_listeners-cursor/
     - api/javascript/listeners-cursor/
     - api/javascript/emit-cursor/
-command: "EventEmitter's methods"
+command: "EventEmitter methods"
 py: false
 rb: false
 io:
     -   - cursor 
-        - undefined
-    -   - feed
         - undefined
 related_commands:
     next: next/
@@ -34,14 +32,6 @@ cursor.removeAllListeners([event])
 cursor.setMaxListeners(n)
 cursor.listeners(event)
 cursor.emit(event, [arg1], [arg2], [...])
-feed.addListener(event, listener)
-feed.on(event, listener)
-feed.once(event, listener)
-feed.removeListener(event, listener)
-feed.removeAllListeners([event])
-feed.setMaxListeners(n)
-feed.listeners(event)
-feed.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
 # Description #
