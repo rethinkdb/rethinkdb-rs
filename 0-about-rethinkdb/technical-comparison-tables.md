@@ -36,7 +36,7 @@ The document is organized by four main categories:
 | Data model             | JSON documents | BSON documents |
 | Data access           | Unified chainable dynamic query language | Dynamic rich query language |
 | JavaScript integration | V8 engine | Spidermonkey/V8 engine |
-| Access languages       | <ul><li>Protocol Buffers protocol</li><li>3 official (JavaScript, Python, Ruby) and community supported (.NET / C#, PHP, Go, and many more) libraries</li></ul> | <ul><li>BSON protocol</li><li>13 official and many community supported libraries</li></ul> |
+| Access languages       | <ul><li>JSON protocol</li><li>3 official (JavaScript, Python, Ruby) and community supported (.NET / C#, PHP, Go, and many more) libraries</li></ul> | <ul><li>BSON protocol</li><li>13 official and many community supported libraries</li></ul> |
 | Indexing               | Multiple types of indexes (primary key, compound, secondary, arbitrarily computed) | Multiple types of indexes (unique, compound, secondary, sparse, geospatial) |
 | Cloud deployment   | AWS, dotCloud | MongoDB is available on many cloud platforms |
 

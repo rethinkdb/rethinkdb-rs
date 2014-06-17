@@ -7,7 +7,7 @@ permalink: api/ruby/
 language: Ruby
 ---
 
-{% apisection Accessing ReQL%}
+{% apisection Accessing ReQL %}
 All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
@@ -194,7 +194,7 @@ cursor.close
 
 {% endapisection %}
 
-{% apisection Manipulating databases%}
+{% apisection Manipulating databases %}
 ## [db_create](db_create/) ##
 
 {% apibody %}
@@ -253,7 +253,7 @@ r.db_list.run(conn)
 
 
 
-{% apisection Manipulating tables%}
+{% apisection Manipulating tables %}
 ## [table_create](table_create/) ##
 
 {% apibody %}
@@ -407,10 +407,29 @@ __Example:__ Wait for the index `timestamp` to be ready:
 r.table('test').index_wait('timestamp').run(conn)
 ```
 
+## [changes](changes/) ##
+
+{% apibody %}
+table.changes() &rarr; stream
+{% endapibody %}
+
+Takes a table and returns an infinite stream of objects representing
+changes to that table.  Whenever an `insert`, `delete`, `update` or
+`replace` is performed on the table, an object of the form
+`{old_val:..., new_val:...}` will be added to the stream.  For an
+`insert`, `old_val` will be `nil`, and for a `delete`, `new_val` will
+be `nil`.
+
+__Example:__ Subscribe to the changes on a table.
+
+```rb
+r.table('games').changes().run(conn).each{|change| p(change)}
+```
+
 {% endapisection %}
 
 
-{% apisection Writing data%}
+{% apisection Writing data %}
 
 ## [insert](insert/) ##
 
@@ -540,7 +559,7 @@ r.table('marvel').sync.run(conn)
 {% endapisection %}
 
 
-{% apisection Selecting data%}
+{% apisection Selecting data %}
 
 ## [db](db/) ##
 
@@ -635,7 +654,7 @@ r.table('marvel').between(10, 20).run(conn)
 ## [filter](filter/) ##
 
 {% apibody %}
-sequence.filter(predicate[, :default => false]) &rarr; selection
+selection.filter(predicate[, :default => false]) &rarr; selection
 stream.filter(predicate[, :default => false]) &rarr; stream
 array.filter(predicate[, :default => false]) &rarr; array
 {% endapibody %}
@@ -665,7 +684,7 @@ r.table('users').filter({:age => 30}).run(conn)
 {% endapisection %}
 
 
-{% apisection Joins%}
+{% apisection Joins %}
 These commands allow the combination of multiple sequences into a single sequence
 
 ## [inner_join](inner_join/) ##
@@ -713,16 +732,15 @@ r.table('marvel').outer_join(r.table('dc')) {|marvel_row, dc_row|
 ## [eq_join](eq_join/) ##
 
 {% apibody %}
-sequence.eq_join(left_attr, other_table[, index='id']) &rarr; stream
-array.eq_join(left_attr, other_table[, index='id']) &rarr; array
+sequence.eq_join(left_field, right_table[, :index => 'id']) &rarr; sequence
 {% endapibody %}
 
-An efficient join that looks up elements in the right table by primary key.
+Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other Re_qL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
-__Example:__ Let our heroes join forces to battle evil!
+**Example:** Match players with the games they've played against one another.
 
 ```rb
-r.table('marvel').eq_join(:main_dc_collaborator, r.table('dc')).run(conn)
+r.table('players').eq_join('game_id', r.table('games')).run(conn)
 ```
 
 [Read more about this command &rarr;](eq_join/)
@@ -747,7 +765,7 @@ r.table('marvel').eq_join(:main_dc_collaborator, r.table('dc')).zip.run(conn)
 
 {% endapisection %}
 
-{% apisection Transformations%}
+{% apisection Transformations %}
 These commands are used to transform data in a sequence.
 
 ## [map](map/) ##
@@ -899,17 +917,17 @@ r.table('players').order_by(:index => 'age').slice(3,6).run(conn)
 ## [nth](nth/) ##
 
 {% apibody %}
-sequence[index] &rarr; object
+sequence.nth(index) &rarr; object
+selection.nth(index) &rarr; selection&lt;object&gt;
 {% endapibody %}
 
-Get the nth element of a sequence.
+Get the *nth* element of a sequence.
 
 __Example:__ Select the second element in the array.
 
 ```rb
-r.expr([1,2,3])[1].run(conn)
+r.expr([1,2,3]).nth(1).run(conn)
 ```
-
 
 ## [indexes_of](indexes_of/) ##
 
@@ -978,7 +996,7 @@ r.table('marvel').sample(3).run(conn)
 {% endapisection %}
 
 
-{% apisection Aggregation%}
+{% apisection Aggregation %}
 These commands are used to compute smaller values from large sequences.
 
 
@@ -1201,7 +1219,7 @@ r.table('marvel').get('ironman')[:opponents].contains('superman').run(conn)
 {% endapisection %}
 
 
-{% apisection Document manipulation%}
+{% apisection Document manipulation %}
 
 ## [pluck](pluck/) ##
 
@@ -1506,7 +1524,7 @@ __Example:__ Create a simple object.
 {% endapisection %}
 
 
-{% apisection String manipulation%}
+{% apisection String manipulation %}
 These commands provide string operators.
 
 ## [match](match/) ##
@@ -1595,7 +1613,7 @@ __Example:__
 {% endapisection %}
 
 
-{% apisection Math and logic%}
+{% apisection Math and logic %}
 
 ## [+](add/) ##
 
@@ -1835,10 +1853,39 @@ r.not(true).run(conn)
 
 [Read more about this command &rarr;](not/)
 
+## [random](random/) ##
+
+{% apibody %}
+r.random() &rarr number
+r.random(integer) &rarr integer
+r.random(integer, integer) &rarr integer
+r.random(number, number, :float => true) &rarr number
+{% endapibody %}
+
+Generate a random number between the given bounds. If no arguments are given, the result
+will be a floating-point number in the range `[0,1)`.
+
+When passing a single argument, `r.random(x)`, the result will be in the range `[0,x)`,
+and when passing two arguments, `r.random(x,y)`, the range is `[x,y)`. If `x` and `y` are
+equal, an error will occur, unless generating a floating-point number, for which `x` will
+be returned.
+
+Note: The last argument given will always be the 'open' side of the range, but when
+generating a floating-point number, the 'open' side may be less than the 'closed' side.
+
+__Example:__ Generate a random integer in the range `[0,100)`
+
+```rb
+r.random(100).run(conn)
+r.random(0, 100).run(conn)
+```
+
+[Read more about this command &rarr;](random/)
+
 {% endapisection %}
 
 
-{% apisection Dates and times%}
+{% apisection Dates and times %}
 
 ## [now](now/) ##
 
@@ -2187,7 +2234,27 @@ r.now().to_epoch_time()
 {% endapisection %}
 
 
-{% apisection Control structures%}
+{% apisection Control structures %}
+
+## [args](args/) ##
+
+{% apibody %}
+r.args(array) &rarr; special
+{% endapibody %}
+
+`r.args` is a special term that's used to splice an array of arguments
+into another term.  This is useful when you want to call a variadic
+term such as `get_all` with a set of arguments produced at runtime.
+
+This is analagous to the **splat operator** in Ruby.
+
+__Example:__ Get Alice and Bob from the table `people`.
+
+```rb
+r.table('people').get_all('Alice', 'Bob').run(conn)
+# or
+r.table('people').get_all(r.args(['Alice', 'Bob'])).run(conn)
+```
 
 ## [do](do/) ##
 
@@ -2390,11 +2457,27 @@ r.json(json_string) &rarr; value
 
 Parse a JSON string on the server.
 
-__Example:__ Send an array to the server'
+__Example:__ Send an array to the server.
 
 ```rb
 r.json("[1,2,3]").run(conn)
 ```
+
+## [http](http/) ##
+
+{% apibody %}
+r.http(url [, options]) &rarr; value
+{% endapibody %}
+
+Retrieve data from the specified URL over HTTP.  The return type depends on the `result_format` option, which checks the `Content-Type` of the response by default.
+
+__Example:__ Perform a simple HTTP `GET` request, and store the result in a table.
+
+```rb
+r.table('posts').insert(r.http('httpbin.org/get')).run(conn)
+```
+
+[Read more about this command &rarr;](http/)
 
 
 {% endapisection %}

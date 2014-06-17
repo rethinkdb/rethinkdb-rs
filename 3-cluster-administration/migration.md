@@ -14,7 +14,7 @@ currently incompatible between versions. Migration consists of three simple step
   - Import the data into the new version of RethinkDB
 
 If you have already updated to a new version of RethinkDB, you can find
-binaries for previous versions on the [download
+binaries for previous versions in the [download
 archive](http://download.rethinkdb.com).
 
 {% infobox info %}
@@ -52,6 +52,13 @@ __First__, upgrade the RethinkDB server and drivers to the latest version:
 
 - See [server install instructions](/install) for your platform.
 - See [driver install instructions](/docs/install-drivers/) for your language.
+
+{% infobox info %}
+__Keep in mind__: 
+
+- Don't upgrade the Python driver until after you've dumped the data.
+- [Upgrade](/docs/install-drivers/python/) the Python driver for the `restore` step below. 
+{% endinfobox %}
 
 __Then__, make sure to move or delete the old RethinkDB data directory
 (`rethinkdb_data` by default), since the new version will not be able

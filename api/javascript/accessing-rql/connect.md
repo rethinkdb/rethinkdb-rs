@@ -14,8 +14,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.connect(options, callback)
-r.connect(host, callback)
+r.connect([options, ]callback)
+r.connect([host, ]callback)
+r.connect([options]) &rarr; promise
+r.connect([host]) &rarr; promise
+
 {% endapibody %}
 
 # Description #
@@ -29,6 +32,7 @@ options:
 - `port`: the port to connect on (default `28015`).
 - `db`: the default database (default `test`).
 - `authKey`: the authentication key (default none).
+- `timeout`: timeout value in seconds for connection handshake to succeed (default `20` seconds)
 
 If the connection cannot be established, a `RqlDriverError` will be passed to the callback instead of a connection.
 
@@ -39,6 +43,8 @@ conn = r.connect({ db: 'marvel' },
                  function(err, conn) { ... })
 ```
 
+If no callback is provided, a promise will be returned.
+
 __Example:__ Opens a new connection to the database.
 
 ```js
@@ -47,4 +53,15 @@ r.connect({ host: 'localhost',
             db: 'marvel',
             authKey: 'hunter2' },
           function(err, conn) { ... })
+```
+
+Alternatively, you can use promises.
+
+```js
+var p = r.connect({host:'localhost', port:28015, db:'marvel', authKey:'hunter2'});
+p.then(function(conn) {
+    // ...
+}).error(function(error) {
+    // ...
+})
 ```
