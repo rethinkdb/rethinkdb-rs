@@ -149,6 +149,13 @@ the `Optargs` should be an object mapping from optarg names to terms.
 [56, [[15, ['test']]], [2, [{}, {}]], {durability: 'soft'}]
 ```
 
+### Example 3: r.expr(1)
+
+```
+# Note the absence of `TermType::DATUM` -- we just write number directly
+1
+```
+
 # Stage 3: The Response
 
 The server's response to your query will take the following form:
@@ -164,7 +171,17 @@ A `Response` is a JSON object with the following fields:
   https://github.com/rethinkdb/rethinkdb/blob/v{{site.version.major}}.x/src/rdb_protocol/ql2.proto
   .
 * `r` -- An array of JSON expressions representing the query's result.
-* `b` -- A backtrace in the case where `t` is an error type.
+  If `t` is `SUCCESS_ATOM` or an error type, this will be an array of
+  one element.  (In the case of an error type, that one element will
+  be the error message.)
+* `b` -- A backtrace in the case where `t` is an error type.  This is
+  an array of frames, which are either strings or integers.  A string
+  indicates that the error occured in the optarg named by the string,
+  and an integer indicates that the error occured in the argument at
+  that index.  For example, the query `r.random(1, 2, float:
+  r.add(r.add(1, "a")))` would return a type error with the backtrace
+  `["float", 0]` to indicate that `r.add(1, "a")` should be underlined.
+* `p` -- A profile in the case where the global optarg `profile:true` was specified.
 
 ## Example 1: A response to `r.table('test').count()`
 
