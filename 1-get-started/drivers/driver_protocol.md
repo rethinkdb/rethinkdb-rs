@@ -171,6 +171,9 @@ A `Response` is a JSON object with the following fields:
   https://github.com/rethinkdb/rethinkdb/blob/v{{site.version.major}}.x/src/rdb_protocol/ql2.proto
   .
 * `r` -- An array of JSON expressions representing the query's result.
+  If `t` is `SUCCESS_ATOM` or an error type, this will be an array of
+  one element.  (In the case of an error type, that one element will
+  be the error message.)
 * `b` -- A backtrace in the case where `t` is an error type.  This is
   an array of frames, which are either strings or integers.  A string
   indicates that the error occured in the optarg named by the string,
