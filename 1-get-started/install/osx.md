@@ -15,12 +15,6 @@ _Prerequisites:_ We provide native binaries for OS X Lion and above (>= 10.7).
 [Download](http://download.rethinkdb.com/osx/rethinkdb-{{site.version.major}}.{{site.version.minor}}.dmg) the disk
 image, run `rethinkdb.pkg`, and follow the installation instructions.
 
-{% infobox info %}
-__Troubleshooting:__ If you see the message _"rethinkdb.pkg can't be opened
-because it is from an unidentified developer"_, right click on the file and choose Open.
-See [GitHub issue #1565](https://github.com/rethinkdb/rethinkdb/issues/1565) for more information on signed packages.
-{% endinfobox %}
-
 # Using Homebrew #
 
 _Prerequisites:_ Make sure you're on OS X Lion or above (>= 10.7) and
