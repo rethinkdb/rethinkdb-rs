@@ -10,26 +10,16 @@ permalink: docs/install/debian/
 {% include install-community-platform-warning.md %}
 The following instructions were tested on Debian 7 (Wheezy).
 If you are using Debian 6, the process is very similar, but you will have to
-upgrade a few libraries, such as protobuf.  We will try to document the
-necessary library upgrades as soon as possible.
+upgrade a few libraries, such as protobuf.
 
-# With Launchpad binaries #
+# Using the Ubuntu packages on Debian #
 
-## Add the RethinkDB PPA ##
-This approach is inspired by [Anant
-Shrivastava](http://blog.anantshri.info/howto-add-ppa-in-debian/)'s
-instructions for adding PPAs to Debian systems.
+Add the [RethinkDB repository](http://download.rethinkdb.com/apt) to
+your list of repositories and then install via `apt-get`:
 
 ```bash
-wget http://blog.anantshri.info/content/uploads/2010/09/add-apt-repository.sh.txt
-sudo mv add-apt-repository.sh.txt /usr/sbin/add-apt-repository
-sudo chmod o+x /usr/sbin/add-apt-repository
-sudo chown root:root /usr/sbin/add-apt-repository
-```
-
-## Install RethinkDB ##
-```bash
-sudo add-apt-repository ppa:rethinkdb/ppa
+echo "deb http://download.rethinkdb.com/apt lucid main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
+wget -O- http://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
 sudo apt-get update
 sudo apt-get install rethinkdb
 ```
