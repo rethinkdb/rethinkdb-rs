@@ -1465,12 +1465,14 @@ r.expr(["Iron Man", "Spider-Man"]).splice_at(1, ["Hulk", "Thor"]).run(conn)
 array.delete_at(index [,endIndex]) &rarr; array
 {% endapibody %}
 
-Remove an element from an array at a given index. Returns the modified array.
+Remove one or more elements from an array at a given index. Returns the modified array.
 
-__Example:__ Hulk decides to leave the avengers.
+__Example:__ Delete the second element of an array.
 
 ```rb
-r.expr(["Iron Man", "Hulk", "Spider-Man"]).delete_at(1).run(conn)
+> r.expr(['a','b','c','d','e','f']).delete_at(1).run(conn)
+
+['a', 'c', 'd', 'e', 'f']
 ```
 
 [Read more about this command &rarr;](delete_at/)
