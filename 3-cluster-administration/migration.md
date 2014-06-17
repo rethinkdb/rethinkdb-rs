@@ -42,6 +42,8 @@ Use `rethinkdb dump --help` to see the complete list of options for dumping
 your data.
 
 {% infobox info %}
+**Keep in mind:** The `dump` command requires the [Python driver](/docs/install-drivers/python/) to be installed. Don't upgrade the Python driver until after you've dumped the data!
+
 __Exporting from a version before RethinkDB 1.7?__ Use the deprecated
 [migration script](https://github.com/rethinkdb/rethinkdb/tree/next/scripts/migration).
 {% endinfobox %}
