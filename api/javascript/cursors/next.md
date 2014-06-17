@@ -21,7 +21,6 @@ cursor.next(callback)
 array.next(callback)
 cursor.next() &rarr; promise
 array.next() &rarr; promise
-
 {% endapibody %}
 
 # Description #

@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.filter(predicate[, default=False]) &rarr; selection
+selection.filter(predicate[, default=False]) &rarr; selection
 stream.filter(predicate[, default=False]) &rarr; stream
 array.filter(predicate[, default=False]) &rarr; array
 {% endapibody %}

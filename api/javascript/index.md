@@ -8,7 +8,7 @@ alias: api/
 language: JavaScript
 ---
 
-{% apisection Accessing ReQL%}
+{% apisection Accessing ReQL %}
 All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
@@ -163,6 +163,49 @@ conn.noreplyWait(function(err) { ... })
 ```
 
 
+## [EventEmitter methods](event_emitter/) ##
+
+{% apibody %}
+connection.addListener(event, listener)
+connection.on(event, listener)
+connection.once(event, listener)
+connection.removeListener(event, listener)
+connection.removeAllListeners([event])
+connection.setMaxListeners(n)
+connection.listeners(event)
+connection.emit(event, [arg1], [arg2], [...])
+{% endapibody %}
+
+The connection object supports the event emitter interface so you can listen for
+changes in connection state.
+
+__Example:__ Monitor connection state with events 'connect', 'close', and 'error'.
+
+
+```js
+r.connect({}, function(err, conn) {
+    if (err) throw err;
+
+    conn.addListener('error', function(e) {
+        processNetworkError(e);
+    });
+
+    conn.addListener('close', function() {
+        cleanup();
+    });
+
+    runQueries(conn);
+});
+
+```
+
+[Read more about this command &rarr;](add_listener/)
+
+
+{% endapisection %}
+
+{% apisection Cursors %}
+
 ## [next](next/) ##
 
 {% apibody %}
@@ -191,6 +234,7 @@ cursor.next(function(err, row) {
 {% apibody %}
 cursor.each(callback[, onFinishedCallback])
 array.each(callback[, onFinishedCallback])
+feed.each(callback)
 {% endapibody %}
 
 Lazily iterate over the result set one element at a time.
@@ -230,7 +274,7 @@ cursor.toArray(function(err, results) {
 [Read more about this command &rarr;](to_array/)
 
 
-## [close (cursor)](close-cursor/) ##
+## [close](close-cursor/) ##
 
 {% apibody %}
 cursor.close()
@@ -247,41 +291,53 @@ cursor.close()
 ```
 
 
-## [addListener](add_listener/) ##
+## [EventEmitter methods](event_emitter-cursor/) ##
 
 {% apibody %}
-conn.addListener(event, listener)
+cursor.addListener(event, listener)
+cursor.on(event, listener)
+cursor.once(event, listener)
+cursor.removeListener(event, listener)
+cursor.removeAllListeners([event])
+cursor.setMaxListeners(n)
+cursor.listeners(event)
+cursor.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
-The connection object also supports the event emitter interface so you can listen for
-changes in connection state.
+Cursors and feeds implement the same interface as [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
-__Example:__ Monitor connection state with events 'connect', 'close', and 'error'.
+There are a few things to know about this interface:
 
+- Two events can be emited, `data` and `error`.
+- Once you start using the EventEmitter interface, the other commands like `next`,
+`toArray`, `each` will not be available anymore.
+- The first time you call one of the EventEmitter's methods, the cursor or feed will
+emit data just after the I/O events callbacks and before `setTimeout` and `setInterval`
+callbacks.
+
+
+__Example:__ Broadcast all messages with [socket.io](http://socket.io).
 
 ```js
-r.connect({}, function(err, conn) {
-    if (err) throw err;
+r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
+    if (err) {
+        // Handle error
+        return
+    }
 
-    conn.addListener('error', function(e) {
-        processNetworkError(e);
-    });
-
-    conn.addListener('close', function() {
-        cleanup();
-    });
-
-    runQueries(conn);
+    cursor.on("error", function(error) {
+        // Handle error
+    })
+    cursor.on("data", function(message) {
+        socket.broadcast.emit("message", message)
+    })
 });
-
 ```
-
-[Read more about this command &rarr;](add_listener/)
-
 
 {% endapisection %}
 
-{% apisection Manipulating databases%}
+{% apisection Manipulating databases %}
+
 ## [dbCreate](db_create/) ##
 
 {% apibody %}
@@ -340,7 +396,7 @@ r.dbList().run(conn, callback)
 
 
 
-{% apisection Manipulating tables%}
+{% apisection Manipulating tables %}
 ## [tableCreate](table_create/) ##
 
 {% apibody %}
@@ -514,7 +570,7 @@ r.table('games').changes().run(conn, function(err, cursor) {
 {% endapisection %}
 
 
-{% apisection Writing data%}
+{% apisection Writing data %}
 
 ## [insert](insert/) ##
 
@@ -644,7 +700,7 @@ r.table('marvel').sync().run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Selecting data%}
+{% apisection Selecting data %}
 
 ## [db](db/) ##
 
@@ -740,7 +796,7 @@ r.table('marvel').between(10, 20).run(conn, callback)
 ## [filter](filter/) ##
 
 {% apibody %}
-sequence.filter(predicate[, {default: false}]) &rarr; selection
+selection.filter(predicate[, {default: false}]) &rarr; selection
 stream.filter(predicate[, {default: false}]) &rarr; stream
 array.filter(predicate[, {default: false}]) &rarr; array
 {% endapibody %}
@@ -768,7 +824,7 @@ r.table('users').filter({age: 30}).run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Joins%}
+{% apisection Joins %}
 These commands allow the combination of multiple sequences into a single sequence
 
 ## [innerJoin](inner_join/) ##
@@ -850,7 +906,7 @@ r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc'))
 
 {% endapisection %}
 
-{% apisection Transformations%}
+{% apisection Transformations %}
 These commands are used to transform data in a sequence.
 
 ## [map](map/) ##
@@ -1078,7 +1134,7 @@ r.table('marvel').sample(3).run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Aggregation%}
+{% apisection Aggregation %}
 These commands are used to compute smaller values from large sequences.
 
 
@@ -1303,7 +1359,7 @@ r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, cal
 {% endapisection %}
 
 
-{% apisection Document manipulation%}
+{% apisection Document manipulation %}
 
 ## [row](row/) ##
 
@@ -1624,7 +1680,7 @@ r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
 {% endapisection %}
 
 
-{% apisection String manipulation%}
+{% apisection String manipulation %}
 These commands provide string operators.
 
 ## [match](match/) ##
@@ -1711,7 +1767,7 @@ r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Math and logic%}
+{% apisection Math and logic %}
 
 ## [add](add/) ##
 
@@ -1968,7 +2024,7 @@ r.random(0, 100).run(conn, callback)
 {% endapisection %}
 
 
-{% apisection Dates and times%}
+{% apisection Dates and times %}
 
 ## [now](now/) ##
 
@@ -2314,7 +2370,7 @@ r.now().toEpochTime()
 {% endapisection %}
 
 
-{% apisection Control structures%}
+{% apisection Control structures %}
 
 ## [args](args/) ##
 

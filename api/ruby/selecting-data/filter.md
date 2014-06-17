@@ -13,7 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.filter(predicate[, :default => false]) &rarr; selection
+selection.filter(predicate[, :default => false]) &rarr; selection
 stream.filter(predicate[, :default => false]) &rarr; stream
 array.filter(predicate[, :default => false]) &rarr; array
 
