@@ -40,7 +40,7 @@ Create a new connection to the database server.  Accepts the following options:
 - `port`: the port to connect on (default `28015`).
 - `db`: the default database (default `test`).
 - `authKey`: the authentication key (default none).
-- `timeout`: timeout period for the connection to be opened, by default `20` (seconds).
+- `timeout`: timeout period in seconds for the connection to be opened (default `20`).
 
 If the connection cannot be established, a `RqlDriverError` will be passed to the callback instead of a connection.
 

@@ -37,7 +37,7 @@ Create a new connection to the database server. The keyword arguments are:
 - `port`: the driver port, by default `28015`.
 - `db`: the database used if not explicitly specified in a query, by default `test`.
 - `auth_key`: the authentification key, by default the empty string.
-- `timeout`: timeout period for the connection to be opened, by default `20` (seconds).
+- `timeout`: timeout period in seconds for the connection to be opened (default `20`).
 
 If the connection cannot be established, a `RqlDriverError` exception will be thrown.
 
