@@ -152,7 +152,7 @@ the `Optargs` should be an object mapping from optarg names to terms.
 ### Example 3: r.expr(1)
 
 ```
-# Node the absence of `TermType::DATUM` -- we just write number directly
+# Note the absence of `TermType::DATUM` -- we just write number directly
 1
 ```
 
