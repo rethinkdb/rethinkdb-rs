@@ -12,22 +12,17 @@ permalink: docs/install/ubuntu/
 We provide binaries for both 32-bit and 64-bit Ubuntu Lucid and above (>= 10.04).
 
 To install the server, you have to add the [RethinkDB
-PPA](https://launchpad.net/~rethinkdb/+archive/ppa) to your list of
-repositories and install via `apt-get`. 
+repository](http://download.rethinkdb.com/apt) to your list of
+repositories and install via `apt-get`.
 To do this, paste the
 following lines into your terminal:
 
 ```bash
-sudo add-apt-repository ppa:rethinkdb/ppa   && \
-sudo apt-get update                         && \
+source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
+wget -O- http://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
+sudo apt-get update
 sudo apt-get install rethinkdb
 ```
-
-If you do not have the `add-apt-repository` command, install it first:
-
-* Ubuntu Quantal and above (>= 12.10) &mdash; `sudo apt-get install software-properties-common`
-* Earlier Ubuntu versions (< 12.10) &mdash; `sudo apt-get install python-software-properties`
-
 
 # Compile from source on Ubuntu 13.10 #
 
