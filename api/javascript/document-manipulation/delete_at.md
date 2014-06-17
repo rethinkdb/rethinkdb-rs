@@ -26,6 +26,8 @@ If only `index` is specified, `deleteAt` removes the element at that index. If b
 
 If `endIndex` is specified, it must not be less than `index`. Both `index` and `endIndex` must be within the array's bounds (i.e., if the array has 10 elements, an `index` or `endIndex` of 10 or higher is invalid).
 
+By using a negative `index` you can delete from the end of the array. `-1` is the last element in the array, `-2` is the second-to-last element, and so on. You may specify a negative `endIndex`, although just as with a positive value, this will not be inclusive. The range `(2,-1)` specifies the third element through the next-to-last element.
+
 __Example:__ Delete the second element of an array.
 
 ```js
@@ -40,6 +42,14 @@ __Example:__ Delete the second and third elements of an array.
 > r(['a','b','c','d','e','f']).deleteAt(1,3).run(conn, callback)
 
 ['a', 'd', 'e', 'f']
+```
+
+__Example:__ Delete the next-to-last element of an array.
+
+```js
+> r(['a','b','c','d','e','f']).deleteAt(-2).run(conn, callback)
+
+['a', 'b', 'c', 'dl', 'f']
 ```
 
 __Example:__ Delete a comment on a post.

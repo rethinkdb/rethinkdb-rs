@@ -24,6 +24,8 @@ If only `index` is specified, `delete_at` removes the element at that index. If 
 
 If `end_index` is specified, it must not be less than `index`. Both `index` and `end_index` must be within the array's bounds (i.e., if the array has 10 elements, an `index` or `end_index` of 10 or higher is invalid).
 
+By using a negative `index` you can delete from the end of the array. `-1` is the last element in the array, `-2` is the second-to-last element, and so on. You may specify a negative `end_index`, although just as with a positive value, this will not be inclusive. The range `(2,-1)` specifies the third element through the next-to-last element.
+
 __Example:__ Delete the second element of an array.
 
 ```rb
@@ -38,6 +40,14 @@ __Example:__ Delete the second and third elements of an array.
 > r.expr(['a','b','c','d','e','f']).delete_at(1,3).run(conn)
 
 ['a', 'd', 'e', 'f']
+```
+
+__Example:__ Delete the next-to-last element of an array.
+
+```rb
+> r.expr(['a','b','c','d','e','f']).delete_at(-2).run(conn)
+
+['a', 'b', 'c', 'd', 'f']
 ```
 
 __Example:__ Delete a comment on a post.
