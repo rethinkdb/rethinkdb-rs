@@ -17,17 +17,21 @@ io:
 # Command syntax #
 
 {% apibody %}
-sequence.coerceTo(typeName) &rarr; array
-value.coerceTo(typeName) &rarr; string
-array.coerceTo(typeName) &rarr; object
-object.coerceTo(typeName) &rarr; array
+sequence.coerceTo('array') &rarr; array
+value.coerceTo('string') &rarr; string
+string.coerceTo('number') &rarr; number
+array.coerceTo('object') &rarr; object
+object.coerceTo('array') &rarr; array
 {% endapibody %}
 
 # Description #
 
 Converts a value of one type into another.
 
-You can convert: a selection, sequence, or object into an ARRAY, an array of pairs into an OBJECT, and any DATUM into a STRING.
+* a sequence, selection or object can be coerced to an array
+* an array of key-value pairs can be coerced to an object
+* a string can be coerced to a number
+* any datum (single value) can be converted to a string
 
 __Example:__ Convert a table to an array.
 
@@ -35,8 +39,7 @@ __Example:__ Convert a table to an array.
 r.table('marvel').coerceTo('array').run(conn, callback)
 ```
 
-
-__Example:__ Convert an array of pairs into an object.
+__Example:__ Convert an array of key-value pairs into an object.
 
 
 ```js
@@ -48,4 +51,3 @@ __Example:__ Convert a number to a string.
 ```js
 r.expr(1).coerceTo('string').run(conn, callback)
 ```
-

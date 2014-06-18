@@ -8,17 +8,21 @@ command: coerce_to
 # Command syntax #
 
 {% apibody %}
-sequence.coerce_to(type_name) &rarr; array
-value.coerce_to(type_name) &rarr; string
-array.coerce_to(type_name) &rarr; object
-object.coerce_to(type_name) &rarr; array
+sequence.coerce_to('array') &rarr; array
+value.coerce_to('string') &rarr; string
+string.coerce_to('number') &rarr; number
+array.coerce_to('object') &rarr; object
+object.coerce_to('array') &rarr; array
 {% endapibody %}
 
 # Description #
 
 Converts a value of one type into another.
 
-You can convert: a selection, sequence, or object into an ARRAY, an array of pairs into an OBJECT, and any DATUM into a STRING.
+* a sequence, selection or object can be coerced to an array
+* an array of key-value pairs can be coerced to an object
+* a string can be coerced to a number
+* any datum (single value) can be converted to a string
 
 __Example:__ Convert a table to an array.
 

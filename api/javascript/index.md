@@ -2543,10 +2543,11 @@ r.js("'str1' + 'str2'").run(conn, callback)
 ## [coerceTo](coerce_to/) ##
 
 {% apibody %}
-sequence.coerceTo(typeName) &rarr; array
-value.coerceTo(typeName) &rarr; string
-array.coerceTo(typeName) &rarr; object
-object.coerceTo(typeName) &rarr; array
+sequence.coerceTo('array') &rarr; array
+value.coerceTo('string') &rarr; string
+string.coerceTo('number') &rarr; number
+array.coerceTo('object') &rarr; object
+object.coerceTo('array') &rarr; array
 {% endapibody %}
 
 Converts a value of one type into another.
