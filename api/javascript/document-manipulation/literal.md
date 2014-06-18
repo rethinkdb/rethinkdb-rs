@@ -41,8 +41,12 @@ Assume your users table has this structure:
 Using `update` to modify the `data` field will normally merge the nested documents:
 
 ```js
-> r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn, callback)
+r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn, callback)
+```
 
+Result:
+
+```js
 {
     "id": 1,
     "name": "Alice",
@@ -57,8 +61,12 @@ Using `update` to modify the `data` field will normally merge the nested documen
 That will preserve `city` and other existing fields. But to replace the entire `data` document with a new object, use `literal`:
 
 ```js
-> r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)
+r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)
+```
 
+Result:
+
+```js
 {
     "id": 1,
     "name": "Alice",
