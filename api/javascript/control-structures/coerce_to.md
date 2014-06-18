@@ -12,6 +12,8 @@ io:
         - object
     -   - object
         - array
+related_commands:
+    object: object/
 ---
 
 # Command syntax #
@@ -33,10 +35,12 @@ Converts a value of one type into another.
 * a string can be coerced to a number
 * any datum (single value) can be converted to a string
 
-__Example:__ Convert a table to an array.
+__Example:__ Convert a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 
 ```js
-r.table('marvel').coerceTo('array').run(conn, callback)
+r.table('posts').map(function (post) {
+    post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
+}).run(conn, callback)
 ```
 
 __Example:__ Convert an array of key-value pairs into an object.
@@ -45,6 +49,8 @@ __Example:__ Convert an array of key-value pairs into an object.
 ```js
 r.expr([['name', 'Ironman'], ['victories', 2000]]).coerceTo('object').run(conn, callback)
 ```
+
+__Note:__ To convert a list of key-value pairs like `['name', 'Ironman', 'victories', 2000]` to an object, use the [object](/api/javascript/object) command.
 
 __Example:__ Convert a number to a string.
 

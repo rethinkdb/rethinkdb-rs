@@ -2554,10 +2554,12 @@ Converts a value of one type into another.
 
 You can convert: a selection, sequence, or object into an ARRAY, an array of pairs into an OBJECT, and any DATUM into a STRING.
 
-__Example:__ Convert a table to an array.
+__Example:__ Convert a stream to an array.
 
 ```js
-r.table('marvel').coerceTo('array').run(conn, callback)
+r.table('posts').map(function (post) {
+    post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
+}).run(conn, callback)
 ```
 
 [Read more about this command &rarr;](coerce_to/)

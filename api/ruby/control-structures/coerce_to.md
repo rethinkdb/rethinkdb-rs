@@ -3,6 +3,8 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/coerce_to/
 command: coerce_to
+related_commands:
+    object: object/
 ---
 
 # Command syntax #
@@ -24,12 +26,13 @@ Converts a value of one type into another.
 * a string can be coerced to a number
 * any datum (single value) can be converted to a string
 
-__Example:__ Convert a table to an array.
+__Example:__ Convert a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 
 ```rb
-r.table('marvel').coerce_to('array').run(conn)
+r.table('posts').map { |post|
+    { :comments => r.table('comments').get_all(post['id'], {:index => 'post_id'}).coerce_to('array') }
+}.run(conn)
 ```
-
 
 __Example:__ Convert an array of pairs into an object.
 
@@ -37,6 +40,7 @@ __Example:__ Convert an array of pairs into an object.
 r.expr([['name', 'Ironman'], ['victories', 2000]]).coerce_to('object').run(conn)
 ```
 
+__Note:__ To convert a list of key-value pairs like `['name', 'Ironman', 'victories', 2000]` to an object, use the [object](/api/ruby/object) command.
 
 __Example:__ Convert a number to a string.
 
