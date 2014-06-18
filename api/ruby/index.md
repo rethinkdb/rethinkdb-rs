@@ -2411,11 +2411,9 @@ array.coerce_to('object') &rarr; object
 object.coerce_to('array') &rarr; array
 {% endapibody %}
 
-Converts a value of one type into another.
+Convert a value of one type into another.
 
-You can convert: a selection, sequence, or object into an ARRAY, an array of pairs into an OBJECT, and any DATUM into a STRING.
-
-__Example:__ Convert a stream to an array.
+__Example:__ Coerce a stream to an array.
 
 ```rb
 r.table('posts').map { |post|

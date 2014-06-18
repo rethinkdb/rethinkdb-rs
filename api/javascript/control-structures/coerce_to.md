@@ -28,14 +28,14 @@ object.coerceTo('array') &rarr; array
 
 # Description #
 
-Converts a value of one type into another.
+Convert value of one type into another.
 
 * a sequence, selection or object can be coerced to an array
 * an array of key-value pairs can be coerced to an object
 * a string can be coerced to a number
-* any datum (single value) can be converted to a string
+* any datum (single value) can be coerced to to a string
 
-__Example:__ Convert a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
+__Example:__ Coerce a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 
 ```js
 r.table('posts').map(function (post) {
@@ -43,16 +43,16 @@ r.table('posts').map(function (post) {
 }).run(conn, callback)
 ```
 
-__Example:__ Convert an array of key-value pairs into an object.
+__Example:__ Coerce an array of key-value pairs into an object.
 
 
 ```js
 r.expr([['name', 'Ironman'], ['victories', 2000]]).coerceTo('object').run(conn, callback)
 ```
 
-__Note:__ To convert a list of key-value pairs like `['name', 'Ironman', 'victories', 2000]` to an object, use the [object](/api/javascript/object) command.
+__Note:__ To coerce a list of key-value pairs like `['name', 'Ironman', 'victories', 2000]` to an object, use the [object](/api/javascript/object) command.
 
-__Example:__ Convert a number to a string.
+__Example:__ Coerce a number to a string.
 
 ```js
 r.expr(1).coerceTo('string').run(conn, callback)
