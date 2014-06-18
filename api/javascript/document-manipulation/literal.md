@@ -13,12 +13,12 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-literal(object) &rarr; object
+r.literal(object) &rarr; special
 {% endapibody %}
 
 # Description #
 
-Preserve an exact object that would otherwise be modified by a ReQL operation.
+Replace an object in a field instead of merging it with an existing object in a `merge` or `update` operation.
 
 __Example:__ Replace one nested document with another rather than merging the fields.
 
