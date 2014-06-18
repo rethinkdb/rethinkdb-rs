@@ -652,7 +652,7 @@ Sometimes you may want to specify a key in a ReQL document dynamically. The easi
 To retrieve all the posts matching the tag stored in `tagName`:
 
 ```js
-r.table('posts').filter(r.object('tags', [tagName, true])).run(conn, callback)
+r.table('posts').filter({tags: r.object(tagName, true)}).run(conn, callback)
 ```
 
 {% endfaqsection %}
