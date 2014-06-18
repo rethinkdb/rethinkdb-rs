@@ -78,7 +78,7 @@ See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on 
 
 * `page`: This option may specify either a built-in pagination strategy (as a string), or a function to provide the next URL and/or `params` to request.
 
-   At the moment, the only supported built-in is `'link-next'`, which is equivalent to `function(info) { return info('header')('link')('rel="next"').default(null); }`.
+    At the moment, the only supported built-in is `'link-next'`, which is equivalent to `function(info) { return info('header')('link')('rel="next"').default(null); }`.
 
     __Example:__ Perform a GitHub search and collect up to 3 pages of results.
 

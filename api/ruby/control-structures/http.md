@@ -101,7 +101,7 @@ See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on 
 
     ```rb
     {
-        'content-length' => '1024'",
+        'content-length' => '1024',
         'content-type' => 'application/json',
         'date' => 'Thu, 1 Jan 1970 00:00:00 GMT',
         'link' => {
