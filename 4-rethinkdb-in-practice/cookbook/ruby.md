@@ -346,6 +346,21 @@ r.table("pages").update{|page|
     )}, {"return_vals"=>true}).run()
 ```
 
+## Storing timestamps and JSON date strings as Time data types ##
+
+You can use the `epochtime` and `ISO8601` commands to convert Unix timestamps (in seconds) and JSON date-time strings (which are in ISO 8601 format) to the ReQL time type, in addition to storing native Time objects. (RethinkDB does not store Ruby Date or DateTime objects.)
+
+```rb
+the_date = Time.now
+timestamp = the_date.to_i
+json_date = the_date.iso8601
+r.table("dates").insert({
+    :from_object => the_date,
+    :from_epoch => r.epoch_time(timestamp),
+    :from_iso => r.iso8601(json_date)
+}).run(conn)
+```
+
 {% endfaqsection %}
 
 {% faqsection Pagination %}

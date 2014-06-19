@@ -404,6 +404,23 @@ r.table("pages").update(function(page) {
     })
 ```
 
+## Storing timestamps and JSON date strings as Time data types ##
+
+You can use the `epochtime` and `ISO8601` commands to convert Unix timestamps (in seconds) and JSON date-time strings (which are in ISO 8601 format) to the ReQL time type, in addition to storing native datetime objects.
+
+```js
+var theDate = new Date();
+var timestamp = theDate.getTime();
+var JSONDate = theDate.toJSON();
+r.table("dates").insert({
+    from_object: theDate,
+    from_epoch: r.epochTime(timestamp/1000.0),
+    from_iso: r.ISO8601(JSONDate)
+}).run(conn, callback);
+```
+
+Use the commands `toEpochTime` and `toISO8601` to convert back.
+
 {% endfaqsection %}
 
 {% faqsection Pagination %}

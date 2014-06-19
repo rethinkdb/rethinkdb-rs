@@ -343,6 +343,27 @@ r.table("pages").update(lambda page:
     )), {"return_vals": True}).run()
 ```
 
+## Storing timestamps and JSON date strings as Time data types ##
+
+You can use the `epochtime` and `ISO8601` commands to convert Unix timestamps (in seconds) and JSON date-time strings (which are in ISO 8601 format) to the ReQL time type, in addition to storing native datetime objects.
+
+```py
+import time
+from datetime import datetime
+timezone = time.strftime("%z")
+reql_tz = r.make_timezone(timezone[:3] + ":" + timezone[3:])
+the_date = datetime.now(reql_tz)
+timestamp = time.mktime(the_date.timetuple())
+json_date = the_date.isoformat()
+r.table("dates").insert({
+    'from_object': the_date,
+    'from_epoch': r.epoch_time(timestamp),
+    'from_iso': r.iso8601(json_date)
+}).run(conn)
+```
+
+Use the commands `toEpochTime` and `toISO8601` to convert back.
+
 {% endfaqsection %}
 
 {% faqsection Pagination %}
