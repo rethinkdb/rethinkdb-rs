@@ -1,11 +1,8 @@
 ---
 layout: api-command
-language: JavaScript
-permalink: api/javascript/literal/
+language: Python
+permalink: api/python/literal/
 command: literal
-io:
-    -   - object
-        - object
 related_commands:
     merge: merge/
     filter: filter/
@@ -40,13 +37,13 @@ Assume your users table has this structure:
 
 Using `update` to modify the `data` field will normally merge the nested documents:
 
-```js
-r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn, callback)
+```py
+r.table('users').get(1).update({ 'data': { 'age': 19, 'job': 'Engineer' } }).run(conn)
 ```
 
 Result:
 
-```js
+```py
 {
     "id": 1,
     "name": "Alice",
@@ -60,13 +57,13 @@ Result:
 
 That will preserve `city` and other existing fields. But to replace the entire `data` document with a new object, use `literal`:
 
-```js
-r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)
+```py
+r.table('users').get(1).update({ 'data': r.literal({ 'age': 19, 'job': 'Engineer' }) }).run(conn)
 ```
 
 Result:
 
-```js
+```py
 {
     "id": 1,
     "name": "Alice",
