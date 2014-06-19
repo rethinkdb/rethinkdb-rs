@@ -556,5 +556,19 @@ In addition, the following two fields are set as circumstances dictate:
 * `generated_keys` -- If you issue an insert query where some or all of the rows lack primary keys, the server will generate primary keys for you and return an array of those keys in this field.  (The order of this array will match the order of the rows in your insert query.)
 * `first_error` -- If `errors` is positive, the text of the first error message encountered will be in this field.  This is a very useful debugging aid.  (We don't return all of the errors because a single typo can result in millions of errors when operating on a large database.)
 
+## Using dynamic keys in ReQL commands ##
+
+Sometimes you may want to specify a key in a ReQL document dynamically. The easiest way to do that is with the `object` command, which takes a list of keys and values and returns an object from them.
+
+Suppose you wanted to retrieve a list of distinct first names from a user table, but the table is too large to be used with the `distinct` command. You can use use `map` and `object` to turn the names into keys, then use `reduce` to remove duplicates:
+
+```py
+r.table('users').map(
+    lambda user: r.object(user['first_name'], True)
+).reduce(
+    lambda left, right: left.merge(right)
+).keys().run(conn)
+```
+
 {% endfaqsection %}
 
