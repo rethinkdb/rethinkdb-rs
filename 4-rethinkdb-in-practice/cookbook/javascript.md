@@ -633,26 +633,16 @@ In addition, the following two fields are set as circumstances dictate:
 
 ## Using dynamic keys in ReQL commands ##
 
-Sometimes you may want to specify a key in a ReQL document dynamically. The easiest way to do that is with the `object` command, which takes a list of key-value pairs and returns an object from them. Suppose you had a table of blog posts with tags organized like this:
+Sometimes you may want to specify a key in a ReQL document dynamically. The easiest way to do that is with the `object` command, which takes a list of keys and values and returns an object from them.
+
+Suppose you wanted to retrieve a list of distinct first names from a user table, but the table is too large to be used with the `distinct` command. You can use use `map` and `object` to turn the names into keys, then use `reduce` to remove duplicates:
 
 ```js
-[
-    {
-        title: 'First Post',
-        tags: {
-            'tag1': true,
-            'tag2': true
-        }
-    },
-    ...
-    
-]
-```
-
-To retrieve all the posts matching the tag stored in `tagName`:
-
-```js
-r.table('posts').filter({tags: r.object(tagName, true)}).run(conn, callback)
+r.table('users').map(function (user) {
+    return r.object(user('firstName'), true);
+}).reduce(function (left, right) {
+    return left.merge(right);
+}).keys().run(conn, callback)
 ```
 
 {% endfaqsection %}
