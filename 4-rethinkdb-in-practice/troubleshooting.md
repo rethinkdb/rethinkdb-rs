@@ -187,4 +187,23 @@ r.table("test").run( conn, function(error, cursor) {
 })
 ```
 
+## I get incorrect results when I pass functions with control blocks to ReQL ##
+
+When you pass functions to ReQL, your language's driver serializes those functions into ReQL lambda functions that are run on the server, not in your client language. (See [All about lambda functions in RethinkDB queries](/blog/lambda-functions/) for more details.) A consequence of this is that you must use ReQL control functions such as [branch](/api/javascript/branch/) and [forEach](/api/javascript/for_each/) instead of using your native language's equivalents like `if` and `for`. Here's an example in Python from the [Introduction to ReQL](/docs/introduction-to-reql/) document:
+
+```python
+# WRONG: Get all users older than 30 using the `if` statement
+r.table('users').filter(lambda user:
+    print "Testing"      # WRONG: this will only execute once on the client
+    if user['age'] > 30:
+        True,
+        False).run(conn)
+
+# RIGHT: Get all users older than 30 using the `r.branch` command
+r.table('users').filter(lambda user:
+    r.branch(user['age'] > 30,
+             True,
+             False)).run(conn)
+```
+
 {% endfaqsection %}
