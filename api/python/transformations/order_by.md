@@ -99,6 +99,11 @@ posts were published on the same date, they will be ordered by title.
 ```py
 r.table('post').order_by('title', index='date').run(conn)
 ```
+__Example:__ You can use [nested field](/docs/cookbook/python/#filtering-based-on-nested-fields) syntax to sort on fields from subdocuments. (You can also create indexes on nested fields using this syntax with `index_create`.)
+
+```py
+r.table('user').order_by(lambda user: user['group']['id']).run(conn)
+```
 
 __Example:__ You can efficiently order data on arbitrary expressions using indexes.
 

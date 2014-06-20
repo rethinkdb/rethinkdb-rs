@@ -104,6 +104,12 @@ posts were published on the same date, they will be ordered by title.
 r.table('post').orderBy('title', {index: 'date'}).run(conn, callback)
 ```
 
+__Example:__ You can use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to sort on fields from subdocuments. (You can also create indexes on nested fields using this syntax with `indexCreate`.)
+
+```js
+r.table('user').orderBy(r.row('group')('id')).run(conn, callback)
+```
+
 __Example:__ You can efficiently order data on arbitrary expressions using indexes.
 
 ```js
