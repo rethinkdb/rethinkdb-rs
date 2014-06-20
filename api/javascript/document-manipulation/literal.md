@@ -5,7 +5,7 @@ permalink: api/javascript/literal/
 command: literal
 io:
     -   - object
-        - object
+        - special
 related_commands:
     merge: merge/
     filter: filter/
@@ -29,7 +29,7 @@ Assume your users table has this structure:
     {
         "id": 1,
         "name": "Alice",
-        data: {
+        "data": {
             "age": 18,
             "city": "Dallas"
         }

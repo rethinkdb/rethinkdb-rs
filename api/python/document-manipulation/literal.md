@@ -21,12 +21,12 @@ __Example:__ Replace one nested document with another rather than merging the fi
 
 Assume your users table has this structure:
 
-```js
+```py
 [
     {
         "id": 1,
         "name": "Alice",
-        data: {
+        "data": {
             "age": 18,
             "city": "Dallas"
         }

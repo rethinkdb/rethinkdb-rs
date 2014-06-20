@@ -24,11 +24,11 @@ Assume your users table has this structure:
 ```js
 [
     {
-        "id": 1,
-        "name": "Alice",
-        data: {
-            "age": 18,
-            "city": "Dallas"
+        :id => 1,
+        :name => "Alice",
+        :data => {
+            :age => 18,
+            :city => "Dallas"
         }
     }       
     ...
@@ -45,12 +45,12 @@ Result:
 
 ```rb
 {
-    "id": 1,
-    "name": "Alice",
-    "data": {
-        "age": 19,
-        "city": "Dallas",
-        "job": "Engineer"
+    :id => 1,
+    :name => "Alice",
+    :data => {
+        :age => 19,
+        :city => "Dallas",
+        :job => "Engineer"
     }
 }       
 ```
@@ -65,11 +65,11 @@ Result:
 
 ```rb
 {
-    "id": 1,
-    "name": "Alice",
-    "data": {
-        "age": 19,
-        "job": "Engineer"
+    :id => 1,
+    :name => "Alice",
+    :data => {
+        :age => 19,
+        :job => "Engineer"
     }
 }       
 ```
