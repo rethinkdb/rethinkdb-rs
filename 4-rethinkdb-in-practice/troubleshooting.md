@@ -187,4 +187,14 @@ r.table("test").run( conn, function(error, cursor) {
 })
 ```
 
+## How do I specify an external canonical IP address of a RethinkDB node? ##
+
+When a RethinkDB node starts, it will broadcast its "canonical" IP address, the address other nodes should use to connect to it. By default, the canonical address is the machine's primary IP address. However, if this address is an internal IP address that isn't reachable by other nodes (for example, the nodes are on different networks), you will need to specify the canonical address explicitly by using the `--canonical-address` argument.
+
+```
+rethinkdb --canonical-address <external IP>
+```
+
+This may also be specified in the [config file](http://rethinkdb.com/docs/cluster-on-startup/).
+
 {% endfaqsection %}
