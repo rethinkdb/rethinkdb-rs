@@ -1,11 +1,8 @@
 ---
 layout: api-command
-language: JavaScript
-permalink: api/javascript/literal/
+language: Ruby
+permalink: api/ruby/literal/
 command: literal
-io:
-    -   - object
-        - special
 related_commands:
     merge: merge/
     filter: filter/
@@ -27,11 +24,11 @@ Assume your users table has this structure:
 ```js
 [
     {
-        "id": 1,
-        "name": "Alice",
-        "data": {
-            "age": 18,
-            "city": "Dallas"
+        :id => 1,
+        :name => "Alice",
+        :data => {
+            :age => 18,
+            :city => "Dallas"
         }
     }       
     ...
@@ -40,39 +37,39 @@ Assume your users table has this structure:
 
 Using `update` to modify the `data` field will normally merge the nested documents:
 
-```js
-r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn, callback)
+```rb
+r.table('users').get(1).update({ :data => { :age => 19, :job => 'Engineer' } }).run(conn)
 ```
 
 Result:
 
-```js
+```rb
 {
-    "id": 1,
-    "name": "Alice",
-    "data": {
-        "age": 19,
-        "city": "Dallas",
-        "job": "Engineer"
+    :id => 1,
+    :name => "Alice",
+    :data => {
+        :age => 19,
+        :city => "Dallas",
+        :job => "Engineer"
     }
 }       
 ```
 
 That will preserve `city` and other existing fields. But to replace the entire `data` document with a new object, use `literal`:
 
-```js
-r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)
+```rb
+r.table('users').get(1).update({ :data => r.literal({ :age => 19, :job => 'Engineer' }) }).run(conn)
 ```
 
 Result:
 
-```js
+```rb
 {
-    "id": 1,
-    "name": "Alice",
-    "data": {
-        "age": 19,
-        "job": "Engineer"
+    :id => 1,
+    :name => "Alice",
+    :data => {
+        :age => 19,
+        :job => "Engineer"
     }
 }       
 ```

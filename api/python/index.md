@@ -1524,6 +1524,19 @@ __Example:__ Get all the keys of a row.
 ```py
 r.table('marvel').get('ironman').keys().run(conn)
 ```
+## [literal](literal/) ##
+
+{% apibody %}
+r.literal(object) &rarr; special
+{% endapibody %}
+
+Replace an object in a field instead of merging it with an existing object in a `merge` or `update` operation.
+
+```py
+r.table('users').get(1).update({ 'data': r.literal({ 'age': 19, 'job': 'Engineer' }) }).run(conn)
+```
+
+[Read more about this command &rarr;](literal/)
 
 ## [object](object/) ##
 
