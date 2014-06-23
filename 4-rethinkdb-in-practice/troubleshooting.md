@@ -187,6 +187,9 @@ r.table("test").run( conn, function(error, cursor) {
     })
 })
 ```
+## RethinkDB is running out of memory ##
+
+Read "[Understanding RethinkDB memory requirements](/docs/memory-usage/)" for an explanation of how RethinkDB uses memory and possible solutions.
 
 ## I get incorrect results when I pass functions with if/for statements to ReQL ##
 
