@@ -45,7 +45,7 @@ your data.
 
 __Note:__ The `dump` command requires the [Python driver](/docs/install-drivers/python/) to be installed. Don't upgrade the Python driver until after you've dumped the data!
 
-If you don't have the Python driver installed, you can install the previous version using `pip install rethinkdb version=1.12.0-2`. (You can use the [Python Package Index](https://pypi.python.org/pypi "PyPI") to check on current and older versions.)
+If you don't have the Python driver installed, you can install the previous version using `pip install rethinkdb version==1.12.0-2`. (You can use the [Python Package Index](https://pypi.python.org/pypi "PyPI") to check on current and older versions.)
 {% endinfobox %}
 
 {% infobox info %}
