@@ -460,13 +460,12 @@ In this case, you can do a pivot operation with the `group` and
 
 
 ```py
-r.db('test').table('marks')                                      \
- .group('name')                                                  \
- .map(lambda row: [[row['course'], row['mark']]])                \
- .ungroup()                                                      \
- .map(lambda res: r.expr({'name': res['group']})                 \
-                   .merge(res['reduction'].coerce_to('OBJECT'))) \
- .run(conn)
+r.db('test').table('marks').group('name').map(
+    lambda row: [row['course'], row['mark']]
+).ungroup().map(
+    lambda res: r.expr({'name': res['group']}).merge(
+        res['reduction'].coerce_to('object'))
+).run(conn)
 ```
 
 _Note:_ A nicer syntax will eventually be added. See the

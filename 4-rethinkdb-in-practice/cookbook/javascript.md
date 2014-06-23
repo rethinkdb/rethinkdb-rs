@@ -536,14 +536,11 @@ In this case, you can do a pivot operation with the `group` and
 `coerceTo` commands.
 
 ```js
-r.db('test').table('marks')                                  \
- .group('name')                                              \
- .map(function(row){return [[row('course'), row('mark')]];}) \
- .ungroup()                                                  \
- .map(function(res){                                         \
-   return r.expr(name: res('group'))                         \
-           .merge(res('reduction').coerceTo('OBJECT'));      \
- }).run(conn)
+r.db('test').table('marks').group('name').map(function (row) {
+    return [row('course'), row('mark')];
+}).ungroup().map(function (res) {
+    return r.expr({name: res('group')}).merge(res('reduction').coerceTo('object'));
+}).run(conn, callback)
 ```
 
 _Note:_ A nicer syntax will eventually be added. See the
