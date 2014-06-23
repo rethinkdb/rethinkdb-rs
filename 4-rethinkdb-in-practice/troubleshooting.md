@@ -187,4 +187,36 @@ r.table("test").run( conn, function(error, cursor) {
 })
 ```
 
+## I get incorrect results when I pass functions with if/for statements to ReQL ##
+
+When you pass functions to ReQL, your language's driver serializes those functions into ReQL lambda functions that are run on the server, not in your client language. (See [All about lambda functions in RethinkDB queries](/blog/lambda-functions/) for more details.) A consequence of this is that native language constructs like `if` and `for` will not produce the expected result when their conditions involve ReQL commands. While they may not cause errors, they will be executed on the client side before the function is compiled for ReQL, and thus give an incorrect result. Instead, you must use equivalent ReQL control functions such as [branch](/api/javascript/branch/) and [forEach](/api/javascript/for_each/). Here's an example in Python from the [Introduction to ReQL](/docs/introduction-to-reql/) document:
+
+```py
+# WRONG: Get all users older than 30 using the `if` statement
+r.table('users').filter(lambda user:
+    True if user['age'] > 30 else False
+).run(conn)
+
+# RIGHT: Get all users older than 30 using the `r.branch` command
+r.table('users').filter(lambda user:
+    r.branch(user['age'] > 30, True, False)
+).run(conn)
+```
+
+And an equivalent example in Javascript:
+
+```js
+// WRONG: Get all users older than 30 using the ternary operator
+r.table('users').filter(function(user) {
+    return (r.row('age').gt(30) ? true : false);
+}).run(conn, callback)
+
+// RIGHT: Get all users older than 30 using the `r.branch` command
+r.table('users').filter(function(user) {
+    r.branch(user('age').gt(30), true, false)
+}).run(conn, callback)
+```
+
+(Note we must use `gt` instead of the native `>` operator in Javascript, for the same reason. In Python the `>` operator is [overloaded](https://docs.python.org/2/reference/datamodel.html#special-method-names) to be translated to ReQL's `gt` command, a trick that is not possible in Javascript.)
+
 {% endfaqsection %}
