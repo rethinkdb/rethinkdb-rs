@@ -92,6 +92,8 @@ alias: docs/guides/drivers/
 
 ---
 
+<img src="/assets/images/docs/api_illustrations/install_client_drivers.png" class="api_command_illustration" />
+
 # Contribute a driver #
 
 Help make RethinkDB available on more platforms &mdash; contribute a

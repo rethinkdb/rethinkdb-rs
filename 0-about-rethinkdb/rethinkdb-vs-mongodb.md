@@ -12,6 +12,8 @@ js: [fancybox]
 between RethinkDB and MongoDB.
 {% endinfobox %}
 
+<img src="/assets/images/docs/api_illustrations/mongo_vs_rethink.png" class="api_command_illustration" />
+
 Many people have been asking how RethinkDB differs from MongoDB and
 other NoSQL systems. Our first attempt to address these questions is a
 high level [technical overview][compared_to_mongodb] comparing
