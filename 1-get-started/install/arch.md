@@ -62,7 +62,7 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb
-./configure --dynamic tcmalloc_minimal 
+./configure --dynamic tcmalloc_minimal --allow-fetch --fetch v8
 make
 ```
 
