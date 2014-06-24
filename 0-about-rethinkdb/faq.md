@@ -35,7 +35,7 @@ aggregations.
 Find out how RethinkDB compares to other NoSQL databases:
 
 - [RethinkDB compared to MongoDB](/docs/comparison-tables/) &mdash; an unbiased technical comparison between RethinkDB and MongoDB.
-- [RethinkDB vs today's NoSQL](/docs/rethinkdb-vs-mongodb/) &mdash; our biased, but more personal take on what makes RethinkDB different.
+- [RethinkDB vs today's NoSQL](/blog/mongodb-biased-comparison/) &mdash; our biased, but more personal take on what makes RethinkDB different.
 
 ## When is RethinkDB a good choice? ##
 
