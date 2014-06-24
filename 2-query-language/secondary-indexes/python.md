@@ -194,6 +194,23 @@ view.
 
 Secondary indexes have the following limitations:
 
+- Secondary indexes will not store `None` values or objects. Thus, the results of a command such as:
+
+    ```py
+    r.table("users").index_create("group").run(conn)
+    r.table("users").order_by(index="group").run(conn)
+    ```
+    
+    may be different from an equivalent command without an index:
+    
+    ```py
+    r.table("users").order_by("group").run(conn)
+    ```
+    
+    if the field being indexed has non-indexable values.
+    
+    This limitation will be removed in a future version of RethinkDB. See GitHub issue [#1032](https://github.com/rethinkdb/rethinkdb/issues/1032) to track progress on this.
+
 - RethinkDB does not currently have an optimizer. As an example,
   the following query will not automatically use an index:
 

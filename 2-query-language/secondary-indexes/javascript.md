@@ -198,21 +198,38 @@ view.
 
 Secondary indexes have the following limitations:
 
+- Secondary indexes will not store `null` values or objects. Thus, the results of a command such as:
+
+    ```js
+    r.table("users").indexCreate("group").run(conn, callback)
+    r.table("users").orderBy({index: "group"}).run(conn, callback)
+    ```
+    
+    may be different from an equivalent command without an index:
+    
+    ```js
+    r.table("users").orderBy("group").run(conn, callback)
+    ```
+    
+    if the field being indexed has non-indexable values.
+    
+    This limitation will be removed in a future version of RethinkDB. See GitHub issue [#1032](https://github.com/rethinkdb/rethinkdb/issues/1032) to track progress on this.
+
 - RethinkDB does not currently have an optimizer. As an example,
   the following query will not automatically use an index:
 
-  ```js
-  // This query does not use a secondary index! Use getAll instead.
-  r.table("users").filter({"last_name": "Smith" }).run(conn, callback)
-  ```
+    ```js
+    // This query does not use a secondary index! Use getAll instead.
+    r.table("users").filter({"last_name": "Smith" }).run(conn, callback)
+    ```
 
-  You have to explicitly use the `getAll` command to take advantage
-  of secondary indexes.
+    You have to explicitly use the `getAll` command to take advantage
+    of secondary indexes.
 
-  ```js
-  // This query uses a secondary index.
-  r.table("users").getAll("Smith", {index: "last_name"}).run(conn, callback)
-  ```
+    ```js
+    // This query uses a secondary index.
+    r.table("users").getAll("Smith", {index: "last_name"}).run(conn, callback)
+    ```
 
 - You cannot chain multiple `getAll` commands. Use a compound index to efficiently
   retrieve documents by multiple fields.
