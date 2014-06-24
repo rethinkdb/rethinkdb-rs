@@ -15,9 +15,12 @@ js: faq_index
 * Jump into the [cookbook](/docs/cookbook/javascript/) and see dozens of examples of common RethinkDB queries.
 {% endinfobox %}
 
+<img src="/assets/images/docs/api_illustrations/faq.png" class="api_command_illustration" />
+
 <div id="faqcontents"></div>
 ---
 {% faqsection RethinkDB overview %}
+
 ## What is RethinkDB? ##
 
 RethinkDB is an open-source, distributed database built to store JSON
