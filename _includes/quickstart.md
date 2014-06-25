@@ -15,8 +15,6 @@ info: Listening for administrative HTTP connections on port 8080
 info: Server ready
 ```
 
-<img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
-
 Point your browser to `localhost:8080` &ndash; you'll see an administrative UI
 where you can control the cluster (which so far consists of one machine), and
 play with the query language.
