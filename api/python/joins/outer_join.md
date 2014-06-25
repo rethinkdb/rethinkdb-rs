@@ -20,7 +20,7 @@ array.outer_join(other_sequence, predicate) &rarr; array
 
 Computes a left outer join by retaining each row in the left table even if no match was found in the right table.
 
-Note that `outer_join` is slower and much less efficient than using [eq_join](/api/python/eq_join/) or [concat_map](/api/python/concat_map/). You should avoid using `outer_join` in commands when possible.
+Note that `outer_join` is slower and much less efficient than using [concat_map](/api/python/concat_map/) with [get_all](/api/python/get_all). You should avoid using `outer_join` in commands when possible.
 
 __Example:__ Construct a sequence of documents containing all cross-universe matchups
 where a marvel hero would lose, but keep marvel heroes who would never lose a matchup in

@@ -25,7 +25,7 @@ array.outerJoin(otherSequence, predicate) &rarr; array
 
 Computes a left outer join by retaining each row in the left table even if no match was found in the right table.
 
-Note that `outerJoin` is slower and much less efficient than using [eqJoin](/api/javascript/eq_join/) or [concatMap](/api/javascript/concat_map/). You should avoid using `outerJoin` in commands when possible.
+Note that `outerJoin` is slower and much less efficient than using [concatMap](/api/javascript/concat_map/) with [getAll](/api/javascript/get_all). You should avoid using `outerJoin` in commands when possible.
 
 __Example:__ Construct a sequence of documents containing all cross-universe matchups
 where a marvel hero would lose, but keep marvel heroes who would never lose a matchup in
