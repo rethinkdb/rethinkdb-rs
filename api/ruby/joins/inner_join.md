@@ -35,9 +35,3 @@ __Example:__ Join a sequence on a simple field name.
 ```rb
 r.table('players').inner_join(r.table('games'), 'game_id').zip().run(conn)
 ```
-
-__Example:__ Use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to join on fields from subdocuments.
-
-```rb
-r.table('players').inner_join(r.table('games'), { :game => 'id' } ).zip().run(conn)
-```

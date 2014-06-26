@@ -40,9 +40,3 @@ __Example:__ Join a sequence on a simple field name.
 ```js
 r.table('players').innerJoin(r.table('games'), 'game_id').zip().run(conn, callback)
 ```
-
-__Example:__ Use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to join on fields from subdocuments.
-
-```js
-r.table('players').innerJoin(r.table('games'), {game: 'id'}).zip().run(conn, callback)
-```

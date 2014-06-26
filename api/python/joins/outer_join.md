@@ -36,9 +36,3 @@ __Example:__ Join a sequence on a simple field name.
 ```py
 r.table('players').outer_join(r.table('games'), 'game_id').zip().run(conn)
 ```
-
-__Example:__ Use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to join on fields from subdocuments.
-
-```py
-r.table('players').outer_join(r.table('games'), {'game': 'id'} ).zip().run(conn)
-```
