@@ -171,7 +171,8 @@ Suppose we have a table `users` with documents of the following form:
 ```json
 {
     name: "William Adama"
-    emails: ["bill@bsg.com", "william@bsg.com"]
+    emails: ["bill@bsg.com", "william@bsg.com"],
+    ship: "Galactica"
 }
 ```
 
@@ -184,6 +185,17 @@ r.table("user").filter(r.row("emails").contains("user@email.com"))
         if (err) throw err;
         console.log(result);
     })
+```
+
+If we want to retrieve all users on the Galactica and Pegasus, we can write:
+
+```js
+r.table("user").filter(function (user) {
+    r(["Galactica", "Pegasus"]).contains(user("ship"))
+}).run(connection, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 ## Filtering based on nested fields ##

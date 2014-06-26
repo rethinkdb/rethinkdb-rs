@@ -144,7 +144,8 @@ Suppose we have a table `users` with documents of the following form:
 ```ruby
 {
     "name" => "William Adama"
-    "emails" => ["bill@bsg.com", "william@bsg.com"]
+    "emails" => ["bill@bsg.com", "william@bsg.com"],
+    "ship" => "Galactica"
 }
 ```
 
@@ -154,6 +155,13 @@ If we want to retrieve all users that have the email address
 ```ruby
 r.table("user").filter{|user| user["emails"].contains("user@email.com")}.run
 ```
+
+If we want to retrieve all users on the Galactica and Pegasus, we can write:
+
+```rb
+r.table("user").filter{ |user|
+    r.expr(["Galactica", "Pegasus"]).contains(user["ship"])
+}.run()
 
 ## Filtering based on nested fields ##
 

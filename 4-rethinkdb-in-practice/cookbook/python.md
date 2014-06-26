@@ -143,6 +143,7 @@ Suppose we have a table `users` with documents of the following form:
 {
     name: "William Adama"
     emails: ["bill@bsg.com", "william@bsg.com"]
+    ship: "Galactica"
 }
 ```
 
@@ -151,8 +152,15 @@ If we want to retrieve all users that have the email address
 
 ```python
 r.table("user").filter(r.row["emails"].contains("user@email.com")).run()
-
 ```
+
+If we want to retrieve all users on the Galactica and Pegasus, we can write:
+
+```py
+r.table("user").filter(
+    lambda user: r.expr(["Galactica", "Pegasus"]).contains(user["ship"])
+).run()
+
 
 ## Filtering based on nested fields ##
 

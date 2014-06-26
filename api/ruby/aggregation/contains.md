@@ -39,3 +39,10 @@ r.table('marvel').get('ironman')[:battles].contains{|battle|
 }.run(conn)
 ```
 
+__Example:__ Use `contains` with a predicate function to simulate an `or`. Return the Marvel superheroes who live in Detroit, Chicago or Hoboken.
+
+```rb
+r.table('marvel').filter { |hero|
+    r.expr(['Detroit', 'Chicago', 'Hoboken']).contains(hero['city'])
+}.run(conn)
+```

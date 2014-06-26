@@ -42,3 +42,10 @@ r.table('marvel').get('ironman')('battles').contains(function (battle) {
 }).run(conn, callback)
 ```
 
+__Example:__ Use `contains` with a predicate function to simulate an `or`. Return the Marvel superheroes who live in Detroit, Chicago or Hoboken.
+
+```js
+r.table('marvel').filter(function(hero) {
+    return r.expr(['Detroit', 'Chicago', 'Hoboken']).contains(hero('city'))
+}).run(conn, callback)
+```

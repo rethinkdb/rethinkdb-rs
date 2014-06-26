@@ -39,3 +39,10 @@ r.table('marvel').get('ironman')['battles'].contains(lambda battle:
 ).run(conn)
 ```
 
+__Example:__ Use `contains` with a predicate function to simulate an `or`. Return the Marvel superheroes who live in Detroit, Chicago or Hoboken.
+
+```py
+r.table('marvel').filter(
+    lambda hero: r.expr(['Detroit', 'Chicago', 'Hoboken']).contains(hero['city'])
+).run(conn)
+```
