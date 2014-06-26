@@ -51,7 +51,7 @@ You can also select a descending ordering:
 r.table('posts').orderBy({index: r.desc('date')}).run(conn, callback)
 ```
 
-__Example:__ If you have a sequence with less than 100,000 documents, you can order it
+__Example:__ Order a sequence with less than 100,000 documents
 without an index.
 
 ```js
@@ -104,7 +104,7 @@ posts were published on the same date, they will be ordered by title.
 r.table('post').orderBy('title', {index: 'date'}).run(conn, callback)
 ```
 
-__Example:__ You can use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to sort on fields from subdocuments. (You can also create indexes on nested fields using this syntax with `indexCreate`.)
+__Example:__ Use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to sort on fields from subdocuments. (You can also create indexes on nested fields using this syntax with `indexCreate`.)
 
 ```js
 r.table('user').orderBy(r.row('group')('id')).run(conn, callback)

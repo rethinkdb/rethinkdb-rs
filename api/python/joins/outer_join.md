@@ -18,17 +18,27 @@ array.outer_join(other_sequence, predicate) &rarr; array
 
 # Description #
 
-Computes a left outer join by retaining each row in the left table even if no match was found in the right table.
+Returns the outer product of two sequences (e.g. a table, a filter result). The query returns each row of the left sequence paired with each row of the right sequence that satisfies the predicate. The predicate can be either a field name to join on or a function that filters the input sequence.
 
 Note that `outer_join` is slower and much less efficient than using [concat_map](/api/python/concat_map/) with [get_all](/api/python/get_all). You should avoid using `outer_join` in commands when possible.
 
 __Example:__ Construct a sequence of documents containing all cross-universe matchups
-where a marvel hero would lose, but keep marvel heroes who would never lose a matchup in
+where a Marvel hero would lose, but keep Marvel heroes who would never lose a matchup in
 the sequence.
 
 ```py
 r.table('marvel').outer_join(r.table('dc'),
-  lambda marvelRow, dcRow: marvelRow['strength'] < dcRow['strength']).run(conn)
+  lambda marvelRow, dcRow: marvelRow['strength'] < dcRow['strength']).zip().run(conn)
 ```
 
+__Example:__ Join a sequence on a simple field name.
 
+```py
+r.table('players').outer_join(r.table('games'), 'game_id').zip().run(conn)
+```
+
+__Example:__ Use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to join on fields from subdocuments.
+
+```py
+r.table('players').outer_join(r.table('games'), {'game': 'id'} ).zip().run(conn)
+```

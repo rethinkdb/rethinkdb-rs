@@ -47,7 +47,7 @@ r.table('posts').order_by(:index => r.desc('date')).run(conn, callback)
 ```
 
 
-__Example:__ If you have a sequence with less than 100,000 documents, you can order it
+__Example:__ Order a sequence with less than 100,000 documents
 without an index.
 
 ```rb
