@@ -18,7 +18,7 @@ array.outer_join(other_sequence, predicate) &rarr; array
 
 # Description #
 
-Returns the outer product of two sequences (e.g. a table, a filter result). The query returns each row of the left sequence paired with each row of the right sequence that satisfies the predicate. The predicate can be either a field name to join on or a function that filters the input sequence.
+Returns the outer product of two sequences (e.g. a table, a filter result). The query returns each row of the left sequence paired with each row of the right sequence that satisfies the predicate function. In most cases, you will want to follow the join with [zip](/api/ruby/zip) to combine the left and right results.
 
 Note that `outer_join` is slower and much less efficient than using [concat_map](/api/ruby/concat_map/) with [get_all](/api/ruby/get_all). You should avoid using `outer_join` in commands when possible.
 
@@ -31,10 +31,4 @@ the sequence.
 r.table('marvel').outer_join(r.table('dc')) {|marvel_row, dc_row|
     marvel_row[:strength] < dc_row[:strength]
 }.run(conn)
-```
-
-__Example:__ Join a sequence on a simple field name.
-
-```rb
-r.table('players').outer_join(r.table('games'), 'game_id').zip().run(conn)
 ```

@@ -23,7 +23,7 @@ array.outerJoin(otherSequence, predicate) &rarr; array
 
 # Description #
 
-Returns the outer product of two sequences (e.g. a table, a filter result). The query returns each row of the left sequence paired with each row of the right sequence that satisfies the predicate. The predicate can be either a field name to join on or a function that filters the input sequence.
+Returns the outer product of two sequences (e.g. a table, a filter result). The query returns each row of the left sequence paired with each row of the right sequence that satisfies the predicate function. In most cases, you will want to follow the join with [zip](/api/javascript/zip) to combine the left and right results.
 
 Note that `outerJoin` is slower and much less efficient than using [concatMap](/api/javascript/concat_map/) with [getAll](/api/javascript/get_all). You should avoid using `outerJoin` in commands when possible.
 
@@ -35,10 +35,4 @@ the sequence.
 r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
     return marvelRow('strength').lt(dcRow('strength'))
 }).run(conn, callback)
-```
-
-__Example:__ Join a sequence on a simple field name.
-
-```js
-r.table('players').outerJoin(r.table('games'), 'game_id').run(conn, callback)
 ```
