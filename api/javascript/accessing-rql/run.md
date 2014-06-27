@@ -36,6 +36,7 @@ will acknowledge the write immediately after receiving it, but before the write 
 been committed to disk.
 - `groupFormat`: what format to return `grouped_data` and `grouped_streams` in (default: `'native'`).
   Set this to `'raw'` if you want the raw pseudotype.
+- `noreply`: set to `true` to not receive the result object or cursor and return immediately.
 
 If no callback is provided, a promise will be returned.
 
