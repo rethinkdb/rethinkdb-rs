@@ -46,7 +46,7 @@ You can also select a descending ordering:
 r.table('posts').order_by(index=r.desc('date')).run(conn, callback)
 ```
 
-__Example:__ If you have a sequence with less than 100,000 documents, you can order it
+__Example:__ Order a sequence with less than 100,000 documents
 without an index.
 
 ```py
@@ -98,6 +98,11 @@ posts were published on the same date, they will be ordered by title.
 
 ```py
 r.table('post').order_by('title', index='date').run(conn)
+```
+__Example:__ You can use [nested field](/docs/cookbook/python/#filtering-based-on-nested-fields) syntax to sort on fields from subdocuments. (You can also create indexes on nested fields using this syntax with `index_create`.)
+
+```py
+r.table('user').order_by(lambda user: user['group']['id']).run(conn)
 ```
 
 __Example:__ You can efficiently order data on arbitrary expressions using indexes.

@@ -18,17 +18,15 @@ array.outer_join(other_sequence, predicate) &rarr; array
 
 # Description #
 
-Computes a left outer join by retaining each row in the left table even if no match was found in the right table.
+Returns the outer product of two sequences (e.g. a table, a filter result). The query returns each row of the left sequence paired with each row of the right sequence that satisfies the predicate function. In most cases, you will want to follow the join with [zip](/api/python/zip) to combine the left and right results.
 
 Note that `outer_join` is slower and much less efficient than using [concat_map](/api/python/concat_map/) with [get_all](/api/python/get_all). You should avoid using `outer_join` in commands when possible.
 
 __Example:__ Construct a sequence of documents containing all cross-universe matchups
-where a marvel hero would lose, but keep marvel heroes who would never lose a matchup in
+where a Marvel hero would lose, but keep Marvel heroes who would never lose a matchup in
 the sequence.
 
 ```py
 r.table('marvel').outer_join(r.table('dc'),
-  lambda marvelRow, dcRow: marvelRow['strength'] < dcRow['strength']).run(conn)
+  lambda marvelRow, dcRow: marvelRow['strength'] < dcRow['strength']).zip().run(conn)
 ```
-
-
