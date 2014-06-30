@@ -9,7 +9,7 @@
 First, start the RethinkDB server like this:
 
 <div class="highlight">
-<pre style="word-break:normal">
+<pre class="normal-break">
 <code>
 $ rethinkdb
 info: Creating directory 'rethinkdb_data'
