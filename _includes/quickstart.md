@@ -4,16 +4,22 @@
 
 # Start the server #
 
+<img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
+
 First, start the RethinkDB server like this:
 
-```
+<div class="highlight">
+<pre style="word-break:normal">
+<code>
 $ rethinkdb
 info: Creating directory 'rethinkdb_data'
 info: Listening for intracluster connections on port 29015
 info: Listening for client driver connections on port 28015
 info: Listening for administrative HTTP connections on port 8080
 info: Server ready
-```
+</code>
+</pre>
+</div>
 
 <img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
 

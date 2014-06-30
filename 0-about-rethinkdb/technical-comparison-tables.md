@@ -12,6 +12,8 @@ alias: docs/comparisons/mongodb/
 href="/docs/rethinkdb-vs-mongodb/">what makes RethinkDB different</a>.
 {% endinfobox %}
 
+<img src="/assets/images/docs/api_illustrations/tech-comparisons.png" class="api_command_illustration" />
+
 This document is our attempt at an unbiased comparison between
 RethinkDB and MongoDB (for a more partisan view, take a look at the
 [biased comparison](/blog/mongodb-biased-comparison/) written by
