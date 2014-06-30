@@ -12,13 +12,13 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-time.during(start_time, end_time[, :left_bound => "open/closed", :right_bound => "open/closed"])
+time.during(start_time, end_time[, :left_bound => "closed", :right_bound => "open"])
     &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Return if a time is between two other times (by default, inclusive for the start, exclusive for the end).
+Return whether a time is between two other times. By default, this is inclusive of the start time and exclusive of the end time. Set `left_bound` and `right_bound` to explicitly include (`closed`) or exclude (`open`) that endpoint of the range.
 
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013 (inclusive) and December 10th, 2013 (exclusive).
 
