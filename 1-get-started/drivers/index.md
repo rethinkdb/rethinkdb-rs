@@ -67,11 +67,11 @@ alias: docs/guides/drivers/
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/npiv/rethink-java-driver">
         <img src="/assets/images/docs/driver-languages/java.png" />
-        <p class="name">Java</span></p>
+        <p class="name">Java <span class="driver-author">by @npiv</span></p>
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/dkhenry/rethinkjava">
         <img src="/assets/images/docs/driver-languages/java.png" />
-        <p class="name">Java</span></p>
+        <p class="name">Java <span class="driver-author">by @dkhenry</span></p>
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/njlg/perl-rethinkdb">
         <img src="/assets/images/docs/driver-languages/perl.png" />
@@ -116,6 +116,7 @@ __Thanks to all our amazing driver contributors!__
 - [@dancannon](https://github.com/dancannon) (Go): <https://github.com/dancannon/gorethink>
 - [@danielmewes](https://github.com/danielmewes) (PHP): <https://github.com/danielmewes/php-rql>
 - [@dkhenry](https://github.com/dkhenry) (Java): <https://github.com/dkhenry/rethinkjava>
+- [@npiv](https://github.com/npiv/) (Java): <https://github.com/npiv/rethink-java-driver>
 - [@esycat](https://github.com/esycat) (Scala): <https://github.com/esycat/rql-scala>
 - [@kclay](https://github.com/kclay) (Scala): <https://github.com/kclay/rethink-scala>
 - [@njlg](https://github.com/njlg) (Perl): <https://github.com/njlg/perl-rethinkdb>
