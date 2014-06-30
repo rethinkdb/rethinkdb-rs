@@ -15,13 +15,12 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-time.during(startTime, endTime[, options]) &rarr; bool
+time.during(startTime, endTime[, {leftBound: "open/closed", rightBound: "open/closed"}]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Return if a time is between two other times (by default, inclusive for the start,
-exclusive for the end).
+Return if a time is between two other times (by default, inclusive for the start, exclusive for the end).
 
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 (inclusive) and December 10th, 2013 (exclusive).
