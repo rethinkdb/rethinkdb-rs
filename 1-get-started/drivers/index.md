@@ -65,6 +65,10 @@ alias: docs/guides/drivers/
         <img src="/assets/images/docs/driver-languages/haskell.png" />
         <p class="name">Haskell</p>
     </a>
+    <a class="mini icon-box driver-language" href="https://github.com/npiv/rethink-java-driver">
+        <img src="/assets/images/docs/driver-languages/java.png" />
+        <p class="name">Java</span></p>
+    </a>
     <a class="mini icon-box driver-language" href="https://github.com/dkhenry/rethinkjava">
         <img src="/assets/images/docs/driver-languages/java.png" />
         <p class="name">Java</span></p>
