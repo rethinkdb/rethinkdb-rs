@@ -671,4 +671,12 @@ r.table('users').map(function (user) {
 }).keys().run(conn, callback)
 ```
 
+## Returning a ReQL query as a string ##
+
+For testing or logging purposes, you might want to capture a created ReQL query as a string. (You can see an example of this in ReQL error messages.) While there is no ReQL command to do this, you can simply use the `toString()` method at the end of a query chain, rather than `run()`:
+
+```js
+r.table('users').filter(r.row('groups').contains('operators')).toString()
+```
+
 {% endfaqsection %}

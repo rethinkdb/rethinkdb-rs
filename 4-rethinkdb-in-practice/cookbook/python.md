@@ -598,5 +598,13 @@ r.table('users').map(
 ).keys().run(conn)
 ```
 
+## Returning a ReQL query as a string ##
+
+For testing or logging purposes, you might want to capture a created ReQL query as a string. (You can see an example of this in ReQL error messages.) While there is no ReQL command to do this, you can simply pass the query chain (without `run()`) as an argument to `str()`:
+
+```py
+str(r.table('users').filter(lambda user: user['groups'].contains('operators')))
+```
+
 {% endfaqsection %}
 

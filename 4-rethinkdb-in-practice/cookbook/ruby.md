@@ -595,4 +595,12 @@ r.table('users').map { |user|
 }.keys().run(conn)
 ```
 
+## Returning a ReQL query as a string ##
+
+For testing or logging purposes, you might want to capture a created ReQL query as a string. (You can see an example of this in ReQL error messages.) While there is no ReQL command to do this, you can simply use the `inspect()` method at the end of a query chain, rather than `run()`:
+
+```rb
+r.table('users').filter{ |user| user['groups'].contains('operators')}.inspect()
+```
+
 {% endfaqsection %}
