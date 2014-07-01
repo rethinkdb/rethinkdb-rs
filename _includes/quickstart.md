@@ -8,18 +8,14 @@
 
 First, start the RethinkDB server like this:
 
-<div class="highlight">
-<pre class="normal-break">
-<code>
+```
 $ rethinkdb
 info: Creating directory 'rethinkdb_data'
 info: Listening for intracluster connections on port 29015
 info: Listening for client driver connections on port 28015
 info: Listening for administrative HTTP connections on port 8080
 info: Server ready
-</code>
-</pre>
-</div>
+```
 
 Point your browser to `localhost:8080` &ndash; you'll see an administrative UI
 where you can control the cluster (which so far consists of one machine), and
