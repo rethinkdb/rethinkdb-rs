@@ -502,18 +502,18 @@ progress.
 ## Performing an unpivot operation ##
 
 Doing an unpivot operation to "cancel" a pivot one can be done with the `concat_map`,
-`map` and `coerce_to` commands:
+`map` and `keys` commands:
 
 ```rb
-r.table("pivoted_marks").concat_map{ |doc|
-    doc.without("name").coerce_to("array").map{ |values|
-        {
+r.table("pivoted_marks").concat_map { |doc|
+    doc.without("id", "name").keys().map { |course|
+    	{
             :name => doc["name"],
-            :course => values[0],
-            :mark => values[1]
+            :course => course,
+            :mark => doc[course]
         }
     }
-}
+)
 ```
 
 _Note:_ A nicer syntax will eventually be added. See the
