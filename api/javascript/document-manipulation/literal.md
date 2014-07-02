@@ -4,7 +4,7 @@ language: JavaScript
 permalink: api/javascript/literal/
 command: literal
 io:
-    -   - object
+    -   - r
         - special
 related_commands:
     merge: merge/
