@@ -87,7 +87,7 @@ r.table("users").indexWait("full_name").run(conn, callback)
 r.table("users").getAll(["John", "Smith"], {index: "full_name"}).run(conn, callback)
 
 // Get all users whose full name is between "John Smith" and "Wade Welles"
-r.table("users").between(["John", "Smith"], ["Wade, Welles"], {index: "full_name"}) \
+r.table("users").between(["John", "Smith"], ["Wade", "Welles"], {index: "full_name"}) \
     .run(conn, callback)
 
 // Efficiently order users by first name and last name using an index

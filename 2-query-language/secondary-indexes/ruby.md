@@ -84,7 +84,7 @@ r.table("users").index_wait("full_name").run(conn)
 r.table("users").get_all(["John", "Smith"], :index => "full_name").run(conn)
 
 # Get all users whose full name is between "John Smith" and "Wade Welles"
-r.table("users").between(["John", "Smith"], ["Wade, Welles"], :index => "full_name") \
+r.table("users").between(["John", "Smith"], ["Wade", "Welles"], :index => "full_name") \
     .run(conn)
 
 # Efficiently order users by first name and last name using an index
