@@ -27,7 +27,7 @@ __Example:__ Select all documents where the 'magazines' field is greater than 5 
 
 ```py
 r.table('marvel').filter(
-    r.js('(function (row) { return row.magazines > 5; })')
+    r.js('(function (row) { return row.magazines.length > 5; })')
 ).run(conn)
 ```
 
