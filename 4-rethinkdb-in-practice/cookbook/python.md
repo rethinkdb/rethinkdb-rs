@@ -509,7 +509,8 @@ Doing an unpivot operation to "cancel" a pivot one can be done with the `concat_
 
 ```py
 r.table("pivoted_marks").concat_map(lambda doc:
-    doc.without("id", "name").keys().map(lamdba course: {
+    doc.without("id", "name").keys().map(lamdba course:
+        {
             "name": doc["name"],
             "course": course,
             "mark": doc[course]
