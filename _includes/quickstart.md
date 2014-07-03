@@ -4,8 +4,6 @@
 
 # Start the server #
 
-<img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
-
 First, start the RethinkDB server like this:
 
 ```
