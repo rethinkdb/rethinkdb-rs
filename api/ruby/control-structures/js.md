@@ -28,7 +28,7 @@ running Javascript on the server.
 
 ```rb
 r.table('marvel').filter(
-r.js('(function (row) { return row.magazines > 5; })')).run(conn)
+r.js('(function (row) { return row.magazines.length > 5; })')).run(conn)
 ```
 
 
