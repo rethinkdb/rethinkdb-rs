@@ -4,8 +4,6 @@
 
 # Start the server #
 
-<img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
-
 First, start the RethinkDB server like this:
 
 ```
@@ -16,6 +14,8 @@ info: Listening for client driver connections on port 28015
 info: Listening for administrative HTTP connections on port 8080
 info: Server ready
 ```
+
+<img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
 
 Point your browser to `localhost:8080` &ndash; you'll see an administrative UI
 where you can control the cluster (which so far consists of one machine), and
