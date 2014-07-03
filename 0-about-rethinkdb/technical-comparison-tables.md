@@ -12,8 +12,6 @@ alias: docs/comparisons/mongodb/
 href="/docs/rethinkdb-vs-mongodb/">what makes RethinkDB different</a>.
 {% endinfobox %}
 
-<img src="/assets/images/docs/api_illustrations/tech-comparisons.png" class="api_command_illustration" />
-
 This document is our attempt at an unbiased comparison between
 RethinkDB and MongoDB (for a more partisan view, take a look at the
 [biased comparison](/blog/mongodb-biased-comparison/) written by
@@ -21,6 +19,8 @@ RethinkDB and MongoDB (for a more partisan view, take a look at the
 with our commentary to allow the reader to form their own
 opinion. Whenever possible, we provide links to the original
 documentation for further details.
+
+<img src="/assets/images/docs/api_illustrations/tech-comparisons.png" class="api_command_illustration" />
 
 The document is organized by four main categories:
 
@@ -30,6 +30,7 @@ The document is organized by four main categories:
 * [Database architecture](#architecture)
 
 <div class="comparison-section"><a name="development" class="comparison-anchor"></a></div>
+
 # Development #
 
 |                        | RethinkDB | MongoDB |
