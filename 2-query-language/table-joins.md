@@ -101,13 +101,13 @@ Returns the following result:
 
 ## Using subqueries ##
 
-A common data access task is retrieving one document with associated "child" documents in a one-to-many relation: for instance, a blog post with all its comments. In our example data set, that might be a company and all its employees. You can retrieve these in one ReQL command using `merge` and a subquery in its lambda function.
+A common data access task is retrieving one document with associated "child" documents. (This would often be in a one-to-many relationship as shown here, but could be a many-to-many or one-to-one relationship.) In our example data set, we might want to retrieve information about a company and all its employees. We can do this in one ReQL command using `merge` and a subquery in its lambda function.
 
 ```py
 id = "064058b6-cea9-4117-b92d-c911027a725a"
 r.table("companies").get(id).merge(lamdba company:
-    { employees: r.table('employees').get_all(company['id'],
-                         index='company_id').coerce_to('array') }
+    { 'employees': r.table('employees').get_all(company['id'],
+                           index='company_id').coerce_to('array') }
 ).run()
 ```
 
@@ -130,6 +130,7 @@ This will return a result similar to:
 }
 ```
 
+Where `eq_join` produces a table-like result (the rough equivalent of SQL's `SELECT * FROM companies, employees WHERE companies.id = employees.company_id`), using a subquery produces a nested document, where the employee objects are returned in a list in the `employees` field.
 
 ## Using secondary indexes ##
 
