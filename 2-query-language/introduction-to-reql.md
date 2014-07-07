@@ -5,7 +5,6 @@ active: docs
 docs_active: introduction-to-reql
 permalink: docs/introduction-to-reql/
 ---
-<img src="/assets/images/docs/api_illustrations/introduction_to_reql.png" class="api_command_illustration" />
 
 ReQL is the RethinkDB query language. It offers a very powerful and
 convenient way to manipulate JSON documents. This document is a gentle
@@ -15,6 +14,8 @@ productive with RethinkDB, but it helps to understand some basics.
 {% infobox info %}
 <strong>Want to write useful queries right away?</strong> Check out the [ten-minute guide](/docs/guide/javascript/).
 {% endinfobox %}
+
+<img src="/assets/images/docs/api_illustrations/introduction_to_reql.png" class="api_command_illustration" />
 
 ReQL is different from other NoSQL query languages. It's built on
 three key principles:
