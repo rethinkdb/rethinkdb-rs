@@ -54,3 +54,4 @@ argument giving the secondary index to query.
 r.table('dc').between('dark_knight', 'man_of_steel', index='code_name').run(conn)
 ```
 
+__Note:__ To filter all documents between *times* (and dates), do not use `between`. Instead, using the [during](/api/python/during) command.

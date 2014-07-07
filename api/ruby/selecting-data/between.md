@@ -52,3 +52,4 @@ __Example:__ Between can be used on secondary indexes too. Just pass an optional
 r.table('dc').between('dark_knight', 'man_of_steel', :index => 'code_name').run(conn)
 ```
 
+__Note:__ To filter all documents between *times* (and dates), do not use `between`. Instead, using the [during](/api/ruby/during) command.
