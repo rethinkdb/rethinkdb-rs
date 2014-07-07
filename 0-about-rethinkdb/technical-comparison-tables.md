@@ -20,8 +20,6 @@ with our commentary to allow the reader to form their own
 opinion. Whenever possible, we provide links to the original
 documentation for further details.
 
-<img src="/assets/images/docs/api_illustrations/tech-comparisons.png" class="api_command_illustration" />
-
 The document is organized by four main categories:
 
 * [Development](#development)
