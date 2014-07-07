@@ -99,6 +99,38 @@ Returns the following result:
 }
 ```
 
+## Using subqueries ##
+
+A common data access task is retrieving one document with associated "child" documents in a one-to-many relation: for instance, a blog post with all its comments. In our example data set, that might be a company and all its employees. You can retrieve these in one ReQL command using `merge` and a subquery in its lambda function.
+
+```py
+id = "064058b6-cea9-4117-b92d-c911027a725a"
+r.table("companies").get(id).merge(lamdba company:
+    { employees: r.table('employees').get_all(company['id'],
+                         index='company_id').coerce_to('array') }
+).run()
+```
+
+This will return a result similar to:
+
+```json
+{
+    "id": "064058b6-cea9-4117-b92d-c911027a725a",
+    "company": "Starfleet",
+    "type": "paramilitary",
+    "employees": [
+        {
+            "id": "543ad9c8-1744-4001-bb5e-450b2565d02c",
+            "name": "Jean-Luc Picard",
+            "company_id": "064058b6-cea9-4117-b92d-c911027a725a",
+            "rank": "captain"
+        },
+        ...
+    ]
+}
+```
+
+
 ## Using secondary indexes ##
 
 Suppose that our data model for the employees stores a company name
