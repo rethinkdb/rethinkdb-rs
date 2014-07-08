@@ -84,6 +84,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 - [NoBrainer](https://github.com/nviennot/nobrainer) by [@nviennot](https://github.com/nviennot)  
   A Ruby ORM designed for RethinkDB.
+    - [nobrainer](/docs/nobrainer) a quickstart tutorial
 
 
 
