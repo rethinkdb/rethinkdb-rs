@@ -28,6 +28,7 @@ The document is organized by four main categories:
 * [Database architecture](#architecture)
 
 <div class="comparison-section"><a name="development" class="comparison-anchor"></a></div>
+
 # Development #
 
 |                        | RethinkDB | MongoDB |
