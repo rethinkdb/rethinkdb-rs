@@ -35,13 +35,14 @@ been committed to disk.
 - `group_format`: what format to return `grouped_data` and `grouped_streams` in (default: `'native'`).
   Set this to `'raw'` if you want the raw pseudotype.
 - `noreply`: set to `true` to not receive the result object or cursor and return immediately.
+- `db`: the database to run this query against, specified with the [db](/api/ruby/db/) command. The default is the database specified in the `db` parameter to [connect](/api/ruby/connect/) (which defaults to `test`). The database may also be specified separately with the `db` command.
 
 
 __Example:__ Run a query on the connection `conn` and print out every
 row in the result.
 
 ```rb
-r.table('marvel').run(conn).each{|x| p x}
+r.table('marvel').run(conn).each { |x| p x }
 ```
 
 __Example:__ If you are OK with potentially out of date data from all
@@ -83,4 +84,16 @@ object.
 
 ```rb
 r.now().run(conn, :time_format=>"raw")
+```
+__Example:__ Specify the database to use for the query.
+
+```rb
+r.table('marvel').run(conn, :db => r.db('heroes')).each { |x| p x }
+```
+
+
+This is equivalent to using the `db` command to specify the database:
+
+```rb
+r.db('heroes').table('marvel').run(conn) ...
 ```

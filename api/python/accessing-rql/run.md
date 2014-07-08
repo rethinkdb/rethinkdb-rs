@@ -35,6 +35,7 @@ been committed to disk.
 - `group_format`: what format to return `grouped_data` and `grouped_streams` in (default: `'native'`).
   Set this to `'raw'` if you want the raw pseudotype.
 - `noreply`: set to `True` to not receive the result object or cursor and return immediately.
+- `db`: the database to run this query against as a string. The default is the database specified in the `db` parameter to [connect](/api/python/connect/) (which defaults to `test`). The database may also be specified with the [db](/api/python/db/) command.
 
 
 __Example:__ Run a query on the connection `conn` and print out every
@@ -86,3 +87,15 @@ object.
 r.now().run(conn, time_format="raw")
 ```
 
+__Example:__ Specify the database to use for the query.
+
+```py
+for doc in r.table('marvel').run(conn, db='heroes'):
+    print doc
+```
+
+This is equivalent to using the `db` command to specify the database:
+
+```py
+r.db('heroes').table('marvel').run(conn) ...
+```
