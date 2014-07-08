@@ -37,6 +37,7 @@ been committed to disk.
 - `groupFormat`: what format to return `grouped_data` and `grouped_streams` in (default: `'native'`).
   Set this to `'raw'` if you want the raw pseudotype.
 - `noreply`: set to `true` to not receive the result object or cursor and return immediately.
+- `db`: the database to run this query against as a string. The default is the database specified in the `db` parameter to [connect](/api/javascript/connect/) (which defaults to `test`). The database may also be specified with the [db](/api/javascript/db/) command.
 
 If no callback is provided, a promise will be returned.
 
@@ -129,3 +130,20 @@ r.now().run(conn, {timeFormat: "raw"}, function (err, result) {
 });
 ```
 
+__Example:__ Specify the database to use for the query.
+
+```js
+r.table('marvel').run(conn, {db: 'heroes'}).then(function(cursor) {
+    return cursor.toArray()
+}).then(function(results) {
+    // process the results
+}).error(function(err) {
+    // process error
+})
+```
+
+This is equivalent to using the `db` command to specify the database:
+
+```js
+r.db('heroes').table('marvel').run(conn) ...
+```
