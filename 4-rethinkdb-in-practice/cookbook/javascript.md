@@ -21,10 +21,10 @@ language : JavaScript
 You can use the `dbCreate` command as follows:
 
 ```javascript
-r.dbCreate("blog").run(connection, function(err, result) {
+r.dbCreate("blog").run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 Another way to create a database is through the web UI. You can reach
@@ -37,10 +37,10 @@ You can select the database where you'd like to create the table with
 the `db` command and use the `tableCreate` command as follows:
 
 ```javascript
-r.db("blog").tableCreate("posts").run( connection, function(err, result) {
+r.db("blog").tableCreate("posts").run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 Note that you can omit the `db` command if you're creating a table in
@@ -60,10 +60,10 @@ appropriate table:
 r.table("user").insert({
     name: "Michel",
     age: 26
-}).run(connection, function(err, result) {
+}).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 You can insert multiple documents at once by passing an array of
@@ -79,10 +79,10 @@ r.table("user").insert([
         name: "Slava",
         age: 30
     }
-]).run( connection, function(err, result) {
+]).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 ## Deleting documents ##
@@ -92,30 +92,32 @@ the `delete` command. For example, let's delete all posts with the
 author "Michel":
 
 ```javascript
-r.table("posts").filter(r.row("author").eq("Michel")).delete().
-  run(connection, function(err, result) {
-    if (err) throw err;
-    console.log(result);
-})
+r.table("posts").filter(r.row("author").eq("Michel")).delete().run(conn,
+    function(err, result) {
+        if (err) throw err;
+        console.log(result);
+    }
+);
 ```
 
 Or, let's try to delete a single user:
 
 ```javascript
-r.table("posts").get("7644aaf2-9928-4231-aa68-4e65e31bf219").delete().
-  run(connection, function(err, result) {
-    if (err) throw err;
-    console.log(result);
-})
+r.table("posts").get("7644aaf2-9928-4231-aa68-4e65e31bf219").delete().run(conn,
+    function(err, result) {
+        if (err) throw err;
+        console.log(result);
+    }
+);
 ```
 
 Here is how we'd delete all documents in a table:
 
 ```javascript
-r.table("posts").delete().run(connection, function(err, result) {
+r.table("posts").delete().run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 {% endfaqsection %}
@@ -131,10 +133,10 @@ Suppose you'd like to select all posts where the author's name is
 r.table("posts").filter({
     author: "Michel",
     category: "Geek",
-}).run(connection, function(err, result) {
+}).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 Alternatively, you can build a predicate with the `and` command, and
@@ -142,23 +144,23 @@ pass it to `filter`:
 
 ```javascript
 r.table("posts").filter(
-        r.row("author").eq("Michel").and(r.row("category").eq("Geek"))
-    ).run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-    })
+    r.row("author").eq("Michel").and(r.row("category").eq("Geek"))
+).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 You can also use the prefix notation (passing all arguments to
 `r.and`), if that's what you prefer:
 
 ```javascript
-r.table("posts").filter(r.and(r.row("author").eq("Michel"),
-                             r.row("category").eq("Geek"))
-    ).run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-    })
+r.table("posts").filter(
+    r.and(r.row("author").eq("Michel"), r.row("category").eq("Geek"))
+).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 Similarly, you can use the `r.or` command to filter based on one of
@@ -181,10 +183,10 @@ If we want to retrieve all users that have the email address
 
 ```javascript
 r.table("user").filter(r.row("emails").contains("user@email.com"))
-    .run( connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-    })
+ .run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 If we want to retrieve all users on the Galactica and Pegasus, we can write:
@@ -192,7 +194,7 @@ If we want to retrieve all users on the Galactica and Pegasus, we can write:
 ```js
 r.table("user").filter(function (user) {
     r(["Galactica", "Pegasus"]).contains(user("ship"))
-}).run(connection, function(err, result) {
+}).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
 });
@@ -220,11 +222,11 @@ Let's filter based on the nested field `email`:
 
 ```javascript
 r.table("user").filter(
-        r.row("contact")("email").eq("user@email.com")
-    ).run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-    })
+    r.row("contact")("email").eq("user@email.com")
+).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 ## Efficiently retrieving multiple documents by primary key ##
@@ -233,10 +235,10 @@ If you want to retrieve all the posts with the primary keys `1`, `2`,
 or `3` you can use the `getAll` command:
 
 ```javascript
-r.table("posts").getAll(1, 2, 3).run(connection, function(err, result) {
+r.table("posts").getAll(1, 2, 3).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 ## Efficiently retrieving multiple documents by secondary index ##
@@ -247,11 +249,11 @@ and want to retrieve all the posts where `author_id` is `1`, `2`, or
 `3`, we can use the `getAll` command to do it as follows:
 
 ```javascript
-r.table("posts").getAll(1, 2, 3, {index: 'author_id'}).
-  run(connection, function(err, result) {
-      if (err) throw err;
-      console.log(result);
-  })
+r.table("posts").getAll(1, 2, 3, {index: 'author_id'})
+ .run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 {% infobox info %}
@@ -266,11 +268,10 @@ you'd return only the fields `name` and `age` from each row in table
 `users`:
 
 ```javascript
-r.table("users").pluck("name", "age")
-    .run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-    })
+r.table("users").pluck("name", "age").run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 This is equivalent to calling `SELECT name, age FROM users` in SQL.
@@ -292,31 +293,39 @@ and `email` from the following document:
 We can use the following syntax:
 
 ```javascript
-r.table("users").pluck({contact: {phone: true, email: true}})
-    .run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-    })
+r.table("users").pluck(
+    {contact: {phone: true, email: true}}
+).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 
 ## Filtering based on a date range ##
+
 Suppose you want to retrieve all the posts whose date field is
-between January 1st, 2012 (included) and January 1st, 2013 (excluded), you could do:
+between January 1st, 2012 (included) and January 1st, 2013 (excluded). You could do:
 
 ```js
-r.table("posts").filter( function(post) {
-    return post("date").during( r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z') )
-}).run( conn, callback)
+r.table("posts").filter(function(post) {
+    return post("date").during(r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z'));
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 You can also manually compare dates:
 
 ```js
-r.table("posts").filter( function(post) {
-    return post("date").ge( r.time(2012, 1, 1, 'Z') ).
-       and(post("date").lt( r.time(2013, 1, 1, 'Z') ))
-}).run( conn, callback)
+r.table("posts").filter(function(post) {
+    return post("date").ge(r.time(2012, 1, 1, 'Z')).and(
+        post("date").lt(r.time(2013, 1, 1, 'Z')));
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 
@@ -327,9 +336,12 @@ you can use `r.match` this way:
 
 ```js
 // Will return Martin, Martinez, Marshall etc.
-r.table("users").filter( function(user) {
-    return user("lastName").match("^Ma")
-}).run( conn, callback)
+r.table("users").filter(function(user) {
+    return user("lastName").match("^Ma");
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 If you want to retrieve all users whose last name ends with an "s", 
@@ -337,9 +349,12 @@ you can use `r.match` this way:
 
 ```js
 // Will return Williams, Jones, Davis etc.
-r.table("users").filter( function(user) {
-    return user("lastName").match("s$")
-}).run( conn, callback)
+r.table("users").filter(function(user) {
+    return user("lastName").match("s$");
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 If you want to retrieve all users whose last name contains "ll", 
@@ -347,9 +362,12 @@ you can use `r.match` this way:
 
 ```js
 // Will return Williams, Miller, Allen etc.
-r.table("users").filter( function(user) {
-    return user("lastName").match("ll")
-}).run( conn, callback)
+r.table("users").filter(function(user) {
+    return user("lastName").match("ll");
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 ## Case insensitive filter ##
@@ -358,9 +376,12 @@ Retrieve all users whose name is "William" (case insensitive).
 
 ```js
 // Will return william, William, WILLIAM, wiLLiam etc.
-r.table("users").filter( function(user) {
-    return user("name").match("(?i)^william$")
-}).run( conn, callback)
+r.table("users").filter(function(user) {
+    return user("name").match("(?i)^william$");
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 
@@ -375,10 +396,10 @@ instance, if you would like to add the field `author` with the value
 "Michel" for all of the documents in the table `posts`, you would use:
 
 ```javascript
-r.table("posts").update({ author: "Michel" }).run(connection, function(err, result) {
+r.table("posts").update({ author: "Michel" }).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 ## Removing a field from a document ##
@@ -390,11 +411,11 @@ you pass as an argument. For example, if you want to delete the field
 `author` of the blog post with the id `1`, you would use:
 
 ```javascript
-r.table("posts").get("1").replace(r.row.without('author')).
-  run( connection, function(err, result) {
+r.table("posts").get("1").replace(r.row.without('author'))
+ .run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 ## Atomically updating a document based on a condition ##
@@ -408,12 +429,13 @@ in a single query. We can perform this operation as follows:
 ```javascript
 r.table("pages").update(function(page) {
     return r.branch(page("countable").eq(true),  // if the page is countable
-             { views: page("views").add(1) },    // increment the view count
-             {}                                  // else do nothing
-    )}, {return_vals: true}).run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-    })
+        { views: page("views").add(1) },         // increment the view count
+        {}                                       // else do nothing
+    );
+}, {return_vals: true}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 ## Storing timestamps and JSON date strings as Time data types ##
@@ -428,7 +450,10 @@ r.table("dates").insert({
     from_object: theDate,
     from_epoch: r.epochTime(timestamp/1000.0),
     from_iso: r.ISO8601(JSONDate)
-}).run(conn, callback);
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 Use the commands `toEpochTime` and `toISO8601` to convert back.
@@ -443,12 +468,10 @@ You can limit the number of documents returned by your queries with
 the `limit` command. Let's retrieve just the first 10 blog posts:
 
 ```javascript
-r.table("posts").orderBy("date").
-  limit(10).
-  run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(result);
-    })
+r.table("posts").orderBy("date").limit(10).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 ## Implementing pagination ##
@@ -457,12 +480,10 @@ To paginate results, you can use a combination of the `skip` and
 `limit` commands. Let's retrieve posts 11-20 from our database:
 
 ```javascript
-r.table("posts").orderBy("date").
-  skip(10).
-  limit(10).run(connection, function(err, result) {
-      if (err) throw err;
-      console.log(result);
-  })
+r.table("posts").orderBy("date").skip(10).limit(10).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 {% endfaqsection %}
@@ -474,10 +495,10 @@ r.table("posts").orderBy("date").
 You can count the number of documents with a `count` command:
 
 ```javascript
-r.table("posts").count().run(connection, function(err, result) {
+r.table("posts").count().run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 ## Computing the average value of a field ##
@@ -485,10 +506,10 @@ r.table("posts").count().run(connection, function(err, result) {
 You can compute the average value of a field with the `avg` command.
 
 ```javascript
-r.table("posts").avg("num_comments").run(connection, function(err, result) {
+r.table("posts").avg("num_comments").run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 ## Using subqueries to return additional fields ##
@@ -505,10 +526,10 @@ r.table("posts").merge(function(post) {
             return comment("id_post").eq(post("id"))
         }).coerceTo("ARRAY")
     }
-}).run(connection, function(err, result) {
+}).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
-})
+});
 ```
 
 ## Performing a pivot operation ##
@@ -569,7 +590,10 @@ r.db('test').table('marks').group('name').map(function (row) {
     return [row('course'), row('mark')];
 }).ungroup().map(function (res) {
     return r.expr({name: res('group')}).merge(res('reduction').coerceTo('object'));
-}).run(conn, callback)
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 _Note:_ A nicer syntax will eventually be added. See the
@@ -591,6 +615,9 @@ r.table("pivotedMarks").concatMap(function (doc) {
             mark: doc(course)
         };
     });
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
 });
 ```
 
@@ -602,15 +629,17 @@ progress.
 ## Renaming a field when retrieving documents ##
 
 Suppose we want to rename the field `id` to `idUser` when retrieving
-documents from the table `users`. We could do:
+documents from the table `users`. In the subquery, we can use `merge` to add
+a new field with the existing field's value, then `without` to delete the old
+field:
 
 ```js
 r.table("users").map(
-    r.row.merge({ // Add the field idUser that is equal to the id one
-        idUser: r.row("id")
-    })
-    .without("id") // Remove the field id
-)
+    r.row.merge({ idUser: r.row("id") }).without("id")
+).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 {% endfaqsection %}
@@ -668,7 +697,10 @@ r.table('users').map(function (user) {
     return r.object(user('firstName'), true);
 }).reduce(function (left, right) {
     return left.merge(right);
-}).keys().run(conn, callback)
+}).keys().run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
 ```
 
 ## Returning a ReQL query as a string ##
