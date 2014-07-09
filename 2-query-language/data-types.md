@@ -12,7 +12,7 @@ RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* 
 
 * **Numbers** are any real number: `5`, `3.14159`, `-42`. RethinkDB uses double precision (64-bit) floating point numbers internally. (Neither infinity nor [NaN](http://en.wikipedia.org/wiki/NaN) are allowed.)
 
-* **Strings** are Unicode strings: `"superhero"`, `"the quick brown fox"`, <code>&quot;&uuml;nn&euml;c&euml;ss&auml;r&yuml; &uuml;ml&auml;&uuml;ts&quot;</code>.
+* **Strings** are (generally) UTF-8 strings: `"superhero"`, `"the quick brown fox"`, <code>&quot;&uuml;nn&euml;c&euml;ss&auml;r&yuml; &uuml;ml&auml;&uuml;ts&quot;</code>. Strings in RethinkDB can't contain the `null` character. While it's possible to insert a string that is not valid UTF-8, many ReQL operations assume that strings are UTF-8 encoded, and future versions of RethinkDB may enforce UTF-8 encoding.
 
 * **Times** are RethinkDB's native date/time type, stored with millisecond precision. You can use native date/time types in supported languages, as the conversion will be done by the driver. See [Dates and times in RethinkDB](/docs/dates-and-times/) for details.
 
