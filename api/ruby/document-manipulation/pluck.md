@@ -50,3 +50,5 @@ __Example:__ The nested syntax can quickly become overly verbose so there's a sh
 ```rb
 r.table('marvel').pluck({:abilities => [:damage, :mana_cost]}, :weapons).run(conn)
 ```
+
+For more information read the [nested field documentation](/docs/nested-fields/).
