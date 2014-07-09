@@ -30,6 +30,8 @@ Create a new connection to the database server. The keyword arguments are:
 
 If the connection cannot be established, a `RqlDriverError` exception will be thrown.
 
+__Note:__ Currently, the Python driver is not thread-safe. Each thread or multiprocessing PID should be given its own connection object. (This is likely to change in a future release of RethinkDB; you can track issue [#2427](https://github.com/rethinkdb/rethinkdb/issues/2427) for progress.)
+
 __Example:__ Opens a connection using the default host and port but specifying the default database.
 
 ```py
