@@ -153,7 +153,22 @@ Be aware this behavior holds true when retreiving data from lists, too. If you e
 Also, another caveat: the nested field syntax doesn't guarantee identical schemas between documents that it returns. It's possible to describe a path that matches objects that have different schema, as seen in this simple example.
 
 ```js
-> r([{a: {b: 1, c: 2}}, {a: [{b: 1, c:2}]}]).pluck({a: {b: true}}).run(conn, callback)
+> r([
+    {
+        a: {
+            b: 1,
+            c: 2
+        }
+    },
+    {
+        a: [
+            {
+                b: 1,
+                c: 2
+            }
+        ]
+    }
+]).pluck({a: {b: true}}).run(conn, callback)
 // result passed to callback
 [
     {
