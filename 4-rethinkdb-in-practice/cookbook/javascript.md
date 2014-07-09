@@ -260,6 +260,25 @@ r.table("posts").getAll(1, 2, 3, {index: 'author_id'})
 Read about [creating secondary indexes in RethinkDB](/docs/secondary-indexes/).
 {% endinfobox %}
 
+## Retrieving all the objects in a stream (cursor) as an array ##
+
+If you're using a command that returns a stream and want to retrieve all of
+its results at once in an array rather than iterating through them with the
+cursor object, you can coerce it to an array using the
+[toArray](/api/javascript/to_array/) command.
+
+```js
+r.table('posts').run(conn, function(err, cursor) {
+    if (err) throw err;
+    cursor.toArray(function(result) {
+        console.log(result);
+    });
+});
+```
+
+See the [data type documentation](/docs/data-types/) for more detail about
+streams.
+
 ## Returning specific fields of a document ##
 
 If you need to retrieve only a few specific fields from your

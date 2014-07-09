@@ -213,6 +213,19 @@ r.table("posts").get_all(1, 2, 3, :index=>'author_id').run
 Read about [creating secondary indexes in RethinkDB](/docs/secondary-indexes/).
 {% endinfobox %}
 
+## Retrieving all the objects in a stream (cursor) as an array ##
+
+If you're using a command that returns a stream and want to retrieve all of
+its results at once in an array rather than iterating through them with the
+cursor object, you can coerce it to an array using `to_a`.
+
+```rb
+posts = r.table('posts').run(conn).to_a
+```
+
+See the [data type documentation](/docs/data-types/) for more detail about
+streams.
+
 ## Returning specific fields of a document ##
 
 If you need to retrieve only a few specific fields from your
