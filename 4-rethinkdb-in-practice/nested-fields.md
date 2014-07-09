@@ -149,3 +149,24 @@ If you ask for a nested field that doesn't exist, you will get an empty object o
 ```
 
 Be aware this behavior holds true when retreiving data from lists, too. If you extracted `subject` from `notes` above and Bob had 10 notes, 7 of which contained no `subject` field,  you would still get a list of 10 objects: 7 of them would be `{subject: <text>}` and 3 of them would be empty, i.e., `{ }`.
+
+Also, another caveat: the nested field syntax doesn't guarantee identical schemas between documents that it returns. It's possible to describe a path that matches objects that have different schema, as seen in this simple example.
+
+```js
+> r([{a: {b: 1, c: 2}}, {a: [{b: 1, c:2}]}]).pluck({a: {b: true}}).run(conn, callback)
+// result passed to callback
+[
+    {
+        "a": {
+            "b": 1
+        }
+    },
+    {
+        "a": [
+            {
+                "b": 1
+            }
+        ]
+    }
+]
+```
