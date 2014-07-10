@@ -13,11 +13,14 @@ permalink: docs/tutorials/elections/
 
 
 Given the timeliness of the 2012 US Presidential Election and the inherent
-intricacies of the [electoral process](http://en.wikipedia.org/wiki/United_States_presidential_election),
-we internally used an interesting dataset on poll results to test RethinkDB's query language support
-in the [Javascript][js_install], [Python][python_install], and [Ruby client libraries][ruby_install].
+intricacies of the [electoral
+process](http://en.wikipedia.org/wiki/United_States_presidential_election), we
+internally used an interesting dataset on poll results to test RethinkDB's
+query language support in the [Javascript](/docs/install-drivers/javascript),
+[Python](/docs/install-drivers/python), and
+[Ruby](/docs/install-drivers/ruby) client libraries.
 
-We'll use this dataset to walk through RethinkDB's [JavaScript query language][js_reql] using the Data Explorer.
+We'll use this dataset to walk through RethinkDB's [JavaScript query language](/api/javascript) using the Data Explorer.
 
 
 {% infobox info %}
