@@ -16,7 +16,7 @@ between RethinkDB and MongoDB.
 
 Many people have been asking how RethinkDB differs from MongoDB and
 other NoSQL systems. Our first attempt to address these questions is a
-high level [technical overview][/docs/comparison-tables] comparing
+high level [technical overview](/docs/comparison-tables) comparing
 RethinkDB with MongoDB. However, the overview is meant to be
 impartial, and it omits some of the more interesting bits about what
 makes RethinkDB special (such as our irrational love for Dota). In
