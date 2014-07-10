@@ -16,7 +16,7 @@ between RethinkDB and MongoDB.
 
 Many people have been asking how RethinkDB differs from MongoDB and
 other NoSQL systems. Our first attempt to address these questions is a
-high level [technical overview][compared_to_mongodb] comparing
+high level [technical overview](/docs/comparison-tables) comparing
 RethinkDB with MongoDB. However, the overview is meant to be
 impartial, and it omits some of the more interesting bits about what
 makes RethinkDB special (such as our irrational love for Dota). In
@@ -49,8 +49,8 @@ __RethinkDB aims to embody ideas from each philosophy__ to offer the
 best of both worlds. It is designed to be very easy to use, has a rich
 data model, and supports extremely flexible querying capabilities. A
 cluster of RethinkDB nodes can be sharded in only a couple of clicks
-(really, it's that easy, check out the [screencast][screencast]). Browse
-through the [ReQL API reference][api] to see how RethinkDB attempts to
+(really, it's that easy, check out the [screencast](/screencast)). Browse
+through the [ReQL API reference](/api) to see how RethinkDB attempts to
 accomplish these goals.
 
 Will Larson said it best on his blog, [Irrational Exuberance](http://lethain.com/):
@@ -91,7 +91,7 @@ that we're constantly adding to the query language.
 > WOW. @RethinkDB's admin interface is incredible. And installing on OSX is a cinch. Check it out people! - [@mjackson](https://twitter.com/mjackson/status/281834673217363968)
 
 * Sharding, replication, and multi-datacenter setup can be done in a
-  few clicks. Watch the [screencast][screencast] to see how easy it
+  few clicks. Watch the [screencast](/screencast) to see how easy it
   is to setup and operate a cluster.
 * All cluster operations are scriptable via CLI tools.
 * The Built-in data explorer offers online documentation and query
@@ -99,7 +99,7 @@ that we're constantly adding to the query language.
 
 Many products are easy to use, but we think RethinkDB is
 __beautiful__. See the screenshots or the [screencast
-video][screencast] and be the judge yourself.
+video](/screencast) and be the judge yourself.
 
 <div class="wide-screenshot-row row-fluid screenshots">
     <div class="span4"><a class="screenshot-thumbnail" href="/assets/images/screenshots/performance.png"><img src="/assets/images/screenshots/thumbnails/wide/performance.png" /></a></div>

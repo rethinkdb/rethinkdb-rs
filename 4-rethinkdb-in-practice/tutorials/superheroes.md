@@ -12,8 +12,8 @@ with new information.
 ## Prerequisites ##
 
 Before following this tutorial you must have [RethinkDB installed and
-running][rethinkdb_install]. You'll also need to [install the
-RethinkDB Python library][python_install].
+running](/docs/install). You'll also need to [install the
+RethinkDB Python library](/docs/install-drivers/python).
 
 ## Connecting ##
 
@@ -231,6 +231,6 @@ __Tips:__ RethinkDB supports atomic updates at the document level. You can read 
 
 ## What's next ##
 
-1. [Learn more about RethinkDB queries][python_reql]
+1. [Learn more about RethinkDB queries](/docs/introduction-to-reql/)
 2. [Learn how to scale an application running on RethinkDB](/docs/administration-tools)
 3. [Learn how to experiment and tune queries using the Data Explorer](/docs/tutorials/elections)
