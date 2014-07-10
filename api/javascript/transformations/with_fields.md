@@ -9,8 +9,8 @@ io:
     -   - array
         - array
 related_commands:
-    map: map/
-    concatMap: concat_map/
+    pluck: pluck/
+    hasFields: has_fields/
 ---
 
 # Command syntax #
@@ -22,26 +22,16 @@ array.withFields([selector1, selector2...]) &rarr; array
 
 # Description #
 
-Takes a sequence of objects and a list of fields. If any objects in the sequence don't
-have all of the specified fields, they're dropped from the sequence. The remaining
-objects have the specified fields plucked out. (This is identical to `has_fields`
-followed by `pluck` on a sequence.)
+Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to `hasFields` followed by `pluck` on a sequence.
 
-__Example:__ Get a list of heroes and their nemeses, excluding any heroes that lack one.
+__Example:__ Get a list of users and their posts, excluding any users who have not made any posts.
 
 ```js
-r.table('marvel').withFields('id', 'nemesis')
+r.table('users').withFields('id', 'username', 'posts').run(conn, callback)
 ```
 
-__Example:__ Get a list of heroes and their nemeses, excluding any heroes whose nemesis isn't in an evil organization.
+__Example:__ Use the [nested field syntax](/docs/nested-fields/) to get a list of users with cell phone numbers in their contacts.
 
 ```js
-r.table('marvel').withFields('id', {'nemesis' : {'evil_organization' : true}})
+r.table('users').withFields('id', 'username', {contact: {phone: "work"}).run(conn, callback)
 ```
-
-__Example:__ The nested syntax can quickly become overly verbose so there's a shorthand.
-
-```js
-r.table('marvel').withFields('id', {'nemesis' : 'evil_organization'})
-```
-
