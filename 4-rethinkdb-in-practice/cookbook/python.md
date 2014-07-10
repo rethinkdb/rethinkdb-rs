@@ -188,6 +188,10 @@ r.table("user").filter(
 ).run()
 ```
 
+For many ReQL commands, you can also use a JSON-style nested syntax that allows
+considerably more flexibility. Read "[Accessing nested fields](/docs/nested-fields)"
+for more information.
+
 ## Efficiently retrieving multiple documents by primary key ##
 
 If you want to retrieve all the posts with the primary keys `1`, `2`,
