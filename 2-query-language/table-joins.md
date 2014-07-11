@@ -9,6 +9,10 @@ permalink: docs/table-joins/
 {% infobox info %}
 __Wondering how to model your data?__ Read about [data modeling in RethinkDB](/docs/data-modeling).{% endinfobox %}
 
+<img src="/assets/images/docs/api_illustrations/table-joins.png"
+     alt="Table Join Illustration"
+     class="api_command_illustration" />
+
 Like many traditional database systems, RethinkDB supports `JOIN`
 commands to combine data from multiple tables. In RethinkDB joins are
 automatically distributed &mdash; a join command is automatically sent

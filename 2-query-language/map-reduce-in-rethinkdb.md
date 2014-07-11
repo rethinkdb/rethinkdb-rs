@@ -6,6 +6,10 @@ docs_active: map-reduce
 permalink: docs/map-reduce/
 ---
 
+<img src="/assets/images/docs/api_illustrations/map-reduce.png"
+     alt="Map Reduce Illustration"
+     class="api_command_illustration" />
+
 Map/reduce is a way to process distributed data at scale.
 It was originally designed by
 [Google](http://research.google.com/archive/mapreduce.html) and later
