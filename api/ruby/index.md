@@ -793,15 +793,12 @@ sequence.with_fields([selector1, selector2...]) &rarr; stream
 array.with_fields([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
-Takes a sequence of objects and a list of fields. If any objects in the sequence don't
-have all of the specified fields, they're dropped from the sequence. The remaining
-objects have the specified fields plucked out. (This is identical to `has_fields`
-followed by `pluck` on a sequence.)
+Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to `has_fields` followed by `pluck` on a sequence.
 
-__Example:__ Get a list of heroes and their nemeses, excluding any heroes that lack one.
+__Example:__ Get a list of users and their posts, excluding any users who have not made any posts.
 
 ```rb
-r.table('marvel').with_fields('id', 'nemesis')
+r.table('users').with_fields('id', 'user', 'posts').run(conn)
 ```
 
 [Read more about this command &rarr;](with_fields/)

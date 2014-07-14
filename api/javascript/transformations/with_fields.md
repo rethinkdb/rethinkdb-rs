@@ -26,12 +26,29 @@ Plucks one or more attributes from a sequence of objects, filtering out any obje
 
 __Example:__ Get a list of users and their posts, excluding any users who have not made any posts.
 
+Existing table structure:
+
 ```js
-r.table('users').withFields('id', 'username', 'posts').run(conn, callback)
+[
+    { 'id': 1, 'user': 'bob', 'email': 'bob@foo.com', 'posts': [ 1, 4, 5 ] },
+    { 'id': 2, 'user': 'george', 'email': 'george@foo.com' },
+    { 'id': 3, 'user': 'jane', 'email': 'jane@foo.com', 'posts': [ 2, 3, 6 ] }
+]
+```
+
+Command and output:
+
+```js
+> r.table('users').withFields('id', 'user', 'posts').run(conn, callback)
+// Result passed to callback
+[
+    { 'id': 1, 'user': 'bob', 'posts': [ 1, 4, 5 ] },
+    { 'id': 3, 'user': 'jane', 'posts': [ 2, 3, 6 ] }
+]
 ```
 
 __Example:__ Use the [nested field syntax](/docs/nested-fields/) to get a list of users with cell phone numbers in their contacts.
 
 ```js
-r.table('users').withFields('id', 'username', {contact: {phone: "work"}).run(conn, callback)
+r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn, callback)
 ```
