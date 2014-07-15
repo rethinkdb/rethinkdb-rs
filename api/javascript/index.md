@@ -553,12 +553,7 @@ r.table('test').indexWait('timestamp').run(conn, callback)
 table.changes() &rarr; stream
 {% endapibody %}
 
-Takes a table and returns an infinite stream of objects representing
-changes to that table.  Whenever an `insert`, `delete`, `update` or
-`replace` is performed on the table, an object of the form
-`{old_val:..., new_val:...}` will be added to the stream.  For an
-`insert`, `old_val` will be `null`, and for a `delete`, `new_val` will
-be `null`.
+Return an infinite stream of objects representing changes to a table.  Whenever an `insert`, `delete`, `update` or `replace` is performed on the table, an object of the form `{old_val:..., new_val:...}` will be appended to the stream.  For an `insert`, `old_val` will be `null`, and for a `delete`, `new_val` will be `null`.
 
 __Example:__ Subscribe to the changes on a table.
 
@@ -567,6 +562,8 @@ r.table('games').changes().run(conn, function(err, cursor) {
   cursor.each(console.log)
 })
 ```
+
+[Read more about this command &rarr;](changes/)
 
 {% endapisection %}
 
