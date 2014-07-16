@@ -20,6 +20,8 @@ Evaluate an expression and pass its values as arguments to a function or to an e
 
 The last argument to `do` (or, in some forms, the only argument) is an expression or an anonymous function which receives values from either the previous arguments or from prefixed commands chained before `do`. A common use, for example, would be to retrieve a document with `get` and pass it to a function via `do`. The type of `do`'s result is the type of the value returned from the function or last expression.
 
+Arguments passed to the `do` function must be basic data types, and cannot be streams or selections. (Read about [ReQL data types](/docs/data-types/).) While the arguments will all be evaluated before the function is executed, they may be evaluated in any order, so their values should not be dependent on one another.
+
 __Example:__ Compute a golfer's net score for a game.
 
 
