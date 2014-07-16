@@ -80,7 +80,7 @@ conn.close(noreply_wait=True)
 
 Close an open connection. Closing a connection waits until all
 outstanding requests have finished and then frees any open resources
-associated with the connection.  If `noreply_wait` is set to `false`,
+associated with the connection.  If `noreply_wait` is set to `False`,
 all outstanding requests are canceled immediately.
 
 Closing a connection cancels all outstanding requests and frees the
@@ -106,7 +106,7 @@ conn.reconnect(noreply_wait=True)
 
 Close and reopen a connection. Closing a connection waits until all
 outstanding requests have finished.  If `noreply_wait` is set to
-`false`, all outstanding requests are canceled immediately.
+`False`, all outstanding requests are canceled immediately.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
@@ -320,7 +320,7 @@ r.db('test').table_list().run(conn)
 table.index_create(index_name[, index_function][, multi=True]) &rarr; object
 {% endapibody %}
 
-Create a new secondary index on this table.
+Create a new secondary index on a table.
 
 __Example:__ Create a simple index based on the field `post_id`.
 
@@ -408,7 +408,7 @@ r.table('test').index_wait('timestamp').run(conn)
 table.changes() &rarr; stream
 {% endapibody %}
 
-Return an infinite stream of objects representing changes to a table. Whenever an `insert`, `delete`, `update` or `replace` is performed on the table, an object of the form `{'old_val': ..., 'new_val': ...}` will be appended to the stream. For an `insert`, `old_val` will be `null`, and for a `delete`, `new_val` will be `null`.
+Return an infinite stream of objects representing changes to a table. Whenever an `insert`, `delete`, `update` or `replace` is performed on the table, an object of the form `{'old_val': ..., 'new_val': ...}` will be appended to the stream. For an `insert`, `old_val` will be `None`, and for a `delete`, `new_val` will be `None`.
 
 __Example:__ Subscribe to the changes on a table.
 

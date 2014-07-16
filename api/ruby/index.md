@@ -324,7 +324,7 @@ r.db('test').table_list().run(conn)
 table.index_create(index_name[, index_function][, :muti => true]) &rarr; object
 {% endapibody %}
 
-Create a new secondary index on this table.
+Create a new secondary index on a table.
 
 __Example:__ Create a simple index based on the field `post_id`.
 

@@ -18,18 +18,14 @@ table.index_create(index_name[, index_function][, multi=True]) &rarr; object
 
 # Description #
 
-Create a new secondary index on this table.
+Create a new secondary index on a table. Secondary indexes improve the speed of many read queries at the slight cost of increased storage space and decreased write performance. For more information about secondary indexes, read the article "[Using secondary indexes in RethinkDB](/docs/secondary-indexes/)."
 
 RethinkDB supports different types of secondary indexes:
 
-- Simple indexes based on the value of a single field.
-- Compound indexes based on multiple fields.
-- Multi indexes based on arrays of values.
-- Indexes based on arbitrary expressions.
-
-If you are not familiar with secondary indexes, read
-[the article about secondary indexes](http://www.rethinkdb.com/docs/secondary-indexes/)
-to learn more about them.
+- *Simple indexes* based on the value of a single field.
+- *Compound indexes* based on multiple fields.
+- *Multi indexes* based on arrays of values.
+- Indexes based on *arbitrary expressions*.
 
 __Example:__ Create a simple index based on the field `post_id`.
 
@@ -44,18 +40,12 @@ r.table('comments').index_create('author_name', r.row["author"]["name"]).run(con
 ```
 
 
-__Example:__ Create a compount index based on the fields `post_id` and `date`.
+__Example:__ Create a compound index based on the fields `post_id` and `date`.
 
 ```py
 r.table('comments').index_create('post_and_date', [r.row["post_id"], r.row["date"]]).run(conn)
 ```
 __Example:__ Create a multi index based on the field `authors`.
-
-
-__Example:__ A multi index can be created by passing an optional multi argument. Multi
-index functions should return arrays and allow you to query based on whether a value
-is present in the returned array. The example would allow us to get heroes who possess a
-specific ability (the field 'abilities' is an array).
 
 ```py
 r.table('posts').index_create('authors', multi=True).run(conn)

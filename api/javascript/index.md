@@ -466,7 +466,7 @@ r.db('test').tableList().run(conn, callback)
 table.indexCreate(indexName[, indexFunction][, {multi: True}]) &rarr; object
 {% endapibody %}
 
-Create a new secondary index on this table.
+Create a new secondary index on a table.
 
 __Example:__ Create a simple index based on the field `postId`.
 
