@@ -17,7 +17,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.indexCreate(indexName[, indexFunction][, {multi: true}]) &rarr; object
+table.indexCreate(indexName[, indexFunction][, {multi: false}]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -44,7 +44,7 @@ r.table('comments').indexCreate('authorName', r.row("author")("name")).run(conn,
 ```
 
 
-__Example:__ Create a compount index based on the fields `postId` and `date`.
+__Example:__ Create a compound index based on the fields `postId` and `date`.
 
 ```js
 r.table('comments').indexCreate('postAndDate', [r.row("postId"), r.row("date")]).run(conn, callback)
@@ -56,7 +56,7 @@ __Example:__ Create a multi index based on the field `authors`.
 r.table('posts').indexCreate('authors', {multi: true}).run(conn, callback)
 ```
 
-__Example:__ Create a multi index based on an arbitrary expression.
+__Example:__ Create an index based on an arbitrary expression.
 
 ```js
 r.table('posts').indexCreate('authors', function(doc) {

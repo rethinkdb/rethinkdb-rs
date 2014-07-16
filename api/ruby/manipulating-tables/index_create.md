@@ -13,7 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.index_create(index_name[, index_function][, :multi => true]) &rarr; object
+table.index_create(index_name[, index_function][, :multi => false]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -56,7 +56,7 @@ __Example:__ Create a multi index based on the field `authors`.
 r.table('posts').index_create('authors', :multi=>true).run(conn)
 ```
 
-__Example:__ Create a multi index based on an arbitrary expression.
+__Example:__ Create an index based on an arbitrary expression.
 
 ```rb
 r.table('posts').index_create('authors'){ |doc|
