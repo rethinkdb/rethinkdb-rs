@@ -15,7 +15,7 @@ table.changes() &rarr; stream
 
 # Description #
 
-Return an infinite stream of objects representing changes to a table.  Whenever an `insert`, `delete`, `update` or `replace` is performed on the table, an object of the form `{old_val:..., new_val:...}` will be appended to the stream.  For an `insert`, `old_val` will be `null`, and for a `delete`, `new_val` will be `null`.
+Return an infinite stream of objects representing changes to a table. Whenever an `insert`, `delete`, `update` or `replace` is performed on the table, an object of the form `{'old_val': ..., 'new_val': ...}` will be appended to the stream. For an `insert`, `old_val` will be `null`, and for a `delete`, `new_val` will be `null`.
 
 The server will buffer up to 100,000 elements. If the buffer limit is hit, early changes will be discarded, and the client will receive an object of the form `{error: "Changefeed cache over array size limit, skipped X elements."}` where `X` is the number of elements skipped.
 
