@@ -73,6 +73,10 @@ alias: docs/guides/drivers/
         <img src="/assets/images/docs/driver-languages/java.png" />
         <p class="name">Java <span class="driver-author">by @dkhenry</span></p>
     </a>
+    <a class="mini icon-box driver-language" href="https://github.com/dparnell/rethink-db-client">
+        <img src="/assets/images/docs/driver-languages/objc.png" />
+        <p class="name">Objective-C</p>
+    </a>
     <a class="mini icon-box driver-language" href="https://github.com/njlg/perl-rethinkdb">
         <img src="/assets/images/docs/driver-languages/perl.png" />
         <p class="name">Perl</p>
@@ -109,6 +113,7 @@ get started with driver development:
 __Thanks to all our amazing driver contributors!__
 
 - [@dbettin](https://github.com/dbettin) (Dart): <https://github.com/dbettin/rethinkdb>
+- [@dparnell](https://github.com/dparnell) (Objective-C): <https://github.com/dparnell/rethink-db-client>
 - The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C# / .NET): <https://github.com/mfenniak/rethinkdb-net>
 - [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): <https://github.com/bitemyapp/revise>
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
