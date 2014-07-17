@@ -156,6 +156,25 @@ r.table("users").index_create("activities", r.row["hobbies"] + r.row["sports"]),
     multi=True).run(conn)
 ```
 
+### Use a multi index and a mapping function to speed get_all/contains ###
+
+If your program frequently executes a [get_all](/api/python/get_all) followed by a [contains](/api/python/contains), that operation can be made more efficient by creating a compound multi index using a mapping function on the field that contains the list.
+
+```py
+# Create the index
+r.table("users").index_create("user_equipment",
+    lambda user: user['equipment'].map(
+        lambda equipment: [user['id'], equipment]),
+    multi=True).run(conn)
+
+# Query equivalent to:
+# r.table("users").get(1).filter(
+#     lambda user: user['equipment'].contains('tent')
+# ).run(conn)
+r.table("users").get_all([1, "tent"], index="user_equipment").run(conn)
+```
+
+
 # Administrative operations #
 
 ## With ReQL ##

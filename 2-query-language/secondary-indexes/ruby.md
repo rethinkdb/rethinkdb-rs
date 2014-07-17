@@ -160,6 +160,23 @@ r.table("users").index_create("activities", :multi => true){ |activity|
 }.run(conn)
 ```
 
+### Use a multi index and a mapping function to speed get_all/contains ###
+
+If your program frequently executes a [get_all](/api/ruby/get_all) followed by a [contains](/api/ruby/contains), that operation can be made more efficient by creating a compound multi index using a mapping function on the field that contains the list.
+
+```rb
+# Create the index
+r.table("users").index_create("user_equipment", {:multi => true}) { |user|
+    user['equipment'].map { |equipment| [user['id'], equipment] }
+}.run(conn)
+
+# Query equivalent to:
+# r.table("users").get(1).filter { |user|
+#     user['equipment'].contains('tent')
+# }.run(conn)
+r.table("users").get_all([1, "tent"], {:index =>"user_equipment"}).run(conn)
+```
+
 # Administrative operations #
 
 ## With ReQL ##

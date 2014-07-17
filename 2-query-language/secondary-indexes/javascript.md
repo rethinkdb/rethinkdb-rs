@@ -167,7 +167,7 @@ If your program frequently executes a [getAll](/api/javascript/get_all) followed
 
 ```js
 // Create the index
-r.table("users").indexCreate("idEquipment", function(user) {
+r.table("users").indexCreate("userEquipment", function(user) {
     return user("equipment").map(function(equipment) {
         return [ user("id"), equipment ];
     });
@@ -177,7 +177,7 @@ r.table("users").indexCreate("idEquipment", function(user) {
 // r.table("users").get(1).filter(function (user) {
 //     return user("equipment").contains("tent");
 // });
-r.table("users").getAll([1, "tent"], {index: "idEquipment"}).run(conn, callback);
+r.table("users").getAll([1, "tent"], {index: "userEquipment"}).run(conn, callback);
 ```
 
 # Administrative operations #
