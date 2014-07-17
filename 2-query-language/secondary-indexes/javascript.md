@@ -161,6 +161,22 @@ r.table("users").indexCreate("activities", r.row("hobbies").add(r.row("sports"))
     {multi: true}).run(conn, callback)
 ```
 
+### Use a multi index and a mapping function to speed get/contains ###
+
+If your program frequently executes a [get](/api/javascript/get) followed by a [contains](/api/javascript/contains), that operation can be made more efficient by creating a multi index using a mapping function on the field that contains the list.
+
+```js
+// Create the index
+r.table("users").indexCreate("idEquipment", function(user) {
+    return user("equipment").map(function(equipment) {
+        return [ user("id"), equipment ];
+    });
+}, {multi: true}).run(conn, callback)
+
+// Query equivalent to get(1)('equipment').contains('tent')
+r.table("users").getAll([1, "tent"], {index: "idEquipment"}).run(conn, callback)
+```
+
 # Administrative operations #
 
 ## With ReQL ##
