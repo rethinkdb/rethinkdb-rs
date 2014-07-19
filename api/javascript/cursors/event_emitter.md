@@ -40,7 +40,7 @@ Cursors and feeds implement the same interface as [EventEmitter](http://nodejs.o
 
 There are a few things to know about this interface:
 
-- Two events can be emited, `data` and `error`.
+- Two events can be emitted, `data` and `error`.
 - Once you start using the EventEmitter interface, the other commands like `next`,
 `toArray`, `each` will not be available anymore.
 - The first time you call one of the EventEmitter's methods, the cursor or feed will

@@ -293,7 +293,7 @@ db.table_drop(table_name) &rarr; object
 
 Drop a table. The table and all its data will be deleted.
 
-If succesful, the operation returns an object: {"dropped": 1}. If the specified table
+If successful, the operation returns an object: {"dropped": 1}. If the specified table
 doesn't exist a `RqlRuntimeError` is thrown.
 
 __Example:__ Drop a table named 'dc_universe'.
@@ -1594,7 +1594,7 @@ string.upcase() &rarr; string
 {% endapibody %}
 
 
-Upcases a string.
+Uppercases a string.
 
 __Example:__
 
@@ -1609,7 +1609,7 @@ __Example:__
 string.downcase() &rarr; string
 {% endapibody %}
 
-Downcases a string.
+Lowercases a string.
 
 __Example:__
 
@@ -2254,7 +2254,7 @@ r.args(array) &rarr; special
 into another term.  This is useful when you want to call a variadic
 term such as `get_all` with a set of arguments produced at runtime.
 
-This is analagous to the **splat operator** in Ruby.
+This is analogous to the **splat operator** in Ruby.
 
 __Example:__ Get Alice and Bob from the table `people`.
 

@@ -281,7 +281,7 @@ r.table("posts").filter( lambda post:
 ).run(conn)
 ```
 
-## Filering with Regex ##
+## Filtering with Regex ##
 
 If you want to retrieve all users whose last name starts with "Ma", 
 you can use `r.match` this way:

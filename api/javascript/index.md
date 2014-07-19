@@ -309,7 +309,7 @@ Cursors and feeds implement the same interface as [EventEmitter](http://nodejs.o
 
 There are a few things to know about this interface:
 
-- Two events can be emited, `data` and `error`.
+- Two events can be emitted, `data` and `error`.
 - Once you start using the EventEmitter interface, the other commands like `next`,
 `toArray`, `each` will not be available anymore.
 - The first time you call one of the EventEmitter's methods, the cursor or feed will
@@ -437,7 +437,7 @@ db.tableDrop(tableName) &rarr; object
 
 Drop a table. The table and all its data will be deleted.
 
-If succesful, the operation returns an object: {dropped: 1}. If the specified table
+If successful, the operation returns an object: {dropped: 1}. If the specified table
 doesn't exist a `RqlRuntimeError` is thrown.
 
 __Example:__ Drop a table named 'dc_universe'.

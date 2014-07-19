@@ -146,7 +146,7 @@ system is designed with three main principles in mind:
   fine-tuned control, such as pinning specific masters and replicas to
   specific machines in the cluster.
 - Information about the cluster and all operations on the cluster
-  should be programatically accessible.
+  should be programmatically accessible.
 
 We felt that performing automatic maintenance operations on the
 cluster (such as adding shards) is a higher-level component, and that

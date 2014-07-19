@@ -19,7 +19,7 @@ works for simple tests. Follow these instructions to set up an AMI:
 
 1. On the [RethinkDB marketplace page](https://aws.amazon.com/marketplace/pp/B00E9EZ5DK),
    click the __Continue__ button. Then select the __1-Click Launch__ tab and click on the
-   __Launch with 1-Click__ button on the right. Finally, click on the link __Your Sotware__
+   __Launch with 1-Click__ button on the right. Finally, click on the link __Your Software__
    to access RethinkDB.
 2. You should see a RethinkDB instance. When the instance is ready,
    click on the __Access Software__ link on the right.
@@ -88,7 +88,7 @@ The default security group opens 4 ports:
 To secure your instance even further, we recommend that you perform
 the following steps:
 
-* __Change the authentification key.__
+* __Change the authentication key.__
   Open the [RethinkDB command line](#command-line) and execute the command
   ```
   set auth <your_key>

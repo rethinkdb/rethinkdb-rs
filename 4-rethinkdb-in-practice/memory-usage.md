@@ -24,7 +24,7 @@ RethinkDB's page cache keeps recently used data in memory to minimize disk acces
 
 ![Finding cache size](/assets/images/docs/finding-cache-size.png)
 
-The automatically chosen cache size ensures a reliable operation in most scenarios, but the cache size can be tuned manually to accomodate increased memory usage by other processes or to maximize query performance. A larger cache improves the database's performance, but you must consider other sources of memory consumption to avoid out of memory conditions.
+The automatically chosen cache size ensures a reliable operation in most scenarios, but the cache size can be tuned manually to accommodate increased memory usage by other processes or to maximize query performance. A larger cache improves the database's performance, but you must consider other sources of memory consumption to avoid out of memory conditions.
 
 Depending on how you start the RethinkDB server process, there are two ways to set the cache size.
 
