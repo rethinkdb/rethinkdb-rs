@@ -51,6 +51,8 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 ## Integrations
 
+- [rabbitMQ](/docs/rabbitmq/javascript) Listen for changes in a RethinkDB table over RabbitMQ.
+
 - [koa-rethinkdb](https://github.com/hden/koa-rethinkdb) by [@hden](https://github.com/hden)  
   Koa middleware that automatically manages connections via a connection pool.
 
@@ -69,6 +71,8 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 ## Integrations
 
+- [rabbitMQ](/docs/rabbitmq/python) Listen for changes in a RethinkDB table over RabbitMQ.
+
 - [celery-backends-rethinkdb](https://github.com/pilwon/celery-backends-rethinkdb) by [@pilwon](https://github.com/pilwon)  
   [Celery](http://www.celeryproject.org/)'s custom result backend for RethinkDB.
 
@@ -85,6 +89,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [NoBrainer](https://github.com/nviennot/nobrainer) by [@nviennot](https://github.com/nviennot)  
   A Ruby ORM designed for RethinkDB. (Read our [quickstart tutorial](/docs/rails).)
 
+## Integrations
+
+- [rabbitMQ](/docs/rabbitmq/ruby) Listen for changes in a RethinkDB table over RabbitMQ.
 
 
 # Tools and utilities
