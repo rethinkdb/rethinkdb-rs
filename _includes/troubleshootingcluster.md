@@ -8,5 +8,5 @@ intracluster traffic port.
 
 The message `received invalid clustering header` means there is a port
 mismatch, and something is connecting to the wrong port. For example,
-it's common to get this message if you accidently point the browser or
+it's common to get this message if you accidentally point the browser or
 connect the client drivers to the intracluster traffic port.

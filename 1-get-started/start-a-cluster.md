@@ -97,7 +97,7 @@ $ rethinkdb --join IP_OF_FIRST_MACHINE:29015 --bind all
 __You now have a RethinkDB cluster!__
 
 Note that by default, RethinkDB only opens connections bound to
-`localhost` in order to prevent unathorized clients on the network
+`localhost` in order to prevent unauthorized clients on the network
 from connecting to the server. The `--bind all` option allows
 connections from anywhere on the network. It works well if the network
 is protected.

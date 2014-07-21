@@ -17,7 +17,7 @@ r.args(array) &rarr; special
 into another term.  This is useful when you want to call a variadic
 term such as `get_all` with a set of arguments produced at runtime.
 
-This is analagous to the **splat operator** in Ruby.
+This is analogous to the **splat operator** in Ruby.
 
 __Example:__ Get Alice and Bob from the table `people`.
 

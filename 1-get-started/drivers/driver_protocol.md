@@ -176,8 +176,8 @@ A `Response` is a JSON object with the following fields:
   be the error message.)
 * `b` -- A backtrace in the case where `t` is an error type.  This is
   an array of frames, which are either strings or integers.  A string
-  indicates that the error occured in the optarg named by the string,
-  and an integer indicates that the error occured in the argument at
+  indicates that the error occurred in the optarg named by the string,
+  and an integer indicates that the error occurred in the argument at
   that index.  For example, the query `r.random(1, 2, float:
   r.add(r.add(1, "a")))` would return a type error with the backtrace
   `["float", 0]` to indicate that `r.add(1, "a")` should be underlined.

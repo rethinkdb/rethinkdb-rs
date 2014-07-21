@@ -6,7 +6,7 @@ docs_active: dates-and-times
 permalink: docs/dates-and-times/
 ---
 
-RethinkDB has native suport for millisecond-precision times with time zones.
+RethinkDB has native support for millisecond-precision times with time zones.
 Some highlights:
 
 * **Times are integrated with the official drivers**, which will automatically
@@ -14,7 +14,7 @@ Some highlights:
 * **Queries are timezone-aware**, so you can ask questions like "Did this event
     happen on a Monday in the time zone where it was recorded?"
 * **Times work as indexes**, so you can efficiently retrieve events based on when
-   they occured.
+   they occurred.
 * **Time operations are pure ReQL**, which means that even complicated date-time
   queries can be distributed efficiently across the cluster.
 
@@ -156,7 +156,7 @@ By default, times are converted into native time objects when they are retrieved
 from the server.  This may be overridden by passing the optarg `time_format` to
 `run`.  The only options right now are `native`, the default, and `raw`.  See
 the [API reference](/api) if you are uncertain how to pass an optarg in a
-non-Ruby languge.
+non-Ruby language.
 
 {% infobox info %}
 <strong>Warning:</strong> Some languages, like Javascript, don't have an easy
@@ -343,7 +343,7 @@ RqlDriverError: Cannot convert datetime to ReQL time object
 without timezone information. You can add timezone information with
 the third party module "pytz" or by constructing ReQL compatible
 timezone values with r.make_timezone("[+-]HH:MM"). Alternatively,
-use one of ReQL's bultin time constructors, r.now, r.time, or r.iso8601.
+use one of ReQL's builtin time constructors, r.now, r.time, or r.iso8601.
 ```
 
 To pass a valid time object to the Python driver, you can:
@@ -373,7 +373,7 @@ In JavaScript, `Date` objects store the epoch time, but not the time
 zone.  As a result, the JavaScript driver will not send any time zones
 to RethinkDB, and will discard the time zones on any time objects it
 retrieves from RethinkDB (the epoch time will still be correct).  If
-you need to access the time zone of a time stored in RethinKDB, you
+you need to access the time zone of a time stored in RethinkDB, you
 can retrieve the raw time object like so:
 
 ```js

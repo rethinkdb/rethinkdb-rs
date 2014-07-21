@@ -36,7 +36,7 @@ document with the same primary key exists.
 
 Insert returns an object that contains the following attributes:
 
-- `inserted`: the number of documents that were succesfully inserted.
+- `inserted`: the number of documents that were successfully inserted.
 - `replaced`: the number of documents that were updated when upsert is used.
 - `unchanged`: the number of documents that would have been modified, except that the
 new value was the same as the old value when doing an upsert.

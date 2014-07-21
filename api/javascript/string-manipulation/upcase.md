@@ -20,7 +20,7 @@ string.upcase() &rarr; string
 
 # Description #
 
-Upcases a string.
+Uppercases a string.
 
 __Example:__
 

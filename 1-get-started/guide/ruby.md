@@ -182,7 +182,7 @@ for every row in the table, and returns only the relevant rows. Here's
 the new commands we used to construct the condition above:
 
 - `author` refers to the currently visited document.
-- `autor['name']` refers to the value of the field `name` of the visited document.
+- `author['name']` refers to the value of the field `name` of the visited document.
 - The `eq` command returns `true` if two values are equal (in this case, the field `name` and the string `William Adama`).
 
 

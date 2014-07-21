@@ -80,7 +80,7 @@ the request to the next middleware.
 The next middleware will form the REST API. Each request will go through:
 
 - `bodyParser`: Parse the body and save it in `req.body`
-- `createConnection`: Create a connection to RethinKDB and save it in `req._rdbConn`
+- `createConnection`: Create a connection to RethinkDB and save it in `req._rdbConn`
 - `get`/`create`/`update`/`del`: Perform an operation on the database depending on the route
 - `closeConnection`: Close the connection to the database
 

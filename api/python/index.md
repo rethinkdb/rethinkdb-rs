@@ -36,7 +36,7 @@ Create a new connection to the database server. The keyword arguments are:
 - `host`: host of the RethinkDB instance. The default value is `localhost`.
 - `port`: the driver port, by default `28015`.
 - `db`: the database used if not explicitly specified in a query, by default `test`.
-- `auth_key`: the authentification key, by default the empty string.
+- `auth_key`: the authentication key, by default the empty string.
 - `timeout`: timeout period in seconds for the connection to be opened (default `20`).
 
 If the connection cannot be established, a `RqlDriverError` exception will be thrown.
@@ -288,7 +288,7 @@ db.table_drop(table_name) &rarr; object
 
 Drop a table. The table and all its data will be deleted.
 
-If succesful, the operation returns an object: {"dropped": 1}. If the specified table
+If successful, the operation returns an object: {"dropped": 1}. If the specified table
 doesn't exist a `RqlRuntimeError` is thrown.
 
 __Example:__ Drop a table named 'dc_universe'.
@@ -1610,7 +1610,7 @@ __Example:__ Split on whitespace.
 string.upcase() &rarr; string
 {% endapibody %}
 
-Upcases a string.
+Uppercases a string.
 
 __Example:__
 
@@ -1625,7 +1625,7 @@ __Example:__
 string.downcase() &rarr; string
 {% endapibody %}
 
-Downcases a string.
+Lowercases a string.
 
 __Example:__
 
@@ -2278,7 +2278,7 @@ r.args(array) &rarr; special
 into another term.  This is useful when you want to call a variadic
 term such as `get_all` with a set of arguments produced at runtime.
 
-This is analagous to unpacking argument lists in Python.
+This is analogous to unpacking argument lists in Python.
 
 __Example:__ Get Alice and Bob from the table `people`.
 
