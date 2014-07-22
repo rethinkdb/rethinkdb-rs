@@ -553,6 +553,35 @@ r.table("users").map{ |user|
 }
 ```
 
+## Grouping query results by date/time periods ##
+
+ReQL has commands for extracting parts of [dates and times](/docs/dates-and-times/), including [year](/api/javascript/year), [month](/api/javascript/month), [day](/api/javascript/day), [dayOfWeek](/api/javascript/day_of_week) and more. You can use these with [group](/api/javascript/group) to group by various intervals. Suppose you had a table of invoices and wanted to retrieve them in groups ordered by year and month:
+
+```rb
+r.table('invoices').group(
+    [r.row['date'].year(), r.row['date'].month()]
+).ungroup().merge(
+    {:invoices => r.row['reduction'], :month => r.row['group']}
+).without('reduction', 'group').order_by('month').run(conn)
+```
+
+(We also use the technique for renaming a field, described above, to give the names "reduction" and "group" more useful names of "invoices" and "month.") You could use any combination of the ReQL date/time interval commands in the group, or work with the date/time as a native object.
+
+Currently, however, ReQL has a limit of 100,000 elements in an array, and the implementation of `group` requires the total number of documents grouped to fit within that boundary, so you are limited to 100,000 invoices. (Also note that `ungroup` always returns an array, although this may change in a future version. Follow issue [#2719](https://github.com/rethinkdb/rethinkdb/issues/2719) for progress on this.)
+
+You can also use this approach with a [compound index](/docs/secondary-indexes/) on the intervals you want to group:
+
+```rb
+r.table('invoices').index_create('by_day') { |doc|
+    [doc['date'].year(), doc['date'].month(), doc['date'].day()]
+}.run(conn)
+```
+
+Then you can use that index in the `group` function. This query would return the highest-value invoice for each day.
+
+```rb
+r.table('invoices').group({:index => 'by_day'}).max('price').run(conn)
+```
 
 {% endfaqsection %}
 
