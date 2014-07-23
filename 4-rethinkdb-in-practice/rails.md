@@ -56,7 +56,7 @@ You're now up and running with RethinkDB and Rails!
 
 # Models in depth
 
-Unlike a relational database RethinkDB doesn't enforce types, so
+Unlike a relational database, RethinkDB doesn't enforce types, so
 NoBrainer's type annotations on the field are validators that are run
 just before a document is saved to the database. If you don't want to
 specify the type for a field, you can use the dummy type `object`:
@@ -84,7 +84,8 @@ The NoBrainer generator automatically includes the
 fields `created_on` and `updated_on`. You'll also notice this created
 a simple secondary index on the `name`
 field. [NoBrainer can handle different index types](http://nobrainer.io/docs/indexes/)
-as well. In order to add the index to the database, use the Rake task:
+as well. In order to add the index to the database, you can use the
+Rake task:
 
 ```bash
 $ rake db:update_indexes
@@ -116,9 +117,8 @@ end
 
 If we go back into the `Article` model and add the `has_many` side of
 the association, it's important to note that `has_many` associations
-in NoBrainer are read-only. The server cannot atomically commit
-objects to two tables, so saving the members of the association is up
-to the developer.
+in NoBrainer are read-only. The server doesn't support transactions,
+so saving the members of the association is up to the developer.
 
 ## Validation
 
@@ -143,7 +143,7 @@ end
 
 NoBrainer runs the validations only when saving, but not when
 retrieving a document. This means you can always retrieve your data,
-but badly formed data won't be saved to the database.
+but an invalid model won't be saved to the database.
 
 Read about [validation in
 NoBrainer](http://nobrainer.io/docs/validations/) for more details.
