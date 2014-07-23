@@ -22,23 +22,20 @@ almost drop-in replacement for ActiveRecord.
 
 # Getting started
 
-First, generate a new Rails application using the NoBrainer template:
+First, generate a new Rails application using NoBrainer:
 
 ```bash
-$ rails new nb_app -O -m \
- https://raw.githubusercontent.com/deontologician/nobrainer/master/template.rb
+$ rails new nb_app --skip-active-record
 $ cd nb_app
+$ echo "gem 'nobrainer'" >> Gemfile
+$ bundle install
 ```
-
-The `-O` option prevents Rails from generating boilerplate for
-ActiveRecord. We aren't going to need that since we're using NoBrainer
-instead.
 
 You can now generate models individually or use the scaffolding
 mechanism. For example, here's a scaffold for an Article resource:
 
 ```bash
-$ rails g scaffold Article title:String text:String tags:Array
+$ rails g scaffold Article title:string text:string tags:array
 ```
 
 This yields the following model in `app/models/article.rb`:
@@ -46,6 +43,7 @@ This yields the following model in `app/models/article.rb`:
 ```ruby
 class Article
   include NoBrainer::Document
+  include NoBrainer::Document::Timestamps
 
   field :title, :type => String
   field :author, :type => String
@@ -61,11 +59,10 @@ You're now up and running with RethinkDB and Rails!
 Unlike a relational database RethinkDB doesn't enforce types, so
 NoBrainer's type annotations on the field are validators that are run
 just before a document is saved to the database. If you don't want to
-specify the type for a field, you can just omit it in the generator
-invocation:
+specify the type for a field, you can use the dummy type `object`:
 
 ```bash
-$ rails g model User name:String:index user_data
+$ rails g model User name:string:index user_data:object
 ```
 
 This allows the `user_data` field to contain any legal JSON value,
@@ -74,18 +71,20 @@ while `name` must still be a valid string.
 ```ruby
 class User
   include NoBrainer::Document
+  include NoBrainer::Document::Timestamps
 
-  field :name, :type => String
+  field :name, :type => String, :index => :name
   field :custom_data
 
-  index :name
 end
 ```
 
-You'll notice this also created a simple secondary index on the `name`
-field down at the bottom of the class. [NoBrainer can handle different
-index types](http://nobrainer.io/docs/indexes/) as well. In order to
-create the index in the database, use the Rake task:
+The NoBrainer generator automatically includes the
+[TimeStamps](http://nobrainer.io/docs/timestamps) mixin that adds the
+fields `created_on` and `updated_on`. You'll also notice this created
+a simple secondary index on the `name`
+field. [NoBrainer can handle different index types](http://nobrainer.io/docs/indexes/)
+as well. In order to add the index to the database, use the Rake task:
 
 ```bash
 $ rake db:update_indexes
@@ -96,7 +95,7 @@ $ rake db:update_indexes
 You can specify associations between models in the generator:
 
 ```bash
-$ rails g model Comment body:String liked:Boolean \
+$ rails g model Comment body:string liked:boolean \
     user:belongs_to article:belongs_to
 ```
 
@@ -105,6 +104,7 @@ This will create the following model for comments:
 ```ruby
 class Comment
   include NoBrainer::Document
+  include NoBrainer::Document::Timestamps
 
   field :body, :type => String
   field :liked, :type => Boolean
@@ -116,9 +116,9 @@ end
 
 If we go back into the `Article` model and add the `has_many` side of
 the association, it's important to note that `has_many` associations
-in NoBrainer are read-only. NoBrainer leaves saving the members of the
-association to the developer because the server cannot enforce strong
-consistency due to the lack of transactions.
+in NoBrainer are read-only. The server cannot atomically commit
+objects to two tables, so saving the members of the association is up
+to the developer.
 
 ## Validation
 
@@ -129,6 +129,7 @@ expect:
 ```ruby
 class Article
   include NoBrainer::Document
+  include NoBrainer::Document::Timestamps
 
   has_many :comments # read only!
 
@@ -142,7 +143,7 @@ end
 
 NoBrainer runs the validations only when saving, but not when
 retrieving a document. This means you can always retrieve your data,
-but new bad data won't be inserted.
+but badly formed data won't be saved to the database.
 
 Read about [validation in
 NoBrainer](http://nobrainer.io/docs/validations/) for more details.
