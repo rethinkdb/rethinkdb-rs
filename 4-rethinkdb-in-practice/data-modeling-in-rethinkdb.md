@@ -10,12 +10,12 @@ There are two ways to model relationships between documents in
 RethinkDB:
 
 - By using __embedded arrays__.
-- By linking documents stored in __multiple tables__ (similarly to
+- By linking documents stored in __multiple tables__ (similar to
   traditional relational database systems).
 
-Let's explore advantages and disadvantages of each approach. We'll use
+Let's explore the advantages and disadvantages of each approach. We'll use
 a simple blog database that stores information about authors and their
-posts to illustrate each approach.
+posts to demonstrate them.
 
 # Using embedded arrays #
 
@@ -38,7 +38,7 @@ table `authors`:
 The `authors` table contains a document for each author. Each document
 contains information about the relevant author and a field `posts` with
 an array of posts for that author. In this case the query to retrieve
-all authors with their posts is really simple:
+all authors with their posts is simple:
 
 ```python
 # Retrieve all authors with their posts
@@ -48,15 +48,15 @@ r.db("blog").table("authors").run()
 r.db("blog").table("authors").get(AUTHOR_ID).run()
 ```
 
-{% infobox info%}
+{% infobox info %}
+
 __Advantages of using embedded arrays:__
 
-- The queries for accessing authors and posts tend to be simpler than
-  when using multiple tables.
-- When using this approach, the data is often colocated on disk. If
-  you have a dataset that doesn't fit into RAM, the data can be loaded
+- Queries for accessing authors and posts tend to be simpler.
+- The data is often colocated on disk. If
+  you have a dataset that doesn't fit into RAM, data is loaded
   from disk faster.
-- With this approach, any update to the authors document atomically
+- Any update to the authors document atomically
   updates both the author data and the posts data.
 
 __Disadvantages of using embedded arrays:__
@@ -71,9 +71,7 @@ __Disadvantages of using embedded arrays:__
 
 # Linking documents in multiple tables #
 
-You can use a data modeling technique similar to the one used in
-relational database systems, and create two tables to store your
-data. A typical document in the `authors` table would look like this:
+You can use a relational data modeling technique and create two tables to store your data. A typical document in the `authors` table would look like this:
 
 ```json
 {
@@ -94,9 +92,7 @@ A typical document in the `posts` table would look like this:
 }
 ```
 
-In this example, every post contains an `author_id` field, that links
-each post to its author. We can retrieve all posts for a given author
-as follows:
+Every post contains an `author_id` field that links each post to its author. We can retrieve all posts for a given author as follows:
 
 ```python
 # If we have a secondary index on `author_id` in the table `posts`
@@ -110,10 +106,7 @@ r.db("blog").table("posts").
   run()
 ```
 
-To get all posts for a given author, we can use the `eq_join` command,
-similarly to how we'd do a `JOIN` in a relational system. Here is how
-we could get all posts along with the author information for William
-Adama:
+In a relational database, we'd use a `JOIN` here; in RethinkDB, we use the `eq_join` command. To get all posts along with the author information for William Adama:
 
 ```python
 # In order for this query to work, we need to have a secondary index
@@ -128,7 +121,8 @@ r.db("blog").table("authors").getAll("7644aaf2-9928-4231-aa68-4e65e31bf219").eq_
 Note that the values for `author_id` correspond to the `id` field of
 the author, which allows us to link the documents.
 
-{% infobox info%}
+{% infobox info %}
+
 __Advantages of using multiple tables:__
 
 - Operations on authors and posts don't require loading the data for
@@ -147,11 +141,4 @@ __Disadvantages of using multiple tables:__
 
 # Read more #
 
-If you aren't sure which schema to use, ask us on [Stack Overflow](http://stackoverflow.com/questions/ask)
-or [on IRC](/community). For more detailed information, take a look at the
-API documentation for the join commands.
-
-- [eq_join](/api/python/eq_join/)
-- [inner_join](/api/python/inner_join/)
-- [outer_join](/api/python/outer_join/)
-- [zip](/api/python/zip/)
+There's a separate article, [Table joins in RethinkDB](/docs/table-joins/), with much more information about the multiple-table approach, including how to do the ReQL equivalents of inner, outer and cross joins. If you aren't sure which schema to use, ask us on [Stack Overflow](http://stackoverflow.com/questions/ask) or join the `#rethinkdb` IRC channel on [Freenode](http://www.freenode.org/).
