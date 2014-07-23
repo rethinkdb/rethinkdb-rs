@@ -62,7 +62,7 @@ See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on 
 
 * `header`: Extra header lines to include. The value may be an array of strings or an object. Default: none.
 
-    Unless specified otherwise, `r.http` will by default use the headers `Accept-Encoding: deflate=1;gzip=0.5` and `User-Agent: RethinkDB/VERSION`.
+    Unless specified otherwise, `r.http` will by default use the headers `Accept-Encoding: deflate;q=1, gzip;q=0.5` and `User-Agent: RethinkDB/VERSION`.
 
 * `data`: Data to send to the server on a `POST`, `PUT`, `PATCH`, or `DELETE` request.
 
