@@ -73,7 +73,7 @@ class User
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
-  field :name, :type => String, :index => :name
+  field :name, :type => String, :index => true
   field :custom_data
 
 end
