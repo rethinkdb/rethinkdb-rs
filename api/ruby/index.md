@@ -429,9 +429,8 @@ r.table('games').changes().run(conn).each{|change| p(change)}
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json]
-    [, :durability => "hard", :return_vals => false :upsert => false])
-        &rarr; object
+table.insert(json | [json][, :durability => "hard", :return_vals => false :conflict => "error"])
+    &rarr; object
 {% endapibody %}
 
 Insert documents into a table. Accepts a single document or an array of
