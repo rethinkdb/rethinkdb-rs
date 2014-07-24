@@ -427,9 +427,8 @@ for change in r.table('games').changes().run(conn):
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json]
-    [, durability="hard", return_vals=False, upsert=False])
-        &rarr; object
+table.insert(json | [json][, durability="hard", return_vals=False, conflict="error"])
+    &rarr; object
 {% endapibody %}
 
 Insert documents into a table. Accepts a single document or an array of

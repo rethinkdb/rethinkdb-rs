@@ -13,7 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, durability="hard", return_vals=False, upsert=False])
+table.insert(json | [json][, durability="hard", return_vals=False, conflict="error"])
     &rarr; object
 {% endapibody %}
 
@@ -26,33 +26,25 @@ documents.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. This option will override the
-table or query's durability setting (set in [run](/api/python/run/)).  
-In soft durability mode RethinkDB will acknowledge the write immediately after
-receiving it, but before the write has been committed to disk.
-- `return_vals`: if set to `True` and in case of a single insert/upsert, the inserted/updated
-document will be returned.
-- `upsert`: when set to `True`, performs a [replace](/api/python/replace/) if a
-document with the same primary key exists.
-
+- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/python/run/)). In soft durability mode Rethink_dB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
+- `return_vals`: if set to `True` when a single document is given, return `old_val` and `new_val` keys with the old value of the document (or `None` on an insert) and the new value.
+- `conflict`: Determine handling of inserting documents with the same primary key as existing entries. Possible values are `"error"`, `"replace"` or `"update"`.
+    - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
+    - `"replace"`: [Replace](/api/python/replace/) the old document in its entirety with the new one.
+    - `"update"`: [Update](/api/python/update/) fields of the old document with fields from the new one.
 
 Insert returns an object that contains the following attributes:
 
-- `inserted`: the number of documents that were successfully inserted.
-- `replaced`: the number of documents that were updated when upsert is used.
-- `unchanged`: the number of documents that would have been modified, except that the
-new value was the same as the old value when doing an upsert.
+- `inserted`: the number of documents successfully inserted.
+- `replaced`: the number of documents updated when `conflict` is set to `"replace"` or `"update"`.
+- `unchanged`: the number of documents whose fields are identical to existing documents with the same primary key when `conflict` is set to `"replace"` or `"update"`.
 - `errors`: the number of errors encountered while performing the insert.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `deleted` and `skipped`: 0 for an insert operation.
-- `generated_keys`: a list of generated primary keys in case the primary keys for some
-documents were missing (capped to 100000).
-- `warnings`: if the field `generated_keys` is truncated, you will get the warning _"Too
-many generated keys (&lt;X&gt;), array truncated to 100000."_.
+- `generated_keys`: a list of generated primary keys for inserted documents whose primary keys were not specified (capped to 100,000).
+- `warnings`: if the field `generated_keys` is truncated, you will get the warning _"Too many generated keys (&lt;X&gt;), array truncated to 100000."_.
 - `old_val`: if `return_vals` is set to `True`, contains `None`.
 - `new_val`: if `return_vals` is set to `True`, contains the inserted/updated document.
-
-
 
 __Example:__ Insert a document into the table `posts`.
 
@@ -133,12 +125,11 @@ r.table("users").insert([
 
 __Example:__ Insert a document into the table `users`, replacing the document if the document
 already exists.  
-_Note_: If the document exists, the `insert` command will behave like [replace](/api/python/replace/), not like [update](/api/python/update/) 
 
 ```py
 r.table("users").insert(
     {"id": "william", "email": "william@rethinkdb.com"},
-    upsert=True
+    conflict="error"
 ).run(conn)
 ```
 
