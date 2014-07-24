@@ -572,9 +572,7 @@ r.table('games').changes().run(conn, function(err, cursor) {
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json]
-    [, {durability: "hard", returnVals: false, upsert: false}])
-        &rarr; object
+table.insert(json | [json][, {durability: "hard", returnVals: false, conflict: "error"}]) &rarr; object
 {% endapibody %}
 
 Insert JSON documents into a table. Accepts a single JSON document or an array of
