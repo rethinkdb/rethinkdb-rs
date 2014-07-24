@@ -6,6 +6,9 @@ docs_active: data-modeling
 permalink: docs/data-modeling/
 ---
 
+<img alt="Data Modeling Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/data-modeling.png" />
+
 There are two ways to model relationships between documents in
 RethinkDB:
 
