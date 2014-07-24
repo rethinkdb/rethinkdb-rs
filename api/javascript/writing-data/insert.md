@@ -36,7 +36,7 @@ The optional arguments are:
 - `conflict`: Determine handling of inserting documents with the same primary key as existing entries. Possible values are `"error"`, `"replace"` or `"update"`.
     - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
     - `"replace"`: [Replace](/api/javascript/replace/) the old document in its entirety with the new one.
-    - `"update"`: [Update](/api/javascript/update) fields of the old document with fields from the new one.
+    - `"update"`: [Update](/api/javascript/update/) fields of the old document with fields from the new one.
 
 Insert returns an object that contains the following attributes:
 
