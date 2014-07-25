@@ -6,10 +6,14 @@ docs_active: sql-to-reql
 permalink: docs/sql-to-reql/
 ---
 
+<img alt="Data Modeling Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/SQL-to-ReQL-cheat-sheet.png" />
+
+&nbsp;
+
 {% infobox info %}
 __Note:__ Examples below are in Python. Head to the [API reference](/api/) to see the commands in other languages.
 {% endinfobox %}
-
 
 # Terminology #
 
