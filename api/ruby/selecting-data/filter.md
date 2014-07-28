@@ -23,15 +23,9 @@ array.filter(predicate[, :default => false]) &rarr; array
 
 Get all the documents for which the given predicate is true.
 
-`filter` can be called on a sequence, selection, or a field containing an array of
-elements. The return type is the same as the type on which the function was called on.
+`filter` can be called on a sequence, selection, or array. The type of the return value will be the same as the input.
 
-The body of every filter is wrapped in an implicit `.default(false)`, which means that
-if a non-existence errors is thrown (when you try to access a field that does not exist
-in a document), RethinkDB will just ignore the document.
-The `default` value can be changed by passing the symbol `default`.
-Setting this optional argument to `r.error()` will cause any non-existence errors to
-return a `RqlRuntimeError`.
+The body of every filter is wrapped in an implicit `.default(false)`, which means that if a non-existence error is thrown (when you try to access a field that does not exist in a document) RethinkDB will just ignore the document. The `default` value can be changed by passing an object with a `default` field. Setting this optional argument to `r.error()` will cause non-existence errors to return a `RqlRuntimeError`.
 
 
 __Example:__ Get all the users that are 30 years old.
