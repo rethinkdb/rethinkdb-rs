@@ -1869,32 +1869,39 @@ r.expr(2).mod(2).run(conn, callback)
 ## [and](and/) ##
 
 {% apibody %}
-bool.and(bool) &rarr; bool
+bool.and(bool[, bool, ...]) &rarr; bool
+r.and(bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
-Compute the logical and of two values.
+Compute the logical "and" of two or more values.
 
-__Example:__ True and false anded is false?
+__Example:__ Return whether both `a` and `b` evaluate to true.
 
 ```js
-r.expr(true).and(false).run(conn, callback)
+var a = true, b = false;
+r.expr(a).and(b).run(conn, callback);
+// result passed to callback
+false
 ```
-
 
 ## [or](or/) ##
 
 {% apibody %}
-bool.or(bool) &rarr; bool
+bool.or(bool[, bool, ...]) &rarr; bool
+r.or(bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
-Compute the logical or of two values.
 
-__Example:__ True or false ored is true?
+Compute the logical "or" of two or more values.
+
+__Example:__ Return whether either `a` or `b` evaluate to true.
 
 ```js
-r.expr(true).or(false).run(conn, callback)
+var a = true, b = false;
+r.expr(a).or(b).run(conn, callback);
+// result passed to callback
+true
 ```
-
 
 ## [eq](eq/) ##
 

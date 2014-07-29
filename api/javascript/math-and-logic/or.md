@@ -15,15 +15,28 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-bool.or(bool) &rarr; bool
+bool.or(bool[, bool, ...]) &rarr; bool
+r.or(bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Compute the logical or of two values.
+Compute the logical "or" of two or more values. The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true,false)`).
 
-__Example:__ True or false ored is true?
+__Example:__ Return whether either `a` or `b` evaluate to true.
 
 ```js
-r.expr(true).or(false).run(conn, callback)
+var a = true, b = false;
+r.expr(a).or(b).run(conn, callback);
+// result passed to callback
+true
+```
+
+__Example:__ Return whether any of `x`, `y` or `z` evaluate to true.
+
+```js
+var x = false, y = false, z = false;
+r.or(x, y, z).run(conn, callback);
+// result passed to callback
+false
 ```

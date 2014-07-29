@@ -1716,14 +1716,15 @@ bool.and(bool) &rarr; bool
 r.and(bool, bool) &rarr; bool
 {% endapibody %}
 
-Compute the logical and of two values.
-
-__Example:__ True and false anded is false?
+Compute the logical "and" of two or more values.
+__Example:__ Return whether both `a` and `b` evaluate to true.
 
 ```rb
-(r.expr(True) & False).run(conn)
-r.expr(True).and(False).run(conn)
-r.and(True, False).run(conn)
+> a = true
+> b = false
+> (r.expr(a) & b).run(conn)
+
+false
 ```
 
 
@@ -1735,16 +1736,17 @@ bool.or(bool) &rarr; bool
 r.or(bool, bool) &rarr; bool
 {% endapibody %}
 
-Compute the logical or of two values.
+Compute the logical "or" of two or more values.
 
-__Example:__ True or false ored is true?
+__Example:__ Return whether either `a` or `b` evaluate to true.
 
 ```rb
-(r.expr(True) | False).run(conn)
-r.expr(True).or(False).run(conn)
-r.or(True, False).run(conn)
-```
+> a = true
+> b = false
+> (r.expr(a) | b).run(conn)
 
+true
+```
 
 ## [eq](eq/) ##
 
