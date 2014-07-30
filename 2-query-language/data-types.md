@@ -37,7 +37,7 @@ RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* 
 	[{user: 'Bob', posts: 23}, {user: 'Jason', posts: 10}]
 	```
 
-	Again, anything valid in a JSON array is valid in RethinkDB: the elements may be any of the basic values, objects, or other arrays. Arrays in RethinkDB are loaded fully into memory before they're returned to the user, so they're inefficient at large sizes. RethinkDB supports arrays of up to 100,000 elements. (This may be a configurable option in a future release; see [Github Issue #2318](https://github.com/rethinkdb/rethinkdb/issues/2318) for details.)
+	Again, anything valid in a JSON array is valid in RethinkDB: the elements may be any of the basic values, objects, or other arrays. Arrays in RethinkDB are loaded fully into memory before they're returned to the user, so they're inefficient at large sizes. RethinkDB defaults to supporting arrays of up to 100,000 elements; this may be set to a different value at runtime for reading by using the `array_limit` option to [run](/api/javascript/run).
 
 # Composite Data Types #
 

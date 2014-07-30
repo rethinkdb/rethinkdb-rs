@@ -832,7 +832,7 @@ the ordering, wrap the attribute with either `r.asc` or `r.desc`
 (defaults to ascending).
 
 Sorting without an index requires the server to hold the sequence in
-memory, and is limited to 100,000 documents. Sorting with an index can
+memory, and is limited to 100,000 documents (or the setting of the `array_limit` option for [run](/api/ruby/run)). Sorting with an index can
 be done on arbitrarily large tables, or after a `between` command
 using the same index.
 
