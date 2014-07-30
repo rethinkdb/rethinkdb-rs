@@ -29,7 +29,7 @@ the ordering, wrap the attribute with either `r.asc` or `r.desc`
 (defaults to ascending).
 
 Sorting without an index requires the server to hold the sequence in
-memory, and is limited to 100,000 documents. Sorting with an index can
+memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/javascript/run)). Sorting with an index can
 be done on arbitrarily large tables, or after a `between` command
 using the same index.
 
@@ -51,8 +51,7 @@ You can also select a descending ordering:
 r.table('posts').orderBy({index: r.desc('date')}).run(conn, callback)
 ```
 
-__Example:__ Order a sequence with less than 100,000 documents
-without an index.
+__Example:__ Order a sequence without an index.
 
 ```js
 r.table('posts').get(1)('comments').orderBy('date')
@@ -65,7 +64,7 @@ r.table('posts').get(1)('comments').orderBy(r.desc('date'))
 ```
 
 If you're doing ad-hoc analysis and know your table won't have more then 100,000
-elements you can run `orderBy` without an index:
+elements (or you've changed the setting of the `array_limit` option for [run](/api/javascript/run)) you can run `orderBy` without an index:
 
 ```js
 r.table('small_table').orderBy('date')
@@ -89,7 +88,7 @@ r.table('posts').indexCreate('dateAndTitle', [r.row('date'), r.row('title')]).ru
 _Note_: You cannot specify multiple orders in a compound index. See [issue #2306](https://github.com/rethinkdb/rethinkdb/issues/2306)
 to track progress.
 
-__Example:__ If you have a sequence with less than 100,000 documents, you can order it
+__Example:__ If you have a sequence with fewer documents than the `arrayLimit`, you can order it
 by multiple fields without an index.
 
 ```js
@@ -124,7 +123,7 @@ r.table('posts').indexCreate('votes', function(post) {
 }).run(conn, callback)
 ```
 
-__Example:__ If you have a sequence with less than 100,000 documents, you can order it with an arbitrary function directly.
+__Example:__ If you have a sequence with fewer documents than the `arrayLimit`, you can order it with an arbitrary function directly.
 
 ```js
 r.table('small_table').orderBy(function(doc) {
