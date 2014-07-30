@@ -570,7 +570,7 @@ r.table('invoices').group(
 
 (We also use the technique for renaming a field, described above, to give the names "reduction" and "group" more useful names of "invoices" and "month.") You could use any combination of the ReQL date/time interval commands in the group, or work with the date/time as a native object.
 
-Currently, however, ReQL has a limit of 100,000 elements in an array, and the implementation of `group` requires the total number of documents grouped to fit within that boundary, so you are limited to 100,000 invoices. (Also note that `ungroup` always returns an array, although this may change in a future version. Follow issue [#2719](https://github.com/rethinkdb/rethinkdb/issues/2719) for progress on this.)
+Currently, ReQL has a default limit of 100,000 elements in an array, and the implementation of `group` requires the total number of documents grouped to fit within that boundary, so you are limited to 100,000 invoices. This can be changed, however, by passing the `array_limit` option to [run](/api/python/run). (Also note that `ungroup` always returns an array, although this may change in a future version. Follow issue [#2719](https://github.com/rethinkdb/rethinkdb/issues/2719) for progress on this.) 
 
 You can also use this approach with a [compound index](/docs/secondary-indexes/) on the intervals you want to group:
 

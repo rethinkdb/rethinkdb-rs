@@ -24,7 +24,7 @@ the ordering, wrap the attribute with either `r.asc` or `r.desc`
 (defaults to ascending).
 
 Sorting without an index requires the server to hold the sequence in
-memory, and is limited to 100,000 documents. Sorting with an index can
+memory, and is limited to 100,000 documents (or the setting of the `array_limit` option for [run](/api/ruby/run)). Sorting with an index can
 be done on arbitrarily large tables, or after a `between` command
 using the same index.
 
@@ -47,8 +47,7 @@ r.table('posts').order_by(:index => r.desc('date')).run(conn, callback)
 ```
 
 
-__Example:__ Order a sequence with less than 100,000 documents
-without an index.
+__Example:__ Order a sequence without an index.
 
 ```rb
 r.table('posts').get(1)['comments'].order_by('date')
@@ -61,7 +60,7 @@ r.table('posts').get(1)['comments'].order_by(r.desc('date'))
 ```
 
 If you're doing ad-hoc analysis and know your table won't have more then 100,000
-elements you can run `order_by` without an index:
+elements (or you've changed the setting of the `array_limit` option for [run](/api/ruby/run)) you can run `order_by` without an index:
 
 ```rb
 r.table('small_table').order_by('date')
@@ -85,8 +84,7 @@ r.table('posts').index_create('date_and_title') {|post| [post["date"], post["tit
 _Note_: You cannot specify multiple orders in a compound index. See [issue #2306](https://github.com/rethinkdb/rethinkdb/issues/2306)
 to track progress.
 
-__Example:__ If you have a sequence with less than 100,000 documents, you can order it
-by multiple fields without an index.
+__Example:__ If you have a sequence with fewer documents than the `array_limit`, you can order it by multiple fields without an index.
 
 ```rb
 r.table('small_table').order_by('date', r.desc('title'))
@@ -120,7 +118,7 @@ r.table('posts').index_create('votes') {|post|
 }.run(conn)
 ```
 
-__Example:__ If you have a sequence with less than 100,000 documents, you can order it with an arbitrary function directly.
+__Example:__ If you have a sequence with fewer documents than the `array_limit`, you can order it with an arbitrary function directly.
 
 ```rb
 r.table('small_table').order_by(lambda { |doc|

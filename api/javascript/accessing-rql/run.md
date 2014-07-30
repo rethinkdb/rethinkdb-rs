@@ -38,6 +38,7 @@ been committed to disk.
   Set this to `'raw'` if you want the raw pseudotype.
 - `noreply`: set to `true` to not receive the result object or cursor and return immediately.
 - `db`: the database to run this query against as a string. The default is the database specified in the `db` parameter to [connect](/api/javascript/connect/) (which defaults to `test`). The database may also be specified with the [db](/api/javascript/db/) command.
+- `arrayLimit`: the maximum numbers of array elements that can be returned by a query (default: 100,000). This affects all ReQL commands that return arrays. Note that it has no effect on the size of arrays being _written_ to the database; those always have an upper limit of 100,000 elements.
 
 If no callback is provided, a promise will be returned.
 

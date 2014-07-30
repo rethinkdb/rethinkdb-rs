@@ -258,8 +258,7 @@ objects on the server.
 If you run a query that returns a grouped stream, it will be
 automatically converted to grouped data before being sent back to you
 (there is currently no efficient way to stream groups from RethinkDB).
-This grouped data is subject to the array size limit (which means you
-can't have more than 100,000 groups or 100,000 rows in the output).
+This grouped data is subject to the array size limit, by default 100,000 elements (see [run](/api/ruby/run) for details on how to use the `array_limit` option to change this).
 
 In general, operations on grouped streams will be efficiently
 distributed, and operations on grouped data won't be.  You can figure
@@ -290,7 +289,7 @@ memory proportional to the size of the grouped data it's operating
 on.  (In the case of the `order_by` in the inefficient example, that
 means memory proportional **to the size of the table**.)  The array
 limit is also enforced for grouped data, so the `order_by` example
-would fail for tables with more than 100,000 rows.
+would fail for tables with more than 100,000 rows without changing the `array_limit` option to `run`.
 
 # More Examples #
 
