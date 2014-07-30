@@ -744,7 +744,7 @@ The following fields are always present in this object:
 * `deleted` -- Number of documents deleted from the database.
 * `replaced` -- Number of documents that were modified.
 * `unchanged` -- Number of documents that would have been modified, except that the new value was the same as the old value.
-* `skipped` -- Number of documents that were left unmodified because there was nothing to do.  (For example, if you delete a row that has already been deleted, that row will be "skipped".  This field is sometimes positive even when operating on a selection, because a concurrent write might get to the value first.)
+* `skipped` -- Number of documents that were unmodified in a write operation, because the document is not available to be deleted or updated. The document might have been deleted by a different operation happening concurrently, or in the case of a `get` operation the key might not exist.
 * `errors` -- Number of documents that were left unmodified due to an error.
 
 In addition, the following two fields are set as circumstances dictate:
