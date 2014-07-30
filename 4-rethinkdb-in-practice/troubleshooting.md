@@ -12,11 +12,7 @@ js: faq_index
 
 ## I get a "RqlRuntimeError: Array over size limit 100000" when trying to order a table
 
-Ordering without an index requires the server to load the whole sequence in an
-array, which is currently limited to 100,000 documents.
-
-If you want to sort more than 100,000 documents, you need to use an index. See the
-documentation for [orderBy](/api/javascript/order_by/) for more information.
+Ordering without an index requires the server to load the whole sequence in an array, which is limited by default to 100,000 documents. You can use the `arrayLimit` option to [run](/api/javascript/run/) to temporarily raise this limit. However, a more efficient option is to use an index. See the documentation for [orderBy](/api/javascript/order_by/) for more information.
 
 ## My insert queries are slow. How can I speed them up? ##
 
