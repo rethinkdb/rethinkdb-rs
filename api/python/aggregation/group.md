@@ -44,13 +44,8 @@ Suppose that the table `games` has the following data:
 Grouping games by player can be done with:
 
 ```py
-r.table('games').group('player').run(conn)
-```
+> r.table('games').group('player').run(conn)
 
-
-Result:
-
-```py
 {
     "Alice": [
         {"id": 5, "player": "Alice", "points": 7, "type": "free"},
@@ -69,12 +64,8 @@ sub-streams, producing grouped data.
 __Example:__ What is each player's best game?
 
 ```py
-r.table('games').group('player').max('points').run(conn)
-```
+> r.table('games').group('player').max('points').run(conn)
 
-Result:
-
-```py
 {
     "Alice": {"id": 5, "player": "Alice", "points": 7, "type": "free"},
     "Bob": {"id": 2, "player": "Bob", "points": 15, "type": "ranked"}
@@ -87,12 +78,8 @@ producing more grouped data.
 __Example:__ What is the maximum number of points scored by each player?
 
 ```py
-r.table('games').group('player').max('points')['points'].run(conn)
-```
+> r.table('games').group('player').max('points')['points'].run(conn)
 
-Result:
-
-```py
 {
     "Alice": 7,
     "Bob": 15
@@ -105,12 +92,8 @@ __Example:__ What is the maximum number of points scored by each
 player for each game type?
 
 ```py
-r.table('games').group('player', 'type').max('points')['points'].run(conn)
-```
+> r.table('games').group('player', 'type').max('points')['points'].run(conn)
 
-Result:
-
-```py
 {
     ("Alice", "free"): 7,
     ("Bob", "free"): 10,
@@ -123,17 +106,12 @@ You can also group by a function.
 __Example:__ What is the maximum number of points scored by each
 player for each game type?
 
-
 ```py
-r.table('games')
+> r.table('games')
     .group(lambda game:
         game.pluck('player', 'type')
     ).max('points')['points'].run(conn)
-```
 
-Result:
-
-```py
 {
     frozenset([('player', 'Alice'), ('type', 'free')]): 7,
     frozenset([('player', 'Bob'), ('type', 'free')]): 10,
@@ -146,10 +124,8 @@ You can also group by an index.
 __Example:__ What is the maximum number of points scored by game type?
 
 ```py
-r.table('games').group(index='type').max('points')['points'].run(conn)
-```
+> r.table('games').group(index='type').max('points')['points'].run(conn)
 
-```py
 {
     "free": 10,
     "ranked": 15
@@ -164,12 +140,8 @@ grouped data into an array of objects representing the groups.
 __Example:__ Ungrouping grouped data.
 
 ```py
-r.table('games').group('player').max('points')['points'].ungroup().run(conn)
-```
+> r.table('games').group('player').max('points')['points'].ungroup().run(conn)
 
-Result:
-
-```py
 [
     {
         "group": "Alice",
@@ -189,12 +161,9 @@ __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
 ```py
-r.table('games')
-    .group('player').max('points')['points']
-    .ungroup().order_by(r.desc('reduction')).run(conn)
-```
+> r.table('games').group('player').max('points')['points'].ungroup().order_by(
+        r.desc('reduction')).run(conn)
 
-```py
 [
     {
         "group": "Bob",
@@ -225,10 +194,8 @@ argument to `run`:
 __Example:__ Get back the raw `GROUPED_DATA` pseudotype.
 
 ```py
-r.table('games').group('player').avg('points').run(conn, group_format='raw')
-```
+> r.table('games').group('player').avg('points').run(conn, group_format='raw')
 
-```py
 {
     "$reql_type$": "GROUPED_DATA",
     "data": [
@@ -298,12 +265,10 @@ __Example:__ What is the maximum number of points scored by each
 player in free games?
 
 ```py
-r.table('games').filter(lambda game:
+> r.table('games').filter(lambda game:
         game['type'] = 'free'
     ).group('player').max('points')['points'].run(conn)
-```
 
-```py
 {
     "Alice": 7,
     "Bob": 10
@@ -313,13 +278,11 @@ r.table('games').filter(lambda game:
 __Example:__ What is each player's highest even and odd score?
 
 ```py
-r.table('games')
+> r.table('games')
     .group('name', lambda game:
         game['points'] % 2
     ).max('points')['points'].run(conn)
-```
 
-```py
 {
     ("Alice", 1): 7,
     ("Bob", 0): 10,

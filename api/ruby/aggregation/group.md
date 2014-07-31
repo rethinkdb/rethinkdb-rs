@@ -43,12 +43,8 @@ Suppose that the table `games` has the following data:
 Grouping games by player can be done with:
 
 ```rb
-r.table('games').group('player').run(conn)
-```
+> r.table('games').group('player').run(conn)
 
-Result:
-
-```rb
 {
     "Alice" => [
         {"id" => 5, "player" => "Alice", "points" => 7, "type" => "free"},
@@ -67,12 +63,8 @@ sub-streams, producing grouped data.
 __Example:__ What is each player's best game?
 
 ```rb
-r.table('games').group('player').max('points').run(conn)
-```
+> r.table('games').group('player').max('points').run(conn)
 
-Result:
-
-```rb
 {
     "Alice" => {"id" => 5, "player" => "Alice", "points" => 7, "type" => "free"},
     "Bob" => {"id" => 2, "player" => "Bob", "points" => 15, "type" => "ranked"}
@@ -85,12 +77,8 @@ producing more grouped data.
 __Example:__ What is the maximum number of points scored by each player?
 
 ```rb
-r.table('games').group('player').max('points')['points'].run(conn)
-```
+> r.table('games').group('player').max('points')['points'].run(conn)
 
-Result:
-
-```rb
 {
     "Alice" => 7,
     "Bob" => 15
@@ -103,12 +91,8 @@ __Example:__ What is the maximum number of points scored by each
 player for each game type?
 
 ```rb
-r.table('games').group('player', 'type').max('points')['points'].run(conn)
-```
+> r.table('games').group('player', 'type').max('points')['points'].run(conn)
 
-Result:
-
-```rb
 {
     ["Alice", "free"] => 7,
     ["Bob", "free"] => 10,
@@ -124,14 +108,10 @@ __Example:__ What is the maximum number of points scored by each
 player for each game type?
 
 ```rb
-r.table('games')
+> r.table('games')
     .group{|game| game.pluck('player', 'type')}
     .max('points')['points'].run(conn)
-```
 
-Result:
-
-```rb
 {
     {"player" => "Alice", "type" => "free"} => 7,
     {"player" => "Bob", "type" => "free"} => 10,
@@ -145,12 +125,8 @@ __Example:__ What is the maximum number of points scored by game type?
 
 
 ```rb
-r.table('games').group(:index => 'type').max('points')['points'].run(conn)
-```
+> r.table('games').group(:index => 'type').max('points')['points'].run(conn)
 
-Result:
-
-```rb
 {
     "free" => 10,
     "ranked" => 15
@@ -165,12 +141,8 @@ grouped data into an array of objects representing the groups.
 __Example:__ Ungrouping grouped data.
 
 ```rb
-r.table('games').group('player').max('points')['points'].ungroup().run(conn)
-```
+> r.table('games').group('player').max('points')['points'].ungroup().run(conn)
 
-Result:
-
-```rb
 [
     {
         "group" => "Alice",
@@ -190,14 +162,10 @@ __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
 ```rb
-r.table('games')
+> r.table('games')
    .group('player').max('points')['points']
    .ungroup().order_by(r.desc('reduction')).run(conn)
-```
 
-Result:
-
-```rb
 [
     {
         "group" => "Bob",
@@ -209,7 +177,6 @@ Result:
     }
 ]
 ```
-
 
 # Implementation Details #
 
@@ -225,10 +192,8 @@ __Example:__ Get back the raw `GROUPED_DATA` pseudotype.
 
 
 ```rb
-r.table('games').group('player').avg('points').run(conn, group_format:'raw')
-```
+> r.table('games').group('player').avg('points').run(conn, group_format:'raw')
 
-```rb
 {
     "$reql_type$" => "GROUPED_DATA",
     "data" => [
@@ -298,13 +263,9 @@ __Example:__ What is the maximum number of points scored by each
 player in free games?
 
 ```rb
-r.table('games').filter{|game| game['type'].eq('free')}
+> r.table('games').filter{|game| game['type'].eq('free')}
    .group('player').max('points')['points'].run(conn)
-```
 
-Result:
-
-```rb
 {
     "Alice" => 7,
     "Bob" => 10
@@ -314,18 +275,13 @@ Result:
 __Example:__ What is each player's highest even and odd score?
 
 ```rb
-r.table('games')
+> r.table('games')
    .group('name', lambda {|game| game['points'] % 2})
    .max('points')['points'].run(conn)
-```
 
-Result:
-
-```rb
 {
     ["Alice", 1] => 7,
     ["Bob", 0] => 10,
     ["Bob", 1] => 15
 }
 ```
-

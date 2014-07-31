@@ -22,10 +22,10 @@ instance. We will assume that RethinkDB is running on the same machine and on
 the default port (you can change the parameters passed to `connect`): 
 
 ```python
->>> import rethinkdb as r
->>> # connect and make the connection available to subsequent commands 
->>> r.connect('localhost', 28015).repl()
->>> print r.db_list().run()
+> import rethinkdb as r
+> # connect and make the connection available to subsequent commands 
+> r.connect('localhost', 28015).repl()
+> print r.db_list().run()
 
 [u'test']
 ```
@@ -47,9 +47,8 @@ you'll work with a single database at a time. RethinkDB comes with a default
 database so you can quickly experiment with it:
 
 ```python
->>> test = r.db('test')
+> test = r.db('test')
 ```
-
 
 ### Creating a Database and a Table ###
 
@@ -57,10 +56,10 @@ For your application you'll probably want to use a new database and define new t
 
 ```python
 // creating a new database
->>> r.db_create('python_tutorial').run()
+> r.db_create('python_tutorial').run()
 
 // creating a new table
->>> r.db('python_tutorial').table_create('heroes').run()
+> r.db('python_tutorial').table_create('heroes').run()
 ```
 
 You can see the new database and table through the browser-based administrative
@@ -68,12 +67,10 @@ UI: http://localhost:8080/#tables.
 
 ![Python Tutorial Heroes table](/assets/images/docs/python-tutorial/python-tutorial-table.png)
 
-
-
 Because we will continue to use the `heroes` table, let's save it as a reference for the next operations:
 
 ```python
->>> heroes = r.db('python_tutorial').table('heroes')
+> heroes = r.db('python_tutorial').table('heroes')
 ```
 
 ## Inserting Documents ##
@@ -82,10 +79,11 @@ RethinkDB stores data in JSON, so passing `dict`s from Python requires no additi
 
 
 ```python
->>> heroes.insert({
+> heroes.insert({
     "hero": "Wolverine", 
     "name": "James 'Logan' Howlett", 
-    "magazine_titles": ["Amazing Spider-Man vs. Wolverine", "Avengers", "X-MEN Unlimited", "Magneto War", "Prime"],
+    "magazine_titles": ["Amazing Spider-Man vs. Wolverine", "Avengers",
+        "X-MEN Unlimited", "Magneto War", "Prime"],
     "appearances_count": 98
 }).run()
 
@@ -104,7 +102,7 @@ the documents that do not provide one.
 You can also insert multiple documents at a time by passing `insert` an array of dicts:
 
 ```python
->>> heroes.insert([
+> heroes.insert([
     {
         "hero": "Magneto", 
         "name": "Max Eisenhardt", 
@@ -121,10 +119,10 @@ You can also insert multiple documents at a time by passing `insert` an array of
     {
         "hero": "Storm", 
         "name": "Ororo Monroe", 
-        "magazine_titles": ["Amazing Spider-Man vs. Wolverine", "Excalibur", "Fantastic Four", "Iron Fist"],
+        "magazine_titles": ["Amazing Spider-Man vs. Wolverine", "Excalibur",
+            "Fantastic Four", "Iron Fist"],
         "appearances_count": 72
     }
-
 ]).run()
 
 {u'errors': 0,
@@ -136,19 +134,19 @@ You can also insert multiple documents at a time by passing `insert` an array of
 
 ## Retrieving all documents ##
 
-Even if we only inserted 4 documents &ndash; you can double check that by running
-`heroes.count().run()` &ndash; let's take a quick look at them:
+Even if we only inserted 4 documents, you can double check that by running
+`heroes.count().run()`. Let's take a quick look at them:
 
 ```python
->>> heroes.run()
+> heroes.run()
 
 <rethinkdb.net.Cursor object at 0x15d4710>
 ```
 
 {% infobox %}
-__Tips__: If the table contains a large number of documents a query will not return all
-of them at once, which would saturate the network and/or require a lot of memory on the
-client. Instead the query will return the results in batches and fetch more data as needed.
+
+__Tips__: If the table contains a large number of documents a query will not return all of them at once, which would saturate the network and/or require a lot of memory on the client. Instead the query will return the results in batches and fetch more data as needed.
+
 {% endinfobox %}
 
 ## Retrieving a single document ##
@@ -156,7 +154,7 @@ client. Instead the query will return the results in batches and fetch more data
 Let's now retrieve a document by its ID:
 
 ```python
->>> heroes.get('d7d5e949-3f71-4e21-b5b7-42b6e7048ea3').run()
+> heroes.get('d7d5e949-3f71-4e21-b5b7-42b6e7048ea3').run()
 
 {u'aka': [u'Magnus', u'Erik Lehnsherr', u'Lehnsherr'],
  u'appearances_count': 42,
@@ -172,7 +170,7 @@ RethinkDB supports a wide range of filters, so let's try a couple of different
 ones. Firstly let's retrieve Professor Xavier by his character name:
 
 ```python
->>> heroes.filter({'name': 'Charles Francis Xavier'}).run()
+> heroes.filter({'name': 'Charles Francis Xavier'}).run()
 
 <rethinkdb.net.Cursor object at 0x15dc910>
 ```
@@ -181,23 +179,27 @@ Next thing we can do is to **order** the characters based on the number of
 magazines they've appeared in:
 
 ```python
->>> heroes.order_by(r.desc('appearances_count')).pluck('hero', 'appearances_count').run()
+> heroes.order_by(r.desc('appearances_count')).pluck('hero',
+        'appearances_count').run()
 
 <rethinkdb.net.Cursor object at 0x15dc450>
 ```
 
 {% infobox %}
+
 __Tips__: Ordering result ascending or descending can be done using `asc` and
 `desc` respectively. 
-The server-side operation <code>pluck</code> allows fetching only the specified
+The server-side operation `pluck` allows fetching only the specified
 attributes of the result documents.
+
 {% endinfobox %}
 
 As you see only 1 of the characters has appeared in more than 90 magazines. 
 This is something we could also verify with the query:
 
 ```python
->>> heroes.filter(r.row['appearances_count'] >= 90).pluck('hero', 'name', 'appearances_count').run()
+> heroes.filter(r.row['appearances_count'] >= 90).pluck('hero',
+        'name', 'appearances_count').run()
 ```
 
 For the last query example let's retrieve the characters that appeared in a
@@ -205,9 +207,11 @@ specific magazine. This demonstrates using `filter` on a nested list in a
 document:
 
 ```python
->>> heroes.filter(
-        r.row['magazine_titles'].filter(lambda mag: mag == 'Amazing Spider-Man vs. Wolverine').count() > 0
-    ).pluck('hero').run()
+> heroes.filter(
+    r.row['magazine_titles'].filter(
+        lambda mag: mag == 'Amazing Spider-Man vs. Wolverine'
+    ).count() > 0
+).pluck('hero').run()
 ```
 
 ## Updating multiple documents ##
@@ -218,15 +222,17 @@ characters and also updating their number of appearances:
 ```python
 heroes.update({
     'appearances_count': r.row['appearances_count'] + 1,
-    'magazine_titles': r.row['magazine_titles'].append('The Fantastic RethinkDB')
+    'magazine_titles': r.row['magazine_titles'].append(
+        'The Fantastic RethinkDB')
 }).run()
 
 {u'errors': 0, u'skipped': 0, u'updated': 4}
 ```
 
 {% infobox %}
-__Tips:__ RethinkDB supports atomic updates at the document level. You can read more about about the
-[RethinkDB atomicity model](/docs/architecture/#how-does-the-atomicity-model-work).
+
+__Tips:__ RethinkDB supports atomic updates at the document level. You can read more about about the [RethinkDB atomicity model](/docs/architecture/#how-does-the-atomicity-model-work).
+
 {% endinfobox %}
 
 ## What's next ##

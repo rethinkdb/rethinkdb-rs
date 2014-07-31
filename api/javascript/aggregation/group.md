@@ -46,12 +46,9 @@ Suppose that the table `games` has the following data:
 Grouping games by player can be done with:
 
 ```js
-r.table('games').group('player').run(conn, callback)
-```
+> r.table('games').group('player').run(conn, callback)
 
-Result:
-
-```js
+// Result passed to callback
 [
     {
         group: "Alice",
@@ -77,12 +74,9 @@ sub-streams, producing grouped data.
 __Example:__ What is each player's best game?
 
 ```js
-r.table('games').group('player').max('points').run(conn, callback)
-```
+> r.table('games').group('player').max('points').run(conn, callback)
 
-Result:
-
-```js
+// Result passed to callback
 [
     {
         group: "Alice",
@@ -101,12 +95,9 @@ producing more grouped data.
 __Example:__ What is the maximum number of points scored by each player?
 
 ```js
-r.table('games').group('player').max('points')('points').run(conn, callback)
-```
+> r.table('games').group('player').max('points')('points').run(conn, callback)
 
-Result:
-
-```js
+// Result passed to callback
 [
     {
         group: "Alice",
@@ -125,10 +116,9 @@ __Example:__ What is the maximum number of points scored by each
 player for each game type?
 
 ```js
-r.table('games').group('player', 'type').max('points')('points').run(conn, callback)
-```
+> r.table('games').group('player', 'type').max('points')('points').run(conn, callback)
 
-```js
+// Result passed to callback
 [
     {
         group: ["Alice", "free"],
@@ -152,15 +142,12 @@ player for each game type?
 
 
 ```js
-r.table('games')
+> r.table('games')
     .group(function(game) {
         return game.pluck('player', 'type')
     }).max('points')('points').run(conn, callback)
-```
 
-Result:
-
-```js
+// Result passed to callback
 [
     {
         group: {"player": "Alice", "type": "free"},
@@ -183,10 +170,9 @@ __Example:__ What is the maximum number of points scored by game type?
 
 
 ```js
-r.table('games').group({index:'type'}).max('points')('points').run(conn, callback)
-```
+> r.table('games').group({index:'type'}).max('points')('points').run(conn, callback)
 
-```js
+// Result passed to callback
 [
     {
         group: "free",
@@ -207,10 +193,9 @@ grouped data into an array of objects representing the groups.
 __Example:__ Ungrouping grouped data.
 
 ```js
-r.table('games').group('player').max('points')('points').ungroup().run(conn, callback)
-```
+> r.table('games').group('player').max('points')('points').ungroup().run(conn, callback)
 
-```js
+// Result passed to callback
 [
     {
         group: "Alice",
@@ -230,12 +215,11 @@ __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
 ```js
-r.table('games')
+> r.table('games')
    .group('player').max('points')('points')
    .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
-```
 
-```js
+// Result passed to callback
 [
     {
         group: "Bob",
@@ -261,10 +245,9 @@ argument to `run`:
 __Example:__ Get back the raw `GROUPED_DATA` pseudotype.
 
 ```js
-r.table('games').group('player').avg('points').run(conn, {groupFormat:'raw'}, callback)
-```
+> r.table('games').group('player').avg('points').run(conn, {groupFormat:'raw'}, callback)
 
-```js
+// Result passed to callback
 {
     $reql_type$: "GROUPED_DATA",
     data: [
@@ -340,14 +323,11 @@ __Example:__ What is the maximum number of points scored by each
 player in free games?
 
 ```js
-r.table('games').filter( r.row('type').eq('free') )
+> r.table('games').filter( r.row('type').eq('free'))
     .group('player').max('points')('points')
     .run(conn, callback)
-```
 
-Result:
-
-```js
+// Result passed to callback
 [
     {
         group: "Alice":
@@ -367,11 +347,8 @@ r.table('games')
     .group('name', function(game) {
         return game('points').mod(2)
     }).max('points')('points').run(conn, callback)
-```
 
-Result:
-
-```js
+// Result passed to callback
 [
     {
         group: ["Alice", 1]
