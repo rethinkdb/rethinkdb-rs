@@ -120,20 +120,20 @@ r.table("posts").filter(
     ).run()
 ```
 
-__Note__: RethinkDB overloads `&` because Ruby doesn't allow
+__Note__: RethinkDB overloads `&` because Python doesn't allow
 overloading the proper _and_ operator. Since `&` has high precedence,
 make sure to wrap the conditions around it in parentheses.
 
-You can also use the `r.all` command, if you prefer not using
+You can also use the `r.and_` command, if you prefer not using
 overloaded `&`:
 
 ```python
-r.table("posts").filter(r.all(r.row["author"] == "Michel",
+r.table("posts").filter(r.and_(r.row["author"] == "Michel",
                              r.row["category"] == "Geek")).run()
 ```
 
 Similarly, you can use the overloaded `|` operator or the equivalent
-`r.any` command to filter based on one of many conditions.
+`r.or_` command to filter based on one of many conditions.
 
 ## Filtering based on the presence of a value in an array ##
 
@@ -362,9 +362,9 @@ in a single query. We can perform this operation as follows:
 
 ```python
 r.table("pages").update(lambda page:
-    r.branch(page["countable"] == True,          // if the page is countable
-             { "views": page["views"] + 1 },     // increment the view count
-             {}                                  // else do nothing
+    r.branch(page["countable"] == True,          # if the page is countable
+             { "views": page["views"] + 1 },     # increment the view count
+             {}                                  # else do nothing
     )), {"return_vals": True}).run()
 ```
 
@@ -399,9 +399,7 @@ You can limit the number of documents returned by your queries with
 the `limit` command. Let's retrieve just the first 10 blog posts:
 
 ```python
-r.table("posts").order_by("date").
-  limit(10).
-  run()
+r.table("posts").order_by("date").limit(10).run()
 ```
 
 ## Implementing pagination ##
@@ -410,9 +408,7 @@ To paginate results, you can use a combination of the `skip` and
 `limit` commands. Let's retrieve posts 11-20 from our database:
 
 ```python
-r.table("posts").order_by("date").
-  skip(10).
-  limit(10).run()
+r.table("posts").order_by("date").skip(10).limit(10).run()
 ```
 
 {% endfaqsection %}
