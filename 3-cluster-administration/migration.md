@@ -6,21 +6,19 @@ docs_active: migration
 permalink: docs/migration/
 ---
 
-You must migrate your data __before__ updating RethinkDB, since file formats are
-currently incompatible between versions. Migration consists of three simple steps:
+{% infobox info %}
+Starting with version **1.13** of RethinkDB, manual migration of data when upgrading between major versions (1.x &rarr; 1.y) is no longer necessary. If you are upgrading from version 1.13 to a later version, you will not need to export your data. If you are upgrading from version 1.12.x or earlier, you will need to follow these instructions.
+
+If you're upgrading from a version before RethinkDB **1.7,** you'll need to use the deprecated [migration script](https://github.com/rethinkdb/rethinkdb/tree/02b4f29e1e7f15b3edffcb68bf015578ec5783ab/scripts/migration).
+{% endinfobox %}
+
+Migration consists of three simple steps:
 
   - Export your data from the existing version of RethinkDB
   - Upgrade RethinkDB to a new version
   - Import the data into the new version of RethinkDB
 
-If you have already updated to a new version of RethinkDB, you can find
-binaries for previous versions in the [download
-archive](http://download.rethinkdb.com).
-
-{% infobox info %}
-__Note:__ RethinkDB file formats are currently not compatible between major versions (1.x -> 1.y).  
-A better migration experience is on the roadmap (follow [Github issue #1010](https://github.com/rethinkdb/rethinkdb/issues/1010) to track progress).
-{% endinfobox %}
+While this is no longer a necessary step from version 1.13 on, it's never a bad idea to back up your data before migration. You should do this *before* updating RethinkDB to its new version. If you've already updates, you can find binaries for previous versions in the [download archive](http://download.rethinkdb.com).
 
 # Exporting your data
 
@@ -29,6 +27,7 @@ To export your data, use `rethinkdb dump`:
 ```
 rethinkdb dump --connect <host>:<port> [--auth <auth_key>] 
 ```
+
 where:
 
 - `host` is the IP address of any machine of your RethinkDB cluster
@@ -43,14 +42,10 @@ your data.
 
 {% infobox info %}
 
-__Note:__ The `dump` command requires the [Python driver](/docs/install-drivers/python/) to be installed. Don't upgrade the Python driver until after you've dumped the data!
+__Note:__ The `dump` command requires the [Python driver](/docs/install-drivers/python/) to be installed. Don't upgrade the Python driver until *after* you've dumped the data!
 
-If you don't have the Python driver installed, you can install the previous version using `pip install rethinkdb version==1.12.0-2`. (You can use the [Python Package Index](https://pypi.python.org/pypi "PyPI") to check on current and older versions.)
-{% endinfobox %}
+If you don't have the Python driver installed, you can install the previous version using `pip install rethinkdb version==<number>`. Use the [Python Package Index](https://pypi.python.org/pypi "PyPI") to check on current and older versions.
 
-{% infobox info %}
-Exporting from a version before RethinkDB 1.7? Use the deprecated
-[migration script](https://github.com/rethinkdb/rethinkdb/tree/02b4f29e1e7f15b3edffcb68bf015578ec5783ab/scripts/migration).
 {% endinfobox %}
 
 # Upgrading RethinkDB
@@ -63,7 +58,7 @@ __First__, upgrade the RethinkDB server and drivers to the latest version:
 {% infobox info %}
 __Keep in mind__: 
 
-- Don't upgrade the Python driver until after you've dumped the data.
+- Don't upgrade the Python driver until *after* you've dumped the data.
 - [Upgrade](/docs/install-drivers/python/) the Python driver for the `restore` step below. 
 {% endinfobox %}
 
