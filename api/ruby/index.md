@@ -1866,28 +1866,17 @@ r.not(true).run(conn)
 ## [random](random/) ##
 
 {% apibody %}
-r.random() &rarr number
-r.random(integer) &rarr integer
-r.random(integer, integer) &rarr integer
-r.random(number, number, :float => true) &rarr number
+r.random() &rarr; number
+r.random(number[, number], :float => true) &rarr; number
+r.random(integer[, integer]) &rarr; integer
 {% endapibody %}
 
-Generate a random number between the given bounds. If no arguments are given, the result
-will be a floating-point number in the range `[0,1)`.
+Generate a random number between given (or implied) bounds. `random` takes zero, one or two arguments.
 
-When passing a single argument, `r.random(x)`, the result will be in the range `[0,x)`,
-and when passing two arguments, `r.random(x,y)`, the range is `[x,y)`. If `x` and `y` are
-equal, an error will occur, unless generating a floating-point number, for which `x` will
-be returned.
-
-Note: The last argument given will always be the 'open' side of the range, but when
-generating a floating-point number, the 'open' side may be less than the 'closed' side.
-
-__Example:__ Generate a random integer in the range `[0,100)`
+__Example:__ Generate a random number in the range `[0,1)`
 
 ```rb
-r.random(100).run(conn)
-r.random(0, 100).run(conn)
+r.random().run(conn)
 ```
 
 [Read more about this command &rarr;](random/)
