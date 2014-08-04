@@ -13,11 +13,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.update(json | expr[, :durability => "hard", :return_vals => false, :non_atomic => false])
+table.update(json | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
-selection.update(json | expr[, :durability => "hard", :return_vals => false, :non_atomic => false])
+selection.update(json | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
-singleSelection.update(json | expr[, :durability => "hard", :return_vals => false, :non_atomic => false])
+singleSelection.update(json | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
 {% endapibody %}
 
@@ -33,8 +33,7 @@ The optional arguments are:
 table or query's durability setting (set in [run](/api/ruby/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
-- `return_vals`: if set to `true` and in case of a single update, the updated document
-will be returned.
+- `return_changes`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
 - `non_atomic`: set to `true` if you want to perform non-atomic updates (updates that
 require fetching data from another document).
 
@@ -48,8 +47,7 @@ value was the same as the old value.
 - `errors`: the number of errors encountered while performing the update.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `deleted` and `inserted`: 0 for an update operation.
-- `old_val`: if `return_vals` is set to `true`, contains the old document.
-- `new_val`: if `return_vals` is set to `true`, contains the new document.
+- `changes`: if `return_changes` is set to `true`, this will be an array of objects, one for each objected affected by the `delete` operation. Each object will have two keys: `{:new_val => <new value>, :old_val => <old value>}`.
 
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
@@ -137,7 +135,7 @@ __Example:__ Increment the field `views` and return the values of the document b
 and after the update operation.
 
 ```rb
-r.table("posts").get(1).update(:return_vals => true) { |post|
+r.table("posts").get(1).update(:return_changes => true) { |post|
     :views => post["views"]+1
 }.run(conn)
 ```
@@ -149,20 +147,24 @@ The result will have two fields `old_val` and `new_val`.
     :deleted => 1,
     :errors => 0,
     :inserted => 0,
-    :new_val => {
-        :id => 1,
-        :author => "Julius_Caesar",
-        :title => "Commentarii de Bello Gallico",
-        :content => "Aleas jacta est",
-        :views => 207
-    },
-    :old_val => {
-        :id => 1,
-        :author => "Julius_Caesar",
-        :title => "Commentarii de Bello Gallico",
-        :content => "Aleas jacta est",
-        :views => 206
-    },
+    :changes => [
+        {
+            :new_val => {
+                :id => 1,
+                :author => "Julius_Caesar",
+                :title => "Commentarii de Bello Gallico",
+                :content => "Aleas jacta est",
+                :views => 207
+            },
+            :old_val => {
+                :id => 1,
+                :author => "Julius_Caesar",
+                :title => "Commentarii de Bello Gallico",
+                :content => "Aleas jacta est",
+                :views => 206
+            }
+        }
+    ],
     :replaced => 0,
     :skipped => 0,
     :unchanged => 0

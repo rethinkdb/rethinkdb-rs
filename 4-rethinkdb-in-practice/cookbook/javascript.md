@@ -455,7 +455,7 @@ r.table("pages").update(function(page) {
         { views: page("views").add(1) },         // increment the view count
         {}                                       // else do nothing
     );
-}, {return_vals: true}).run(conn, function(err, result) {
+}, {returnChanges: true}).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
 });

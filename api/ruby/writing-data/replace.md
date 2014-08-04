@@ -13,11 +13,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(json | expr[, :durability => "hard", :return_vals => false, :non_atomic => false])
+table.replace(json | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
-selection.replace(json | expr[, :durability => "hard", :return_vals => false, :non_atomic => false])
+selection.replace(json | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
-singleSelection.replace(json | expr[, :durability => "hard", :return_vals => false, :non_atomic => false])
+singleSelection.replace(json | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
 {% endapibody %}
 
@@ -35,8 +35,7 @@ The optional arguments are:
 table or query's durability setting (set in [run](/api/ruby/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
-- `return_vals`: if set to `true` and in case of a single replace, the replaced document
-will be returned.
+- `return_changes`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
 - `non_atomic`: set to `true` if you want to perform non-atomic replaces (replaces that
 require fetching data from another document).
 
@@ -53,8 +52,7 @@ selection and one of the documents you are replacing has been deleted
 - `errors`: the number of errors encountered while performing the replace.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `skipped`: 0 for a replace operation
-- `old_val`: if `return_vals` is set to `true`, contains the old document.
-- `new_val`: if `return_vals` is set to `true`, contains the new document.
+- `changes`: if `return_changes` is set to `true`, this will be an array of objects, one for each objected affected by the `delete` operation. Each object will have two keys: `{:new_val => <new value>, :old_val => <old value>}`.
 
 __Example:__ Replace the document with the primary key `1`.
 
@@ -103,29 +101,33 @@ r.table("posts").get(1).replace({
     :title => "Lorem ipsum",
     :content => "Aleas jacta est",
     :status => "published"
-}, :return_vals => true).run(conn)
+}, :return_changes => true).run(conn)
 ```
 
-The result will have two fields `old_val` and `new_val`.
+The result will have a `changes` field:
 
 ```rb
 {
     :deleted => 0,
     :errors => 0,
     :inserted => 0,
-    :new_val => {
-        :id => 1,
-        :title => "Lorem ipsum"
-        :content => "Aleas jacta est",
-        :status => "published",
-    },
-    :old_val => {
-        :id => 1,
-        :title => "Lorem ipsum"
-        :content => "TODO",
-        :status => "draft",
-        :author => "William",
-    },
+    :changes => [
+        {
+            :new_val => {
+                :id => 1,
+                :title => "Lorem ipsum"
+                :content => "Aleas jacta est",
+                :status => "published",
+            },
+            :old_val => {
+                :id => 1,
+                :title => "Lorem ipsum"
+                :content => "TODO",
+                :status => "draft",
+                :author => "William",
+            }
+        }
+    ],
     :replaced => 1,
     :skipped => 0,
     :unchanged => 0

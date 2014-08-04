@@ -368,7 +368,7 @@ r.table("pages").update{|page|
     r.branch(page["countable"].eq(true),         // if the page is countable
              { "views"=>page["views"] + 1 },     // increment the view count
              {}                                  // else do nothing
-    )}, {"return_vals"=>true}).run()
+    )}, {"return_changes"=>true}).run()
 ```
 
 ## Storing timestamps and JSON date strings as Time data types ##

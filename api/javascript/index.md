@@ -572,7 +572,7 @@ r.table('games').changes().run(conn, function(err, cursor) {
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json][, {durability: "hard", returnVals: false, conflict: "error"}]) &rarr; object
+table.insert(json | [json][, {durability: "hard", returnChanges: false, conflict: "error"}]) &rarr; object
 {% endapibody %}
 
 Insert JSON documents into a table. Accepts a single JSON document or an array of
@@ -595,18 +595,18 @@ r.table("posts").insert({
 
 {% apibody %}
 table.update(json | expr
-    [, {durability: "hard", returnVals: false, nonAtomic: false}])
+    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 selection.update(json | expr
-    [, {durability: "hard", returnVals: false, nonAtomic: false}])
+    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 singleSelection.update(json | expr
-    [, {durability: "hard", returnVals: false, nonAtomic: false}])
+    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 {% endapibody %}
 
 Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
-combination of the two. You can pass options like `returnVals` that will return the old
+combination of the two. You can pass options like `returnChanges` that will return the old
 and new values of the row you have modified.
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
@@ -623,13 +623,13 @@ r.table("posts").get(1).update({status: "published"}).run(conn, callback)
 
 {% apibody %}
 table.replace(json | expr
-    [, {durability: "hard", returnVals: false, nonAtomic: false}])
+    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 selection.replace(json | expr
-    [, {durability: "hard", returnVals: false, nonAtomic: false}])
+    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 singleSelection.replace(json | expr
-    [, {durability: "hard", returnVals: false, nonAtomic: false}])
+    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 
 {% endapibody %}
@@ -654,11 +654,11 @@ r.table("posts").get(1).replace({
 ## [delete](delete/) ##
 
 {% apibody %}
-table.delete([{durability: "hard", returnVals: false}])
+table.delete([{durability: "hard", returnChanges: false}])
     &rarr; object
-selection.delete([{durability: "hard", returnVals: false}])
+selection.delete([{durability: "hard", returnChanges: false}])
     &rarr; object
-singleSelection.delete([{durability: "hard", returnVals: false}])
+singleSelection.delete([{durability: "hard", returnChanges: false}])
     &rarr; object
 {% endapibody %}
 

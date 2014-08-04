@@ -429,7 +429,7 @@ r.table('games').changes().run(conn).each{|change| p(change)}
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json][, :durability => "hard", :return_vals => false :conflict => "error"])
+table.insert(json | [json][, :durability => "hard", :return_changes => false :conflict => "error"])
     &rarr; object
 {% endapibody %}
 
@@ -455,13 +455,13 @@ r.table("posts").insert({
 
 {% apibody %}
 table.update(json | expr
-    [, :durability => "hard", :return_vals => false, :non_atomic => false])
+    [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
 selection.update(json | expr
-    [, :durability => "hard", :return_vals => false, :non_atomic => false])
+    [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
 singleSelection.update(json | expr
-    [, :durability => "hard", :return_vals => false, :non_atomic => false])
+    [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
 {% endapibody %}
 
@@ -481,13 +481,13 @@ r.table("posts").get(1).update({status: "published"}).run(conn)
 
 {% apibody %}
 table.replace(json | expr
-    [, :durability => "hard", :return_vals => false, :non_atomic => false])
+    [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
 selection.replace(json | expr
-    [, :durability => "hard", :return_vals => false, :non_atomic => false])
+    [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
 singleSelection.replace(json | expr
-    [, :durability => "hard", :return_vals => false, :non_atomic => false])
+    [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
 {% endapibody %}
 
@@ -512,11 +512,11 @@ r.table("posts").get(1).replace({
 ## [delete](delete/) ##
 
 {% apibody %}
-table.delete[({:durability => "hard", :return_vals => false})]
+table.delete[({:durability => "hard", :return_changes => false})]
     &rarr; object
-selection.delete[({:durability => "hard", :return_vals => false})]
+selection.delete[({:durability => "hard", :return_changes => false})]
     &rarr; object
-singleSelection.delete[({:durability => "hard", :return_vals => false})]
+singleSelection.delete[({:durability => "hard", :return_changes => false})]
     &rarr; object
 {% endapibody %}
 

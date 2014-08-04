@@ -20,11 +20,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.update(json | expr[, {durability: "hard", returnVals: false, nonAtomic: false}])
+table.update(json | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
-selection.update(json | expr[, {durability: "hard", returnVals: false, nonAtomic: false}])
+selection.update(json | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
-singleSelection.update(json | expr[, {durability: "hard", returnVals: false, nonAtomic: false}])
+singleSelection.update(json | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
 {% endapibody %}
 
@@ -39,8 +39,7 @@ The optional arguments are:
 table or query's durability setting (set in [run](/api/javascript/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
-- `returnVals`: if set to `true` and in case of a single update, the updated document
-will be returned.
+- `returnChanges`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
 - `nonAtomic`: set to `true` if you want to perform non-atomic updates (updates that
 require fetching data from another document).
 
@@ -54,8 +53,7 @@ value was the same as the old value.
 - `errors`: the number of errors encountered while performing the update.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `deleted` and `inserted`: 0 for an update operation.
-- `old_val`: if `returnVals` is set to `true`, contains the old document.
-- `new_val`: if `returnVals` is set to `true`, contains the new document.
+- `changes`: if `returnChanges` is set to `true`, this will be an array of objects, one for each objected affected by the `delete` operation. Each object will have two keys: `{new_val: <new value>, old_val: <old value>}`.
 
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
@@ -150,7 +148,7 @@ and after the update operation.
 r.table("posts").get(1).update({
     views: r.row("views").add(1)
 }, {
-    returnVals: true
+    returnChanges: true
 }).run(conn, callback)
 ```
 
@@ -161,20 +159,24 @@ The result will have two fields `old_val` and `new_val`.
     deleted: 1,
     errors: 0,
     inserted: 0,
-    new_val: {
-        id: 1,
-        author: "Julius_Caesar",
-        title: "Commentarii de Bello Gallico",
-        content: "Aleas jacta est",
-        views: 207
-    },
-    old_val: {
-        id: 1,
-        author: "Julius_Caesar",
-        title: "Commentarii de Bello Gallico",
-        content: "Aleas jacta est",
-        views: 206
-    },
+    changes: [
+        {
+            new_val: {
+                id: 1,
+                author: "Julius_Caesar",
+                title: "Commentarii de Bello Gallico",
+                content: "Aleas jacta est",
+                views: 207
+            },
+            old_val: {
+                id: 1,
+                author: "Julius_Caesar",
+                title: "Commentarii de Bello Gallico",
+                content: "Aleas jacta est",
+                views: 206
+            }
+        }
+    ],
     replaced: 0,
     skipped: 0,
     unchanged: 0

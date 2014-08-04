@@ -365,7 +365,7 @@ r.table("pages").update(lambda page:
     r.branch(page["countable"] == True,          # if the page is countable
              { "views": page["views"] + 1 },     # increment the view count
              {}                                  # else do nothing
-    )), {"return_vals": True}).run()
+    )), {"return_changes": True}).run()
 ```
 
 ## Storing timestamps and JSON date strings as Time data types ##
