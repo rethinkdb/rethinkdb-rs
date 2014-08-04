@@ -427,7 +427,7 @@ for change in r.table('games').changes().run(conn):
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json][, durability="hard", return_vals=False, conflict="error"])
+table.insert(json | [json][, durability="hard", return_changes=False, conflict="error"])
     &rarr; object
 {% endapibody %}
 
@@ -451,13 +451,13 @@ r.table("posts").insert({
 
 {% apibody %}
 table.update(json | exp
-    [, durability="hard", return_vals=False, non_atomic=False])
+    [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
 selection.update(json | exp
-    [, durability="hard", return_vals=False, non_atomic=False])
+    [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
 singleSelection.update(json | exp
-    [, durability="hard", return_vals=False, non_atomic=False])
+    [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
 {% endapibody %}
 
@@ -477,13 +477,13 @@ r.table("posts").get(1).update({"status": "published"}).run(conn)
 
 {% apibody %}
 table.replace(json | expr
-    [, durability="hard", return_vals=False, non_atomic=False])
+    [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
 selection.replace(json | expr
-    [, durability="hard", return_vals=False, non_atomic=False])
+    [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
 singleSelection.replace(json | expr
-    [, durability="hard", return_vals=False, non_atomic=False])
+    [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
 {% endapibody %}
 
@@ -507,11 +507,11 @@ r.table("posts").get(1).replace({
 ## [delete](delete/) ##
 
 {% apibody %}
-table.delete([durability="hard", return_vals=False])
+table.delete([durability="hard", return_changes=False])
     &rarr; object
-selection.delete([durability="hard", return_vals=False])
+selection.delete([durability="hard", return_changes=False])
     &rarr; object
-singleSelection.delete([durability="hard", return_vals=False])
+singleSelection.delete([durability="hard", return_changes=False])
     &rarr; object
 {% endapibody %}
 

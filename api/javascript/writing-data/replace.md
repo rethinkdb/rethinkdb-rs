@@ -19,11 +19,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(json | expr[, {durability: "hard", returnVals: false, nonAtomic: false}])
+table.replace(json | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
-selection.replace(json | expr[, {durability: "hard", returnVals: false, nonAtomic: false}])
+selection.replace(json | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
-singleSelection.replace(json | expr[, {durability: "hard", returnVals: false, nonAtomic: false}])
+singleSelection.replace(json | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
 {% endapibody %}
 
@@ -41,8 +41,7 @@ The optional arguments are:
 table or query's durability setting (set in [run](/api/javascript/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
-- `returnVals`: if set to `true` and in case of a single replace, the replaced document
-will be returned.
+- `returnChanges`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
 - `nonAtomic`: set to `true` if you want to perform non-atomic replaces (replaces that
 require fetching data from another document).
 
@@ -59,8 +58,7 @@ selection and one of the documents you are replacing has been deleted
 - `errors`: the number of errors encountered while performing the replace.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `skipped`: 0 for a replace operation
-- `old_val`: if `returnVals` is set to `true`, contains the old document.
-- `new_val`: if `returnVals` is set to `true`, contains the new document.
+- `changes`: if `returnChanges` is set to `true`, this will be an array of objects, one for each objected affected by the `delete` operation. Each object will have two keys: `{new_val: <new value>, old_val: <old value>}`.
 
 __Example:__ Replace the document with the primary key `1`.
 
@@ -112,7 +110,7 @@ r.table("posts").get(1).replace({
     content: "Aleas jacta est",
     status: "published"
 }, {
-    returnVals: true
+    returnChanges: true
 }).run(conn, callback)
 ```
 
@@ -123,19 +121,23 @@ The result will have two fields `old_val` and `new_val`.
     deleted: 0,
     errors: 0,
     inserted: 0,
-    new_val: {
-        id:1,
-        title: "Lorem ipsum"
-        content: "Aleas jacta est",
-        status: "published",
-    },
-    old_val: {
-        id:1,
-        title: "Lorem ipsum"
-        content: "TODO",
-        status: "draft",
-        author: "William",
-    },
+    changes: [
+        {
+            new_val: {
+                id:1,
+                title: "Lorem ipsum"
+                content: "Aleas jacta est",
+                status: "published",
+            },
+            old_val: {
+                id:1,
+                title: "Lorem ipsum"
+                content: "TODO",
+                status: "draft",
+                author: "William",
+            }
+        }
+    ],
     replaced: 1,
     skipped: 0,
     unchanged: 0

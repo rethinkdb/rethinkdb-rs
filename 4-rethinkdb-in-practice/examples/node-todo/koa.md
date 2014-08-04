@@ -171,7 +171,7 @@ function* create(next) {
         todo.createdAt = r.now(); // Set the field `createdAt` to the current time
 
         // Insert a new Todo
-        var result = yield r.table('todos').insert(todo, {returnVals: true}).run(this._rdbConn);
+        var result = yield r.table('todos').insert(todo, {returnChanges: true}).run(this._rdbConn);
 
         todo = result.new_val; // todo now contains the previous todo + a field `id` and `createdAt`
         this.body = JSON.stringify(todo);
@@ -200,8 +200,8 @@ function* update(next) {
             throw new Error("The todo must have a field `id`.");
         }
 
-        var result = yield r.table('todos').get(todo.id).update(todo, {returnVals: true}).run(this._rdbConn);
-        this.body = JSON.stringify(result.new_val);
+        var result = yield r.table('todos').get(todo.id).update(todo, {returnChanges: true}).run(this._rdbConn);
+        this.body = JSON.stringify(result.changes[0].new_val);
     }
     catch(e) {
         this.status = 500;

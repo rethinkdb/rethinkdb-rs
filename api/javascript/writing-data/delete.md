@@ -19,11 +19,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.delete([{durability: "hard", returnVals: false}])
+table.delete([{durability: "hard", returnChanges: false}])
     &rarr; object
-selection.delete([{durability: "hard", returnVals: false}])
+selection.delete([{durability: "hard", returnChanges: false}])
     &rarr; object
-singleSelection.delete([{durability: "hard", returnVals: false}])
+singleSelection.delete([{durability: "hard", returnChanges: false}])
     &rarr; object
 {% endapibody %}
 
@@ -39,8 +39,7 @@ The optional arguments are:
 table or query's durability setting (set in [run](/api/javascript/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
-- `returnVals`: if set to `true` and in case of a single document deletion, the deleted
-document will be returned.
+- `returnChanges`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
 
 
 Delete returns an object that contains the following attributes:
@@ -52,8 +51,7 @@ deletes some of those documents first, they will be counted as skipped.
 - `errors`: the number of errors encountered while performing the delete.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `inserted`, `replaced`, and `unchanged`: all 0 for a delete operation..
-- `old_val`: if `returnVals` is set to `true`, contains the deleted document.
-- `new_val`: if `returnVals` is set to `true`, contains `null`.
+- `changes`: if `returnChanges` is set to `true`, this will be an array of objects, one for each objected affected by the `delete` operation. Each object will have two keys: `{new_val: null, old_val: <old value>}`.
 
 
 __Example:__ Delete a single document from the table `comments`.
@@ -80,7 +78,7 @@ r.table("comments").filter({idPost: 3}).delete().run(conn, callback)
 __Example:__ Delete a single document from the table `comments` and return its value.
 
 ```js
-r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete({returnVals: true}).run(conn, callback)
+r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete({returnChanges: true}).run(conn, callback)
 ```
 
 The result look like:
@@ -90,13 +88,17 @@ The result look like:
     deleted: 1,
     errors: 0,
     inserted: 0,
-    new_val: null,
-    old_val: {
-        id: "7eab9e63-73f1-4f33-8ce4-95cbea626f59",
-        author: "William",
-        comment: "Great post",
-        idPost: 3
-    },
+    changes: [
+        {
+            new_val: null,
+            old_val: {
+                id: "7eab9e63-73f1-4f33-8ce4-95cbea626f59",
+                author: "William",
+                comment: "Great post",
+                idPost: 3
+            }
+        }
+    ],
     replaced: 0,
     skipped: 0,
     unchanged: 0

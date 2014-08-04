@@ -186,7 +186,7 @@ function create(req, res, next) {
     var todo = req.body;         // req.body was created by `bodyParser`
     todo.createdAt = r.now();    // Set the field `createdAt` to the current time
 
-    r.table('todos').insert(todo, {returnVals: true}).run(req._rdbConn, function(error, result) {
+    r.table('todos').insert(todo, {returnChanges: true}).run(req._rdbConn, function(error, result) {
         if (error) {
             handleError(res, error) 
         }
@@ -212,12 +212,12 @@ We first select the todo with the `get` command, then call `update` on it.
 function update(req, res, next) {
     var todo = req.body;
     if ((todo != null) && (todo.id != null)) {
-        r.table('todos').get(todo.id).update(todo, {returnVals: true}).run(req._rdbConn, function(error, result) {
+        r.table('todos').get(todo.id).update(todo, {returnChanges: true}).run(req._rdbConn, function(error, result) {
             if (error) {
                 handleError(res, error) 
             }
             else {
-                res.send(JSON.stringify(result.new_val));
+                res.send(JSON.stringify(result.changes[0].new_val));
             }
             next();
         });

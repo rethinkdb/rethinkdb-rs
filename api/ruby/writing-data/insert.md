@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, :durability => "hard", :return_vals => false :conflict => "error"])
+table.insert(json | [json][, :durability => "hard", :return_changes => false :conflict => "error"])
     &rarr; object
 {% endapibody %}
 
@@ -26,7 +26,7 @@ documents.
 The optional arguments are:
 
 - `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/ruby/run/)). In soft durability mode Rethink_dB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
-- `return_vals`: if set to `true` when a single document is given, return `old_val` and `new_val` keys with the old value of the document (or `nil` on an insert) and the new value.
+- `return_changes`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
 - `conflict`: Determine handling of inserting documents with the same primary key as existing entries. Possible values are `"error"`, `"replace"` or `"update"`.
     - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
     - `"replace"`: [Replace](/api/ruby/replace/) the old document in its entirety with the new one.
@@ -42,8 +42,7 @@ Insert returns an object that contains the following attributes:
 - `deleted` and `skipped`: 0 for an insert operation.
 - `generated_keys`: a list of generated primary keys for inserted documents whose primary keys were not specified (capped to 100,000).
 - `warnings`: if the field `generated_keys` is truncated, you will get the warning _"Too many generated keys (&lt;X&gt;), array truncated to 100000."_.
-- `old_val`: if `return_vals` is set to `true`, contains `nil`.
-- `new_val`: if `return_vals` is set to `true`, contains the inserted/updated document.
+- `changes`: if `return_changes` is set to `true`, this will be an array of objects, one for each objected affected by the `delete` operation. Each object will have two keys: `{:new_val => <new value>, :old_val => nil}`.
 
 __Example:__ Insert a document into the table `posts`.
 
@@ -146,7 +145,7 @@ __Example:__ Get back a copy of the inserted document (with its generated primar
 ```rb
 r.table("posts").insert(
     {:title => "Lorem ipsum", :content => "Dolor sit amet"},
-    :return_vals => true
+    :return_changes => true
 ).run(conn)
 ```
 
@@ -163,11 +162,15 @@ The result will be
     :replaced => 0,
     :skipped => 0,
     :unchanged => 0,
-    :old_val => nil,
-    :new_val => {
-        :id => "dd782b64-70a7-43e4-b65e-dd14ae61d947",
-        :title => "Lorem ipsum",
-        :content => "Dolor sit amet"
-    }
+    :changes => [
+        {
+            :old_val => nil,
+            :new_val => {
+                :id => "dd782b64-70a7-43e4-b65e-dd14ae61d947",
+                :title => "Lorem ipsum",
+                :content => "Dolor sit amet"
+            }
+        }
+    ]
 }
 ```
