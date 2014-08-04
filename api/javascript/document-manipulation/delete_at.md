@@ -32,7 +32,7 @@ __Example:__ Delete the second element of an array.
 
 ```js
 > r(['a','b','c','d','e','f']).deleteAt(1).run(conn, callback)
-
+// result passed to callback
 ['a', 'c', 'd', 'e', 'f']
 ```
 
@@ -40,7 +40,7 @@ __Example:__ Delete the second and third elements of an array.
 
 ```js
 > r(['a','b','c','d','e','f']).deleteAt(1,3).run(conn, callback)
-
+// result passed to callback
 ['a', 'd', 'e', 'f']
 ```
 
@@ -48,8 +48,8 @@ __Example:__ Delete the next-to-last element of an array.
 
 ```js
 > r(['a','b','c','d','e','f']).deleteAt(-2).run(conn, callback)
-
-['a', 'b', 'c', 'dl', 'f']
+// result passed to callback
+['a', 'b', 'c', 'd', 'f']
 ```
 
 __Example:__ Delete a comment on a post.
