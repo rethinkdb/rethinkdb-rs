@@ -250,8 +250,10 @@ Secondary indexes have the following limitations:
   r.table("users").get_all("Smith", index="last_name").run(conn)
   ```
 
-- You cannot chain multiple `get_all` commands. Use a compound index to efficiently
-  retrieve documents by multiple fields.
+- You cannot chain multiple `get_all` commands. Use a compound index to
+  efficiently retrieve documents by multiple fields.
+
+- Currently, you cannot chain an `order_by` using a secondary index after a `get_all` but only after a `table`. (You can, however, chain an `order_by` using a secondary index after a `between` *if* they use the same index.)
 
 - Currently, compound indexes cannot be queried by a prefix.  
   See [Github issue #955](https://github.com/rethinkdb/rethinkdb/issues/955)
