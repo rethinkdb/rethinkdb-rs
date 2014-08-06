@@ -94,7 +94,7 @@ that we're constantly adding to the query language.
   few clicks. Watch the [screencast](/screencast) to see how easy it
   is to setup and operate a cluster.
 * All cluster operations are scriptable via CLI tools.
-* The Built-in data explorer offers online documentation and query
+* The built-in data explorer offers online documentation and query
   language suggestions.
 
 Many products are easy to use, but we think RethinkDB is
