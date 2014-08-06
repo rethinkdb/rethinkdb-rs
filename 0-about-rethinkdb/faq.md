@@ -54,7 +54,6 @@ Find out how RethinkDB compares to other NoSQL databases:
   failover, you will love RethinkDB. Sharding and replication can be done in a
   few clicks in the Web UI or on the command line.
 
-
 ## When is RethinkDB not a good choice? ##
 
 - RethinkDB is not a good choice if you need full ACID support or strong schema
@@ -66,9 +65,11 @@ Find out how RethinkDB compares to other NoSQL databases:
   consistency, so if you absolutely need high write availability and do not
   mind dealing with conflicts, you may be better off with a Dynamo-style system
   like Riak.
+
 {% endfaqsection %}
 
 {% faqsection Practical considerations %}
+
 ## What languages can I use to work with RethinkDB? ##
 
 You can use Ruby, Python, and Javascript/Node.js to write RethinkDB
@@ -102,6 +103,11 @@ No, but RethinkDB supports a very powerful, expressive, and easy to
 learn query language that can do almost anything SQL can do (and many
 things SQL can't do, such as mixing queries with Javascript
 expressions and Hadoop-style map/reduce).
+
+## What limitations are there on key sizes? ##
+
+* Primary keys are limited to 127 characters.
+* Secondary indexes are efficient when their keys are a length of no more than 238&minus;*PK*, where *PK* is the primary key length. (See [secondary indexes](/docs/secondary-indexes) for more information.)
 
 ## How do queries get routed in a RethinkDB cluster? ##
 
@@ -148,5 +154,6 @@ We chose to release the client drivers under Apache License v2.0 to
 remove any ambiguity as to the extent of the server license &mdash;
 you do not have to license any software that uses RethinkDB under AGPL
 and are completely free to use any licensing mechanism of your choice.
+
 {% endfaqsection %}
 

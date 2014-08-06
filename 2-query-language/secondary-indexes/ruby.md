@@ -218,6 +218,8 @@ view.
 
 Secondary indexes have the following limitations:
 
+- The part of a secondary index key that's actually indexed depends on the length of the primary key (which must be 127 bytes or less). This secondary index key length is 238&minus;*PK*, where *PK* is the primary key length; if the primary key length is a 36-character GUID, for instance, this means that 202 characters in the secondary index will be significant. If a table has multiple entries where the first 238&minus;*PK* characters are identical, lookup performance will be sharply degraded, as RethinkDB will have to perform a linear search to find the correct entries.
+
 - Secondary indexes will not store `nil` values or objects. Thus, the results of a command such as:
 
     ```rb
