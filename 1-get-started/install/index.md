@@ -92,3 +92,6 @@ Our long-term goal is to port RethinkDB to every widely-used platform. [Get
 involved](/community/) in the development effort and help port RethinkDB to
 more platforms.
 
+# Older versions #
+
+Binaries for previous versions of RethinkDB are available in the [download archive](http://download.rethinkdb.com).

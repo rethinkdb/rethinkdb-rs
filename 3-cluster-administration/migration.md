@@ -6,8 +6,10 @@ docs_active: migration
 permalink: docs/migration/
 ---
 
+Starting with version **1.13** of RethinkDB, manual migration of data when upgrading between major versions (1.x &rarr; 1.y) is no longer necessary. Data is migrated to the new version automatically. While it's not strictly necessary to back up your data before upgrading, it's always a good idea. You should make a backup by using the `dump` command *before* updating RethinkDB to its new version! Databases that have been automatically upgraded are not backward-compatible (that is, a database from version 1.14 cannot be used with version 1.13).
+
 {% infobox info %}
-Starting with version **1.13** of RethinkDB, manual migration of data when upgrading between major versions (1.x &rarr; 1.y) is no longer necessary. If you are upgrading from version 1.13 to a later version, you will not need to export your data. If you are upgrading from version 1.12.x or earlier, you will need to follow these instructions.
+If you are upgrading from version 1.13 to a later version, you will not need to export and re-import your data. If you are upgrading from version 1.12.x or earlier to a new major version, you will need to follow these instructions.
 
 If you're upgrading from a version before RethinkDB **1.7,** you'll need to use the deprecated [migration script](https://github.com/rethinkdb/rethinkdb/tree/02b4f29e1e7f15b3edffcb68bf015578ec5783ab/scripts/migration).
 {% endinfobox %}
@@ -18,7 +20,9 @@ Migration consists of three simple steps:
   - Upgrade RethinkDB to a new version
   - Import the data into the new version of RethinkDB
 
-While this is no longer a necessary step from version 1.13 on, it's never a bad idea to back up your data before migration. You should do this *before* updating RethinkDB to its new version. If you've already updates, you can find binaries for previous versions in the [download archive](http://download.rethinkdb.com).
+{% infobox info %}
+You must export your data **before** you've upgraded RethinkDB to a new version! If you've already updated, you can find binaries for previous versions in the [download archive](http://download.rethinkdb.com).
+{% endinfobox %}
 
 # Exporting your data
 
