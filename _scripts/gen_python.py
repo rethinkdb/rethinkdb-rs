@@ -179,17 +179,12 @@ def add_doc(file_name, result_file):
                 parsing_body = False
             elif parsing_body == False:
                 if example_code_start_pattern.match(line) != None:
-                    example_code_first_line = True
                     parsing_example_code = True
                 elif example_code_end_pattern.match(line) != None:
                     parsing_example_code = False
                 else:
                     if parsing_example_code == True:
-                       if example_code_first_line == True:
-                            text += ">>> "+line
-                            example_code_first_line = False
-                       else:
-                            text += "... "+line
+                        text += "    " + line
                     else:
                         text += line
             else:
