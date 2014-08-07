@@ -194,7 +194,7 @@ function create(req, res, next) {
             handleError(res, new Error("Document was not inserted.")) 
         }
         else {
-            res.send(JSON.stringify(result.new_val));
+            res.send(JSON.stringify(result.changes[0].new_val));
         }
         next();
     });
