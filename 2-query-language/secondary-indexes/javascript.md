@@ -213,13 +213,15 @@ manipulate indexes through the secondary index panel in the table
 view.
 
 <div class="screenshots">
-    <a href="/assets/images/docs/query-language/secondary-index-ui.png"><img src="/assets/images/docs/query-language/secondary-index-ui.png" style="width: 269px; height: 105px; "/></a>
+    <a href="/assets/images/docs/query-language/secondary-index-ui.png"><img src="/assets/images/docs/query-language/secondary-index-ui.png" style="width: 269px; height: 105px;"></a>
 </div>
 
 
 # Limitations #
 
 Secondary indexes have the following limitations:
+
+- The part of a secondary index key that's used for fast lookups depends on the length of the primary key (which must be 127 bytes or less). The length of this part is 238&minus;*PK*, where *PK* is the primary key length; if the primary key length is a 36-character GUID, for instance, this means that 202 characters in the secondary index will be significant. If a table has multiple entries where the first 238&minus;*PK* characters are identical, lookup performance will be sharply degraded, as RethinkDB will have to perform a linear search to find the correct entries.
 
 - Secondary indexes will not store `null` values or objects. Thus, the results of a command such as:
 
