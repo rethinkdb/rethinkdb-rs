@@ -104,11 +104,6 @@ learn query language that can do almost anything SQL can do (and many
 things SQL can't do, such as mixing queries with Javascript
 expressions and Hadoop-style map/reduce).
 
-## What limitations are there on key sizes? ##
-
-* Primary keys are limited to 127 characters.
-* Secondary indexes are efficient when their keys are a length of no more than 238&minus;*PK*, where *PK* is the primary key length. (See [secondary indexes](/docs/secondary-indexes) for more information.)
-
 ## How do queries get routed in a RethinkDB cluster? ##
 
 You can connect your clients to any node in the cluster, and all the
