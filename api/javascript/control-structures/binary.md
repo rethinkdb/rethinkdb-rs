@@ -1,0 +1,47 @@
+---
+layout: api-command
+language: Javascript
+permalink: api/javascript/binary/
+command: binary
+io:
+    - r
+    - special
+---
+
+# Command syntax #
+
+{% apibody %}
+r.binary(data) &rarr; special
+{% endapibody %}
+
+# Description #
+
+Encapsulate binary data within a query.
+
+The type of data `binary` accepts depends on the client language. In JavaScript, it expects a [Node.js](http://nodejs.org) `Buffer`. Using a `Buffer` object within a query implies the use of `binary` and the ReQL driver will automatically perform the coercion.
+
+Binary objects returned to the client in JavaScript will also be Node.js `Buffer` objects. This can be changed with the `binaryFormat` option provided to [run](/api/javascript/run) to return "raw" objects.
+
+Only a limited subset of ReQL commands may be chained after `binary`:
+
+* [coerceTo](/api/javascript/coerce_to/) can coerce `binary` objects to `string` types
+* [count](/api/javascript/count/) will return the number of bytes in the object
+* [slice](/api/javascript/slice/) will treat bytes like array indexes (i.e., `slice(10,20)` will return bytes 10&ndash;19)
+* [typeOf](/api/javascript/type_of) returns `PTYPE<BINARY>`
+
+__Example:__ Save an avatar image to a existing user record.
+
+```js
+// avatarImage is a PNG previously read from a file
+r.table('users').get(100).update({
+	avatar: r.binary(avatarImage)
+}).run(conn, callback);
+```
+
+__Example:__ Get the size of an existing avatar image.
+
+```js
+r.table('users').get(100).pluck('avatar').count().run(conn, callback);
+// result returned to callback
+14156
+```
