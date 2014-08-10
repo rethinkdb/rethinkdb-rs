@@ -12,8 +12,8 @@ io:
         - object
     -   - object
         - array
-    -	- binary
-    	- string
+    -   - binary
+        - string
 related_commands:
     object: object/
 ---

@@ -5,7 +5,7 @@ permalink: api/javascript/count/
 command: count
 io:
     -   - sequence
-    	- binary
+        - binary
         - number
 related_commands:
     map: map/
