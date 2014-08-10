@@ -1034,6 +1034,7 @@ r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
 selection.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
 stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
 array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
+binary.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; binary
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1201,6 +1202,7 @@ r.table("posts").map(function(doc) {
 
 {% apibody %}
 sequence.count([filter]) &rarr; number
+binary.count() &rarr; number
 {% endapibody %}
 
 Count the number of elements in the sequence. With a single argument, count the number
@@ -2392,6 +2394,25 @@ r.table('people').getAll('Alice', 'Bob').run(conn, callback)
 r.table('people').getAll(r.args(['Alice', 'Bob'])).run(conn, callback)
 ```
 
+## [binary](binary/) ##
+
+{% apibody %}
+r.binary(data) &rarr; special
+{% endapibody %}
+
+Encapsulate binary data within a query.
+
+__Example:__ Save an avatar image to a existing user record.
+
+```js
+// avatarImage is a PNG previously read from a file
+r.table('users').get(100).update({
+	avatar: r.binary(avatarImage)
+}).run(conn, callback);
+```
+
+[Read more about this command &rarr;](binary/)
+
 ## [do](do/) ##
 
 {% apibody %}
@@ -2545,6 +2566,7 @@ value.coerceTo('string') &rarr; string
 string.coerceTo('number') &rarr; number
 array.coerceTo('object') &rarr; object
 object.coerceTo('array') &rarr; array
+binary.coerceTo('string') &rarr; string
 {% endapibody %}
 
 Convert a value of one type into another.

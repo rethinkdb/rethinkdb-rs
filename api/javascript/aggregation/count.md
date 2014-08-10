@@ -5,6 +5,7 @@ permalink: api/javascript/count/
 command: count
 io:
     -   - sequence
+    	- binary
         - number
 related_commands:
     map: map/
@@ -20,6 +21,7 @@ related_commands:
 
 {% apibody %}
 sequence.count([value_or_predicate]) &rarr; number
+binary.count() &rarr; number
 {% endapibody %}
 
 # Description #
@@ -29,6 +31,7 @@ counts the number of times that value occurs in the sequence.  If
 called with a predicate function, counts the number of elements in the
 sequence where that function returns `true`.
 
+If `count` is called on a [binary](/api/javascript/binary) object, it will return the size of the object in bytes.
 
 __Example:__ Count the number of users.
 
