@@ -11,7 +11,7 @@ io:
 # Command syntax #
 
 {% apibody %}
-r.binary(data) &rarr; special
+r.binary(data) &rarr; binary
 {% endapibody %}
 
 # Description #

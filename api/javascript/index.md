@@ -2412,7 +2412,7 @@ r.table('people').getAll(r.args(['Alice', 'Bob'])).run(conn, callback)
 ## [binary](binary/) ##
 
 {% apibody %}
-r.binary(data) &rarr; special
+r.binary(data) &rarr; binary
 {% endapibody %}
 
 Encapsulate binary data within a query.
@@ -2420,10 +2420,17 @@ Encapsulate binary data within a query.
 __Example:__ Save an avatar image to a existing user record.
 
 ```js
-// avatarImage is a PNG previously read from a file
-r.table('users').get(100).update({
-	avatar: r.binary(avatarImage)
-}).run(conn, callback);
+var fs = require('fs');
+fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
+    if (err) {
+        // Handle error
+    }
+    else {
+        r.table('users').get(100).update({
+            avatar: avatarImage
+        })
+    }
+});
 ```
 
 [Read more about this command &rarr;](binary/)
