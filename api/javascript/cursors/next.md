@@ -39,7 +39,7 @@ cursor.next(function(err, row) {
 ```
 
 __Note:__ The canonical way to retrieve all the results is to use [each](../each/)
-or [toArray](../toArray/). The `next` command should be used only when you may not
+or [toArray](../to_array/). The `next` command should be used only when you may not
 retrieve all the elements of a cursor or want to delay some operations.
 
 
