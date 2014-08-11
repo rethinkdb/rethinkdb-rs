@@ -504,6 +504,21 @@ __Example:__ List the available secondary indexes for this table.
 r.table('marvel').indexList().run(conn, callback)
 ```
 
+## [indexRename](index_rename/) ##
+
+{% apibody %}
+table.indexRename(oldIndexName, newIndexName[, {overwrite: false}]) &rarr; object
+{% endapibody %}
+
+Rename an existing secondary index on a table. If the optional argument `overwrite` is specified as `true`, a previously existing index with the new name will be deleted and the index will be renamed. If `overwrite` is `false` (the default) an error will be raised if the new index name already exists.
+
+__Example:__ Rename an index on the comments table.
+
+```js
+r.table('comments').indexRename('postId', 'messageId').run(conn, callback)
+```
+
+
 ## [indexStatus](index_status/) ##
 
 {% apibody %}
