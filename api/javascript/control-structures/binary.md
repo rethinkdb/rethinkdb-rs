@@ -5,7 +5,7 @@ permalink: api/javascript/binary/
 command: binary
 io:
     - r
-    - special
+    - binary
 ---
 
 # Command syntax #
@@ -33,10 +33,17 @@ Only a limited subset of ReQL commands may be chained after `binary`:
 __Example:__ Save an avatar image to a existing user record.
 
 ```js
-// avatarImage is a PNG previously read from a file
-r.table('users').get(100).update({
-	avatar: r.binary(avatarImage)
-}).run(conn, callback);
+var fs = require('fs');
+fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
+    if (err) {
+        // Handle error
+    }
+    else {
+        r.table('users').get(100).update({
+            avatar: avatarImage
+        })
+    }
+});
 ```
 
 __Example:__ Get the size of an existing avatar image.
