@@ -40,11 +40,12 @@ See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on 
 
 * `verify`: Verify the server's SSL certificate, specified as a boolean. Default: true.
 
-* `result_format`: The format the result should be returned in. The values can be `'text'` (always return as a string), `'json'` (parse the result as JSON, raising an error if the parsing fails), `'jsonp'` (parse the result as [padded JSON](http://www.json-p.org/)), or `'auto'` . The default is `'auto'`.
+* `result_format`: The format the result should be returned in. The values can be `'text'` (always return as a string), `'json'` (parse the result as JSON, raising an error if the parsing fails), `'jsonp'` (parse the result as [padded JSON](http://www.json-p.org/)), `'binary'` (return a binary object), or `'auto'` . The default is `'auto'`.
 
     When `result_format` is `'auto'`, the response body will be parsed according to the `Content-Type` of the response:
     * `application/json`: parse as `'json'`
     * `application/json-p`, `text/json-p`, `text/javascript`: parse as `'jsonp'`
+    * `audio/*`, `video/*`, `image/*`, `application/octet-stream`: return a binary object
     * Anything else: parse as `'text'`
 
 ## Request Options
