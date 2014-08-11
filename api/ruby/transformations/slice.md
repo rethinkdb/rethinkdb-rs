@@ -16,6 +16,7 @@ related_commands:
 selection.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; selection
 stream.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
 array.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
+binary.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; binary
 {% endapibody %}
 
 # Description #
@@ -27,6 +28,8 @@ Return the elements of a sequence within the specified range.
 If `end_index` is past the end of the sequence, all elements from `start_index` to the end of the sequence will be returned. If `start_index` is past the end of the sequence or `end_index` is less than `start_index`, a zero-element sequence will be returned (although see below for negative `end_index` values). An error will be raised on a negative `start_index`.
 
 A negative `end_index` is allowed with arrays; in that case, the returned range counts backward from the array's end. That is, the range of `(2,-1)` returns the second element through the next-to-last element of the range. A negative `end_index` is not allowed with a stream. (An `end_index` of &minus;1 *is* allowed with a stream if `right_bound` is closed; this behaves as if no `end_index` was specified.)
+
+If `slice` is used with a [binary](/api/ruby/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
 
 If you are only specifying the indexes and not the bounding options, you may use Ruby's range operator as a shorthand: `[start_index..end_index]`. Note that when you use this shorthand `right_bound` will be `closed` and thus include `end_index`.
 

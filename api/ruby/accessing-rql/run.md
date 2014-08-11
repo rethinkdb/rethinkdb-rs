@@ -37,6 +37,7 @@ been committed to disk.
 - `noreply`: set to `true` to not receive the result object or cursor and return immediately.
 - `db`: the database to run this query against, specified with the [db](/api/ruby/db/) command. The default is the database specified in the `db` parameter to [connect](/api/ruby/connect/) (which defaults to `test`). The database may also be specified separately with the `db` command.
 - `array_limit`: the maximum numbers of array elements that can be returned by a query (default: 100,000). This affects all ReQL commands that return arrays. Note that it has no effect on the size of arrays being _written_ to the database; those always have an upper limit of 100,000 elements.
+- `binary_format`: what format to return binary data in (default: `'native'`). Set this to `'raw'` if you want the raw pseudotype.
 
 
 __Example:__ Run a query on the connection `conn` and print out every

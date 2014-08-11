@@ -8,6 +8,8 @@ io:
         - stream
     -   - array
         - array
+    -   - binary
+        - binary
 related_commands:
     order_by: order_by/
     skip: skip/
@@ -21,6 +23,7 @@ related_commands:
 selection.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
 stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
 array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
+binary.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; binary
 {% endapibody %}
 
 # Description #
@@ -32,6 +35,8 @@ Return the elements of a sequence within the specified range.
 If `endIndex` is past the end of the sequence, all elements from `startIndex` to the end of the sequence will be returned. If `startIndex` is past the end of the sequence or `endIndex` is less than `startIndex`, a zero-element sequence will be returned (although see below for negative `endIndex` values). An error will be raised on a negative `startIndex`.
 
 A negative `endIndex` is allowed with arrays; in that case, the returned range counts backward from the array's end. That is, the range of `(2,-1)` returns the second element through the next-to-last element of the range. A negative `endIndex` is not allowed with a stream. (An `endIndex` of &minus;1 *is* allowed with a stream if `rightBound` is closed; this behaves as if no `endIndex` was specified.)
+
+If `slice` is used with a [binary](/api/javascript/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
 
 **Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
