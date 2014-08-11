@@ -28,6 +28,7 @@ Only a limited subset of ReQL commands may be chained after `binary`:
 * [count](/api/javascript/count/) will return the number of bytes in the object
 * [slice](/api/javascript/slice/) will treat bytes like array indexes (i.e., `slice(10,20)` will return bytes 10&ndash;19)
 * [typeOf](/api/javascript/type_of) returns `PTYPE<BINARY>`
+* [info](/api/javascript/info) will return information on a binary object.
 
 __Example:__ Save an avatar image to a existing user record.
 
@@ -41,7 +42,7 @@ r.table('users').get(100).update({
 __Example:__ Get the size of an existing avatar image.
 
 ```js
-r.table('users').get(100).pluck('avatar').count().run(conn, callback);
+r.table('users').get(100)('avatar').count().run(conn, callback);
 // result returned to callback
 14156
 ```
