@@ -24,9 +24,13 @@ The result is an array where for each index, there will be an object like:
 ```rb
 {
     :index => <index_name>,
-    :ready => true
+    :ready => true,
+    :multi => <bool>,
+    :outdated => <bool>
 }
 ```
+
+The `multi` field will be `true` or `false` depending on whether this index was created as a multi index (see [index_create](/api/ruby/index_create/) for details). The `outdated` field will be true if the index is outdated in the current version of RethinkDB and needs to be rebuilt.
 
 
 __Example:__ Wait for all indexes on the table `test` to be ready:
