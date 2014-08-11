@@ -2250,6 +2250,23 @@ r.table('people').get_all('Alice', 'Bob').run(conn)
 r.table('people').get_all(r.args(['Alice', 'Bob'])).run(conn)
 ```
 
+## [binary](binary/) ##
+
+{% apibody %}
+r.binary(data) &rarr; binary
+{% endapibody %}
+
+Encapsulate binary data within a query.
+
+__Example:__ Save an avatar image to a existing user record.
+
+```rb
+f = File.open('./default_avatar.png', 'rb')
+avatar_image = f.read()
+f.close()
+r.table('users').get(100).update({:avatar => r.binary(avatar_image)}).run(conn)
+```
+
 ## [do](do/) ##
 
 {% apibody %}

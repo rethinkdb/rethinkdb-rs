@@ -15,6 +15,8 @@ r.expr(value) &rarr; value
 
 Construct a ReQL JSON object from a native object.
 
+If the native object is of the `bytes` type, then `expr` will return a binary object. See [binary](/api/python/binary) for more information.
+
 __Example:__ Objects wrapped with expr can then be manipulated by ReQL API functions.
 
 ```py

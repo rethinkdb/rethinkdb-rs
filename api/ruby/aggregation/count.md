@@ -17,6 +17,7 @@ related_commands:
 
 {% apibody %}
 sequence.count([value_or_predicate]) &rarr; number
+binary.count() &rarr; number
 {% endapibody %}
 
 # Description #
@@ -25,6 +26,8 @@ Counts the number of elements in a sequence.  If called with a value,
 counts the number of times that value occurs in the sequence.  If
 called with a predicate function, counts the number of elements in the
 sequence where that function returns `true`.
+
+If `count` is called on a [binary](/api/ruby/binary) object, it will return the size of the object in bytes.
 
 __Example:__ Count the number of users.
 
