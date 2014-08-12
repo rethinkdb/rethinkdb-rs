@@ -15,7 +15,8 @@ value.coerce_to('string') &rarr; string
 string.coerce_to('number') &rarr; number
 array.coerce_to('object') &rarr; object
 object.coerce_to('array') &rarr; array
-binary.coerce_to('array') &rarr; string
+binary.coerce_to('string') &rarr; string
+string.coerce_to('binary') &rarr; binary
 {% endapibody %}
 
 # Description #
@@ -26,7 +27,7 @@ Convert a value of one type into another.
 * an array of key-value pairs can be coerced to an object
 * a string can be coerced to a number
 * any datum (single value) can be coerced to a string
-* a binary object can be coerced to a string
+* a binary object can be coerced to a string and vice-versa
 
 __Example:__ Coerce a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 
