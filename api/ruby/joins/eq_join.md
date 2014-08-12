@@ -10,6 +10,7 @@ related_commands:
     zip: zip/
 ---
 
+# Command syntax #
 
 {% apibody %}
 sequence.eq_join(left_field, right_table[, :index => 'id']) &rarr; sequence
