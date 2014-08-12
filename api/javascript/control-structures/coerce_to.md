@@ -13,7 +13,7 @@ io:
     -   - object
         - array
     -   - binary
-    	- string
+        - string
     -   - string
         - binary
 related_commands:

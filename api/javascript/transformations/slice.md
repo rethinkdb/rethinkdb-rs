@@ -9,7 +9,7 @@ io:
     -   - array
         - array
     -   - binary
-    	- binary
+        - binary
 related_commands:
     order_by: order_by/
     skip: skip/
