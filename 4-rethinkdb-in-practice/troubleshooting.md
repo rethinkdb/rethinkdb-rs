@@ -235,6 +235,42 @@ rethinkdb --canonical-address <external IP>
 
 This may also be specified in the [config file](http://rethinkdb.com/docs/cluster-on-startup/).
 
+## My secondary index is outdated ##
+
+You may receive a warning message about secondary indexes on startup being "outdated" when you upgrade RethinkDB versions.
+
+```
+warn: Namespace <x> contains these outdated indexes which should be recreated:
+<index names>
+```
+
+(This may happen, for instance, between v1.13 and v1.14, when the internal format of secondary indexes changed.) Outdated indexes can still be used--they don't affect availability. However, you should rebuild your index before updating to the next version of RethinkDB.
+
+You may rebuild indexes with the `rethinkdb` command line utility:
+
+```
+rethinkdb index-rebuild [-c HOST:PORT] [-r (DB|DB.TABLE)] [-n CONCURRENT_REBUILDS]
+```
+
+The `-c` and `-r` options are similar to other `rethinkdb` options, specifying the cluster host and port (defaulting to `localhost:28015`) and either a database or a table to rebuild. The `-n` option specifies the number of rebuilds that will be performed concurrently (defaulting to 1).
+
+You may also rebuild indexes manually in ReQL:
+
+* Use [index_status](/api/python/index_status/) to retrieve a binary representation of the existing secondary index (whether it is simple, compound, multi, or based on an expression)
+* Create a new index using [index_create](/api/python/index_create/)
+* Rename the new index to the old index's name with [index_rename](/api/python/index_rename).
+
+A simple example in Python:
+
+```py
+old_index = r.table('posts').index_status('old_index').nth(0)['function'].run(conn)
+r.table('posts').index_create('new_index', old_index).run(conn)
+r.table('posts').index_wait('new_index').run(conn)
+r.table('posts').index_rename('new_index', 'old_index', overwrite=True).run(conn)
+```
+
+(The same example can be found in `index_create` for both [Ruby](/api/ruby/index_create) and [JavaScript](/api/javascript/index_create).)
+
 ## How do I store a Ruby DateTime object in RethinkDB? ##
 
 The short answer: you can't. Use `Time` objects instead.

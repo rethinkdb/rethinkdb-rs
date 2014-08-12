@@ -31,6 +31,8 @@ RethinkDB supports different types of secondary indexes:
 - *Multi indexes* based on arrays of values.
 - Indexes based on *arbitrary expressions*.
 
+The `indexFunction` can be an anonymous function or a binary representation obtained from the `function` field of [indexStatus](/api/javascript/index_status).
+
 __Example:__ Create a simple index based on the field `postId`.
 
 ```js
@@ -66,4 +68,24 @@ r.table('posts').indexCreate('authors', function(doc) {
         doc("createdAt")
     )
 }).run(conn, callback)
+```
+
+__Example:__ Create a new secondary index based on an existing one.
+
+```js
+r.table('posts').indexStatus('authors').nth(0)('function').run(conn, function (func) {
+    r.table('newPosts').indexCreate('authors', func).run(conn, callback);
+});
+```
+
+__Example:__ Rebuild an outdated secondary index on a table.
+
+```js
+r.table('posts').indexStatus('oldIndex').nth(0).do(function(oldIndex) {
+  return r.table('posts').indexCreate('newIndex', oldIndex("function")).do(function() {
+    return r.table('posts').indexWait('newIndex').do(function() {
+      return r.table('posts').indexRename('newIndex', 'oldIndex', {overwrite: true})
+    })
+  })
+})
 ```
