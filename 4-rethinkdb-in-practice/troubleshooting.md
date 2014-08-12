@@ -235,4 +235,12 @@ rethinkdb --canonical-address <external IP>
 
 This may also be specified in the [config file](http://rethinkdb.com/docs/cluster-on-startup/).
 
+## How do I store a Ruby DateTime object in RethinkDB? ##
+
+The short answer: you can't. Use `Time` objects instead.
+
+The slightly longer answer: there's only one native `time` data type in RethinkDB. When a language supports more than one kind of date/time object, we think it's better to explicitly support one and only one of them in the client driver to avoid confusion. Otherwise, you might insert a `DateTime` object and get a `Time` object back.
+
+You can use Ruby's `DateTime.to_time` and `Time.to_datetime` methods to easily convert between one and the other.
+
 {% endfaqsection %}
