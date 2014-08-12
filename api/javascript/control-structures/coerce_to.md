@@ -12,7 +12,7 @@ io:
         - object
     -   - object
         - array
-    -	- binary
+    -   - binary
     	- string
     -   - string
         - binary
