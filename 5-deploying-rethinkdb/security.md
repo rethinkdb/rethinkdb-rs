@@ -6,6 +6,10 @@ docs_active: security
 permalink: docs/security/
 ---
 
+<img alt="Securing your cluster Illustration"
+     class="api_command_illustration"
+     src="/assets/images/docs/api_illustrations/secure-cluster.png" />
+
 The best way to secure a RethinkDB cluster is to run it on a protected
 network that doesn't allow access from the outside world. However,
 this may not always be feasible. For example, cloud deployments often
