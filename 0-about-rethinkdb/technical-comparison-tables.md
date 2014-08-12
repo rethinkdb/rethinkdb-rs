@@ -74,25 +74,23 @@ floating-point), string, boolean, array, object, null.
 
 Accessing data in MongoDB can be done using:
 
-*   [CRUD operations using BSON objects](http://docs.mongodb.org/master/single/#queries-in-mongodb) for inserting, bulk inserting, filtering, and updating documents
-*   aggregations using [map/reduce](http://docs.mongodb.org/master/single/index.html#mapReduce)  or the  [aggregation framework](http://docs.mongodb.org/master/single/#aggregation) (starting with ver.2.2)
+* [CRUD operations using BSON objects](http://docs.mongodb.org/manual/core/crud/) for inserting, bulk inserting, filtering, and updating documents
+* [Aggregations](http://docs.mongodb.org/manual/aggregation/) including [MapReduce](http://docs.mongodb.org/manual/core/map-reduce/)
 
 RethinkDB provides a [unified chainable query language](/api) supporting:
 
 *   CRUD operations
-*	aggregations (including map/reduce and the more advanced [group/map/reduce](/docs/map-reduce))
-*	JOINs
-*	full sub-queries
+*	Aggregations including [MapReduce & GroupMapReduce](/docs/map-reduce/)
+*	Joins
+*	Full sub-queries
 
 
 ## Javascript integration ##
 
 MongoDB's query language allows JavaScript queries using the [$where
-clause](http://docs.mongodb.org/master/single/index.html#_S_where). MongoDB
-[MapReduce functions](http://docs.mongodb.org/manual/applications/map-reduce/)
-are defined in JavaScript. MongoDB uses a [single-threaded JavaScript engine
-for executing MapReduce
-operations](http://docs.mongodb.org/manual/applications/map-reduce/#concurrency). 
+clause](http://docs.mongodb.org/manual/reference/operator/query/where/). MongoDB
+[MapReduce functions](http://docs.mongodb.org/manual/core/map-reduce/)
+are defined in JavaScript. 
 
 RethinkDB allows embedding [JavaScript
 expressions](http://www.rethinkdb.com/api/javascript/js/) anywhere
@@ -101,20 +99,19 @@ V8 execution engines for isolation.
 
 ## Access languages ##
 
-MongoDB has [13 official and many community supported
-libraries](http://www.mongodb.org/display/DOCS/Drivers). MongoDB's [wire
+MongoDB has [10 official and many community supported
+libraries](http://docs.mongodb.org/ecosystem/drivers/). MongoDB's [wire
 protocol is TCP based and uses
-BSON](http://api.mongodb.org/wiki/current/Mongo%20Wire%20Protocol.html).
+BSON](http://docs.mongodb.org/meta-driver/latest/legacy/mongodb-wire-protocol/).
 
 RethinkDB provides official libraries for Javascript/Node.js, Python, Ruby.
 In addition, there are [community supported client drivers](/docs/install-drivers/) for more than half a dozen other languages.
-RethinkDB uses [Protocol Buffers](http://code.google.com/p/protobuf/) over TCP
-for client-server communications.
+RethinkDB uses JSON over TCP for client-server communications.
 
 ## Indexing ##
 
 MongoDB supports [unique, compound, secondary, sparse, and geospatial
-indexes](http://docs.mongodb.org/master/single/index.html#document-core/indexes).
+indexes](http://docs.mongodb.org/manual/indexes/).
 All MongoDB indexes use a B-tree data structure. Every MongoDB query, including
 update operations, uses one and only one index.
 
@@ -129,13 +126,11 @@ index.
 
 MongoDB can be manually deployed on the majority of cloud platforms (AWS,
 Joyent, Rackspace, etc.). MongoDB hosting is also available from a [wide range
-of providers](http://www.mongodb.org/display/DOCS/Hosting+Center) either as a
-dedicated service (MongoHQ, MongoLab, etc.) or as an add-on on
-Platform-as-a-Service solutions (dotCloud, Heroku, etc.). 
+of providers](http://docs.mongodb.org/ecosystem/#platforms-and-services)
+either as a dedicated service or as an add-on on Platform-as-a-Service
+solutions.
 
-RethinkDB can be manually deployed on cloud platforms like AWS or as a custom
-service on dotCloud using
-[rethinkdb-dotcloud](https://github.com/rethinkdb/rethinkdb-dotcloud).
+RethinkDB can be manually deployed on cloud platforms such as AWS.
 
 
 <div class="comparison-section"><a name="administration" class="comparison-anchor"></a></div>
@@ -151,7 +146,7 @@ service on dotCloud using
 ## CLI Tools ##
 
 MongoDB provides a [JavaScript interactive
-shell](http://www.mongodb.org/display/DOCS/mongo+-+The+Interactive+Shell) that
+shell](http://docs.mongodb.org/manual/reference/program/mongo/) that
 can be used for inspecting data, testing queries, creating indexes, maintenance
 scripts, and other administrative functions.
 
@@ -162,10 +157,9 @@ resources. The command-line client offers integrated help and auto-completion.
 ## UI tools ##
 
 MongoDB has a simple [HTTP
-interface](http://www.mongodb.org/display/DOCS/Http+Interface#HttpInterface-HTTPConsole)
-that displays read-only information about a server.  10gen offers a hosted
-monitoring solution called
-[MMS](http://www.10gen.com/mongodb-monitoring-service).
+interface](http://docs.mongodb.org/ecosystem/tools/http-interfaces/#http-console)
+that displays read-only information about a server.  MongoDB (the company)
+offers a hosted monitoring solution called [MMS](https://mms.mongodb.com).
 
 RethinkDB has a web-based admin UI accessible on every node of a cluster that
 provides high level and guided support for operating the cluster. The admin UI
@@ -177,7 +171,7 @@ data.
 
 The 3 main components of a MongoDB cluster (`mongos`, `mongod`, and the 3
 config servers) are [highly
-available](http://docs.mongodb.org/manual/administration/sharding-architectures/#sharding-high-availability).
+available](http://docs.mongodb.org/manual/core/sharded-cluster-high-availability/).
 For servers storing data, MongoDB allows setting up replica sets with automatic
 primary election.
 
@@ -189,8 +183,8 @@ re-elections.
 
 MongoDB provides different mechanisms for backing up data:
 
-*   the [`mongodump`](http://docs.mongodb.org/manual/administration/backups/#database-dump-with-mongodump) utility can perform a live backup of data. 
-*   [disk/block level snapshots](http://docs.mongodb.org/manual/administration/backups/#backup-with-journaling) can be used to backup a MongoDB instance when journaling is enabled. When [journaling is disabled](http://docs.mongodb.org/manual/administration/backups/#backup-without-journaling), snapshots are possible after flushing all writes to disk and locking the database.
+*   the [`mongodump`](http://docs.mongodb.org/manual/reference/program/mongodump/) utility can perform a live backup of data. 
+*   [disk/block level snapshots](http://docs.mongodb.org/manual/tutorial/backup-with-filesystem-snapshots/) can be used to backup a MongoDB instance when journaling is enabled. When [journaling is disabled](http://docs.mongodb.org/manual/tutorial/backup-with-filesystem-snapshots/#create-backups-on-instances-that-do-not-have-journaling-enabled), snapshots are possible after flushing all writes to disk and locking the database.
 
 RethinkDB supports [hot backup](/docs/backup/) on a live cluster via `dump` and `restore` commands.
 
@@ -210,7 +204,7 @@ RethinkDB supports [hot backup](/docs/backup/) on a live cluster via `dump` and 
 
 MongoDB supports automatic range-based sharding using a shard key. A sharded
 MongoDB cluster requires [3 config servers and 1 or more `mongos`
-instances](http://docs.mongodb.org/manual/core/sharding/#infrastructure-requirements).
+instances](http://docs.mongodb.org/manual/core/sharded-cluster-architectures-production/).
 
 RethinkDB supports 1-click sharding from the admin UI. Sharding can be
 configured also from the CLI which also supports manual assignments of shards
@@ -231,7 +225,7 @@ B-Tree diff algorithms and doesn't require log-shipping.
 ## Multi Datacenter Support ##
 
 MongoDB can be configured to run in multiple datacenters via [different
-mechanisms](http://www.mongodb.org/display/DOCS/Data+Center+Awareness):
+mechanisms](http://docs.mongodb.org/manual/data-center-awareness/):
 
 - assigning priorities to members of replica-sets
 - support for nearby replication
@@ -249,9 +243,7 @@ tasks](http://docs.mongodb.org/manual/applications/map-reduce/) through the
 `mapReduce` command or from the interactive shell. MongoDB MapReduce allows
 pre-filtering and ordering the data for the map phase. It also allows storing
 the results in a new collection. The various phases of the MongoDB MapReduce
-implementation make uses of different locks and the [JavaScript code is
-executed in a single
-thread](http://docs.mongodb.org/manual/applications/map-reduce/#concurrency).
+implementation make uses of different locks.
 
 RethinkDB supports MapReduce with the `map` and `reduce` commands, as
 well as grouped MapReduce with the `group` command.  MapReduce queries
@@ -330,7 +322,7 @@ evaluations.
 ## Durability ##
 
 MongoDB supports [write-ahead journaling of
-operations](http://www.mongodb.org/display/DOCS/Journaling) to facilitate fast
+operations](http://docs.mongodb.org/manual/tutorial/manage-journaling/) to facilitate fast
 crash recovery and durability in the storage engine. MongoDB offers a [recovery
 procedure](http://docs.mongodb.org/manual/tutorial/recover-data-following-unexpected-shutdown/)
 when journaling is not enabled. 
@@ -366,7 +358,7 @@ and streamed back to the client.
 ## Caching engine ##
 
 MongoDB's storage engine uses memory mapped files which also function as an
-[OS-level LRU caching system](http://www.mongodb.org/display/DOCS/Caching).
+[OS-level LRU caching system](http://docs.mongodb.org/manual/faq/storage/).
 MongoDB can use all free memory on the server for cache space automatically
 without any configuration of a cache size.
 
