@@ -4,8 +4,8 @@ language: Javascript
 permalink: api/javascript/binary/
 command: binary
 io:
-    - r
-    - binary
+    -   - r
+        - binary
 ---
 
 # Command syntax #
