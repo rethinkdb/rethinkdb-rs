@@ -28,8 +28,8 @@ r.now().day_of_week().run(conn)
 __Example:__ Retrieve all the users who were born on a Tuesday.
 
 ```py
-r.table("users").filter{ |user|
+r.table("users").filter( lambda user:
     user["birthdate"].day_of_week().eq(r.tuesday)
-}
+)
 ```
 
