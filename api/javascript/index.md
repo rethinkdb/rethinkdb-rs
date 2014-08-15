@@ -2663,6 +2663,20 @@ r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn, callback)
 
 [Read more about this command &rarr;](http/)
 
+## [uuid](uuid/) ##
+
+{% apibody %}
+r.uuid(array) &rarr; string
+{% endapibody %}
+
+Return a UUID (universally unique identifier), a string that can be used as a unique ID.
+
+__Example:__ Generate a UUID.
+
+```js
+> r.uuid().run(conn, callback)
+// result returned to callback
+27961a0e-f4e8-4eb3-bf95-c5203e1d87b9
+```
 
 {% endapisection %}
-
