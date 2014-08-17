@@ -5,6 +5,10 @@ active: docs
 docs_active: sharding-and-replication
 permalink: docs/sharding-and-replication/
 ---
+
+<img alt="Sharding and Replication Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/shard-and-replicate.png" />
+
 RethinkDB allows you to shard and replicate your cluster on a per-table basis.
 
 Sharding a table is as easy as typing the number of shards you'd like in the

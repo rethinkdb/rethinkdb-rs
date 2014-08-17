@@ -10,12 +10,17 @@ related_commands:
     zip: zip/
 ---
 
+# Command syntax #
 
 {% apibody %}
 sequence.eq_join(left_field, right_table[, :index => 'id']) &rarr; sequence
 {% endapibody %}
 
 # Description #
+
+
+<img alt="Data Modeling Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/table-joins.png" />
 
 Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other Re_qL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 

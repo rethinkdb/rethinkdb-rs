@@ -22,18 +22,21 @@ should be available for your operating system's repository. These packages are:
 - gperftools
 - ncurses
 - boost
-- nodejs and npm
+- nodejs/npm
 - Python 2
+- libcurl
 
 
 On Ubuntu 13.10+, you can install build dependencies with apt-get ([see instructions for previous versions](/docs/install/ubuntu/)):
 
 ```bash
-sudo apt-get install git-core g++ nodejs npm libprotobuf-dev libgoogle-perftools-dev \
-    libncurses5-dev libboost-all-dev nodejs-legacy
+sudo apt-get install git-core g++ nodejs npm libprotobuf-dev \
+libgoogle-perftools-dev libncurses5-dev libboost-all-dev nodejs-legacy \
+curl libcurl3 libcurl4-openssl-dev protobuf-compiler
 ```
 
 ## Get the source code ##
+
 Clone the RethinkDB repository:
 
 ```bash
@@ -46,8 +49,10 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb
-./configure
+./configure --allow-fetch
 make
 ```
+
+If you're compiling on a multicore or multiprocessor machine, you may be able to use `make -j #` to speed up the build process, where '#' is the total number of CPU cores. (On a 4-core machine, you can use `make -j 4`.) However, some older versions of `make` will produce a segmentation fault error when using `-j` with RethinkDB; if that happens, just run `make` without the `-j` option.
 
 You'll find the `rethinkdb` binary in the `build/release/` subfolder.

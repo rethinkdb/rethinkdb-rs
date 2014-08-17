@@ -207,7 +207,7 @@ will return `7`.
 | Handshake 4 | SEND | JSON | 0x7e6970c7 | `c7 70 69 7e` |
 | Handshake 5 | RECV | success | "SUCCESS" | `53 55 43 43 45 53 53` |
 | Query 1 | SEND | token | 5 | `05 00 00 00 00 00 00 00` |
-| Query 2 | SEND | query length | 20 | `1B 00 00 00` |
+| Query 2 | SEND | query length | 27 | `1B 00 00 00` |
 | Query 3 | SEND | query | '[1,[43,[[15,["test"]]]],{}]' | `5b 31 2c 5b 34 33 2c 5b 5b 31 35 2c 5b 22 74 65 73 74 22 5d 5d 5d 5d 2c 7b 7d 5d` |
 | Response 1 | RECV | token | 5 | `05 00 00 00 00 00 00 00` |
 | Response 2 | RECV | response length | 15 | `0F 00 00 00` |

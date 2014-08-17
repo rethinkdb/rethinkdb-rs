@@ -6,6 +6,10 @@ docs_active: changefeeds
 permalink: docs/changefeeds/
 ---
 
+<img alt="Data Modeling Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/change-feeds.png" />
+
+
 Changefeeds are a way for clients to subscribe to changes on a
 table. Any time a document in the table is inserted, updated, or
 deleted, the client driver can get notified about the

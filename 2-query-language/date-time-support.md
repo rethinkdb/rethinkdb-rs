@@ -6,6 +6,9 @@ docs_active: dates-and-times
 permalink: docs/dates-and-times/
 ---
 
+<img alt="Dates and Times Illustration" class="api_command_illustration"
+     src="/assets/images/docs/api_illustrations/dates-and-times.png" />
+
 RethinkDB has native support for millisecond-precision times with time zones.
 Some highlights:
 
