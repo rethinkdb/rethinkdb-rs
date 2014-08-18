@@ -1752,7 +1752,7 @@ string.upcase() &rarr; string
 {% endapibody %}
 
 
-Upcases a string.
+Uppercases a string.
 
 __Example:__
 
@@ -1766,7 +1766,7 @@ r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 string.downcase() &rarr; string
 {% endapibody %}
 
-Downcases a string.
+Lowercases a string.
 
 __Example:__
 

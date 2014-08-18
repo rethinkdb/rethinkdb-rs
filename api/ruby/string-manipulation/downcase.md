@@ -17,7 +17,7 @@ string.downcase() &rarr; string
 
 # Description #
 
-Downcases a string.
+Lowercases a string.
 
 __Example:__
 
