@@ -1331,6 +1331,8 @@ r.expr([3, 5, 7]).max().run(conn, callback)
 
 {% apibody %}
 sequence.distinct() &rarr; array
+table.distinct() &rarr; stream
+table.distinct({index: <indexname>}) &rarr; stream
 {% endapibody %}
 
 Remove duplicate elements from the sequence.
@@ -1338,8 +1340,9 @@ Remove duplicate elements from the sequence.
 __Example:__ Which unique villains have been vanquished by marvel heroes?
 
 ```js
-r.table('marvel').concatMap(function(hero) {return hero('villainList')}).distinct()
-    .run(conn, callback)
+r.table('marvel').concatMap(function(hero) {
+    return hero('villainList')
+}).distinct().run(conn, callback)
 ```
 
 [Read more about this command &rarr;](distinct/)

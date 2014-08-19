@@ -5,7 +5,9 @@ permalink: api/javascript/distinct/
 command: distinct
 io:
     -   - sequence
-        - value
+        - array
+    -   - table
+        - stream
 related_commands:
     map: map/
     concat_map: concat_map/
@@ -16,17 +18,34 @@ related_commands:
 
 {% apibody %}
 sequence.distinct() &rarr; array
+table.distinct() &rarr; stream
+table.distinct({index: <indexname>}) &rarr; stream
 {% endapibody %}
 
 # Description #
 
-Removes duplicate elements from a sequence.  Returns an array even
-when called on a stream.  Meant for use on small sequences.
+Removes duplicates from elements in a sequence.
 
-__Example:__ Which unique villains have been vanquished by marvel heroes?
+The `distinct` command can be called on any sequence, a table, or called on a table with an index.
+
+__Example:__ Which unique villains have been vanquished by Marvel heroes?
 
 ```js
 r.table('marvel').concatMap(function(hero) {
     return hero('villainList')
 }).distinct().run(conn, callback)
 ```
+
+__Example:__ Topics in a table of messages have a secondary index on them, and more than one message can have the same topic. What are the unique topics in the table?
+
+```js
+r.table('messages').distinct({index: 'topics'}).run(conn, callback)
+```
+
+The above structure is functionally identical to:
+
+```js
+r.table('messages')('topics').distinct().run(conn, callback)
+```
+
+However, the first form (passing the index as an argument to `distinct`) is faster, and won't run into array limit issues since it's returning a stream.
