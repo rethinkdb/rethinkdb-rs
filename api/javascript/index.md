@@ -757,8 +757,7 @@ table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
 
 Get all documents where the given value matches the value of the requested index.
 
-__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via
-"get" when using a secondary index.
+__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/javascript/get/) when using a secondary index.
 
 ```js
 r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn, callback)
