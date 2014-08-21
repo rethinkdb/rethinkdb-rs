@@ -75,12 +75,12 @@ floating-point), string, boolean, array, object, null.
 Accessing data in MongoDB can be done using:
 
 * [CRUD operations using BSON objects](http://docs.mongodb.org/manual/core/crud/) for inserting, bulk inserting, filtering, and updating documents
-* [Aggregations](http://docs.mongodb.org/manual/aggregation/) including [MapReduce](http://docs.mongodb.org/manual/core/map-reduce/)
+* [Aggregations](http://docs.mongodb.org/manual/aggregation/) including [map-reduce](http://docs.mongodb.org/manual/core/map-reduce/)
 
 RethinkDB provides a [unified chainable query language](/api) supporting:
 
 *   CRUD operations
-*	Aggregations including [MapReduce & GroupMapReduce](/docs/map-reduce/)
+*	Aggregations including [map-reduce & group-map-reduce](/docs/map-reduce/)
 *	Joins
 *	Full sub-queries
 
@@ -89,7 +89,7 @@ RethinkDB provides a [unified chainable query language](/api) supporting:
 
 MongoDB's query language allows JavaScript queries using the [$where
 clause](http://docs.mongodb.org/manual/reference/operator/query/where/). MongoDB
-[MapReduce functions](http://docs.mongodb.org/manual/core/map-reduce/)
+[map-reduce functions](http://docs.mongodb.org/manual/core/map-reduce/)
 are defined in JavaScript. 
 
 RethinkDB allows embedding [JavaScript
@@ -196,7 +196,7 @@ RethinkDB supports [hot backup](/docs/backup/) on a live cluster via `dump` and 
 | Sharding    | Guided range-based sharding<br/>(supervised/guided/advised/trained) | Automatic range-based sharding |
 | Replication | Sync and async replication | Replica-sets with log-shipping |
 | Multi datacenter | Multiple DC support with per-datacenter replication and write acknowledgements | Supports different options for multi DC |
-| MapReduce  | Multiple MapReduce functions<br/>Executing ReQL or Javascript operations | Javascript-based MapReduce |
+| Map-reduce  | Multiple map-reduce functions<br/>Executing ReQL or Javascript operations | Javascript-based map-reduce |
 | Performance | No published results | No official results |
 | Concurrency | Event-based and coroutines<br/>Asynchronous block-level MVCC | Threading<br/>Read-write locks | 
 
@@ -236,24 +236,24 @@ replication and write acknowledgement settings through either the admin web UI
 or CLI. RethinkDB immediate consistency based reads and writes do not require a
 special protocol for multi DC replication.
 
-## MapReduce ##
+## Map-reduce ##
 
-MongoDB supports running [JavaScript-based MapReduce
+MongoDB supports running [JavaScript-based map-reduce
 tasks](http://docs.mongodb.org/manual/applications/map-reduce/) through the
-`mapReduce` command or from the interactive shell. MongoDB MapReduce allows
+`mapReduce` command or from the interactive shell. MongoDB map-reduce allows
 pre-filtering and ordering the data for the map phase. It also allows storing
-the results in a new collection. The various phases of the MongoDB MapReduce
+the results in a new collection. The various phases of the MongoDB map-reduce
 implementation make uses of different locks.
 
-RethinkDB supports MapReduce with the `map` and `reduce` commands, as
-well as grouped MapReduce with the `group` command.  MapReduce queries
+RethinkDB supports map-reduce with the `map` and `reduce` commands, as
+well as group-map-reduce with the `group` command.  Map-reduce queries
 can process data using both ReQL and JavaScript. RethinkDB operations
 are transparently and fully distributed. None of these operations
-require any locks. RethinkDB MapReduce functions can be part of
+require any locks. RethinkDB map-reduce functions can be part of
 chained queries, by preceding, following, or being sub-queries of
 other operations.
 
-Neither MongoDB nor RethinkDB support incremental MapReduce by default.
+Neither MongoDB nor RethinkDB support incremental map-reduce by default.
 
 ## Performance ##
 
@@ -267,7 +267,7 @@ releases.
 
 MongoDB uses [locks at various
 levels](http://docs.mongodb.org/manual/faq/concurrency/#which-operations-lock-the-database)
-for ensuring data consistency. In MongoDB, v2.2 writes and MapReduce require
+for ensuring data consistency. In MongoDB, v2.2 writes and map-reduce require
 write locks at the database level. MongoDB uses threads for handling client
 connections.
 

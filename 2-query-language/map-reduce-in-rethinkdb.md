@@ -1,33 +1,33 @@
 ---
 layout: documentation
-title: MapReduce in RethinkDB
+title: Map-reduce in RethinkDB
 active: docs
 docs_active: map-reduce
 permalink: docs/map-reduce/
 ---
 
 <img src="/assets/images/docs/api_illustrations/map-reduce.png"
-     alt="MapReduce Illustration"
+     alt="Map-reduce Illustration"
      class="api_command_illustration" />
 
-[MapReduce][wp] is a way to summarize and run aggregation functions on large data sets, potentially stored across many machines, in an efficient fashion. It works by processing the data on each server in parallel and then combining those results into one set. It was originally designed by [Google][g] and later implemented in database systems such as [Apache Hadoop][ah] and [MongoDB][md].
+[Map-reduce][wp] is a way to summarize and run aggregation functions on large data sets, potentially stored across many machines, in an efficient fashion. It works by processing the data on each server in parallel and then combining those results into one set. It was originally designed by [Google][g] and later implemented in database systems such as [Apache Hadoop][ah] and [MongoDB][md].
 
 [wp]: http://en.wikipedia.org/wiki/MapReduce
 [g]: http://research.google.com/archive/mapreduce.html
 [ah]: http;//hadoop.apache.org/
 [md]: http://www.mongodb.org/
 
-In RethinkDB, MapReduce queries operate on sequences and are composed of two or three parts:
+In RethinkDB, map-reduce queries operate on sequences and are composed of two or three parts:
 
 * An optional __group__ operation which partitions the elements of the sequence into multiple groups.
 * A __map__ operation which filters and/or transforms the elements in the sequence (or each group) into a new sequence (or grouped sequences).
 * A __reduce__ operation which aggregates the values produced by __map__ into a single value (or a single value for each group).
 
-Some other MapReduce implementations, like Hadoop's, use the mapping step to perform grouping as well; RethinkDB's implementation explicitly separates them. This is sometimes referred to as "GroupMapReduce," or GMR. RethinkDB distributes GMR queries over tables and shards efficiently. You write GMR queries with the [group][], [map][] and [reduce][] commands, although as we'll see in our examples, many ReQL commands compile to GMR queries behind the scenes--many common MapReduce cases can be accomplished in one or two lines of ReQL.
+Some other map-reduce implementations, like Hadoop's, use the mapping step to perform grouping as well; RethinkDB's implementation explicitly separates them. This is sometimes referred to as "group-map-reduce," or GMR. RethinkDB distributes GMR queries over tables and shards efficiently. You write GMR queries with the [group][], [map][] and [reduce][] commands, although as we'll see in our examples, many ReQL commands compile to GMR queries behind the scenes--many common map-reduce cases can be accomplished in one or two lines of ReQL.
 
 # A simple example #
 
-Suppose you are running a blog and would like to retrieve the number of posts. A MapReduce query to perform this operation would consist of the following steps:
+Suppose you are running a blog and would like to retrieve the number of posts. A map-reduce query to perform this operation would consist of the following steps:
 
 * A __map__ step that transforms each post into the number `1` (since we're counting each post once).
 * A __reduce__ step that sums the number of posts.
@@ -68,7 +68,7 @@ RethinkDB has shortcuts for five common aggregation operations: `count`, `sum`, 
 
 # An example with group #
 
-Suppose on the blog in the last example, you'd like to retrieve the number of posts _per category._ A MapReduce query to perform this operation would consist of the following steps:
+Suppose on the blog in the last example, you'd like to retrieve the number of posts _per category._ A map-reduce query to perform this operation would consist of the following steps:
 
 * A __group__ step that groups the posts based on their category.
 * The __map__ step from above.
@@ -226,7 +226,7 @@ reduction step executes from left to right!
 
 # Read more #
 
-For more information about MapReduce in general, read the [Wikipedia article][wp]. For more information about RethinkDB's implementation, browse our API documentation.
+For more information about map-reduce in general, read the [Wikipedia article][wp]. For more information about RethinkDB's implementation, browse our API documentation.
 
 * [group][]
 * [map][]
