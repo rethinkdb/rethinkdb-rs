@@ -12,11 +12,11 @@ RethinkDB has been publicly available for a little over a year and is still a yo
 
 Since all complex software systems are quickly evolving, we use the following terminology to refer to potential issues:
 
-- No `systemic` issues means there are no underlying architectural problems that would prevent us from quickly fixing a reported bug.
-- A `required` feature is essential for using the product for its intended purpose.
+- No **systemic** issues means there are no underlying architectural problems that would prevent us from quickly fixing a reported bug.
+- A **required** feature is essential for using the product for its intended purpose.
 
 {% infobox info %}
-<strong>Found a problem?</strong> Help make RethinkDB better &mdash; <a href="/community">ask a question</a> or <a href="https://github.com/rethinkdb/rethinkdb/issues/new">submit a bug report</a>.
+**Found a problem?** Help make RethinkDB better &mdash; [ask a question](/community) or [submit a bug report](https://github.com/rethinkdb/rethinkdb/issues/new).
 {% endinfobox %}
 
 # Single node deployments #
@@ -32,7 +32,7 @@ Single node deployments have been extensively tested and all known systemic issu
 | Sustained load               | There is no systemic degradation under sustained load. |
 | Features                     | All of the required features are available. |
 | Extent of testing            | Single node deployments have been extensively tested. |
-| Migration                    | You will have to <a href="/docs/migration/">migrate your data</a> for major feature releases (1.x -> 1.y). |
+| Migration                    | Migration for major feature releases (1.x &rarr; 1.y) is automatic. |
 
 # Deployments of small clusters #
 
@@ -48,7 +48,7 @@ Small cluster deployments are still undergoing heavy testing, but most known sys
 | Scalability                  | There are no known systemic scalability issues in small cluster deployments. |
 | Features                     | All of the required features are available. Some convenience features are still under development (e.g. resharding without loss of availability). See <a href="https://github.com/rethinkdb/rethinkdb/issues/1911">#1911</a> for details. |
 | Extent of testing            | Small cluster deployments are still undergoing heavy testing. |
-| Migration                    | You will have to <a href="/docs/migration/">migrate your data</a> for major feature releases (1.x -> 1.y). |
+| Migration                    | Migration for major feature releases (1.x &rarr; 1.y) is automatic. |
 
 # Deployments of large clusters #
 
@@ -64,5 +64,5 @@ Large cluster deployments have not been sufficiently tested, and required featur
 | Scalability                  | There may be systemic scalability issues in large cluster deployments. See <a href="https://github.com/rethinkdb/rethinkdb/issues/1861">#1861</a> and <a href="https://github.com/rethinkdb/rethinkdb/issues/1944">#1944</a> for details. |
 | Features                     | Required features are still under development. See <a href="https://github.com/rethinkdb/rethinkdb/issues/1911">#1911</a> for details. |
 | Extent of testing            | Large cluster deployments have not been sufficiently tested. |
-| Migration                    | You will have to <a href="/docs/migration/">migrate your data</a> for major feature releases (1.x -> 1.y). |
+| Migration                    | Migration for major feature releases (1.x &rarr; 1.y) is automatic. |
 
