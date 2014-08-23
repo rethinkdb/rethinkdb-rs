@@ -48,3 +48,5 @@ r.do(
     lamdba heroines: r.table('villains').get_all(r.args(heroines))
 ).run(conn)
 ```
+
+Secondary indexes can be used in extremely powerful ways with `get_all` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.

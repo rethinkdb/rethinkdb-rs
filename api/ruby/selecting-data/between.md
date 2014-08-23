@@ -53,3 +53,5 @@ r.table('dc').between('dark_knight', 'man_of_steel', :index => 'code_name').run(
 ```
 
 __Note:__ To filter all documents between *times* (and dates), do not use `between`. Instead, use the [during](/api/ruby/during) command.
+
+Secondary indexes can be used in extremely powerful ways with `between` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.

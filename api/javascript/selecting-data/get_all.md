@@ -51,3 +51,5 @@ r.do(
     }
 ).run(conn, callback)
 ```
+
+Secondary indexes can be used in extremely powerful ways with `getAll` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
