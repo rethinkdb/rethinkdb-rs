@@ -2383,7 +2383,7 @@ r.args(array) &rarr; special
 into another term.  This is useful when you want to call a variadic
 term such as `getAll` with a set of arguments produced at runtime.
 
-This is analagous to using **apply** in Javascript.
+This is analagous to using **apply** in JavaScript.
 
 __Example:__ Get Alice and Bob from the table `people`.
 
@@ -2530,7 +2530,7 @@ r.js(jsString[, {timeout: <number>}]) &rarr; value
 
 Create a javascript expression.
 
-__Example:__ Concatenate two strings using Javascript'
+__Example:__ Concatenate two strings using JavaScript.
 
 ```js
 r.js("'str1' + 'str2'").run(conn, callback)

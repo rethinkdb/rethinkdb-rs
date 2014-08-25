@@ -85,7 +85,7 @@ RethinkDB provides a [unified chainable query language](/api) supporting:
 *	Full sub-queries
 
 
-## Javascript integration ##
+## JavaScript integration ##
 
 MongoDB's query language allows JavaScript queries using the [$where
 clause](http://docs.mongodb.org/manual/reference/operator/query/where/). MongoDB
@@ -104,7 +104,7 @@ libraries](http://docs.mongodb.org/ecosystem/drivers/). MongoDB's [wire
 protocol is TCP based and uses
 BSON](http://docs.mongodb.org/meta-driver/latest/legacy/mongodb-wire-protocol/).
 
-RethinkDB provides official libraries for Javascript/Node.js, Python, Ruby.
+RethinkDB provides official libraries for JavaScript/Node.js, Python, Ruby.
 In addition, there are [community supported client drivers](/docs/install-drivers/) for more than half a dozen other languages.
 RethinkDB uses JSON over TCP for client-server communications.
 
@@ -196,7 +196,7 @@ RethinkDB supports [hot backup](/docs/backup/) on a live cluster via `dump` and 
 | Sharding    | Guided range-based sharding<br/>(supervised/guided/advised/trained) | Automatic range-based sharding |
 | Replication | Sync and async replication | Replica-sets with log-shipping |
 | Multi datacenter | Multiple DC support with per-datacenter replication and write acknowledgements | Supports different options for multi DC |
-| Map-reduce  | Multiple map-reduce functions<br/>Executing ReQL or Javascript operations | Javascript-based map-reduce |
+| Map-reduce  | Multiple map-reduce functions<br/>Executing ReQL or JavaScript operations | JavaScript-based map-reduce |
 | Performance | No published results | No official results |
 | Concurrency | Event-based and coroutines<br/>Asynchronous block-level MVCC | Threading<br/>Read-write locks | 
 

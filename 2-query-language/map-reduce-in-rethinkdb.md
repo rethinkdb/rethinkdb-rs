@@ -197,7 +197,7 @@ The output will be in this format:
 ]
 ```
 
-(Note that Javascript, or another language where `+` and `/` operators aren't overridden to work with ReQL, will require you to use [div](/api/javascript/div) and [add](/api/javascript/add).)
+(Note that JavaScript, or another language where `+` and `/` operators aren't overridden to work with ReQL, will require you to use [div](/api/javascript/div) and [add](/api/javascript/add).)
 
 # How GMR queries are executed #
 

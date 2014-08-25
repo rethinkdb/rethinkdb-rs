@@ -15,7 +15,7 @@ r.js(js_string[, timeout=<number>]) &rarr; value
 
 Create a javascript expression.
 
-__Example:__ Concatenate two strings using Javascript'
+__Example:__ Concatenate two strings using JavaScript.
 
 `timeout` is the number of seconds before `r.js` times out. The default value is 5 seconds.
 
@@ -23,7 +23,7 @@ __Example:__ Concatenate two strings using Javascript'
 r.js("'str1' + 'str2'").run(conn)
 ```
 
-__Example:__ Select all documents where the 'magazines' field is greater than 5 by running Javascript on the server.
+__Example:__ Select all documents where the 'magazines' field is greater than 5 by running JavaScript on the server.
 
 ```py
 r.table('marvel').filter(

@@ -72,20 +72,20 @@ Find out how RethinkDB compares to other NoSQL databases:
 
 ## What languages can I use to work with RethinkDB? ##
 
-You can use Ruby, Python, and Javascript/Node.js to write RethinkDB
+You can use Ruby, Python, and JavaScript/Node.js to write RethinkDB
 queries. In addition, there are [community
 supported](/docs/install-drivers/) client drivers for more than half a
 dozen other languages.
 
-If you already know Javascript, all RethinkDB queries can be freely
-intermixed with Javascript code because the server supports native
-Javascript execution using the V8 engine.
+If you already know JavaScript, all RethinkDB queries can be freely
+intermixed with JavaScript code because the server supports native
+JavaScript execution using the V8 engine.
 
 ## What are the system requirements? ##
 
 RethinkDB server is written in C++ and currently runs on 32-bit and
 64-bit Linux systems, as well as OS X 10.7 and above. Ruby, Python,
-Javascript, as well as [community supported](/docs/install-drivers/)
+JavaScript, as well as [community supported](/docs/install-drivers/)
 client drivers can run on any platform where these languages are
 supported.
 
@@ -101,7 +101,7 @@ high-throughput network hardware.
 
 No, but RethinkDB supports a very powerful, expressive, and easy to
 learn query language that can do almost anything SQL can do (and many
-things SQL can't do, such as mixing queries with Javascript
+things SQL can't do, such as mixing queries with JavaScript
 expressions and Hadoop-style map/reduce).
 
 ## How do queries get routed in a RethinkDB cluster? ##

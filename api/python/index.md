@@ -2407,7 +2407,7 @@ r.js(js_string[, timeout=<number>]) &rarr; value
 
 Create a javascript expression.
 
-__Example:__ Concatenate two strings using Javascript'
+__Example:__ Concatenate two strings using JavaScript.
 
 ```py
 r.js("'str1' + 'str2'").run(conn)

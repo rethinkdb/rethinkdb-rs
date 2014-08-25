@@ -207,7 +207,7 @@ r.table('users').filter(lambda user:
 ).run(conn)
 ```
 
-And an equivalent example in Javascript:
+And an equivalent example in JavaScript:
 
 ```js
 // WRONG: Get all users older than 30 using the ternary operator
@@ -221,7 +221,7 @@ r.table('users').filter(function(user) {
 }).run(conn, callback)
 ```
 
-(Note we must use `gt` instead of the native `>` operator in Javascript, for the same reason. In Python the `>` operator is [overloaded](https://docs.python.org/2/reference/datamodel.html#special-method-names) to be translated to ReQL's `gt` command, a trick that is not possible in Javascript.)
+(Note we must use `gt` instead of the native `>` operator in JavaScript, for the same reason. In Python the `>` operator is [overloaded](https://docs.python.org/2/reference/datamodel.html#special-method-names) to be translated to ReQL's `gt` command, a trick that is not possible in JavaScript.)
 
 ## How do I specify an external canonical IP address of a RethinkDB node? ##
 

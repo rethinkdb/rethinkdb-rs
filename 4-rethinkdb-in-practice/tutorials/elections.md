@@ -16,7 +16,7 @@ Given the timeliness of the 2012 US Presidential Election and the inherent
 intricacies of the [electoral
 process](http://en.wikipedia.org/wiki/United_States_presidential_election), we
 internally used an interesting dataset on poll results to test RethinkDB's
-query language support in the [Javascript](/docs/install-drivers/javascript),
+query language support in the [JavaScript](/docs/install-drivers/javascript),
 [Python](/docs/install-drivers/python), and
 [Ruby](/docs/install-drivers/ruby) client libraries.
 

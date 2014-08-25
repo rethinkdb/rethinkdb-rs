@@ -49,7 +49,7 @@ RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* 
 
 In the ReQL API documentation you'll often come across the term **Sequence.** Sequences aren't their own data type&mdash;instead, that's a collective word for all the list data types: arrays, streams, selections, and tables. You may also see **Any** used for commands that work with any data type.
 
-You can use the `typeOf` command at the end of a ReQL command to find out what you get as a result set. For instance (in Javascript):
+You can use the `typeOf` command at the end of a ReQL command to find out what you get as a result set. For instance (in JavaScript):
 
 ```js
 r.table('users').get(1).typeOf().run(conn, callback)
@@ -78,7 +78,7 @@ players.each do |player|
 end
 ```
 
-Javascript has no native iterator, but ReQL implements an [each](/api/javascript/each) command similar to [jQuery](http://api.jquery.com/each/)'s.
+JavaScript has no native iterator, but ReQL implements an [each](/api/javascript/each) command similar to [jQuery](http://api.jquery.com/each/)'s.
 
 ```js
 r.table('players').run(conn, function(err, cursor) {
@@ -89,7 +89,7 @@ r.table('players').run(conn, function(err, cursor) {
 });
 ```
 
-Smaller result sets can be turned into an array directly. In the examples above, you would use `list(players)` in Python, `players.to_a` in Ruby,  or `players.toArray()` in Javascript (a ReQL command; see [toArray](/api/javascript/to_array/)).
+Smaller result sets can be turned into an array directly. In the examples above, you would use `list(players)` in Python, `players.to_a` in Ruby,  or `players.toArray()` in JavaScript (a ReQL command; see [toArray](/api/javascript/to_array/)).
 
 # Grouped Data #
 

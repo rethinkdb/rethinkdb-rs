@@ -20,13 +20,13 @@ Create a javascript expression.
 
 `timeout` is the number of seconds before `r.js` times out. The default value is 5 seconds.
 
-__Example:__ Concatenate two strings using Javascript'
+__Example:__ Concatenate two strings using JavaScript.
 
 ```js
 r.js("'str1' + 'str2'").run(conn, callback)
 ```
 
-__Example:__ Select all documents where the 'magazines' field is greater than 5 by running Javascript on the server.
+__Example:__ Select all documents where the 'magazines' field is greater than 5 by running JavaScript on the server.
 
 ```js
 r.table('marvel').filter(

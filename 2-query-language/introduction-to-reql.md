@@ -259,11 +259,11 @@ ones.
 ## Composing simple commands ##
 
 Let's start with a simple example. RethinkDB supports
-server-side Javascript evaluation using the embedded V8 engine
+server-side JavaScript evaluation using the embedded V8 engine
 (sandboxed within outside processes, of course):
 
 ```python
-# Evaluate a Javascript expression on the server and get the result
+# Evaluate a JavaScript expression on the server and get the result
 r.js('1 + 1').run(conn)
 ```
 

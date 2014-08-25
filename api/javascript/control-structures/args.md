@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: Javascript
+language: JavaScript
 permalink: api/javascript/args/
 command: args
 io:
@@ -20,7 +20,7 @@ r.args(array) &rarr; special
 into another term.  This is useful when you want to call a variadic
 term such as `getAll` with a set of arguments produced at runtime.
 
-This is analogous to using **apply** in Javascript.
+This is analogous to using **apply** in JavaScript.
 
 __Example:__ Get Alice and Bob from the table `people`.
 
