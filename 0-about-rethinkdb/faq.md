@@ -102,7 +102,7 @@ high-throughput network hardware.
 No, but RethinkDB supports a very powerful, expressive, and easy to
 learn query language that can do almost anything SQL can do (and many
 things SQL can't do, such as mixing queries with Javascript
-expressions and Hadoop-style map/reduce).
+expressions and Hadoop-style map-reduce).
 
 ## How do queries get routed in a RethinkDB cluster? ##
 

@@ -127,7 +127,7 @@ You will get back something with this schema:
 * * * * *
 
 
-## Data cleanup: chaining, group/map/reduce, simple map  ##
+## Data cleanup: chaining, group-map-reduce, simple map  ##
 
 We'll first clean up the data in `input_polls`, as we want to calculate the average results of various
 polls at the state level. We'll also get rid of unnecessary/empty
@@ -199,7 +199,7 @@ You should get back this document:
 }
 ```
 
-## Data analysis: projections, JOINs, orderby, group/map/reduce ##
+## Data analysis: projections, JOINs, orderby, group-map-reduce ##
 
 Based on this data let's try to see if we can figure out **how many
 voters a party would need to turn to win the states.** For the sake of

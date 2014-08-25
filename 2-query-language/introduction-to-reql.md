@@ -333,7 +333,7 @@ In addition to commands described here, ReQL supports a number of
 sophisticated commands that are composable similarly to the commands
 described here. See the following documentation for more details:
 
-* Learn how to use [map/reduce](/docs/map-reduce/) in RethinkDB.
+* Learn how to use [map-reduce](/docs/map-reduce/) in RethinkDB.
 * Learn how to use [table joins](/docs/table-joins/) in RethinkDB.
 * Browse the [API reference](/api) for more commands.
 
@@ -389,6 +389,6 @@ r.table('fib').order_by('id')['value'].run(conn)
 Browse the following resources to learn more about ReQL:
 
 - [Lambda functions in RethinkDB](/blog/lambda-functions/)
-- [Introduction to map/reduce](/docs/map-reduce/)
+- [Introduction to map-reduce](/docs/map-reduce/)
 - [Introduction to Joins](/docs/table-joins/)
 - [API Reference](/api/)
