@@ -114,7 +114,7 @@ video](/screencast) and be the judge yourself.
 * All queries including joins, aggregation, and subqueries are
   automatically compiled to distributed programs and executed across
   the cluster without any effort from the user.
-* Data intensive operations are automatically compiled to map/reduce
+* Data intensive operations are automatically compiled to map-reduce
   jobs that take advantage of the distributed architecture.
 * Cluster protocol is peer-to-peer and doesn't require coordinator
   nodes. This makes clusters extremely easy to set up and operate.

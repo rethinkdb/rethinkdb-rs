@@ -203,7 +203,7 @@ The output will be in this format:
 
 RethinkDB's GMR queries are distributed and parallelized across shards and CPU cores whenever possible. While this allows them to execute efficiently, it's important to keep in mind that the `reduce` function is *not* called on the elements of its input stream from left to right. It's called on either the elements of the stream *in any order* or on the output of previous calls to the function.
 
-Here is an example of an __incorrect__ way to write the previous grouped map/reduce query, simply incrementing the first value passed to the reduction function:
+Here is an example of an __incorrect__ way to write the previous grouped map-reduce query, simply incrementing the first value passed to the reduction function:
 
 ```py
 # Incorrect!

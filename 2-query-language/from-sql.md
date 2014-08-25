@@ -1094,6 +1094,6 @@ r.<a href="/api/python/table_drop/">table_drop</a>("users")
 Browse the following resources to learn more about ReQL:
 
 - [Lambda functions in RethinkDB](/blog/lambda-functions/)
-- [Introduction to map/reduce](/docs/map-reduce/)
+- [Introduction to map-reduce](/docs/map-reduce/)
 - [Introduction to Joins](/docs/table-joins/)
 - [API Reference](/api/)
