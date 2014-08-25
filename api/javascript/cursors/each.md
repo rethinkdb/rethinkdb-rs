@@ -19,6 +19,7 @@ related_commands:
 {% apibody %}
 cursor.each(callback[, onFinishedCallback])
 array.each(callback[, onFinishedCallback])
+feed.each(callback)
 {% endapibody %}
 
 # Description #
