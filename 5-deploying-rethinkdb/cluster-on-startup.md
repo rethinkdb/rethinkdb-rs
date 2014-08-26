@@ -101,7 +101,7 @@ of RethinkDB only requires creating another `.conf` file.
 
 # Configuration options #
 
-The `.conf` file includes a number of options for exclusive to the
+The `.conf` file includes a number of options exclusively for the
 init script. The rest of the options are exactly the same as the ones
 that go on the command line to the RethinkDB server. For more details
 about these options run `rethinkdb help`.
