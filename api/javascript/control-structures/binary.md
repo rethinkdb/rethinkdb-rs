@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: Javascript
+language: JavaScript
 permalink: api/javascript/binary/
 command: binary
 io:
