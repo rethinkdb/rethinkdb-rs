@@ -116,7 +116,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 ## For driver developers
 - [rethinkdb-driver-development](https://github.com/neumino/rethinkdb-driver-development) by [@neumino](https://github.com/neumino)  
-  A tool to retrieve the query objects, protobuf messages and responses.
+  A tool to retrieve the query objects, messages and responses.
 
 
 ## Deployment tools
