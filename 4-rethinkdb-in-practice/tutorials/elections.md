@@ -16,7 +16,7 @@ Given the timeliness of the 2012 US Presidential Election and the inherent
 intricacies of the [electoral
 process](http://en.wikipedia.org/wiki/United_States_presidential_election), we
 internally used an interesting dataset on poll results to test RethinkDB's
-query language support in the [Javascript](/docs/install-drivers/javascript),
+query language support in the [JavaScript](/docs/install-drivers/javascript),
 [Python](/docs/install-drivers/python), and
 [Ruby](/docs/install-drivers/ruby) client libraries.
 
@@ -127,7 +127,7 @@ You will get back something with this schema:
 * * * * *
 
 
-## Data cleanup: chaining, group/map/reduce, simple map  ##
+## Data cleanup: chaining, group-map-reduce, simple map  ##
 
 We'll first clean up the data in `input_polls`, as we want to calculate the average results of various
 polls at the state level. We'll also get rid of unnecessary/empty
@@ -199,7 +199,7 @@ You should get back this document:
 }
 ```
 
-## Data analysis: projections, JOINs, orderby, group/map/reduce ##
+## Data analysis: projections, JOINs, orderby, group-map-reduce ##
 
 Based on this data let's try to see if we can figure out **how many
 voters a party would need to turn to win the states.** For the sake of

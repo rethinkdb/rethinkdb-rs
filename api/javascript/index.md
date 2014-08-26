@@ -770,8 +770,7 @@ table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
 
 Get all documents where the given value matches the value of the requested index.
 
-__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via
-"get" when using a secondary index.
+__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/javascript/get/) when using a secondary index.
 
 ```js
 r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn, callback)
@@ -1770,7 +1769,7 @@ string.upcase() &rarr; string
 {% endapibody %}
 
 
-Upcases a string.
+Uppercases a string.
 
 __Example:__
 
@@ -1784,7 +1783,7 @@ r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 string.downcase() &rarr; string
 {% endapibody %}
 
-Downcases a string.
+Lowercases a string.
 
 __Example:__
 
@@ -2402,7 +2401,7 @@ r.args(array) &rarr; special
 into another term.  This is useful when you want to call a variadic
 term such as `getAll` with a set of arguments produced at runtime.
 
-This is analagous to using **apply** in Javascript.
+This is analagous to using **apply** in JavaScript.
 
 __Example:__ Get Alice and Bob from the table `people`.
 
@@ -2575,7 +2574,7 @@ r.js(jsString[, {timeout: <number>}]) &rarr; value
 
 Create a javascript expression.
 
-__Example:__ Concatenate two strings using Javascript'
+__Example:__ Concatenate two strings using JavaScript.
 
 ```js
 r.js("'str1' + 'str2'").run(conn, callback)

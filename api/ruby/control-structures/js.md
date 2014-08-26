@@ -17,14 +17,14 @@ Create a javascript expression.
 
 `timeout` is the number of seconds before `r.js` times out. The default value is 5 seconds.
 
-__Example:__ Concatenate two strings using Javascript'
+__Example:__ Concatenate two strings using JavaScript.
 
 ```rb
 r.js("'str1' + 'str2'").run(conn)
 ```
 
 __Example:__ Select all documents where the 'magazines' field is greater than 5 by
-running Javascript on the server.
+running JavaScript on the server.
 
 ```rb
 r.table('marvel').filter(

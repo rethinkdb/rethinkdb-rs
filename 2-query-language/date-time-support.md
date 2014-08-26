@@ -101,7 +101,7 @@ Leap-seconds aren't well-supported right now: `2012-06-30T23:59:60` and
 
 You can insert times by simply passing a native time object. (In Ruby, this
 will be a `Time` object; in Python, it will be `datetime.datetime`; in
-Javascript, it will be `Date`.) If the local time object contains a time zone,
+JavaScript, it will be `Date`.) If the local time object contains a time zone,
 the inserted time will have that time zone; if it doesn't, the inserted time
 will be in UTC. (Check this if you're using a third-party driver. The Python
 driver requires `datetime` objects to have time zone information.)
@@ -164,7 +164,7 @@ the [API reference](/api) if you are uncertain how to pass an optarg in a
 non-Ruby language.
 
 {% infobox info %}
-<strong>Warning:</strong> Some languages, like Javascript, don't have an easy
+<strong>Warning:</strong> Some languages, like JavaScript, don't have an easy
 way to represent a time in an arbitrary time zone.  In this case, time zone
 information will be discarded when converting to a native time object.
 {% endinfobox %}

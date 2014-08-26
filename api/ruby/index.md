@@ -627,8 +627,7 @@ table.get_all(key[, key2...], [, :index => 'id']) &rarr; selection
 
 Get all documents where the given value matches the value of the requested index.
 
-__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via
-"get" when using a secondary index.
+__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/ruby/get/) when using a secondary index.
 
 ```rb
 r.table('marvel').get_all('man_of_steel', :index => 'code_name').run(conn)
@@ -2418,7 +2417,7 @@ r.js(js_string[, :timeout => <number>]) &rarr; value
 
 Create a javascript expression.
 
-__Example:__ Concatenate two strings using Javascript'
+__Example:__ Concatenate two strings using JavaScript.
 
 ```rb
 r.js("'str1' + 'str2'").run(conn)
