@@ -42,7 +42,7 @@ Insert returns an object that contains the following attributes:
 - `deleted` and `skipped`: 0 for an insert operation.
 - `generated_keys`: a list of generated primary keys for inserted documents whose primary keys were not specified (capped to 100,000).
 - `warnings`: if the field `generated_keys` is truncated, you will get the warning _"Too many generated keys (&lt;X&gt;), array truncated to 100000."_.
-- `changes`: if `return_changes` is set to `true`, this will be an array of objects, one for each objected affected by the `delete` operation. Each object will have two keys: `{:new_val => <new value>, :old_val => nil}`.
+- `changes`: if `return_changes` is set to `true`, this will be an array of objects, one for each objected affected by the `insert` operation. Each object will have two keys: `{:new_val => <new value>, :old_val => nil}`.
 
 __Example:__ Insert a document into the table `posts`.
 

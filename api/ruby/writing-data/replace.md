@@ -52,7 +52,7 @@ selection and one of the documents you are replacing has been deleted
 - `errors`: the number of errors encountered while performing the replace.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `skipped`: 0 for a replace operation
-- `changes`: if `return_changes` is set to `true`, this will be an array of objects, one for each objected affected by the `delete` operation. Each object will have two keys: `{:new_val => <new value>, :old_val => <old value>}`.
+- `changes`: if `return_changes` is set to `true`, this will be an array of objects, one for each objected affected by the `replace` operation. Each object will have two keys: `{:new_val => <new value>, :old_val => <old value>}`.
 
 __Example:__ Replace the document with the primary key `1`.
 
