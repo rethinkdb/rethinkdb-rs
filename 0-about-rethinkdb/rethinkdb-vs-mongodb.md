@@ -83,7 +83,7 @@ especially excited about RethinkDB.
   attacks is greatly minimized.
 
 That's not to say that ReQL is complete. There are [more features and
-operations](https://github.com/rethinkdb/rethinkdb/issues?milestone=3&page=1)
+operations](https://github.com/rethinkdb/rethinkdb/issues?q=is%3Aopen+is%3Aissue+label%3Acp%3Areql)
 that we're constantly adding to the query language.
 
 ## Administration: simple and beautiful ##
@@ -121,7 +121,7 @@ video](/screencast) and be the judge yourself.
 
 Of course we're always improving performance and are always working to
 remove more [performance and scalability
-bottlenecks](https://github.com/rethinkdb/rethinkdb/issues/207).
+bottlenecks](https://github.com/rethinkdb/rethinkdb/issues?q=is%3Aopen+is%3Aissue+label%3Atp%3Aperformance).
 
 ## Robust implementation ##
 
