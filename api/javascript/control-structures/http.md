@@ -24,7 +24,7 @@ Retrieve data from the specified URL over HTTP.  The return type depends on the 
 __Example:__ Perform an HTTP `GET` and store the result in a table.
 
 ```js
-r.table('posts').insert(r.http('httpbin.org/get')).run(conn, callback)
+r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn, callback)
 ```
 
 See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
@@ -54,7 +54,7 @@ See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on 
 * `auth`: Authentication information in the form of an object with key/value pairs indicating the authentication type (in the `type` key) and any required information. Types currently supported are `basic` and `digest` for HTTP Basic and HTTP Digest authentication respectively. If `type` is omitted, `basic` is assumed. Example:
 
 	```js
-	r.http('httpbin.org/basic-auth/fred/mxyzptlk',
+	r.http('http://httpbin.org/basic-auth/fred/mxyzptlk',
            { auth: { type: 'basic', user: 'fred', pass: 'mxyzptlk' } }
 	).run(conn, callback)
 	```
@@ -133,7 +133,7 @@ __Example:__ Perform multiple requests with different parameters.
 
 ```js
 r.expr([1, 2, 3]).map(function(i) {
-    return r.http('httpbin.org/get', { params: { user: i } });
+    return r.http('http://httpbin.org/get', { params: { user: i } });
 }).run(conn, callback)
 ```
 
@@ -141,7 +141,7 @@ __Example:__ Perform a `PUT` request for each item in a table.
 
 ```js
 r.table('data').map(function(row) {
-    return r.http('httpbin.org/put', { method: 'PUT', data: row });
+    return r.http('http://httpbin.org/put', { method: 'PUT', data: row });
 }).run(conn, callback)
 ```
 
@@ -150,7 +150,7 @@ __Example:__ Perform a `POST` request with accompanying data.
 Using form-encoded data:
 
 ```js
-r.http('httpbin.org/post',
+r.http('http://httpbin.org/post',
        { method: 'POST', data: { player: 'Bob', game: 'tic tac toe' } })
 .run(conn, callback)
 ```
@@ -158,7 +158,7 @@ r.http('httpbin.org/post',
 Using JSON data:
 
 ```js
-r.http('httpbin.org/post',
+r.http('http://httpbin.org/post',
        { method: 'POST',
          data: r.expr(value).coerceTo('string'),
          header: { 'Content-Type': 'application/json' } })

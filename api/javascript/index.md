@@ -2658,7 +2658,7 @@ Retrieve data from the specified URL over HTTP.  The return type depends on the 
 __Example:__ Perform a simple HTTP `GET` request, and store the result in a table.
 
 ```js
-r.table('posts').insert(r.http('httpbin.org/get')).run(conn, callback)
+r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn, callback)
 ```
 
 [Read more about this command &rarr;](http/)

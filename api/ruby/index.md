@@ -2501,7 +2501,7 @@ Retrieve data from the specified URL over HTTP.  The return type depends on the 
 __Example:__ Perform a simple HTTP `GET` request, and store the result in a table.
 
 ```rb
-r.table('posts').insert(r.http('httpbin.org/get')).run(conn)
+r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn)
 ```
 
 [Read more about this command &rarr;](http/)
