@@ -53,3 +53,5 @@ r.table('users').get(100)('avatar').count().run(conn, callback);
 // result returned to callback
 14156
 ```
+
+Read more details about RethinkDB's binary object support: [Storing binary objects](/docs/storing-binary/).
