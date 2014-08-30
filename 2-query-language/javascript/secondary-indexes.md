@@ -4,8 +4,9 @@ title: Using secondary indexes in RethinkDB
 active: docs
 docs_active: secondary-indexes
 permalink: docs/secondary-indexes/javascript/
+alias: docs/secondary-indexes/
 switcher: true
-language : JavaScript 
+language : JavaScript
 js: [fancybox]
 ---
 
@@ -229,15 +230,15 @@ Secondary indexes have the following limitations:
     r.table("users").indexCreate("group").run(conn, callback)
     r.table("users").orderBy({index: "group"}).run(conn, callback)
     ```
-    
+
     may be different from an equivalent command without an index:
-    
+
     ```js
     r.table("users").orderBy("group").run(conn, callback)
     ```
-    
+
     if the field being indexed has non-indexable values.
-    
+
     This limitation will be removed in a future version of RethinkDB. See GitHub issue [#1032](https://github.com/rethinkdb/rethinkdb/issues/1032) to track progress on this.
 
 - RethinkDB does not currently have an optimizer. As an example,

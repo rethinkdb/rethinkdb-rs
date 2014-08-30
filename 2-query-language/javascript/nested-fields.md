@@ -3,7 +3,10 @@ layout: documentation
 title: Accessing nested fields
 active: docs
 docs_active: nested-fields
-permalink: docs/nested-fields/
+permalink: docs/nested-fields/javascript/
+alias: docs/nested-fields/
+switcher: true
+language: JavaScript
 ---
 
 A ReQL document is a JSON object: a set of key-value pairs, in which each value might be a single value, a list of values, or *another* set of key-value pairs. When the value of a field contains more fields, we describe these as *nested fields.*

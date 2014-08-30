@@ -3,7 +3,10 @@ layout: documentation
 title: SQL to ReQL cheat sheet
 active: docs
 docs_active: sql-to-reql
-permalink: docs/sql-to-reql/
+permalink: docs/sql-to-reql/python/
+alias: docs/sql-to-reql/
+switcher: true
+language: Python
 ---
 
 <img alt="Data Modeling Illustration" class="api_command_illustration"

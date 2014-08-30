@@ -3,7 +3,10 @@ layout: documentation
 title: ReQL data types
 active: docs
 docs_active: data-types
-permalink: docs/data-types/
+permalink: docs/data-types/javascript/
+alias: docs/data-types/
+switcher: true
+language: JavaScript
 ---
 
 RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* values, and the *null* value. In addition, it stores several composite data types. *Objects* and *arrays* are key/value pairs and lists, respectively, with direct counterparts in most programming languages. *Streams, selections* and *tables* are RethinkDB-specific data types.
@@ -26,7 +29,7 @@ RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* 
 	{ username: 'bob', posts: 23, favorites: {color: 'blue', food: 'tacos'},
 	friends: ['agatha', 'jason'] }
 	```
-	
+
 	Any valid JSON object is a valid RethinkDB object, so values can be any of the basic values, arrays, or other objects. Documents in a RethinkDB database are objects. Like JSON, key names must be strings, not integers.
 
 * **Arrays** are lists of zero or more elements.
@@ -59,7 +62,7 @@ Returns `"SELECTION<OBJECT>"`.
 
 # Working with Streams #
 
-Streams use "lazy loading," a concept you may have run across in other database interfaces. Instead of returning an entire result set from a query, streams return an [iterator](http://en.wikipedia.org/wiki/Iterator) referred to as a "cursor," a pointer into the data set. 
+Streams use "lazy loading," a concept you may have run across in other database interfaces. Instead of returning an entire result set from a query, streams return an [iterator](http://en.wikipedia.org/wiki/Iterator) referred to as a "cursor," a pointer into the data set.
 
 Different languages support iterators in different ways, but the fundamental concept is always the same: the result set is traversed in a loop that returns one result set at a time. In Python, you might loop through a stream this way:
 
