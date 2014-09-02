@@ -13,37 +13,37 @@ A ReQL document is a JSON object: a set of key-value pairs, in which each value 
 
 Consider a user table with contact information and a list of notes for each user in this format:
 
-```js
+```rb
 {
-  id: 10001,
-  name: "Bob Smith",
-  contact: {
-    phone: {
-      work: "408-555-1212",
-      home: "408-555-1213",
-      cell: "408-555-1214"
+  :id => 10001,
+  :name => "Bob Smith",
+  :contact => {
+    :phone => {
+      :work => "408-555-1212",
+      :home => "408-555-1213",
+      :cell => "408-555-1214"
     },
-    email: {
-      work: "bob@smith.com",
-      home: "bobsmith@gmail.com",
-      other: "bobbys@moosecall.net"
+    :email => {
+      :work => "bob@smith.com",
+      :home => "bobsmith@gmail.com",
+      :other => "bobbys@moosecall.net"
     },
-    im: {
-      skype: "Bob Smith",
-      aim: "bobmoose",
-      icq: "nobodyremembersicqnumbers"
+    :im => {
+      :skype => "Bob Smith",
+      :aim => "bobmoose",
+      :icq => "nobodyremembersicqnumbers"
     }
   },
-  notes: [
+  :notes => [
     {
-      date: r.time(2014,1,1,'Z'),
-      from: "John Doe",
-      subject: "My name is even more boring than Bob's"
+      :date => r.time(2014,1,1,'Z'),
+      :from => "John Doe",
+      :subject => "My name is even more boring than Bob's"
     },
     {
-      date: r.time(2014,2,2,'Z'),
-      from: "Bob Smith Sr",
-      subject: "Happy Second of February"
+      :date => r.time(2014,2,2,'Z'),
+      :from => "Bob Smith Sr",
+      :subject => "Happy Second of February"
     }
   ]
 }
