@@ -3,10 +3,7 @@ layout: documentation
 title: Map-reduce in RethinkDB
 active: docs
 docs_active: map-reduce
-permalink: docs/map-reduce/python/
-alias: docs/map-reduce/
-switcher: true
-language: Python
+permalink: docs/map-reduce/
 ---
 
 <img src="/assets/images/docs/api_illustrations/map-reduce.png"

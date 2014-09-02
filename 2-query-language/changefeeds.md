@@ -3,10 +3,7 @@ layout: documentation
 title: Changefeeds in RethinkDB
 active: docs
 docs_active: changefeeds
-permalink: docs/changefeeds/python/
-alias: docs/changefeeds/
-switcher: true
-language: Python
+permalink: docs/changefeeds/
 ---
 
 <img alt="Data Modeling Illustration" class="api_command_illustration"
@@ -106,3 +103,4 @@ Browse the following resources to learn more about ReQL and the
 - The [changes](/api/python/changes) command API reference
 - [Introduction to ReQL](/docs/introduction-to-reql/)
 - [ReQL data types](/docs/data-types/)
+

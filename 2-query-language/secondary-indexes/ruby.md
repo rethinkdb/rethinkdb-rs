@@ -4,7 +4,6 @@ title: Using secondary indexes in RethinkDB
 active: docs
 docs_active: secondary-indexes
 permalink: docs/secondary-indexes/ruby/
-alias: docs/secondary-indexes/
 switcher: true
 language : Ruby
 js: [fancybox]
@@ -227,15 +226,15 @@ Secondary indexes have the following limitations:
     r.table("users").index_create("group").run(conn)
     r.table("users").order_by(:index => "group").run(conn)
     ```
-
+    
     may be different from an equivalent command without an index:
-
+    
     ```rb
     r.table("users").order_by("group").run(conn)
     ```
-
+    
     if the field being indexed has non-indexable values.
-
+    
     This limitation will be removed in a future version of RethinkDB. See GitHub issue [#1032](https://github.com/rethinkdb/rethinkdb/issues/1032) to track progress on this.
 
 - RethinkDB does not currently have an optimizer. As an example,
