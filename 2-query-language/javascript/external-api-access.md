@@ -3,7 +3,10 @@ layout: documentation
 title: External API access
 active: docs
 docs_active: external-api-access
-permalink: docs/external-api-access/
+permalink: docs/external-api-access/javascript/
+alias: docs/external-api-access/
+switcher: true
+language: JavaScript
 ---
 
 RethinkDB provides an [r.http](/api/javascript/http/) command for
