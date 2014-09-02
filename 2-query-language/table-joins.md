@@ -3,10 +3,7 @@ layout: documentation
 title: Table joins in RethinkDB
 active: docs
 docs_active: table-joins
-permalink: docs/table-joins/python/
-alias: docs/table-joins/
-switcher: true
-language: Python
+permalink: docs/table-joins/
 ---
 
 {% infobox info %}

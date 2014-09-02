@@ -3,10 +3,7 @@ layout: documentation
 title: Introduction to ReQL
 active: docs
 docs_active: introduction-to-reql
-permalink: docs/introduction-to-reql/python/
-alias: docs/introduction-to-reql/
-switcher: true
-language: Python
+permalink: docs/introduction-to-reql/
 ---
 
 ReQL is the RethinkDB query language. It offers a very powerful and
