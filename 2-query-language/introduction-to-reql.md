@@ -219,16 +219,11 @@ and `for`). Instead, you have to use alternative ReQL commands:
 ```python
 # WRONG: Get all users older than 30 using the `if` statement
 r.table('users').filter(lambda user:
-    print "Testing"      # WRONG: this will only execute once on the client
-    if user['age'] > 30:
-        True,
-        False).run(conn)
+    True if user['age'] > 30 else False).run(conn)
 
 # RIGHT: Get all users older than 30 using the `r.branch` command
 r.table('users').filter(lambda user:
-    r.branch(user['age'] > 30,
-             True,
-             False)).run(conn)
+    r.branch(user['age'] > 30, True, False)).run(conn)
 ```
 
 {% infobox info %}
