@@ -649,4 +649,24 @@ For testing or logging purposes, you might want to capture a created ReQL query 
 r.table('users').filter{ |user| user['groups'].contains('operators')}.inspect()
 ```
 
+## Building ReQL queries on multiple lines ##
+
+It's a common pattern in some query interfaces to "build" queries programmatically by instantiating a query object, calling it several times in succession to add query commands, then calling the execution command. This lets you dynamically change the query based on conditions at runtime. You might expect to do this in ReQL like so:
+
+```rb
+query = r.table('posts')
+query.filter(request.filter) if request.filter
+query.order_by('date')
+query.run(conn)
+```
+
+However, that won't work! The reason is that the query object doesn't store state. Each of the commands after the first one is simply running on the *original* value of `query` (in this case, the `posts` table). You can solve this by explicitly assigning the output of each new command to the `query` variable:
+
+```rb
+query = r.table('posts')
+query = query.filter(request.filter) if request.filter
+query = query.order_by('date')
+query = query.run(conn)
+```
+
 {% endfaqsection %}
