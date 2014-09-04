@@ -3,7 +3,10 @@ layout: documentation
 title: Changefeeds in RethinkDB
 active: docs
 docs_active: changefeeds
-permalink: docs/changefeeds/
+permalink: docs/changefeeds/python/
+alias: docs/changefeeds/
+switcher: true
+language: Python
 ---
 
 <img alt="Data Modeling Illustration" class="api_command_illustration"
@@ -22,12 +25,6 @@ convenient way to perform certain tasks:
 
 In RethinkDB the `changes` command returns a stream of changes in a
 regular cursor, and is very powerful and easy to use.
-
-{% infobox info %}
-<strong>Note:</strong> the following examples use the Python
-driver. See the [changes](/api/python/changes/) command reference
-for documentation for other languages.
-{% endinfobox %}
 
 # Basic usage #
 
@@ -103,4 +100,3 @@ Browse the following resources to learn more about ReQL and the
 - The [changes](/api/python/changes) command API reference
 - [Introduction to ReQL](/docs/introduction-to-reql/)
 - [ReQL data types](/docs/data-types/)
-
