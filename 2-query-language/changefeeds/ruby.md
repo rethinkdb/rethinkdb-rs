@@ -48,8 +48,8 @@ following document into the feeds subscribed to `users`:
 
 ```rb
 {
-  old_val: nil,
-  new_val: { id: 1, name: 'Slava', age: 31 }
+  :old_val => nil,
+  :new_val => { :id => 1, :name => 'Slava', :age => 31 }
 }
 ```
 
