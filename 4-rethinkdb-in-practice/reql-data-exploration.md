@@ -1,6 +1,6 @@
 ---
 layout: documentation
-title: ReQL data exploration
+title: Useful RethinkDB commands for exploring data
 active: docs
 docs_active: reql-data-exploration
 permalink: docs/reql-data-exploration/
