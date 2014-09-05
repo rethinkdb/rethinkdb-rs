@@ -160,7 +160,7 @@ If we want to retrieve all users on the Galactica and Pegasus, we can write:
 r.table("user").filter(
     lambda user: r.expr(["Galactica", "Pegasus"]).contains(user["ship"])
 ).run()
-
+```
 
 ## Filtering based on nested fields ##
 
