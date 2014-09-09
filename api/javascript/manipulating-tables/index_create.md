@@ -17,7 +17,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.indexCreate(indexName[, indexFunction][, {multi: false}]) &rarr; object
+table.indexCreate(indexName[, indexFunction][, {multi: false, geo:false}]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -28,7 +28,8 @@ RethinkDB supports different types of secondary indexes:
 
 - *Simple indexes* based on the value of a single field.
 - *Compound indexes* based on multiple fields.
-- *Multi indexes* based on arrays of values.
+- *Multi indexes* based on arrays of values, created when the `multi` optional argument is `true`.
+- *Geospatial indexes* based on indexes of geometry objects, created when the `geo` optional argument is true.
 - Indexes based on *arbitrary expressions*.
 
 The `indexFunction` can be an anonymous function or a binary representation obtained from the `function` field of [indexStatus](/api/javascript/index_status).
@@ -38,6 +39,14 @@ __Example:__ Create a simple index based on the field `postId`.
 ```js
 r.table('comments').indexCreate('postId').run(conn, callback)
 ```
+
+__Example:__ Create a geospatial index based on the field `location`.
+
+```js
+r.table('comments').indexCreate('location', {geo: true}).run(conn, callback)
+```
+
+A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([getIntersecting](/api/javascript/get_intersecting/) and [getNearest](/api/javascript/get_nearest/) as well as index-specific terms ([indexStatus](/api/javascript/index_status), [indexWait](/api/javascript/index_wait), [indexDrop](/api/javascript/index_drop) and [indexList](/api/javascript/index_list). Using terms that rely on non-geometric ordering such as [getAll](/api/javascript/get_all/), [orderBy](/api/javascript/order_by/) and [between](/api/javascript/order_by/) will result in an error.
 
 __Example:__ Create a simple index based on the nested field `author > name`.
 
