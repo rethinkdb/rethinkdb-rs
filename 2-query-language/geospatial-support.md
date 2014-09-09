@@ -83,6 +83,8 @@ The geospatial functions are implemented through a set of new geometric object d
 * **Lines:** A sequence of two or more coordinate pairs
 * **Polygons:** A multipoint line (at least three coordinate pairs) which does not intersect with itself and whose first and last coordinate pairs are equal. The interior of the polygon is considered filled, that is, part of the polygon. Polygons with "holes" in them, where a hole is another polygon contained by the first, can be created with the [polygonSub][] command.
 
+In addition, there's a "pseudotype" called **geometry** which appears in documentation, to indicate that any of the geometric objects can be used with those commands.
+
 [polygon_sub]: /api/polygon_sub/javascript
 
 Lines and polygons can be specified using either point objects or sequences of two-number arrays:
