@@ -6,9 +6,9 @@ docs_active: data-types
 permalink: docs/data-types/
 ---
 
-RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* values, and the *null* value. In addition, it stores several composite data types. *Objects* and *arrays* are key/value pairs and lists, respectively, with direct counterparts in most programming languages. *Streams, selections* and *tables* are RethinkDB-specific data types.
+RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* values, and the *null* value. In addition, it stores several composite data types. *Objects* and *arrays* are key/value pairs and lists, respectively, with direct counterparts in most programming languages. *Streams, selections* and *tables* are RethinkDB-specific data types. Lastly, there are geometry data types: *point, line* and *polygon.*
 
-# Basic Data Types #
+# Basic data types #
 
 * **Numbers** are any real number: `5`, `3.14159`, `-42`. RethinkDB uses double precision (64-bit) floating point numbers internally. (Neither infinity nor [NaN](http://en.wikipedia.org/wiki/NaN) are allowed.)
 
@@ -39,7 +39,7 @@ RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* 
 
 	Again, anything valid in a JSON array is valid in RethinkDB: the elements may be any of the basic values, objects, or other arrays. Arrays in RethinkDB are loaded fully into memory before they're returned to the user, so they're inefficient at large sizes. RethinkDB defaults to supporting arrays of up to 100,000 elements; this may be set to a different value at runtime for reading by using the `array_limit` option to [run](/api/javascript/run).
 
-# Composite Data Types #
+# Composite data types #
 
 * **Streams** are lists like arrays, but they're loaded in a lazy fashion. Operations that return streams return a *cursor.* A cursor is a pointer into the result set. Instead of reading the results all at once like an array, you loop over the results, retrieving the next member of the set with each iteration. This makes it possible to efficiently work with large result sets. (See "Working with Streams," below, for some tips.) Streams are read-only; you can't pass one as an input to an ReQL command meant to modify its input like `update` or `delete`.
 
@@ -57,7 +57,21 @@ r.table('users').get(1).typeOf().run(conn, callback)
 
 Returns `"SELECTION<OBJECT>"`.
 
-# Working with Streams #
+# Geometry data types #
+
+For more information on these data types, read about RethinkDB's [geospatial support][geo].
+
+[geo]: /docs/geo-support/
+
+* **Points** are denoted by a single coordinate pair, two floating point numbers indicating longitude (&minus;180 through 180) and latitude (&minus;90 through 90).
+
+* **Lines** are a sequence of two or more points, denoted by either point objects or coordinate pairs.
+
+* **Polygons** are multipoint lines denoted by a sequence of three or more points, denoted by either point objects or coordinate pairs, which do not intersect with themselves. The first and last coordinate pairs of a polygon are equal.
+
+In the ReQL API documentation you'll also see a "psuedotype" called **Geometry,** which is a collective for all of the geometry data types. Those commands will work with points, lines and polygons.
+
+# Working with streams #
 
 Streams use "lazy loading," a concept you may have run across in other database interfaces. Instead of returning an entire result set from a query, streams return an [iterator](http://en.wikipedia.org/wiki/Iterator) referred to as a "cursor," a pointer into the data set. 
 
@@ -91,6 +105,6 @@ r.table('players').run(conn, function(err, cursor) {
 
 Smaller result sets can be turned into an array directly. In the examples above, you would use `list(players)` in Python, `players.to_a` in Ruby,  or `players.toArray()` in JavaScript (a ReQL command; see [toArray](/api/javascript/to_array/)).
 
-# Grouped Data #
+# Grouped data #
 
 The `group` command partitions a stream into multiple groups based on specified fields or functions. It returns a pseudotype named `GROUPED_DATA`. ReQL comments called on `GROUPED_DATA` operate on each group individually. For a thorough discussion about groups with examples, read the [group](/api/javascript/group) documentation.
