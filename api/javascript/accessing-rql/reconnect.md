@@ -36,7 +36,7 @@ If no callback is provided, a promise will be returned.
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```js
-conn.reconnect({noreplyWait: false}, function(errror, connection) { ... })
+conn.reconnect({noreplyWait: false}, function(error, connection) { ... })
 ```
 
 Alternatively, you can use promises.
