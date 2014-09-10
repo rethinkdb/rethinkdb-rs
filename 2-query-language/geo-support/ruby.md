@@ -91,7 +91,7 @@ In addition, there's a "pseudotype" called **geometry** which appears in documen
 
 Lines and polygons can be specified using either point objects or sequences of two-number arrays:
 
-```js
+```rb
 r.line(r.point(0,0), r.point(0,5), r.point(5,5), r.point(5,0), r.point(0,0))
 r.line([0,0], [0,5], [5,5], [5,0], [0,0])
 ```
@@ -104,8 +104,8 @@ While there *is* a [circle] command, it approximates a circle by defining either
 
 To create indexes on fields containing geometry objects, you simply use the standard [index_create](/api/ruby/index_create/) command, setting the `geo` optional argument to `Prue`. In JavaScript, this would be:
 
-```js
-r.table('sites').indexCreate('locations', {geo: true})
+```rb
+r.table('sites').index_create('locations', {geo: true})
 ```
 
 Just like other ReQL indexes, you can create an index using an anonymous function rather than a simple field name, as well as create multi indexes by using the `multi` flag with `geo`. Read the [index_create](/api/ruby/index_create) API documentation for more details.
