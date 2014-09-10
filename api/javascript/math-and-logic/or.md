@@ -40,3 +40,12 @@ r.or(x, y, z).run(conn, callback);
 // result passed to callback
 false
 ```
+
+__Note:__ When using `or` inside a `filter` predicate to test the values of fields that may not exist on the documents being tested, you should use the `default` command with those fields so they explicitly return `false`.
+
+```js
+r.table('posts').filter(
+    r.row('category').default('foo').eq('article').
+    or(r.row('genre').default('foo').eq('mystery'))
+).run(conn, callback);
+```

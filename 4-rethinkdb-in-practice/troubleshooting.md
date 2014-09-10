@@ -279,4 +279,25 @@ The slightly longer answer: there's only one native `time` data type in RethinkD
 
 You can use Ruby's `DateTime.to_time` and `Time.to_datetime` methods to easily convert between one and the other.
 
+## Filters with `or` return incorrect/unexpected results ##
+
+You might want to use `filter` to return documents that have one of two (or more) optional fields set, such as the following:
+
+```js
+r.table('posts').filter(
+    r.row('category').eq('article').or(r.row('genre').eq('mystery'))
+).run(conn, callback);
+```
+
+However, if any document in the `posts` table above lacks a `category` field, it won't be included in the result set even if it has a `genre` field whose value is `'mystery'`. The problem isn't the `or` command; it's that the invocation of `r.row('category')` on a document without that field returns an error, and the rest of the filter predicate isn't evaluated.
+
+The solution is to add a `default` to the `row` command that always evaluates to something other than what you're testing for, so it will return `false` if the field doesn't exist:
+
+```js
+r.table('posts').filter(
+    r.row('category').default('foo').eq('article').
+    or(r.row('genre').default('foo').eq('mystery'))
+).run(conn, callback);
+```
+
 {% endfaqsection %}
