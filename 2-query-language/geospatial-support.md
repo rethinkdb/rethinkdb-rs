@@ -35,22 +35,22 @@ r.table('geo').insert([
 ])
 ```
 
-Get the distance between the points:
+Get the distance between the two points in San Francisco and San Diego:
 
 ```js
 r.table('geo').get(1)('location').distance(r.table('geo').get(2)('location'))
 ```
 
-Add a geospatial index on the table:
+Add a geospatial index on the table (required for certain operations like `getNearest`):
 
 ```js
 r.table('geo').indexCreate('location', {geo: true})
 ```
 
-Get the nearest point in the table based on the index:
+Get the nearest point in the table to a specified one based on the index:
 
 ```js
-var point = r.point(37.777128,-122.422876);
+var point = r.point(37.777128,-122.422876);  // San Francisco
 r.table('geo').getNearest(point, {index: 'location'})
 ```
 
@@ -120,15 +120,15 @@ Only latitude/longitude coordinates are supported. GeoJSON objects that use Cart
 
 # Geospatial commands #
 
-* [geojson](/api/geojson/): convert a GeoJSON object to a geometry object
-* [toGeojson](to_geojson/)/[to_geojson](/api/to_geojson/): convert a geometry object to a GeJSON object
-* [point](/api/point/): create a point object
-* [line](/api/line/): create a line object
-* [polygon](/api/polygon/): create a line object
-* [circle](/api/circle/): create a line or polygon that approximates a circle
-* [distance](/api/distance/): compute the distance between a point and another geometry object
-* [intersects](/api/intersects/): determine whether two geometry objects intersect
-* [includes](/api/includes/): determine whether one geometry object is completely contained by a polygon object
-* [getIntersecting](/api/get_intersecting/)/[get_intersecting](/api/get_intersecting): return documents from a sequence that have a geospatially indexed field whose values intersect with a given geometry object
-* [getNearest](/api/get_nearest/)/[get_nearest](/api/get_nearest/): return documents from a sequence that have a geospatially indexed field whose values are within a specified distance of a given point
-* [polygonSub](/api/polygon_sub/)/[polygon_sub](/polygon_sub/): use one polygon completely contained within another to cut out a "hole" in the enclosing polygon
+* [geojson](/api/javascript/geojson/): convert a GeoJSON object to a geometry object
+* [toGeojson](to_geojson/)/[to_geojson](/api/javascript/to_geojson/): convert a geometry object to a GeJSON object
+* [point](/api/javascript/point/): create a point object
+* [line](/api/javascript/line/): create a line object
+* [polygon](/api/javascript/polygon/): create a line object
+* [circle](/api/javascript/circle/): create a line or polygon that approximates a circle
+* [distance](/api/javascript/distance/): compute the distance between a point and another geometry object
+* [intersects](/api/javascript/intersects/): determine whether two geometry objects intersect
+* [includes](/api/javascript/includes/): determine whether one geometry object is completely contained by a polygon object
+* [getIntersecting](/api/javascript/get_intersecting/): return documents from a sequence that have a geospatially indexed field whose values intersect with a given geometry object
+* [getNearest](/api/javascript/get_nearest/): return documents from a sequence that have a geospatially indexed field whose values are within a specified distance of a given point
+* [polygonSub](/api/javascript/polygon_sub/): use one polygon completely contained within another to cut out a "hole" in the enclosing polygon
