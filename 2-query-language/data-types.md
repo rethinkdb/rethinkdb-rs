@@ -69,6 +69,8 @@ For more information on these data types, read about RethinkDB's [geospatial sup
 
 * **Polygons** are multipoint lines denoted by a sequence of three or more points, denoted by either point objects or coordinate pairs, which do not intersect with themselves. The first and last coordinate pairs of a polygon are equal.
 
+    Polygons can also have holes in them, created when a polygon entirely enclosed by another one is "punched out" of the larger one using the `polygonSub` command. (This is the only way to create a polygon with a hole in it.)
+
 In the ReQL API documentation you'll also see a "psuedotype" called **Geometry,** which is a collective for all of the geometry data types. Those commands will work with points, lines and polygons.
 
 # Working with streams #
