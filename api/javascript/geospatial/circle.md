@@ -15,7 +15,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.circle([lat, lon], radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
+r.circle([latitude, longitude], radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
 r.circle(point, radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
 {% endapibody %}
 
@@ -30,7 +30,7 @@ Optional arguments available with `circle` are:
 * `numVertices`: the number of vertices in the polygon or line. Defaults to 32.
 * `geoSystem`: the reference ellipsoid to use for geographic coordinates. Possible values are `WGS84` (the default), a common standard for Earth's geometry, or `unit_sphere`, a perfect sphere of 1 meter radius.
 * `unit`: Unit for the radius distance. Possible values are `m` (meter, the default), `km` (kilometer), `mi` (international mile), `nm` (nautical mile), `ft` (international foot).
-* `fill`: if `true` the circle is filled (the default, creating a polygon); if `false` the circle is unfilled (creating a line).
+* `fill`: if `true` (the default) the circle is filled, creating a polygon; if `false` the circle is unfilled (creating a line).
 
 
 

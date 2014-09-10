@@ -5,7 +5,7 @@ permalink: api/javascript/get_nearest/
 command: getNearest
 io:
     -   - table
-        - stream
+        - array
 related_commands:
     getIntersecting: get_intersecting/
 ---
@@ -13,14 +13,14 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.getNearest(point, {index: 'indexname'[, maxResults: 100, maxDist: 100000, unit: 'm', geoSystem: 'WGS84']}) &rarr; stream
+table.getNearest(point, {index: 'indexname'[, maxResults: 100, maxDist: 100000, unit: 'm', geoSystem: 'WGS84']}) &rarr; selection<array>
 {% endapibody %}
 
 # Description #
 
 Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
 
-The `index` argument is mandatory. This command is equivalent to `table.filter(r.row('index').intersects(geometry))`. The total number of results is limited to the array size limit which defaults to 100,000, but can be changed with the `arrayLimit` option to [run](/api/javascript/run).
+The `index` argument is mandatory. This command returns the same results as `table.filter(r.row('index').intersects(geometry))`. The total number of results is limited to the array size limit which defaults to 100,000, but can be changed with the `arrayLimit` option to [run](/api/javascript/run).
 
 Optional arguments are:
 

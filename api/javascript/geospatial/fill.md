@@ -4,8 +4,8 @@ language: JavaScript
 permalink: api/javascript/fill/
 command: fill
 io:
-    -   - geometry
-        - geometry
+    -   - line
+        - polygon
 related_commands:
     polygon: polygon/
     line: line/
@@ -13,7 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.fill() &rarr; geometry
+line.fill() &rarr; polygon
 {% endapibody %}
 
 # Description #

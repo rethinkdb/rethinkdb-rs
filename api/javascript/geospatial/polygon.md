@@ -5,7 +5,7 @@ permalink: api/javascript/polygon/
 command: polygon
 io:
     -   - r
-        - geometry
+        - polygon
 related_commands:
     point: point/
     line: line/

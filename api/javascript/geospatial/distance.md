@@ -5,7 +5,7 @@ permalink: api/javascript/distance/
 command: distance
 io:
     -   - geometry
-        - geometry
+        - number
 related_commands:
     polygon: polygon/
     line: line/
@@ -13,7 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-geometry.distance(geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; value
+geometry.distance(geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
 {% endapibody %}
 
 # Description #

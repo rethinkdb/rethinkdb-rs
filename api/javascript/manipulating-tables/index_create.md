@@ -43,7 +43,7 @@ r.table('comments').indexCreate('postId').run(conn, callback)
 __Example:__ Create a geospatial index based on the field `location`.
 
 ```js
-r.table('comments').indexCreate('location', {geo: true}).run(conn, callback)
+r.table('places').indexCreate('location', {geo: true}).run(conn, callback)
 ```
 
 A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([getIntersecting](/api/javascript/get_intersecting/) and [getNearest](/api/javascript/get_nearest/) as well as index-specific terms ([indexStatus](/api/javascript/index_status), [indexWait](/api/javascript/index_wait), [indexDrop](/api/javascript/index_drop) and [indexList](/api/javascript/index_list). Using terms that rely on non-geometric ordering such as [getAll](/api/javascript/get_all/), [orderBy](/api/javascript/order_by/) and [between](/api/javascript/order_by/) will result in an error.
@@ -60,6 +60,16 @@ __Example:__ Create a compound index based on the fields `postId` and `date`.
 ```js
 r.table('comments').indexCreate('postAndDate', [r.row("postId"), r.row("date")]).run(conn, callback)
 ```
+
+__Example:__ Create a compound index with a geospatial index.
+
+```js
+r.table('places').indexCreate('locationName',
+    [r.row('location'), r.row('name')], {geo: true}
+).run(conn, callback)
+```
+
+Note that the geospatial index must be the *first* field in a compound index, or the index may not be created properly.
 
 __Example:__ Create a multi index based on the field `authors`.
 

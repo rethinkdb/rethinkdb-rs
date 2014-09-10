@@ -4,8 +4,8 @@ language: JavaScript
 permalink: api/javascript/polygon_sub/
 command: polygonSub
 io:
-    -   - geometry
-        - geometry
+    -   - polygon
+        - polygon
 related_commands:
     polygon: polygon/
 ---
