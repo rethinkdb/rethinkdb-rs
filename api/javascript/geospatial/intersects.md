@@ -6,6 +6,8 @@ command: intersects
 io:
     -   - geometry
         - bool
+    -   - sequence
+        - sequence
 related_commands:
     includes: includes/
 ---

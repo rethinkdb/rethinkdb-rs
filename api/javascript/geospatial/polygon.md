@@ -14,8 +14,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.polygon([lat1, lon2], [lat2, lon2], ...) &rarr; geometry
-r.polygon(point1, point2, ...) &rarr; geometry
+r.polygon([lat1, lon2], [lat2, lon2], ...) &rarr; polygon
+r.polygon(point1, point2, ...) &rarr; polygon
 {% endapibody %}
 
 # Description #

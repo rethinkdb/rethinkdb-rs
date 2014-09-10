@@ -14,7 +14,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.point(latitude, longitude) &rarr; geometry
+r.point(latitude, longitude) &rarr; point
 {% endapibody %}
 
 # Description #

@@ -14,8 +14,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.line([lat1, lon2], [lat2, lon2], ...) &rarr; geometry
-r.line(point1, point2, ...) &rarr; geometry
+r.line([lat1, lon2], [lat2, lon2], ...) &rarr; line
+r.line(point1, point2, ...) &rarr; line
 {% endapibody %}
 
 # Description #
