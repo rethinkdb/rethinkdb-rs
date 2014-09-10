@@ -3,55 +3,57 @@ layout: documentation
 title: Geospatial support
 active: docs
 docs_active: geo-support
-permalink: docs/geo-support/
+permalink: docs/geo-support/ruby/
+alias: docs/geo-support/
+switcher: true
+language: Ruby
 ---
 
 RethinkDB supports spatial and geographic queries. Geometry objects are implemented through a geographic coordinate system, with points and shapes plotted on the surface of a sphere in three-dimensional space. This is an overview of the system; for more details, consult the API documentation for individual geospatial commands.
 
 # Getting started #
 
-These can be executed in the Data Explorer to try out RethinkDB's geospatial support.
-
 Create a new table:
 
-```js
-r.tableCreate('geo')
+```rb
+r.table_create('geo').run(conn)
 ```
 
 Add a couple points:
 
-```js
+```rb
 r.table('geo').insert([
   {
-    id: 1,
-    name: 'San Francisco',
-    location: r.point(37.779388,-122.423246)
+    :id => 1,
+    :name => 'San Francisco',
+    :location => r.point(37.779388,-122.423246)
   },
   {
-    id: 2,
-    name: 'San Diego',
-    location: r.point(32.719464,-117.220406)
+    :id => 2,
+    :name => 'San Diego',
+    :location => r.point(32.719464,-117.220406)
   }
-])
+]).run(conn)
 ```
 
 Get the distance between the two points in San Francisco and San Diego:
 
-```js
-r.table('geo').get(1)('location').distance(r.table('geo').get(2)('location'))
+```rb
+r.table('geo').get(1)['location'].distance(
+    r.table('geo').get(2)['location']).run(conn)
 ```
 
 Add a geospatial index on the table (required for certain operations like `getNearest`):
 
-```js
-r.table('geo').indexCreate('location', {geo: true})
+```rb
+r.table('geo').index_create('location', {:geo => true})
 ```
 
 Get the nearest point in the table to a specified one based on the index:
 
-```js
-var point = r.point(37.777128,-122.422876);  // San Francisco
-r.table('geo').getNearest(point, {index: 'location'})
+```rb
+point = r.point(37.777128,-122.422876)  # San Francisco
+r.table('geo').get_nearest(point, {:index => 'location'})
 ```
 
 # Coordinate system #
@@ -81,11 +83,11 @@ The geospatial functions are implemented through a set of new geometric object d
 
 * **Points:** a single coordinate pair
 * **Lines:** A sequence of two or more coordinate pairs
-* **Polygons:** A multipoint line (at least three coordinate pairs) which does not intersect with itself and whose first and last coordinate pairs are equal. The interior of the polygon is considered filled, that is, part of the polygon. Polygons with "holes" in them, where a hole is another polygon contained by the first, can be created with the [polygonSub][] command.
+* **Polygons:** A multipoint line (at least three coordinate pairs) which does not intersect with itself and whose first and last coordinate pairs are equal. The interior of the polygon is considered filled, that is, part of the polygon. Polygons with "holes" in them, where a hole is another polygon contained by the first, can be created with the [polygon_sub][] command.
 
 In addition, there's a "pseudotype" called **geometry** which appears in documentation, to indicate that any of the geometric objects can be used with those commands.
 
-[polygon_sub]: /api/polygon_sub/javascript
+[polygon_sub]: /api/ruby/polygon_sub/
 
 Lines and polygons can be specified using either point objects or sequences of two-number arrays:
 
@@ -100,17 +102,17 @@ While there *is* a [circle] command, it approximates a circle by defining either
 
 # Geospatial indexes #
 
-To create indexes on fields containing geometry objects, you simply use the standard [indexCreate](/api/index_create/) command, setting the `geo` optional argument to `true`. In JavaScript, this would be:
+To create indexes on fields containing geometry objects, you simply use the standard [index_create](/api/ruby/index_create/) command, setting the `geo` optional argument to `Prue`. In JavaScript, this would be:
 
 ```js
 r.table('sites').indexCreate('locations', {geo: true})
 ```
 
-Just like other ReQL indexes, you can create an index using an anonymous function rather than a simple field name, as well as create multi indexes by using the `multi` flag with `geo`. Read the [indexCreate](/api/index_create) API documentation for more details.
+Just like other ReQL indexes, you can create an index using an anonymous function rather than a simple field name, as well as create multi indexes by using the `multi` flag with `geo`. Read the [index_create](/api/ruby/index_create) API documentation for more details.
 
 # Using GeoJSON #
 
-ReQL geometry objects are not [GeoJSON][] objects, but you can convert back and forth between them with the [geojson](/api/geojson/) and [toGeojson](/api/to_geojson) commands.
+ReQL geometry objects are not [GeoJSON][] objects, but you can convert back and forth between them with the [geojson](/api/ruby/geojson/) and [to_geojson](/api/ruby/to_geojson) commands.
 
 [GeoJSON]: http://geojson.org
 
@@ -120,15 +122,15 @@ Only latitude/longitude coordinates are supported. GeoJSON objects that use Cart
 
 # Geospatial commands #
 
-* [geojson](/api/javascript/geojson/): convert a GeoJSON object to a geometry object
-* [toGeojson](to_geojson/)/[to_geojson](/api/javascript/to_geojson/): convert a geometry object to a GeJSON object
-* [point](/api/javascript/point/): create a point object
-* [line](/api/javascript/line/): create a line object
-* [polygon](/api/javascript/polygon/): create a line object
-* [circle](/api/javascript/circle/): create a line or polygon that approximates a circle
-* [distance](/api/javascript/distance/): compute the distance between a point and another geometry object
-* [intersects](/api/javascript/intersects/): determine whether two geometry objects intersect
-* [includes](/api/javascript/includes/): determine whether one geometry object is completely contained by a polygon object
-* [getIntersecting](/api/javascript/get_intersecting/): return documents from a sequence that have a geospatially indexed field whose values intersect with a given geometry object
-* [getNearest](/api/javascript/get_nearest/): return documents from a sequence that have a geospatially indexed field whose values are within a specified distance of a given point
-* [polygonSub](/api/javascript/polygon_sub/): use one polygon completely contained within another to cut out a "hole" in the enclosing polygon
+* [geojson](/api/ruby/geojson/): convert a GeoJSON object to a geometry object
+* [to_geojson](to_geojson/)/[to_geojson](/api/ruby/to_geojson/): convert a geometry object to a GeJSON object
+* [point](/api/ruby/point/): create a point object
+* [line](/api/ruby/line/): create a line object
+* [polygon](/api/ruby/polygon/): create a line object
+* [circle](/api/ruby/circle/): create a line or polygon that approximates a circle
+* [distance](/api/ruby/distance/): compute the distance between a point and another geometry object
+* [intersects](/api/ruby/intersects/): determine whether two geometry objects intersect
+* [includes](/api/ruby/includes/): determine whether one geometry object is completely contained by a polygon object
+* [get_intersecting](/api/ruby/get_intersecting/): return documents from a sequence that have a geospatially indexed field whose values intersect with a given geometry object
+* [get_nearest](/api/ruby/get_nearest/): return documents from a sequence that have a geospatially indexed field whose values are within a specified distance of a given point
+* [polygon_sub](/api/ruby/polygon_sub/): use one polygon completely contained within another to cut out a "hole" in the enclosing polygon
