@@ -3,9 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/geojson/
 command: geojson
-io:
-    -   - r
-        - geometry
 related_commands:
     toGeojson: to_geojson/
 ---
@@ -28,13 +25,13 @@ Only latitude/longitude coordinates are supported. GeoJSON objects that use Cart
 __Example:__ Convert a GeoJSON object to a ReQL geometry object.
 
 ```py
-var geoJson = {
+geoJson = {
     'type': 'Point',
     'coordinates': [ -122.423246, 37.779388 ]
-};
+}
 r.table('geo').insert({
-    id: 'sfo',
-    name: 'San Francisco',
-    location: r.geojson(geoJson)
-}).run(conn, callback);
+    'id': 'sfo',
+    'name': 'San Francisco',
+    'location': r.geojson(geoJson)
+}).run(conn)
 ```

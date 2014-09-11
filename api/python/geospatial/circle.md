@@ -3,9 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/circle/
 command: circle
-io:
-    -   - r
-        - geometry
 related_commands:
     line: line/
     polygon: polygon/
@@ -15,8 +12,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.circle([latitude, longitude], radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
-r.circle(point, radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
+r.circle([latitude, longitude], radius[, num_vertices=32, geo_system='WGS84', unit='m', fill=True]) &rarr; geometry
+r.circle(point, radius[, {num_vertices=32, geo_system='WGS84', unit='m', fill=True]) &rarr; geometry
 {% endapibody %}
 
 # Description #
@@ -27,8 +24,8 @@ The center may be specified either by two floating point numbers, the latitude (
 
 Optional arguments available with `circle` are:
 
-* `numVertices`: the number of vertices in the polygon or line. Defaults to 32.
-* `geoSystem`: the reference ellipsoid to use for geographic coordinates. Possible values are `WGS84` (the default), a common standard for Earth's geometry, or `unit_sphere`, a perfect sphere of 1 meter radius.
+* `num_vertices`: the number of vertices in the polygon or line. Defaults to 32.
+* `geo_system`: the reference ellipsoid to use for geographic coordinates. Possible values are `WGS84` (the default), a common standard for Earth's geometry, or `unit_sphere`, a perfect sphere of 1 meter radius.
 * `unit`: Unit for the radius distance. Possible values are `m` (meter, the default), `km` (kilometer), `mi` (international mile), `nm` (nautical mile), `ft` (international foot).
 * `fill`: if `true` (the default) the circle is filled, creating a polygon; if `false` the circle is unfilled (creating a line).
 
@@ -38,8 +35,8 @@ __Example:__ Define a circle.
 
 ```py
 r.table('geo').insert({
-    id: 300,
-    name: 'Hayes Valley',
-    neighborhood: r.circle([37.779388,-122.423246], 1000)
-}).run(conn, callback);
+    'id': 300,
+    'name': 'Hayes Valley',
+    'neighborhood': r.circle([37.779388,-122.423246], 1000)
+}).run(conn)
 ```
