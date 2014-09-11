@@ -13,7 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.index_create(index_name[, index_function][, multi=False]) &rarr; object
+table.index_create(index_name[, index_function][, multi=False, geo=False]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -25,6 +25,7 @@ RethinkDB supports different types of secondary indexes:
 - *Simple indexes* based on the value of a single field.
 - *Compound indexes* based on multiple fields.
 - *Multi indexes* based on arrays of values.
+- *Geospatial indexes* based on indexes of geometry objects, created when the `geo` optional argument is true.
 - Indexes based on *arbitrary expressions*.
 
 The `index_function` can be an anonymous function or a binary representation obtained from the `function` field of [index_status](/api/python/index_status).
@@ -41,12 +42,28 @@ __Example:__ Create a simple index based on the nested field `author > name`.
 r.table('comments').index_create('author_name', r.row["author"]["name"]).run(conn)
 ```
 
+__Example:__ Create a geospatial index based on the field `location`.
+
+```py
+r.table('places').index_create('location', geo=True).run(conn)
+```
+
+A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([get_intersecting](/api/python/get_intersecting/) and [get_nearest](/api/python/get_nearest/) as well as index-specific terms ([index_status](/api/python/index_status), [index_wait](/api/python/index_wait), [index_drop](/api/python/index_drop) and [index_list](/api/python/index_list). Using terms that rely on non-geometric ordering such as [get_all](/api/python/get_all/), [order_by](/api/python/order_by/) and [between](/api/python/order_by/) will result in an error.
 
 __Example:__ Create a compound index based on the fields `post_id` and `date`.
 
 ```py
 r.table('comments').index_create('post_and_date', [r.row["post_id"], r.row["date"]]).run(conn)
 ```
+
+__Example:__ Create a compound index with a geospatial index.
+
+```rb
+r.table('places').index_create('location_name',
+    [r.row['location'], r.row['name']], geo=True
+).run(conn)
+```
+
 __Example:__ Create a multi index based on the field `authors`.
 
 ```py
