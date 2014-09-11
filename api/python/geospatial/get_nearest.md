@@ -30,7 +30,6 @@ __Example:__ Return a list of enemy hideouts within 5000 meters of the secret ba
 
 ```py
 secret_base = r.point(37.777128,-122.422876)
-r.table('hideouts').get_nearest(secret_base,
-    {index: 'location', max_dist=5000}
-).run(conn)
+r.table('hideouts').get_nearest(secret_base, index='location',
+    max_dist=5000).run(conn)
 ```

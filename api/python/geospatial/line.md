@@ -3,9 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/line/
 command: line
-io:
-    -   - r
-        - line
 related_commands:
     point: point/
     polygon: polygon/
@@ -31,7 +28,7 @@ __Example:__ Define a line.
 
 ```py
 r.table('geo').insert({
-    id: 101,
-    route: r.line([37.779388,-122.423246], [37.329898,-121.886420])
-}).run(conn, callback);
+    'id': 101,
+    'route': r.line([37.779388,-122.423246], [37.329898,-121.886420])
+}).run(conn)
 ```

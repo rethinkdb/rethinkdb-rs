@@ -3,9 +3,6 @@ layout: api-command
 language: Python
 permalink: api/python/point/
 command: point
-io:
-    -   - r
-        - point
 related_commands:
     line: line/
     polygon: polygon/
@@ -25,8 +22,8 @@ __Example:__ Define a point.
 
 ```py
 r.table('geo').insert({
-    id: 1,
-    name: 'San Francisco',
-    location: r.point(37.779388,-122.423246)
-}).run(conn, callback);
+    'id': 1,
+    'name': 'San Francisco',
+    'location': r.point(37.779388,-122.423246)
+}).run(conn)
 ```
