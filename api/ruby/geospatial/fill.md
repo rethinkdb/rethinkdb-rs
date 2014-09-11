@@ -22,7 +22,7 @@ Latitude (&minus;90 to 90) and longitude (&minus;180 to 180) of vertices are plo
 If the last point does not specify the same coordinates as the first point, `polygon` will close the polygon by connecting them. You cannot directly construct a polygon with holes in it using `polygon`, but you can use [polygon_sub](/api/ruby/polygon_sub) to use a second polygon within the interior of the first to define a hole.
 
 
-__Example:__ Create a line object and then convert it to a fill.
+__Example:__ Create a line object and then convert it to a polygon.
 
 ```rb
 r.table('geo').insert({
