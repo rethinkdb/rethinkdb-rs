@@ -2680,3 +2680,277 @@ __Example:__ Generate a UUID.
 ```
 
 {% endapisection %}
+
+{% apisection Geospatial commands %}
+
+## [circle](circle/) ##
+
+{% apibody %}
+r.circle([latitude, longitude], radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
+r.circle(point, radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
+{% endapibody %}
+
+Construct a circular line or polygon. A circle in RethinkDB is a polygon or line *approximating* a circle of a given radius around a given center, consisting of a specified number of vertices (default 32).
+
+__Example:__ Define a circle.
+
+```js
+r.table('geo').insert({
+    id: 300,
+    name: 'Hayes Valley',
+    neighborhood: r.circle([37.779388,-122.423246], 1000)
+}).run(conn, callback);
+```
+
+## [distance](distance/) ##
+
+{% apibody %}
+geometry.distance(geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
+{% endapibody %}
+
+Compute the distance between a point and another geometry object. At least one of the geometry objects specified must be a point.
+
+__Example:__ Compute the distance between two points on the Earth in kilometers.
+
+```js
+var point1 = r.point(37.779388,-122.423246);
+var point2 = r.point(32.719464,-117.220406);
+r.distance(point1, point2, {unit: 'km'}).run(conn, callback);
+// result returned to callback 
+734.1252496021841
+```
+
+## [fill](fill/) ##
+
+{% apibody %}
+line.fill() &rarr; polygon
+{% endapibody %}
+
+Convert a Line object into a Polygon object. If the last point does not specify the same coordinates as the first point, `polygon` will close the polygon by connecting them.
+
+__Example:__ Create a line object and then convert it to a polygon.
+
+```js
+r.table('geo').insert({
+    id: 201,
+    rectangle: r.line(
+        [37.779388,-122.423246],
+        [37.329898,-122.423246],
+        [37.329898,-121.886420],
+        [37.779388,-121.886420]
+    )
+}).run(conn, callback);
+
+r.table('geo').get(201).update({
+    rectangle: r.row('rectangle').fill()
+}).run(conn, callback);
+```
+
+## [geojson](geojson/) ##
+
+{% apibody %}
+r.geojson(geojson) &rarr; geometry
+{% endapibody %}
+
+Convert a [GeoJSON][] object to a ReQL geometry object.
+
+[GeoJSON]: http://geojson.org
+
+__Example:__ Convert a GeoJSON object to a ReQL geometry object.
+
+```js
+var geoJson = {
+    'type': 'Point',
+    'coordinates': [ -122.423246, 37.779388 ]
+};
+r.table('geo').insert({
+    id: 'sfo',
+    name: 'San Francisco',
+    location: r.geojson(geoJson)
+}).run(conn, callback);
+```
+
+## [toGeojson](to_geojson/) ##
+
+{% apibody %}
+geometry.toGeojson() &rarr; object
+{% endapibody %}
+
+Convert a ReQL geometry object to a [GeoJSON][] object.
+
+[GeoJSON]: http://geojson.org
+
+__Example:__ Convert a ReQL geometry object to a GeoJSON object.
+
+```js
+r.table(geo).get('sfo')('location').toGeojson.run(conn, callback);
+// result passed to callback
+{
+    'type': 'Point',
+    'coordinates': [ -122.423246, 37.779388 ]
+}
+```
+
+## [getIntersecting](get_intersecting/) ##
+
+{% apibody %}
+table.getIntersecting(geometry, {index: 'indexname'}) &rarr; selection<array>
+{% endapibody %}
+
+Get all documents where the given geometry object intersects the geometry object of the requested geospatial index.
+
+__Example:__ Which of the locations in a list of parks intersect `circle1`?
+
+```js
+var circle1 = r.circle([32.719464,-117.220406], 10, {unit: 'mi'});
+r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
+```
+
+## [getNearest](get_nearest/) ##
+
+{% apibody %}
+table.getNearest(point, {index: 'indexname'[, maxResults: 100, maxDist: 100000, unit: 'm', geoSystem: 'WGS84']}) &rarr; selection<array>
+{% endapibody %}
+
+Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
+
+__Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
+
+```js
+var secretBase = r.point(37.777128,-122.422876);
+r.table('hideouts').getNearest(secretBase,
+    {index: 'location', maxDist: 5000}
+).run(conn, callback)
+```
+
+## [includes](includes/) ##
+
+{% apibody %}
+sequence.includes(geometry) &rarr; sequence
+geometry.includes(geometry) &rarr; bool
+{% endapibody %}
+
+Tests whether a geometry object is completely contained within another. When applied to a sequence of geometry objects, `includes` acts as a [filter](/api/javascript/filter), returning a sequence of objects from the sequence that include the argument.
+
+__Example:__ Is `point2` included within a 2000-meter circle around `point1`?
+
+```js
+var point1 = r.point(32.719464,-117.220406);
+var point2 = r.point(32.725186,-117.206201);
+r.circle(point1, 2000).includes(point2).run(conn, callback);
+// result returned to callback 
+true
+```
+
+## [intersects](intersects/) ##
+
+{% apibody %}
+sequence.intersects(geometry) &rarr; sequence
+geometry.intersects(geometry) &rarr; bool
+{% endapibody %}
+
+Tests whether two geometry objects intersect with one another. When applied to a sequence of geometry objects, `intersects` acts as a [filter](/api/javascript/filter), returning a sequence of objects from the sequence that intersect with the argument.
+
+__Example:__ Is `point2` within a 2000-meter circle around `point1`?
+
+```js
+var point1 = r.point(32.719464,-117.220406);
+var point2 = r.point(32.725186,-117.206201);
+r.circle(point1, 2000).intersects(point2).run(conn, callback);
+// result returned to callback 
+true
+```
+
+## [line](line/) ##
+
+{% apibody %}
+r.line([lat1, lon2], [lat2, lon2], ...) &rarr; line
+r.line(point1, point2, ...) &rarr; line
+{% endapibody %}
+
+Construct a geometry object of type Line. The line can be specified in one of two ways:
+
+* Two or more two-item arrays, specifying latitude and longitude numbers of the line's vertices;
+* Two or more [Point](/api/javascript/point) objects specifying the line's vertices.
+
+__Example:__ Define a line.
+
+```js
+r.table('geo').insert({
+    id: 101,
+    route: r.line([37.779388,-122.423246], [37.329898,-121.886420])
+}).run(conn, callback);
+```
+
+## [point](point/) ##
+
+{% apibody %}
+r.point(latitude, longitude) &rarr; point
+{% endapibody %}
+
+Construct a geometry object of type Point. The point is specified by two floating point numbers, the latitude (&minus;90 to 90) and longitude (&minus;180 to 180) of the point on a perfect sphere.
+
+__Example:__ Define a point.
+
+```js
+r.table('geo').insert({
+    id: 1,
+    name: 'San Francisco',
+    location: r.point(37.779388,-122.423246)
+}).run(conn, callback);
+```
+
+## [polygon](polygon/) ##
+
+{% apibody %}
+r.polygon([lat1, lon2], [lat2, lon2], ...) &rarr; polygon
+r.polygon(point1, point2, ...) &rarr; polygon
+{% endapibody %}
+
+Construct a geometry object of type Polygon. The Polygon can be specified in one of two ways:
+
+* Three or more two-item arrays, specifying latitude and longitude numbers of the polygon's vertices;
+* Three or more [Point](/api/javascript/point) objects specifying the polygon's vertices.
+
+__Example:__ Define a polygon.
+
+```js
+r.table('geo').insert({
+    id: 101,
+    rectangle: r.polygon(
+        [37.779388,-122.423246],
+        [37.329898,-122.423246],
+        [37.329898,-121.886420],
+        [37.779388,-121.886420]
+    )
+}).run(conn, callback);
+```
+
+## [polygonSub](polygon_sub/) ##
+
+{% apibody %}
+polygon1.polygonSub(polygon2) &rarr; polygon
+{% endapibody %}
+
+Use `polygon2` to "punch out" a hole in `polygon1`. `polygon2` must be completely contained within `polygon1` and must have no holes itself (it must not be the output of `polygonSub` itself).
+
+
+__Example:__ Define a polygon with a hole punched in it.
+
+```js
+var outerPolygon = r.polygon(
+    [37.7,-122.4],
+    [37.3,-122.4],
+    [37.3,-121.8],
+    [37.7,-121.8]
+);
+var innerPolygon = r.polygon(
+    [37.4,-122.3],
+    [37.6,-122.3],
+    [37.6,-122.0],
+    [37.4,-122.0]
+);
+outerPolygon.polygonSub(innerpolygon).run(conn, callback);
+```
+
+{% endapisection %}
