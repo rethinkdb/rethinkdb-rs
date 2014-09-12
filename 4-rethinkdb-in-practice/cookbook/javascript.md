@@ -754,16 +754,21 @@ In addition, the following two fields are set as circumstances dictate:
 
 ## Using dynamic keys in ReQL commands ##
 
-Sometimes you may want to specify a key in a ReQL document dynamically. The easiest way to do that is with the `object` command, which takes a list of keys and values and returns an object from them.
-
-Suppose you wanted to retrieve a list of distinct first names from a user table, but the table is too large to be used with the `distinct` command. You can use use `map` and `object` to turn the names into keys, then use `reduce` to remove duplicates:
+Sometimes you may want to write a ReQL document with a dynamic key--the field name is stored in a variable. You can do this with the `object` command, which takes a list of keys and values (`(key, value, key, value ...)`) and returns an object from them.
 
 ```js
-r.table('users').map(function (user) {
-    return r.object(user('firstName'), true);
-}).reduce(function (left, right) {
-    return left.merge(right);
-}).keys().run(conn, function(err, result) {
+r.table('users').get(1).update(r.object(propertyName, value)).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
+```
+
+The field name can be determined entirely on the server, too. For instance, to update a field whose name is drawn from the value of another field:
+
+```js
+r.table('users').forEach(function (doc) {
+  return r.table('users').get(doc('id')).update(r.object(doc('field'), newValue));
+}).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
 });
