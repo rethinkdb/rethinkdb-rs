@@ -14,7 +14,7 @@ permalink: docs/map-reduce/
 
 [wp]: http://en.wikipedia.org/wiki/MapReduce
 [g]: http://research.google.com/archive/mapreduce.html
-[ah]: http;//hadoop.apache.org/
+[ah]: http://hadoop.apache.org/
 [md]: http://www.mongodb.org/
 
 In RethinkDB, map-reduce queries operate on sequences and are composed of two or three parts:
