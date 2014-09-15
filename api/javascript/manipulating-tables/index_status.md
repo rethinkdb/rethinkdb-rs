@@ -30,6 +30,7 @@ The result is an array where for each index, there will be an object like this o
     ready: true,
     function: <binary>,
     multi: <bool>,
+    geo: <bool>,
     outdated: <bool>
 }
 ```
@@ -44,11 +45,12 @@ or this one:
     blocks_total: <int>,
     function: <binary>,
     multi: <bool>,
+    geo: <bool>,
     outdated: <bool>
 }
 ```
 
-The `multi` field will be `true` or `false` depending on whether this index was created as a multi index (see [indexCreate](/api/javascript/index_create/) for details). The `outdated` field will be true if the index is outdated in the current version of RethinkDB and needs to be rebuilt.
+The `multi` field will be `true` or `false` depending on whether this index was created as a multi index; the `geo` field will be `true` or `false` depending on whether this index was created as a geospatial index. See [indexCreate](/api/javascript/index_create/) for details. The `outdated` field will be true if the index is outdated in the current version of RethinkDB and needs to be rebuilt.
 
 The `function` field is a binary object containing an opaque representation of the secondary index (including the `multi` argument if specified). It can be passed as the second argument to [indexCreate](/api/javascript/index_create/) to create a new index with the same function; see `indexCreate` for more information.
 
