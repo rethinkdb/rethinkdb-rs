@@ -2545,6 +2545,8 @@ r.table('geo').insert({
 }).run(conn)
 ```
 
+[Read more about this command &rarr;](circle/)
+
 ## [distance](distance/) ##
 
 {% apibody %}
@@ -2562,6 +2564,8 @@ __Example:__ Compute the distance between two points on the Earth in kilometers.
 
 734.1252496021841
 ```
+
+[Read more about this command &rarr;](distance/)
 
 ## [fill](fill/) ##
 
@@ -2589,6 +2593,8 @@ r.table('geo').get(201).update({
 }).run(conn)
 ```
 
+[Read more about this command &rarr;](fill/)
+
 ## [geojson](geojson/) ##
 
 {% apibody %}
@@ -2613,6 +2619,8 @@ r.table('geo').insert({
 }).run(conn)
 ```
 
+[Read more about this command &rarr;](geojson/)
+
 ## [to_geojson](to_geojson/) ##
 
 {% apibody %}
@@ -2634,6 +2642,8 @@ __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 }
 ```
 
+[Read more about this command &rarr;](to_geojson/)
+
 ## [get_intersecting](get_intersecting/) ##
 
 {% apibody %}
@@ -2648,6 +2658,8 @@ __Example:__ Which of the locations in a list of parks intersect `circle1`?
 circle1 = r.circle([32.719464,-117.220406], 10, {:unit => 'mi'})
 r.table('parks').get_intersecting(circle1, {:index => 'area'}).run(conn)
 ```
+
+[Read more about this command &rarr;](get_intersecting/)
 
 ## [get_nearest](get_nearest/) ##
 
@@ -2664,6 +2676,8 @@ secret_base = r.point(37.777128,-122.422876)
 r.table('hideouts').get_nearest(secret_base, {:index => 'location',
     :max_dist => 5000}).run(conn)
 ```
+
+[Read more about this command &rarr;](get_nearest/)
 
 ## [includes](includes/) ##
 
@@ -2684,6 +2698,8 @@ __Example:__ Is `point2` included within a 2000-meter circle around `point1`?
 true
 ```
 
+[Read more about this command &rarr;](includes/)
+
 ## [intersects](intersects/) ##
 
 {% apibody %}
@@ -2702,6 +2718,8 @@ __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 
 true
 ```
+
+[Read more about this command &rarr;](intersects/)
 
 ## [line](line/) ##
 
@@ -2724,6 +2742,8 @@ r.table('geo').insert({
 }).run(conn)
 ```
 
+[Read more about this command &rarr;](line/)
+
 ## [point](point/) ##
 
 {% apibody %}
@@ -2741,6 +2761,8 @@ r.table('geo').insert({
     :location => r.point(37.779388,-122.423246)
 }).run(conn)
 ```
+
+[Read more about this command &rarr;](point/)
 
 ## [polygon](polygon/) ##
 
@@ -2768,6 +2790,8 @@ r.table('geo').insert({
 }).run(conn)
 ```
 
+[Read more about this command &rarr;](polygon/)
+
 ## [polygon_sub](polygon_sub/) ##
 
 {% apibody %}
@@ -2794,5 +2818,7 @@ inner_polygon = r.polygon(
 )
 outer_polygon.polygon_sub(inner_polygon).run(conn)
 ```
+
+[Read more about this command &rarr;](polygon_sub/)
 
 {% endapisection %}

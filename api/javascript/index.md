@@ -2702,6 +2702,8 @@ r.table('geo').insert({
 }).run(conn, callback);
 ```
 
+[Read more about this command &rarr;](circle/)
+
 ## [distance](distance/) ##
 
 {% apibody %}
@@ -2719,6 +2721,8 @@ r.distance(point1, point2, {unit: 'km'}).run(conn, callback);
 // result returned to callback 
 734.1252496021841
 ```
+
+[Read more about this command &rarr;](distance/)
 
 ## [fill](fill/) ##
 
@@ -2746,6 +2750,8 @@ r.table('geo').get(201).update({
 }).run(conn, callback);
 ```
 
+[Read more about this command &rarr;](fill/)
+
 ## [geojson](geojson/) ##
 
 {% apibody %}
@@ -2770,6 +2776,8 @@ r.table('geo').insert({
 }).run(conn, callback);
 ```
 
+[Read more about this command &rarr;](geojson/)
+
 ## [toGeojson](to_geojson/) ##
 
 {% apibody %}
@@ -2791,6 +2799,8 @@ r.table(geo).get('sfo')('location').toGeojson.run(conn, callback);
 }
 ```
 
+[Read more about this command &rarr;](to_geojson/)
+
 ## [getIntersecting](get_intersecting/) ##
 
 {% apibody %}
@@ -2805,6 +2815,8 @@ __Example:__ Which of the locations in a list of parks intersect `circle1`?
 var circle1 = r.circle([32.719464,-117.220406], 10, {unit: 'mi'});
 r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 ```
+
+[Read more about this command &rarr;](get_intersecting/)
 
 ## [getNearest](get_nearest/) ##
 
@@ -2822,6 +2834,8 @@ r.table('hideouts').getNearest(secretBase,
     {index: 'location', maxDist: 5000}
 ).run(conn, callback)
 ```
+
+[Read more about this command &rarr;](get_nearest/)
 
 ## [includes](includes/) ##
 
@@ -2842,6 +2856,8 @@ r.circle(point1, 2000).includes(point2).run(conn, callback);
 true
 ```
 
+[Read more about this command &rarr;](includes/)
+
 ## [intersects](intersects/) ##
 
 {% apibody %}
@@ -2860,6 +2876,8 @@ r.circle(point1, 2000).intersects(point2).run(conn, callback);
 // result returned to callback 
 true
 ```
+
+[Read more about this command &rarr;](intersects/)
 
 ## [line](line/) ##
 
@@ -2882,6 +2900,8 @@ r.table('geo').insert({
 }).run(conn, callback);
 ```
 
+[Read more about this command &rarr;](line/)
+
 ## [point](point/) ##
 
 {% apibody %}
@@ -2899,6 +2919,8 @@ r.table('geo').insert({
     location: r.point(37.779388,-122.423246)
 }).run(conn, callback);
 ```
+
+[Read more about this command &rarr;](point/)
 
 ## [polygon](polygon/) ##
 
@@ -2926,6 +2948,8 @@ r.table('geo').insert({
 }).run(conn, callback);
 ```
 
+[Read more about this command &rarr;](polygon/)
+
 ## [polygonSub](polygon_sub/) ##
 
 {% apibody %}
@@ -2952,5 +2976,7 @@ var innerPolygon = r.polygon(
 );
 outerPolygon.polygonSub(innerpolygon).run(conn, callback);
 ```
+
+[Read more about this command &rarr;](polygon_sub/)
 
 {% endapisection %}
