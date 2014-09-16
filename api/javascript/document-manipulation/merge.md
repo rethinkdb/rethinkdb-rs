@@ -21,15 +21,15 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-singleSelection.merge(object) &rarr; object
-object.merge(object) &rarr; object
-sequence.merge(object) &rarr; stream
-array.merge(object) &rarr; array
+singleSelection.merge(object|function) &rarr; object
+object.merge(object|function) &rarr; object
+sequence.merge(object|function) &rarr; stream
+array.merge(object|function) &rarr; array
 {% endapibody %}
 
 # Description #
 
-Merge two objects together to construct a new object with properties from both. Gives preference to attributes from other when there is a conflict.
+Merge two objects together to construct a new object with properties from both. Gives preference to attributes from other when there is a conflict. `merge` also accepts a subquery function that returns an object, which will be used similarly to a [map](/api/javascript/map/) function.
 
 __Example:__ Equip IronMan for battle.
 
@@ -39,6 +39,24 @@ r.table('marvel').get('IronMan').merge(
 ).run(conn, callback)
 ```
 
+__Example:__ Equip every hero for battle, using a subquery function to retrieve their weapons.
+
+```js
+r.table('marvel').merge(function (hero) {
+    return { weapons: r.table('weapons').get(hero('weaponId')) };
+}).run(conn, callback)
+```
+
+__Example:__ Use `merge` to join each blog post with its comments.
+
+```js
+r.table('posts').merge(function (post) {
+    return {
+        comments: r.table('comments').getAll(post('id'),
+            {index: 'postId'}).coerceTo('array')
+    }
+}).run(conn, callback)
+```    
 
 __Example:__ Merge can be used recursively to modify object within objects.
 
