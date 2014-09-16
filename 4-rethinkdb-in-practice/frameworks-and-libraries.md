@@ -91,6 +91,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 ## Integrations
 
+- [Epiphy](https://github.com/kureikain/epiphy) by [@kureikain](https://github.com/kureikain)   
+  A light persistence framework for RethinkDB.
+
 - [rabbitMQ](/docs/rabbitmq/ruby) Listen for changes in a RethinkDB table over RabbitMQ.
 
 
