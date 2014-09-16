@@ -10,6 +10,7 @@ io:
         - sequence
 related_commands:
     includes: includes/
+    getIntersecting: get_intersecting/
 ---
 # Command syntax #
 

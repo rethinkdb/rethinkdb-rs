@@ -5,6 +5,7 @@ permalink: api/ruby/intersects/
 command: intersects
 related_commands:
     includes: includes/
+    get_intersecting: get_intersecting/
 ---
 # Command syntax #
 
