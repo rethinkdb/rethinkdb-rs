@@ -407,6 +407,21 @@ r.table("users").filter(function(user) {
 });
 ```
 
+## Performing multiple aggregations simultaneously ##
+
+If you want to perform a query that returns aggregations on different fields together, there are a couple different approaches. A straightforward way to do it is to use the `object` command to return a new document whose values are separate aggregation queries.
+
+```js
+r.object(
+    'average_year', r.table('movies')('year').avg(),
+    'total_votes', r.table('movies')('votes').sum()
+).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
+```
+
+This is also a canonical use case for [map-reduce](/docs/map-reduce). This is more involved, but makes it easier to do transformations on the table before running the final map-reduce query. This is the same query as above in map-reduce, but limited to just the top 25 movies in the `movies` table.
 
 {% endfaqsection %}
 
