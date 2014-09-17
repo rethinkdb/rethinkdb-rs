@@ -1639,7 +1639,7 @@ __Example:__ Delete the second element of an array.
 
 ```js
 > r(['a','b','c','d','e','f']).deleteAt(1).run(conn, callback)
-
+// result passed to callback
 ['a', 'c', 'd', 'e', 'f']
 ```
 
