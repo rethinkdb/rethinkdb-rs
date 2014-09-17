@@ -87,8 +87,8 @@ to track progress.
 __Example:__ If you have a sequence with fewer documents than the `array_limit`, you can order it
 by multiple fields without an index.
 
-```js
-r.table('small_table').orderBy('date', r.desc('title'))
+```py
+r.table('small_table').order_by('date', r.desc('title'))
 ```
 
 __Example:__ Notice that an index ordering always has highest

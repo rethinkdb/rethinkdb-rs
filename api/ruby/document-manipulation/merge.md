@@ -45,7 +45,7 @@ r.table('posts').merge{ |post|
     { :comments => r.table('comments').get_all(post['id'],
         {:index => 'post_id'}).coerce_to('array') }
 }.run(conn)
-```    
+```
 
 __Example:__ Merge can be used recursively to modify object within objects.
 

@@ -21,7 +21,7 @@ __Example:__ Replace one nested document with another rather than merging the fi
 
 Assume your users table has this structure:
 
-```js
+```rb
 [
     {
         :id => 1,
