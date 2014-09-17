@@ -44,6 +44,7 @@ def read_index(script_path, result):
             # We just found a new title, let's save the previous one (if defined)
             if current_method != None:
                 # The key used is the url of the detailed page about the method
+                current_example = re.sub('```\n> ', '```\n', re.sub("```js[^`]*```", lambda x: re.sub('\n+', '\n', x.group(0)), current_example).replace('```js', '```'))
                 result["api/javascript/"+current_url+"/"] = {
                     "description": markdown.markdown(current_description),
                     "url":  current_url,
