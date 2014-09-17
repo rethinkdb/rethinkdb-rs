@@ -54,6 +54,6 @@ argument giving the secondary index to query.
 r.table('dc').between('dark_knight', 'man_of_steel', index='code_name').run(conn)
 ```
 
-__Note:__ To filter all documents between *times* (and dates), do not use `between`. Instead, use the [during](/api/python/during) command.
+__Note:__ To get all documents between two *dates*, use the [during](/api/ruby/during) command, not `between`.
 
 Secondary indexes can be used in extremely powerful ways with `between` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
