@@ -27,7 +27,7 @@ r.expr([1, 2, 3]).map { |x| [x, x.mul(2)] }.run(conn)
 
 Result:
 
-```js
+```rb
 [[1, 2], [2, 4], [3, 6]]
 ```
 
@@ -39,7 +39,7 @@ r.expr([1, 2, 3]).concat_map { |x| [x, x.mul(2)] }.run(conn)
 
 Result:
 
-```js
+```rb
 [1, 2, 2, 4, 3, 6]
 ```
 

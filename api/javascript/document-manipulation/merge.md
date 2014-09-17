@@ -56,7 +56,7 @@ r.table('posts').merge(function (post) {
             {index: 'postId'}).coerceTo('array')
     }
 }).run(conn, callback)
-```    
+```
 
 __Example:__ Merge can be used recursively to modify object within objects.
 
