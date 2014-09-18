@@ -40,6 +40,6 @@ __Example:__ Define a circle.
 r.table('geo').insert({
     id: 300,
     name: 'Hayes Valley',
-    neighborhood: r.circle([37.779388,-122.423246], 1000)
+    neighborhood: r.circle([-122.423246,37.779388], 1000)
 }).run(conn, callback);
 ```

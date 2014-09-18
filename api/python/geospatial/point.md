@@ -11,12 +11,12 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.point(latitude, longitude) &rarr; point
+r.point(longitude, latitude) &rarr; point
 {% endapibody %}
 
 # Description #
 
-Construct a geometry object of type Point. The point is specified by two floating point numbers, the latitude (&minus;90 to 90) and longitude (&minus;180 to 180) of the point on a perfect sphere. See [Geospatial support](/docs/geo-support/) for more information on ReQL's coordinate system.
+Construct a geometry object of type Point. The point is specified by two floating point numbers, the longitude (&minus;180 to 180) and latitude (&minus;90 to 90) of the point on a perfect sphere. See [Geospatial support](/docs/geo-support/) for more information on ReQL's coordinate system.
 
 __Example:__ Define a point.
 
@@ -24,6 +24,6 @@ __Example:__ Define a point.
 r.table('geo').insert({
     'id': 1,
     'name': 'San Francisco',
-    'location': r.point(37.779388,-122.423246)
+    'location': r.point(-122.423246,37.779388)
 }).run(conn)
 ```

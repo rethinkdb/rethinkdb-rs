@@ -25,16 +25,16 @@ __Example:__ Define a polygon with a hole punched in it.
 
 ```js
 var outerPolygon = r.polygon(
-    [37.7,-122.4],
-    [37.3,-122.4],
-    [37.3,-121.8],
-    [37.7,-121.8]
+    [-122.4,37.7],
+    [-122.4,37.3],
+    [-121.8,37.3],
+    [-121.8,37.7]
 );
 var innerPolygon = r.polygon(
-    [37.4,-122.3],
-    [37.6,-122.3],
-    [37.6,-122.0],
-    [37.4,-122.0]
+    [-122.3,37.4],
+    [-122.3,37.6],
+    [-122.0,37.6],
+    [-122.0,37.4]
 );
 outerPolygon.polygonSub(innerPolygon).run(conn, callback);
 ```

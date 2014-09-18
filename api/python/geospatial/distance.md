@@ -28,8 +28,8 @@ If one of the objects is a polygon or a line, the point will be projected onto t
 __Example:__ Compute the distance between two points on the Earth in kilometers.
 
 ```py
-> point1 = r.point(37.779388,-122.423246)
-> point2 = r.point(32.719464,-117.220406)
+> point1 = r.point(-122.423246,37.779388)
+> point2 = r.point(-117.220406,32.719464)
 > r.distance(point1, point2, unit='km').run(conn)
 
 734.1252496021841

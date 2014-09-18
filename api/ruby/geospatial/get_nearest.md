@@ -31,7 +31,7 @@ The return value will be an array of two-item objects with the keys `dist` and `
 __Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
 
 ```rb
-secret_base = r.point(37.777128,-122.422876)
+secret_base = r.point(-122.422876,37.777128)
 r.table('hideouts').get_nearest(secret_base, {:index => 'location',
     :max_dist => 5000}).run(conn)
 ```

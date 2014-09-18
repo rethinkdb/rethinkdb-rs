@@ -2551,7 +2551,7 @@ __Example:__ Generate a UUID.
 ## [circle](circle/) ##
 
 {% apibody %}
-r.circle([latitude, longitude], radius[, num_vertices=32, geo_system='WGS84', unit='m', fill=True]) &rarr; geometry
+r.circle([longitude, latitude], radius[, num_vertices=32, geo_system='WGS84', unit='m', fill=True]) &rarr; geometry
 r.circle(point, radius[, {num_vertices=32, geo_system='WGS84', unit='m', fill=True]) &rarr; geometry
 {% endapibody %}
 
@@ -2563,7 +2563,7 @@ __Example:__ Define a circle.
 r.table('geo').insert({
     'id': 300,
     'name': 'Hayes Valley',
-    'neighborhood': r.circle([37.779388,-122.423246], 1000)
+    'neighborhood': r.circle([-122.423246,37.779388], 1000)
 }).run(conn)
 ```
 
@@ -2580,8 +2580,8 @@ Compute the distance between a point and another geometry object. At least one o
 __Example:__ Compute the distance between two points on the Earth in kilometers.
 
 ```py
-> point1 = r.point(37.779388,-122.423246)
-> point2 = r.point(32.719464,-117.220406)
+> point1 = r.point(-122.423246,37.779388)
+> point2 = r.point(-117.220406,32.719464)
 > r.distance(point1, point2, unit='km').run(conn)
 
 734.1252496021841
@@ -2603,10 +2603,10 @@ __Example:__ Create a line object and then convert it to a polygon.
 r.table('geo').insert({
     'id': 201,
     'rectangle': r.line(
-        [37.779388,-122.423246],
-        [37.329898,-122.423246],
-        [37.329898,-121.886420],
-        [37.779388,-121.886420]
+        [-122.423246,37.779388],
+        [-122.423246,37.329898],
+        [-121.886420,37.329898],
+        [-121.886420,37.779388]
     )
 }).run(conn)
 
@@ -2677,7 +2677,7 @@ Get all documents where the given geometry object intersects the geometry object
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 
 ```py
-circle1 = r.circle([32.719464,-117.220406], 10, unit='mi')
+circle1 = r.circle([-117.220406,32.719464], 10, unit='mi')
 r.table('parks').get_intersecting(circle1, index='area').run(conn)
 ```
 
@@ -2694,7 +2694,7 @@ Get all documents where the specified geospatial index is within a certain dista
 __Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
 
 ```py
-secret_base = r.point(37.777128,-122.422876)
+secret_base = r.point(-122.422876,37.777128)
 r.table('hideouts').get_nearest(secret_base, index='location',
     max_dist=5000).run(conn)
 ```
@@ -2713,8 +2713,8 @@ Tests whether a geometry object is completely contained within another. When app
 __Example:__ Is `point2` included within a 2000-meter circle around `point1`?
 
 ```py
-> point1 = r.point(32.719464,-117.220406)
-> point2 = r.point(32.725186,-117.206201)
+> point1 = r.point(-117.220406,32.719464)
+> point2 = r.point(-117.206201,32.725186)
 > r.circle(point1, 2000).includes(point2).run(conn)
 
 True
@@ -2735,8 +2735,8 @@ Tests whether two geometry objects intersect with one another. When applied to a
 __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 
 ```py
-> point1 = r.point(32.719464,-117.220406)
-> point2 = r.point(32.725186,-117.206201)
+> point1 = r.point(-117.220406,32.719464)
+> point2 = r.point(-117.206201,32.725186)
 > r.circle(point1, 2000).intersects(point2).run(conn)
 
 True
@@ -2747,7 +2747,7 @@ True
 ## [line](line/) ##
 
 {% apibody %}
-r.line([lat1, lon2], [lat2, lon2], ...) &rarr; line
+r.line([lon1, lat1], [lon2, lat2], ...) &rarr; line
 r.line(point1, point2, ...) &rarr; line
 {% endapibody %}
 
@@ -2761,7 +2761,7 @@ __Example:__ Define a line.
 ```py
 r.table('geo').insert({
     'id': 101,
-    'route': r.line([37.779388,-122.423246], [37.329898,-121.886420])
+    'route': r.line([-122.423246,37.779388], [-121.886420,37.329898])
 }).run(conn)
 ```
 
@@ -2770,10 +2770,10 @@ r.table('geo').insert({
 ## [point](point/) ##
 
 {% apibody %}
-r.point(latitude, longitude) &rarr; point
+r.point(longitude, latitude) &rarr; point
 {% endapibody %}
 
-Construct a geometry object of type Point. The point is specified by two floating point numbers, the latitude (&minus;90 to 90) and longitude (&minus;180 to 180) of the point on a perfect sphere.
+Construct a geometry object of type Point. The point is specified by two floating point numbers, the longitude (&minus;180 to 180) and latitude (&minus;90 to 90) of the point on a perfect sphere.
 
 __Example:__ Define a point.
 
@@ -2790,13 +2790,13 @@ r.table('geo').insert({
 ## [polygon](polygon/) ##
 
 {% apibody %}
-r.polygon([lat1, lon2], [lat2, lon2], ...) &rarr; polygon
+r.polygon([lon1, lat1], [lon2, lat2], ...) &rarr; polygon
 r.polygon(point1, point2, ...) &rarr; polygon
 {% endapibody %}
 
 Construct a geometry object of type Polygon. The Polygon can be specified in one of two ways:
 
-* Three or more two-item arrays, specifying latitude and longitude numbers of the polygon's vertices;
+* Three or more two-item arrays, specifying longitude and latitude numbers of the polygon's vertices;
 * Three or more [Point](/api/python/point) objects specifying the polygon's vertices.
 
 __Example:__ Define a polygon.
@@ -2805,10 +2805,10 @@ __Example:__ Define a polygon.
 r.table('geo').insert({
     'id': 101,
     'rectangle': r.polygon(
-        [37.779388,-122.423246],
-        [37.329898,-122.423246],
-        [37.329898,-121.886420],
-        [37.779388,-121.886420]
+        [-122.423246,37.779388],
+        [-122.423246,37.329898],
+        [-121.886420,37.329898],
+        [-121.886420,37.779388]
     )
 }).run(conn)
 ```
@@ -2827,16 +2827,16 @@ __Example:__ Define a polygon with a hole punched in it.
 
 ```py
 outer_polygon = r.polygon(
-    [37.7,-122.4],
-    [37.3,-122.4],
-    [37.3,-121.8],
-    [37.7,-121.8]
+    [-122.4,37.7],
+    [-122.4,37.3],
+    [-121.8,37.3],
+    [-121.8,37.7]
 )
 inner_polygon = r.polygon(
-    [37.4,-122.3],
-    [37.6,-122.3],
-    [37.6,-122.0],
-    [37.4,-122.0]
+    [-122.3,37.4],
+    [-122.3,37.6],
+    [-122.0,37.6],
+    [-122.0,37.4]
 )
 outer_polygon.polygon_sub(inner_polygon).run(conn)
 ```

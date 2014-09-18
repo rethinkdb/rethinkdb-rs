@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.circle([latitude, longitude], radius[, num_vertices=32, geo_system='WGS84', unit='m', fill=True]) &rarr; geometry
+r.circle([longitude, latitude], radius[, num_vertices=32, geo_system='WGS84', unit='m', fill=True]) &rarr; geometry
 r.circle(point, radius[, {num_vertices=32, geo_system='WGS84', unit='m', fill=True]) &rarr; geometry
 {% endapibody %}
 
@@ -37,6 +37,6 @@ __Example:__ Define a circle.
 r.table('geo').insert({
     'id': 300,
     'name': 'Hayes Valley',
-    'neighborhood': r.circle([37.779388,-122.423246], 1000)
+    'neighborhood': r.circle([-122.423246,37.779388], 1000)
 }).run(conn)
 ```

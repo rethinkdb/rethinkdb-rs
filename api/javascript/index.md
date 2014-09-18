@@ -2698,7 +2698,7 @@ __Example:__ Define a circle.
 r.table('geo').insert({
     id: 300,
     name: 'Hayes Valley',
-    neighborhood: r.circle([37.779388,-122.423246], 1000)
+    neighborhood: r.circle([-122.423246,37.779388], 1000)
 }).run(conn, callback);
 ```
 
@@ -2715,8 +2715,8 @@ Compute the distance between a point and another geometry object. At least one o
 __Example:__ Compute the distance between two points on the Earth in kilometers.
 
 ```js
-var point1 = r.point(37.779388,-122.423246);
-var point2 = r.point(32.719464,-117.220406);
+var point1 = r.point(-122.423246,37.779388);
+var point2 = r.point(-117.220406,32.719464);
 r.distance(point1, point2, {unit: 'km'}).run(conn, callback);
 // result returned to callback 
 734.1252496021841
@@ -2738,10 +2738,10 @@ __Example:__ Create a line object and then convert it to a polygon.
 r.table('geo').insert({
     id: 201,
     rectangle: r.line(
-        [37.779388,-122.423246],
-        [37.329898,-122.423246],
-        [37.329898,-121.886420],
-        [37.779388,-121.886420]
+        [-122.423246,37.779388],
+        [-122.423246,37.329898],
+        [-121.886420,37.329898],
+        [-121.886420,37.779388]
     )
 }).run(conn, callback);
 
@@ -2812,7 +2812,7 @@ Get all documents where the given geometry object intersects the geometry object
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 
 ```js
-var circle1 = r.circle([32.719464,-117.220406], 10, {unit: 'mi'});
+var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 ```
 
@@ -2829,7 +2829,7 @@ Get all documents where the specified geospatial index is within a certain dista
 __Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
 
 ```js
-var secretBase = r.point(37.777128,-122.422876);
+var secretBase = r.point(-122.422876,37.777128);
 r.table('hideouts').getNearest(secretBase,
     {index: 'location', maxDist: 5000}
 ).run(conn, callback)
@@ -2849,8 +2849,8 @@ Tests whether a geometry object is completely contained within another. When app
 __Example:__ Is `point2` included within a 2000-meter circle around `point1`?
 
 ```js
-var point1 = r.point(32.719464,-117.220406);
-var point2 = r.point(32.725186,-117.206201);
+var point1 = r.point(-117.220406,32.719464);
+var point2 = r.point(-117.206201,32.725186);
 r.circle(point1, 2000).includes(point2).run(conn, callback);
 // result returned to callback 
 true
@@ -2870,8 +2870,8 @@ Tests whether two geometry objects intersect with one another. When applied to a
 __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 
 ```js
-var point1 = r.point(32.719464,-117.220406);
-var point2 = r.point(32.725186,-117.206201);
+var point1 = r.point(-117.220406,32.719464);
+var point2 = r.point(-117.206201,32.725186);
 r.circle(point1, 2000).intersects(point2).run(conn, callback);
 // result returned to callback 
 true
@@ -2882,13 +2882,13 @@ true
 ## [line](line/) ##
 
 {% apibody %}
-r.line([lat1, lon2], [lat2, lon2], ...) &rarr; line
+r.line([lon1, lat1], [lon2, lat1], ...) &rarr; line
 r.line(point1, point2, ...) &rarr; line
 {% endapibody %}
 
 Construct a geometry object of type Line. The line can be specified in one of two ways:
 
-* Two or more two-item arrays, specifying latitude and longitude numbers of the line's vertices;
+* Two or more two-item arrays, specifying longitude and latitude numbers of the line's vertices;
 * Two or more [Point](/api/javascript/point) objects specifying the line's vertices.
 
 __Example:__ Define a line.
@@ -2896,7 +2896,7 @@ __Example:__ Define a line.
 ```js
 r.table('geo').insert({
     id: 101,
-    route: r.line([37.779388,-122.423246], [37.329898,-121.886420])
+    route: r.line([-122.423246,37.779388], [-121.886420,37.329898])
 }).run(conn, callback);
 ```
 
@@ -2905,10 +2905,10 @@ r.table('geo').insert({
 ## [point](point/) ##
 
 {% apibody %}
-r.point(latitude, longitude) &rarr; point
+r.point(longitude, latitude) &rarr; point
 {% endapibody %}
 
-Construct a geometry object of type Point. The point is specified by two floating point numbers, the latitude (&minus;90 to 90) and longitude (&minus;180 to 180) of the point on a perfect sphere.
+Construct a geometry object of type Point. The point is specified by two floating point numbers, the longitude (&minus;180 to 180) and the latitude (&minus;90 to 90) of the point on a perfect sphere.
 
 __Example:__ Define a point.
 
@@ -2916,7 +2916,7 @@ __Example:__ Define a point.
 r.table('geo').insert({
     id: 1,
     name: 'San Francisco',
-    location: r.point(37.779388,-122.423246)
+    location: r.point(-122.423246,37.779388)
 }).run(conn, callback);
 ```
 
@@ -2925,13 +2925,13 @@ r.table('geo').insert({
 ## [polygon](polygon/) ##
 
 {% apibody %}
-r.polygon([lat1, lon2], [lat2, lon2], ...) &rarr; polygon
+r.polygon([lon1, lat1], [lon2, lat2], ...) &rarr; polygon
 r.polygon(point1, point2, ...) &rarr; polygon
 {% endapibody %}
 
 Construct a geometry object of type Polygon. The Polygon can be specified in one of two ways:
 
-* Three or more two-item arrays, specifying latitude and longitude numbers of the polygon's vertices;
+* Three or more two-item arrays, specifying longitude and latitude numbers of the polygon's vertices;
 * Three or more [Point](/api/javascript/point) objects specifying the polygon's vertices.
 
 __Example:__ Define a polygon.
@@ -2940,10 +2940,10 @@ __Example:__ Define a polygon.
 r.table('geo').insert({
     id: 101,
     rectangle: r.polygon(
-        [37.779388,-122.423246],
-        [37.329898,-122.423246],
-        [37.329898,-121.886420],
-        [37.779388,-121.886420]
+        [-122.423246,37.779388],
+        [-122.423246,37.329898],
+        [-121.886420,37.329898],
+        [-121.886420,37.779388]
     )
 }).run(conn, callback);
 ```
@@ -2963,16 +2963,16 @@ __Example:__ Define a polygon with a hole punched in it.
 
 ```js
 var outerPolygon = r.polygon(
-    [37.7,-122.4],
-    [37.3,-122.4],
-    [37.3,-121.8],
-    [37.7,-121.8]
+    [-122.4,37.7],
+    [-122.4,37.3],
+    [-121.8,37.3],
+    [-121.8,37.7]
 );
 var innerPolygon = r.polygon(
-    [37.4,-122.3],
-    [37.6,-122.3],
-    [37.6,-122.0],
-    [37.4,-122.0]
+    [-122.3,37.4],
+    [-122.3,37.6],
+    [-122.0,37.6],
+    [-122.0,37.4]
 );
 outerPolygon.polygonSub(innerpolygon).run(conn, callback);
 ```

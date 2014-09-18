@@ -26,12 +26,12 @@ r.table('geo').insert([
   {
     'id': 1,
     'name': 'San Francisco',
-    'location': r.point(37.779388,-122.423246)
+    'location': r.point(-122.423246,37.779388)
   },
   {
     'id': 2,
     'name': 'San Diego',
-    'location': r.point(32.719464,-117.220406)
+    'location': r.point(-117.220406,32.719464)
   }
 ]).run(conn)
 ```
@@ -52,13 +52,13 @@ r.table('geo').index_create('location', geo=True)
 Get the nearest point in the table to a specified one based on the index:
 
 ```py
-point = r.point(37.777128,-122.422876)  # San Francisco
+point = r.point(-122.422876,37.777128)  # San Francisco
 r.table('geo').get_nearest(point, index='location')
 ```
 
 # Coordinate system #
 
-Coordinates of points on the sphere's surface are addressed by a pair of floating point numbers that denote latitude and longitude. The range of latitude is &minus;90 (the south pole) through 90 (the north pole); the range of longitude is &minus;180 through 180, which wraps around the whole of the sphere: &minus;180 and 180 denote the same line.
+Coordinates of points on the sphere's surface are addressed by a pair of floating point numbers that denote longitude and latitude. The range of longitude is &minus;180 through 180, which wraps around the whole of the sphere: &minus;180 and 180 denote the same line. The range of latitude is &minus;90 (the south pole) through 90 (the north pole).
 
 For a more detailed explanation of this, consult the Wikipedia article on the [geographic coordinate system][gcs].
 
@@ -66,7 +66,7 @@ For a more detailed explanation of this, consult the Wikipedia article on the [g
 
 # Lines and distances #
 
-Given two endpoints, a line in ReQL is the shortest path between those endpoints on the surface of the sphere, known as a [geodesic]. Lines can be defined with multiple points, in which case each segment of the line will be a geodesic; likewise, sides of a polygon will be geodesics. Geodesics are calculated assuming a perfect sphere.
+Given two endpoints, a line in ReQL is the shortest path between those endpoints on the surface of the sphere, known as a [geodesic][]. Lines can be defined with multiple points, in which case each segment of the line will be a geodesic; likewise, sides of a polygon will be geodesics. Geodesics are calculated assuming a perfect sphere.
 
 [geodesic]: http://en.wikipedia.org/wiki/Geodesic
 
@@ -118,7 +118,7 @@ ReQL geometry objects are not [GeoJSON][] objects, but you can convert back and 
 
 RethinkDB only allows conversion of GeoJSON objects which have ReQL equivalents: Point, LineString, and Polygon; MultiPoint, MultiLineString, and MultiPolygon are not supported. (You could, however, store multiple points, lines and polygons in an array and use a geospatial multi index with them.)
 
-Only latitude/longitude coordinates are supported. GeoJSON objects that use Cartesian coordinates, specify an altitude, or specify their own coordinate reference system will be rejected.
+Only longitude/latitude coordinates are supported. GeoJSON objects that use Cartesian coordinates, specify an altitude, or specify their own coordinate reference system will be rejected.
 
 # Geospatial commands #
 
