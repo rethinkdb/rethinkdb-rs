@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.circle([latitude, longitude], radius[, {:num_vertices => 32, :geo_system => 'WGS84', :unit => 'm', :fill => true}]) &rarr; geometry
+r.circle([longitude, latitude], radius[, {:num_vertices => 32, :geo_system => 'WGS84', :unit => 'm', :fill => true}]) &rarr; geometry
 r.circle(point, radius[, {:num_vertices => 32, :geo_system => 'WGS84', :unit => 'm', :fill => true}]) &rarr; geometry
 {% endapibody %}
 

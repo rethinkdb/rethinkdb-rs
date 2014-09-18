@@ -2686,7 +2686,7 @@ __Example:__ Generate a UUID.
 ## [circle](circle/) ##
 
 {% apibody %}
-r.circle([latitude, longitude], radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
+r.circle([longitude, latitude], radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
 r.circle(point, radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
 {% endapibody %}
 
