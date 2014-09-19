@@ -52,6 +52,6 @@ __Example:__ Between can be used on secondary indexes too. Just pass an optional
 r.table('dc').between('dark_knight', 'man_of_steel', {index:'code_name'}).run(conn, callback)
 ```
 
-__Note:__ To get all documents between two *dates*, use the [during](/api/ruby/during) command, not `between`.
+__Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/ruby/during) command, not `between`.
 
 Secondary indexes can be used in extremely powerful ways with `between` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
