@@ -6,7 +6,7 @@ docs_active: importing
 permalink: docs/importing/
 ---
 
-The `rethinkdb` utility includes an `import` command to load existing data into RethinkD databases.
+The `rethinkdb` utility includes an `import` command to load existing data into RethinkDB databases.
 
     rethinkdb import -f FILE --table DB.TABLE [-c HOST:PORT] [-a AUTH_KEY]
       [--force] [--clients NUM] [--format (csv | json)] [--pkey PRIMARY_KEY]
@@ -49,6 +49,23 @@ r.table('tablename').update(function(doc) {
     })
 });
 ```
+
+RethinkDB will accept two formats for JSON files:
+
+* An array of JSON documents.
+
+    ```js
+    [ { field: "value" }, { field: "value"}, ... ]
+    ```
+
+* Whitespace-separated JSON rows
+
+    ```js
+    { field: "value" }
+    { field: "value" }
+    ```
+
+In both cases, each documents is a JSON object, bracketed with `{ }` characters. Only the first format is itself a valid JSON document, but RethinkDB will import documents properly either way.
 
 There are more options than what we've covered here. Run `rethinkdb help import` for a full list of parameters and examples.
 
