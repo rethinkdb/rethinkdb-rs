@@ -70,7 +70,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
   A Python ORM for RethinkDB.
 
 - [rethink](https://github.com/caoimhghin/rethink) by [@caoimhghin](https://github.com/caoimhghin)  
-  Python object mapper in the style of appengine ndb
+  A Python object mapper in the style of [App Engine NDB](https://cloud.google.com/appengine/docs/python/ndb/).
 
 
 ## Integrations
