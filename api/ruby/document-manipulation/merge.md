@@ -12,15 +12,15 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-singleSelection.merge(object) &rarr; object
-object.merge(object) &rarr; object
-sequence.merge(object) &rarr; stream
-array.merge(object) &rarr; array
+singleSelection.merge(object|function) &rarr; object
+object.merge(object|function) &rarr; object
+sequence.merge(object|function) &rarr; stream
+array.merge(object|function) &rarr; array
 {% endapibody %}
 
 # Description #
 
-Merge two objects together to construct a new object with properties from both. Gives preference to attributes from other when there is a conflict.
+Merge two objects together to construct a new object with properties from both. Gives preference to attributes from other when there is a conflict. `merge` also accepts a subquery function that returns an object, which will be used similarly to a [map](/api/ruby/map/) function.
 
 __Example:__ Equip IronMan for battle.
 
@@ -28,6 +28,23 @@ __Example:__ Equip IronMan for battle.
 r.table('marvel').get('IronMan').merge(
     r.table('loadouts').get('alienInvasionKit')
 ).run(conn)
+```
+
+__Example:__ Equip every hero for battle, using a subquery function to retrieve their weapons.
+
+```rb
+r.table('marvel').merge{ |hero|
+    { :weapons => r.table('weapons').get(hero['weapon_id']) }
+}.run(conn)
+```
+
+__Example:__ Use `merge` to join each blog post with its comments.
+
+```rb
+r.table('posts').merge{ |post|
+    { :comments => r.table('comments').get_all(post['id'],
+        {:index => 'post_id'}).coerce_to('array') }
+}.run(conn)
 ```
 
 __Example:__ Merge can be used recursively to modify object within objects.

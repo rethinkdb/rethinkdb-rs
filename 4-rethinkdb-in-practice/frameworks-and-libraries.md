@@ -69,6 +69,10 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [pyRethinkORM](https://github.com/JoshAshby/pyRethinkORM) by [@JoshAshby](https://github.com/JoshAshby)  
   A Python ORM for RethinkDB.
 
+- [rethink](https://github.com/caoimhghin/rethink) by [@caoimhghin](https://github.com/caoimhghin)  
+  A Python object mapper in the style of [App Engine NDB](https://cloud.google.com/appengine/docs/python/ndb/).
+
+
 ## Integrations
 
 - [rabbitMQ](/docs/rabbitmq/python) Listen for changes in a RethinkDB table over RabbitMQ.
@@ -80,7 +84,6 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
   A Flask extension that adds RethinkDB support (also see the [pip package](https://pypi.python.org/pypi/Flask-RethinkDB/)).
 
 
-
 # Ruby libraries
 
 
@@ -90,6 +93,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
   A Ruby ORM designed for RethinkDB. (Read our [quickstart tutorial](/docs/rails).)
 
 ## Integrations
+
+- [Epiphy](https://github.com/kureikain/epiphy) by [@kureikain](https://github.com/kureikain)   
+  A light persistence framework for RethinkDB.
 
 - [rabbitMQ](/docs/rabbitmq/ruby) Listen for changes in a RethinkDB table over RabbitMQ.
 

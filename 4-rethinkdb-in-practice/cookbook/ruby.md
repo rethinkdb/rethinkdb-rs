@@ -386,6 +386,18 @@ r.table("dates").insert({
 }).run(conn)
 ```
 
+## Incrementing a field value ##
+
+It's possible to increment a field value in a document&mdash;for example, a counter&mdash;in one step on the server.
+
+```rb
+r.table('aggregated').get(id).update{ |doc|
+    { :count => (doc['count'].default(0)+1) }
+}.run(conn)
+```
+
+Use `default` to ensure that if the `count` field doesn't already exist in the document, it's added correctly, rather than letting `add` throw an error.
+
 {% endfaqsection %}
 
 {% faqsection Pagination %}

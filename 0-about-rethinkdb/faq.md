@@ -8,37 +8,49 @@ alias: docs/faq/
 js: faq_index
 ---
 {% infobox info %}
-<strong>Want to learn more about RethinkDB?</strong>
 
-* Read the <a href="/docs/guide/javascript/">ten-minute guide</a> to get started with RethinkDB.
-* Browse the <a href="/docs/architecture/">architecture overview</a> for programmers familiar with distributed systems.
-* Jump into the [cookbook](/docs/cookbook/javascript/) and see dozens of examples of common RethinkDB queries.
+**Want to learn more about RethinkDB?**
+
+* Read the [ten-minute guide][tmg] to get started with RethinkDB.
+* Browse the [architecture overview][ao] for programmers familiar with distributed systems. 
+* Jump into the [cookbook][cb] and see dozens of examples of common RethinkDB queries.
+
+[tmg]: /docs/guide/javascript/
+[ao]:  /docs/architecture/
+[cb]:  /docs/cookbook/javascript/
+
 {% endinfobox %}
 
 <img src="/assets/images/docs/api_illustrations/faq.png" class="api_command_illustration" />
 
 <div id="faqcontents"></div>
+
 ---
+
 {% faqsection RethinkDB overview %}
 
 ## What is RethinkDB? ##
 
-RethinkDB is an open-source, distributed database built to store JSON
-documents and scale to multiple machines with very little effort. It's
-easy to set up and learn, and it has a pleasant query language that
-supports really useful queries like table joins, groupings, and
-aggregations.
+RethinkDB is an open-source, distributed database built to store JSON documents and effortlessly scale to multiple machines. It's easy to set up and learn and features a simple but powerful query language that supports table joins, groupings, aggregations, and functions.
 
 {% infobox info %}
-    <p><strong>RethinkDB in under two minutes:</strong> see the <a href="/videos/what-is-rethinkdb">highlights video</a>.</p>
+
+**RethinkDB in under two minutes:** see the [highlights video][hv].
+
+[hv]: /videos/what-is-rethinkdb
+
 {% endinfobox %}
 
 ## What are the main differences from other NoSQL databases? ##
 
-Find out how RethinkDB compares to other NoSQL databases:
+We've prepared a [technical comparison of RethinkDB and MongoDB][t1] for an unbiased point-by-point overview comparing us to MongoDB.
 
-- [RethinkDB compared to MongoDB](/docs/comparison-tables/) &mdash; an unbiased technical comparison between RethinkDB and MongoDB.
-- [RethinkDB vs today's NoSQL](/blog/mongodb-biased-comparison/) &mdash; our biased, but more personal take on what makes RethinkDB different.
+For a more conversational take, read "[RethinkDB compared to MongoDB][t2]" as well as [@coffeemug][t3]'s biased but more personal take on what makes RethinkDB different, "[RethinkDB vs today's NoSQL][t4]."
+
+[t1]: /docs/comparison-tables/
+[t2]: /docs/rethinkdb-vs-mongodb
+[t3]: https://github.com/coffeemug
+[t4]: /blog/mongodb-biased-comparison/
 
 ## When is RethinkDB a good choice? ##
 
@@ -46,13 +58,14 @@ Find out how RethinkDB compares to other NoSQL databases:
   and are planning to run anywhere from a single node to a sixteen-node
   cluster.
 - If you periodically copy your data into a separate system to do analytics
-  (such as Hadoop), but your analytics are not incredibly computationally
+  (such as Hadoop) but your analytics are not incredibly computationally
   intensive, you can significantly simplify things by running your analytical
   queries in RethinkDB directly. RethinkDB will _not_ lock your database.
-- Finally, if you are already running a database cluster and are overwhelmed by
+- Finally, if you are already running a database cluster and feel overwhelmed by
   cluster administration and the complexities of sharding, replication, and
   failover, you will love RethinkDB. Sharding and replication can be done in a
   few clicks in the Web UI or on the command line.
+
 
 ## When is RethinkDB not a good choice? ##
 
@@ -62,8 +75,8 @@ Find out how RethinkDB compares to other NoSQL databases:
 - If you are doing deep, computationally-intensive analytics you are better off
   using a system like Hadoop or a column-oriented store like Vertica.
 - In some cases RethinkDB trades off write availability in favor of data
-  consistency, so if you absolutely need high write availability and do not
-  mind dealing with conflicts, you may be better off with a Dynamo-style system
+  consistency. If high write availability is critical and you don't
+  mind dealing with conflicts you may be better off with a Dynamo-style system
   like Riak.
 
 {% endfaqsection %}
@@ -72,83 +85,58 @@ Find out how RethinkDB compares to other NoSQL databases:
 
 ## What languages can I use to work with RethinkDB? ##
 
-You can use Ruby, Python, and JavaScript/Node.js to write RethinkDB
-queries. In addition, there are [community
-supported](/docs/install-drivers/) client drivers for more than half a
-dozen other languages.
+We provide official drivers for Ruby, Python, and JavaScript/Node.js. [Community-supported drivers][csd] exist for more than a dozen other languages, including C#/.NET, Go, and PHP.
 
-If you already know JavaScript, all RethinkDB queries can be freely
-intermixed with JavaScript code because the server supports native
-JavaScript execution using the V8 engine.
+[csd]: /docs/install-drivers/
 
 ## What are the system requirements? ##
 
-RethinkDB server is written in C++ and currently runs on 32-bit and
-64-bit Linux systems, as well as OS X 10.7 and above. Ruby, Python,
-JavaScript, as well as [community supported](/docs/install-drivers/)
-client drivers can run on any platform where these languages are
-supported.
+The RethinkDB server is written in C++ and runs on 32-bit and 64-bit Linux systems, as well as OS X 10.7 and above. Client drivers can run on any platform where their languages are supported.
 
-It's best to run RethinkDB on nodes with at least 2GB of RAM, but
-there are no other strict hardware requirements. RethinkDB has a
-custom caching engine and can run on low-memory nodes with large
-amounts of on-disk data, Amazon EC2 instances, etc. It also has
-specialized support for high-end hardware and does a great job on
-high-memory nodes with many cores, solid-state storage, and
-high-throughput network hardware.
+We recommend RethinkDB servers have at least 2GB of RAM, but there are no other strict hardware requirements. RethinkDB has a custom caching engine and can run on low-memory nodes with large amounts of on-disk data, Amazon EC2 instances, etc. It also has specialized support for high-end hardware and does a great job on high-memory nodes with many cores, solid-state storage, and high-throughput network hardware.
 
 ## Does RethinkDB support SQL? ##
 
-No, but RethinkDB supports a very powerful, expressive, and easy to
-learn query language that can do almost anything SQL can do (and many
-things SQL can't do, such as mixing queries with JavaScript
-expressions and Hadoop-style map-reduce).
+No. However, RethinkDB's query language can do nearly anything SQL can do, including table joins and aggregation functions, and it's powerful, expressive and easy to learn. ReQL can also do many things SQL *can't* do, including mixing queries with JavaScript expressions and [map-reduce][mr].
+
+[mr]: http://en.wikipedia.org/wiki/MapReduce
+
+## Are RethinkDB transactions atomic? ##
+
+For single document transactions, yes&mdash;in those cases, changes to documents are recorded atomically (along with changes to relevant indexes). For multiple document transactions, RethinkDB favors data consistency over high write availability. While RethinkDB is always CID, it is not always A.
 
 ## How do queries get routed in a RethinkDB cluster? ##
 
-You can connect your clients to any node in the cluster, and all the
-queries will automatically be routed to their destination. Advanced
-queries (such as joins, filters, etc.) will be broken up and routed to
-the appropriate machines, executed in parallel, the resultset will be
-recombined, and streamed back to the client. The user never has to
-worry about sending queries to specific nodes&mdash; everything happens
-automatically behind the scenes. 
+Users never have to worry about sending queries to specific nodes. Connect your clients to any node in a cluster, and queries will be routed to the proper destination. Advanced queries such as joins and filters will be executed in parallel, with results recombined and streamed back to the client transparently. Everything happens automatically behind the scenes.
 
 ## How does RethinkDB handle write durability? ##
 
-RethinkDB comes with strict write durability out of the box and is
-identical to traditional database systems in this respect. By default,
-no write is ever acknowledged until it's safely committed to disk.
+RethinkDB comes with strict write durability out of the box and is identical to traditional database systems in this respect. By default, no write is ever acknowledged until it's safely committed to disk.
 
 {% infobox info %}
-<strong>Want to speed up your write queries?</strong> Learn how to
-[configure durability options](/docs/troubleshooting/#why-are-my-inserts-slow).
+
+**Want to speed up your write queries?** Learn how to
+[configure durability options][cdo].
+
+[cdo]: /docs/troubleshooting/#why-are-my-inserts-slow
+
 {% endinfobox %}
 
 ## How is RethinkDB licensed? ##
 
-RethinkDB server is licensed under GNU AGPL v3.0. The client drivers
-are licensed under Apache License v2.0.
+The RethinkDB server is licensed under the [GNU Affero General Public License v3.0][agpl]. The client drivers are licensed under the [Apache License v2.0][apl].
 
-We wanted to pick a license that balances the interests of three
-parties &mdash; our end users, our company, and the software
-development community at large. When picking a license, we decided
-that these interests can be expressed via three simple goals:
+[agpl]: http://www.gnu.org/licenses/agpl-3.0.html
+[apl]:  http://www.apache.org/licenses/LICENSE-2.0.html
 
-- Allow anyone to download RethinkDB, examine the source code, and use it for
-  free (as in speech and beer) for any purpose.
-- Require users that choose to modify RethinkDB to fit their needs to release
-  the patches to the software development community.
-- Require users that are unwilling to release the patches to the software
-  development community to purchase a commercial license.
-- Given that an enormous amount of software is offered as a service via the
-  network and isn't actually distributed in binary form, the most effective
-  license to fulfill all three goals is GNU AGPL.
+We wanted to pick a license that balances the interests of three parties &mdash; our end users, our company, and the software development community at large. When picking a license, we decided on three simple goals:
 
-We chose to release the client drivers under Apache License v2.0 to
-remove any ambiguity as to the extent of the server license &mdash;
-you do not have to license any software that uses RethinkDB under AGPL
-and are completely free to use any licensing mechanism of your choice.
+- Allow anyone to download RethinkDB, examine the source code, and use it for free (as in speech and beer) for any purpose.
+- Require users who choose to modify RethinkDB to fit their needs to release the patches to the software development community.
+- Require users who are unwilling to release the patches to the software development community to purchase a commercial license.
+
+Given that an enormous amount of software is offered as a service via the network rather than being distributed in binary form, the most effective license to fulfill all three goals is the GNU AGPL.
+
+We chose to release the client drivers under the Apache License v2.0 to remove any ambiguity as to the extent of the server license. You do not have to license any software that uses RethinkDB under AGPL, and are free to use any licensing mechanism of your choice.
 
 {% endfaqsection %}
-

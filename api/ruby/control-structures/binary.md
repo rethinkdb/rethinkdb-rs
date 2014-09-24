@@ -38,7 +38,7 @@ r.table('users').get(100).update({:avatar => r.binary(avatar_image)}).run(conn)
 
 __Example:__ Get the size of an existing avatar image.
 
-```py
+```rb
 r.table('users').get(100)['avatar'].count().run(conn)
 
 14156

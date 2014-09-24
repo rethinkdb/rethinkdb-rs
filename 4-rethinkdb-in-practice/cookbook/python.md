@@ -389,6 +389,18 @@ r.table("dates").insert({
 
 Use the commands `toEpochTime` and `toISO8601` to convert back.
 
+## Incrementing a field value ##
+
+It's possible to increment a field value in a document&mdash;for example, a counter&mdash;in one step on the server.
+
+```py
+r.table('aggregated').get(id).update(
+    { 'count': (r.row['count'].default(0)+1) }
+).run(conn)
+```
+
+Use `default` to ensure that if the `count` field doesn't already exist in the document, it's added correctly, rather than letting `add` throw an error.
+
 {% endfaqsection %}
 
 {% faqsection Pagination %}

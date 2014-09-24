@@ -128,7 +128,7 @@ r.table('small_table').order_by(lambda { |doc|
 
 You can also select a descending ordering:
 
-```js
+```rb
 r.table('small_table').order_by(r.desc(lambda { |doc|
     doc['upvotes']-doc['downvotes']
 }));

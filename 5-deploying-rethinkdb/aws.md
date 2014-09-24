@@ -14,18 +14,22 @@ to set up.
 
 ## Launching an instance ##
 
-The minimal recommended instance type is M1 Small, however T1 Micro
-works for simple tests. Follow these instructions to set up an AMI:
+The smallest recommended instance type is `m1.small`. However, `t1.micro` works for simple tests. Follow these instructions to set up an AMI:
 
-1. On the [RethinkDB marketplace page](https://aws.amazon.com/marketplace/pp/B00E9EZ5DK),
-   click the __Continue__ button. Then select the __1-Click Launch__ tab and click on the
-   __Launch with 1-Click__ button on the right. Finally, click on the link __Your Software__
-   to access RethinkDB.
-2. You should see a RethinkDB instance. When the instance is ready,
-   click on the __Access Software__ link on the right.
-3. You should see a web page to set up the AMI. Click on the
-   __Continue__ button and follow the instructions.
-   ![Shard with the web interface](/assets/images/docs/aws/ami_setup.png)
+1. On the [RethinkDB marketplace page][rmp], click the __Continue__ button.
+2. Select the __1-Click Launch__ tab, select the size of the instance you wish to configure, and click on the __Launch with 1-Click__ button on the right.
+3. Click on the link __[Your Software][ys]__ in the upper right. RethinkDB should appear as one of your software subscriptions.
+4. When the RethinkDB instance is ready, click on its __Access Software__ link.
+5. You should see a "Setting up a RethinkDB AMI" web page. Click on the __Continue__ button to proceed.
+6. Accept the self-signed SSL certificate. (How to do this is browser-dependent.)
+7. Choose an AMI password.
+8. Wait for the instance to initialize.
+9. Log in using the username `rethinkdb` and the password you chose in step 7.
+
+![Shard with the web interface](/assets/images/docs/aws/ami_setup.png)
+
+[rmp]: https://aws.amazon.com/marketplace/pp/B00E9EZ5DK
+[ys]: https://aws.amazon.com/marketplace/library
 
 {% infobox info %}
 __Note__: RethinkDB uses a self-signed certificate to encrypt your
@@ -85,7 +89,7 @@ The default security group opens 4 ports:
 * Port 28015 is for client driver access. The only form of
   authentication is a key that is sent in plain text over the network.
 
-To secure your instance even further, we recommend that you perform
+To secure your instance more tightly, we recommend that you perform
 the following steps:
 
 * __Change the authentication key.__
