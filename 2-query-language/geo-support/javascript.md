@@ -1,6 +1,6 @@
 ---
 layout: documentation
-title: Geospatial support
+title: Geospatial queries
 active: docs
 docs_active: geo-support
 permalink: docs/geo-support/javascript/
