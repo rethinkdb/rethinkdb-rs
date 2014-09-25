@@ -6,6 +6,9 @@ docs_active: importing
 permalink: docs/importing/
 ---
 
+<img alt="Importing Data Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/importing_data.png" />
+
 The `rethinkdb` utility includes an `import` command to load existing data into RethinkDB databases.
 
     rethinkdb import -f FILE --table DB.TABLE [-c HOST:PORT] [-a AUTH_KEY]

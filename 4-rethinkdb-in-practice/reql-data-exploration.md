@@ -6,6 +6,9 @@ docs_active: reql-data-exploration
 permalink: docs/reql-data-exploration/
 ---
 
+<img alt="Data Exploration Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/data_exploration.png" />
+
 Akshay Chougule, a biologist working with large data sets, wrote a blog post about [Useful Unix commands for exploring data][uu], showing ways to "query" comma-delimited plain text data sets with common shell commands. We thought it'd be interesting to do a similar article using ReQL in the Data Explorer, showing how it can be used for ad hoc queries.
 
 [uu]: http://datavu.blogspot.com/2014/08/useful-unix-commands-for-exploring-data.html
