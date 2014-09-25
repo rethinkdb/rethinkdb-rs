@@ -20,9 +20,7 @@ table.getNearest(point, {index: 'indexname'[, maxResults: 100, maxDist: 100000, 
 
 Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
 
-The `index` argument is mandatory. This command returns the same results as `table.filter(r.row('index').intersects(geometry))`. The total number of results is limited to the array size limit which defaults to 100,000, but can be changed with the `arrayLimit` option to [run](/api/javascript/run).
-
-Optional arguments are:
+The `index` argument is mandatory. Optional arguments are:
 
 * `maxResults`: the maximum number of results to return (default 100).
 * `unit`: Unit for the distance. Possible values are `m` (meter, the default), `km` (kilometer), `mi` (international mile), `nm` (nautical mile), `ft` (international foot).
