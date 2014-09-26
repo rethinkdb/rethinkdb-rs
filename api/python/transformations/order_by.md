@@ -2,6 +2,9 @@
 layout: api-command
 language: Python
 permalink: api/python/order_by/
+alias:
+    - api/python/asc/
+    - api/python/desc/
 command: order_by
 related_commands:
     skip: skip/
