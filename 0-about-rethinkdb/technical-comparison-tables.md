@@ -31,15 +31,17 @@ The document is organized by four main categories:
 
 # Development #
 
-|                        | RethinkDB | MongoDB |
-| :--------------------- | --------- | ------- |
-| Platforms              | Linux, OS X | Linux, Windows, OS X, Solaris |
-| Data model             | JSON documents | BSON documents |
-| Data access           | Unified chainable dynamic query language | Dynamic rich query language |
-| JavaScript integration | V8 engine | Spidermonkey/V8 engine |
-| Access languages       | <ul><li>JSON protocol</li><li>3 official (JavaScript, Python, Ruby) and community supported (.NET / C#, PHP, Go, and many more) libraries</li></ul> | <ul><li>BSON protocol</li><li>13 official and many community supported libraries</li></ul> |
-| Indexing               | Multiple types of indexes (primary key, compound, secondary, arbitrarily computed) | Multiple types of indexes (unique, compound, secondary, sparse, geospatial) |
-| Cloud deployment   | AWS, dotCloud | MongoDB is available on many cloud platforms |
+
+
+| | RethinkDB | MongoDB |  
+| ------ | ------ | ------ |  
+|Platforms | Linux, OS X | Linux, OS X, Windows, Solaris |  
+|Data model | JSON documents | BSON documents |  
+|Data access | Unified chainable dynamic query language | Dynamic rich query language |  
+|JavaScript integration | V8 engine | Spidermonkey/V8 engine |  
+| Access languages | JSON protocol<br>3 official libraries<br>Many community supported libraries | BSON protocol<br>13 official libraries<br>Many community supported libraries |  
+| Index types | Primary key<br>Compound<br>Secondary<br>Geospatial<br>Arbitrarily computed | Unique<br>Compound<br>Secondary<br>Geospatial<br>Sparse |  
+| Cloud deployment | AWS, dotCloud | Many cloud platforms |  
 
 ## Platforms ##
 
@@ -115,7 +117,7 @@ indexes](http://docs.mongodb.org/manual/indexes/).
 All MongoDB indexes use a B-tree data structure. Every MongoDB query, including
 update operations, uses one and only one index.
 
-RethinkDB supports [primary key, compound, secondary, and arbitrarily
+RethinkDB supports [primary key, compound, secondary, geospatial, and arbitrarily
 computed](/docs/secondary-indexes/)
 indexes [stored as
 B-trees](/docs/architecture/#how-does-rethinkdb-index-data).
@@ -278,6 +280,7 @@ the B-Tree, RethinkDB does take exclusive block-level locks, but reads can
 still proceed.
 
 <div class="comparison-section"><a name="architecture" class="comparison-anchor"></a></div>
+
 # Architecture #
 
 |                   | RethinkDB | MongoDB |
