@@ -494,7 +494,7 @@ Suppose the table `marks` stores the marks of every students per course:
 ]
 ```
 
-You may be interested in retrieving the results in this format
+You may be interested in retrieving the results in this format:
 
 ```rb
 [
@@ -641,16 +641,55 @@ In addition, the following two fields are set as circumstances dictate:
 
 ## Using dynamic keys in ReQL commands ##
 
-Sometimes you may want to specify a key in a ReQL document dynamically. The easiest way to do that is with the `object` command, which takes a list of keys and values and returns an object from them.
-
-Suppose you wanted to retrieve a list of distinct first names from a user table, but the table is too large to be used with the `distinct` command. You can use use `map` and `object` to turn the names into keys, then use `reduce` to remove duplicates:
+Sometimes you may want to write a ReQL document with a dynamic key--the field name is stored in a variable. You can do this with the `object` command, which takes a list of keys and values (`(key, value, key, value ...)`) and returns an object from them.
 
 ```rb
-r.table('users').map { |user|
-    r.object(user['first_name'], true)
-}.reduce { |left, right|
-    left.merge(right)
-}.keys().run(conn)
+r.table('users').get(1).update(r.object(property_name, value)).run(conn)
+```
+
+The field name can be determined entirely on the server, too. For instance, to update a field whose name is drawn from the value of another field:
+
+```rb
+r.table('users').for_each{ |doc|
+    r.table('users').get(doc['id']).update(r.object(doc['field'], new_value))
+}.run(conn)
+```
+
+For a practical example, imagine a data set like the one from the [pivot example][pivotx], where each document represents a student's course record.
+
+[pivotx]: http://www.rethinkdb.com/docs/cookbook/python/#performing-a-pivot-operation
+
+```rb
+[
+    {
+        :name => "John",
+        :mark => 70,
+        :id => 1,
+        :course => "Mathematics"
+    },
+    {
+        :name => "John",
+        :mark => 90,
+        :id => 2,
+        :course => "English"
+    }
+]
+```
+
+But you'd like to get a document more like a "report card":
+
+```rb
+{
+    "Mathematics" => 70,
+    "English" => 90
+}
+
+You can accomplish this with `object` and a pivot.
+
+```rb
+r.table('marks').filter({:student => 'John'}).map{ |mark|
+    r.object(mark['course'], mark['mark'])
+}.reduce{ |left, right| left.merge(right) }.run(conn)
 ```
 
 ## Returning a ReQL query as a string ##
