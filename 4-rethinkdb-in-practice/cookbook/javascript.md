@@ -588,7 +588,7 @@ Suppose the table `marks` stores the marks of every students per course:
 ]
 ```
 
-You may be interested in retrieving the results in this format
+You may be interested in retrieving the results in this format:
 
 ```js
 [
@@ -773,6 +773,49 @@ r.table('users').forEach(function (doc) {
     console.log(result);
 });
 ```
+
+For a practical example, imagine a data set like the one from the [pivot example][pivotx], where each document represents a student's course record.
+
+[pivotx]: http://www.rethinkdb.com/docs/cookbook/javascript/#performing-a-pivot-operation
+
+```js
+[
+    {
+        "name": "John",
+        "mark": 70,
+        "id": 1,
+        "course": "Mathematics"
+    },
+    {
+        "name": "John",
+        "mark": 90,
+        "id": 2,
+        "course": "English"
+    }
+]
+```
+
+But you'd like to get a document more like a "report card":
+
+```js
+{
+    "Mathematics": 70,
+    "English": 90
+}
+
+You can accomplish this with `object` and a pivot.
+
+```js
+r.table("marks").filter({student: "John"}).map(function(mark) {
+    return r.object(mark("course"), mark("mark"));
+}).reduce(function(left, right) {
+    return left.merge(right);
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
+```
+
 
 ## Returning a ReQL query as a string ##
 
