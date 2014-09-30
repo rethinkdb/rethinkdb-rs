@@ -40,7 +40,7 @@ The document is organized by four main categories:
 |Data access | Unified chainable dynamic query language | Dynamic rich query language |  
 |JavaScript integration | V8 engine | Spidermonkey/V8 engine |  
 | Access languages | JSON protocol<br>3 official libraries<br>Many community supported libraries | BSON protocol<br>13 official libraries<br>Many community supported libraries |  
-| Index types | Primary key<br>Compound<br>Secondary<br>Geospatial<br>Arbitrarily computed | Unique<br>Compound<br>Secondary<br>Geospatial<br>Sparse |  
+| Index types | Primary key<br>Compound<br>Secondary<br>Geospatial<br>Arbitrarily computed | Unique (unsharded only)<br>Compound<br>Secondary<br>Geospatial<br>Sparse |  
 | Cloud deployment | AWS, dotCloud | Many cloud platforms |  
 
 ## Platforms ##
