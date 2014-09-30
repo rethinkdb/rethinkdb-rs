@@ -2,6 +2,9 @@
 layout: api-command
 language: JavaScript
 permalink: api/javascript/order_by/
+alias:
+    - api/javascript/asc/
+    - api/javascript/desc/
 command: orderBy
 io:
     -   - sequence
