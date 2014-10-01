@@ -121,6 +121,24 @@ RethinkDB only allows conversion of GeoJSON objects which have ReQL equivalents:
 
 Only longitude/latitude coordinates are supported. GeoJSON objects that use Cartesian coordinates, specify an altitude, or specify their own coordinate reference system will be rejected.
 
+# FAQ #
+
+* **How many dimensions are supported?**
+
+    Two (latitude and longitude). Elevation is not supported.
+
+* **What projections are supported?**
+
+    RethinkDB supports the WGS84 World Geodetic System's reference ellipsoid and geographic coordinate system (GCS). It does not directly support any projected coordinate system (PCS), but there are many tools available for performing such projections.
+
+* **Does RethinkDB do a correct interpolation of degrees to meters along a path?**
+
+    Yes. Distance calculations are done on a geodesic (either WGS84's reference ellipsoid or a unit sphere).
+
+* **Can you export to WKT or WKB?**
+
+    No. However, you can export to GeoJSON and process that with other tools.
+
 # Geospatial commands #
 
 * [geojson](/api/javascript/geojson/): convert a GeoJSON object to a geometry object
