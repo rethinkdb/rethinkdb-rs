@@ -2509,6 +2509,23 @@ __Example:__ Send an array to the server.
 r.json("[1,2,3]").run(conn)
 ```
 
+## [to_json_string, to_json](to_json_string/) ##
+
+{% apibody %}
+value.to_json_string(value) &rarr; string
+value.to_json(value) &rarr; string
+{% endapibody %}
+
+Convert a ReQL value or object to a JSON string. You may use either `to_json_string` or `to_json`.
+
+__Example:__ Get a ReQL document as a JSON string.
+
+```py
+> r.table('hero').get(1).to_json()
+
+'{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
+```
+
 ## [http](http/) ##
 
 {% apibody %}
