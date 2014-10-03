@@ -2646,8 +2646,8 @@ r.json("[1,2,3]").run(conn, callback)
 ## [toJsonString, toJSON](to_json_string/) ##
 
 {% apibody %}
-value.toJsonString(value) &rarr; string
-value.toJSON(value) &rarr; string
+value.toJsonString() &rarr; string
+value.toJSON() &rarr; string
 {% endapibody %}
 
 Convert a ReQL value or object to a JSON string. You may use either `toJsonString` or `toJSON`.
