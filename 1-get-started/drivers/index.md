@@ -25,18 +25,7 @@ alias: docs/guides/drivers/
 
 <div class="icon-box-category">
     <h1>Community-supported drivers &raquo;</h1>
-    <a class="mini icon-box driver-language" href="https://github.com/unbit/librethinkdb">
-        <img src="/assets/images/docs/driver-languages/c.png" />
-        <p class="name">C</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/mfenniak/rethinkdb-net">
-        <img src="/assets/images/docs/driver-languages/csharp.png" />
-        <p class="name">C# / .NET</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/jurajmasar/rethink-db-cpp-driver">
-        <img src="/assets/images/docs/driver-languages/cpp.png" />
-        <p class="name">C++</p>
-    </a>    
+    <p>These drivers have been updated to at least the RethinkDB v1.11 protocol.</p>
     <a class="mini icon-box driver-language" href="https://github.com/bitemyapp/revise">
         <img src="/assets/images/docs/driver-languages/clojure.png" />
         <p class="name smaller-font">Clojure</p>
@@ -48,14 +37,6 @@ alias: docs/guides/drivers/
     <a class="mini icon-box driver-language" href="https://github.com/dbettin/rethinkdb">
         <img src="/assets/images/docs/driver-languages/dart.png" />
         <p class="name smaller-font">Dart</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/azukiapp/elixir-rethinkdb">
-        <img src="/assets/images/docs/driver-languages/elixir.png" />
-        <p class="name">Elixir</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/taybin/lethink">
-        <img src="/assets/images/docs/driver-languages/erlang.png" />
-        <p class="name">Erlang</p>
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/dancannon/gorethink">
         <img src="/assets/images/docs/driver-languages/go.png" />
@@ -73,9 +54,9 @@ alias: docs/guides/drivers/
         <img src="/assets/images/docs/driver-languages/java.png" />
         <p class="name">Java <span class="driver-author">by @dkhenry</span></p>
     </a>
-    <a class="mini icon-box driver-language" href="https://github.com/dparnell/rethink-db-client">
-        <img src="/assets/images/docs/driver-languages/objc.png" />
-        <p class="name">Objective-C</p>
+    <a class="mini icon-box driver-language" href="https://github.com/neumino/rethinkdbdash">
+        <img src="/assets/images/docs/driver-languages/nodejs.png" />
+        <p class="name">Node.js</p>
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/njlg/perl-rethinkdb">
         <img src="/assets/images/docs/driver-languages/perl.png" />
@@ -89,11 +70,42 @@ alias: docs/guides/drivers/
         <img src="/assets/images/docs/driver-languages/scala.png" />
         <p class="name">Scala <span class="driver-author">by @kclay</span></p>
     </a>
+</div>
+
+<div class="icon-box-category">
+    <h1>Other community-supported drivers &raquo;</h1>
+    <p>These drivers have not been updated with more recent additions to the RethinkDB driver protocol, and will require work to take advantage of newer features. If you want to work with one of these languages, these may provide a good starting point.</p>
+    <a class="mini icon-box driver-language" href="https://github.com/unbit/librethinkdb">
+        <img src="/assets/images/docs/driver-languages/c.png" />
+        <p class="name">C</p>
+    </a>
+    <a class="mini icon-box driver-language" href="https://github.com/mfenniak/rethinkdb-net">
+        <img src="/assets/images/docs/driver-languages/csharp.png" />
+        <p class="name">C# / .NET</p>
+    </a>
+    <a class="mini icon-box driver-language" href="https://github.com/jurajmasar/rethink-db-cpp-driver">
+        <img src="/assets/images/docs/driver-languages/cpp.png" />
+        <p class="name">C++</p>
+    </a>
+    <a class="mini icon-box driver-language" href="https://github.com/azukiapp/elixir-rethinkdb">
+        <img src="/assets/images/docs/driver-languages/elixir.png" />
+        <p class="name">Elixir</p>
+    </a>
+    <a class="mini icon-box driver-language" href="https://github.com/taybin/lethink">
+        <img src="/assets/images/docs/driver-languages/erlang.png" />
+        <p class="name">Erlang</p>
+    </a>
+    <a class="mini icon-box driver-language" href="https://github.com/dparnell/rethink-db-client">
+        <img src="/assets/images/docs/driver-languages/objc.png" />
+        <p class="name">Objective-C</p>
+    </a>
     <a class="mini icon-box driver-language" href="https://github.com/esycat/rql-scala">
         <img src="/assets/images/docs/driver-languages/scala.png" />
         <p class="name">Scala <span class="driver-author">by @esycat</span></p>
     </a>
 </div>
+
+
 {% infobox info %}
     <strong>Haven't installed the server yet?</strong> <a href="/install">Go do that</a> first!
 {% endinfobox %}
@@ -130,3 +142,4 @@ __Thanks to all our amazing driver contributors!__
 - [@nuxlli](https://github.com/nuxlli) (Elixir): <https://github.com/azukiapp/elixir-rethinkdb>
 - [@unbit](https://github.com/unbit) (C): <https://github.com/unbit/librethinkdb>
 - [@jurajmasar](https://github.com/jurajmasar) (C++): <https://github.com/jurajmasar/rethink-db-cpp-driver>
+- [@neumino](https://github.com/neumino) (Node.js): <https://github.com/neumino/rethinkdbdash>
