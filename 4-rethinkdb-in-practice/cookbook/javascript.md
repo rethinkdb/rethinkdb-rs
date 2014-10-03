@@ -407,6 +407,38 @@ r.table("users").filter(function(user) {
 });
 ```
 
+## Performing multiple aggregations simultaneously ##
+
+If you want to perform a query that returns aggregations on different fields together, this is a canonical use case for [map-reduce](/docs/map-reduce).
+
+Suppose a data set that lists top movies, ranked by user vote. You'd like to get the total votes and the average age of the top 25 movies: the `avg()` of the `year` column and the `sum()` of the `votes` column, ordered by the `rank` column to get the range 1&ndash;25.
+
+To perform this, [map][] the first 25 movies into a new result set, adding a `count` column, then [reduce][] each row of the mapped result set into a total for each field (`votes`, `year` and `column`). Then use [do][] to return a result set with the total votes and the average year, computed by dividing the sum of the years by their count.
+
+[map]: /api/javascript/map/
+[reduce]: /api/javascript/reduce/
+[do]: /api/javascript/do/
+
+```js
+r.table('movies').orderBy('rank').limit(25).map(function (doc) {
+    return { totalVotes: doc('votes'), totalYear: doc('year'), count: 1 };
+}).reduce(function (left, right) {
+    return {
+        totalVotes: left('totalVotes').add(right('totalVotes')),
+        totalYear: left('totalYear').add(right('totalYear')),
+        count: left('count').add(right('count'))
+    };
+}).do(function (res) {
+    return {
+        totalVotes: res('totalVotes'),
+        averageYear: res('totalYear').div(res('count'))
+    };
+}).run(conn, callback);
+```
+
+We're working on an easier syntax for performing multiple aggregations after `group` commands. Follow [issue 1725][i1725] to track progress on this.
+
+[i1725]: https://github.com/rethinkdb/rethinkdb/issues/1725
 
 {% endfaqsection %}
 

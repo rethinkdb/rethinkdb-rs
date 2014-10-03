@@ -324,6 +324,34 @@ r.table("users").filter( lambda user:
 ).run(conn)
 ```
 
+## Performing multiple aggregations simultaneously ##
+
+If you want to perform a query that returns aggregations on different fields together, this is a canonical use case for [map-reduce](/docs/map-reduce).
+
+Suppose a data set that lists top movies, ranked by user vote. You'd like to get the total votes and the average age of the top 25 movies: the `avg()` of the `year` column and the `sum()` of the `votes` column, ordered by the `rank` column to get the range 1&ndash;25.
+
+To perform this, [map][] the first 25 movies into a new result set, adding a `count` column, then [reduce][] each row of the mapped result set into a total for each field (`votes`, `year` and `column`). Then use [do][] to return a result set with the total votes and the average year, computed by dividing the sum of the years by their count.
+
+[map]: /api/python/map/
+[reduce]: /api/python/reduce/
+[do]: /api/python/do/
+
+```py
+r.table('movies').order_by('rank').limit(25).map(lambda doc:
+    { 'total_votes': doc['votes'], 'total_year': doc['year'], 'count': 1 }
+).reduce(lambda left, right: {
+    'total_votes': (left['total_votes'] + right['total_votes']),
+    'total_year': (left['total_year'] + right['total_year']),
+    'count': (left['count'] + right['count'])
+}).do(lambda res: {
+    'total_votes': res['total_votes'],
+    'average_year': (res['total_year'] / res['count'])
+}).run(conn)
+```
+
+We're working on an easier syntax for performing multiple aggregations after `group` commands. Follow [issue 1725][i1725] to track progress on this.
+
+[i1725]: https://github.com/rethinkdb/rethinkdb/issues/1725
 
 
 {% endfaqsection %}
