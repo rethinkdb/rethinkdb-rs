@@ -1,20 +1,21 @@
 ---
 layout: api-command
 language: Python
-permalink: api/python/to_json/
-command: to_json
+permalink: api/python/to_json_string/
+command: 'to_json_string, to_json'
 related_commands:
     json: json/
 ---
 # Command syntax #
 
 {% apibody %}
-any.to_json(value) &rarr; string
+value.to_json_string(value) &rarr; string
+value.to_json(value) &rarr; string
 {% endapibody %}
 
 # Description #
 
-Convert a ReQL value or object to a JSON string.
+Convert a ReQL value or object to a JSON string. You may use either `to_json_string` or `to_json`.
 
 __Example:__ Get a ReQL document as a JSON string.
 
