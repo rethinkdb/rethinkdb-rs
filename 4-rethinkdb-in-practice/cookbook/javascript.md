@@ -421,20 +421,24 @@ To perform this, [map][] the first 25 movies into a new result set, adding a `co
 
 ```js
 r.table('movies').orderBy('rank').limit(25).map(function (doc) {
-    return { total_votes: doc('votes'), total_year: doc('year'), count: 1 };
+    return { totalVotes: doc('votes'), totalYear: doc('year'), count: 1 };
 }).reduce(function (left, right) {
     return {
-        total_votes: left('total_votes').add(right('total_votes')),
-        total_year: left('total_year').add(right('total_year')),
+        totalVotes: left('totalVotes').add(right('totalVotes')),
+        totalYear: left('totalYear').add(right('totalYear')),
         count: left('count').add(right('count'))
     };
 }).do(function (res) {
     return {
-        total_votes: res('total_votes'),
-        average_year: res('total_year').div(res('count'))
+        totalVotes: res('totalVotes'),
+        averageYear: res('totalYear').div(res('count'))
     };
-})
+}).run(conn, callback);
 ```
+
+We're working on an easier syntax for performing multiple aggregations after `group` commands. Follow [issue 1725][i1725] to track progress on this.
+
+[i1725]: https://github.com/rethinkdb/rethinkdb/issues/1725
 
 {% endfaqsection %}
 
