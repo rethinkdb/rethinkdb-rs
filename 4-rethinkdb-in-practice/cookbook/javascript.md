@@ -409,19 +409,32 @@ r.table("users").filter(function(user) {
 
 ## Performing multiple aggregations simultaneously ##
 
-If you want to perform a query that returns aggregations on different fields together, there are a couple different approaches. A straightforward way to do it is to use the `object` command to return a new document whose values are separate aggregation queries.
+If you want to perform a query that returns aggregations on different fields together, this is a canonical use case for [map-reduce](/docs/map-reduce).
+
+Suppose a data set that lists top movies, ranked by user vote. You'd like to get the total votes and the average age of the top 25 movies: the `avg()` of the `year` column and the `sum()` of the `votes` column, ordered by the `rank` column to get the range 1&ndash;25.
+
+To perform this, [map][] the first 25 movies into a new result set, adding a `count` column, then [reduce][] each row of the mapped result set into a total for each field (`votes`, `year` and `column`). Then use [do][] to return a result set with the total votes and the average year, computed by dividing the sum of the years by their count.
+
+[map]: /api/javascript/map/
+[reduce]: /api/javascript/reduce/
+[do]: /api/javascript/do/
 
 ```js
-r.object(
-    'average_year', r.table('movies')('year').avg(),
-    'total_votes', r.table('movies')('votes').sum()
-).run(conn, function(err, result) {
-    if (err) throw err;
-    console.log(result);
-});
+r.table('movies').orderBy('rank').limit(25).map(function (doc) {
+    return { total_votes: doc('votes'), total_year: doc('year'), count: 1 };
+}).reduce(function (left, right) {
+    return {
+        total_votes: left('total_votes').add(right('total_votes')),
+        total_year: left('total_year').add(right('total_year')),
+        count: left('count').add(right('count'))
+    };
+}).do(function (res) {
+    return {
+        total_votes: res('total_votes'),
+        average_year: res('total_year').div(res('count'))
+    };
+})
 ```
-
-This is also a canonical use case for [map-reduce](/docs/map-reduce). This is more involved, but makes it easier to do transformations on the table before running the final map-reduce query. This is the same query as above in map-reduce, but limited to just the top 25 movies in the `movies` table.
 
 {% endfaqsection %}
 
