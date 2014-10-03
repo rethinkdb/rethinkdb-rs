@@ -12,8 +12,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-value.toJsonString(value) &rarr; string
-value.toJSON(value) &rarr; string
+value.toJsonString() &rarr; string
+value.toJSON() &rarr; string
 {% endapibody %}
 
 # Description #

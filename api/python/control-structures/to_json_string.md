@@ -9,8 +9,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-value.to_json_string(value) &rarr; string
-value.to_json(value) &rarr; string
+value.to_json_string() &rarr; string
+value.to_json() &rarr; string
 {% endapibody %}
 
 # Description #
