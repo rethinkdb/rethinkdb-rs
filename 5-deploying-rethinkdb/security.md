@@ -138,9 +138,12 @@ interface. Once you set the authentication key, client drivers will be
 required to pass the key to the server in order to connect.
 
 {% infobox %}
-__Note__: the authentication key will be transmitted to the RethinkDB
-server in plain text. This may be sufficient to thwart basic attacks,
-but is vulnerable to more sophisticated man-in-the-middle attacks.
+__Note__: the authentication key will be transmitted to and stored on the
+RethinkDB server in plain text, and neither the key nor the data passed
+between the client and the server will be encrypted. The key provides basic
+protection against unauthorized access, but if the client port is open to
+outside networks it's strongly suggested you use SSH tunneling for protection
+(see below).
 {% endinfobox %}
 
 First, open the CLI:
@@ -157,9 +160,9 @@ set auth <authentication_key>
 
 You can set the `authentication_key` option to any key of your choice.
 
-You can now connect to the driver port from any network, but must
-provide the required authentication key. For instance, in JavaScript
-you would connect as follows:
+You can now connect to the driver port from any network, but must provide the
+required authentication key with the `connect` command. For instance, in
+JavaScript you would connect as follows:
 
 ```javascript
 r.connect({host: HOST, port: PORT, authKey: <authentication_key>},

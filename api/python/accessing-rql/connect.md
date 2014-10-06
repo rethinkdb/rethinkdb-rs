@@ -30,6 +30,8 @@ Create a new connection to the database server. The keyword arguments are:
 
 If the connection cannot be established, a `RqlDriverError` exception will be thrown.
 
+The authentication key can be set from the RethinkDB command line tool. Once set, client connections must provide the key as an option to `run` in order to make the connection. For more information, read "Using the RethinkDB authentication system" in the documentation on [securing your cluster](http://rethinkdb.com/docs/security/).
+
 __Note:__ Currently, the Python driver is not thread-safe. Each thread or multiprocessing PID should be given its own connection object. (This is likely to change in a future release of RethinkDB; you can track issue [#2427](https://github.com/rethinkdb/rethinkdb/issues/2427) for progress.)
 
 __Example:__ Opens a connection using the default host and port but specifying the default database.
