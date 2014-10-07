@@ -18,7 +18,7 @@ The packages do not ship with a default config file, so if you install RethinkDB
 will not automatically be run on system startup until you add a config file to
 `/etc/rethinkdb/instances.d/`.
 
-Copy the the example config file and restart the init.d script:
+Copy the example config file and restart the init.d script:
 
 ```bash
 sudo cp /etc/rethinkdb/default.conf.sample /etc/rethinkdb/instances.d/instance1.conf
