@@ -20,14 +20,14 @@ alias: install/
         <img src="/assets/images/docs/install-platforms/centos.png" />
         <p class="name">CentOS</p>
     </a>
+    <a class="icon-box install-platform" href="debian/">
+        <img src="/assets/images/docs/install-platforms/debian.png" />
+        <p class="name">Debian</p>
+    </a>
 </div>
 
 <div class="icon-box-category">
     <h1>Community supported &raquo;</h1>
-    <a class="mini icon-box install-platform" href="debian/">
-        <img src="/assets/images/docs/install-platforms/debian.png" />
-        <p class="name">Debian</p>
-    </a>
     <a class="mini icon-box install-platform" href="arch/">
         <img src="/assets/images/docs/install-platforms/arch.png" />
         <p class="name">Arch Linux</p>
