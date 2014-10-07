@@ -30,7 +30,7 @@ with a given topic. When subscribers connect, they notify the exchange
 about what kinds of messages they're interested in. The exchange is
 then responsible for filtering messages.
 
-Becaused of this decoupled interaction, publishers are free to
+Because of this decoupled interaction, publishers are free to
 disconnect whenever they want. There may even be more than one
 publisher. Likewise, if no subscribers are currently listening for
 messages with a certain topic, the exchange is free to simply delete
@@ -194,7 +194,7 @@ implements both a publisher and a subscriber with each pattern
 type. You can use this script to try out multiple publishers and
 multiple subscribers to test out how it works.
 
-Run the publisher and correspoding subscribers in different terminal
+Run the publisher and corresponding subscribers in different terminal
 windows, so the output doesn't run together. For example, to run the
 publisher for the regex demo:
 
