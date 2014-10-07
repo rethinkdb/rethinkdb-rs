@@ -7,15 +7,16 @@ docs_active: install
 permalink: docs/install/debian/
 ---
 {% include install-docs-header.md %}
-{% include install-community-platform-warning.md %}
-The following instructions were tested on Debian 7 (Wheezy).
-If you are using Debian 6, the process is very similar, but you will have to
-upgrade a few libraries, such as protobuf.
 
-# Using the Ubuntu packages on Debian #
+# With binaries #
 
-Add the [RethinkDB repository](http://download.rethinkdb.com/apt) to
-your list of repositories and then install via `apt-get`:
+We provide binaries for Wheezy and Jessie, 32-bit and 64-bit.
+
+To install the server, you have to add the [RethinkDB
+repository](http://download.rethinkdb.com/apt) to your list of
+repositories and install via `apt-get`.
+To do this, paste the
+following lines into your terminal:
 
 ```bash
 echo "deb http://download.rethinkdb.com/apt `lsb_release -cs` main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
@@ -24,7 +25,7 @@ sudo apt-get update
 sudo apt-get install rethinkdb
 ```
 
-# Compile from source #
+# Compiling from source #
 
 ## Get the build dependencies ##
 
