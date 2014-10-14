@@ -701,19 +701,17 @@ sequence.inner_join(other_sequence, predicate) &rarr; stream
 array.inner_join(other_sequence, predicate) &rarr; array
 {% endapibody %}
 
-Returns the inner product of two sequences (e.g. a table, a filter result) filtered by
-the predicate. The query compares each row of the left sequence with each row of the
-right sequence to find all pairs of rows which satisfy the predicate. When the predicate
-is satisfied, each matched pair of rows of both sequences are combined into a result row.
+Returns an inner join of two sequences.
 
-__Example:__ Construct a sequence of documents containing all cross-universe matchups where a marvel hero would lose.
+__Example:__ Return a list of all matchups between Marvel and DC heroes in which the DC hero could beat the Marvel hero in a fight.
 
 ```rb
 r.table('marvel').inner_join(r.table('dc')) {|marvel_row, dc_row|
     marvel_row[:strength] < dc_row[:strength]
-}.run(conn)
+}.zip().run(conn)
 ```
 
+[Read more about this command &rarr;](inner_join/)
 
 ## [outer_join](outer_join/) ##
 
@@ -722,12 +720,9 @@ sequence.outer_join(other_sequence, predicate) &rarr; stream
 array.outer_join(other_sequence, predicate) &rarr; array
 {% endapibody %}
 
-Computes a left outer join by retaining each row in the left table even if no match was
-found in the right table.
+Returns a left outer join of two sequences.
 
-__Example:__ Construct a sequence of documents containing all cross-universe matchups
-where a marvel hero would lose, but keep marvel heroes who would never lose a matchup in
-the sequence.
+__Example:__ Return a list of all Marvel heroes, paired with any DC heroes who could beat them in a fight.
 
 ```rb
 r.table('marvel').outer_join(r.table('dc')) {|marvel_row, dc_row|
@@ -735,6 +730,7 @@ r.table('marvel').outer_join(r.table('dc')) {|marvel_row, dc_row|
 }.run(conn)
 ```
 
+[Read more about this command &rarr;](outer_join/)
 
 ## [eq_join](eq_join/) ##
 
