@@ -2500,6 +2500,22 @@ r.table('marvel').forEach(function(hero) {
 }).run(conn, callback)
 ```
 
+## [range](range/) ##
+
+{% apibody %}
+r.range() &rarr; stream
+r.range([startValue, ]endValue) &rarr; stream
+{% endapibody %}
+
+Generate a stream of sequential integers in a specified range.
+
+__Example:__ Return a four-element range of `[0, 1, 2, 3]`.
+
+```js
+> r.range(4).run(conn, callback)
+
+[0, 1, 2, 3]
+```
 
 
 ## [error](error/) ##

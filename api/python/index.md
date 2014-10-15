@@ -2368,7 +2368,22 @@ r.table('marvel').for_each(
 ).run(conn)
 ```
 
+## [range](range/) ##
 
+{% apibody %}
+r.range() &rarr; stream
+r.range([start_value, ]end_value) &rarr; stream
+{% endapibody %}
+
+Generate a stream of sequential integers in a specified range.
+
+__Example:__ Return a four-element range of `[0, 1, 2, 3]`.
+
+```py
+> r.range(4).run(conn)
+
+[0, 1, 2, 3]
+```
 
 ## [error](error/) ##
 
