@@ -47,8 +47,8 @@ The document is organized by four main categories:
 
 MongoDB has [binary distributions for](http://www.mongodb.org/downloads):
 
-*   Linux 32-bit and 64-bit 
-*   Windows 32-bit and 64-bit 
+*   Linux 32/64-bit 
+*   Windows 32/64-bit 
 *   OS X 64-bit
 *   Solaris 64-bit
 
@@ -56,9 +56,10 @@ _Note: [MongoDB 32-bit builds are limited to around 2GB of data](http://www.mong
 
 RethinkDB has [binary packages](/docs/install/) available for:
 
-*   Ubuntu 10.04 and higher 32-bit/64-bit
-*   OS X 64-bit (>= 10.7)
-*   CentOS 6, 32-bit/64-bit
+*   Ubuntu 10.04+ 32/64-bit
+*   OS X 10.7+ 64-bit
+*   CentOS 6 32/64-bit
+*   Debian Wheezy and Jessie 32/64-bit
 
 ## Data model ##
 
