@@ -165,8 +165,3 @@ configured properly:
 After the rule has been applied, connect to one of the two instances over SSH
 and change the RethinkDB configuration file to join the two instances (see 
 the [cluster setup instructions](/docs/cluster-on-startup/)).
-
-{% infobox info %}
-__Note__: we will automate setup of RethinkDB clusters on AWS in the future.
-{% endinfobox %}
-
