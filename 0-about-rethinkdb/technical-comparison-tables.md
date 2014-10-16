@@ -41,7 +41,7 @@ The document is organized by four main categories:
 |JavaScript integration | V8 engine | Spidermonkey/V8 engine |  
 | Access languages | JSON protocol<br>3 official libraries<br>Many community supported libraries | BSON protocol<br>13 official libraries<br>Many community supported libraries |  
 | Index types | Primary key<br>Compound<br>Secondary<br>Geospatial<br>Arbitrarily computed | Unique (unsharded only)<br>Compound<br>Secondary<br>Geospatial<br>Sparse |  
-| Cloud deployment | AWS, dotCloud | Many cloud platforms |  
+| Cloud deployment | AWS, dotCloud, Compose.io | Many cloud platforms |  
 
 ## Platforms ##
 
@@ -85,6 +85,7 @@ RethinkDB provides a [unified chainable query language](/api) supporting:
 *	Aggregations including [map-reduce & group-map-reduce](/docs/map-reduce/)
 *	Joins
 *	Full sub-queries
+*   [Change feeds](/docs/changefeeds/)
 
 
 ## JavaScript integration ##
@@ -261,9 +262,7 @@ Neither MongoDB nor RethinkDB support incremental map-reduce by default.
 
 MongoDB doesn't publish any official performance numbers.
 
-RethinkDB's performance has degraded significantly after the addition of the
-clustering layer, but we hope we'll be able to restore it over the next several
-releases.
+Official performance numbers for RethinkDB have not been published yet. (We're still working on improving performance for a number of specialized workloads.)
 
 ## Concurrency ##
 
