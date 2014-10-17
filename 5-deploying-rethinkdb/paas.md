@@ -1,16 +1,36 @@
 ---
 layout: documentation
-title: "RethinkDB on Amazon Web Services"
+title: "Deploying with PaaS"
 active: docs
-docs_active: aws
-permalink: docs/aws/
+docs_active: paas
+permalink: docs/paas/
 ---
 
-RethinkDB can be easily deployed on Amazon Web Services. You can use a
-pre-built AMI (Amazon Machine Image), which takes only a few minutes
-to set up.
+RethinkDB can be easily deployed on [Compose][cio] and [Amazon Web Services][aws].
 
-# AWS quickstart #
+[cio]: http://compose.io/
+[aws]: http://aws.amazon.com/
+
+# Deploying on Compose #
+
+Each deployment provided by Compose is configured as a high-availability cluster with full redundancy. To create a hosted RethinkDB instance:
+
+1. Click the "Add Deployment" button in the Compose administration panel.
+2. Select "RethinkDB."
+3. Enter a name for the deployment.
+
+![Deploying on Compose](/assets/images/posts/2014-10-14-compose-newdep.png)
+
+If you haven't already added billing information to your Compose account, you'll be prompted to do so before deployment.
+
+Compose uses SSH tunneling to provide secure access to your hosted cluster. After your RethinkDB deployment is created, the admin console will give you the host and port information that you need to use to set up the SSH tunnel. Once the tunnel is set up on your system, you can work with the hosted RethinkDB instance the same way you'd work with a local installation of the database.
+
+Read Compose's [overview][over] of RethinkDB support and their [How to Connect to RethinkDB][conn] documentation for more information.
+
+[over]: https://docs.compose.io/getting-started/rethinkdb-deployments.html
+[conn]: https://docs.compose.io/common-questions/how-to-connect-to-rethinkdb.html
+
+# Deploying on AWS #
 
 ## Launching an instance ##
 
@@ -145,8 +165,3 @@ configured properly:
 After the rule has been applied, connect to one of the two instances over SSH
 and change the RethinkDB configuration file to join the two instances (see 
 the [cluster setup instructions](/docs/cluster-on-startup/)).
-
-{% infobox info %}
-__Note__: we will automate setup of RethinkDB clusters on AWS in the future.
-{% endinfobox %}
-
