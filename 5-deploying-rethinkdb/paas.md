@@ -73,7 +73,7 @@ available out of the box. If you manually attach an EBS volume, you can
 SSH into the instance and edit the configuration file to point
 RethinkDB to the custom volume. See the [cluster setup
 instructions](/docs/cluster-on-startup/) for more details.
-{% endinfobox%}
+{% endinfobox %}
 
 # Instance administration #
 
@@ -113,10 +113,12 @@ To secure your instance more tightly, we recommend that you perform
 the following steps:
 
 * __Change the authentication key.__
-  Open the [RethinkDB command line](#command-line) and execute the command
-  ```
-  set auth <your_key>
-  ```
+  Open the [RethinkDB command line](/docs/administration-tools/) and execute the command
+  
+    ```
+    set auth <your_key>
+    ```
+
 * __Restrict access to port 28015__ to allow only IP addresses or
   security groups that should have driver access.
 

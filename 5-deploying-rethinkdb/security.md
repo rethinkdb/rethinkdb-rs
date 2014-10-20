@@ -169,6 +169,13 @@ r.connect({host: HOST, port: PORT, authKey: <authentication_key>},
     function(error, connection) { ... })
 ```
 
+You can remove an authentication key with the `unset auth` command from the RethinkDB CLI.
+
+```
+rethinkdb admin unset auth
+```
+
+
 ## Using SSH tunneling ##
 
 First, protect the driver port so that it cannot be accessed from the
