@@ -121,7 +121,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 ## Logging tools
 - [fluent-plugin-rethinkdb](https://github.com/kureikain/fluent-plugin-rethink)  
-  [FluentD](https://github.com/fluent/fluentd) output plugins to ship log to RethinkDB
+  [FluentD](https://github.com/fluent/fluentd) output plugins to ship logs to RethinkDB.
 
 ## For driver developers
 - [rethinkdb-driver-development](https://github.com/neumino/rethinkdb-driver-development) by [@neumino](https://github.com/neumino)  
