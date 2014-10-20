@@ -120,7 +120,6 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
   CLI to run ReQL queries in Ruby.
 
 ## Logging tools
-
 - [fluent-plugin-rethinkdb](https://github.com/kureikain/fluent-plugin-rethink)  
   [FluentD](https://github.com/fluent/fluentd) output plugins to ship log to RethinkDB
 
