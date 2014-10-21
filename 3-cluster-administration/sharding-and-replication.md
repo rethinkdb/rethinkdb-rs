@@ -21,16 +21,20 @@ Sharding and replication settings can also be
 controlled from a powerful command-line interface: `rethinkdb admin`.
 
 # Sharding #
+
 {% infobox info %}
+
 __Note__: Currently, RethinkDB implements range shards, but will eventually be
 switching to hash shards (follow [Github
 issue #364](https://github.com/rethinkdb/rethinkdb/issues/364) to track progress).
+
 {% endinfobox %}
 
 ## Sharding via the web interface ##
- When using the web UI, simply  specify the number of shards you
- want, and based on the data available RethinkDB will determine the best split
- points to maintain balanced shards. To shard your data: 
+
+When using the web UI, simply  specify the number of shards you
+want, and based on the data available RethinkDB will determine the best split
+points to maintain balanced shards. To shard your data: 
 
 - Go to the table view (_Tables_ &rarr; _table name_).
 - Click on the _Edit_ button under shard settings.
@@ -52,12 +56,17 @@ points, you can add or remove shards to a table.
 
 - Find the UUID of the table you want to shard using `ls`.
 - To list existing shards, use `ls <table_name>` or `ls <table_uuid>`.
-- Add a new split point, creating a new shard, using `split shard <table_uuid>
-  <split_point>`.
-- Remove a split point, removing an existing shard, using `merge shard
-  <table_uuid> <split_point>`.
+- Add a new split point, creating a new shard, using `split shard S<table_uuid> <split_point>`.
+- Remove a split point, removing an existing shard, using `merge shard <table_uuid> S<split_point>`.
+
+Note that split points must be prefixed with the letter "S"; if the split point was going to be the string value `n`, for instance, the proper syntax (with the table UUID shown by `ls`) would be:
+
+```
+rethinkdb admin split shard da2cde32-2052-4a7f-a53f-2522be15a59f Sn
+```
 
 # Replication #
+
 There are two parameters that can be set when dealing with replicas in
 RethinkDB:
 
@@ -77,6 +86,7 @@ The primary constraints on these parameters are:
   _replicas_, or no write will ever be acknowledge.
 
 ## Replication via the web interface ##
+
 To replicate your data through the web UI:
 
 - Go to the table view (_Tables_ > _table name_).
@@ -87,6 +97,7 @@ To replicate your data through the web UI:
 ![Replica with the web interface](/assets/images/docs/administration/replica.png)
 
 ## Replication via the command-line interface ##
+
 Connect to your cluster via the command-line interface:
 
 ```
@@ -101,6 +112,7 @@ set replicas <table> <num_replicas> [<datacenter>]
 ```
 
 # Pinning masters to datacenters #
+
 Because RethinkDB is immediately consistent, each shard has to be assigned to a
 master (also called a primary server).  The web interface provides an easy way
 to pin primaries to a datacenter, but does not let the user pin a primary per
@@ -108,6 +120,7 @@ shard or per machine basis. If you need this level of control, you will have to
 use the command-line interface instead.
 
 ## Choosing a primary using the web interface  ##
+
 By default, the primary for a shard can be put anywhere in the cluster. That is
 to say, there is no constraint that requires the primary to be in a particular
 datacenter.  In order to set a certain datacenter to contain all the primaries
