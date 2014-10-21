@@ -26,6 +26,10 @@ alias: docs/guides/drivers/
 <div class="icon-box-category">
     <h1>Community-supported drivers &raquo;</h1>
     <p>These drivers have been updated to at least the RethinkDB v1.11 protocol.</p>
+    <a class="mini icon-box driver-language" href="https://github.com/mfenniak/rethinkdb-net">
+        <img src="/assets/images/docs/driver-languages/csharp.png" />
+        <p class="name">C# / .NET</p>
+    </a>
     <a class="mini icon-box driver-language" href="https://github.com/bitemyapp/revise">
         <img src="/assets/images/docs/driver-languages/clojure.png" />
         <p class="name smaller-font">Clojure</p>
@@ -78,10 +82,6 @@ alias: docs/guides/drivers/
     <a class="mini icon-box driver-language" href="https://github.com/unbit/librethinkdb">
         <img src="/assets/images/docs/driver-languages/c.png" />
         <p class="name">C</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/mfenniak/rethinkdb-net">
-        <img src="/assets/images/docs/driver-languages/csharp.png" />
-        <p class="name">C# / .NET</p>
     </a>
     <a class="mini icon-box driver-language" href="https://github.com/jurajmasar/rethink-db-cpp-driver">
         <img src="/assets/images/docs/driver-languages/cpp.png" />
