@@ -18,7 +18,7 @@ language: Python
 {% endinfobox %}
 
 {% infobox info %}
-<strong>There is currently no support for Python 3.</strong> A Python 3 port is in progress, see [Github issue #1050](https://github.com/rethinkdb/rethinkdb/issues/1050).
+From version 1.14, the Python driver for RethinkDB supports Python 2 and 3. Version 1.13 and older support Python 2 only.
 {% endinfobox %}
 
 <img src="/assets/images/docs/api_illustrations/10-minute-guide-python.png" class="api_command_illustration" />
@@ -320,4 +320,4 @@ is:
 }
 ```
 
-{% include quickstart-footer.md %} 
+{% include quickstart-footer.md %}

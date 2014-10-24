@@ -8,64 +8,116 @@ permalink: docs/install/arch/
 ---
 {% include install-docs-header.md %}
 {% include install-community-platform-warning.md %}
-# With binaries #
-RethinkDB is in the Community Repository. To install the server, run:
+
+# Install binary packages #
+
+RethinkDB is in the `community` repository. To install the server, run:
 
 ```bash
-sudo pacman -S rethinkdb
+# pacman -S rethinkdb
 ```
 
-See [the Arch wiki article on RethinkDB](https://wiki.archlinux.org/index.php/RethinkDB) for more information.
+See [the ArchWiki article on RethinkDB][awr] for more information.
 
+[awr]: https://wiki.archlinux.org/index.php/RethinkDB
 
-# Compile from source #
+# Install with the Arch Build System #
 
-## Get the build dependencies ##
-To compile RethinkDB from source, you will need to install the following packages:
-
-```bash
-sudo pacman -S make gcc protobuf boost python2 gperftools nodejs
-```
-
-You also need to install v8 from AUR (and `base-devel`, which is an implicit dependency
-of any AUR package).
-
-```bash
-pacman -S base-devel
-yaourt -S v8
-```
-
-## Tweak the system ##
-
-RethinkDB uses Python 2 to build some documentation. You can use `sed`
-to replace `python` with `python2`, or just change the symbolic link in
-`/usr/bin/python` to `/usb/bin/python2` using:
+RethinkDB can be compiled automatically by the Arch Build System, the ports-like system for building and packaging software from source code in Arch Linux. Note that ABS may lag slightly behind the Arch binary repositories.
 
 {% infobox %}
-__Warning:__ This command will break all other applications that require
-`/usr/bin/python` to be Python 3. Use at your own risk.
+
+According to the `PKGBUILD` some tests may be "flaky" on Btrfs. If you use Btrfs and you are unable to build RethinkDB due to failed tests, you should not edit the `PKGBUILD` to skip the test suite; this might expose you to security problems in production. We suggest using binary packages, or editing the specific failing test.
+
 {% endinfobox %}
 
+## `yaourt` shortcut ##
+
+If you have `yaourt` installed, simply run:
+
 ```bash
-sudo ln -s /usr/bin/python2 /usr/bin/python
+$ yaourt -Sb rethinkdb
+```
+
+This will automatically download the `PKGBUILD` script provided by ABS, download and extract the RethinkDB source, compile and test RethinkDB, create a `pacman`-compatible package, and install the package on the local system. Full customization is possible by editing the `PKGBUILD` when prompted.
+
+## Semi-manual build ##
+
+Ensure you have the `abs` package installed, `/etc/abs.conf` configured for the `community` repository (see [the ArchWiki article on ABS][abs]), and `/etc/makepkg.conf` configured to your liking (see [the ArchWiki article on makepkg][makepkg]).
+
+[abs]: https://wiki.archlinux.org/index.php/Arch_Build_System#How_to_use_ABS
+[makepkg]: https://wiki.archlinux.org/index.php/Makepkg
+
+Copy the `PKGBUILD` and related files to a working directory:
+
+```bash
+$ sudo abs community/rethinkdb
+$ cp -r /var/abs/community/rethinkdb/ ~
+```
+
+Edit `PKGBUILD` to customize the build at this point.
+
+Install thedependencies, build and install the package (the `-s` flag causes `makepkg` to attempt to 
+install explicit build dependencies):
+
+```bash
+# pacman -S base-devel
+$ cd ~/rethinkdb
+$ makepkg -s
+# pacman -U rethinkdb-1.15.1-1-x86_64.pkg.tar.xz
+```
+
+
+# Build from official source #
+
+## Install build dependencies  ##
+
+You will need to install the `base-devel` group and several additional build dependencies:
+
+```bash
+# pacman -S base-devel protobuf boost python2 gperftools v8 nodejs
 ```
 
 ## Get the source code ##
+
 Clone the RethinkDB repository:
 
 ```bash
-git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+$ git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
 ```
 
 ## Build RethinkDB ##
-Kick off the build process:
+
+RethinkDB's `configure` script assumes the `python` executable will be Python 2 (i.e., `/usr/bin/python` is symlinked to `/usr/bin/python2`), which will break your build ('python 3.4.2 is too recent' etc.). Rather than rewriting this symlink and potentially breaking other software, consider installing the following script as `/usr/local/bin/python` (replace `/home/user/rethinkdb` with the absolute path of your own working directory):
 
 ```bash
-cd rethinkdb
-./configure --dynamic tcmalloc_minimal --allow-fetch --fetch v8
-make
+#!/bin/bash
+script=$(readlink -f -- "$1")
+case "$script" in (/home/user/rethinkdb)
+    exec python2 "$@"
+    ;;
+esac
+
+exec python3 "$@"
 ```
 
-You will find the `rethinkdb` binary in the `build/release/` subfolder.  
+This will redirect calls to `python` originating from your RethinkDB working directory to `python2` and leave others untouched. Ensure that the script is executable (`chmod +x`) and, if necessary, reload your shell before continuing.
+
+To run the build:
+
+```bash
+$ cd ~/rethinkdb
+$ ./configure --dynamic tcmalloc_minimal
+$ make
+```
+
+Once successfully built, the `rethinkdb` binary may be found in the `build/release/` subdirectory.  
+
+To install RethinkDB globally:
+
+```bash
+$ cd ~/rethinkdb
+# make install
+```
 
 {% include install-next-step.md %}
