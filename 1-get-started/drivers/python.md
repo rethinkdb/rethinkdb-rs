@@ -11,8 +11,7 @@ permalink: docs/install-drivers/python/
 # Installation #
 
 {% infobox info %}
-From version 1.14, the Python driver for RethinkDB supports Python 2 and 3. Version 1.13 and older supported Python 2 
-only.
+From version 1.14, the Python driver for RethinkDB supports Python 2 and 3. Version 1.13 and older support Python 2 only.
 {% endinfobox %}
 
 Install the driver with pip:

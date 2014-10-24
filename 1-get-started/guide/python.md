@@ -18,8 +18,7 @@ language: Python
 {% endinfobox %}
 
 {% infobox info %}
-From version 1.14, the Python driver for RethinkDB supports Python 2 and 3. Version 1.13 and older supported Python 2 
-only.
+From version 1.14, the Python driver for RethinkDB supports Python 2 and 3. Version 1.13 and older support Python 2 only.
 {% endinfobox %}
 
 <img src="/assets/images/docs/api_illustrations/10-minute-guide-python.png" class="api_command_illustration" />
