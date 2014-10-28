@@ -543,8 +543,9 @@ r.table("posts").orderBy("date").limit(10).run(conn, function(err, result) {
 
 ## Implementing pagination ##
 
-To paginate results, you can use a combination of the `skip` and
-`limit` commands. Let's retrieve posts 11-20 from our database:
+There are multiple ways to paginate results in RethinkDB. The most straightforward way is using `skip` and `limit` (similar to the way SQL's `OFFSET` and `LIMIT` work), but that's also the least efficient. It's more efficient to use `slice`, and even more efficient to use `between` with a secondary index.
+
+First, let's retrieve posts 11-20 from our database using [skip](/api/javascript/skip) and [limit](/api/javascript/limit).
 
 ```javascript
 r.table("posts").orderBy("date").skip(10).limit(10).run(conn, function(err, result) {
@@ -552,6 +553,39 @@ r.table("posts").orderBy("date").skip(10).limit(10).run(conn, function(err, resu
     console.log(result);
 });
 ```
+
+Second, the [slice](/api/javascript/slice) command returns a range from a given start value through but not including a given end value. This makes it easy to use as a `skip`/`limit` replacement: the start value is the first item to retrieve, and the end value is the first item plus the limit. To retrieve posts 11-20 from the database using `slice`:
+
+```javascript
+r.table("posts").orderBy("date").slice(11,21).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
+```
+
+Last, if you have a secondary index, you can use the [between](/api/javascript/between) command in conjunction with [orderBy](/api/javascript/order_by) and `limit`. This is extremely efficient, but it requires starting each fetch by looking up a record by actual index value. That is, instead of fetching the 11th record with the number `15`, you need to fetch it by the value it has in the indexed field.
+
+Suppose you wanted to paginate through a set of users, 25 at a time. You could get the first 25 records efficiently just with `limit`.
+
+```javascript
+r.table("users").orderBy({index: "name"}).limit(25).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
+```
+
+For each successive page, start with the last name in the previous page.
+
+
+```javascript
+r.table("users").between(lastName, null, {leftBound: "open", index: "name"})
+ .orderBy({index: "name"}).limit(25).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
+```
+
+The `between` command is passed the `lastName` saved from the previous set, and `null` as its closing index value to return documents from the start index to the table's end. The `leftBound` parameter tells `between` not to include the first record, since it was already returned as part of the previous page.
 
 {% endfaqsection %}
 

@@ -439,14 +439,36 @@ r.table("posts").order_by("date")
 
 ## Implementing pagination ##
 
-To paginate results, you can use a combination of the `skip` and
-`limit` commands. Let's retrieve posts 11-20 from our database:
+There are multiple ways to paginate results in RethinkDB. The most straightforward way is using `skip` and `limit` (similar to the way SQL's `OFFSET` and `LIMIT` work), but that's also the least efficient. It's more efficient to use `slice`, and even more efficient to use `between` with a secondary index.
 
-```ruby
-r.table("posts").order_by("date").
-  skip(10).
-  limit(10).run
+First, let's retrieve posts 11-20 from our database using [skip](/api/python/skip) and [limit](/api/python/limit).
+
+```rb
+r.table("posts").order_by("date").skip(10).limit(10).run(conn)
 ```
+
+Second, the [slice](/api/python/slice) command returns a range from a given start value through but not including a given end value. This makes it easy to use as a `skip`/`limit` replacement: the start value is the first item to retrieve, and the end value is the first item plus the limit. To retrieve posts 11-20 from the database using `slice`:
+
+```rb
+r.table("posts").order_by("date").slice(11,21).run(conn)
+```
+
+Last, if you have a secondary index, you can use the [between](/api/python/between) command in conjunction with [order_by](/api/python/order_by) and `limit`. This is extremely efficient, but it requires starting each fetch by looking up a record by actual index value. That is, instead of fetching the 11th record with the number `15`, you need to fetch it by the value it has in the indexed field.
+
+Suppose you wanted to paginate through a set of users, 25 at a time. You could get the first 25 records efficiently just with `limit`.
+
+```rb
+r.table("users").order_by(:index => "name"}).limit(25).run(conn)
+```
+
+For each successive page, start with the last name in the previous page.
+
+```rb
+r.table("users").between(last_name, nil, {:left_bound => "open",
+    :index => "name"}).order_by({:index => "name"}).limit(25).run(conn)
+```
+
+The `between` command is passed the `last_name` saved from the previous set, and `null` as its closing index value to return documents from the start index to the table's end. The `left_bound` parameter tells `between` not to include the first record, since it was already returned as part of the previous page.
 
 {% endfaqsection %}
 
