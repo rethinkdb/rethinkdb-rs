@@ -2505,7 +2505,7 @@ r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn)
 ## [uuid](uuid/) ##
 
 {% apibody %}
-r.uuid(array) &rarr; string
+r.uuid() &rarr; string
 {% endapibody %}
 
 Return a UUID (universally unique identifier), a string that can be used as a unique ID.

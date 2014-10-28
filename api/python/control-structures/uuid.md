@@ -8,7 +8,7 @@ command: uuid
 # Command syntax #
 
 {% apibody %}
-r.uuid(array) &rarr; string
+r.uuid() &rarr; string
 {% endapibody %}
 
 # Description #
