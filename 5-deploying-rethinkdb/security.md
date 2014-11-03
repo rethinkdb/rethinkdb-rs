@@ -41,7 +41,7 @@ Now, use one of the following two methods to enable secure access.
 
 Once you block the web interface port in the step above, the easiest
 way to access it is to use ssh to set up a socks proxy. Run the
-following command on your local machine (not the one running
+following command on your local server (not the one running
 RethinkDB):
 
 ```bash
@@ -50,9 +50,9 @@ ssh -D 3000 USERNAME@HOST
 
 Where,
 
-- `HOST` is the ip of any machine on your RethinkDB cluster.
+- `HOST` is the ip of any server on your RethinkDB cluster.
 - `3000` can be changed to any port that is available on your local
-  machine.
+  server.
 
 Then open your browser:
 
@@ -76,7 +76,7 @@ You can now visit `localhost:8080` to see the RethinkDB web admin.
 ## Via a reverse proxy ##
 
 You can use a reverse http proxy to allow access to the web interface
-from other machines. Most web servers (such as apache or nginx)
+from other servers. Most web servers (such as apache or nginx)
 support this feature. In the following example we'll use apache to set
 up a reverse proxy.
 
@@ -192,19 +192,19 @@ __Note__: You may have to replace `eth0` and `28015` above if you are
 using another interface or not using the default driver port.
 {% endinfobox%}
 
-Now create an SSH tunnel on the machine that needs to access the
+Now create an SSH tunnel on the server that needs to access the
 remote RethinkDB driver port:
 
 ```bash
-ssh -L <local_port>:localhost:<driver_port> <ip_of_rethinkdb_machine>
+ssh -L <local_port>:localhost:<driver_port> <ip_of_rethinkdb_server>
 ```
 
 Where,
 
 - `local_port` is the port you are going to specify in the driver - It
-  can be any available port on your machine.
+  can be any available port on your server.
 - `driver_port` is the RethinkDB driver port (28015 by default).
-- `ip_rethinkdb_machine` is the IP address of the machine that runs
+- `ip_of_rethinkdb_server` is the IP address of the server that runs
   the RethinkDB server.
 
 You can now connect to your RethinkDB instance by connecting to the

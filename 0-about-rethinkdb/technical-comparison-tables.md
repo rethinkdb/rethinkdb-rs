@@ -212,7 +212,7 @@ instances](http://docs.mongodb.org/manual/core/sharded-cluster-architectures-pro
 
 RethinkDB supports 1-click sharding from the admin UI. Sharding can be
 configured also from the CLI which also supports manual assignments of shards
-to specific machines. Rebalancing the shards can be done through the admin UI.
+to specific servers. Rebalancing the shards can be done through the admin UI.
 
 ## Replication ##
 
@@ -235,7 +235,7 @@ mechanisms](http://docs.mongodb.org/manual/data-center-awareness/):
 - support for nearby replication
 - tagging (version 2.0+)
 
-RethinkDB supports grouping machines into datacenters with per datacenter
+RethinkDB supports grouping servers into datacenters with per datacenter
 replication and write acknowledgement settings through either the admin web UI
 or CLI. RethinkDB immediate consistency based reads and writes do not require a
 special protocol for multi DC replication.
@@ -355,7 +355,7 @@ are responsible for transparently routing the queries within the cluster.
 RethinkDB clients can connect to any node in the cluster and queries will be
 automatically routed internally.  Both simple (such as filters, joins) and
 composed queries (chained operations) will be broken down, routed to the
-appropriate machines, and executed in parallel. The results will be recombined
+appropriate servers, and executed in parallel. The results will be recombined
 and streamed back to the client.
 
 ## Caching engine ##
@@ -366,4 +366,4 @@ MongoDB can use all free memory on the server for cache space automatically
 without any configuration of a cache size.
 
 RethinkDB implements a custom B-tree aware caching mechanism. The cache size
-can be configured on a per-machine basis.
+can be configured on a per-server basis.

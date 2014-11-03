@@ -318,7 +318,7 @@ r.table('games').group('player').order_by('score').nth(0).run(conn) # INEFFICIEN
 What does it mean to be inefficient here?  When operating on grouped
 data rather than a grouped stream, *all* of the data has to be
 available on the node processing the query.  This means that the
-operation will only use one machine's resources, and will require
+operation will only use one server's resources, and will require
 memory proportional to the size of the grouped data it's operating
 on.  (In the case of the `order_by` in the inefficient example, that
 means memory proportional **to the size of the table**.)  The array

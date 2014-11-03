@@ -106,7 +106,7 @@ The basic setup is complete &mdash; __you've now got a working server!__
 
 ## Multiple instances ##
 
-The init.d script supports starting multiple instances on the same machine via
+The init.d script supports starting multiple instances on the same server via
 multiple `.conf` files in `/etc/rethinkdb/instances.d`.
 
 ## Installing from source ##

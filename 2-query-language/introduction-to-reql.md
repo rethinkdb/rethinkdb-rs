@@ -164,7 +164,7 @@ Learn how to use [primary and secondary indexes](/docs/secondary-indexes/) in Re
 
 All ReQL queries are automatically parallelized on the RethinkDB
 server as much as possible. Whenever possible, query execution is
-split across CPU cores, machines in the cluster, and even multiple
+split across CPU cores, servers in the cluster, and even multiple
 datacenters. If you have large, complicated queries that require
 multiple stages of processing, RethinkDB will automatically break them
 up into stages, execute each stage in parallel, and combine data to
@@ -293,7 +293,7 @@ r.table('authors').filter(lambda author:
 
 Here, we use the `r.table('users').pluck('last_name')` query as the
 inner query in `filter`, combining the two queries to build a more
-sophisticated one. Even if you have a cluster of machines and both the
+sophisticated one. Even if you have a cluster of servers and both the
 `authors` table and the `users` table are sharded, RethinkDB will do
 the right thing and evaluate relevant parts of the query above on the
 appropriate shards, combine bits of data as necessary, and return the
