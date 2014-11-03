@@ -31,7 +31,7 @@ The basic setup is complete &mdash; __you've now got a working server!__
 
 ## Multiple instances ##
 
-The init.d script supports starting multiple instances on the same machine via
+The init.d script supports starting multiple instances on the same server via
 multiple `.conf` files in `/etc/rethinkdb/instances.d`.
 
 ## Installing from source ##
@@ -135,7 +135,7 @@ config file without the `.conf` extension.
    May be 'all' or an IP address, loopback addresses are enabled by default.  
    *Default*: all local addresses
 
-* `canonical-address` &mdash; Address that other rethinkdb instances will use to connect to this machine.
+* `canonical-address` &mdash; Address that other rethinkdb instances will use to connect to this server.
   It can be specified multiple times.
 
 * `http-port`, `driver-port`, and `cluster-port` &mdash; the web UI
@@ -162,7 +162,7 @@ config file without the `.conf` extension.
 
 * `no-direct-io` &mdash; Disable direct I/O.
 
-* `machine-name` &mdash; The name for this machine (as it will appear in the metadata).  
+* `server-name` &mdash; The name for this server (as it will appear in the metadata).  
   *Default*: Randomly chosen from a short list of names.
 
 

@@ -20,7 +20,7 @@ If it were a CSV file, you would use:
 
     rethinkdb import -f users.csv --format csv --table test.users
 
-By default, the import command will connect to `localhost` port `28015`. You can use the `-c` option to specify a machine and client port to connect to. (Note this is the driver port clients connect to, not the cluster port.)
+By default, the import command will connect to `localhost` port `28015`. You can use the `-c` option to specify a server and client port to connect to. (Note this is the driver port clients connect to, not the cluster port.)
 
     rethinkdb import -f crew.json --table discovery.crew -c hal:2001
 

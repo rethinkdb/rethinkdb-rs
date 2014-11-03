@@ -66,12 +66,12 @@ RethinkDB:
   confirmations required before a write is acknowledged.  
 
 These two parameters can be specified for each table on a per-datacenter basis
-or for the whole cluster (which includes machines that are not assigned to any
+or for the whole cluster (which includes servers that are not assigned to any
 datacenter).
 
 The primary constraints on these parameters are:
 
-- You cannot require more replicas than you have machines available in your
+- You cannot require more replicas than you have servers available in your
   cluster.
 - The number of _acks_ has to be less than or equal to the number of
   _replicas_, or no write will ever be acknowledge.
@@ -104,7 +104,7 @@ set replicas <table> <num_replicas> [<datacenter>]
 Because RethinkDB is immediately consistent, each shard has to be assigned to a
 master (also called a primary server).  The web interface provides an easy way
 to pin primaries to a datacenter, but does not let the user pin a primary per
-shard or per machine basis. If you need this level of control, you will have to
+shard or per server basis. If you need this level of control, you will have to
 use the command-line interface instead.
 
 ## Choosing a primary using the web interface  ##
@@ -134,9 +134,9 @@ the primaries for a table to a particular datacenter with:
 - To pin all of the primaries for a table to a particular datacenter, use `set primary <table> <datacenter>`.
 
 The command line interface also provides a more precise way to pin data. You
-can pin a shard (primary or secondary) to a particular machine. The command to
+can pin a shard (primary or secondary) to a particular server. The command to
 do this is:
 
 ```
-pin shard <table> <shard> [--master <machine>] [--replicas <machine>...]
+pin shard <table> <shard> [--master <server>] [--replicas <server>...]
 ```

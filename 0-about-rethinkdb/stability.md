@@ -38,7 +38,7 @@ Single node deployments have been extensively tested and all known systemic issu
 
 Small cluster deployments are still undergoing heavy testing, but most known systemic issues have been resolved. If you run into a problem, please <a href="https://github.com/rethinkdb/rethinkdb/issues/new">open a bug report</a>.
 
-|                              | Small cluster stability report (five machines or fewer) |
+|                              | Small cluster stability report (five servers or fewer) |
 | :--------------------------- | --------- |
 | Data integrity               | There are no known data integrity issues. |
 | Crash reports                | You may encounter crashes under certain workloads, but there are no known systemic issues. |
@@ -54,7 +54,7 @@ Small cluster deployments are still undergoing heavy testing, but most known sys
 
 Large cluster deployments have not been sufficiently tested, and required features are still under heavy development. If you're interested in beta testing, please spin up a large RethinkDB cluster, and <a href="/community">send us your feedback</a>!
 
-|                              | Large cluster stability report (more than five machines) |
+|                              | Large cluster stability report (more than five servers) |
 | :--------------------------- | --------- |
 | Data integrity               | There are no known data integrity issues. |
 | Crash reports                | You may encounter crashes under certain workloads, but there are no known systemic issues. |

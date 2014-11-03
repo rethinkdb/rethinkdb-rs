@@ -21,7 +21,7 @@ The default port for the RethinkDB web interface is `8080`. Point your browser t
 {% infobox info %}
 __Having trouble connecting to the web interface?__ By default, RethinkDB binds
 itself to `localhost` for security reasons. You can start RethinkDB with
-the `--bind all` parameter to access it from another machine.
+the `--bind all` parameter to access it from another server.
 {% endinfobox %}
 
 Here's what the web interface looks like:
@@ -37,7 +37,7 @@ rethinkdb admin --join <host>:<port>
 ```
 where:
 
-- `host` is the IP address of any machine of your RethinkDB cluster
+- `host` is the IP address of any server of your RethinkDB cluster
 - `port` is the port for intracluster connections (by default `29015`)
 
 To get help on using the CLI, run the command:

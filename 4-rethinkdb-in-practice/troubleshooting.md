@@ -221,7 +221,7 @@ r.table('users').filter(function(user) {
 
 ## How do I specify an external canonical IP address of a RethinkDB node? ##
 
-When a RethinkDB node starts, it will broadcast its "canonical" IP address, the address other nodes should use to connect to it. By default, the canonical address is the machine's primary IP address. However, if this address is an internal IP address that isn't reachable by other nodes (for example, the nodes are on different networks), the nodes will not be able to reach one another. You may receive an error message such as:
+When a RethinkDB node starts, it will broadcast its "canonical" IP address, the address other nodes should use to connect to it. By default, the canonical address is the server's primary IP address. However, if this address is an internal IP address that isn't reachable by other nodes (for example, the nodes are on different networks), the nodes will not be able to reach one another. You may receive an error message such as:
 
 ```
 error: received inconsistent routing information (wrong address) from xxx.xxx.xxx.xxx (expected_address = peer_address{ips=[xxx.xxx.xxx.xxx], port=29015}, other_address = peer_address{ips=[xxx.xxx.xxx.xxx], port=29015}), closing connection
