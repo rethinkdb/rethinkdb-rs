@@ -86,7 +86,7 @@ RethinkDB provides a [unified chainable query language](/api) supporting:
 *	Aggregations including [map-reduce & group-map-reduce](/docs/map-reduce/)
 *	Joins
 *	Full sub-queries
-*   [Change feeds](/docs/changefeeds/)
+*   [Changefeeds](/docs/changefeeds/)
 
 
 ## JavaScript integration ##

@@ -27,7 +27,7 @@ It's a good idea to open changefeeds on their own connection. If you don't, othe
 
 __Example:__ Subscribe to the changes on a table.
 
-Start monitoring the change feed in one client:
+Start monitoring the changefeed in one client:
 
 ```rb
 r.table('games').changes().run(conn).each{|change| p(change)}
@@ -67,7 +67,7 @@ __Example:__ Return all the changes to Bob's score.
 ```rb
 # Note that this will have to look at and discard all the changes to
 # rows besides Bob's.  This is currently no way to filter with an index
-# on change feeds.
+# on changefeeds.
 r.table('test').changes().filter{|row| row['new_val']['name'].eq('Bob')}.run(conn)
 ```
 
