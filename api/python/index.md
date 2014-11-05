@@ -772,20 +772,23 @@ These commands are used to transform data in a sequence.
 ## [map](map/) ##
 
 {% apibody %}
-sequence.map(mapping_function) &rarr; stream
-array.map(mapping_function) &rarr; array
+sequence1.map([sequence2, ...], mapping_function) &rarr; stream
+array1.map([sequence2, ...], mapping_function) &rarr; array
+r.map(sequence1[, sequence2, ...], mapping_function) &rarr; stream
+r.map(array1[, array2, ...], mapping_function) &rarr; array
 {% endapibody %}
 
-Transform each element of the sequence by applying the given mapping function.
+Transform each element of one or more sequences by applying a mapping function to them. If `map` is run with two or more sequences, it will iterate for as many items as there are in the shortest sequence.
 
-__Example:__ Construct a sequence of hero power ratings.
+__Example:__ Return the first five squares.
 
 ```py
-r.table('marvel').map(lambda hero:
-    hero['combatPower'] + hero['compassionPower'] * 2
-).run(conn)
+> r.expr([1, 2, 3, 4, 5]).map(lambda val: (val * val)).run(conn)
+
+[1, 4, 9, 16, 25]
 ```
 
+[Read more about this command &rarr;](map/)
 
 ## [with_fields](with_fields/) ##
 
