@@ -58,6 +58,10 @@ alias: docs/guides/drivers/
         <img src="/assets/images/docs/driver-languages/java.png" />
         <p class="name">Java <span class="driver-author">by @dkhenry</span></p>
     </a>
+    <a class="mini icon-box driver-language" href="https://github.com/grandquista/Lua-ReQL">
+        <img src="/assets/images/docs/driver-languages/lua.png" />
+        <p class="name">Lua</p>
+    </a>
     <a class="mini icon-box driver-language" href="https://github.com/neumino/rethinkdbdash">
         <img src="/assets/images/docs/driver-languages/nodejs.png" />
         <p class="name">Node.js</p>
@@ -124,6 +128,7 @@ get started with driver development:
 
 __Thanks to all our amazing driver contributors!__
 
+- [@grandquista](https://github.com/grandquista) (Lua): <https://github.com/grandquista/Lua-ReQL>
 - [@dbettin](https://github.com/dbettin) (Dart): <https://github.com/dbettin/rethinkdb>
 - [@dparnell](https://github.com/dparnell) (Objective-C): <https://github.com/dparnell/rethink-db-client>
 - The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C# / .NET): <https://github.com/mfenniak/rethinkdb-net>
