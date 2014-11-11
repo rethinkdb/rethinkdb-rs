@@ -21,6 +21,7 @@ Sharding and replication settings can also be
 controlled from a powerful command-line interface: `rethinkdb admin`.
 
 # Sharding #
+
 {% infobox info %}
 __Note__: Currently, RethinkDB implements range shards, but will eventually be
 switching to hash shards (follow [Github
@@ -28,6 +29,7 @@ issue #364](https://github.com/rethinkdb/rethinkdb/issues/364) to track progress
 {% endinfobox %}
 
 ## Sharding via the web interface ##
+
  When using the web UI, simply  specify the number of shards you
  want, and based on the data available RethinkDB will determine the best split
  points to maintain balanced shards. To shard your data: 
@@ -40,6 +42,7 @@ issue #364](https://github.com/rethinkdb/rethinkdb/issues/364) to track progress
 ![Shard with the web interface](/assets/images/docs/administration/shard.png)
 
 ## Sharding via the command-line interface ##
+
 Connect to your cluster via the command-line interface:
 
 ```
@@ -54,10 +57,10 @@ points, you can add or remove shards to a table.
 - To list existing shards, use `ls <table_name>` or `ls <table_uuid>`.
 - Add a new split point, creating a new shard, using `split shard <table_uuid>
   <split_point>`.
-- Remove a split point, removing an existing shard, using `merge shard
-  <table_uuid> <split_point>`.
+- Remove a split point, removing an existing shard, using `merge shard <table_uuid> <split_point>`.
 
 # Replication #
+
 There are two parameters that can be set when dealing with replicas in
 RethinkDB:
 
@@ -100,18 +103,20 @@ set acks <table> <num_acks> [<datacenter>]
 set replicas <table> <num_replicas> [<datacenter>]
 ```
 
-# Pinning masters to datacenters #
-Because RethinkDB is immediately consistent, each shard has to be assigned to a
-master (also called a primary server).  The web interface provides an easy way
-to pin primaries to a datacenter, but does not let the user pin a primary per
-shard or per server basis. If you need this level of control, you will have to
-use the command-line interface instead.
+# Pinning primary replicas to datacenters #
 
-## Choosing a primary using the web interface  ##
-By default, the primary for a shard can be put anywhere in the cluster. That is
-to say, there is no constraint that requires the primary to be in a particular
-datacenter.  In order to set a certain datacenter to contain all the primaries
-of your table, you will have to:
+Because RethinkDB is immediately consistent, each shard has to be assigned to
+a primary replica. The web interface provides an easy way to pin primaries to
+a datacenter, but does not let the user pin a primary per shard or per server
+basis. If you need this level of control, you will have to use the
+command-line interface instead.
+
+## Choosing a primary replica using the web interface  ##
+
+By default, the primary replica for a shard can be put anywhere in the
+cluster. That is to say, there is no constraint that requires the primary to
+be in a particular datacenter.  In order to set a certain datacenter to
+contain all the primaries of your table, you will have to:
 
 - Go to the table view (_Tables_ > _table name_).
 - Click on the _Show multi-datacenter options_.
@@ -121,7 +126,8 @@ of your table, you will have to:
 
 ![Change primary with the web interface](/assets/images/docs/administration/primary.png)
 
-## Choosing a primary using the command-line interface ##
+## Choosing a primary replica using the command-line interface ##
+
 Connect to your cluster via the command-line interface:
 
 ```
@@ -129,9 +135,7 @@ rethinkdb admin --join <host>:<port>
 ```
 
 - Find the UUID of the table you want to shard using `ls`.
-Once you find the UUID of your table using the `ls` command, you can pin all of
-the primaries for a table to a particular datacenter with:
-- To pin all of the primaries for a table to a particular datacenter, use `set primary <table> <datacenter>`.
+- Pin all of the primariy replicas for a table to a particular datacenter with `set primary <table> <datacenter>`.
 
 The command line interface also provides a more precise way to pin data. You
 can pin a shard (primary or secondary) to a particular server. The command to
