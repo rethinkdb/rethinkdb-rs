@@ -301,9 +301,9 @@ MongoDB client libraries had by default a fire-and-forget behavior.
 
 In RethinkDB data always remains immediately consistent and conflict-free, and
 a read that follows a write is always guaranteed to see the write. This is
-accomplished by always assigning every shard to a single authoritative master.
+accomplished by always assigning every shard to a single authoritative primary replica.
 All reads and writes to any key in a given shard always get routed to its
-respective master where they're ordered and evaluated.
+respective primary where they're ordered and evaluated.
 
 Both MongoDB and RethinkDB allow out-of-date reads.
 

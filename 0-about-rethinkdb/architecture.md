@@ -143,7 +143,7 @@ system is designed with three main principles in mind:
   and increasing/decreasing replication count should easily be
   performed in a click of a button.
 - In cases where it matters, the system should give administrators
-  fine-tuned control, such as pinning specific masters and replicas to
+  fine-tuned control, such as pinning specific primary and secondary replicas to
   specific servers in the cluster.
 - Information about the cluster and all operations on the cluster
   should be programmatically accessible.
@@ -159,7 +159,7 @@ into three layers:
 - The second layer builds on the first and implements various
   automation mechanisms (e.g. automatically determining how to split
   shards, where to place copies of the data, automatically picking
-  optimal masters, etc.)  This is the layer that compiles goals
+  optimal primary replicas, etc.)  This is the layer that compiles goals
   specified by the user into blueprints.
 - The third layers builds on the previous two and provides the user
   with command line and web-based tools to control the cluster.
@@ -185,20 +185,20 @@ threshold).
 In RethinkDB data always remains immediately consistent and
 conflict-free, and a read that follows a write is always guaranteed to
 see the write. This is accomplished by always assigning every shard to
-a single authoritative master. All reads and writes to any key in a
-given shard always get routed to its respective master where they're
+a single authoritative primary replica. All reads and writes to any key in a
+given shard always get routed to its respective primary where they're
 ordered and evaluated.
 
 RethinkDB supports both up-to-date and out-of-date reads. By default,
 all read queries are executed up-to-date, which means that every read
-operation for a given shard is routed to the master for that shard and
+operation for a given shard is routed to the primary replica for that shard and
 executed in order with other operations on the shard. In this default
 mode, the client always sees the latest, consistent, artifact-free
 view of the data.
 
 The programmer can also mark a read query to be ok with out-of-date
-data. In this mode, the query isn't necessarily routed to the shards
-master, but is likely to be routed to its closest replica. Out-of-date
+data. In this mode, the query isn't necessarily routed to the shard's
+primary, but is likely to be routed to its closest replica. Out-of-date
 queries are likely to have lower latency and have stronger
 availability guarantees, but don't necessarily return the latest
 version of the data to the client.
@@ -219,28 +219,28 @@ clock skew, conflict resolution code, conflict repair operations,
 performance issues for highly contested keys, and latency issues
 associated with quorums.
 
-Authoritative systems, such as RethinkDB and MongoDB choose to
+Authoritative systems such as RethinkDB and MongoDB choose to
 maintain data consistency. Building applications on top of
-authoritative-master systems is much simpler because all of the issues
+authoritative primary systems is much simpler because all of the issues
 associated with data inconsistency do not arise. In exchange, these
 applications will occasionally experience availability issues.
 
 In RethinkDB, if there is a network partition, the behavior of the
 system from any given client's perspective depends on which side of
 the netsplit that client is on. If the client is on the same side of
-the netsplit as the master for the shard the client is trying to
+the netsplit as the primary replica for the shard the client is trying to
 reach, it will continue operating without any problems. If the client
-is on the opposite side of the netsplit from the master for the shard
+is on the opposite side of the netsplit from the primary for the shard
 the client is trying to reach, the client's up-to-date queries and
 write queries will encounter a failure of availability. For example,
 if the client is running an up-to-date range query that spans multiple
-shards, the masters for all shards must be on the same side of the
+shards, the primaries for all shards must be on the same side of the
 netsplit as the client, or the client will encounter a failure of
 availability.
 
 If the programmer marks a read query to be ok with out-of-date data,
 RethinkDB will route the query to the closest available replica
-instead of routing it to the master. In this case the client will see
+instead of routing it to the primary. In this case the client will see
 the data as long as there are replicas of the data on the its side of
 the netsplit. However, in this case the data has the risk of being out
 of date. This is usually ok for reports, analytics, cached data, or
@@ -301,30 +301,30 @@ via the command line administration tools.
 While the server remains unreachable, table availability is
 determined by the following three cases:
 
-- If the server is acting as a master for any shards, the
+- If the server is acting as a primary replica for any shards, the
   corresponding tables lose read and write availability (out-of-date
   reads remain possible as long as there are other replicas of the
   shards).
-- If the server is acting as a replica for a given table and there
+- If the server is acting as a secondary replica for a given table and there
   aren't enough replicas in the cluster to respect the user's write
   acknowledgement settings, the table loses write availability (but
   maintains read availability). 
-- If the server isn't acting as a master for any tables, and there
-  are enough replicas to respect the user's write acknowledgement
+- If the server isn't acting as a primary replica for any tables, and there
+  are enough secondary replicas to respect the user's write acknowledgement
   settings, the system continues operating as normal.
 
 There are two possible solutions to this issue. The first option is to
 simply wait for the server to become reachable again. If the server
 comes back up RethinkDB automatically performs the following actions
-without any user interaction: replicas on the server are brought up
-to date with the latest changes, masters on the server become active
+without any user interaction: secondary replicas on the server are brought up
+to date with the latest changes, primaries on the server become active
 again, the cluster clears the reachability issue from web and command
 line tools, availability is restored, and the cluster continues
 operating as normal.
 
 The second option is to declare the server dead. If the server is
 declared dead, it is absolved of all responsibilities, and one of the
-replicas is automatically elected to act as a new master. After the
+secondary replicas is automatically elected to act as a new primary. After the
 server is declared dead, availability is quickly restored and the
 cluster begins operating normally. (If the dead server comes back up,
 it is rejected by the cluster as a zombie).
