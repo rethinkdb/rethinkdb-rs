@@ -101,7 +101,9 @@ r.table("posts").eq_join("author_full_name", r.table("users"), index="full_name"
 
 ## Multi indexes ##
 
-Simple and compound indexes are unique: values (or combinations of values, for compound indexes) can only appear once, and a single document can have only one index. A _multi index_ can index a single document multiple times with different values. For instance, a blog post might have multiple tags, and each tag might refer to multiple blog posts.
+With simple and compound indexes, a document will be indexed using at most one index key: a single value for a simple index and a set of values for a compound index. Multiple documents may have the same index key. With a _multi index_, a document can be indexed using more than one key in the same index. For instance, a blog post might have multiple tags, and each tag might refer to multiple blog posts.
+
+The keys in a multi index can be single values, compound values or even arbitrary expressions. (See the section below for more detail on indexes using functions.)
 
 ### Creation ###
 Suppose each post has a field `tags` that maps to an array of tags. The schema of the
