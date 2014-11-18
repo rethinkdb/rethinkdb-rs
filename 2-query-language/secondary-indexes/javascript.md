@@ -104,8 +104,7 @@ r.table("posts").eqJoin("author_full_name", r.table("users"), {index: "full_name
 
 ## Multi indexes ##
 
-To index a single document multiple times by different values use a multi index. For
-example, you can index a blog post with an array of tags by each tag.
+Simple and compound indexes are unique: values (or combinations of values, for compound indexes) can only appear once, and a single document can have only one index. A _multi index_ can index a single document multiple times with different values. For instance, a blog post might have multiple tags, and each tag might refer to multiple blog posts.
 
 ### Creation ###
 
@@ -138,6 +137,8 @@ r.table("posts").getAll("travel", {index: "tags"}).run(conn, callback)
 // For each tag, return the tag and the posts that have such tag
 r.table("tags").eqJoin("tag", r.table("posts"), {index: "tags"}).run(conn, callback)
 ```
+
+Note that queries with `getAll` or `between` may return the same document multiple times unless you use the [distinct](/api/javascript/distinct) command.
 
 ## Indexes on arbitrary ReQL expressions ##
 
@@ -178,10 +179,10 @@ r.table("users").indexCreate("userEquipment", function(user) {
 }, {multi: true}).run(conn, callback);
 
 // Query equivalent to:
-// r.table("users").get(1).filter(function (user) {
+// r.table("users").getAll(1).filter(function (user) {
 //     return user("equipment").contains("tent");
 // });
-r.table("users").getAll([1, "tent"], {index: "userEquipment"}).run(conn, callback);
+r.table("users").getAll([1, "tent"], {index: "userEquipment"}).distinct().run(conn, callback);
 ```
 
 # Administrative operations #

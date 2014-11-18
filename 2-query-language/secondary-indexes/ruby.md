@@ -101,8 +101,7 @@ r.table("posts").eq_join("author_full_name", r.table("users"), :index => "full_n
 
 ## Multi indexes ##
 
-To index a single document multiple times by different values use a multi index. For
-example, you can index a blog post with an array of tags by each tag.
+Simple and compound indexes are unique: values (or combinations of values, for compound indexes) can only appear once, and a single document can have only one index. A _multi index_ can index a single document multiple times with different values. For instance, a blog post might have multiple tags, and each tag might refer to multiple blog posts.
 
 ### Creation ###
 
@@ -135,6 +134,8 @@ r.table("posts").get_all("travel", :index => "tags").run(conn)
 # For each tag, return the tag and the posts that have such tag
 r.table("tags").eq_join("tag", r.table("posts"), :index => "tags").run(conn)
 ```
+
+Note that queries with `getAll` or `between` may return the same document multiple times unless you use the [distinct](/api/ruby/distinct) command.
 
 ## Indexes on arbitrary ReQL expressions ##
 
@@ -175,10 +176,10 @@ r.table("users").index_create("user_equipment", {:multi => true}) { |user|
 }.run(conn)
 
 # Query equivalent to:
-# r.table("users").get(1).filter { |user|
+# r.table("users").get_all(1).filter { |user|
 #     user['equipment'].contains('tent')
 # }.run(conn)
-r.table("users").get_all([1, "tent"], {:index =>"user_equipment"}).run(conn)
+r.table("users").get_all([1, "tent"], {:index =>"user_equipment"}).distinct().run(conn)
 ```
 
 # Administrative operations #
