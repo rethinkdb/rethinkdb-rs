@@ -29,7 +29,7 @@ interested in, and ignore the rest.
 
 * Read the [thirty-second quickstart](/docs/quickstart)
 * Ensure you have [RethinkDB installed](/docs/install) for your platform
-* Install [amqplib](//http://www.squaremobius.net/amqp.node/), a RabbitMQ library for NodeJS
+* Install [amqplib](http://www.squaremobius.net/amqp.node/), a RabbitMQ library for NodeJS
 
 {% endinfobox %}
 
