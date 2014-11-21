@@ -56,19 +56,18 @@ __Example:__ Create a compound index based on the fields `post_id` and `date`.
 r.table('comments').index_create('post_and_date', [r.row["post_id"], r.row["date"]]).run(conn)
 ```
 
-__Example:__ Create a compound index with a geospatial index.
-
-```rb
-r.table('places').index_create('location_name',
-    [r.row['location'], r.row['name']], geo=True
-).run(conn)
-```
-
 __Example:__ Create a multi index based on the field `authors`.
 
 ```py
 r.table('posts').index_create('authors', multi=True).run(conn)
 ```
+
+__Example:__ Create a geospatial multi index based on the field `towers`.
+
+```py
+r.table('networks').index_create('towers', geo=True, multi=True).run(conn)
+```
+
 
 __Example:__ Create an index based on an arbitrary expression.
 

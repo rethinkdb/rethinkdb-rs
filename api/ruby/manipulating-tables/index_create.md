@@ -61,19 +61,16 @@ r.table('comments').index_create('post_and_date'){ |doc|
 }.run(conn)
 ```
 
-__Example:__ Create a compound index with a geospatial index.
-
-```rb
-r.table('places').index_create('location_name'){ |doc|
-    [doc['location'], doc['name']], :geo => true
-}.run(conn)
-```
-
-
 __Example:__ Create a multi index based on the field `authors`.
 
 ```rb
 r.table('posts').index_create('authors', :multi=>true).run(conn)
+```
+
+__Example:__ Create a geospatial multi index based on the field `towers`.
+
+```rb
+r.table('networks').index_create('towers', :geo=>true, :multi=>true).run(conn)
 ```
 
 __Example:__ Create an index based on an arbitrary expression.
