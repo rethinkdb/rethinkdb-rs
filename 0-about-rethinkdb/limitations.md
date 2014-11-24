@@ -21,6 +21,8 @@ RethinkDB has a few hard limitations, as well as some soft limitations that are 
 
 * Each table requires a minimum of approximately 10MB disk space on each server in a cluster. (A completely empty table takes up 4MB.)
 
+* Each table has an overhead of 8MB RAM on each server it's replicated on.
+
 * While there is no hard limit on the size of a single document, there is a recommended limit of 16MB for memory performance reasons.
 
 * The maximum size of a JSON query is 64M.
