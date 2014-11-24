@@ -17,7 +17,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.group(field_or_function..., [index='index_name']) &rarr; grouped_stream
+sequence.group(field_or_function..., [index='index_name', multi=False]) &rarr; grouped_stream
 {% endapibody %}
 
 <img src="/assets/images/docs/api_illustrations/group.png" class="api_command_illustration" />
@@ -26,6 +26,9 @@ sequence.group(field_or_function..., [index='index_name']) &rarr; grouped_stream
 
 Takes a stream and partitions it into multiple groups based on the
 fields or functions provided.
+
+With the `multi` flag single documents can be assigned to multiple groups, similar to the behavior of [multi-indexes](/docs/secondary-indexes/python). When `multi` is `True` and the grouping value is an array, documents will be placed in each group that corresponds to the elements of the array. If the array is empty the row will be ignored.
+
 
 __Example:__ Grouping games by player.
 
@@ -131,6 +134,60 @@ __Example:__ What is the maximum number of points scored by game type?
     "ranked": 15
 }
 ```
+
+# Organizing by value with **multi** #
+
+Suppose that the table `games2` has the following data:
+
+```py
+[
+    { 'id': 1, 'matches': {'a': [1, 2, 3], 'b': [4, 5, 6]} },
+    { 'id': 2, 'matches': {'b': [100], 'c': [7, 8, 9]} },
+    { 'id': 3, 'matches': {'a': [10, 20], 'c': [70, 80]} }
+]
+```
+
+Using the `multi` option we can group data by match A, B or C.
+
+```py
+> r.table('games2').group(r.row['matches'].keys(), multi=True).run(conn)
+
+[
+    {
+        'group': 'a',
+        'reduction': [ <id 1>, <id 3> ]
+    },
+    {
+        'group': 'b',
+        'reduction': [ <id 1>, <id 2> ]
+    },
+    {
+        'group': 'c',
+        'reduction': [ <id 2>, <id 3> ]
+    }
+]
+```
+
+(The full result set is abbreviated in the figure; `<id 1>, <id 2>` and `<id 3>` would be the entire documents matching those keys.)
+
+__Example:__ Use [map](/api/python/map) and [sum](/api/python/sum) to get the total points scored for each match.
+
+```py
+r.table('games2').group(r.row['matches'].keys(), multi=True).ungroup().map(
+    lambda doc: { 'match': doc['group'], 'total': doc['reduction'].sum(
+        lambda set: set['matches'][doc['group']].sum()
+    )}).run(conn)
+
+[
+    { 'match': 'a', 'total': 36 },
+    { 'match': 'b', 'total': 115 },
+    { 'match': 'c', 'total': 174 }
+]
+```
+
+The inner `sum` adds the scores by match within each document; the outer `sum` adds those results together for a total across all the documents.
+
+# Ungrouping #
 
 If you want to operate on all the groups rather than operating on each
 group (e.g. if you want to order the groups by their reduction), you

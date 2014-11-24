@@ -1144,7 +1144,7 @@ These commands are used to compute smaller values from large sequences.
 ## [group](group/) ##
 
 {% apibody %}
-sequence.group(fieldOrFunction..., [{index: "indexName"}) &rarr; grouped_stream
+sequence.group(fieldOrFunction..., [{index: "indexName", multi: false}]) &rarr; grouped_stream
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the
