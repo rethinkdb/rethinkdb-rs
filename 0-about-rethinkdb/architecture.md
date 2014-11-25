@@ -480,11 +480,6 @@ journaled filesystems do not allow direct disk access, RethinkDB
 might fail to start if you try to place data files onto such
 filesystems.
 
-There is also a known issue with running RethinkDB (and other database
-systems) on ReiserFS in journaled data mode &mdash; it appears to
-cause a crash instead of reporting an error. See
-[https://github.com/rethinkdb/rethinkdb/issues/20](https://github.com/rethinkdb/rethinkdb/issues/20).
-
 ## How can I perform a backup of my cluster? ##
 
 RethinkDB ships with simple tools to perform a hot backup of a running
