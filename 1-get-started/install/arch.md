@@ -57,7 +57,7 @@ $ cp -r /var/abs/community/rethinkdb/ ~
 
 Edit `PKGBUILD` to customize the build at this point.
 
-Install thedependencies, build and install the package (the `-s` flag causes `makepkg` to attempt to 
+Install the dependencies, build and install the package (the `-s` flag causes `makepkg` to attempt to 
 install explicit build dependencies):
 
 ```bash
