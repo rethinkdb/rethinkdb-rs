@@ -12,8 +12,8 @@ io:
 # Command syntax #
 
 {% apibody %}
-table.rebalance() &rarr; string
-database.rebalance() &rarr; string
+table.rebalance() &rarr; object
+database.rebalance() &rarr; object
 {% endapibody %}
 
 # Description #
@@ -84,7 +84,7 @@ r.table('superheroes').rebalance()
   "old_status": {
     "db": "database",
     "id": "5cb35225-81b2-4cec-9eef-bfad15481265",
-    "name": "sueprheroes",
+    "name": "superheroes",
     "shards": [
       {
         "director": "rethink_local_ym9",
