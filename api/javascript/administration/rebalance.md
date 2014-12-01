@@ -47,7 +47,7 @@ The return value when called on a database will be an array of objects, one for 
 __Example:__ rebalance a table.
 
 ```js
-r.table('superheroes').rebalance()
+r.table('superheroes').rebalance().run(conn, callback);
 // Result passed to callback
 {
   "new_status": {

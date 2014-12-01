@@ -44,7 +44,7 @@ If `reconfigure` is called on a database, all the tables in the database will ha
 __Example:__ Reconfigure a table.
 
 ```js
-r.table('superheroes').reconfigure({shards: 2, replicas: 1})
+r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
 // Result passed to callback
 {
   "new_val": {
