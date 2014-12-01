@@ -24,7 +24,7 @@ Reconfigure a table's sharding and replication.
 * `replicas`: either an integer or a mapping object. Required.
     * If `replicas` is an integer, it specifies the number of replicas per shard. Specifying more replicas than there are servers will return an error.
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`.
-* `directorTag`: the primary server specified by server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
+* `directorTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 * `dryRun`: if `true` the generated configuration will not be applied to the table, only returned.
 
 The return value of `rebalance` when called on a table is an object with two fields, `new_val` and `old_val`, each one of which will contain a single object. Each of those objects will have the following fields.
