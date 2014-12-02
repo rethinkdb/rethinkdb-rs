@@ -871,6 +871,7 @@ But you'd like to get a document more like a "report card":
     "Mathematics": 70,
     "English": 90
 }
+```
 
 You can accomplish this with `object` and a pivot.
 
