@@ -76,7 +76,7 @@ config file without the `.conf` extension.
 * `io-threads` &mdash; Number of simultaneous I/O operations can happen at the same time.  
   *Default*: 64
 
-* `no-direct-io` &mdash; Disable direct I/O.
+* `direct-io` &mdash; Use direct I/O for file system access. 
 
 * `machine-name` &mdash; The name for this machine (as it will appear in the metadata).  
   *Default*: Randomly chosen from a short list of names.

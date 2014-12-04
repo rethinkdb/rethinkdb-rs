@@ -471,14 +471,9 @@ terabytes of data with only a few megabytes of cache space.
 
 ## Which file systems are supported? ##
 
-RethinkDB supports most commonly used file systems. However, like most
-database systems, RethinkDB uses the DIRECT\_IO mechanism to access
-disk efficiently when it is available. Some filesystems cannot be
-accessed using the DIRECT\_IO mechanism, but they can still be used
-to run RethinkDB with degraded performance. Some encrypted and
-journaled filesystems do not allow direct disk access, RethinkDB
-might fail to start if you try to place data files onto such
-filesystems.
+RethinkDB supports most commonly used file systems. It optionally
+supports direct disk I/O for greater efficiency, but this is not enabled
+by default.
 
 ## How can I perform a backup of my cluster? ##
 
