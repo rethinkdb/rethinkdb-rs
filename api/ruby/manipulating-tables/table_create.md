@@ -34,6 +34,7 @@ background. Default is `'hard'` (acknowledgement of writes happens after data ha
 written to disk);
 - `datacenter`: the name of the datacenter this table should be assigned to.
 
+The [data type](/docs/data-types/) of a primary key is usually a string (like a UUID) or a number, but it can also be a time, binary object, boolean or an array. It cannot be an object.
 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 

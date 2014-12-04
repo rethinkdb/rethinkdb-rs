@@ -6,13 +6,15 @@ docs_active: data-types
 permalink: docs/data-types/
 ---
 
-RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* values, and the *null* value. In addition, it stores several composite data types. *Objects* and *arrays* are key/value pairs and lists, respectively, with direct counterparts in most programming languages. *Streams, selections* and *tables* are RethinkDB-specific data types. Lastly, there are geometry data types: *point, line* and *polygon.*
+RethinkDB stores six basic single-value data types: *numbers, strings, binary objects, times, boolean* values, and the *null* value. In addition, it stores two basic composite data types. *Objects* and *arrays* are key/value pairs and lists, respectively, with direct counterparts in most programming languages. *Streams, selections* and *tables* are RethinkDB-specific composite data types. Lastly, there are geometry data types: *point, line* and *polygon.*
 
 # Basic data types #
 
 * **Numbers** are any real number: `5`, `3.14159`, `-42`. RethinkDB uses double precision (64-bit) floating point numbers internally. (Neither infinity nor [NaN](http://en.wikipedia.org/wiki/NaN) are allowed.)
 
 * **Strings** are any UTF-8 string that does not contain the `null` code point (U+0000): `"superhero"`, <code>&quot;&uuml;nn&euml;c&euml;ss&auml;r&yuml; &uuml;ml&auml;&uuml;ts&quot;</code>. Currently RethinkDB does not enforce UTF-8 encoding, but most string operations assume they are operating on UTF-8 strings. Future versions of RethinkDB will enforce UTF-8 encoding and allow `null` to be included.
+
+* **Binary objects** are similar to BLOBs in SQL databases: files, images and other binary data. See [Storing binary objects](/docs/storing-binary/) for details.
 
 * **Times** are RethinkDB's native date/time type, stored with millisecond precision. You can use native date/time types in supported languages, as the conversion will be done by the driver. See [Dates and times in RethinkDB](/docs/dates-and-times/) for details.
 
@@ -39,7 +41,7 @@ RethinkDB stores five basic kinds of values: *numbers, strings, times, boolean* 
 
 	Again, anything valid in a JSON array is valid in RethinkDB: the elements may be any of the basic values, objects, or other arrays. Arrays in RethinkDB are loaded fully into memory before they're returned to the user, so they're inefficient at large sizes. RethinkDB defaults to supporting arrays of up to 100,000 elements; this may be set to a different value at runtime for reading by using the `array_limit` option to [run](/api/javascript/run).
 
-# Composite data types #
+# RethinkDB-specific data types #
 
 * **Streams** are lists like arrays, but they're loaded in a lazy fashion. Operations that return streams return a *cursor.* A cursor is a pointer into the result set. Instead of reading the results all at once like an array, you loop over the results, retrieving the next member of the set with each iteration. This makes it possible to efficiently work with large result sets. (See "Working with Streams," below, for some tips.) Streams are read-only; you can't pass one as an input to an ReQL command meant to modify its input like `update` or `delete`.
 
