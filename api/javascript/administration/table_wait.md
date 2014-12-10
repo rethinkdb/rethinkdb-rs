@@ -23,7 +23,7 @@ The return value is an array of one or more objects providing information about 
 * `name`: table name.
 * `id`: table UUID.
 * `shards`: an array of objects, one for each shard, with the following keys per object:
-    * `director`: name of the shard's primary server.
+    * `primary_replica`: name of the shard's primary server.
     * `replicas`: an array of objects showing the status of each replica, with the following keys:
         * `server`: name of the replica server.
         * `state`: one of `ready` or `transitioning`.
@@ -45,19 +45,19 @@ r.table('superheroes').tableWait().run(conn, callback);
     "name": "superheroes",
     "shards": [
       {
-        "director": null,
+        "primary_replica": null,
         "replicas": [
           {
-            "server": "rethink_local_ym9",
+            "server": "jeeves",
             "state": "ready"
           }
         ]
       },
       {
-        "director": null,
+        "primary_replica": null,
         "replicas": [
           {
-            "server": "rethink_local_ym9",
+            "server": "jeeves",
             "state": "ready"
           }
         ]

@@ -36,7 +36,7 @@ When creating a table you can specify the following options:
 * `replicas`: either an integer or a mapping object. Defaults to `1`.
     * If `replicas` is an integer, it specifies the number of replicas per shard. Specifying more replicas than there are servers will return an error.
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`.
-* `directorTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
+* `primaryTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 
 
 __Example:__ Create a table named 'dc_universe' with the default settings.
@@ -51,7 +51,7 @@ __Example:__ Create a table named 'dc_universe' using the field 'name' as primar
 r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn, callback)
 ```
 
-__Example:__ Create a table set up for two shards and three replicas per shard. This requires six servers available.
+__Example:__ Create a table set up for two shards and three replicas per shard. This requires three available servers.
 
 ```js
 r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn, callback)
