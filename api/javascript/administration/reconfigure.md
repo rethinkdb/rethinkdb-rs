@@ -12,8 +12,8 @@ io:
 # Command syntax #
 
 {% apibody %}
-table.reconfigure({shards: <s>, replicas: <r>[, directorTag: <t>, dryRun: false}]) &rarr; object
-database.reconfigure({shards: <s>, replicas: <r>[, directorTag: <t>, dryRun: false}]) &rarr; object
+table.reconfigure({shards: <s>, replicas: <r>[, primaryTag: <t>, dryRun: false}]) &rarr; object
+database.reconfigure({shards: <s>, replicas: <r>[, primaryTag: <t>, dryRun: false}]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -23,11 +23,11 @@ Reconfigure a table's sharding and replication.
 * `shards`: the number of shards, an integer from 1-32. Required.
 * `replicas`: either an integer or a mapping object. Required.
     * If `replicas` is an integer, it specifies the number of replicas per shard. Specifying more replicas than there are servers will return an error.
-    * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`.
+    * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`. For more information about server tags, read [Administration tools](/docs/administration-tools/).
 * `primaryTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 * `dryRun`: if `true` the generated configuration will not be applied to the table, only returned.
 
-The return value of `rebalance` when called on a table is an object with two fields, `new_val` and `old_val`, each one of which will contain a single object. Each of those objects will have the following fields.
+The return value of `reconfigure` when called on a table is an object with two fields, `new_val` and `old_val`, each one of which will contain a single object. Each of those objects will have the following fields.
 
 * `config`: An object describing the configuration, with the following fields.
     * `durability`: `hard` or `soft`.
