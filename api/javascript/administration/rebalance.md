@@ -26,23 +26,7 @@ A table will lose availability temporarily after `rebalance` is called; use the 
 
 RethinkDB will do a good job keeping shards balanced *if* the primary keys are distributed evenly, such as randomly chosen UUIDs. If you generate your own primary keys and the keys are distributed unevenly--for instance, using an incrementing integer key for newly inserted documents--you may need to rebalance manually.
 
-The return value of `rebalance` when called on a table is an object with two fields, `new_status` and `old_status`, each one of which will contain a single object. Each of those objects will have the following fields.
-
-* `db`: database name.
-* `name`: table name.
-* `id`: table UUID.
-* `shards`: an array of objects, one for each shard, with the following keys per object:
-    * `primary_replica`: name of the shard's primary server.
-    * `replicas`: an array of objects showing the status of each replica, with the following keys:
-        * `server`: name of the replica server.
-        * `state`: one of `ready` or `transitioning`.
-* `status`: an object with the following boolean keys:
-    * `all_replicas_ready`
-    * `ready_for_outdated_reads`
-    * `ready_for_reads`
-    * `ready_for_writes
-
-The return value when called on a database will be an array of objects, one for each table in the database, with the structure described above.
+The return value of `rebalance` when called on a table is an object with two fields, `new_status` and `old_status`, each one of which will contain a single status object. Refer to [tableStatus](/api/javascript/table_status) for details about the status fields. The return value when called on a database will be an array of objects, one for each table in the database, with the structure described above.
 
 __Example:__ rebalance a table.
 
