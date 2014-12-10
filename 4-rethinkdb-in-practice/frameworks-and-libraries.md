@@ -72,6 +72,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [rethink](https://github.com/caoimhghin/rethink) by [@caoimhghin](https://github.com/caoimhghin)  
   A Python object mapper in the style of [App Engine NDB](https://cloud.google.com/appengine/docs/python/ndb/).
 
+- [remodel](https://github.com/linkyndy/remodel) by [@linkyndy](https://github.com/linkyndy)
+  Very simple yet powerful and extensible Object Document Mapper for RethinkDB, written in Python. (also see the [pip package](https://pypi.python.org/pypi/Remodel)).
+
 
 ## Integrations
 
