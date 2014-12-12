@@ -55,7 +55,7 @@ To install the river, we'll use the `plugin` program that comes with Elasticsear
 On most platforms the program is named `plugin`, but it's sometimes called `elasticsearch-plugin`:
 
 ```
-plugin --install river-rethinkdb --url http://goo.gl/UkBm47
+plugin --install river-rethinkdb --url http://goo.gl/JmMwTf
 ```
 
 Depending on how you've installed Elasticsearch, you may need to become the elasticsearch user or root to run this command.
