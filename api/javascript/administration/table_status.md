@@ -36,7 +36,7 @@ The return value is an object providing information about the table's shards, re
 __Example:__ Get a table's status.
 
 ```js
-r.table('superheroes').tableStatus().run(conn, callback);
+r.tableStatus('superheroes').run(conn, callback);
 // Result passed to callback
 {
   "db": "database",

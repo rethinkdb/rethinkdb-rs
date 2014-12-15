@@ -26,7 +26,7 @@ The return value is an array of one or more objects providing information about 
     * `primary_replica`: name of the shard's primary server.
     * `replicas`: an array of objects showing the status of each replica, with the following keys:
         * `server`: name of the replica server.
-        * `state`: one of `ready` or `transitioning`.
+        * `state`: one of `ready`, `missing`, `backfilling_data`, `offloading_data`, `erasing_data`, `looking_for_primary` or `transitioning`.
 * `status`: an object with the following boolean keys:
     * `all_replicas_ready`
     * `ready_for_outdated_reads`
@@ -36,7 +36,7 @@ The return value is an array of one or more objects providing information about 
 __Example:__ Get a table's status.
 
 ```js
-r.table('superheroes').tableWait().run(conn, callback);
+r.tableWait('superheroes').run(conn, callback);
 // Result passed to callback
 [
   {

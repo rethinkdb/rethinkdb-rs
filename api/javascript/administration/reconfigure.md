@@ -101,4 +101,5 @@ r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback)
     },
     "status": { <status object> }
   }
-}```
+}
+```
