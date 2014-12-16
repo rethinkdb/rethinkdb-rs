@@ -32,6 +32,7 @@ __Example:__ rebalance a table.
 
 ```py
 > r.table('superheroes').rebalance().run(conn)
+
 {
   "new_status": {
     "db": "database",

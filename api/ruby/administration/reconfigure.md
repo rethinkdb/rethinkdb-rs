@@ -12,8 +12,8 @@ io:
 # Command syntax #
 
 {% apibody %}
-table.reconfigure(shards=<s>, replicas=<r>[, primary_tag=<t>, dry_run=False]) &rarr; object
-database.reconfigure(shards=<s>, replicas=<r>[, primary_tag=<t>, dry_run=False]) &rarr; object
+table.reconfigure({:shards => <s>, :replicas => <r>[, :primary_tag => <t>, :dry_run => false]}) &rarr; object
+database.reconfigure({:shards => <s>, :replicas => <r>[, :primary_tag => <t>, :dry_run => false]}) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -44,7 +44,7 @@ If `reconfigure` is called on a database, all the tables in the database will ha
 __Example:__ Reconfigure a table.
 
 ```rb
-> r.table('superheroes').reconfigure(shards=2, replicas=1).run(conn)
+> r.table('superheroes').reconfigure({:shards => 2, :replicas => 1).run(conn)
 
 {
   :new_val => {

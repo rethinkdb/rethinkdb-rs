@@ -45,7 +45,7 @@ __Example:__ Get a table's status.
     :name => "superheroes",
     :shards => [
       {
-        :primary_replica => None,
+        :primary_replica => nil,
         :replicas => [
           {
             :server => "jeeves",
@@ -54,7 +54,7 @@ __Example:__ Get a table's status.
         ]
       },
       {
-        :primary_replica => None,
+        :primary_replica => nil,
         :replicas => [
           {
             :server => "jeeves",
@@ -64,10 +64,10 @@ __Example:__ Get a table's status.
       }
     ],
     :status => {
-      :all_replicas_ready => True,
-      :ready_for_outdated_reads => True,
-      :ready_for_reads => True,
-      :ready_for_writes => True
+      :all_replicas_ready => true,
+      :ready_for_outdated_reads => true,
+      :ready_for_reads => true,
+      :ready_for_writes => true
     }
   }
 ]

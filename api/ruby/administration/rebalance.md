@@ -30,8 +30,9 @@ The return value of `rebalance` when called on a table is an object with two fie
 
 __Example:__ rebalance a table.
 
-```py
+```rb
 > r.table('superheroes').rebalance().run(conn)
+
 {
   :new_status => {
     :db => "database",

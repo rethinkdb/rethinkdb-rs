@@ -37,6 +37,6 @@ There are two optional arguments.
 
 __Example:__ Allow potentially out-of-date data in exchange for faster reads.
 
-```py
-r.db('heroes').table('marvel', {:useOutdated => true}).run(conn)
+```rb
+r.db('heroes').table('marvel', {:use_outdated => true}).run(conn)
 ```
