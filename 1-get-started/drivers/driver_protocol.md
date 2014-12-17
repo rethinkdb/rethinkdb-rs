@@ -146,7 +146,7 @@ the `Optargs` should be an object mapping from optarg names to terms.
 
 ```
 # [INSERT, [[TABLE, ['test']], [MAKE_ARRAY, [{}, {}]]], {durability: 'soft'}]
-[56, [[15, ['test']]], [2, [{}, {}]], {durability: 'soft'}]
+[56, [[15, ['test']], [2, [{}, {}]]], {durability: 'soft'}]
 ```
 
 ### Example 3: r.expr(1)
