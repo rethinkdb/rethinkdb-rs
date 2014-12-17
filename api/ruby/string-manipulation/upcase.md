@@ -25,3 +25,5 @@ __Example:__
 > r.expr("Sentence about LaTeX.").upcase().run(conn)
 "SENTENCE ABOUT LATEX."
 ```
+
+__Note:__ `upcase` and `downcase` only affect ASCII characters.

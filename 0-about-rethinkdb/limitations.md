@@ -37,7 +37,9 @@ RethinkDB has a few hard limitations, as well as some soft limitations that are 
 
 ## Other notes ##
 
-By default, arrays on the RethinkDB server have a size limit of 100,000 elements. This can be changed on a per-query basis with the `arrayLimit` (or `array_limit`) option to [run](/api/javascript/run). 
+By default, arrays on the RethinkDB server have a size limit of 100,000 elements. This can be changed on a per-query basis with the `arrayLimit` (or `array_limit`) option to [run](/api/javascript/run).
+
+RethinkDB uses byte-wise ordering for indexes, `orderBy` and `between`. While this corresponds to codepoint ordering in UTF-8, RethinkDB does not support Unicode collations, and does not normalize for identical characters with multiple codepoints (i.e, `\u0065\u0301` and `\u00e9` both represent the character "&eacute;" but RethinkDB treats them, and sorts them as, distinct characters).
 
 Some file systems, typically compressed or encrypted ones, may require the `--no-direct-io` option (see [Create a cluster on system startup](/docs/cluster-on-startup/) for more information on RethinkDB options).
 

@@ -33,3 +33,5 @@ Result:
 ```js
 "SENTENCE ABOUT LATEX."
 ```
+
+__Note:__ `upcase` and `downcase` only affect ASCII characters.
