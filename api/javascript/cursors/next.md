@@ -4,7 +4,6 @@ language: JavaScript
 permalink: api/javascript/next/
 command: next
 rb: false
-py: false
 io:
     -   - cursor
         - undefined

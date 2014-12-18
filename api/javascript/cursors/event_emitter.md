@@ -10,7 +10,7 @@ alias:
     - api/javascript/remove_all_listeners-cursor/
     - api/javascript/listeners-cursor/
     - api/javascript/emit-cursor/
-command: "EventEmitter methods"
+command: EventEmitter
 py: false
 rb: false
 io:
@@ -36,16 +36,13 @@ cursor.emit(event, [arg1], [arg2], [...])
 
 # Description #
 
-Cursors and feeds implement the same interface as [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
+Cursors and feeds implement the same interface as Node's [EventEmitter][ee].
 
-There are a few things to know about this interface:
+[ee]: http://nodejs.org/api/events.html#events_class_events_eventemitter
 
 - Two events can be emitted, `data` and `error`.
-- Once you start using the EventEmitter interface, the other commands like `next`,
-`toArray`, `each` will not be available anymore.
-- The first time you call one of the EventEmitter's methods, the cursor or feed will
-emit data just after the I/O events callbacks and before `setTimeout` and `setInterval`
-callbacks.
+- Once you start using the `EventEmitter` interface, the other RethinkDB cursor commands like `next`, `toArray`, and `each` will not be available anymore.
+- The first time you call an `EventEmitter` method, the cursor or feed will emit data just after the I/O events callbacks and before `setTimeout` and `setInterval` callbacks.
 
 
 __Example:__ Broadcast all messages with [socket.io](http://socket.io).

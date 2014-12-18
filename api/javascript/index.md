@@ -163,46 +163,6 @@ wait until the server has processed them.
 conn.noreplyWait(function(err) { ... })
 ```
 
-
-## [EventEmitter methods](event_emitter/) ##
-
-{% apibody %}
-connection.addListener(event, listener)
-connection.on(event, listener)
-connection.once(event, listener)
-connection.removeListener(event, listener)
-connection.removeAllListeners([event])
-connection.setMaxListeners(n)
-connection.listeners(event)
-connection.emit(event, [arg1], [arg2], [...])
-{% endapibody %}
-
-The connection object supports the event emitter interface so you can listen for
-changes in connection state.
-
-__Example:__ Monitor connection state with events 'connect', 'close', and 'error'.
-
-
-```js
-r.connect({}, function(err, conn) {
-    if (err) throw err;
-
-    conn.addListener('error', function(e) {
-        processNetworkError(e);
-    });
-
-    conn.addListener('close', function() {
-        cleanup();
-    });
-
-    runQueries(conn);
-});
-
-```
-
-[Read more about this command &rarr;](add_listener/)
-
-
 {% endapisection %}
 
 {% apisection Cursors %}
@@ -292,7 +252,7 @@ cursor.close()
 ```
 
 
-## [EventEmitter methods](event_emitter-cursor/) ##
+## [EventEmitter](event_emitter-cursor/) ##
 
 {% apibody %}
 cursor.addListener(event, listener)
@@ -305,35 +265,9 @@ cursor.listeners(event)
 cursor.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
-Cursors and feeds implement the same interface as [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
+Cursors and feeds implement the same interface as Node's [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
-There are a few things to know about this interface:
-
-- Two events can be emitted, `data` and `error`.
-- Once you start using the EventEmitter interface, the other commands like `next`,
-`toArray`, `each` will not be available anymore.
-- The first time you call one of the EventEmitter's methods, the cursor or feed will
-emit data just after the I/O events callbacks and before `setTimeout` and `setInterval`
-callbacks.
-
-
-__Example:__ Broadcast all messages with [socket.io](http://socket.io).
-
-```js
-r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
-    if (err) {
-        // Handle error
-        return
-    }
-
-    cursor.on("error", function(error) {
-        // Handle error
-    })
-    cursor.on("data", function(message) {
-        socket.broadcast.emit("message", message)
-    })
-});
-```
+[Read more about this command &rarr;](event_emitter-cursor/)
 
 {% endapisection %}
 

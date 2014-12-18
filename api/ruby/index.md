@@ -175,6 +175,49 @@ wait until the server has processed them.
 conn.noreply_wait
 ```
 
+{% endapisection %}
+
+{% apisection Cursors %}
+
+## [each](each/) ##
+
+{% apibody %}
+cursor.each { ... }
+array.each { ... }
+feed.each { ... }
+{% endapibody %}
+
+Lazily iterate over a result set one element at a time.
+
+__Example:__ Let's process all the elements!
+
+```rb
+cursor = r.table('users').run(conn)
+cursor.each { |doc|
+    process_row(doc)
+}
+```
+
+[Read more about this command &rarr;](each/)
+
+## [to_a](to_array/) ##
+
+{% apibody %}
+cursor.to_a()
+{% endapibody %}
+
+Retrieve all results as an array.
+
+__Example:__ For small result sets it may be more convenient to process them at once as an array.
+
+```rb
+cursor = r.table('users').run()
+users = cursor.to_a()
+process_results(users)
+```
+
+[Read more about this command &rarr;](to_array/)
+
 ## [close (cursor)](close-cursor/) ##
 
 {% apibody %}

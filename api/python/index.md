@@ -166,6 +166,64 @@ wait until the server has processed them.
 conn.noreply_wait()
 ```
 
+{% endapisection %}
+
+{% apisection Cursors %}
+
+## [next](next/) ##
+
+{% apibody %}
+cursor.next()
+{% endapibody %}
+
+Get the next element in the cursor.
+
+__Example:__ Let's grab the next element!
+
+```py
+doc = cursor.next()
+```
+
+[Read more about this command &rarr;](next/)
+
+## [for](each/) ##
+
+{% apibody %}
+for items in cursor:
+for items in array:
+for items in feed:
+{% endapibody %}
+
+Lazily iterate over a result set one element at a time.
+
+__Example:__ Let's process all the elements!
+
+```py
+cursor = r.table('users').run(conn)
+for doc in cursor:
+    process_row(doc)
+```
+
+[Read more about this command &rarr;](each/)
+
+## [list](to_array/) ##
+
+{% apibody %}
+list(cursor)
+{% endapibody %}
+
+Retrieve all results as a list.
+
+__Example:__ For small result sets it may be more convenient to process them at once as an array.
+
+```py
+cursor = r.table('users').run()
+users = list(cursor)
+process_results(users)
+```
+
+[Read more about this command &rarr;](to_array/)
+
 ## [close (cursor)](close-cursor/) ##
 
 {% apibody %}
@@ -182,11 +240,7 @@ __Example:__ Close a cursor.
 cursor.close()
 ```
 
-
-
 {% endapisection %}
-
-
 
 {% apisection Manipulating databases %}
 
