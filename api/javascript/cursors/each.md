@@ -3,8 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/each/
 command: each
-py: false
-rb: false
 io:
     -   - cursor
         - undefined
