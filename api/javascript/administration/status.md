@@ -1,8 +1,8 @@
 ---
 layout: api-command
 language: JavaScript
-permalink: api/javascript/table_status/
-command: tableStatus
+permalink: api/javascript/status/
+command: status
 io:
     -   - r
         - object
@@ -10,14 +10,14 @@ io:
 # Command syntax #
 
 {% apibody %}
-r.tableStatus('tablename') &rarr; object
+r.table('tablename').status() &rarr; object
 {% endapibody %}
 
 # Description #
 
 Return the status of a table.
 
-The return value is an object providing information about the table's shards, replicas and replica readiness states. For a more complete discussion of the object fields, read about the `table_status` table in [System tables](/docs/system-tables/)
+The return value is an object providing information about the table's shards, replicas and replica readiness states. For a more complete discussion of the object fields, read about the `table_status` table in [System tables](/docs/system-tables/).
 
 * `db`: database name.
 * `name`: table name.
@@ -36,7 +36,7 @@ The return value is an object providing information about the table's shards, re
 __Example:__ Get a table's status.
 
 ```js
-r.tableStatus('superheroes').run(conn, callback);
+r.table('superheroes').status().run(conn, callback);
 // Result passed to callback
 {
   "db": "database",
