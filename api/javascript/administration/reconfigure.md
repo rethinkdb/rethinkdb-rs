@@ -24,18 +24,20 @@ Reconfigure a table's sharding and replication.
 * `replicas`: either an integer or a mapping object. Required.
     * If `replicas` is an integer, it specifies the number of replicas per shard. Specifying more replicas than there are servers will return an error.
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`. For more information about server tags, read [Administration tools](/docs/administration-tools/).
-* `primaryTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
+* `primaryReplicasTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 * `dryRun`: if `true` the generated configuration will not be applied to the table, only returned.
 
-The return value of `reconfigure` when called on a table is an object with two fields, `new_val` and `old_val`, each one of which will contain a single object. Each of those objects will have the following fields.
+The return value of `reconfigure` is an object with three fields:
 
-* `config`: An object describing the configuration, with the following fields.
-    * `durability`: `hard` or `soft`.
-    * `shards`: an array of objects, one for each shard, with the following keys per object:
-        * `primary_replica`: name of the shard's primary server.
-        * `replicas`: an array of server names, one for each replica.
-    * `write_acks`: the write acknowledgement settings for the table: one of `majority`, `single`, or an array of requirements listing `replicas` and `acks` (as either `majority` or `single`).
-* `status`: An object describing the table's status. See the [tableStatus](/api/javascript/table_status) for details.
+* `reconfigured`: the number of tables reconfigured. This will be `0` if `dryRun` is `true`.
+* `config_changes`: a list of new and old table configuration values. Each element of the list will be an object with two fields:
+    * `old_val`: The value of the table's `table_config` system table row before `reconfigure` was executed. 
+    * `new_val`: The value of the table's `table_config` system table row after `reconfigure` was executed.
+* `status_changes`: a list of new and old table status values. Each element of the list will be an object with two fields:
+    * `old_val`: The value of the table's `table_status` system table row before `reconfigure` was executed. 
+    * `new_val`: The value of the table's `table_status` system table row after `reconfigure` was executed.
+
+For `config_changes` and `status_changes`, see the [config](/api/javascript/config) and [status](/api/javascript/status) commands for an explanation of the objects returned in the `old_val` and `new_val` fields.
 
 A table will lose availability temporarily after `reconfigure` is called; use the [tableStatus](/api/javascript/table_status) command to determine when the table is available again.
 
@@ -47,59 +49,39 @@ __Example:__ Reconfigure a table.
 r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
 // Result passed to callback
 {
-  "new_val": {
-    "config": {
-      "durability": "hard",
-      "shards": [
-        {
-          "primary_replica": "jeeves",
-          "replicas": [
-            "jeeves"
-          ]
-        },
-        {
-          "primary_replica": "jeeves",
-          "replicas": [
-            "jeeves"
-          ]
-        }
-      ],
-      "write_acks": "majority"
-    },
-    "status": { <status object> }
-  },
-  "old_val": {
-    "config": {
-      "durability": "hard",
-      "shards": [
-        {
-          "primary_replica": "jeeves",
-          "replicas": [
-            "jeeves"
-          ]
-        },
-        {
-          "primary_replica": "jeeves",
-          "replicas": [
-            "jeeves"
-          ]
-        },
-        {
-          "primary_replica": "jeeves",
-          "replicas": [
-            "jeeves"
-          ]
-        },
-        {
-          "primary_replica": "jeeves",
-          "replicas": [
-            "jeeves"
-          ]
-        }
-      ],
-      "write_acks": "majority"
-    },
-    "status": { <status object> }
-  }
+  reconfigured: 1,
+  config_changes: [
+    {
+      "new_val": {
+        id: "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        name: "superheroes",
+        db: "superstuff",
+        primary_key: "id",
+        shards: [
+          {primary_replica: "jeeves", "replicas": ["jeeves"]},
+          {primary_replica: "alfred", "replicas": ["alfred"]}
+        ],
+        write_acks: "majority",
+        durability: "hard"
+      },
+      "old_val": {
+        id: "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        name: "superheroes",
+        db: "superstuff",
+        primary_key: "id",
+        shards: [
+          {primary_replica: "alfred", "replicas": ["alfred"]}
+        ],
+        write_acks: "majority",
+        durability: "hard"
+      }
+    }
+  ],
+  status_changes: [
+    {
+      "new_val": (status object),
+      "old_val": (status object)
+    }
+  ]
 }
 ```
