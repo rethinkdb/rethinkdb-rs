@@ -146,24 +146,28 @@ htpasswd /etc/nginx/htpasswd rethinkdb $API_KEY
 echo $API_KEY
 ```
 
-# Cluster administration #
+## Setting up VPC security groups ##
 
-To form a two-machine cluster, launch two RethinkDB instances on
-Amazon. Follow the steps below to ensure that AWS security groups are
-configured properly:
+For added security, you can isolate a multi-node RethinkDB cluster on AWS using a Virtual Private Cloud security group. The default security group settings for RethinkDB allow anyone to connect to the database's driver port, but exclude the intracluster port. Follow the steps below to set up your security groups.
 
-1. Open the __Security Groups__ section of the administration console. If you
-   launched your instance in the US East region, you can find the console
-   [here](https://console.aws.amazon.com/ec2/home?region=us-east-1#s=SecurityGroups).
+1. Open the __Security Groups__ section of the administration console.
 2. Select the security group that your instances belong to and open
    the __Inbound__ tab in the bottom half of the page.
-3. Note the id of the security group, it should start with `sg-`.
+3. Note the id of the security group. It will start with `sg-`.
 4. Create a new rule to allow instances to connect to one another:
    - Select __Custom TCP rule__.
-   - Enter "29015" as the port range
-   - As the __Source__, enter the id of the security group (see step 3)
-   - Click on __Add Rule__, and __Apply rule changes__
+   - Enter "29015" as the port range.
+   - As the __Source__, enter the id of the security group (see step 3).
+   - Click on __Add Rule__, and __Apply rule changes__.
 
-After the rule has been applied, connect to one of the two instances over SSH
-and change the RethinkDB configuration file to join the two instances (see 
-the [cluster setup instructions](/docs/cluster-on-startup/)).
+After the rule has been applied, connect to your instances over SSH and change the RethinkDB configuration file (`/etc/rethinkdb/interfaces.d/default.conf`) to join them.
+
+```
+bind=all
+join=<IP address>:29015
+```
+
+If you have changed the intracluster port from 29015, use the new number. For more guidance, see RethinkDB's [cluster setup instructions][csi] and Amazon's documentation on [Security Groups for your VPC][sgvpc].
+
+[csi]: /docs/cluster-on-startup
+[sgvpc]: http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_SecurityGroups.html
