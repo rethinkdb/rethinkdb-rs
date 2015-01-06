@@ -71,11 +71,11 @@ r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
         // Handle error
         return
     }
-
-    cursor.on("error", function(error) {
-        // Handle error
-    })
-    cursor.on("data", function(message) {
+    
+    cursor.each(function(error, message) {
+        if(error) {
+            // Handle error
+        }
         socket.broadcast.emit("message", message)
     })
 });
