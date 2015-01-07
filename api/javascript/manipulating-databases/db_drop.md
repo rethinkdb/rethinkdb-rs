@@ -22,12 +22,31 @@ r.dbDrop(dbName) &rarr; object
 
 Drop a database. The database, all its tables, and corresponding data will be deleted.
 
-If successful, the operation returns the object `{dropped: 1}`. If the specified database
-doesn't exist a `RqlRuntimeError` is thrown.
+If successful, the command returns an object with two fields:
+
+* `dbs_dropped`: always `1`.
+* `config_changes`: a list containing one two-field object, `old_val` and `new_val`:
+    * `old_val`: the row from the `db_config` [system table](/docs/system-tables/) corresponding to the dropped database.
+    * `new_val`: always `null`.
+
+If the given database does not exist, the command throws `RqlRuntimeError`.
 
 __Example:__ Drop a database named 'superheroes'.
 
 ```js
-r.dbDrop('superheroes').run(conn, callback)
+> r.dbDrop('superheroes').run(conn, callback);
+> r.dbCreate('superheroes').run(conn, callback);
+{
+    "config_changes": [
+        {
+            "old_val": {
+                "id": "e4689cfc-e903-4532-a0e6-2d6797a43f07",
+                "name": "superheroes"
+            },
+            "new_val": null
+        }
+    ],
+    "dbs_dropped": 1
+}
 ```
 

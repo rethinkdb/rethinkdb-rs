@@ -23,11 +23,16 @@ db.tableCreate(tableName[, options]) &rarr; object
 
 Create a table. A RethinkDB table is a collection of JSON documents.
 
-If successful, the operation returns an object: `{created: 1}`. If a table with the same
-name already exists, the operation throws `RqlRuntimeError`.
+If successful, the command returns an object with two fields:
 
-Note: that you can only use alphanumeric characters and underscores for the table name.
+* `tables_created`: always `1`.
+* `config_changes`: a two-field object, `old_val` and `new_val`:
+    * `old_val`: always `null`.
+    * `new_val`: the row from the `table_config` [system table](/docs/system-tables/) corresponding to the created table.
 
+If a table with the same name already exists, the command throws `RqlRuntimeError`.
+
+Note: Only alphanumeric characters and underscores are valid for the table name.
 
 When creating a table you can specify the following options:
 
@@ -36,24 +41,49 @@ When creating a table you can specify the following options:
 * `replicas`: either an integer or a mapping object. Defaults to `1`.
     * If `replicas` is an integer, it specifies the number of replicas per shard. Specifying more replicas than there are servers will return an error.
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`.
-* `primaryTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
+* `primaryReplicasTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 
 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```js
-r.db('test').tableCreate('dc_universe').run(conn, callback)
+> r.db('test').tableCreate('dc_universe').run(conn, callback);
+// Result passed to callback
+{
+    "config_changes": [
+        {
+            "new_val": {
+                "db": "test",
+                "durability":  "hard",
+                "id": "20ea60d4-3b76-4817-8828-98a236df0297",
+                "name": "dc_universe",
+                "primary_key": "id",
+                "shards": [
+                    {
+                        "primary_replica": "rethinkdb_local_qpp",
+                        "replicas": [
+                            "rethinkdb_local_qpp"
+                        ]
+                    }
+                ],
+                "write_acks": "majority"
+            },
+            "old_val": null
+        }
+    ],
+    "tables_created": 1
+}
 ```
 
 __Example:__ Create a table named 'dc_universe' using the field 'name' as primary key.
 
 ```js
-r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn, callback)
+r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn, callback);
 ```
 
 __Example:__ Create a table set up for two shards and three replicas per shard. This requires three available servers.
 
 ```js
-r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn, callback)
+r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn, callback);
 ```
 
