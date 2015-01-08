@@ -4,26 +4,28 @@ language: JavaScript
 permalink: api/javascript/config/
 command: config
 io:
-    -   - r
-        - object
+    -   - table
+        - singleSelection
+    -   - database
+        - singleSelection
 ---
 # Command syntax #
 
 {% apibody %}
-r.table('tablename').config() &rarr; object
-r.db('dbname').config() &rarr; object
+table.config() &rarr; selection&lt;object&gt;
+database.config() &rarr; selection&lt;object&gt;
 {% endapibody %}
 
 # Description #
 
 Query (read and/or update) the configurations for individual tables or databases.
 
-The `config` command is effectively a shorthand for accessing the `table_config` or `db_config` [System tables](/docs/system-tables/). It will return the single row from the system that corresponds to the database or table configuration, as if [get](/api/javascript/get) had been called on the system table with the UUID of the database or table in question.
+The `config` command is a shorthand way to access the `table_config` or `db_config` [System tables](/docs/system-tables/). It will return the single row from the system that corresponds to the database or table configuration, as if [get](/api/javascript/get) had been called on the system table with the UUID of the database or table in question.
 
 __Example:__ Get the configuration for the `users` table.
 
 ```js
-r.table('users').config().run(conn, callback);
+> r.table('users').config().run(conn, callback);
 // Result passed to callback
 {
     id: "31c92680-f70c-4a4b-a49e-b238eb12c023",
@@ -42,7 +44,7 @@ r.table('users').config().run(conn, callback);
 __Example:__ Change the write acknowledgement requirement of the `users` table.
 
 ```js
-r.table('users').config().update({write_acks: 'single'}).run(conn, callback);
+> r.table('users').config().update({write_acks: 'single'}).run(conn, callback);
 // Result passed to callback
 {
     id: "31c92680-f70c-4a4b-a49e-b238eb12c023",

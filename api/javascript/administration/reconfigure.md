@@ -31,11 +31,11 @@ The return value of `reconfigure` is an object with three fields:
 
 * `reconfigured`: the number of tables reconfigured. This will be `0` if `dryRun` is `true`.
 * `config_changes`: a list of new and old table configuration values. Each element of the list will be an object with two fields:
-    * `old_val`: The value of the table's `table_config` system table row before `reconfigure` was executed. 
-    * `new_val`: The value of the table's `table_config` system table row after `reconfigure` was executed.
+    * `old_val`: The table's [config](/api/javascript/config) value before `reconfigure` was executed. 
+    * `new_val`: The table's `config` value after `reconfigure` was executed.
 * `status_changes`: a list of new and old table status values. Each element of the list will be an object with two fields:
-    * `old_val`: The value of the table's `table_status` system table row before `reconfigure` was executed. 
-    * `new_val`: The value of the table's `table_status` system table row after `reconfigure` was executed.
+    * `old_val`: The table's [status](/api/javascript/status) value before `reconfigure` was executed.
+    * `new_val`: The table's `status` value after `reconfigure` was executed.
 
 For `config_changes` and `status_changes`, see the [config](/api/javascript/config) and [status](/api/javascript/status) commands for an explanation of the objects returned in the `old_val` and `new_val` fields.
 
@@ -46,38 +46,38 @@ If `reconfigure` is called on a database, all the tables in the database will ha
 __Example:__ Reconfigure a table.
 
 ```js
-r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
+> r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
 // Result passed to callback
 {
-  reconfigured: 1,
-  config_changes: [
+  "reconfigured": 1,
+  "config_changes": [
     {
       "new_val": {
-        id: "31c92680-f70c-4a4b-a49e-b238eb12c023",
-        name: "superheroes",
-        db: "superstuff",
-        primary_key: "id",
-        shards: [
-          {primary_replica: "jeeves", "replicas": ["jeeves"]},
-          {primary_replica: "alfred", "replicas": ["alfred"]}
+        "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        "name": "superheroes",
+        "db": "superstuff",
+        "primary_key": "id",
+        "shards": [
+          {"primary_replica": "jeeves", "replicas": ["jeeves"]},
+          {"primary_replica": "alfred", "replicas": ["alfred"]}
         ],
-        write_acks: "majority",
-        durability: "hard"
+        "write_acks": "majority",
+        "durability": "hard"
       },
       "old_val": {
-        id: "31c92680-f70c-4a4b-a49e-b238eb12c023",
-        name: "superheroes",
-        db: "superstuff",
-        primary_key: "id",
-        shards: [
-          {primary_replica: "alfred", "replicas": ["alfred"]}
+        "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        "name": "superheroes",
+        "db": "superstuff",
+        "primary_key": "id",
+        "shards": [
+          {"primary_replica": "alfred", "replicas": ["alfred"]}
         ],
-        write_acks: "majority",
-        durability: "hard"
+        "write_acks": "majority",
+        "durability": "hard"
       }
     }
   ],
-  status_changes: [
+  "status_changes": [
     {
       "new_val": (status object),
       "old_val": (status object)

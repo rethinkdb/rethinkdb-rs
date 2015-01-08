@@ -26,9 +26,9 @@ Create a table. A RethinkDB table is a collection of JSON documents.
 If successful, the command returns an object with two fields:
 
 * `tables_created`: always `1`.
-* `config_changes`: a two-field object, `old_val` and `new_val`:
+* `config_changes`: a list containing one two-field object, `old_val` and `new_val`:
     * `old_val`: always `null`.
-    * `new_val`: the row from the `table_config` [system table](/docs/system-tables/) corresponding to the created table.
+    * `new_val`: the table's new [config](/api/javascript/config) value.
 
 If a table with the same name already exists, the command throws `RqlRuntimeError`.
 
@@ -60,9 +60,10 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
                 "primary_key": "id",
                 "shards": [
                     {
-                        "primary_replica": "rethinkdb_local_qpp",
+                        "primary_replica": "rethinkdb_srv1",
                         "replicas": [
-                            "rethinkdb_local_qpp"
+                            "rethinkdb_srv1",
+                            "rethinkdb_srv2"
                         ]
                     }
                 ],

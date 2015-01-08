@@ -3,14 +3,11 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/table_status/
 command: table_status
-io:
-    -   - r
-        - object
 ---
 # Command syntax #
 
 {% apibody %}
-r.table_status('tablename') &rarr; object
+table.status() &rarr; selection&lt;object&gt;
 {% endapibody %}
 
 # Description #
@@ -30,7 +27,7 @@ The return value is an object providing information about the table's shards, re
 * `status`: an object with the following boolean keys:
     * `all_replicas_ready`: `true` if all backfills have finished.
     * `ready_for_outdated_reads`: `true` if the table is ready for read queries with the `use_outdated` flag set to `true`.
-    * `ready_for_reads`: `true` if the table is ready for read queries with current data (with the `use_outdated` flag set to `False` or unspecified).
+    * `ready_for_reads`: `true` if the table is ready for read queries with current data (with the `use_outdated` flag set to `false` or unspecified).
     * `ready_for_writes`: `true` if the table is ready for write queries.
 
 __Example:__ Get a table's status.

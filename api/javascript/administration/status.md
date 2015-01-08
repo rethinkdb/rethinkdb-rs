@@ -4,13 +4,13 @@ language: JavaScript
 permalink: api/javascript/status/
 command: status
 io:
-    -   - r
-        - object
+    -   - table
+        - singleSelection
 ---
 # Command syntax #
 
 {% apibody %}
-r.table('tablename').status() &rarr; object
+table.status() &rarr; selection&lt;object&gt;
 {% endapibody %}
 
 # Description #
@@ -36,7 +36,7 @@ The return value is an object providing information about the table's shards, re
 __Example:__ Get a table's status.
 
 ```js
-r.table('superheroes').status().run(conn, callback);
+> r.table('superheroes').status().run(conn, callback);
 // Result passed to callback
 {
   "db": "database",

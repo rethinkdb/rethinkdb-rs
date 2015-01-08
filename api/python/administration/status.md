@@ -3,21 +3,18 @@ layout: api-command
 language: Python
 permalink: api/python/table_status/
 command: table_status
-io:
-    -   - r
-        - object
 ---
 # Command syntax #
 
 {% apibody %}
-r.table_status('tablename') &rarr; object
+table.status() &rarr; selection&lt;object&gt;
 {% endapibody %}
 
 # Description #
 
 Return the status of a table.
 
-The return value is an object providing information about the table's shards, replicas and replica readiness states. For a more complete discussion of the object fields, read about the `table_status` table in [System tables](/docs/system-tables/)
+The return value is an object providing information about the table's shards, replicas and replica readiness states. For a more complete discussion of the object fields, read about the `table_status` table in [System tables](/docs/system-tables/).
 
 * `db`: database name.
 * `name`: table name.
@@ -36,7 +33,7 @@ The return value is an object providing information about the table's shards, re
 __Example:__ Get a table's status.
 
 ```py
-r.table_status('superheroes').run(conn)
+r.table('superheroes').status().run(conn)
 
 {
   "db": "database",
@@ -63,10 +60,10 @@ r.table_status('superheroes').run(conn)
     }
   ],
   "status": {
-    "all_replicas_ready": true,
-    "ready_for_outdated_reads": true,
-    "ready_for_reads": true,
-    "ready_for_writes": true
+    "all_replicas_ready": True,
+    "ready_for_outdated_reads": True,
+    "ready_for_reads": True,
+    "ready_for_writes": True
   }
 }
 ```

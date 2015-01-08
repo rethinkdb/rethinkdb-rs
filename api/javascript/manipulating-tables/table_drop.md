@@ -25,7 +25,7 @@ If successful, the command returns an object with two fields:
 
 * `tables_dropped`: always `1`.
 * `config_changes`: a list containing one two-field object, `old_val` and `new_val`:
-    * `old_val`: the row from the `table_config` [system table](/docs/system-tables/) corresponding to the dropped table.
+    * `old_val`: the dropped table's [config](/api/javascript/config) value.
     * `new_val`: always `null`.
 
 If the given table does not exist in the database, the command throws `RqlRuntimeError`.
@@ -46,9 +46,10 @@ __Example:__ Drop a table named 'dc_universe'.
                 "primary_key": "id",
                 "shards": [
                     {
-                        "primary_replica": "rethinkdb_local_qpp",
+                        "primary_replica": "rethinkdb_srv1",
                         "replicas": [
-                            "rethinkdb_local_qpp"
+                            "rethinkdb_srv1",
+                            "rethinkdb_srv2"
                         ]
                     }
                 ],

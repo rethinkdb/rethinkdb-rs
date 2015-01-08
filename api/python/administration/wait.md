@@ -1,15 +1,8 @@
 ---
 layout: api-command
-language: JavaScript
-permalink: api/javascript/table_wait/
-command: tableWait
-io:
-    -   - table
-        - object
-    -   - database
-        - object
-    -   - r
-        - object
+language: Python
+permalink: api/python/table_wait/
+command: table_wait
 ---
 # Command syntax #
 
@@ -27,18 +20,18 @@ The return value is an object consisting of two key/value pairs:
 
 * `ready`: an integer indicating the number of tables waited for. It will always be `1` when `wait` is called on a table, and the total number of tables when called on a database.
 * `status_changes`: a list with one entry for each of the tables. Each member of the list will be an object with two fields:
-    * `old_val`: The table's [status](/api/javascript/status) value before `wait` was executed.
+    * `old_val`: The table's [status](/api/python/status) value before `wait` was executed. 
     * `new_val`: The table's `status` value after `wait` finished.
 
-See [status](/api/javascript/status) and [System tables](/docs/system-tables/) for a discussion of the fields within the `table_status` rows.
+See [status](/api/python/status) and [System tables](/docs/system-tables/) for a discussion of the fields within the `table_status` rows.
 
-If `wait` is called with no table or database specified (the `r.wait()` form), it will wait on all the tables in the default database (set with the [connect](/api/javascript/connect/) command's `db` parameter, which defaults to `test`).
+If `wait` is called with no table or database specified (the `r.wait()` form), it will wait on all the tables in the default database (set with the [connect](/api/python/connect/) command's `db` parameter, which defaults to `test`).
 
 __Example:__ Get a table's status.
 
-```js
-> r.table('superheroes').wait().run(conn, callback);
-// Result passed to callback
+```py
+r.table('superheroes').wait().run(conn)
+
 {
   "ready": 1,
   "status_changes": [
@@ -49,7 +42,7 @@ __Example:__ Get a table's status.
 		"name": "superheroes",
 		"shards": [
 		  {
-			"primary_replica": null,
+			"primary_replica": None,
 			"replicas": [
 			  {
 				"server": "jeeves",
@@ -58,7 +51,7 @@ __Example:__ Get a table's status.
 			]
 		  },
 		  {
-			"primary_replica": null,
+			"primary_replica": None,
 			"replicas": [
 			  {
 				"server": "jeeves",
@@ -68,10 +61,10 @@ __Example:__ Get a table's status.
 		  }
 		],
 		"status": {
-		  "all_replicas_ready": true,
-		  "ready_for_outdated_reads": true,
-		  "ready_for_reads": true,
-		  "ready_for_writes": true
+		  "all_replicas_ready": True,
+		  "ready_for_outdated_reads": True,
+		  "ready_for_reads": True,
+		  "ready_for_writes": True
 		}
 	  },
 	  "new_val": {
@@ -80,7 +73,7 @@ __Example:__ Get a table's status.
 		"name": "superheroes",
 		"shards": [
 		  {
-			"primary_replica": null,
+			"primary_replica": None,
 			"replicas": [
 			  {
 				"server": "jeeves",
@@ -89,7 +82,7 @@ __Example:__ Get a table's status.
 			]
 		  },
 		  {
-			"primary_replica": null,
+			"primary_replica": None,
 			"replicas": [
 			  {
 				"server": "jeeves",
@@ -99,10 +92,10 @@ __Example:__ Get a table's status.
 		  }
 		],
 		"status": {
-		  "all_replicas_ready": true,
-		  "ready_for_outdated_reads": true,
-		  "ready_for_reads": true,
-		  "ready_for_writes": true
+		  "all_replicas_ready": True,
+		  "ready_for_outdated_reads": True,
+		  "ready_for_reads": True,
+		  "ready_for_writes": True
 		}
 	  }
 	}

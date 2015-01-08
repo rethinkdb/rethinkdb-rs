@@ -28,7 +28,7 @@ If successful, the command returns an object with two fields:
 * `dbs_created`: always `1`.
 * `config_changes`: a list containing one object with two fields, `old_val` and `new_val`:
     * `old_val`: always `null`.
-    * `new_val`: the row from the `db_config` [system table](/docs/system-tables/) corresponding to the created database.
+    * `new_val`: the database's new [config](/api/javascript/config) value.
 
 If a database with the same name already exists, the command throws `RqlRuntimeError`.
 
