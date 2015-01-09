@@ -12,7 +12,7 @@ permalink: docs/install/osx/
 
 _Prerequisites:_ We provide native binaries for OS X Lion and above (>= 10.7).
 
-[Download](http://download.rethinkdb.com/osx/rethinkdb-{{site.version.major}}.{{site.version.minor}}.dmg) the disk
+[Download](http://download.rethinkdb.com/osx/rethinkdb-latest.dmg) the disk
 image, run `rethinkdb.pkg`, and follow the installation instructions.
 
 # Using Homebrew #
