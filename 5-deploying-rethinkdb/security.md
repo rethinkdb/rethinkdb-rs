@@ -133,32 +133,22 @@ You can now access the web interface using the following URL:
 
 ## Using the RethinkDB authentication system ##
 
-RethinkDB allows setting an authentication key using the command line
-interface. Once you set the authentication key, client drivers will be
-required to pass the key to the server in order to connect.
+RethinkDB allows you to set an authentication key by modifying the
+`cluster_config` [system table](/docs/system-tables/). Once you set an
+authentication key, client drivers will be required to pass the key to the
+server in order to connect.
 
 {% infobox %}
-__Note__: the authentication key will be transmitted to and stored on the
-RethinkDB server in plain text, and neither the key nor the data passed
-between the client and the server will be encrypted. The key provides basic
-protection against unauthorized access, but if the client port is open to
-outside networks it's strongly suggested you use SSH tunneling for protection
-(see below).
+__Note__: The authentication key affects _client drivers,_ not the web interface. Follow the directions above to secure the web UI.
 {% endinfobox %}
 
-First, open the CLI:
+Open the Data Explorer in the web administration console and execute the following command:
 
-```
-rethinkdb admin --join HOST:29015
-```
-
-Then execute the following command:
-
-```
-set auth <authentication_key>
+```js
+r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: 'newkey'})
 ```
 
-You can set the `authentication_key` option to any key of your choice.
+Instead of "newkey" you can use any string of your choice as the key.
 
 You can now connect to the driver port from any network, but must provide the
 required authentication key with the `connect` command. For instance, in
@@ -169,12 +159,22 @@ r.connect({host: HOST, port: PORT, authKey: <authentication_key>},
     function(error, connection) { ... })
 ```
 
-You can remove an authentication key with the `unset auth` command from the RethinkDB CLI.
+You can remove an authentication key by writing `null` to the `auth_key` field in `cluster_config`:
 
-```
-rethinkdb admin unset auth
+```js
+r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: null})
 ```
 
+You can use any ReQL driver for this operation, not just the Data Explorer. Read [Administration tools](/docs/administration-tools/) for more details about scripting RethinkDB administration tasks.
+
+{% infobox %}
+__Note__: the authentication key will be transmitted to and stored on the
+RethinkDB server in plain text, and neither the key nor the data passed
+between the client and the server will be encrypted. The key provides basic
+protection against unauthorized access, but if the client port is open to
+outside networks it's strongly suggested you use SSH tunneling for protection
+(see below).
+{% endinfobox %}
 
 ## Using SSH tunneling ##
 
