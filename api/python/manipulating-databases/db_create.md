@@ -20,16 +20,34 @@ r.db_create(db_name) &rarr; object
 Create a database. A RethinkDB database is a collection of tables, similar to
 relational databases.
 
-If successful, the operation returns an object: `{"created": 1}`. If a database with the
-same name already exists the operation throws `RqlRuntimeError`.
+If successful, the command returns an object with two fields:
 
-Note: that you can only use alphanumeric characters and underscores for the database name.
+* `dbs_created`: always `1`.
+* `config_changes`: a list containing one object with two fields, `old_val` and `new_val`:
+    * `old_val`: always `None`.
+    * `new_val`: the database's new [config](/api/python/config) value.
+
+If a database with the same name already exists, the command throws `RqlRuntimeError`.
+
+Note: Only alphanumeric characters and underscores are valid for the database name.
 
 __Example:__ Create a database named 'superheroes'.
 
 ```py
 r.db_create('superheroes').run(conn)
-```
 
+{
+    "config_changes": [
+        {
+            "new_val": {
+                "id": "e4689cfc-e903-4532-a0e6-2d6797a43f07",
+                "name": "superheroes"
+            },
+            "old_val": None
+        }
+    ],
+    "dbs_created": 1
+}
+```
 
 

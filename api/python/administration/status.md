@@ -1,23 +1,20 @@
 ---
 layout: api-command
-language: JavaScript
-permalink: api/javascript/table_status/
-command: tableStatus
-io:
-    -   - r
-        - object
+language: Python
+permalink: api/python/table_status/
+command: table_status
 ---
 # Command syntax #
 
 {% apibody %}
-r.tableStatus('tablename') &rarr; object
+table.status() &rarr; selection&lt;object&gt;
 {% endapibody %}
 
 # Description #
 
 Return the status of a table.
 
-The return value is an object providing information about the table's shards, replicas and replica readiness states. For a more complete discussion of the object fields, read about the `table_status` table in [System tables](/docs/system-tables/)
+The return value is an object providing information about the table's shards, replicas and replica readiness states. For a more complete discussion of the object fields, read about the `table_status` table in [System tables](/docs/system-tables/).
 
 * `db`: database name.
 * `name`: table name.
@@ -28,16 +25,16 @@ The return value is an object providing information about the table's shards, re
         * `server`: name of the replica server.
         * `state`: one of `ready`, `missing`, `backfilling_data`, `offloading_data`, `erasing_data`, `looking_for_primary` or `transitioning`.
 * `status`: an object with the following boolean keys:
-    * `all_replicas_ready`: `true` if all backfills have finished.
-    * `ready_for_outdated_reads`: `true` if the table is ready for read queries with the `useOutdated` flag set to `true`.
-    * `ready_for_reads`: `true` if the table is ready for read queries with current data (with the `useOutdated` flag set to `false` or unspecified).
-    * `ready_for_writes`: `true` if the table is ready for write queries.
+    * `all_replicas_ready`: `True` if all backfills have finished.
+    * `ready_for_outdated_reads`: `True` if the table is ready for read queries with the `use_outdated` flag set to `True`.
+    * `ready_for_reads`: `True` if the table is ready for read queries with current data (with the `use_outdated` flag set to `False` or unspecified).
+    * `ready_for_writes`: `True` if the table is ready for write queries.
 
 __Example:__ Get a table's status.
 
-```js
-r.tableStatus('superheroes').run(conn, callback);
-// Result passed to callback
+```py
+r.table('superheroes').status().run(conn)
+
 {
   "db": "database",
   "id": "5cb35225-81b2-4cec-9eef-bfad15481265",
@@ -63,10 +60,10 @@ r.tableStatus('superheroes').run(conn, callback);
     }
   ],
   "status": {
-    "all_replicas_ready": true,
-    "ready_for_outdated_reads": true,
-    "ready_for_reads": true,
-    "ready_for_writes": true
+    "all_replicas_ready": True,
+    "ready_for_outdated_reads": True,
+    "ready_for_reads": True,
+    "ready_for_writes": True
   }
 }
 ```
