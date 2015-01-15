@@ -16,17 +16,17 @@ The table's primary key is the `id` field, and the keys are always arrays. The f
 
 ```js
 // query about the cluster as a whole
-r.db('rethinkdb').table('stats').get(["cluster"]).run(conn, callback);
+r.db("rethinkdb").table("stats").get(["cluster"]).run(conn, callback);
 
 // query about a specific server
-r.db('rethinkdb').table('stats').get(["server", "de8b75d1-3184-48f0-b1ef-99a9c04e2be5"]).run(conn, callback);
+r.db("rethinkdb").table("stats").get(["server", "de8b75d1-3184-48f0-b1ef-99a9c04e2be5"]).run(conn, callback);
 
 // query about a specific table
-r.db('rethinkdb').table('stats').get(["table", "31c92680-f70c-4a4b-a49e-b238eb12c023"]).run(conn, callback);
+r.db("rethinkdb").table("stats").get(["table", "31c92680-f70c-4a4b-a49e-b238eb12c023"]).run(conn, callback);
 
 // query about a replica of a table on a specific server
 // this requires *two* UUIDs: the table's, then the server's
-r.db('rethinkdb').table('stats').get(["table_server", "31c92680-f70c-4a4b-a49e-b238eb12c023", "de8b75d1-3184-48f0-b1ef-99a9c04e2be5"]).run(conn, callback);
+r.db("rethinkdb").table("stats").get(["table_server", "31c92680-f70c-4a4b-a49e-b238eb12c023", "de8b75d1-3184-48f0-b1ef-99a9c04e2be5"]).run(conn, callback);
 ```
 
 # Document schema #

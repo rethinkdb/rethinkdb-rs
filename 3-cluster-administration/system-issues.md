@@ -1,12 +1,12 @@
 ---
 layout: documentation
-title: System issues table
+title: System current issues table
 active: docs
 docs_active: system-issues
 permalink: docs/system-issues/
 ---
 
-The issues table is one of the [system tables][st] added in version 1.16 of RethinkDB. Querying it returns problems detected within the cluster; in normal, error-free operation, it will remain empty. The table is read-only.
+The current issues table is one of the [system tables][st] added in version 1.16 of RethinkDB. Querying it returns problems detected within the cluster; in normal, error-free operation, it will remain empty. The table is read-only.
 
 [st]: /docs/system-tables/
 
@@ -40,9 +40,8 @@ Note that if you call [table](/api/javascript/table) with `identifier_format` se
 
 The system will never show more than one configuration issue for the same table at the same time.
 
-
 ```
-type: table_needs_primary | data_lost | write_acks
+type: "table_needs_primary" | "data_lost" | "write_acks"
 critical: true
 info: {
     table: "tablename",
@@ -56,16 +55,16 @@ A `primary_replica` field in `table_config` is `null`. This can happen when the 
 
 ### data_lost ###
 
-A `replicas` field in `table_config` is empty. This can only happen if *all* the replicas for that table have been permanently removed from the cluster; some data in that table will likely be lost. Assign new replicas using [reconfigure](/api/javascript/reconfigure) or by writing to [table_config][st]. The lost parts of the table will become available for writes again, but will be empty.
+A `replicas` field in `table_config` is empty. This can only happen if *all* the servers for one of the table's shards have been permanently removed from the cluster; some data in that table will likely be lost. Assign new replicas using [reconfigure](/api/javascript/reconfigure) or by writing to [table_config][st]. The lost parts of the table will become available for writes again, but will be empty.
 
 ### write_acks ###
 
-Write acknowledgements set in `table_config` for a table cannot be met. This can happen if one or more replicas were permanently removed from the cluster and different shards now have different numbers of replicas. The `majority` write ack setting applies the same threshold to every shard, but computes the threshold based on the shard with the most replicas. Change the replica assignments in `rethinkdb.table_config` or change the write ack setting to `single`.
+Write acknowledgements set in `table_config` for a table cannot be met. This can happen if one or more servers for this table were permanently removed from the cluster and different shards now have different numbers of replicas. The `majority` write ack setting applies the same threshold to every shard, but computes the threshold based on the shard with the most replicas. Change the replica assignments in `rethinkdb.table_config` or change the write ack setting to `single`.
 
 ## Log write issues ##
 
 ```
-type: log_write_error
+type: "log_write_error"
 critical: false
 info: {
     servers: ["server_a", "server_b", ...],
@@ -80,7 +79,7 @@ Find and solve the problem preventing the server from writing to the logs (for e
 ## Name collision issues ##
 
 ```
-type: server_name_collision | db_name_collision | table_name_collision
+type: "server_name_collision" | "db_name_collision" | "table_name_collision"
 critical: true
 info: {
     name: "<name in conflict>",
@@ -100,7 +99,7 @@ There will be one issue per name in conflict.
 ## Outdated index issues ##
 
 ```
-type: outdated_index
+type: "outdated_index"
 critical: false
 info: {
     tables: [
@@ -117,24 +116,24 @@ Indexes built with an older version of RethinkDB need to be rebuilt due to chang
 
 [siout]: /docs/troubleshooting/#my-secondary-index-is-outdated
 
-This issue will only appear in the `issues` table once&mdash;check the `info` field for the tables and indexes it affects.
+This issue will only appear in the `current_issues` table once&mdash;check the `info` field for the tables and indexes it affects.
 
 ## Server disconnection issues ##
 
 ```
-type: server_down
+type: "server_disconnected"
 critical: true
 info: {
-    server: "<server>",
-    affected_servers: ["<server1>", "<server2>", ...]
+    disconnected_server: "<server>",
+    reporting_servers: ["<server1>", "<server2>", ...]
 }
 ```
 
-A server within the cluster has lost contact with one or more of the other servers within the cluster; `affected_servers` is a list of the names (or UUIDs) of servers that report they've lost contact with `server`.
+A server within the cluster has lost contact with one or more of the other servers within the cluster; `reporting_servers` is a list of the names (or UUIDs) of servers that report they've lost contact with the `disconnected_server`.
 
 Fix this by resolving the communication problem between the servers. If the server has crashed and lost data and the problem cannot be resolved, you can permanently delete the server's entry from the [server_config][st] table. (See  `server_config` in [System tables][st] for more details about the effects of deleting a server.)
 
-This issue will only appear in the table once per server.
+This issue will only appear in the table once per disconnected server.
 
 ## Server ghost issues ##
 
@@ -142,7 +141,7 @@ This issue will only appear in the table once per server.
 type: server_ghost
 critical: false
 info: {
-    server_id: "UUID",
+    server_id: "<uuid>",
     hostname: "<hostname>",
     pid: <number>
 }

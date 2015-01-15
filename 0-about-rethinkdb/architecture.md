@@ -50,7 +50,7 @@ documents (there are many more Smiths in the phone book than
 Akhmechets).
 
 Split points will not automatically be changed after table creation,
-which means that if the primary keys are unevenly distributed shards may
+which means that if the primary keys are unevenly distributed, shards may
 become unbalanced. However, the user can manually rebalance shards when
 necessary, as well as reconfigure tables with new sharding and
 replication settings. Users cannot set split points for shards manually.
@@ -75,9 +75,9 @@ which let you simply specify the number of shards and replicas per table
 or for all tables within a database. Users do not need to manually
 associate servers with tables. RethinkDB uses a set of heuristics to
 attempt to satisfy table configurations in an optimal way. It will copy
-data for new replicas from the closest available server, evenly
-distribute replicas of the data across the cluster, try to distribute
-the load evenly, and so on.
+data for new replicas from an available server, evenly distribute replicas
+of the data across the cluster, try to distribute the load evenly, and so
+on.
 
 For a more fine-grained mechanism, replicas can be associated with
 servers using _server tags._ Every server may be assigned one or more
@@ -89,8 +89,10 @@ Then tables might have their configuration set with `reconfigure` to
 group replicas in specific ways:
 
 ```py
-r.table('a').reconfigure(shards=2,replicas={'us_east':2, 'us_west':2, 'london':2})
-r.table('b').reconfigure(shards=2,replicas={'us':2, 'london':1})
+r.table('a').reconfigure(shards=2, replicas={'us_east':2, 'us_west':2,
+    'london':2}, primary_replica_tag='us_east')
+r.table('b').reconfigure(shards=2, replicas={'us':2, 'london':1},
+    primary_replica_tag='london')
 ```
 
 In the second example, the two replicas in the `us` group may be on any
@@ -100,7 +102,7 @@ Note that server tags cannot be configured through RethinkDB's web
 administration dashboard. They may be created and assigned through ReQL
 commands and scripts.
 
-RethinkDB keeps an internal directory tracking the physical state of the
+RethinkDB keeps an internal directory tracking the current state of the
 cluster: how many servers are accessible, what data is currently stored
 on each server, etc. The data structures that keep track of the
 directory are automatically updated when the cluster changes. For
@@ -113,7 +115,7 @@ Starting with RethinkDB 1.16, the earlier concept of "data centers" has
 been replaced by server tags, described above. Servers in a given data
 center could all be given a tag such as `us_east` or `us_west`, and a
 table can be configured to have replicas associated with specific server
-tags (i.e., 2 replicas on servers tagged with `us_east` and 3 on servers
+tags (e.g., 2 replicas on servers tagged with `us_east` and 3 on servers
 tagged with `us_west`).
 
 RethinkDB uses the same protocol for communication within a datacenter

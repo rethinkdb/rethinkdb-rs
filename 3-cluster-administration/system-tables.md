@@ -10,7 +10,7 @@ Starting with version 1.16, RethinkDB maintains special *system tables* that con
 
 # Overview #
 
-Access the system tables through the `rethinkdb` database. This database is automatically created on cluster startup, and system tables cannot be created, dropped, reconfigured, or renamed. These tables aren't real RethinkDB document stores the way user-created tables are, but rather "table-like" interfaces to the system allowing most ReQL commands to be used for control.
+Access the system tables through the `rethinkdb` database. These tables aren't real RethinkDB document stores the way user-created tables are, but rather "table-like" interfaces to the system allowing most ReQL commands to be used for control. System tables cannot be created, dropped, reconfigured, or renamed.
 
 The metadata in the system tables applies to the RethinkDB cluster as a whole. Each server in a cluster maintains its own copy of the system tables. Whenever a system table on a server changes, the changes are synced across all the servers.
 
@@ -20,12 +20,12 @@ The metadata in the system tables applies to the RethinkDB cluster as a whole. E
 * `server_config` stores server names and tags. By writing to this table you can rename servers, assign them tags, and remove them from the cluster entirely.
 * `db_config` stores database UUIDs and names. By writing to this table, databases can be created, deleted or modified.
 * `cluster_config` stores the authentication key for the cluster.
-* `table_status` is a read-only table which returns the  status and configuration of tables in the system.
-* `server_status` is a read-only table that returns the status of the servers, including uptime, host name, and process ID.
-* `issues` is a read-only table that returns statistics about cluster problems. For details, read the [System issues table][sit] documentation.
+* `table_status` is a read-only table which returns the status and configuration of tables in the system.
+* `server_status` is a read-only table that returns information about the process and host machine for each server.
+* `current_issues` is a read-only table that returns statistics about cluster problems. For details, read the [System current issues table][sit] documentation.
 * `jobs` lists the jobs&mdash;queries, index creation, disk compaction, and other utility tasks&mdash;the cluster is spending time on, and also allows you to interrupt running queries.
 * `stats` is a read-only table that returns statistics about the cluster.
-* `logs` contains log files for the cluster.
+* `logs` is a read-only table that stores log messages from all the servers in the cluster.
 
 [sit]: /docs/system-issues/
 
@@ -44,7 +44,7 @@ With system tables only, the `table` command takes a new argument, `identifier_f
 
 Sharding and replication can be controlled through the `table_config` table, along with the more advanced settings of write acknowledgements and durability. Tables can also be renamed by modifying their rows. A typical row in the `table_config` table will look like this:
 
-```js
+```json
 {
     id: "31c92680-f70c-4a4b-a49e-b238eb12c023",
     name: "tablename",
@@ -59,13 +59,13 @@ Sharding and replication can be controlled through the `table_config` table, alo
 }
 ```
 
-* `id`: the UUID of the table. (Read-only.)
+* `id`: the UUID of the table. Read-only.
 * `name`: the name of the table.
-* `db`: the database the table is in, either a name or UUID depending on the value of `identifier_format`. It cannot be modified.
-* `primary_key`: the name of the field used as the primary key of the table, set at table creation. (Read-only.)
+* `db`: the database the table is in, either a name or UUID depending on the value of `identifier_format`. Read-only.
+* `primary_key`: the name of the field used as the primary key of the table, set at table creation. Read-only.
 * `shards`: a list of the table's shards. Each shard is an object with these fields:
-	* `primary_replica`: the name or UUID of the server acting as the shard's primary. If `primary_replica` is `null` the table will be unavailable. (This may happen if the server acting as the shard's primary is deleted.)
-	* `replicas`: a list of servers, including the director, storing replicas of the shard.
+	* `primary_replica`: the name or UUID of the server acting as the shard's primary. If `primary_replica` is `null`, the table will be unavailable. This may happen if the server acting as the shard's primary is deleted.
+	* `replicas`: a list of servers, including the primary, storing replicas of the shard.
 * `write_acks`: the write acknowledgement settings for the table. When set to `majority` (the default), writes will be acknowledged when a majority of replicas have acknowledged their writes; when set to `single` writes will be acknowledged when a single replica acknowledges it. This may also be set to a list of requirements; see below.
 * `durability`: `soft` or `hard` (the default). In `hard` durability mode, writes are committed to disk before acknowledgements are sent; in `soft` mode, writes are acknowledged immediately upon receipt. The `soft` mode is faster but slightly less resilient to failure.
 
@@ -73,13 +73,13 @@ If `write_acks` is set to a list of requirements, they should take the form of:
 
 ```js
 [
-	{replicas: ['a', 'b'], acks: 'soft'},
-	{replicas: ['c', 'd'], acks: 'hard'},
+	{replicas: ['a', 'b'], acks: 'single'},
+	{replicas: ['c', 'd'], acks: 'majority'},
 	...
 ]
 ```
 
-If you `delete` a row from `table_config` the table will be deleted. If you `insert` a row, you must include the `name` and `db` fields; the rest will be automatically generated or set to default. You must *not* include the `id` field--the system will auto-generate a UUID.
+If you `delete` a row from `table_config` the table will be deleted. If you `insert` a row, you must include the `name` and `db` fields; the rest will be automatically generated or set to default. Do not include the `id` field. The system will auto-generate a UUID. 
 
 If you `replace` a row in `table_config`, you must include all the fields. It's usually easier to `update` specific fields.
 
@@ -91,7 +91,7 @@ Native ReQL commands like `reconfigure` also control sharding and replication, a
 
 This table stores the names of servers along with their *tags.* Server tags organize servers into logical groups: servers could be tagged by usage (database, application, etc.), or by data center location ("us_west," "us_east," "london," and so on). For more about server tags, read [Sharding and replication][shrep].
 
-Every server that has ever been part of the cluster--and has not been permanently removed--will have a row in this table in the following format.
+Every server that has ever been part of the cluster and has not been permanently removed will have a row in this table in the following format.
 
 ```js
 {
@@ -107,7 +107,7 @@ Every server that has ever been part of the cluster--and has not been permanentl
 
 If tags aren't specified when a server starts, the server is automatically assigned the `default` tag. Documents cannot be inserted into `server_config`. A new document gets created when a server connects to the cluster.
 
-Documents *can* be deleted from this table--doing so permanently removes the server from the cluster. When a server is permanently removed from a cluster, the following occurs:
+Documents *can* be deleted from this table. Doing so permanently removes the server from the cluster. When a server is permanently removed from a cluster, the following occurs:
 
 * all references to it are deleted from `table_config`;
 * if it was a replica for a shard, that entry is removed from the shard's `replicas` list;
@@ -193,7 +193,7 @@ This table stores information about table availability. There is one document pe
 * `status`: the subfields in this field indicate whether all shards of the table are ready to accept the given type of query: `outdated_reads`, `reads` and `writes`. The `all_replicas_ready` field indicates whether all backfills have finished.
 * `shards`: one entry for each shard in `table_config`. Each shard's object has the following fields:
 	* `primary_replica`: the name of the shard's primary or `null` if one is not set.
-	* `replicas`: a list of all servers acting as a replica for that shard. This may include servers which are no longer configured as replicas but are still storing data. The `state` field may be one of the following:
+	* `replicas`: a list of all servers acting as a replica for that shard. This may include servers which are no longer configured as replicas but are still storing data until it can be safely deleted. The `state` field may be one of the following:
 		* `missing`: the server is not connected to the cluster.
 		* `backfilling_data`: the server is receiving data from another server.
 		* `offloading_data`: the server is waiting for all other servers to report `ready` so it can erase its data.
@@ -204,9 +204,9 @@ This table stores information about table availability. There is one document pe
 
 ## server_status ##
 
-This table returns information about the status and availability of servers within a RethinkDB cluster. There is one document per server that's ever been connected to the cluster and not permanently removed.
+This table returns information about the status and availability of servers within a RethinkDB cluster. A single document is created for each server that connects to the cluster. These documents remain in the `server_status` table even if the server loses its connection to the cluster; they are deleted only when a server is permanently removed.
 
-This is a typical document schema for a server connected to the host server--that is, the server the client's connecting to when they query the `server_status` table. If a server is *not* connected to the host server there will be differences noted below.
+This is a typical document schema for a server connected to the host server&mdash;that is, the server the client's connecting to when they query the `server_status` table. If a server is *not* connected to the host server there will be differences noted below.
 
 ```js
 {
@@ -263,9 +263,9 @@ If the server is not connected to the host server:
 
 # Other tables #
 
-## issues ##
+## current_issues ##
 
-This table shows problems that have been detected within the RethinkDB cluster. For details, read the [System issues table][sit] documentation.
+This table shows problems that have been detected within the RethinkDB cluster. For details, read the [System current issues table][sit] documentation.
 
 [sst]: /docs/system-stats/
 

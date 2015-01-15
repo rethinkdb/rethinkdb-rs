@@ -57,19 +57,19 @@ None}, u'id': u'6dbc31fe-8f78-4128-af76-cdac43bcc195', u'name':
 u'rethinkdb_local_qpp'}]
 ```
 
-To return the status on a specific table, you can use the [table_status](/api/python/table_status) command.
+To return the status on a specific table, you can use the [status](/api/python/status) command.
 
 ```py
-list(r.table_status('superheroes').run())
+list(r.table('superheroes').status().run())
 ```
 
 And reconfiguring a table can be done the [reconfigure](/api/python/reconfigure) command.
 
 ```py
-r.table('a').reconfigure(shards=2,replicas=2).run()
+r.table('a').reconfigure(shards=2, replicas=2).run()
 
-r.table('b').reconfigure(shards=2,replicas={'us_east':2, 'us_west':2,
-    'london':2}).run()
+r.table('b').reconfigure(shards=2, replicas={'us_east':2, 'us_west':2,
+    'london':2}, primary_replica_tag='us_east').run()
 ```
 
 The Data Explorer in the web administration UI is itself a JavaScript REPL, with syntax highlighting and history. (The article on [ReQL data exploration][rde] goes into some detail on how to use the Data Explorer.) The advantage of scripting languages with ReQL comes into play when writing administration scripts.

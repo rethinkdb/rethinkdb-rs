@@ -25,8 +25,9 @@ switching to hash shards. Follow [Github issue #364][gh364] to track progress.
 When using the web UI, simply specify the number of shards you want, and based on the data available RethinkDB will determine the best split points to maintain balanced shards. To shard your data:
 
 - Go to the table view (_Tables_ &rarr; _table name_).
+- Click on the _Reconfigure_ button.
 - Set the number of shards and replicas you would like.
-- Click on the _Apply_ button.
+- Click on the _Apply Configuration_ button.
 
 ![Shard with the web interface](/assets/images/docs/administration/shard.png)
 
@@ -51,10 +52,10 @@ These tasks cannot be performed through the web interface.
 
 All of the servers in a RethinkDB cluster may be given zero or more _tags_ that can be used in table configurations to map replicas to servers specified by tag.
 
-A server can be given tags with the `--server_tags` option on startup:
+A server can be given tags with the `--server-tag` option on startup:
 
 ```
-rethinkdb --server_tags us,us_west
+rethinkdb --server-tag us --server-tag us_west
 ```
 
 
@@ -67,13 +68,17 @@ r.db('rethinkdb').table('server_config').get(
     {tags: ['default', 'us', 'us_west']}.run(conn)
 ```
 
-If no tags are specified on startup, the server will be started with one tag, `default`. Changing the sharding/replica information from the web UI or from ReQL commands that do not specify server tags will affect all servers with the `default` tag. This means that if you remove the `default` tag from a server, or start it without that tag, it wil not be affected by changes from the web UI. 
+If no tags are specified on startup, the server will be started with one tag, `default`. Changing the sharding/replica information from the web UI or from ReQL commands that do not specify server tags will affect all servers with the `default` tag.
+
+{% infobox info %}
+The web UI only affects servers with the `default` tag. If you remove the `default` tag from a server or start it without that tag, it will not be used for tables configured through the web UI.
+{% endinfobox %}
 
 When servers are tagged, you can use the tags in the [reconfigure](/api/python/reconfigure) command. To assign 3 replicas of the `users` table to `us_west` and 2 to `us_east`:
 
 ```py
 r.table('users').reconfigure(shards=2, replicas={'us_west':3, 
-    'us_east':2}).run(conn)
+    'us_east':2}, primary_replica_tag='us_east').run(conn)
 ```
 
 If you remove *all* of a server's tags and then reconfigure all the cluster's tables, that server will be taken out of service.
