@@ -41,5 +41,6 @@ r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
 
 # Next steps #
 
-{% include install-driver-docs-footer.md %}
-
+{% infobox %}
+Move on to the [ten-minute guide](/docs/guide/javascript/) and learn how to use RethinkDB.
+{% endinfobox %}

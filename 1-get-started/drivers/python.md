@@ -34,4 +34,6 @@ r.table('tv_shows').insert({ 'name': 'Star Trek TNG' }).run()
 
 # Next steps #
 
-{% include install-driver-docs-footer.md %}
+{% infobox %}
+Move on to the [ten-minute guide](/docs/guide/python/) and learn how to use RethinkDB.
+{% endinfobox %}
