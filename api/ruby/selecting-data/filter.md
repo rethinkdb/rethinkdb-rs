@@ -21,112 +21,80 @@ array.filter(predicate[, :default => false]) &rarr; array
 
 # Description #
 
-Get all the documents for which the given predicate is true.
+Return all the elements in a sequence for which the given predicate is true. The return value of `filter` will be the same as the input (sequence, stream, or array). Documents can be filtered in a variety of ways&mdash;ranges, nested values, boolean conditions, and the results of anonymous functions.
 
-`filter` can be called on a sequence, selection, or array. The type of the return value will be the same as the input.
+The `filter` command wraps predicates in an implicit [.default(False)](/api/python/default), so if the predicate tries to access a field that doesn't exist in a given document, that document is not returned. The `default` optional argument sets the value returned for missing fields, rather than `false`. Setting it to `r.error()` will throw an `RqlRuntimeError` when a non-existent field is accessed.
 
-The body of every filter is wrapped in an implicit `.default(false)`, which means that if a non-existence error is thrown (when you try to access a field that does not exist in a document) RethinkDB will just ignore the document. The `default` value can be changed by passing an object with a `default` field. Setting this optional argument to `r.error()` will cause non-existence errors to return a `RqlRuntimeError`.
+## Basic predicates ##
 
+__Example:__ Get all users that are 30 years old.
 
-__Example:__ Get all the users that are 30 years old.
 
 ```rb
 r.table('users').filter({:age => 30}).run(conn)
 ```
 
-A more general way to write the previous query is to use Ruby's block.
+The predicate `{'age': 30}` selects documents in the `users` table with an `age` field whose value is `30`. Documents with an `age` field set to any other value *or* with no `age` field present are skipped.
+
+While the `{'field': value}` style of predicate is useful for exact matches, a more general way to write a predicate is to use a Ruby block that returns `true` or `false`.
 
 ```rb
-r.table('users').filter{|user|
+r.table('users').filter{ |user|
     user["age"].eq(30)
 }.run(conn)
 ```
 
-Here the predicate is `user["age"].eq(30)`.
+In this case, the function returns `true` if the field `age` is equal to 30.
 
-- `user` refers to the current document
-- `user["age"]` refers to the field `age` of the current document
-- `user["age"].eq(30)` returns `true` if the field `age` is 30
+Predicates to `filter` are evaluated on the server, and must use ReQL expressions. You cannot use standard Ruby comparison operators such as `==`, `<` and `>`, although you may use `|` and `&` in place of [or](/api/ruby/or) and [and](/api/ruby/and) respectively.
 
+Also, predicates must evaluate document fields. They cannot evaluate [secondary indexes](/docs/secondary-indexes/).
 
-
-__Example:__ Get all the users that are more than 18 years old.
+__Example:__ Get all users that are more than 18 years old.
 
 ```rb
-r.table("users").filter{|user|
+r.table("users").filter{ |user|
     user["age"] > 18
 }.run(conn)
 ```
 
-__Example:__ Get all the users that are less than 18 years old and more than 13 years old.
+__Example:__ Get all users that are less than 18 years old and more than 13 years old.
 
-```rb
-r.table("users").filter{|user|
-    (user["age"] < 18) & (user["age"] > 13)
-}.run(conn)
+```py
+r.table("users").filter((r.row["age"] < 18) & (r.row["age"] > 13)).run(conn)
 ```
-
 
 __Example:__ Get all the users that are more than 18 years old or have their parental consent.
 
 ```rb
-r.table("users").filter{|user| (user["age"].lt(18)) | (user["hasParentalConsent"])}.run(conn)
-```
-
-
-__Example:__ Get all the users that are less than 18 years old or whose age is unknown
-(field `age` missing).
-
-```rb
-r.table("users").filter(
-    lambda { |user| user["age"] < 18 },
-    :default => true
-).run(conn)
-```
-
-__Example:__ Get all the users that are more than 18 years old. Throw an error if a
-document is missing the field `age`.
-
-```rb
-r.table("users").filter(
-    lambda { |user| user["age"] > 18 },
-    :default => r.error()
-).run(conn)
-```
-
-
-__Example:__ Select all users who have given their phone number (all the documents
-whose field `phone_number` is defined and not `nil`).
-
-```rb
-r.table('users').filter{|user|
-    user.has_fields('phone_number')
+r.table("users").filter{ |user|
+    (user["age"] < 18) & (user["age"] > 13)
 }.run(conn)
 ```
+
+## More complex predicates ##
 
 __Example:__ Retrieve all the users who subscribed between January 1st, 2012
 (included) and January 1st, 2013 (excluded).
 
 ```rb
-r.table("users").filter{|user|
-    user["subscription_date"].during( r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z') )
+r.table("users").filter{ |user|
+    user["subscription_date"].during(r.time(2012, 1, 1, 'Z'),
+        r.time(2013, 1, 1, 'Z'))
 }.run(conn)
 ```
 
-
-__Example:__ Retrieve all the users who have a gmail account (whose field `email` ends
-with `@gmail.com`).
-
+__Example:__ Retrieve all the users who have a gmail account (whose field `email` ends with `@gmail.com`).
 
 ```rb
-r.table("users").filter{|user|
+r.table("users").filter{ |user|
     user["email"].match("@gmail.com$")
 }.run(conn)
 ```
 
 __Example:__ Filter based on the presence of a value in an array.
 
-Suppose the table `users` has the following schema
+Given this schema for the `users` table:
 
 ```rb
 {
@@ -145,7 +113,7 @@ r.table("users").filter{|user|
 
 __Example:__ Filter based on nested fields.
 
-Suppose we have a table `users` containing documents with the following schema.
+Given this schema for the `users` table:
 
 ```rb
 {
@@ -164,7 +132,7 @@ Retrieve all users named "William Adama" (first name "William", last name
 
 ```rb
 r.table("users").filter({
-    :name =>{
+    :name => {
         :first => "William",
         :last => "Adama"
     }
@@ -185,21 +153,58 @@ r.table("users").filter(r.literal({
 })).run(conn)
 ```
 
-
-The equivalent queries with a lambda function.
+You may rewrite these with blocks.
 
 ```rb
-r.table("users").filter{|user|
+r.table("users").filter{ |user|
     (user["name"]["first"].eq("William")) &
     (user["name"]["last"].eq("Adama"))
 }.run(conn)
 ```
 
 ```rb
-r.table("users").filter{|user|
+r.table("users").filter{ |user|
     user["name"].eq({
         :first => "William",
         :last => "Adama"
     })
 }.run(conn)
 ```
+
+## Handling missing fields ##
+
+By default, documents missing fields tested by the `filter` predicate are skipped. In the previous examples, users without an `age` field are not returned. By passing the optional `default` argument to `filter`, you can change this behavior.
+
+__Example:__ Get all users less than 18 years old or whose `age` field is missing.
+
+```rb
+r.table("users").filter(:default => true){ |user| user["age"] < 18 }.run(conn)
+```
+
+__Example:__ Get all users more than 18 years old. Throw an error if a
+document is missing the field `age`.
+
+```rb
+r.table("users").filter(:default => r.error()){
+    |user| user["age"] > 18
+}.run(conn)
+```
+
+__Example:__ Get all users who have given their phone number (all the documents whose field `phone_number` exists and not `nil`).
+
+```rb
+r.table('users').filter{ |user|
+    user.has_fields('phone_number')
+}.run(conn)
+```
+
+__Example:__ Get all users with an "editor" role or an "admin" privilege.
+
+```rb
+r.table('users').filter{ |user|
+    user['role'].eq('editor').default(false) |
+        user['privilege'].eq('admin').default(false)
+}.run(conn)
+```
+
+Instead of using the `default` optional argument to `filter`, we have to use default values on the fields within the `or` clause. Why? If the field on the left side of the `or` clause is missing from a document&mdash;in this case, if the user doesn't have a `role` field&mdash;the predicate will generate an error, and will return `false` (or the value the `default` argument is set to) without evaluating the right side of the `or`. By using `.default(false)` on the fields, each side of the `or` will evaluate to either the field's value or `false` if the field doesn't exist.
