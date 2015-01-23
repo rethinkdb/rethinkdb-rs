@@ -122,6 +122,17 @@ RethinkDB comes with strict write durability out of the box and is identical to 
 
 {% endinfobox %}
 
+## What usage statistics does RethinkDB collect? ##
+
+By default, RethinkDB will collect anonymous usage statistics and report them to RethinkDB HQ when it checks for new versions of the server. The data it transmits are:
+
+* RethinkDB's version
+* The number of servers in the cluster
+* The operating system (Linux or OS X) and architecture (32 or 64 bit)
+* The number of tables, rounded to the nearest order of magnitude: 2<sup>round(log<sub>2</sub>(<em>tables</em>)</sup>
+
+If the RethinkDB server is started with the `no-update-check` option, these statistics will *not* be sent.
+
 ## How is RethinkDB licensed? ##
 
 The RethinkDB server is licensed under the [GNU Affero General Public License v3.0][agpl]. The client drivers are licensed under the [Apache License v2.0][apl].

@@ -39,6 +39,10 @@ Note the port numbers you can use to access RethinkDB:
 * Use the intracluster port (`29015` by default) to connect other nodes in the cluster to this node.
 * Point your browser to the HTTP connections port (`8080` by default) to access the web interface.
 
+{% infobox info %}
+For a complete list of options that can be passed to RethinkDB on the command line, read [RethinkDB command line options](/docs/cli-options) or type `rethinkdb --help` at the terminal prompt.
+{% endinfobox %}
+
 Now start the second RethinkDB instance on the same machine:
 
 ```
