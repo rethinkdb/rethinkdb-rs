@@ -32,7 +32,7 @@ The `filter` command wraps predicates in an implicit [.default(false)](/api/java
 
 ## Basic predicates ##
 
-__Example:__ Get all users that are 30 years old.
+__Example:__ Get all users who are 30 years old.
 
 
 ```js
@@ -59,14 +59,14 @@ Predicates to `filter` are evaluated on the server, and must use ReQL expression
 
 Also, predicates must evaluate document fields. They cannot evaluate [secondary indexes](/docs/secondary-indexes/).
 
-__Example:__ Get all users that are more than 18 years old.
+__Example:__ Get all users who are more than 18 years old.
 
 ```js
 r.table("users").filter(r.row("age").gt(18)).run(conn, callback)
 ```
 
 
-__Example:__ Get all users that are less than 18 years old and more than 13 years old.
+__Example:__ Get all users who are less than 18 years old and more than 13 years old.
 
 ```js
 r.table("users").filter(
@@ -75,7 +75,7 @@ r.table("users").filter(
 ```
 
 
-__Example:__ Get all the users that are more than 18 years old or have their parental consent.
+__Example:__ Get all users who are more than 18 years old or have their parental consent.
 
 ```js
 r.table("users").filter(
@@ -85,7 +85,7 @@ r.table("users").filter(
 
 ## More complex predicates ##
 
-__Example:__ Retrieve all the users who subscribed between January 1st, 2012
+__Example:__ Retrieve all users who subscribed between January 1st, 2012
 (included) and January 1st, 2013 (excluded).
 
 ```js
@@ -95,7 +95,7 @@ r.table("users").filter(function (user) {
 }).run(conn, callback);
 ```
 
-__Example:__ Retrieve all the users who have a gmail account (whose field `email` ends with `@gmail.com`).
+__Example:__ Retrieve all users who have a gmail account (whose field `email` ends with `@gmail.com`).
 
 ```js
 r.table("users").filter(function (user) {
@@ -114,7 +114,7 @@ Given this schema for the `users` table:
 }
 ```
 
-Retrieve all the users whose field `placesVisited` contains `France`.
+Retrieve all users whose field `placesVisited` contains `France`.
 
 ```js
 r.table("users").filter(function(user) {
@@ -201,7 +201,7 @@ r.table("users").filter(
 ).run(conn, callback);
 ```
 
-__Example:__ Get all users who have given their phone number (all the documents whose field `phoneNumber` exists and not `null`).
+__Example:__ Get all users who have given their phone number (all the documents whose field `phoneNumber` exists and is not `null`).
 
 ```js
 r.table('users').filter(function (user) {

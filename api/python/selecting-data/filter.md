@@ -21,11 +21,11 @@ array.filter(predicate[, default=False]) &rarr; array
 
 Return all the elements in a sequence for which the given predicate is true. The return value of `filter` will be the same as the input (sequence, stream, or array). Documents can be filtered in a variety of ways&mdash;ranges, nested values, boolean conditions, and the results of anonymous functions.
 
-The `filter` command wraps predicates in an implicit [.default(False)](/api/python/default), so if the predicate tries to access a field that doesn't exist in a given document, that document is not returned. The `default` optional argument sets the value returned for missing fields, rather than `false`. Setting it to `r.error()` will throw an `RqlRuntimeError` when a non-existent field is accessed.
+The `filter` command wraps predicates in an implicit [.default(False)](/api/python/default), so if the predicate tries to access a field that doesn't exist in a given document, that document is not returned. The `default` optional argument sets the value returned for missing fields, rather than `False`. Setting it to `r.error()` will throw an `RqlRuntimeError` when a non-existent field is accessed.
 
 ## Basic predicates ##
 
-__Example:__ Get all users that are 30 years old.
+__Example:__ Get all users who are 30 years old.
 
 
 ```py
@@ -52,19 +52,19 @@ Predicates to `filter` are evaluated on the server, and must use ReQL expression
 
 Also, predicates must evaluate document fields. They cannot evaluate [secondary indexes](/docs/secondary-indexes/).
 
-__Example:__ Get all users that are more than 18 years old.
+__Example:__ Get all users who are more than 18 years old.
 
 ```py
 r.table("users").filter(r.row["age"] > 18).run(conn)
 ```
 
-__Example:__ Get all users that are less than 18 years old and more than 13 years old.
+__Example:__ Get all users who are less than 18 years old and more than 13 years old.
 
 ```py
 r.table("users").filter((r.row["age"] < 18) & (r.row["age"] > 13)).run(conn)
 ```
 
-__Example:__ Get all the users that are more than 18 years old or have their parental consent.
+__Example:__ Get all users who are more than 18 years old or have their parental consent.
 
 ```py
 r.table("users").filter(
@@ -73,7 +73,7 @@ r.table("users").filter(
 
 ## More complex predicates ##
 
-__Example:__ Retrieve all the users who subscribed between January 1st, 2012
+__Example:__ Retrieve all users who subscribed between January 1st, 2012
 (included) and January 1st, 2013 (excluded).
 
 ```py
@@ -83,7 +83,7 @@ r.table("users").filter(
 ).run(conn)
 ```
 
-__Example:__ Retrieve all the users who have a gmail account (whose field `email` ends with `@gmail.com`).
+__Example:__ Retrieve all users who have a gmail account (whose field `email` ends with `@gmail.com`).
 
 ```py
 r.table("users").filter(
@@ -102,7 +102,7 @@ Given this schema for the `users` table:
 }
 ```
 
-Retrieve all the users whose field `places_visited` contains `France`.
+Retrieve all users whose field `places_visited` contains `France`.
 
 ```py
 r.table("users").filter(lambda user:
@@ -188,7 +188,7 @@ document is missing the field `age`.
 r.table("users").filter(r.row["age"] > 18, default=r.error()).run(conn)
 ```
 
-__Example:__ Get all users who have given their phone number (all the documents whose field `phone_number` exists and not `None`).
+__Example:__ Get all users who have given their phone number (all the documents whose field `phone_number` exists and is not `None`).
 
 ```py
 r.table('users').filter(

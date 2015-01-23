@@ -27,7 +27,7 @@ The `filter` command wraps predicates in an implicit [.default(False)](/api/pyth
 
 ## Basic predicates ##
 
-__Example:__ Get all users that are 30 years old.
+__Example:__ Get all users who are 30 years old.
 
 
 ```rb
@@ -46,11 +46,11 @@ r.table('users').filter{ |user|
 
 In this case, the function returns `true` if the field `age` is equal to 30.
 
-Predicates to `filter` are evaluated on the server, and must use ReQL expressions. You cannot use standard Ruby comparison operators such as `==`, `<` and `>`, although you may use `|` and `&` in place of [or](/api/ruby/or) and [and](/api/ruby/and) respectively.
+Predicates to `filter` are evaluated on the server, and must use ReQL expressions. Some Ruby comparison operators are overloaded by the RethinkDB driver and will be translated to ReQL, such as `==`, `<`/`>` and `|`/`&` (note the single character form, rather than `||`/`&&`).
 
 Also, predicates must evaluate document fields. They cannot evaluate [secondary indexes](/docs/secondary-indexes/).
 
-__Example:__ Get all users that are more than 18 years old.
+__Example:__ Get all users who are more than 18 years old.
 
 ```rb
 r.table("users").filter{ |user|
@@ -58,13 +58,15 @@ r.table("users").filter{ |user|
 }.run(conn)
 ```
 
-__Example:__ Get all users that are less than 18 years old and more than 13 years old.
+__Example:__ Get all users who are less than 18 years old and more than 13 years old.
 
-```py
-r.table("users").filter((r.row["age"] < 18) & (r.row["age"] > 13)).run(conn)
+```rb
+r.table("users").filter{ |user|
+    (user["age"] < 18) & (user["age"] > 13)
+}.run(conn)
 ```
 
-__Example:__ Get all the users that are more than 18 years old or have their parental consent.
+__Example:__ Get all users who are more than 18 years old or have their parental consent.
 
 ```rb
 r.table("users").filter{ |user|
@@ -74,7 +76,7 @@ r.table("users").filter{ |user|
 
 ## More complex predicates ##
 
-__Example:__ Retrieve all the users who subscribed between January 1st, 2012
+__Example:__ Retrieve all users who subscribed between January 1st, 2012
 (included) and January 1st, 2013 (excluded).
 
 ```rb
@@ -84,7 +86,7 @@ r.table("users").filter{ |user|
 }.run(conn)
 ```
 
-__Example:__ Retrieve all the users who have a gmail account (whose field `email` ends with `@gmail.com`).
+__Example:__ Retrieve all users who have a gmail account (whose field `email` ends with `@gmail.com`).
 
 ```rb
 r.table("users").filter{ |user|
@@ -103,7 +105,7 @@ Given this schema for the `users` table:
 }
 ```
 
-Retrieve all the users whose field `places_visited` contains `France`.
+Retrieve all users whose field `places_visited` contains `France`.
 
 ```rb
 r.table("users").filter{|user|
@@ -190,7 +192,7 @@ r.table("users").filter(:default => r.error()){
 }.run(conn)
 ```
 
-__Example:__ Get all users who have given their phone number (all the documents whose field `phone_number` exists and not `nil`).
+__Example:__ Get all users who have given their phone number (all the documents whose field `phone_number` exists and is not `nil`).
 
 ```rb
 r.table('users').filter{ |user|
