@@ -313,16 +313,17 @@ again, the cluster clears the reachability issue from web and command
 line tools, availability is restored, and the cluster continues
 operating as normal.
 
-The second option is to declare the server dead. If the server is
-declared dead, it is absolved of all responsibilities, and one of the
-secondary replicas is automatically elected to act as a new primary. After the
-server is declared dead, availability is quickly restored and the
-cluster begins operating normally. (If the dead server comes back up,
-it is rejected by the cluster as a zombie).
+The second option is to permanently remove the server from the cluster. If
+the server is permanently removed, it is absolved of all responsibilities,
+and one of the secondary replicas is automatically elected to act as a new
+primary. After the server is removed, availability is quickly restored and
+the cluster begins operating normally. (If the removed server comes back
+up, it is rejected by the cluster as a ghost).
 
-Currently, RethinkDB does not automatically declare servers dead
-after a timeout. This can be done by the user, either in the web UI,
-manually via the command line, or by scripting the command line tools.
+Currently, RethinkDB does not automatically remove servers after a
+timeout. The user must permanently remove the server manually, either by
+using "Resolve issues" in the web UI or by updating the `server_config`
+[system table](/docs/system-tables).
 
 ## What are availability and performance impacts of sharding and replication? ##
 

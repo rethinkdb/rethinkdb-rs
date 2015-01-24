@@ -41,7 +41,11 @@ For `config_changes` and `status_changes`, see the [config](/api/javascript/conf
 
 A table will lose availability temporarily after `reconfigure` is called; use the [tableStatus](/api/javascript/table_status) command to determine when the table is available again.
 
+**Note:** Whenever you call `reconfigure`, the write durability will be set to `hard` and the write acknowledgments will be set to `majority`; these can be changed by using the `config` command on the table.
+
 If `reconfigure` is called on a database, all the tables in the database will have their configurations affected. The return value will be an array of the objects described above, one per table.
+
+Read [Sharding and replication](/docs/sharding-and-replication/) for a complete discussion of the subject, including advanced topics.
 
 __Example:__ Reconfigure a table.
 

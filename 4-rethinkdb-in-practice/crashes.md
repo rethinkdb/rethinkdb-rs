@@ -83,7 +83,7 @@ Other things that might be helpful to us, if you have them:
 
 RethinkDB supports replication of data: every table in a database can be replicated as many times as you have servers in a cluster. Setting up replication is a simple operation with the web interface or the command line tool. For details, read [Sharding and replication](/docs/sharding-and-replication/).
 
-RethinkDB does not have fully automatic failover (yet), but if a server in a cluster crashes it can be manually declared "dead" and removed from the cluster. In most cases, RethinkDB will recover from such a situation automatically. For information on this process, read [Failover](/docs/failover).
+RethinkDB does not have fully automatic failover (yet), but if a server in a cluster crashes it can be manually removed from the cluster. In most cases, RethinkDB will recover from such a situation automatically. For information on this process, read [Failover](/docs/failover).
 
 ----
 

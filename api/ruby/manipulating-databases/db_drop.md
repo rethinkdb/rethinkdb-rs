@@ -44,6 +44,7 @@ r.db_drop('superheroes').run(conn)
             :new_val => nil
         }
     ],
+    :tables_dropped => 3,
     :dbs_dropped => 1
 }
 ```

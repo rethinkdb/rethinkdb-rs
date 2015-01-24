@@ -63,13 +63,18 @@ By default, RethinkDB creates a database `test`. Let's create a table
 r.db("test").table_create("authors").run
 ```
 
-The result should be:
+The result will be:
 
-```ruby
-{ "created"=>1 }
+```rb
+{
+    :config_changes => [
+        <table configuration data>
+    ],
+    :tables_created => 1
+}
 ```
 
-There are a couple of things you should note about this query:
+(The `config_changes` field contains metadata about the newly created table; for more details, read about the [table_create](/api/ruby/table_create/) command.) There are a couple of things you should note about this query:
 
 * First, we select the database `test` with the `db` command.
 * Then, we add the `table_create` command to create the actual table.

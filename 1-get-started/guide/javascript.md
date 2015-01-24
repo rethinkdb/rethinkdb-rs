@@ -61,13 +61,18 @@ r.db('test').tableCreate('authors').run(connection, function(err, result) {
 })
 ```
 
-The result should be:
+The result will be:
 
 ```json
-{ created: 1 }
+{
+    "config_changes": [
+        <table configuration data>
+    ],
+    "tables_created": 1
+}
 ```
 
-There are a couple of things you should note about this query:
+(The `config_changes` field contains metadata about the newly created table; for more details, read about the [tableCreate](/api/javascript/table_create/) command.) There are a couple of things you should note about this query:
 
 * First, we select the database `test` with the `db` command.
 * Then, we add the `tableCreate` command to create the actual table.
