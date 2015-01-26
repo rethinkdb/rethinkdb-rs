@@ -34,6 +34,7 @@ Note: Only alphanumeric characters and underscores are valid for the table name.
 When creating a table you can specify the following options:
 
 * `primary_key`: the name of the primary key. The default primary key is `id`.
+* `durability`: if set to `soft`, writes will be acknowledged by the server immediately and flushed to disk in the background. The default is `hard`: acknowledgment of writes happens after data has been written to disk.
 * `shards`: the number of shards, an integer from 1-32. Defaults to `1`.
 * `replicas`: either an integer or a mapping object. Defaults to `1`.
     * If `replicas` is an integer, it specifies the number of replicas per shard. Specifying more replicas than there are servers will return an error.
