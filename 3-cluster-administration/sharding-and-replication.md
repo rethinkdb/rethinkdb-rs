@@ -91,7 +91,7 @@ r.db('rethinkdb').table('server_config').get(
 r.db('database').reconfigure(shards=2, replicas=3).run(conn)
 ```
 
-Note that tables are configured on startup and when the `reconfigure` command is called, but the configurations are *not* stored by the server otherwise. To reconfigure tables consistently&mdash;especially if your configuration uses server tags&mdash;you should save the configuration in a script. Read more about this in [Administration tools][at].
+Note that tables are configured on creation and when the `reconfigure` command is called, but the configurations are *not* stored by the server otherwise. To reconfigure tables consistently&mdash;especially if your configuration uses server tags&mdash;you should save the configuration in a script. Read more about this in [Administration tools][at].
 
 ## Write acks and durability ##
 
@@ -110,3 +110,5 @@ r.db('rethinkdb').table('table_config').get(
     '31c92680-f70c-4a4b-a49e-b238eb12c023').update(
         {"write_acks": "single"}).run(conn)
 ```
+
+The `durability` setting for a table controls when writes are committed. In `hard` durability mode, writes are committed to disk before acknowledgements are sent; in `soft` mode, writes are acknowledged immediately upon receipt. The `soft` mode is faster but slightly less resilient to failure.

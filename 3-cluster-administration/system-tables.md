@@ -79,7 +79,7 @@ If `write_acks` is set to a list of requirements, they should take the form of:
 ]
 ```
 
-If you `delete` a row from `table_config` the table will be deleted. If you `insert` a row, you must include the `name` and `db` fields; the rest will be automatically generated or set to default. Do not include the `id` field. The system will auto-generate a UUID. 
+If you `delete` a row from `table_config` the table will be deleted. If you `insert` a row, the `name` and `db` fields are required; the other fields are optional, and will be automatically generated or set to their default if they are not specified. Do not include the `id` field. The system will auto-generate a UUID. 
 
 If you `replace` a row in `table_config`, you must include all the fields. It's usually easier to `update` specific fields.
 

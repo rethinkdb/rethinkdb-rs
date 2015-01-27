@@ -40,17 +40,4 @@ __Example:__ Change the write acknowledgement requirement of the `users` table.
 
 ```py
 r.table('users').config().update({'write_acks': 'single'}).run(conn)
-
-{
-    "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
-    "name": "users",
-    "db": "superstuff",
-    "primary_key": "id",
-    "shards": [
-        {"primary_replica": "a", "replicas": ["a", "b"]},
-        {"primary_replica": "d", "replicas": ["c", "d"]}
-    ],
-    "write_acks": "single",
-    "durability": "hard"
-}
 ```

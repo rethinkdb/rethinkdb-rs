@@ -89,3 +89,4 @@ __Example:__ Create a table set up for two shards and three replicas per shard. 
 r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn, callback);
 ```
 
+Read [Sharding and replication](/docs/sharding-and-replication/) for a complete discussion of the subject, including advanced topics.

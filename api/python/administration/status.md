@@ -1,8 +1,8 @@
 ---
 layout: api-command
 language: Python
-permalink: api/python/table_status/
-command: table_status
+permalink: api/python/status/
+command: status
 ---
 # Command syntax #
 
@@ -23,7 +23,7 @@ The return value is an object providing information about the table's shards, re
     * `primary_replica`: name of the shard's primary server.
     * `replicas`: an array of objects showing the status of each replica, with the following keys:
         * `server`: name of the replica server.
-        * `state`: one of `ready`, `missing`, `backfilling_data`, `offloading_data`, `erasing_data`, `looking_for_primary` or `transitioning`.
+        * `state`: one of `ready`, `disconnected`, `backfilling_data`, `offloading_data`, `erasing_data`, `looking_for_primary_replica` or `transitioning`.
 * `status`: an object with the following boolean keys:
     * `all_replicas_ready`: `True` if all backfills have finished.
     * `ready_for_outdated_reads`: `True` if the table is ready for read queries with the `use_outdated` flag set to `True`.

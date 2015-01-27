@@ -19,7 +19,13 @@ The `rebalance` command operates by measuring the distribution of primary keys w
 
 A table will lose availability temporarily after `rebalance` is called; use the [wait](/api/ruby/wait) command to wait for the table to become available again, or [status](/api/ruby/status) to check if the table is available for writing.
 
-RethinkDB will do a good job keeping shards balanced *if* the primary keys are distributed evenly, such as randomly chosen UUIDs. If you generate your own primary keys and the keys are distributed unevenly--for instance, using an incrementing integer key for newly inserted documents--you may need to rebalance manually. You can use the [web UI](/docs/administration-tools/) or the [info](/api/ruby/info) command to see if shards are balanced.
+RethinkDB automatically rebalances tables when the number of shards are increased, and as long as your documents have evenly distributed primary keys--such as the default UUIDs--it is rarely necessary to call `rebalance` manually. Cases where `rebalance` may need to be called include:
+
+* Tables with unevenly distributed primary keys, such as incrementing integers
+* Changing a table's primary key type
+* Increasing the number of shards on an empty table, then using non-UUID primary keys in that table
+
+The [web UI](/docs/administration-tools/) (and the [info](/api/ruby/info) command) can be used to tell you when a table's shards need to be rebalanced.
 
 The return value of `rebalance` is an object with two fields:
 

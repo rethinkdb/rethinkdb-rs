@@ -31,7 +31,7 @@ r.db("rethinkdb").table("stats").get(["table_server", "31c92680-f70c-4a4b-a49e-b
 
 # Document schema #
 
-Each object has its own document schema. The field names are, for the most part, self-explanatory.
+Each object has its own document schema. The field names are, for the most part, self-explanatory. The fields `server`, `db` and `table` will be either UUIDs or strings depending on the value of the `identifier_format` optional argument to `table`.
 
 ## cluster ##
 
@@ -51,8 +51,7 @@ Each object has its own document schema. The field names are, for the most part,
 ```
 {
   id: ["server", <UUID>],
-  server_id: <UUID>,
-  server_name: <STRING>,
+  server: <UUID> or <STRING>,
   query_engine: {
     queries_per_sec: <NUMBER>,
     queries_total: <NUMBER>,
@@ -70,8 +69,7 @@ If a server has timed out, the returned document will contain no statistics, but
 ```
 {
   id: ["server", <UUID>],
-  server_id: <UUID>,
-  server_name: <STRING>,
+  server: <UUID> or <STRING>,
   error: "Timed out. Unable to retrieve stats."
 }
 ```
@@ -82,11 +80,8 @@ If a server has timed out, the returned document will contain no statistics, but
 ```
 {
   id: ["table", <UUID>],
-  table_id: <UUID>,
-  db_id: <UUID>,
-  db_name: <STRING>,
-  table_name: <STRING>,
-
+  table: <UUID> or <STRING>,
+  db: <UUID> or <STRING>,
   query_engine: {
     read_docs_per_sec: <NUMBER>,
     written_docs_per_sec: <NUMBER>
@@ -99,13 +94,9 @@ If a server has timed out, the returned document will contain no statistics, but
 ```
 {
   id: ["table_server", <UUID>, <UUID>]  // table_id, server_id
-  server_id: <UUID>,
-  server_name: <STRING>,
-  table_id: <UUID>,
-  db_id: <UUID>,
-  db_name: <STRING>,
-  table_name: <STRING>,
-
+  server: <UUID> or <STRING>,
+  table: <UUID> or <STRING>,
+  db: <UUID> or <STRING>,
   query_engine: {
     read_docs_per_sec: <NUMBER>,
     read_docs_total: <NUMBER>,

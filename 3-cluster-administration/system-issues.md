@@ -147,7 +147,7 @@ info: {
 }
 ```
 
-A server that's been permanently removed&mdash;deleted from the `server_config` table&mdash;has tried to reconnect to the cluster. (`<server>` will always be a UUID regardless of `identifier_format`.) The UUID of the "ghost" server will be in `server_id` (note this will always be the UUID, regardless of the `identifier_format` setting); other `info` fields are the `hostname` of the "ghost" server and the `pid` (process ID) of the RethinkDB process on that server.
+A server that's been permanently removed&mdash;deleted from the `server_config` table&mdash;has tried to reconnect to the cluster. The UUID of the "ghost" server will be in `server_id` (note this will always be the UUID, regardless of the `identifier_format` setting); other `info` fields are the `hostname` of the "ghost" server and the `pid` (process ID) of the RethinkDB process on that server.
 
 When a server has been permanently deleted, it can only rejoin the cluster after the RethinkDB data files on that server are deleted and the process is restarted with an empty data directory, thus making it a "new" server.
 

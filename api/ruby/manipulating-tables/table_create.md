@@ -86,3 +86,5 @@ __Example:__ Create a table set up for two shards and three replicas per shard. 
 ```rb
 r.db('test').table_create('dc_universe', {:shards => 2, :replicas => 3}).run(conn)
 ```
+
+Read [Sharding and replication](/docs/sharding-and-replication/) for a complete discussion of the subject, including advanced topics.

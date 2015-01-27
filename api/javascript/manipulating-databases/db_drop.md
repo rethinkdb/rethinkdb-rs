@@ -47,6 +47,7 @@ __Example:__ Drop a database named 'superheroes'.
             "new_val": null
         }
     ],
+    "tables_dropped": 3,
     "dbs_dropped": 1
 }
 ```

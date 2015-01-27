@@ -12,51 +12,33 @@ the roadmap. Follow [Github
 issue #223](https://github.com/rethinkdb/rethinkdb/issues/223) for more information.
 {% endinfobox %}
 
-When a server fails, it may be because of a network availability issue or
-something more serious, such as system failure. If the server will not be able
-to reconnect to the cluster, you can __manually declare it dead__, which is a
-simple one-click operation. 
+When a server fails, it may be because of a network availability issue or something more serious, such as system failure. If the server will not be able to reconnect to the cluster, you can permanently remove it.
 
-When a server is declared dead, the system will attempt to recover itself
-automatically. However, dropping a server from the cluster can affect table
-availability and require additional manual intervention in the following cases:
+When a server is permanently removed, the system will attempt to recover itself automatically. However, dropping a server from the cluster can affect table availability and require additional manual intervention in the following cases:
 
-- If the server was acting as __primary for any shards__, the corresponding
-  tables will lose read and write availability (out-of-date reads remain
-  possible as long as there are other replicas of the shards).
-- If the server was acting as a replica for a given table and there are __not
-  enough replicas in the cluster__ to respect the write acknowledgement
-  settings (_acks_), the table will lose write availability, but maintains read
+- If the server was acting as a primary replica for any shards, the corresponding tables will lose read and write availability (out-of-date reads remain possible as long as there are other replicas of the shards).
+
+- If the server was acting as a replica for a given table and there are not
+  enough replicas in the cluster to respect the write acknowledgement
+  settings (_acks_), the table will lose write availability, but maintain read
   availability. 
 
-On the other hand, if the server was acting as a replica for a given table and there are
-enough replicas to respect the user's write acknowledgement settings (_acks_),
-the system continues operating as normal and the affected tables will maintain
-both read and write access. The system will be able to recover itself without
-additional intervention.
+If the server was acting as a replica for a given table and there are enough replicas to respect the user's write acknowledgement settings (_acks_), the system continues operating as normal and the affected tables will maintain both read and write access. The system will be able to recover itself without additional intervention.
 
 ## What to do when a server goes down ##
 
-In general, when a server goes down, there are two possible solutions. The
-first option is to simply wait for the server to become reachable again. If
-the server comes back up, RethinkDB automatically performs the following
-actions without any user interaction:
+In general, when a server goes down, there are two possible solutions. The first option is to simply wait for the server to become reachable again. If the server comes back up, RethinkDB automatically performs the following actions without any user interaction:
 
 1. Replicas on the server are brought up to date with the latest changes. 
-2. Primaries on the server become active again. 
+2. Primary replicas on the server become active again. 
 3. The cluster clears the reachability issue from web and command
 line tools, availability is restored, and the cluster continues
 operating as normal.
 
-The second option is to declare the server dead. If a server is
-declared dead, it is absolved of all responsibilities, and one of the
-replicas is automatically elected as a new primary. After the
-server is declared dead, availability is quickly restored and the
-cluster begins operating normally. (If the dead server comes back up,
-it is rejected by the cluster as a "zombie" since it might have data conflicts).
-
+The second option is to permanently remove the server. If a server is permanently removed, it is absolved of all responsibilities, and one of the replicas is automatically elected as a new primary replica. After the server is removed, availability is quickly restored and the cluster begins operating normally. (If the server comes back up, it is rejected by the cluster as a "ghost," since it might have data conflicts.)
 
 ## Example failover scenario using the web interface ##
+
 In this example, we have 4 servers in our cluster and one table requiring 4
 replicas and 4 acks.
 
@@ -72,16 +54,16 @@ about the current issue.  In our case, the unreachable server is a replica
 ![Issue on the web interface](/assets/images/docs/administration/failover2.png)
 
 In this case, if we don't want to wait for the server to come back online, we
-can declare the server dead. Declaring a server dead means that we remove the
+can resolve the issue by permanently removing the server. This will delete the
 server and all its data from the cluster.
 
 {% infobox %}
-__Warning__: Once we have declared a server dead, all of its data will be
+__Warning__: Once we have permanently removed a server, all of its data will be
 lost. Even if we later restart a RethinkDB instance with the same data
 directory, we will not be able to reuse the data.
 {% endinfobox %}
 
-Once the server is declared dead, we have only three servers left in our
+Once the server is removed, we have only three servers left in our
 cluster. Since we are requiring four replicas and four acks, the system raises
 a new error: _Unsatisfiable goals_. This error means that our replication
 requirements are not possible with the current cluster.
@@ -108,40 +90,16 @@ our cluster and the warning disappears.
 
 ![Issue on the web interface](/assets/images/docs/administration/failover4.png)
 
+## Permanently removing a server with ReQL ##
 
+Administration through ReQL is performed by querying [system tables](/docs/system-tables/). Server issues can be listed by querying the [current_issues](/docs/system-issues/) system table.
 
-## Example failover scenario using the command-line interface ##
-Connect to your cluster via the command-line interface:
+An unreachable server will be listed with a `server_disconnected` issue, with its UUID in the `disconnected_server` field. To permanently remove a server using ReQL administration commands, delete it by UUID from the `server_config` system table.
 
-```
-rethinkdb admin --join <host>:<port>
-```
+From the Data Explorer:
 
-In this example, a server has already been declared dead so you should see
-this warning:
-
-```
-There is 1 outstanding issue, run 'ls issues' for more information
+```js
+r.db('rethinkdb').table('server_config').get(<UUID>).delete()
 ```
 
-You can resolve this issue with the following:
-
-```
-# List the issues first using `ls`:
-localhost:29015> ls issues
-
-Machine 9d1b4e33-346d-406b-a1e9-8ce1d47e0f28 is inaccessible.
-
-# If we try to remove the server with the `rm` command, we will get an error
-# stating "unsatisfiable goals":
-localhost:29015> rm server 9d1b4e33-346d-406b-a1e9-8ce1d47e0f28
-
-error: Namespace ecaf9874-5fe2-4627-97ee-69c7cafdd9a8 has unsatisfiable goals
-
-# To solve this problem, we can lower the number of replicas:
-localhost:29105> set acks ecaf9874-5fe2-4627-97ee-69c7cafdd9a8 3
-localhost:29105> set replicas ecaf9874-5fe2-4627-97ee-69c7cafdd9a8 3
-
-# The list of issues should now be empty:
-localhost:29015> ls issues
-```
+(The syntax is similar with other drivers.)
