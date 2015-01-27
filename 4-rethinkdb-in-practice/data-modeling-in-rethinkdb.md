@@ -27,7 +27,7 @@ embedded arrays as follows. Consider this example document in the
 table `authors`:
 
 ```json
-{ 
+{
   "id": "7644aaf2-9928-4231-aa68-4e65e31bf219",
   "name": "William Adama", "tv_show": "Battlestar Galactica",
   "posts": [
@@ -87,7 +87,7 @@ You can use a relational data modeling technique and create two tables to store 
 A typical document in the `posts` table would look like this:
 
 ```json
-{ 
+{
   "id": "064058b6-cea9-4117-b92d-c911027a725a",
   "author_id": "7644aaf2-9928-4231-aa68-4e65e31bf219",
   "title": "Decommissioning speech",
@@ -116,7 +116,7 @@ In a relational database, we'd use a `JOIN` here; in RethinkDB, we use the `eq_j
 # on the `author_id` field of the table `posts`.
 r.db("blog").table("authors").getAll("7644aaf2-9928-4231-aa68-4e65e31bf219").eq_join(
     'id',
-    r.db("blog").table("authors"),
+    r.db("blog").table("posts"),
     index='author_id'
 ).zip().run()
 ```
