@@ -271,7 +271,9 @@ This table shows problems that have been detected within the RethinkDB cluster. 
 
 ## jobs ##
 
-TK
+The `jobs` table provides information about tasks running within the RethinkDB cluster, including queries, disk compaction, and index construction, and allows you to kill query jobs by deleting them from the table. For details, read the [System jobs table][sjt] documentation.
+
+[sjt]: /docs/system-jobs/
 
 ## stats ##
 
