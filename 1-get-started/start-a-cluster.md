@@ -72,6 +72,8 @@ Note the command line parameters we used to start the second node:
 - `--directory` &mdash; use a different data directory so the two nodes don't try to access the same files.
 - `--join` &mdash; tell our new RethinkDB instance to connect to another instance (in this case, `localhost:29015`).
 
+For a complete list of options that can be passed to RethinkDB on the command line, read [RethinkDB command line options](/docs/cli-options), or type `rethinkdb --help` at the terminal prompt.
+
 {% infobox info %}
 <strong>Having trouble accessing the web interface?</strong> Try restarting both of your RethinkDB instances with an additional `--bind all` parameter.
 {% endinfobox %}
