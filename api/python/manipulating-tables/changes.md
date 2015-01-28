@@ -16,15 +16,15 @@ singleSelection.changes(squash=True) &rarr; stream
 
 # Description #
 
-Return an infinite stream of objects representing changes to a table or a document.
+Return an infinite stream of objects representing changes to a query.
 
 The `squash` optional argument controls how `changes` batches change notifications:
 
-* `True`: When multiple changes to the same table or document occur before a batch of notifications is sent, the changes are "squashed" into one change. The client receives a notification that will bring it fully up to date with the server. This is the default.
+* `True`: When multiple changes to the same document occur before a batch of notifications is sent, the changes are "squashed" into one change. The client receives a notification that will bring it fully up to date with the server. This is the default.
 * `False`: All changes will be sent to the client verbatim.
 * `n`: A numeric value (floating point). Similar to `True`, but the server will wait `n` seconds to respond in order to squash as many changes together as possible, reducing network traffic.
 
-## Notification format ##
+If the table becomes unavailable, the changefeed will be disconnected, and a runtime exception will be thrown by the driver.
 
 Changefeed notifications take the form of a two-field object:
 
@@ -35,21 +35,13 @@ Changefeed notifications take the form of a two-field object:
 }
 ```
 
-When a document is deleted, `new_val` will be `None`; when a document is inserted, `old_val` will be `None`.
+The first notification object in the changefeed stream will contain the query's initial value in `new_val` and have no `old_val` field. When a document is deleted, `new_val` will be `None`; when a document is inserted, `old_val` will be `None`.
 
 Certain document transformation commands can be chained before changefeeds. For more information, read the [discussion of changefeeds](docs/changefeeds/python/) in the "Query language" documentation.
 
-## Changefeeds on tables ##
-
 The server will buffer up to 100,000 elements. If the buffer limit is hit, early changes will be discarded, and the client will receive an object of the form `{"error": "Changefeed cache over array size limit, skipped X elements."}` where `X` is the number of elements skipped.
 
-If the table becomes unavailable, the changefeed will be disconnected, and a runtime exception will be thrown by the driver.
-
 Commands that operate on streams (such as `filter` or `map`) can usually be chained after `changes`.  However, since the stream produced by `changes` has no ending, commands that need to consume the entire stream before returning (such as `reduce` or `count`) cannot.
-
-## On single documents ##
-
-Whenever the document changes, the new document will be appended to the stream. The stream will always start with a notification that *only* has the `new_val` field (no `old_val` will be listed).
 
 It's a good idea to open changefeeds on their own connection. If you don't, other queries run on the same connection will experience unpredictable latency spikes while the connection blocks on more changes.
 

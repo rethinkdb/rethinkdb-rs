@@ -14,7 +14,7 @@ language: JavaScript
 
 
 Changefeeds are a way for clients to subscribe to changes on a table or a
-document within that table. Any time a document is inserted, updated, or
+document within that table. When a document is inserted, updated, or
 deleted, the client driver will be notified about the change. RethinkDB
 implements changefeeds via the [changes](/api/javascript/changes) command.
 
@@ -22,6 +22,8 @@ Changefeeds offer a convenient way to perform certain tasks:
 
 - Integrate with other databases or middleware such as ElasticSearch or RabbitMQ.
 - Write applications where clients are notified of changes in realtime.
+
+You can control how frequently your application receives change notifications with the `squash` argument to `changes`; read the API documentation for more details.
 
 # Basic usage #
 
@@ -88,12 +90,13 @@ select data:
 * [between](/api/javascript/between) (returns an initial value)
 * [min](/api/javascript/min) (returns an initial value)
 * [max](/api/javascript/max) (returns an initial value)
-* [orderBy](/api/javascript/order_by) (returns an initial value)
-* [limit](/api/javascript/limit) (returns an initial value)
+* [orderBy](/api/javascript/order_by).[limit](/api/javascript/limit) (returns an initial value)
 
-You can't use changefeeds after [concatMap](/api/javascript/concat_map) or
-other transformations whose results cannot be pushed to the shards.
-Transformations are applied before changes are calculated.
+Note that `order_by` requires `limit` with changefeeds (neither one will
+work by itself). You can't use changefeeds after
+[concatMap](/api/javascript/concat_map) or other transformations whose
+results cannot be pushed to the shards. Transformations are applied before
+changes are calculated.
 
 In addition, `changes` can be chained before any command that operates on
 a sequence of documents, as long as that command doesn't require the

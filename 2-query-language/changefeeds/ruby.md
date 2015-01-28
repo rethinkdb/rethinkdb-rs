@@ -14,7 +14,7 @@ language: Ruby
 
 
 Changefeeds are a way for clients to subscribe to changes on a table or a
-document within that table. Any time a document is inserted, updated, or
+document within that table. When a document is inserted, updated, or
 deleted, the client driver will be notified about the change. RethinkDB
 implements changefeeds via the [changes](/api/ruby/changes) command.
 
@@ -22,6 +22,8 @@ Changefeeds offer a convenient way to perform certain tasks:
 
 - Integrate with other databases or middleware such as ElasticSearch or RabbitMQ.
 - Write applications where clients are notified of changes in realtime.
+
+You can control how frequently your application receives change notifications with the `squash` argument to `changes`; read the API documentation for more details.
 
 # Basic usage #
 
@@ -86,12 +88,13 @@ select data:
 * [between](/api/ruby/between) (returns an initial value)
 * [min](/api/ruby/min) (returns an initial value)
 * [max](/api/ruby/max) (returns an initial value)
-* [order_by](/api/ruby/order_by) (returns an initial value)
-* [limit](/api/ruby/limit) (returns an initial value)
+* [order_by](/api/ruby/order_by).[limit](/api/ruby/limit) (returns an initial value)
 
-You can't use changefeeds after [concat_map](/api/ruby/concat_map) or
-other transformations whose results cannot be pushed to the shards.
-Transformations are applied before changes are calculated.
+Note that `order_by` requires `limit` with changefeeds (neither one will
+work by itself). You can't use changefeeds after
+[concat_map](/api/ruby/concat_map) or other transformations whose results
+cannot be pushed to the shards. Transformations are applied before changes
+are calculated.
 
 In addition, `changes` can be chained before any command that operates on
 a sequence of documents, as long as that command doesn't require the

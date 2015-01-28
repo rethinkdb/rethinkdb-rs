@@ -34,3 +34,9 @@ r.table('heroes').get(3).merge(
     { 'powers': ['invisibility', 'speed'] }
 ).run(conn)
 ```
+
+___Example:__ Subscribe to a document's [changefeed](/docs/changefeeds/python).
+
+```py
+changes = r.table('heroes').get(3).changes().run(conn)
+```
