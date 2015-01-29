@@ -57,7 +57,10 @@ tags = {
     'r': [('', 'rethinkdb')],
     'repl': [('rethinkdb.net.Connection.', 'repl')],
     'count': lambda parent: not parent == 'rethinkdb.' and [(query, 'count')] or [],
-    'rethinkdb': [('', 'rethinkdb')]
+    'rethinkdb': [('', 'rethinkdb')],
+    'to_json_string, to_json': [(query, 'to_json_string'), (query, 'to_json')],
+    'for': [],
+    'list': []
 }
 
 # Write the header of the docs.py file
