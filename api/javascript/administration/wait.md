@@ -1,8 +1,8 @@
 ---
 layout: api-command
 language: JavaScript
-permalink: api/javascript/table_wait/
-command: tableWait
+permalink: api/javascript/wait/
+command: wait
 io:
     -   - table
         - object

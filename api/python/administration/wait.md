@@ -1,8 +1,8 @@
 ---
 layout: api-command
 language: Python
-permalink: api/python/table_wait/
-command: table_wait
+permalink: api/python/wait/
+command: wait
 ---
 # Command syntax #
 

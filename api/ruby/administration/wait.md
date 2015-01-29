@@ -1,8 +1,8 @@
 ---
 layout: api-command
 language: Ruby
-permalink: api/ruby/table_wait/
-command: table_wait
+permalink: api/ruby/wait/
+command: wait
 ---
 # Command syntax #
 
