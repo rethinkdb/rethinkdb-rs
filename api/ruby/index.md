@@ -2855,3 +2855,92 @@ outer_polygon.polygon_sub(inner_polygon).run(conn)
 [Read more about this command &rarr;](polygon_sub/)
 
 {% endapisection %}
+
+{% apisection Administration %}
+
+## [config](config/) ##
+
+{% apibody %}
+table.config() &rarr; selection&lt;object&gt;
+database.config() &rarr; selection&lt;object&gt;
+{% endapibody %}
+
+Query (read and/or update) the configurations for individual tables or databases.
+
+__Example:__ Get the configuration for the `users` table.
+
+```rb
+> r.table('users').config().run(conn)
+```
+
+[Read more about this command &rarr;](config/)
+
+## [rebalance](rebalance/) ##
+
+{% apibody %}
+table.rebalance() &rarr; object
+database.rebalance() &rarr; object
+{% endapibody %}
+
+Rebalances the shards of a table. When called on a database, all the tables in that database will be rebalanced.
+
+__Example:__ rebalance a table.
+
+```rb
+> r.table('superheroes').rebalance().run(conn)
+```
+
+[Read more about this command &rarr;](rebalance/)
+
+## [reconfigure](reconfigure/) ##
+
+{% apibody %}
+table.reconfigure({:shards => <s>, :replicas => <r>[, :primary_tag => <t>, :dry_run => false]}) &rarr; object
+database.reconfigure({:shards => <s>, :replicas => <r>[, :primary_tag => <t>, :dry_run => false]}) &rarr; object
+{% endapibody %}
+
+Reconfigure a table's sharding and replication.
+
+__Example:__ Reconfigure a table.
+
+```rb
+> r.table('superheroes').reconfigure({:shards => 2, :replicas => 1}).run(conn)
+```
+
+[Read more about this command &rarr;](reconfigure/)
+
+## [status](status/) ##
+
+{% apibody %}
+table.status() &rarr; selection&lt;object&gt;
+{% endapibody %}
+
+Return the status of a table.
+
+__Example:__ Get a table's status.
+
+```rb
+> r.table('superheroes').status().run(conn)
+```
+
+[Read more about this command &rarr;](status/)
+
+## [wait](wait/) ##
+
+{% apibody %}
+table.wait() &rarr; object
+database.wait() &rarr; object
+r.wait() &rarr; object
+{% endapibody %}
+
+Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.
+
+__Example:__ Get a table's status.
+
+```rb
+> r.table('superheroes').wait().run(conn)
+```
+
+[Read more about this command &rarr;](wait/)
+
+{% endapisection %}
