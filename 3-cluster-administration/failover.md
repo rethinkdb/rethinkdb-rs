@@ -39,17 +39,8 @@ The second option is to permanently remove the server. If a server is permanentl
 
 ## Example failover scenario using the web interface ##
 
-In this example, we have 4 servers in our cluster and one table requiring 4
-replicas and 4 acks.
-
-As soon as one server dies, the web interface reports an issue. This is what
-you would see in the webUI:
-
-![Issue on the web interface](/assets/images/docs/administration/failover1.png)
-
-If we click on the _Resolve issues_ button, we should see more information
-about the current issue.  In our case, the unreachable server is a replica
-(aka secondary) and therefore we have not lost any write availability.
+As soon as one server dies, the web interface reports an issue. If we click on the _Resolve issues_ button, we should see more information
+about the current issue. In our case, the unreachable server is a replica, and therefore we have not lost any write availability.
 
 ![Issue on the web interface](/assets/images/docs/administration/failover2.png)
 
@@ -63,32 +54,7 @@ lost. Even if we later restart a RethinkDB instance with the same data
 directory, we will not be able to reuse the data.
 {% endinfobox %}
 
-Once the server is removed, we have only three servers left in our
-cluster. Since we are requiring four replicas and four acks, the system raises
-a new error: _Unsatisfiable goals_. This error means that our replication
-requirements are not possible with the current cluster.
-
-![Issue on the web interface](/assets/images/docs/administration/failover3.png)
-
-There are two ways for us to solve this issue:
-
-- Connect a new server to the cluster
-- Lower the number of replicas and acks required
-
-If we decide to click on the _Lower replicas_ button, the system will lower the
-replicas just enough to solve the issue (in our case 3 replicas and 3 acks).
-
-{% infobox info %}
-__Note__: There can sometimes be a situation where the system has the option to
-lower the number of replicas in a specific datacenter or in the whole cluster.
-In this case, there is no way for the system to know which option is preferred, so
-it will require the user to reduce the number of replicas manually.
-{% endinfobox %}
-
-Once the number of replicas has been reduced, there are no remaining issues in
-our cluster and the warning disappears.
-
-![Issue on the web interface](/assets/images/docs/administration/failover4.png)
+Once the server is removed, the problem is resolved--the tables that had replicas on that server will be reconfigured automatically. Note, however, that if you connect a new server, the table will not automatically be reconfigured to take advantage of it--you will need to reconfigure the table manually.
 
 ## Permanently removing a server with ReQL ##
 
