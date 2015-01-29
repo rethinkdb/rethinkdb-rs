@@ -30,18 +30,20 @@ def read_index(script_path, result):
     parsing_example = False
     just_opened_api = False
 
-    for line in index_file:
-        # If we just opened an api section, we are going to ignore everything until we hit a new method
-        if open_apisection.match(line) != None:
-            just_opened_api = True
+    for line in list(index_file) + [None]:
+        if line is not None:
+            # If we just opened an api section, we are going to ignore everything until we hit a new method
+            if open_apisection.match(line) != None:
+                just_opened_api = True
 
-        # Ignore the "read more about this command" lines
-        if ignore_pattern.match(line) != None:
-           continue 
+            # Ignore the "read more about this command" lines
+            if ignore_pattern.match(line) != None:
+                continue
 
-        title = title_pattern.match(line)
-        if title != None:
-            # We just found a new title, let's save the previous one (if defined)
+            title = title_pattern.match(line)
+
+        if line is None or title != None:
+            # We just found a new title or are at the end, let's save the previous one (if defined)
             if current_method != None:
                 # The key used is the url of the detailed page about the method
 
@@ -57,6 +59,9 @@ def read_index(script_path, result):
                     "name": current_method,
                     "example": markdown.markdown(current_example)
                 }
+
+            if line is None:
+                break
 
             current_method = title.group(1)
             current_url = title.group(2)
@@ -87,15 +92,6 @@ def read_index(script_path, result):
                             current_example = line
                         else:
                             current_description += line
-
-    # Save last method
-    result["api/javascript/"+current_url+"/"] = {
-        "description": markdown.markdown(current_description),
-        "url":  current_url,
-        "body": current_body,
-        "name": current_method,
-        "example": markdown.markdown(current_example)
-    }
 
     index_file.close()
 

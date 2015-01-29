@@ -41,7 +41,7 @@ Now, use one of the following two methods to enable secure access.
 
 Once you block the web interface port in the step above, the easiest
 way to access it is to use ssh to set up a socks proxy. Run the
-following command on your local machine (not the one running
+following command on your local server (not the one running
 RethinkDB):
 
 ```bash
@@ -50,9 +50,9 @@ ssh -D 3000 USERNAME@HOST
 
 Where,
 
-- `HOST` is the ip of any machine on your RethinkDB cluster.
+- `HOST` is the ip of any server on your RethinkDB cluster.
 - `3000` can be changed to any port that is available on your local
-  machine.
+  server.
 
 Then open your browser:
 
@@ -76,7 +76,7 @@ You can now visit `localhost:8080` to see the RethinkDB web admin.
 ## Via a reverse proxy ##
 
 You can use a reverse http proxy to allow access to the web interface
-from other machines. Most web servers (such as apache or nginx)
+from other servers. Most web servers (such as apache or nginx)
 support this feature. In the following example we'll use apache to set
 up a reverse proxy.
 
@@ -133,32 +133,22 @@ You can now access the web interface using the following URL:
 
 ## Using the RethinkDB authentication system ##
 
-RethinkDB allows setting an authentication key using the command line
-interface. Once you set the authentication key, client drivers will be
-required to pass the key to the server in order to connect.
+RethinkDB allows you to set an authentication key by modifying the
+`cluster_config` [system table](/docs/system-tables/). Once you set an
+authentication key, client drivers will be required to pass the key to the
+server in order to connect.
 
 {% infobox %}
-__Note__: the authentication key will be transmitted to and stored on the
-RethinkDB server in plain text, and neither the key nor the data passed
-between the client and the server will be encrypted. The key provides basic
-protection against unauthorized access, but if the client port is open to
-outside networks it's strongly suggested you use SSH tunneling for protection
-(see below).
+__Note__: The authentication key affects _client drivers,_ not the web interface. Follow the directions above to secure the web UI.
 {% endinfobox %}
 
-First, open the CLI:
+Open the Data Explorer in the web administration console and execute the following command:
 
-```
-rethinkdb admin --join HOST:29015
-```
-
-Then execute the following command:
-
-```
-set auth <authentication_key>
+```js
+r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: 'newkey'})
 ```
 
-You can set the `authentication_key` option to any key of your choice.
+Instead of "newkey" you can use any string of your choice as the key.
 
 You can now connect to the driver port from any network, but must provide the
 required authentication key with the `connect` command. For instance, in
@@ -169,12 +159,22 @@ r.connect({host: HOST, port: PORT, authKey: <authentication_key>},
     function(error, connection) { ... })
 ```
 
-You can remove an authentication key with the `unset auth` command from the RethinkDB CLI.
+You can remove an authentication key by writing `null` to the `auth_key` field in `cluster_config`:
 
-```
-rethinkdb admin unset auth
+```js
+r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: null})
 ```
 
+You can use any ReQL driver for this operation, not just the Data Explorer. Read [Administration tools](/docs/administration-tools/) for more details about scripting RethinkDB administration tasks.
+
+{% infobox %}
+__Note__: the authentication key will be transmitted to and stored on the
+RethinkDB server in plain text, and neither the key nor the data passed
+between the client and the server will be encrypted. The key provides basic
+protection against unauthorized access, but if the client port is open to
+outside networks it's strongly suggested you use SSH tunneling for protection
+(see below).
+{% endinfobox %}
 
 ## Using SSH tunneling ##
 
@@ -192,19 +192,19 @@ __Note__: You may have to replace `eth0` and `28015` above if you are
 using another interface or not using the default driver port.
 {% endinfobox%}
 
-Now create an SSH tunnel on the machine that needs to access the
+Now create an SSH tunnel on the server that needs to access the
 remote RethinkDB driver port:
 
 ```bash
-ssh -L <local_port>:localhost:<driver_port> <ip_of_rethinkdb_machine>
+ssh -L <local_port>:localhost:<driver_port> <ip_of_rethinkdb_server>
 ```
 
 Where,
 
 - `local_port` is the port you are going to specify in the driver - It
-  can be any available port on your machine.
+  can be any available port on your server.
 - `driver_port` is the RethinkDB driver port (28015 by default).
-- `ip_rethinkdb_machine` is the IP address of the machine that runs
+- `ip_of_rethinkdb_server` is the IP address of the server that runs
   the RethinkDB server.
 
 You can now connect to your RethinkDB instance by connecting to the

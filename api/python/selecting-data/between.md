@@ -65,7 +65,13 @@ r.table("users").between(["Smith", "John"], ["Welles", "Wade"],
     index="full_name").run(conn)
 ```
 
-__Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/ruby/during) command, not `between`.
+__Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams ranked in the top 10.
+
+```py
+changes = r.table("teams").between(1, 11, index="rank").changes().run(conn)
+```
+
+__Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/python/during) command, not `between`.
 
 Secondary indexes can be used in extremely powerful ways with `between` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 

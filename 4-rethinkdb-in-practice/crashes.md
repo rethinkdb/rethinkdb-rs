@@ -71,7 +71,7 @@ Other things that might be helpful to us, if you have them:
 * The core file, if it was dumped on crash
 * The data files if RethinkDB cannot restart&sup1;
 * The output of `rethinkdb` on startup
-* Your cluster configuration (number of machines, basic network topology, etc.)
+* Your cluster configuration (number of servers, basic network topology, etc.)
 * Information about the server:
     * How much memory it has
     * The file system it's using
@@ -81,9 +81,9 @@ Other things that might be helpful to us, if you have them:
 
 # Setting up high availability
 
-RethinkDB supports replication of data: every table in a database can be replicated as many times as you have machines in a cluster. Setting up replication is a simple operation with the web interface or the command line tool. For details, read [Sharding and replication](/docs/sharding-and-replication/).
+RethinkDB supports replication of data: every table in a database can be replicated as many times as you have servers in a cluster. Setting up replication is a simple operation with the web interface or the command line tool. For details, read [Sharding and replication](/docs/sharding-and-replication/).
 
-RethinkDB does not have fully automatic failover (yet), but if a machine in a cluster crashes it can be manually declared "dead" and removed from the cluster. In most cases, RethinkDB will recover from such a situation automatically. For information on this process, read [Failover](/docs/failover).
+RethinkDB does not have fully automatic failover (yet), but if a server in a cluster crashes it can be manually removed from the cluster. In most cases, RethinkDB will recover from such a situation automatically. For information on this process, read [Failover](/docs/failover).
 
 ----
 

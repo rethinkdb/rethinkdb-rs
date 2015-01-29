@@ -499,9 +499,10 @@ r.table('test').indexWait('timestamp').run(conn, callback)
 
 {% apibody %}
 table.changes() &rarr; stream
+singleSelection.changes() &rarr; stream
 {% endapibody %}
 
-Return an infinite stream of objects representing changes to a table. Whenever an `insert`, `delete`, `update` or `replace` is performed on the table, an object of the form `{'old_val': ..., 'new_val': ...}` will be appended to the stream. For an `insert`, `old_val` will be `null`, and for a `delete`, `new_val` will be `null`.
+Return an infinite stream of objects representing changes to a table or a document.
 
 __Example:__ Subscribe to the changes on a table.
 
@@ -851,20 +852,25 @@ These commands are used to transform data in a sequence.
 ## [map](map/) ##
 
 {% apibody %}
-sequence.map(mappingFunction) &rarr; stream
-array.map(mappingFunction) &rarr; array
+sequence1.map([sequence2, ...], mappingFunction) &rarr; stream
+array1.map([sequence2, ...], mappingFunction) &rarr; array
+r.map(sequence1[, sequence2, ...], mappingFunction) &rarr; stream
+r.map(array1[, array2, ...], mappingFunction) &rarr; array
 {% endapibody %}
 
-Transform each element of the sequence by applying the given mapping function.
+Transform each element of one or more sequences by applying a mapping function to them. If `map` is run with two or more sequences, it will iterate for as many items as there are in the shortest sequence.
 
-__Example:__ Construct a sequence of hero power ratings.
+__Example:__ Return the first five squares.
 
 ```js
-r.table('marvel').map(function(hero) {
-    return hero('combatPower').add(hero('compassionPower').mul(2))
-}).run(conn, callback)
+r.expr([1, 2, 3, 4, 5]).map(function (val) {
+    return val.mul(val);
+}).run(conn, callback);
+// Result passed to callback
+[1, 4, 9, 16, 25]
 ```
 
+[Read more about this command &rarr;](map/)
 
 ## [withFields](with_fields/) ##
 
@@ -2430,6 +2436,22 @@ r.table('marvel').forEach(function(hero) {
 }).run(conn, callback)
 ```
 
+## [range](range/) ##
+
+{% apibody %}
+r.range() &rarr; stream
+r.range([startValue, ]endValue) &rarr; stream
+{% endapibody %}
+
+Generate a stream of sequential integers in a specified range.
+
+__Example:__ Return a four-element range of `[0, 1, 2, 3]`.
+
+```js
+> r.range(4).run(conn, callback)
+
+[0, 1, 2, 3]
+```
 
 
 ## [error](error/) ##
@@ -2575,6 +2597,23 @@ __Example:__ Send an array to the server.
 
 ```js
 r.json("[1,2,3]").run(conn, callback)
+```
+
+## [toJsonString, toJSON](to_json_string/) ##
+
+{% apibody %}
+value.toJsonString() &rarr; string
+value.toJSON() &rarr; string
+{% endapibody %}
+
+Convert a ReQL value or object to a JSON string. You may use either `toJsonString` or `toJSON`.
+
+__Example:__ Get a ReQL document as a JSON string.
+
+```js
+> r.table('hero').get(1).toJson()
+// result returned to callback
+'{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
 ```
 
 ## [http](http/) ##
@@ -2908,5 +2947,94 @@ outerPolygon.polygonSub(innerpolygon).run(conn, callback);
 ```
 
 [Read more about this command &rarr;](polygon_sub/)
+
+{% endapisection %}
+
+{% apisection Administration %}
+
+## [config](config/) ##
+
+{% apibody %}
+table.config() &rarr; selection&lt;object&gt;
+database.config() &rarr; selection&lt;object&gt;
+{% endapibody %}
+
+Query (read and/or update) the configurations for individual tables or databases.
+
+__Example:__ Get the configuration for the `users` table.
+
+```js
+> r.table('users').config().run(conn, callback);
+```
+
+[Read more about this command &rarr;](config/)
+
+## [rebalance](rebalance/) ##
+
+{% apibody %}
+table.rebalance() &rarr; object
+database.rebalance() &rarr; object
+{% endapibody %}
+
+Rebalances the shards of a table. When called on a database, all the tables in that database will be rebalanced.
+
+__Example:__ rebalance a table.
+
+```js
+> r.table('superheroes').rebalance().run(conn, callback);
+```
+
+[Read more about this command &rarr;](rebalance/)
+
+## [reconfigure](reconfigure/) ##
+
+{% apibody %}
+table.reconfigure({shards: <s>, replicas: <r>[, primaryTag: <t>, dryRun: false}]) &rarr; object
+database.reconfigure({shards: <s>, replicas: <r>[, primaryTag: <t>, dryRun: false}]) &rarr; object
+{% endapibody %}
+
+Reconfigure a table's sharding and replication.
+
+__Example:__ Reconfigure a table.
+
+```js
+> r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
+```
+
+[Read more about this command &rarr;](reconfigure/)
+
+## [status](status/) ##
+
+{% apibody %}
+table.status() &rarr; selection&lt;object&gt;
+{% endapibody %}
+
+Return the status of a table.
+
+__Example:__ Get a table's status.
+
+```js
+> r.table('superheroes').status().run(conn, callback);
+```
+
+[Read more about this command &rarr;](status/)
+
+## [wait](wait/) ##
+
+{% apibody %}
+table.wait() &rarr; object
+database.wait() &rarr; object
+r.wait() &rarr; object
+{% endapibody %}
+
+Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.
+
+__Example:__ Wait for a table to be ready.
+
+```js
+> r.table('superheroes').wait().run(conn, callback);
+```
+
+[Read more about this command &rarr;](wait/)
 
 {% endapisection %}

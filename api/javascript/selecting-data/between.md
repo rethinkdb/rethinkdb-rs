@@ -37,36 +37,42 @@ This range includes all compound keys:
 __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open interval).
 
 ```js
-r.table('marvel').between(10, 20).run(conn, callback)
+r.table('marvel').between(10, 20).run(conn, callback);
 ```
 
 __Example:__ Find all users with primary key >= 10 and <= 20 (an interval closed on both sides).
 
 ```js
-r.table('marvel').between(10, 20, {'rightBound':'closed'}).run(conn, callback)
+r.table('marvel').between(10, 20, {'rightBound':'closed'}).run(conn, callback);
 ```
 
 
 __Example:__ Find all users with primary key < 20. (You can use `null` to mean "unbounded" for either endpoint.)
 
 ```js
-r.table('marvel').between(null, 20, {'rightBound':'closed'}).run(conn, callback)
+r.table('marvel').between(null, 20, {'rightBound':'closed'}).run(conn, callback);
 ```
 
 __Example:__ Between can be used on secondary indexes too. Just pass an optional index argument giving the secondary index to query.
 
 ```js
-r.table('dc').between('dark_knight', 'man_of_steel', {index:'code_name'}).run(conn, callback)
+r.table('dc').between('dark_knight', 'man_of_steel', {index:'code_name'}).run(conn, callback);
 ```
 
 __Example:__ Get all users whose full name is between "John Smith" and "Wade Welles"
 
 ```js
 r.table("users").between(["Smith", "John"], ["Welles", "Wade"],
-{index: "full_name"}).run(conn, callback)
+{index: "full_name"}).run(conn, callback);
 ```
 
-__Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/ruby/during) command, not `between`.
+__Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams ranked in the top 10.
+
+```js
+r.table("teams").between(1, 11, {index: "rank"}).changes().run(conn, callback);
+```
+
+__Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/javascript/during) command, not `between`.
 
 Secondary indexes can be used in extremely powerful ways with `between` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 

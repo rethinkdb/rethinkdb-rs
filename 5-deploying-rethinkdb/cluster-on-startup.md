@@ -11,7 +11,7 @@ This document explains configuration options and offers tips on various ways to 
 
 [src]: /docs/start-a-cluster/
 
-To configure a multi-node RethinkDB cluster to run on startup, start separate instances with their own configuration files, including the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, also specify `bind=all` in the configuration file (or `--bind all` on the command line).
+To configure a multi-node RethinkDB cluster to run on startup, start separate instances with their own configuration files, including the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, also specify `bind=all` in the configuration file, or `--bind all` on the command line.
 
 # Configuration options #
 
@@ -21,6 +21,10 @@ that go on the command line to the RethinkDB server. For more details
 about these options run `rethinkdb help`.
 
 The configuration file's location depends on the startup system your distribution uses. For `init.d` and `systemd`, follow the directions below. A configuration file may also be specified on the command line with the `--config-file` option.
+
+{% infobox info %}
+For a complete list of options that can be passed to RethinkDB on the command line, read [RethinkDB command line options](/docs/cli-options) or type `rethinkdb --help` at the terminal prompt.
+{% endinfobox %}
 
 ## Supported options ##
 
@@ -76,7 +80,7 @@ config file without the `.conf` extension.
 * `io-threads` &mdash; Number of simultaneous I/O operations can happen at the same time.  
   *Default*: 64
 
-* `no-direct-io` &mdash; Disable direct I/O.
+* `direct-io` &mdash; Use direct I/O for file system access. 
 
 * `machine-name` &mdash; The name for this machine (as it will appear in the metadata).  
   *Default*: Randomly chosen from a short list of names.
@@ -106,7 +110,7 @@ The basic setup is complete &mdash; __you've now got a working server!__
 
 ## Multiple instances ##
 
-The init.d script supports starting multiple instances on the same machine via
+The init.d script supports starting multiple instances on the same server via
 multiple `.conf` files in `/etc/rethinkdb/instances.d`.
 
 ## Installing from source ##

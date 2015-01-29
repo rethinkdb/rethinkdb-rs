@@ -18,7 +18,7 @@ info: Server ready
 <img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
 
 Point your browser to `localhost:8080` &ndash; you'll see an administrative UI
-where you can control the cluster (which so far consists of one machine), and
+where you can control the cluster (which so far consists of one server), and
 play with the query language.
 
 # Run some queries #

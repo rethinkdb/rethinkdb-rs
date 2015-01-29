@@ -113,11 +113,14 @@ To secure your instance more tightly, we recommend that you perform
 the following steps:
 
 * __Change the authentication key.__
-  Open the [RethinkDB command line](/docs/administration-tools/) and execute the command
-  
+
+    Open the RethinkDB Data Explorer in the web UI and execute the following command:
+
+    ```js
+    r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: 'newkey'})
     ```
-    set auth <your_key>
-    ```
+    
+    Where "newkey" is the new key you want to use.
 
 * __Restrict access to port 28015__ to allow only IP addresses or
   security groups that should have driver access.
@@ -136,7 +139,7 @@ The `htpasswd` tool will prompt for your new password.
 ## Changing the driver API key ##
 
 To change the API key used by the server to authenticate the drivers,
-login over SSH and run `rethinkdb admin set auth`.
+follow the "Change the authentication key" instructions above.
 
 You can run the following commands to generate a good API key:
 

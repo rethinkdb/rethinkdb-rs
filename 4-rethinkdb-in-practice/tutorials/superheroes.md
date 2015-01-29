@@ -18,7 +18,7 @@ RethinkDB Python library](/docs/install-drivers/python).
 ## Connecting ##
 
 Let's now confirm the setup is correct and we can connect to the RethinkDB
-instance. We will assume that RethinkDB is running on the same machine and on
+instance. We will assume that RethinkDB is running on the same server and on
 the default port (you can change the parameters passed to `connect`): 
 
 ```python

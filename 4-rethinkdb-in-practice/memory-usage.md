@@ -36,7 +36,7 @@ Depending on how you start the RethinkDB server process, there are two ways to s
 
 # Internal metadata
 
-RethinkDB can handle databases much larger than the amount of main memory available on a machine. However, some internal metadata is always kept in memory to guarantee fast access times.
+RethinkDB can handle databases much larger than the amount of main memory available on a server. However, some internal metadata is always kept in memory to guarantee fast access times.
 
 RethinkDB organizes data into blocks. Blocks in RethinkDB are sized in steps of 512 bytes up to a maximum of 4 KB. While the content of a block itself can be cleared from main memory to free space, metadata of approximately 28 bytes per block (as of RethinkDB 1.13) is always kept in memory. Thus, this memory overhead is directly proportional to the number of blocks that a given data set requires.
 

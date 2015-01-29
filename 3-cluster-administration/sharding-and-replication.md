@@ -9,147 +9,106 @@ permalink: docs/sharding-and-replication/
 <img alt="Sharding and Replication Illustration" class="api_command_illustration"
     src="/assets/images/docs/api_illustrations/shard-and-replicate.png" />
 
-RethinkDB allows you to shard and replicate your cluster on a per-table basis.
-
-Sharding a table is as easy as typing the number of shards you'd like in the
-web admin and clicking 'Rebalance'. RethinkDB rebalances the table, creates
-copies in the cluster, and moves necessary data around behind the scenes
-without any additional work from the user. Similarly, to change the number of
-replicas you simply set the number in the web UI and hit 'Save'. 
-
-Sharding and replication settings can also be
-controlled from a powerful command-line interface: `rethinkdb admin`.
-
-# Sharding #
+RethinkDB allows you to shard and replicate your cluster on a per-table basis. Settings can be controlled easily from the web administration console. In addition, ReQL commands for table configuration allow both scripting capability and more fine-grained control over replication, distributing replicas for individual tables across user-defined groups of servers using server tags.
 
 {% infobox info %}
 
 __Note__: Currently, RethinkDB implements range shards, but will eventually be
-switching to hash shards (follow [Github
-issue #364](https://github.com/rethinkdb/rethinkdb/issues/364) to track progress).
+switching to hash shards. Follow [Github issue #364][gh364] to track progress.
+
+[gh364]: https://github.com/rethinkdb/rethinkdb/issues/364
 
 {% endinfobox %}
 
-## Sharding via the web interface ##
+# Sharding and replication via the web console #
 
-When using the web UI, simply  specify the number of shards you
-want, and based on the data available RethinkDB will determine the best split
-points to maintain balanced shards. To shard your data: 
+When using the web UI, simply specify the number of shards you want, and based on the data available RethinkDB will determine the best split points to maintain balanced shards. To shard your data:
 
 - Go to the table view (_Tables_ &rarr; _table name_).
-- Click on the _Edit_ button under shard settings.
-- Set the number of shards you would like.
-- Click on the _Rebalance_ button.
+- Click on the _Reconfigure_ button.
+- Set the number of shards and replicas you would like.
+- Click on the _Apply Configuration_ button.
 
 ![Shard with the web interface](/assets/images/docs/administration/shard.png)
 
-## Sharding via the command-line interface ##
-Connect to your cluster via the command-line interface:
+# Sharding and replication via ReQL #
+
+There are three primary commands for changing sharding and replication in ReQL. In addition, there are lower-level values that can be changed by manipulating [system tables](/docs/system-tables/).
+
+
+* The [table_create](/api/python/table_create) (or [tableCreate](/api/javascript/table_create)) command can specify initial values for `shards` and `replicas`.
+* The [reconfigure](/api/python/reconfigure) command can change the values for `shards` and `replicas` for an existing table.
+* The [rebalance](/api/python/rebalance) command will rebalance table shards.
+
+For more information about administration via ReQL, consult the API documentation for the individual commands as well as the [Administration tools][at] documentation.
+
+[at]: /docs/administration-tools/
+
+# Advanced configuration #
+
+These tasks cannot be performed through the web interface.
+
+## Server tags ##
+
+All of the servers in a RethinkDB cluster may be given zero or more _tags_ that can be used in table configurations to map replicas to servers specified by tag.
+
+A server can be given tags with the `--server-tag` option on startup:
 
 ```
-rethinkdb admin --join <host>:<port>
+rethinkdb --server-tag us --server-tag us_west
 ```
 
-Shards are managed by specifying a set of split points. A split point is the
-primary key upon which the table will be sharded. By adding and removing split
-points, you can add or remove shards to a table.
 
-- Find the UUID of the table you want to shard using `ls`.
-- To list existing shards, use `ls <table_name>` or `ls <table_uuid>`.
-- Add a new split point, creating a new shard, using `split shard S<table_uuid> <split_point>`.
-- Remove a split point, removing an existing shard, using `merge shard <table_uuid> S<split_point>`.
+While running, a server's configuration can be changed by writing to the `rethinkdb.server_config` [system table](/docs/system-tables/).
 
-Note that split points must be prefixed with the letter "S"; if the split point was going to be the string value `n`, for instance, the proper syntax (with the table UUID shown by `ls`) would be:
-
-```
-rethinkdb admin split shard da2cde32-2052-4a7f-a53f-2522be15a59f Sn
+```py
+# get server by UUID
+r.db('rethinkdb').table('server_config').get(
+    'd5211b11-9824-47b1-9f2e-516a999a6451').update(
+    {tags: ['default', 'us', 'us_west']}.run(conn)
 ```
 
-# Replication #
+If no tags are specified on startup, the server will be started with one tag, `default`. Changing the sharding/replica information from the web UI or from ReQL commands that do not specify server tags will affect all servers with the `default` tag.
 
-There are two parameters that can be set when dealing with replicas in
-RethinkDB:
+{% infobox info %}
+The web UI only affects servers with the `default` tag. If you remove the `default` tag from a server or start it without that tag, it will not be used for tables configured through the web UI.
+{% endinfobox %}
 
-- The number of _replicas_: the number of copies of your data.
-- The number of _acknowledgements_ (also referred to as _acks_): the number of
-  confirmations required before a write is acknowledged.  
+When servers are tagged, you can use the tags in the [reconfigure](/api/python/reconfigure) command. To assign 3 replicas of the `users` table to `us_west` and 2 to `us_east`:
 
-These two parameters can be specified for each table on a per-datacenter basis
-or for the whole cluster (which includes machines that are not assigned to any
-datacenter).
-
-The primary constraints on these parameters are:
-
-- You cannot require more replicas than you have machines available in your
-  cluster.
-- The number of _acks_ has to be less than or equal to the number of
-  _replicas_, or no write will ever be acknowledge.
-
-## Replication via the web interface ##
-
-To replicate your data through the web UI:
-
-- Go to the table view (_Tables_ > _table name_).
-- Click on the _Edit_ button under replication settings.
-- Set the number of _replicas_ and _acks_ you would like.
-- Click on the _Update_ button.
-
-![Replica with the web interface](/assets/images/docs/administration/replica.png)
-
-## Replication via the command-line interface ##
-
-Connect to your cluster via the command-line interface:
-
-```
-rethinkdb admin --join <host>:<port>
+```py
+r.table('users').reconfigure(shards=2, replicas={'us_west':3, 
+    'us_east':2}, primary_replica_tag='us_east').run(conn)
 ```
 
-You can change the number of _replicas_ and _acks_ using the following commands:
+If you remove *all* of a server's tags and then reconfigure all the cluster's tables, that server will be taken out of service.
 
-```
-set acks <table> <num_acks> [<datacenter>]
-set replicas <table> <num_replicas> [<datacenter>]
-```
-
-# Pinning masters to datacenters #
-
-Because RethinkDB is immediately consistent, each shard has to be assigned to a
-master (also called a primary server).  The web interface provides an easy way
-to pin primaries to a datacenter, but does not let the user pin a primary per
-shard or per machine basis. If you need this level of control, you will have to
-use the command-line interface instead.
-
-## Choosing a primary using the web interface  ##
-
-By default, the primary for a shard can be put anywhere in the cluster. That is
-to say, there is no constraint that requires the primary to be in a particular
-datacenter.  In order to set a certain datacenter to contain all the primaries
-of your table, you will have to:
-
-- Go to the table view (_Tables_ > _table name_).
-- Click on the _Show multi-datacenter options_.
-- Click on the toggle box to _Pin masters to a single datacenter_.
-- Choose the datacenter and click the _Update_ button.
-
-
-![Change primary with the web interface](/assets/images/docs/administration/primary.png)
-
-## Choosing a primary using the command-line interface ##
-Connect to your cluster via the command-line interface:
-
-```
-rethinkdb admin --join <host>:<port>
+```py
+# decommission a server
+r.db('rethinkdb').table('server_config').get(
+    'd5211b11-9824-47b1-9f2e-516a999a6451').update(
+    {tags: []}.run(conn)
+r.db('database').reconfigure(shards=2, replicas=3).run(conn)
 ```
 
-- Find the UUID of the table you want to shard using `ls`.
-Once you find the UUID of your table using the `ls` command, you can pin all of
-the primaries for a table to a particular datacenter with:
-- To pin all of the primaries for a table to a particular datacenter, use `set primary <table> <datacenter>`.
+Note that tables are configured on creation and when the `reconfigure` command is called, but the configurations are *not* stored by the server otherwise. To reconfigure tables consistently&mdash;especially if your configuration uses server tags&mdash;you should save the configuration in a script. Read more about this in [Administration tools][at].
 
-The command line interface also provides a more precise way to pin data. You
-can pin a shard (primary or secondary) to a particular machine. The command to
-do this is:
+## Write acks and durability ##
 
+Two settings for tables, write acknowledgements and write durability, cannot be set through either the web interface or the `reconfigure` command. They must be set by modifying the `table_config` table for individual tables.
+
+The write acknowledgement setting for a table controls when the cluster acknowledges a write request as fulfilled. There are three possible settings:
+
+* `majority`: The cluster sends the acknowledgement when the majority of replicas have acknowledged it. This is the default.
+* `single`: The cluster sends the acknowledgement when any replica has acknowledged it.
+* complex: a list of requirements describing sets of replicas with either `majority` or `single` write acknowledgements. This takes the form of `[{replicas: ["replica1", "replica2", ...], acks: "single"}, {replicas: ["replica3", "replica4", ...], acks: "majority"}]`.
+
+To change these settings for a table:
+
+```py
+r.db('rethinkdb').table('table_config').get(
+    '31c92680-f70c-4a4b-a49e-b238eb12c023').update(
+        {"write_acks": "single"}).run(conn)
 ```
-pin shard <table> <shard> [--master <machine>] [--replicas <machine>...]
-```
+
+The `durability` setting for a table controls when writes are committed. In `hard` durability mode, writes are committed to disk before acknowledgements are sent; in `soft` mode, writes are acknowledged immediately upon receipt. The `soft` mode is faster but slightly less resilient to failure.

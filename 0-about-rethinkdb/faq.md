@@ -31,7 +31,7 @@ js: faq_index
 
 ## What is RethinkDB? ##
 
-RethinkDB is an open-source, distributed database built to store JSON documents and effortlessly scale to multiple machines. It's easy to set up and learn and features a simple but powerful query language that supports table joins, groupings, aggregations, and functions.
+RethinkDB is an open-source, distributed database built to store JSON documents and effortlessly scale to multiple servers. It's easy to set up and learn and features a simple but powerful query language that supports table joins, groupings, aggregations, and functions.
 
 {% infobox info %}
 
@@ -121,6 +121,17 @@ RethinkDB comes with strict write durability out of the box and is identical to 
 [cdo]: /docs/troubleshooting/#why-are-my-inserts-slow
 
 {% endinfobox %}
+
+## What usage statistics does RethinkDB collect? ##
+
+By default, RethinkDB will collect anonymous usage statistics and report them to RethinkDB HQ when it checks for new versions of the server. The data it transmits are:
+
+* RethinkDB's version
+* The number of servers in the cluster
+* The operating system (Linux or OS X) and architecture (32 or 64 bit)
+* The number of tables, rounded to the nearest order of magnitude: 2<sup>round(log<sub>2</sub>(<em>tables</em>)</sup>
+
+If the RethinkDB server is started with the `no-update-check` option, these statistics will *not* be sent.
 
 ## How is RethinkDB licensed? ##
 
