@@ -13,18 +13,17 @@ language: Ruby
     src="/assets/images/docs/api_illustrations/change-feeds.png" />
 
 
-Changefeeds are a way for clients to subscribe to changes on a
-table. Any time a document in the table is inserted, updated, or
-deleted, the client driver can get notified about the
-change. RethinkDB implements changefeeds via the
-[changes](/api/ruby/changes) command. Changefeeds offer a
-convenient way to perform certain tasks:
+Changefeeds are a way for clients to subscribe to changes on a table or a
+document within that table. When a document is inserted, updated, or
+deleted, the client driver will be notified about the change. RethinkDB
+implements changefeeds via the [changes](/api/ruby/changes) command.
+
+Changefeeds offer a convenient way to perform certain tasks:
 
 - Integrate with other databases or middleware such as ElasticSearch or RabbitMQ.
 - Write applications where clients are notified of changes in realtime.
 
-In RethinkDB the `changes` command returns a stream of changes in a
-regular cursor, and is very powerful and easy to use.
+You can control how frequently your application receives change notifications with the `squash` argument to `changes`; read the API documentation for more details.
 
 # Basic usage #
 
@@ -64,16 +63,47 @@ You can then grab the old version or the new version of the document
 them to a queueing system or another database, or perform other
 queries on RethinkDB.
 
-# Filtering events #
+# Point changefeeds #
+
+A "point" changefeed returns changes to a single document within a table rather than the table as a whole.
+
+```rb
+r.table('users').get(100).changes().run(conn)
+```
+
+The output format of a point changefeed is identical to a table
+changefeed, with the exception that the point changefeed stream will start
+with the initial value of the document: a notification with the `new_val`
+field, but no `old_val` field.
+
+# Chaining changefeeds #
 
 Like any ReQL command, `changes` integrates with the rest of the query
-language. You can compose `changes` with any other ReQL command that
-operates on a sequence of documents (with the exception of commands
-like `count` and `order_by` that consume the entire sequence).
+language. You can call `changes` after most commands that transform or
+select data:
 
-For example, suppose you have a chat application with multiple clients
-posting messages to different chat rooms. You can create feeds that
-subscribe to messages posted to a specific room:
+* [filter](/api/ruby/filter)
+* [map](/api/ruby/map)
+* [pluck](/api/ruby/pluck)
+* [between](/api/ruby/between) (returns an initial value)
+* [min](/api/ruby/min) (returns an initial value)
+* [max](/api/ruby/max) (returns an initial value)
+* [order_by](/api/ruby/order_by).[limit](/api/ruby/limit) (returns an initial value)
+
+Note that `order_by` requires `limit` with changefeeds (neither one will
+work by itself). You can't use changefeeds after
+[concat_map](/api/ruby/concat_map) or other transformations whose results
+cannot be pushed to the shards. Transformations are applied before changes
+are calculated.
+
+In addition, `changes` can be chained before any command that operates on
+a sequence of documents, as long as that command doesn't require the
+entire sequence. (For instance, `count` and `order_by` cannot come after
+the `changes` command.)
+
+Suppose you have a chat application with multiple clients posting messages
+to different chat rooms. You can create feeds that subscribe to messages
+posted to a specific room:
 
 ```rb
 r.table('messages').changes.filter{ |row|

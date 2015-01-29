@@ -10,27 +10,38 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.changes() &rarr; stream
-singleSelection.changes() &rarr; stream
+table.changes({:squash => true}) &rarr; stream
+singleSelection.changes({:squash => true}) &rarr; stream
 {% endapibody %}
 
 # Description #
 
-Return an infinite stream of objects representing changes to a table or a document.
+Return an infinite stream of objects representing changes to a query.
 
-## On tables ##
+The `squash` optional argument controls how `changes` batches change notifications:
 
-Whenever an `insert`, `delete`, `update` or `replace` is performed on the table, an object of the form `{:old_val => ..., :new_val => ...}` will be appended to the stream. For an `insert`, `old_val` will be `null`, and for a `delete`, `new_val` will be `null`.
-
-The server will buffer up to 100,000 elements. If the buffer limit is hit, early changes will be discarded, and the client will receive an object of the form `{:error => "Changefeed cache over array size limit, skipped X elements."}` where `X` is the number of elements skipped.
+* `true`: When multiple changes to the same document occur before a batch of notifications is sent, the changes are "squashed" into one change. The client receives a notification that will bring it fully up to date with the server. This is the default.
+* `false`: All changes will be sent to the client verbatim.
+* `n`: A numeric value (floating point). Similar to `true`, but the server will wait `n` seconds to respond in order to squash as many changes together as possible, reducing network traffic.
 
 If the table becomes unavailable, the changefeed will be disconnected, and a runtime exception will be thrown by the driver.
 
+Changefeed notifications take the form of a two-field object:
+
+```rb
+{
+    :old_val => <document before change>,
+    :new_val => <document after change>
+}
+```
+
+The first notification object in the changefeed stream will contain the query's initial value in `new_val` and have no `old_val` field. When a document is deleted, `new_val` will be `nil`; when a document is inserted, `old_val` will be `nil`.
+
+Certain document transformation commands can be chained before changefeeds. For more information, read the [discussion of changefeeds](docs/changefeeds/ruby/) in the "Query language" documentation.
+
+The server will buffer up to 100,000 elements. If the buffer limit is hit, early changes will be discarded, and the client will receive an object of the form `{:error => "Changefeed cache over array size limit, skipped X elements."}` where `X` is the number of elements skipped.
+
 Commands that operate on streams (such as `filter` or `map`) can usually be chained after `changes`.  However, since the stream produced by `changes` has no ending, commands that need to consume the entire stream before returning (such as `reduce` or `count`) cannot.
-
-## On single documents ##
-
-Whenever the document changes, the new document will be appended to the stream. The stream will always start with the current version of the document when the `changes` command is executed. At most only one change will be available on each read of the changefeed; if the document changes multiple times between reads, you will receive the most recent version of the document when the changefeed is read.
 
 It's a good idea to open changefeeds on their own connection. If you don't, other queries run on the same connection will experience unpredictable latency spikes while the connection blocks on more changes.
 
@@ -90,4 +101,10 @@ __Example:__ Return all the changes to game 1.
 
 ```rb
 r.table('games').get(1).changes().run(conn)
+```
+
+__Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
+
+```rb
+r.table('games').order_by({:index => r.desc('score')}).limit(10).run(conn)
 ```

@@ -26,7 +26,7 @@ If no document exists with that primary key, `get` will return `null`.
 __Example:__ Find a document by UUID.
 
 ```js
-r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn, callback)
+r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn, callback);
 ```
 
 __Example:__ Find a document and merge another document with it.
@@ -34,5 +34,11 @@ __Example:__ Find a document and merge another document with it.
 ```js
 r.table('heroes').get(3).merge(
     { powers: ['invisibility', 'speed'] }
-).run(conn, callback)
+).run(conn, callback);
+```
+
+___Example:__ Subscribe to a document's [changefeed](/docs/changefeeds/javascript).
+
+```js
+r.table('heroes').get(3).changes().run(conn, callback);
 ```
