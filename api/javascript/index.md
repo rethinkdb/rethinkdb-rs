@@ -3095,7 +3095,7 @@ r.wait() &rarr; object
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.
 
-__Example:__ Get a table's status.
+__Example:__ Wait for a table to be ready.
 
 ```js
 > r.table('superheroes').wait().run(conn, callback);
