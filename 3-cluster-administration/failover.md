@@ -40,7 +40,7 @@ The second option is to permanently remove the server. If a server is permanentl
 ## Example failover scenario using the web interface ##
 
 As soon as one server dies, the web interface reports an issue. If we click on the _Resolve issues_ button, we should see more information
-about the current issue. In our case, the unreachable server is a replica, and therefore we have not lost any write availability.
+about the current issue. In our case, the unreachable server is a secondary replica, and therefore we have not lost any write availability.
 
 ![Issue on the web interface](/assets/images/docs/administration/failover2.png)
 
@@ -54,7 +54,7 @@ lost. Even if we later restart a RethinkDB instance with the same data
 directory, we will not be able to reuse the data.
 {% endinfobox %}
 
-Once the server is removed, the problem is resolved--the tables that had replicas on that server will be reconfigured automatically. Note, however, that if you connect a new server, the table will not automatically be reconfigured to take advantage of it--you will need to reconfigure the table manually.
+Once the server is removed, the problem is resolved&mdash;the tables that had replicas on that server will be reconfigured automatically. Note, however, that if you connect a new server, the table will not automatically be reconfigured to take advantage of it&mdash;you will need to reconfigure the table manually.
 
 ## Permanently removing a server with ReQL ##
 
