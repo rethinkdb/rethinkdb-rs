@@ -12,8 +12,8 @@ io:
 # Command syntax #
 
 {% apibody %}
-table.reconfigure({shards: <s>, replicas: <r>[, primaryTag: <t>, dryRun: false}]) &rarr; object
-database.reconfigure({shards: <s>, replicas: <r>[, primaryTag: <t>, dryRun: false}]) &rarr; object
+table.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false}]) &rarr; object
+database.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false}]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -24,7 +24,7 @@ Reconfigure a table's sharding and replication.
 * `replicas`: either an integer or a mapping object. Required.
     * If `replicas` is an integer, it specifies the number of replicas per shard. Specifying more replicas than there are servers will return an error.
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`. For more information about server tags, read [Administration tools](/docs/administration-tools/).
-* `primaryReplicasTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
+* `primaryReplicaTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 * `dryRun`: if `true` the generated configuration will not be applied to the table, only returned.
 
 The return value of `reconfigure` is an object with three fields:

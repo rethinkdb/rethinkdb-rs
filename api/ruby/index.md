@@ -2938,8 +2938,8 @@ __Example:__ rebalance a table.
 ## [reconfigure](reconfigure/) ##
 
 {% apibody %}
-table.reconfigure({:shards => <s>, :replicas => <r>[, :primary_tag => <t>, :dry_run => false]}) &rarr; object
-database.reconfigure({:shards => <s>, :replicas => <r>[, :primary_tag => <t>, :dry_run => false]}) &rarr; object
+table.reconfigure({:shards => <s>, :replicas => <r>[, :primary_replica_tag => <t>, :dry_run => false]}) &rarr; object
+database.reconfigure({:shards => <s>, :replicas => <r>[, :primary_replica_tag => <t>, :dry_run => false]}) &rarr; object
 {% endapibody %}
 
 Reconfigure a table's sharding and replication.

@@ -2989,8 +2989,8 @@ __Example:__ rebalance a table.
 ## [reconfigure](reconfigure/) ##
 
 {% apibody %}
-table.reconfigure({shards: <s>, replicas: <r>[, primaryTag: <t>, dryRun: false}]) &rarr; object
-database.reconfigure({shards: <s>, replicas: <r>[, primaryTag: <t>, dryRun: false}]) &rarr; object
+table.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false}]) &rarr; object
+database.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false}]) &rarr; object
 {% endapibody %}
 
 Reconfigure a table's sharding and replication.
