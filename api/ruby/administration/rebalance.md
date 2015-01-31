@@ -36,7 +36,7 @@ The return value of `rebalance` is an object with two fields:
 
 See the [status](/api/ruby/status) command for an explanation of the objects returned in the `old_val` and `new_val` fields.
 
-__Example:__ rebalance a table.
+__Example:__ Rebalance a table.
 
 ```rb
 r.table('superheroes').rebalance().run(conn)

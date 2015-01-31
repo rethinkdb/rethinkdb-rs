@@ -2927,7 +2927,7 @@ database.rebalance() &rarr; object
 
 Rebalances the shards of a table. When called on a database, all the tables in that database will be rebalanced.
 
-__Example:__ rebalance a table.
+__Example:__ Rebalance a table.
 
 ```rb
 > r.table('superheroes').rebalance().run(conn)
