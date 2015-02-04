@@ -150,7 +150,11 @@ def add_doc(file_name, result_file):
     start_body_pattern = re.compile("{%\s*apibody\s*%}\s*")
     end_body_pattern = re.compile("{%\s*endapibody\s*%}\s*")
     parsing_body = False
-
+    
+    # Used to convert relative Markdown links to absolute
+    link_match_pattern = re.compile(r'\[(.*?)\]\(/')
+    link_replace_pattern = r'[\1](http://rethinkdb.com/'
+    
     # Tracking the yaml header, we need it for the command name
     is_yaml = False
     yaml_header_py = ""
@@ -193,6 +197,8 @@ def add_doc(file_name, result_file):
                     if parsing_example_code == True:
                         text += "    " + line
                     else:
+                        line = re.sub(link_match_pattern,
+                            link_replace_pattern, line)
                         text += line
             else:
                 text += line.replace('&rarr;', '->')
