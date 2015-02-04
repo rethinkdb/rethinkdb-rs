@@ -3,7 +3,10 @@ layout: documentation
 title: Dates and times in RethinkDB
 active: docs
 docs_active: dates-and-times
-permalink: docs/dates-and-times/
+permalink: docs/dates-and-times/python
+alias: docs/dates-and-times/
+switcher: true
+language: Python
 ---
 
 <img alt="Dates and Times Illustration" class="api_command_illustration"
@@ -23,60 +26,59 @@ Some highlights:
 
 # A quick example #
 
-{% infobox info %}
-<strong>Note:</strong> Examples below are in Ruby.  Head to the [API
-reference](/api) to see the commands in other languages.
-{% endinfobox %}
-
 First, let's create a table and insert some events.  We'll insert the first
 event using a native time object, and the second with the `epoch_time`
 constructor:
 
-```ruby
-> r.table_create('ev').run(conn)
-{"created"=>1}
-> r.table('events').insert(
-    [{'id' => 0, 'timestamp' => Time.now},
-     {'id' => 1, 'timestamp' => r.epoch_time(1376436769.923)}]
-  ).run(conn)
-{"unchanged"=>0, "skipped"=>0, "replaced"=>0, "inserted"=>2, "errors"=>0, "deleted"=>0}
+```py
+r.table_create('events').run(conn)
+
+from datetime import datetime
+r.table('events').insert([
+    {'id': 0, 'timestamp': r.expr(datetime.now(r.make_timezone('-07:00')))},
+    {'id': 1, 'timestamp': r.epoch_time(1376436769.923)}
+]).run(conn)
 ```
 
 Now, let's get those back:
 
-```ruby
-> r.table('events').run(conn).to_a
-[{"timestamp"=>2013-08-13 16:32:48 -0700, "id"=>0},
- {"timestamp"=>2013-08-13 23:32:49 +0000, "id"=>1}]
+```py
+> list(r.table('events').run(conn))
+
+[{u'id': 0,
+  u'timestamp': datetime.datetime(2015, 2, 2, 11, 56, 31, 250000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102ca0c50>)},
+ {u'id': 1,
+  u'timestamp': datetime.datetime(2013, 8, 13, 23, 32, 49, 923000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102ca0fd0>)}]
 ```
 
-You'll notice that both times we inserted are returned as native Ruby `Time`
-objects.  They're in different time zones because `Time.now` creates a time
-object in the local time zone, but `r.epoch_time` creates a UTC time (it doesn't
-know or care what time zone the client is in).  If we had instead inserted
-`Time.now.utc`, they'd both be in UTC when we retrieved them.
+You'll notice that both times we inserted are returned as native Python `datetime`
+objects. They're in different time zones because `datetime.now` requires us to specify a timezone, but `r.epoch_time` creates a UTC time (it doesn't
+know or care what time zone the client is in). In this example we're using `r.make_timezone`, a ReQL helper command that only exists for Python, but you could use `pytz` or another Python timezone library.
 
 We can now filter based on these times:
 
 ```ruby
 > r.table('events').filter{|row| row['timestamp'].hours() > 20}.run(conn)
-[{"timestamp"=>2013-08-13 23:32:49 +0000, "id"=>1}]
-> r.table('events').filter{|row|
-    row['timestamp'].in_timezone('-02:00').hours() > 20
-  }.run(conn)
-[{"timestamp"=>2013-08-13 16:32:48 -0700, "id"=>0},
- {"timestamp"=>2013-08-13 23:32:49 +0000, "id"=>1}]
+[{u'id': 1,
+  u'timestamp': datetime.datetime(2013, 8, 13, 23, 32, 49, 923000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102cbde90>)}]
+  
+> r.table('events').filter(r.row['timestamp'].in_timezone('-02:00').hours() > 20).run
+[{u'id': 0,
+  u'timestamp': datetime.datetime(2015, 2, 2, 11, 56, 31, 250000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102ca0c50>)},
+ {u'id': 1,
+  u'timestamp': datetime.datetime(2013, 8, 13, 23, 32, 49, 923000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102ca0fd0>)}]
 ```
 
 Or create a secondary index on them:
 
 ```ruby
 > r.table('events').index_create('timestamp').run(conn)
-{"created"=>1}
+{'created': 1}
 > r.table('events').between(r.epoch_time(1376436769.913),
                             r.epoch_time(1376436769.933),
-                            :index => 'timestamp').run(conn)
-[{"timestamp"=>2013-08-13 23:32:49 +0000, "id"=>1}]
+                            index='timestamp').run(conn)
+[{u'id': 1,
+  u'timestamp': datetime.datetime(2013, 8, 13, 23, 32, 49, 923000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102cbde90>)}]
 ```
 
 # Technical details #
@@ -99,23 +101,19 @@ Leap-seconds aren't well-supported right now: `2012-06-30T23:59:60` and
 
 # Inserting times #
 
-You can insert times by simply passing a native time object. (In Ruby, this
-will be a `Time` object; in Python, it will be `datetime.datetime`; in
-JavaScript, it will be `Date`.) If the local time object contains a time zone,
-the inserted time will have that time zone; if it doesn't, the inserted time
-will be in UTC. (Check this if you're using a third-party driver. The Python
-driver requires `datetime` objects to have time zone information.)
+You can insert times by simply passing a Python `datetime.datetime` object. Note that the Python driver requires `datetime` objects to have time zone information. (The Ruby and JavaScript drivers will default to UTC if the object does not contain time zone information; for third party drivers, check their documentation.)
 
-```ruby
-> r.table('events').insert({'id' => 2, 'timestamp' => Time.now}).run(conn)
-{"unchanged"=>0, "skipped"=>0, "replaced"=>0, "inserted"=>1, "errors"=>0, "deleted"=>0}
+```py
+r.table('events').insert(
+    {'id': 2, 'timestamp': datetime.now(r.make_timezone('00:00'))}
+).run()
 ```
 
 You can also use `r.now` (which the server interprets as the time the
 query was received in UTC), or construct a time using `r.time`,
 `r.epoch_time`, or `r.iso8601`.
 
-```ruby
+```py
 > r.now().to_iso8601().run(conn)
 "2013-08-09T18:53:15.012+00:00"
 > r.time(2013, r.august, 9, 18, 53, 15.012, '-07:00').to_iso8601().run(conn)
@@ -130,16 +128,20 @@ Times may be used as the primary key for a table.  Two times are considered
 equal if they have the same number of milliseconds since epoch (UTC), regardless
 of time zone.
 
-```ruby
-> r.table('t').insert({'id' => r.iso8601("2013-08-09T11:58:00.1111-07:00")}).run(conn)
-{"unchanged"=>0, "skipped"=>0, "replaced"=>0, "inserted"=>1, "errors"=>0, "deleted"=>0}
-> r.table('t').insert({'id' => r.iso8601("2013-08-09T10:58:00.1112-08:00")}).run(conn)
-{"unchanged"=>0, "skipped"=>0, "replaced"=>0, "inserted"=>0,
- "first_error"=>"Duplicate primary key.", "errors"=>1, "deleted"=>0}
+```py
+> r.table('t').insert(
+      {'id': r.iso8601("2013-08-09T11:58:00.1111-07:00")}
+  ).run(conn)
+{'deleted': 0, 'errors': 0, 'inserted': 1, 'replaced:' 0, 'skipped': 0, 'unchanged': 0}
+
+> r.table('t').insert(
+      {'id': r.iso8601("2013-08-09T10:58:00.1112-08:00")}
+  ).run(conn)
+{'deleted': 0, 'errors': 1, 'inserted': 0, 'replaced:' 0, 'skipped': 0, 'unchanged': 0, 'first_error': 'Duplicate primary key `id`: ...'}
 ```
 
 You may also insert a time by inserting a literal pseudotype object.  This is
-useful if, for instance, you exported a row using `:time_format => 'raw'` (see
+useful if, for instance, you exported a row using `time_format='raw'` (see
 <strong>Retrieving Times</strong> below).
 
 {% infobox info %}
@@ -148,10 +150,10 @@ useful if, for instance, you exported a row using `:time_format => 'raw'` (see
 keywords.
 {% endinfobox %}
 
-```ruby
-> r.expr({'$reql_type$' => 'TIME',
-          'epoch_time' => 1376075362.662,
-          'timezone' => '+00:00'}).to_iso8601().run(conn)
+```py
+> r.expr({'$reql_type$': 'TIME',
+          'epoch_time': 1376075362.662,
+          'timezone': '+00:00'}).to_iso8601().run(conn)
 "2013-08-09T19:09:22.662+00:00"
 ```
 
@@ -159,31 +161,29 @@ keywords.
 
 By default, times are converted into native time objects when they are retrieved
 from the server.  This may be overridden by passing the optarg `time_format` to
-`run`.  The only options right now are `native`, the default, and `raw`.  See
-the [API reference](/api) if you are uncertain how to pass an optarg in a
-non-Ruby language.
+`run`.  The only options right now are `native`, the default, and `raw`.
 
 {% infobox info %}
-<strong>Warning:</strong> Some languages, like JavaScript, don't have an easy
+<strong>Warning:</strong> Some languages don't have an easy
 way to represent a time in an arbitrary time zone.  In this case, time zone
 information will be discarded when converting to a native time object.
 {% endinfobox %}
 
-```ruby
+```py
 > r.now().run(conn)
-2013-08-09 19:09:11 UTC
+datetime.datetime(2015, 2, 2, 19, 34, 10, 776000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102ca12d0>)
 > r.now().in_timezone('-07:00').run(conn)
-2013-08-09 12:14:56 -0700
-> r.now().run(conn, :time_format => 'raw')
-{'timezone'=>'+00:00', "epoch_time"=>1376075362.662, "$reql_type$"=>"TIME"}
-> r.now().in_timezone('-07:00').run(conn, :time_format => 'raw')
-{"timezone"=>"-07:00", "epoch_time"=>1376075702.485, "$reql_type$"=>"TIME"}
+datetime.datetime(2015, 2, 2, 12, 34, 55, 642000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102ca1250>)
+> r.now().run(conn, time_format='raw')
+{u'$reql_type$': u'TIME',
+ u'epoch_time': 1422905756.693,
+ u'timezone': u'-07:00'}
 ```
 
 You can also transform a time object on the server using either `to_epoch_time`
 or `to_iso8601`.
 
-```ruby
+```py
 > r.now().to_epoch_time().run(conn)
 1376075986.574
 > r.now().to_iso8601().run(conn)
@@ -199,23 +199,23 @@ to another time, or retrieve a portion of it.
 
 You can put a time into a new time zone:
 
-```ruby
-> r.expr(Time.now).to_iso8601().run(conn)
+```py
+> r.now().to_iso8601().run(conn)
 "2013-08-09T12:48:59.103-07:00"
-> r.expr(Time.now).in_timezone('-06:00').to_iso8601().run(conn)
+> r.now().in_timezone('-06:00').to_iso8601().run(conn)
 "2013-08-09T13:49:15.503-06:00"
 ```
 
 You can also add or subtract a duration (in seconds):
 
-```ruby
+```py
 > (r.epoch_time(123.456) + 123.456).to_epoch_time().run(conn)
 246.912
 ```
 
 If you subtract two times, you get a duration:
 
-```ruby
+```py
 > (r.epoch_time(246.912) - r.epoch_time(123.456)).run(conn)
 123.456
 ```
@@ -224,20 +224,19 @@ If you subtract two times, you get a duration:
 
 All of the normal comparison operators are defined on times:
 
-```ruby
-> (r.epoch_time(1376081287.982) < Time.now).run(conn)
-true
+```py
+> (r.epoch_time(1376081287.982) < r.now()).run(conn)
+True
 ```
 
 Times are only compared with millisecond precision:
 
-```ruby
+```py
 > r.epoch_time(1376081287.9821).eq(r.epoch_time(1376081287.9822)).run(conn)
-true
+True
 ```
 
-There's also the `during` command which is convenient for checking whether a time is
-in a particular range of times.  See more at the [API reference](/api).
+There's also the [during](/api/python/during) command, which can check whether a time is in a particular range of times.
 
 ## Retrieving portions of times ##
 
@@ -245,36 +244,36 @@ If you have a time, you can retrieve a particular portion (like the month, or
 the hours) relative to the current time zone.  (See the full list at the
 [API reference](/api).)
 
-```ruby
-> r.expr(Time.now).run(conn)
+```py
+> r.now().run(conn)
 2013-08-09 13:53:00 -0700
-> r.expr(Time.now).month().run(conn)
+> r.now().month().run(conn)
 8
-> r.expr(Time.now).hours().run(conn)
+> r.now().hours().run(conn)
 13
-> r.expr(Time.now).in_timezone('-06:00').hours().run(conn)
+> r.now().in_timezone('-06:00').hours().run(conn)
 14
 ```
 
 We use the ISO 8601 definition of a week, which starts with Monday, represented
 as `1`.
 
-```ruby
-> r.expr(Time.now).day_of_week().run(conn)
+```py
+> r.now().day_of_week().run(conn)
 5 # Friday
 ```
 
 We define `r.monday...r.sunday` and `r.january...r.december` for convenience:
 
-```ruby
-> r.expr(Time.now).day_of_week().eq(r.friday).run(conn)
+```py
+> r.now().day_of_week().eq(r.friday).run(conn)
 true
 ```
 
 We also let you slice the time into the date and the current time of day (a time
 and a duration, respectively):
 
-```ruby
+```py
 > r.now().to_epoch_time().run(conn)
 1376351312.744
 > r.now().date().to_epoch_time().run(conn)
@@ -290,15 +289,15 @@ ReQL.  For example, let's say you have a table of sales your company has made,
 and you want to figure out how much of the gross comes from people who were
 working overtime:
 
-```ruby
-r.table('sales').filter {|sale|
+```py
+r.table('sales').filter(lambda sale:
   # Weekends are overtime.
   sale['time'].day_of_week().eq(r.saturday) |
   sale['time'].day_of_week().eq(r.sunday) |
   # Weekdays outside 9-5 are overtime.
   (sale['time'].hours() < 9) |
   (sale['time'].hours() >= 17)
-}.sum('dollars').run(conn)
+).sum('dollars').run(conn)
 ```
 
 If your timestamps are stored with time zones, this query will work even if you
@@ -312,21 +311,19 @@ Further, because it's ReQL, the query's individual pieces are easily
 composable.  If you decide you want those numbers on a per-month
 basis, you can just throw a `group` in there:
 
-```ruby
-r.table('sales').filter {|sale|
+```py
+r.table('sales').filter(lambda sale:
   # Weekends are overtime.
   sale['time'].day_of_week().eq(r.saturday) |
   sale['time'].day_of_week().eq(r.sunday) |
   # Weekdays outside 9-5 are overtime.
   (sale['time'].hours() < 9) |
   (sale['time'].hours() >= 17)
-}.group{|sale| sale['time'].month()}.sum('dollars').run(conn)
+).group(lambda sale: sale['time'].month()).sum('dollars').run(conn)
 ```
 
 <a id="native-time-objects"></a>
-# Working with native time objects
 
-## Python
 RethinkDB accepts Python `datetime` objects:
 
 ```py
@@ -334,16 +331,11 @@ from datetime import datetime
 ```
 
 The Python driver will throw an error if you pass it a `datetime`
-without a time zone.  (RethinkDB only stores times with time zones.)
-If you try to run:
+without a time zone. (RethinkDB only stores times with time zones.)
 
 ```py
-r.expr(datetime.now()).run(conn)
-```
+> r.expr(datetime.now()).run(conn)
 
-You will get the following error:
-
-```
 RqlDriverError: Cannot convert datetime to ReQL time object
 without timezone information. You can add timezone information with
 the third party module "pytz" or by constructing ReQL compatible
@@ -365,29 +357,3 @@ To pass a valid time object to the Python driver, you can:
     from pytz import timezone
     r.expr(datetime.now(timezone('US/Pacific'))).run(conn)
     ```
-
-
-## JavaScript
-RethinkDB accepts JavaScript `Date` objects:
-
-```js
-r.expr(new Date()).run(conn, callback)
-```
-
-In JavaScript, `Date` objects store the epoch time, but not the time
-zone.  As a result, the JavaScript driver will not send any time zones
-to RethinkDB, and will discard the time zones on any time objects it
-retrieves from RethinkDB (the epoch time will still be correct).  If
-you need to access the time zone of a time stored in RethinkDB, you
-can retrieve the raw time object like so:
-
-```js
-r.expr(new Date()).run({connection: conn, timeFormat: "raw"}, callback)
-```
-
-## Ruby
-RethinkDB accepts Ruby `Time` objects.  (Note that we only support Ruby 1.9+.)
-
-```rb
-r.expr(Time.now).run(conn)
-```
