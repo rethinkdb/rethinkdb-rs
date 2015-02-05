@@ -108,7 +108,7 @@ to different chat rooms. You can create feeds that subscribe to messages
 posted to a specific room:
 
 ```python
-r.table('messages').changes().filter(r.row['new_val']['room_id'] == ROOM_ID).run(conn)
+r.table('messages').filter(r.row['room_id'] == ROOM_ID).changes().run(conn)
 ```
 
 You can also use more complicated expressions. Let's say you have a

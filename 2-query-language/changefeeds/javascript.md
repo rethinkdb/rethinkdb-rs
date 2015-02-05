@@ -108,9 +108,9 @@ to different chat rooms. You can create feeds that subscribe to messages
 posted to a specific room:
 
 ```js
-r.table('messages').changes().filter(
-  r.row('new_val')('room_id').eq(ROOM_ID)
-).run(conn, callback)
+r.table('messages').filter(
+  r.row('room_id').eq(ROOM_ID)
+).changes().run(conn, callback)
 ```
 
 You can also use more complicated expressions. Let's say you have a
