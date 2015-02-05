@@ -90,10 +90,8 @@ that we're constantly adding to the query language.
 
 > WOW. @RethinkDB's admin interface is incredible. And installing on OSX is a cinch. Check it out people! - [@mjackson](https://twitter.com/mjackson/status/281834673217363968)
 
-* Sharding, replication, and multi-datacenter setup can be done in a
-  few clicks. Watch the [screencast](/screencast) to see how easy it
-  is to setup and operate a cluster.
-* All cluster operations are scriptable via CLI tools.
+* Sharding and replication can be done in a few clicks.
+* All cluster operations are scriptable in ReQL.
 * The built-in data explorer offers online documentation and query
   language suggestions.
 

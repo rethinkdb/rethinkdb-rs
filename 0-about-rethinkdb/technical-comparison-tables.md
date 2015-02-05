@@ -199,7 +199,7 @@ RethinkDB supports [hot backup](/docs/backup/) on a live cluster via `dump` and 
 | :---------- | --------- | ------- |
 | Sharding    | Guided range-based sharding<br/>(supervised/guided/advised/trained) | Automatic range-based sharding |
 | Replication | Sync and async replication | Replica-sets with log-shipping |
-| Multi datacenter | Multiple DC support with per-datacenter replication and write acknowledgements | Supports different options for multi DC |
+| Multi datacenter | Server grouping via tags with per-group replication and write acknowledgements | Supports different options for multi DC |
 | Map-reduce  | Multiple map-reduce functions<br/>Executing ReQL or JavaScript operations | JavaScript-based map-reduce |
 | Performance | No published results | No official results |
 | Concurrency | Event-based and coroutines<br/>Asynchronous block-level MVCC | Threading<br/>Read-write locks | 
@@ -235,10 +235,10 @@ mechanisms](http://docs.mongodb.org/manual/data-center-awareness/):
 - support for nearby replication
 - tagging (version 2.0+)
 
-RethinkDB supports grouping servers into datacenters with per datacenter
-replication and write acknowledgement settings through either the admin web UI
-or CLI. RethinkDB immediate consistency based reads and writes do not require a
-special protocol for multi DC replication.
+RethinkDB supports grouping servers together in any configuration via "server
+tags" with per group replication and write acknowledgement settings. RethinkDB
+immediate consistency based reads and writes do not require a special protocol
+for multi DC replication.
 
 ## Map-reduce ##
 
