@@ -236,9 +236,8 @@ mechanisms](http://docs.mongodb.org/manual/data-center-awareness/):
 - tagging (version 2.0+)
 
 RethinkDB supports grouping servers together in any configuration via "server
-tags" with per group replication and write acknowledgement settings. RethinkDB
-immediate consistency based reads and writes do not require a special protocol
-for multi DC replication.
+tags" with per-group replication and write acknowledgement settings. RethinkDB
+immediate consistency-based reads and writes do not require a special protocol.
 
 ## Map-reduce ##
 
