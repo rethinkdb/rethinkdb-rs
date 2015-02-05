@@ -57,12 +57,12 @@ know or care what time zone the client is in). In this example we're using `r.ma
 
 We can now filter based on these times:
 
-```ruby
-> r.table('events').filter{|row| row['timestamp'].hours() > 20}.run(conn)
+```py
+> r.table('events').filter(r.row['timestamp'].hours() > 20).run(conn)
 [{u'id': 1,
   u'timestamp': datetime.datetime(2013, 8, 13, 23, 32, 49, 923000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102cbde90>)}]
   
-> r.table('events').filter(r.row['timestamp'].in_timezone('-02:00').hours() > 20).run
+> r.table('events').filter(r.row['timestamp'].in_timezone('-02:00').hours() > 20).run(conn)
 [{u'id': 0,
   u'timestamp': datetime.datetime(2015, 2, 2, 11, 56, 31, 250000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x102ca0c50>)},
  {u'id': 1,
@@ -71,7 +71,7 @@ We can now filter based on these times:
 
 Or create a secondary index on them:
 
-```ruby
+```py
 > r.table('events').index_create('timestamp').run(conn)
 {'created': 1}
 > r.table('events').between(r.epoch_time(1376436769.913),
@@ -162,12 +162,6 @@ keywords.
 By default, times are converted into native time objects when they are retrieved
 from the server.  This may be overridden by passing the optarg `time_format` to
 `run`.  The only options right now are `native`, the default, and `raw`.
-
-{% infobox info %}
-<strong>Warning:</strong> Some languages don't have an easy
-way to represent a time in an arbitrary time zone.  In this case, time zone
-information will be discarded when converting to a native time object.
-{% endinfobox %}
 
 ```py
 > r.now().run(conn)
@@ -331,7 +325,7 @@ from datetime import datetime
 ```
 
 The Python driver will throw an error if you pass it a `datetime`
-without a time zone. (RethinkDB only stores times with time zones.)
+without a time zone.
 
 ```py
 > r.expr(datetime.now()).run(conn)

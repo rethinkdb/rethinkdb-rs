@@ -45,8 +45,8 @@ Now, let's get those back:
 > r.table('events');
 // Result passed to callback
 [
-    { "id": 0, "timestamp": "2013-08-13T23:32:49.923Z" },
-    { "id": 1, "timestamp": "2013-08-13T23:32:49.923Z" }
+    { "id": 0, "timestamp": Date("2013-08-13T23:32:49.923Z") },
+    { "id": 1, "timestamp": Date("2013-08-13T23:32:49.923Z") }
 ]
 ```
 
@@ -60,7 +60,7 @@ We can now filter based on these times:
 ```js
 > r.table('events').filter(r.row('timestamp').hours().gt(20)).run(conn, callback);
 // Result passed to callback
-[ { "id": 1, "timestamp": "2013-08-13T23:32:49.923Z" } ]
+[ { "id": 1, "timestamp": Date("2013-08-13T23:32:49.923Z") } ]
 ```
 
 Or create a secondary index on them:
@@ -72,7 +72,7 @@ Or create a secondary index on them:
       r.epochTime(1376436769.933), {index: 'timestamp'}
   ).run(conn, callback);
 // Result passed to callback
-[ { "id": 1, "timestamp": "2013-08-13T23:32:49.923Z" } ]
+[ { "id": 1, "timestamp": Date("2013-08-13T23:32:49.923Z") } ]
 ```
 
 # Technical details #
@@ -159,31 +159,24 @@ keywords.
       {'$reql_type$': 'TIME', epoch_time: 1376075362.662, timezone: '+00:00'}
   ).run(conn, callback);
 // Result passed to callback
-"2013-08-09T19:09:22.662Z"
+Date("2013-08-09T19:09:22.662Z")
 ```
 
 # Retrieving times #
 
 By default, times are converted into native time objects when they are retrieved
-from the server.  This may be overridden by passing the optarg `time_format` to
+from the server.  This may be overridden by passing the optarg `timeFormat` to
 `run`.  The only options right now are `native`, the default, and `raw`.  See
-the [API reference](/api) if you are uncertain how to pass an optarg in a
-non-Ruby language.
-
-{% infobox info %}
-<strong>Warning:</strong> Some languages, like JavaScript, don't have an easy
-way to represent a time in an arbitrary time zone.  In this case, time zone
-information will be discarded when converting to a native time object.
-{% endinfobox %}
+the [API reference](/api) if you are uncertain how to pass an optional argument in JavaScript.
 
 ```js
 > r.now().run(conn, callback);
 // Result passed to callback
-"2013-08-13T23:32:49.923Z"
+Date("2013-08-13T23:32:49.923Z")
 
-> r.now().in_timezone('-07:00').run(conn, callback);
+> r.now().inTimezone('-07:00').run(conn, callback);
 // Result passed to callback: same as above, no TZ info retrieved
-"2013-08-13T23:32:49.923Z"
+Date("2013-08-13T23:32:49.923Z")
 
 > r.now().run(conn, {timeFormat: 'raw'}, callback);
 // Result passed to callback
@@ -272,11 +265,11 @@ the hours) relative to the current time zone.  (See the full list at the
 
 > r.expr(new Date()).hours().run(conn, callback);
 // Result passed to callback
-13
+23
 
 > r.expr(new Date()).inTimezone('-06:00').hours().run(conn, callback);
 // Result passed to callback
-14
+17
 ```
 
 We use the ISO 8601 definition of a week, which starts with Monday, represented
@@ -351,24 +344,4 @@ r.table('sales').filter(function (sale) {
 }).group(function (sale) {
     return sale('time').month();
 }).sum('dollars').run(conn, callback);
-```
-
-<a id="native-time-objects"></a>
-# Working with native time objects
-
-RethinkDB accepts JavaScript `Date` objects:
-
-```js
-r.expr(new Date()).run(conn, callback)
-```
-
-In JavaScript, `Date` objects store the epoch time, but not the time
-zone.  As a result, the JavaScript driver will not send any time zones
-to RethinkDB, and will discard the time zones on any time objects it
-retrieves from RethinkDB (the epoch time will still be correct).  If
-you need to access the time zone of a time stored in RethinkDB, you
-can retrieve the raw time object like so:
-
-```js
-r.expr(new Date()).run({connection: conn, timeFormat: "raw"}, callback)
 ```

@@ -155,12 +155,6 @@ By default, times are converted into native time objects when they are retrieved
 from the server.  This may be overridden by passing the optarg `time_format` to
 `run`.  The only options right now are `native`, the default, and `raw`.
 
-{% infobox info %}
-<strong>Warning:</strong> Some languages don't have an easy
-way to represent a time in an arbitrary time zone. In this case, time zone
-information will be discarded when converting to a native time object.
-{% endinfobox %}
-
 ```ruby
 > r.now().run(conn)
 2013-08-09 19:09:11 UTC
@@ -312,13 +306,4 @@ r.table('sales').filter {|sale|
   (sale['time'].hours() < 9) |
   (sale['time'].hours() >= 17)
 }.group{|sale| sale['time'].month()}.sum('dollars').run(conn)
-```
-
-<a id="native-time-objects"></a>
-# Working with native time objects
-
-RethinkDB accepts Ruby `Time` objects.  (Note that we only support Ruby 1.9+.)
-
-```rb
-r.expr(Time.now).run(conn)
 ```
