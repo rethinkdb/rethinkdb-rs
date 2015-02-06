@@ -1,6 +1,6 @@
 ---
 layout: documentation
-title: System stats table
+title: System statistics table
 active: docs
 docs_active: system-stats
 permalink: docs/system-stats/
@@ -15,6 +15,9 @@ The stats table is one of the [system tables][st] added in version 1.16 of Rethi
 The table's primary key is the `id` field, and the keys are always arrays. The first element in the array is always a string indicating the object type being queried (i.e., `"table"`, `"server"`, etc.); for all objects but the cluster (which has only one document in the `stats` table), the second element is the UUID of the object being queried.
 
 ```js
+// get a dump of all current statistics
+r.db("rethinkdb").table("stats").run(conn, callback);
+
 // query about the cluster as a whole
 r.db("rethinkdb").table("stats").get(["cluster"]).run(conn, callback);
 

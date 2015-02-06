@@ -15,6 +15,9 @@ The jobs table is one of the [system tables][st] added in version 1.16 of Rethin
 The table's primary key is the `id` field, and the keys are always arrays. The first element in the array is always a string indicating the type of job (e.g., `"query"`, `"disk_compaction"`, etc.); the second element is the UUID of the job. The type of job is also given in the `type` field.
 
 ```js
+// get a list all currently running jobs
+r.db("rethinkdb").table("jobs").run(conn, callback);
+
 // get a list of currently running queries
 r.db("rethinkdb").table("jobs").filter({type: 'query'}).run(conn, callback);
 

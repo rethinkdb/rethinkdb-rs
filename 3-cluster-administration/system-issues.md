@@ -10,6 +10,12 @@ The current issues table is one of the [system tables][st] added in version 1.16
 
 [st]: /docs/system-tables/
 
+Querying this table with no filters produces a list of all current issues within the cluster.
+
+```js
+r.db("rethinkdb").table("current_issues").run(conn, callback);
+```
+
 # Document schema #
 
 Issues added to the table follow the same structure.
@@ -31,6 +37,12 @@ Issues added to the table follow the same structure.
 * `critical`: `true` if the issue is likely to cause loss of availability.
 * `info`: detail fields; the keys and values will depend on the issue type.
 * `description`: a human-readable description of the problem, including suggestions for how to solve it.
+
+You can query for specific kinds of issues by filtering on the `type` field.
+
+```js
+r.db("rethinkdb").table("current_issues").filter({type: "outdated_index"}).run(conn, callback);
+```
 
 # Issue types #
 
