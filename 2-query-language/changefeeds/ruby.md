@@ -106,9 +106,9 @@ to different chat rooms. You can create feeds that subscribe to messages
 posted to a specific room:
 
 ```rb
-r.table('messages').changes.filter{ |row|
-  row['new_val']['room_id'].eq(ROOM_ID)
-}.run(conn)
+r.table('messages').filter{ |row|
+  row['room_id'].eq(ROOM_ID)
+}.changes().run(conn)
 ```
 
 You can also use more complicated expressions. Let's say you have a
@@ -117,7 +117,7 @@ your game. You can create a feed of all games where a user beats their
 previous score, and get only the new value:
 
 ```rb
-r.table('scores').changes.filter{ |change|
+r.table('scores').changes().filter{ |change|
   change['new_val']['score'] > change['old_val']['score']
 }['new_val'].run(conn)
 ```
