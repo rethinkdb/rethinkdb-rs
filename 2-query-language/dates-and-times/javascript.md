@@ -3,7 +3,7 @@ layout: documentation
 title: Dates and times in RethinkDB
 active: docs
 docs_active: dates-and-times
-permalink: docs/dates-and-times/javascript
+permalink: docs/dates-and-times/javascript/
 alias: docs/dates-and-times/
 switcher: true
 language: JavaScript
