@@ -875,7 +875,7 @@ memory, and is limited to 100,000 documents (or the setting of the `array_limit`
 be done on arbitrarily large tables, or after a `between` command
 using the same index.
 
-__Example:__ Order all the posts using the index `date`.   
+__Example:__ Order all the posts using the index `date`.
 
 ```rb
 r.table('posts').order_by(:index => 'date').run(conn)
@@ -1092,7 +1092,7 @@ __Example:__ Return the number of documents in the table `posts.
 ```rb
 r.table("posts").map{|doc|
     1
-}.reduce(0), { left, right:
+}.reduce{ |left, right|
     left+right
 }.run(conn);
 ```
