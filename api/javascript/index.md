@@ -1201,20 +1201,16 @@ r.expr([3, 5, 7]).avg().run(conn, callback)
 ## [min](min/) ##
 
 {% apibody %}
-sequence.min([fieldOrFunction]) &rarr; element
+sequence.min(fieldOrFunction) &rarr; element
+sequence.min({index: 'index'}) &rarr; element
 {% endapibody %}
 
-Finds the minimum of a sequence.  If called with a field name, finds
-the element of that sequence with the smallest value in that field.
-If called with a function, calls that function on every element of the
-sequence and returns the element which produced the smallest value,
-ignoring any elements where the function returns `null` or produces a
-non-existence error.
+Finds the minimum element of a sequence.
 
-__Example:__ What's the minimum of 3, 5, and 7?
+__Example:__ Return the minimum value in the list `[3, 5, 7]`.
 
 ```js
-r.expr([3, 5, 7]).min().run(conn, callback)
+r.expr([3, 5, 7]).min().run(conn, callback);
 ```
 
 
@@ -1225,21 +1221,16 @@ r.expr([3, 5, 7]).min().run(conn, callback)
 ## [max](max/) ##
 
 {% apibody %}
-sequence.max([fieldOrFunction]) &rarr; element
+sequence.max(fieldOrFunction) &rarr; element
+sequence.max({index: 'index'}) &rarr; element
 {% endapibody %}
 
-Finds the maximum of a sequence.  If called with a field name, finds
-the element of that sequence with the largest value in that field.  If
-called with a function, calls that function on every element of the
-sequence and returns the element which produced the largest value,
-ignoring any elements where the function returns `null` or produces a
-non-existence error.
+Finds the maximum element of a sequence.
 
-
-__Example:__ What's the maximum of 3, 5, and 7?
+__Example:__ Return the maximum value in the list `[3, 5, 7]`.
 
 ```js
-r.expr([3, 5, 7]).max().run(conn, callback)
+r.expr([3, 5, 7]).max().run(conn, callback);
 ```
 
 [Read more about this command &rarr;](max/)
