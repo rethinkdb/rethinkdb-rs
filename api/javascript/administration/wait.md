@@ -14,14 +14,19 @@ io:
 # Command syntax #
 
 {% apibody %}
-table.wait() &rarr; object
-database.wait() &rarr; object
-r.wait() &rarr; object
+table.wait([{waitFor: 'ready_for_writes', timeout: <sec>}) &rarr; object
+database.wait([{waitFor: 'ready_for_writes', timeout: <sec>}) &rarr; object
+r.wait([{waitFor: 'ready_for_writes', timeout: <sec>}) &rarr; object
 {% endapibody %}
 
 # Description #
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.
+
+The `wait` command takes two optional arguments:
+
+* `waitFor`: a string indicating a table [status](/api/javascript/status) to wait on before returning. The default is `ready_for_writes`. 
+* `timeout`: a number indicating maximum time to wait for in seconds before returning. The default is to have no timeout.
 
 The return value is an object consisting of two key/value pairs:
 
@@ -30,11 +35,11 @@ The return value is an object consisting of two key/value pairs:
     * `old_val`: The table's [status](/api/javascript/status) value before `wait` was executed.
     * `new_val`: The table's `status` value after `wait` finished.
 
-See [status](/api/javascript/status) and [System tables](/docs/system-tables/) for a discussion of the fields within the `table_status` rows.
+See [status](/api/javascript/status) and [System tables](/docs/system-tables/) for a discussion of the fields within the `status` rows.
 
 If `wait` is called with no table or database specified (the `r.wait()` form), it will wait on all the tables in the default database (set with the [connect](/api/javascript/connect/) command's `db` parameter, which defaults to `test`).
 
-__Example:__ Get a table's status.
+__Example:__ Wait on a table to be ready.
 
 ```js
 > r.table('superheroes').wait().run(conn, callback);
