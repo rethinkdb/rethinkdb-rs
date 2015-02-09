@@ -61,7 +61,7 @@ info: {
 }
 ```
 
-### table_needs_primary ###
+### table\_needs\_primary ###
 
 A `primary_replica` field in `table_config` is `null`. This can happen when the server that had been acting as primary is permanently removed from the cluster. To clear this issue, assign a new primary replica using [reconfigure](/api/javascript/reconfigure) or by writing to [table_config][st].
 
