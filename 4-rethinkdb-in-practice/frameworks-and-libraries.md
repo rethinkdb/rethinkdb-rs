@@ -102,6 +102,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 - [rabbitMQ](/docs/rabbitmq/ruby) Listen for changes in a RethinkDB table over RabbitMQ.
 
+- [lotus-rethinkdb](https://github.com/angeloashmore/lotus-rethinkdb) by [@angeloashmore](https://github.com/angeloashmore)  
+  A RethinkDB adapter for [Lotus::Model](https://github.com/lotus/model), a persistence framework for Ruby.
+
 
 # Tools and utilities
 
