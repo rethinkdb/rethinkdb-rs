@@ -103,7 +103,7 @@ No. However, RethinkDB's query language can do nearly anything SQL can do, inclu
 
 ## Are RethinkDB transactions atomic? ##
 
-For single document transactions, yes&mdash;in those cases, changes to documents are recorded atomically (along with changes to relevant indexes). For multiple document transactions, RethinkDB favors data consistency over high write availability. While RethinkDB is always CID, it is not always A.
+Most write operations involving a single document in RethinkDB are guaranteed to atomic. Operations that are not deterministic cannot update documents in an atomic fashion (such as random values, or values obtained as the result of a subquery). In addition, multiple documents are not updated atomically.
 
 ## How do queries get routed in a RethinkDB cluster? ##
 
