@@ -1,26 +1,19 @@
 ---
 layout: documentation
-title: Start a RethinkDB cluster
+title: Start a RethinkDB server
 active: docs
-docs_active: start-a-cluster
-permalink: docs/start-a-cluster/
+docs_active: start-a-server
+permalink: docs/start-a-server/
+alias: docs/start-a-cluster/
 ---
 
 {% infobox info %}
-<strong>Want to set up a production cluster?</strong> See the [production cluster setup page](/docs/cluster-on-startup/) to learn how to set up RethinkDB with `init.d` or `systemd`.
+**Want to start instances of RethinkDB on system startup?** See [Start RethinkDB at system startup](/docs/start-on-startup/) to learn how to set up RethinkDB with `init.d` or `systemd`.
 {% endinfobox %}
 
 <img src="/assets/images/docs/api_illustrations/cluster.png" class="api_command_illustration" />
 
-Adding a node to a RethinkDB cluster is as easy as starting a new
-RethinkDB process and pointing it to an existing node in the
-cluster. Everything else is handled by the system without any
-additional effort required from the user.
-
-You can set up multiple RethinkDB instances on a single machine, or
-use multiple physical machines or VMs to run a distributed cluster.
-
-#  Multiple RethinkDB instances on a single machine #
+# Starting the server
 
 To start the first RethinkDB instance, run this command in your
 terminal:
@@ -42,6 +35,13 @@ Note the port numbers you can use to access RethinkDB:
 {% infobox info %}
 For a complete list of options that can be passed to RethinkDB on the command line, read [RethinkDB command line options](/docs/cli-options) or type `rethinkdb --help` at the terminal prompt.
 {% endinfobox %}
+
+#  Multiple RethinkDB instances on a single machine #
+
+Adding a node to a RethinkDB cluster is as easy as starting a new
+RethinkDB process and pointing it to an existing node in the
+cluster. Everything else is handled by the system without any
+additional effort required from the user.
 
 Now start the second RethinkDB instance on the same machine:
 
@@ -78,6 +78,8 @@ For a complete list of options that can be passed to RethinkDB on the command li
 <strong>Having trouble accessing the web interface?</strong> Try restarting both of your RethinkDB instances with an additional `--bind all` parameter.
 {% endinfobox %}
 
+In production, you'd likely want to specify options via configuration files rather than command line options; read the [configuration file](/docs/config-file/) documentation for details on the format and available options. Also, you'd want your RethinkDB instances to come online at system startup. See [Start RethinkDB at system startup](/docs/start-on-startup/) to learn how to set up RethinkDB with `init.d` or `systemd`.
+
 {% infobox info %}
 <strong>Want to connect a third node?</strong> You can join it with either of the two existing nodes in the cluster.
 {% endinfobox %}
@@ -108,7 +110,7 @@ from connecting to the server. The `--bind all` option allows
 connections from anywhere on the network. It works well if the network
 is protected.
 
-If your network is open to the internet, you might have to take
+If your network is open to the internet, you should take
 additional precautions. See the [security page](/docs/security/) for
 more details.
 

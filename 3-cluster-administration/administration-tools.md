@@ -16,10 +16,10 @@ RethinkDB provides a web interface which lets you manage your entire server clus
 
 Once RethinkDB is running, you can connect to it at <http://localhost:8080>, assuming you've kept the default port (8080) and it's running on your local machine.
 
-By default, RethinkDB binds the web interface to `localhost` for security reasons. If you need to be able to access it from another server, use the `--bind all` parameter when starting RethinkDB. Read how to [Start a cluster][sc] or [Create a cluster on system startup][cc].
+By default, RethinkDB binds the web interface to `localhost` for security reasons. If you need to be able to access it from another server, use the `--bind all` parameter when starting RethinkDB. Read how to [Start a RethinkDB server][sc] and [Start RethinkDB at system startup][cc].
 
-[sc]: /docs/start-a-cluster/
-[cc]: /docs/cluster-on-startup/
+[sc]: /docs/start-a-server/
+[cc]: /docs/start-on-startup/
 
 # ReQL administration commands #
 
