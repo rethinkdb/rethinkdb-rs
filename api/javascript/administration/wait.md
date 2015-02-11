@@ -14,9 +14,9 @@ io:
 # Command syntax #
 
 {% apibody %}
-table.wait([{waitFor: 'ready_for_writes', timeout: <sec>}) &rarr; object
-database.wait([{waitFor: 'ready_for_writes', timeout: <sec>}) &rarr; object
-r.wait([{waitFor: 'ready_for_writes', timeout: <sec>}) &rarr; object
+table.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
+database.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
+r.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -25,8 +25,8 @@ Wait for a table or all the tables in a database to be ready. A table may be tem
 
 The `wait` command takes two optional arguments:
 
-* `waitFor`: a string indicating a table [status](/api/javascript/status) to wait on before returning. The default is `ready_for_writes`. 
-* `timeout`: a number indicating maximum time to wait for in seconds before returning. The default is to have no timeout.
+* `waitFor`: a string indicating a table [status](/api/javascript/status) to wait on before returning, one of `ready_for_outdated_reads`, `ready_for_reads`, `ready_for_writes`, or `all_replicas_ready`. The default is `ready_for_writes`. 
+* `timeout`: a number indicating maximum time to wait for in seconds before returning. The default is no timeout.
 
 The return value is an object consisting of two key/value pairs:
 
@@ -35,7 +35,7 @@ The return value is an object consisting of two key/value pairs:
     * `old_val`: The table's [status](/api/javascript/status) value before `wait` was executed.
     * `new_val`: The table's `status` value after `wait` finished.
 
-See [status](/api/javascript/status) and [System tables](/docs/system-tables/) for a discussion of the fields within the `status` rows.
+See [status](/api/javascript/status) and [System tables](/docs/system-tables/) for a description of the fields within `status_changes`.
 
 If `wait` is called with no table or database specified (the `r.wait()` form), it will wait on all the tables in the default database (set with the [connect](/api/javascript/connect/) command's `db` parameter, which defaults to `test`).
 
