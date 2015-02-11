@@ -110,7 +110,7 @@ from connecting to the server. The `--bind all` option allows
 connections from anywhere on the network. It works well if the network
 is protected.
 
-If your network is open to the internet, you might have to take
+If your network is open to the internet, you should take
 additional precautions. See the [security page](/docs/security/) for
 more details.
 
