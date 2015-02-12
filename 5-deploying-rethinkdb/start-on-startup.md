@@ -44,7 +44,7 @@ The basic setup is complete &mdash; __you've now got a working server!__
 The init.d script supports starting multiple instances on the same server via
 multiple `.conf` files in `/etc/rethinkdb/instances.d`.
 
-Include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind-all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
+Include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
 
 {% infobox %}
 The `bind=all` option is a security risk if your machine is open to the internet, and you should take steps to prevent unauthorized access. See the [security page](/docs/security/) for more details.
@@ -115,7 +115,7 @@ __You've now got a working server!__
 
 As systemd supports multiple instances on the same server, you simply need to create multiple `.conf` files in `/etc/rethinkdb/instances.d`.
 
-Include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind-all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
+Include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
 
 {% infobox %}
 The `bind=all` option is a security risk if your machine is open to the internet, and you should take steps to prevent unauthorized access. See the [security page](/docs/security/) for more details.
