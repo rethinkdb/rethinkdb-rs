@@ -16,34 +16,39 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.max([field_or_function]) &rarr; element
+sequence.max(field_or_function) &rarr; element
+sequence.max(index='index') &rarr; element
 {% endapibody %}
 
 # Description #
 
-Finds the maximum of a sequence.  If called with a field name, finds
-the element of that sequence with the largest value in that field.  If
-called with a function, calls that function on every element of the
-sequence and returns the element which produced the largest value,
-ignoring any elements where the function returns `None` or produces a
-non-existence error.
+Finds the maximum element of a sequence. The `max` command can be called with:
 
-Produces a non-existence error when called on an empty sequence.  You
-can handle this case with `default`.
+* a **field name**, to return the element of the sequence with the largest value in that field;
+* an **index**, to return the element of the sequence with the largest value in that index;
+* a **function**, to apply the function to every element within the sequence and return the element which returns the largest value from the function, ignoring any elements where the function returns `None` or produces a non-existence error.
 
-__Example:__ What's the maximum of 3, 5, and 7?
+Calling `max` on an empty sequence will throw a non-existence error; this can be handled using the [default](/api/python/default/) command.
+
+__Example:__ Return the maximum value in the list `[3, 5, 7]`.
 
 ```py
 r.expr([3, 5, 7]).max().run(conn)
 ```
 
-__Example:__ Which user has scored the most points?
+__Example:__ Return the user who has scored the most points.
 
 ```py
 r.table('users').max('points').run(conn)
 ```
 
-__Example:__ Which user has scored the most points, counting bonus points?
+__Example:__ The same as above, but using a secondary index on the `points` field.
+
+```py
+r.table('users').max(index='points').run(conn)
+```
+
+__Example:__ Return the user who has scored the most points, adding in bonus points from a separate field using a function.
 
 ```py
 r.table('users').max(lambda user:
@@ -51,14 +56,13 @@ r.table('users').max(lambda user:
 ).run(conn)
 ```
 
-__Example:__ What is the largest number of points any user has ever scored?
+__Example:__ Return the highest number of points any user has ever scored. This returns the value of that `points` field, not a document.
 
 ```py
 r.table('users').max('points')['points'].run(conn)
 ```
 
-__Example:__ Which user has scored the most points?  (But return
-`None` instead of erroring if no users have ever scored points.)
+__Example:__ Return the user who has scored the most points, but add a default `None` return value to prevent an error if no user has ever scored points.
 
 ```py
 r.table('users').max('points').default(None).run(conn)
