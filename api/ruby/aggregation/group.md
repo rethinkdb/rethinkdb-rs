@@ -122,6 +122,23 @@ player for each game type?
 }
 ```
 
+Using a function, you can also group by date on a ReQL [date field](/docs/dates-and-times/javascript/).
+
+__Example:__ How many matches have been played this year by month?
+
+```rb
+> r.table('matches').group { |match|
+      [match['date'].year(), match['date'].month()]
+  }.count().run(conn)
+
+{
+    [2014, 2] => 2,
+    [2014, 3] => 2,
+    [2014, 4] => 1,
+    [2014, 5] => 3
+}
+```
+
 You can also group by an index.
 
 __Example:__ What is the maximum number of points scored by game type?

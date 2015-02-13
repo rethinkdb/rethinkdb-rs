@@ -156,12 +156,42 @@ player for each game type?
         reduction: 7
     },
     {
-        group: {"player": "Bob", "type": "free"}
+        group: {"player": "Bob", "type": "free"},
         reduction: 10
     },
     {
         group: {"player": "Bob", "type": "ranked"},
         reduction: 15
+    }
+]
+```
+
+Using a function, you can also group by date on a ReQL [date field](/docs/dates-and-times/javascript/).
+
+__Example:__ How many matches have been played this year by month?
+
+```js
+> r.table('matches').group(
+      [r.row('date').year(), r.row('date').month()]
+  ).count().run(conn, callback)
+
+// Result passed to callback
+[
+    {
+        group: [2014, 2],
+        reduction: 2
+    },
+    {
+        group: [2014, 3],
+        reduction: 2
+    },
+    {
+        group: [2014, 4],
+        reduction: 1
+    },
+    {
+        group: [2014, 5],
+        reduction: 3
     }
 ]
 ```
