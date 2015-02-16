@@ -10,6 +10,23 @@ js: faq_index
 {% faqsection Table of contents | %}
 ---
 
+## How can I get a dump of the RethinkDB system tables?
+
+This can be useful for diagnostic purposes, as well as for filing bug reports. The easiest way to do this is with ReQL administration commands. Any individual table can be examined with `r.db('rethinkdb').table(<tablename>)`.
+
+The following command will output the contents of *all* the configuration/status tables as well as the most recent 50 lines of the `logs` table:
+
+```js
+r.expr(["current_issues", "jobs", "stats", "server_config", "server_status",
+"table_config", "table_status", "db_config", "cluster_config"]).map(
+    [r.row, r.db('rethinkdb').table(r.row).coerceTo('array')]
+).coerceTo('object').merge(
+    {logs: r.db('rethinkdb').table('logs').limit(50).coerceTo('array')}
+)
+```
+
+(That command is suitable for running in the Data Explorer, but can be easily adapted into other languages.)
+
 ## I get a "RqlRuntimeError: Array over size limit 100000" when trying to order a table
 
 Ordering without an index requires the server to load the whole sequence in an array, which is limited by default to 100,000 documents. You can use the `arrayLimit` option to [run](/api/javascript/run/) to temporarily raise this limit. However, a more efficient option is to use an index. See the documentation for [orderBy](/api/javascript/order_by/) for more information.

@@ -68,6 +68,7 @@ The most important things for you to provide for us are:
 
 Other things that might be helpful to us, if you have them:
 
+* A dump of the [system tables](/docs/system-tables/) (see below)
 * The core file, if it was dumped on crash
 * The data files if RethinkDB cannot restart&sup1;
 * The output of `rethinkdb` on startup
@@ -78,6 +79,19 @@ Other things that might be helpful to us, if you have them:
     * Are you running RethinkDB in a VM?
     * Other unusual configuration details
 * Is the crash reproducible, and if so, under what conditions?
+
+# Dumping the system tables
+
+In the Data Explorer, the following command will output the contents of all the configuration/status tables and the most recent 50 lines of the `logs` table:
+
+```js
+r.expr(["current_issues", "jobs", "stats", "server_config", "server_status",
+"table_config", "table_status", "db_config", "cluster_config"]).map(
+    [r.row, r.db('rethinkdb').table(r.row).coerceTo('array')]
+).coerceTo('object').merge(
+    {logs: r.db('rethinkdb').table('logs').limit(50).coerceTo('array')}
+)
+```
 
 # Setting up high availability
 
