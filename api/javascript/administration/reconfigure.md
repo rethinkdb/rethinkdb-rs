@@ -89,3 +89,46 @@ __Example:__ Reconfigure a table.
   ]
 }
 ```
+
+__Example:__ Reconfigure a table, specifying replicas by server tags.
+
+```js
+> r.table('superheroes').reconfigure({shards: 2, replicas: {wooster: 1, wayne: 1}, primaryReplicaTag: 'wooster'}).run(conn, callback);
+// Result passed to callback
+{
+  "reconfigured": 1,
+  "config_changes": [
+    {
+      "new_val": {
+        "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        "name": "superheroes",
+        "db": "superstuff",
+        "primary_key": "id",
+        "shards": [
+          {"primary_replica": "jeeves", "replicas": ["jeeves", "alfred"]},
+          {"primary_replica": "jeeves", "replicas": ["jeeves", "alfred"]}
+        ],
+        "write_acks": "majority",
+        "durability": "hard"
+      },
+      "old_val": {
+        "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        "name": "superheroes",
+        "db": "superstuff",
+        "primary_key": "id",
+        "shards": [
+          {"primary_replica": "alfred", "replicas": ["alfred"]}
+        ],
+        "write_acks": "majority",
+        "durability": "hard"
+      }
+    }
+  ],
+  "status_changes": [
+    {
+      "new_val": (status object),
+      "old_val": (status object)
+    }
+  ]
+}
+```

@@ -45,7 +45,7 @@ Read [Sharding and replication](/docs/sharding-and-replication/) for a complete 
 __Example:__ Reconfigure a table.
 
 ```rb
-r.table('superheroes').reconfigure({:shards => 2, :replicas => 1).run(conn)
+r.table('superheroes').reconfigure({:shards => 2, :replicas => 1}).run(conn)
 
 {
   :reconfigured => 1,
@@ -59,6 +59,49 @@ r.table('superheroes').reconfigure({:shards => 2, :replicas => 1).run(conn)
         :shards => [
           {:primary_replica => "jeeves", :replicas => ["jeeves"]},
           {:primary_replica => "alfred", :replicas => ["alfred"]}
+        ],
+        :write_acks => "majority",
+        :durability => "hard"
+      },
+      :old_val => {
+        :id => "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        :name => "superheroes",
+        :db => "superstuff",
+        :primary_key => "id",
+        :shards => [
+          {:primary_replica => "alfred", :replicas => ["alfred"]}
+        ],
+        :write_acks => "majority",
+        :durability => "hard"
+      }
+    }
+  ],
+  :status_changes => [
+    {
+      :new_val => (status object),
+      :old_val => (status object)
+    }
+  ]
+}
+```
+
+__Example:__ Reconfigure a table, specifying replicas by server tags.
+
+```rb
+r.table('superheroes').reconfigure({:shards => 2, :replicas => {:wooster => 1, :wayne => 1}, :primary_replica_tag => 'wooster'}).run(conn)
+
+{
+  :reconfigured => 1,
+  :config_changes => [
+    {
+      :new_val => {
+        :id => "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        :name => "superheroes",
+        :db => "superstuff",
+        :primary_key => "id",
+        :shards => [
+          {:primary_replica => "jeeves", :replicas => ["jeeves", "alfred"]},
+          {:primary_replica => "jeeves", :replicas => ["jeeves", "alfred"]}
         ],
         :write_acks => "majority",
         :durability => "hard"
