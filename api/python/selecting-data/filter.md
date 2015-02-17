@@ -21,7 +21,11 @@ array.filter(predicate[, default=False]) &rarr; array
 
 Return all the elements in a sequence for which the given predicate is true. The return value of `filter` will be the same as the input (sequence, stream, or array). Documents can be filtered in a variety of ways&mdash;ranges, nested values, boolean conditions, and the results of anonymous functions.
 
-The `filter` command wraps predicates in an implicit [.default(False)](/api/python/default), so if the predicate tries to access a field that doesn't exist in a given document, that document is not returned. The `default` optional argument sets the value returned for missing fields, rather than `False`. Setting it to `r.error()` will throw an `RqlRuntimeError` when a non-existent field is accessed.
+By default, `filter` will silently skip documents with missing fields: if the predicate tries to access a field that doesn't exist (for instance, the predicate `{'age': 30}` applied to a document with no `age` field), that document will not be returned in the result set, and no error will be generated. This behavior can be changed with the `default` optional argument.
+
+* If `default` is set to `True`, documents with missing fields will be returned rather than skipped.
+* If `default` is set to `r.error()`, an `RqlRuntimeError` will be thrown when a document with a missing field is tested.
+* If `default` is set to `False` (the default), documents with missing fields will be skipped.
 
 ## Basic predicates ##
 
