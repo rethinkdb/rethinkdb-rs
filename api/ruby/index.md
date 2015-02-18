@@ -74,20 +74,10 @@ r.table('heroes').run
 ## [close](close/) ##
 
 {% apibody %}
-conn.close(opts={})
+conn.close([{:noreply_wait => true}])
 {% endapibody %}
 
-
-Close an open connection.  Accepts the following options:
-
-- `noreply_wait`: whether to wait for noreply writes to complete
-  before closing (default `true`).  If this is set to `false`, some
-  outstanding noreply writes may be aborted.
-
-Closing a connection waits until all outstanding requests have
-finished and then frees any open resources associated with the
-connection.  If `noreply_wait` is set to `false`, all outstanding
-requests are canceled immediately.
+Close an open connection.
 
 __Example:__ Close an open connection, waiting for noreply writes to finish.
 
@@ -95,34 +85,21 @@ __Example:__ Close an open connection, waiting for noreply writes to finish.
 conn.close
 ```
 
-__Example:__ Close an open connection immediately.
-
-```rb
-conn.close(:noreply_wait => false)
-```
+[Read more about this command &rarr;](close/)
 
 ## [reconnect](reconnect/) ##
 
-{% apibody %}
-conn.reconnect(opts={})
-{% endapibody %}
+conn.reconnect([{:noreply_wait => true}])
 
-
-Close and reopen a connection.  Accepts the following options:
-
-- `noreply_wait`: whether to wait for noreply writes to complete
-  before closing (default `true`).  If this is set to `false`, some
-  outstanding noreply writes may be aborted.
-
-Closing a connection waits until all outstanding requests have
-finished.  If `noreply_wait` is set to `false`, all outstanding
-requests are canceled immediately.
+Close and reopen a connection.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```rb
 conn.reconnect(:noreply_wait => false)
 ```
+
+[Read more about this command &rarr;](reconnect/)
 
 ## [use](use/) ##
 

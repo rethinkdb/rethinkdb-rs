@@ -78,13 +78,7 @@ r.table('heroes').run()
 conn.close(noreply_wait=True)
 {% endapibody %}
 
-Close an open connection. Closing a connection waits until all
-outstanding requests have finished and then frees any open resources
-associated with the connection.  If `noreply_wait` is set to `False`,
-all outstanding requests are canceled immediately.
-
-Closing a connection cancels all outstanding requests and frees the
-memory associated with any open cursors.
+Close an open connection.
 
 __Example:__ Close an open connection, waiting for noreply writes to finish.
 
@@ -92,11 +86,7 @@ __Example:__ Close an open connection, waiting for noreply writes to finish.
 conn.close()
 ```
 
-__Example:__ Close an open connection immediately.
-
-```py
-conn.close(noreply_wait=False)
-```
+[Read more about this command &rarr;](close/)
 
 ## [reconnect](reconnect/) ##
 
@@ -104,15 +94,15 @@ conn.close(noreply_wait=False)
 conn.reconnect(noreply_wait=True)
 {% endapibody %}
 
-Close and reopen a connection. Closing a connection waits until all
-outstanding requests have finished.  If `noreply_wait` is set to
-`False`, all outstanding requests are canceled immediately.
+Close and reopen a connection.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```py
 conn.reconnect(noreply_wait=False)
 ```
+
+[Read more about this command &rarr;](reconnect/)
 
 ## [use](use/) ##
 

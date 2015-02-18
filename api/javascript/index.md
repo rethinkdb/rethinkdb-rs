@@ -59,20 +59,13 @@ r.connect({ host: 'localhost',
 ## [close](close/) ##
 
 {% apibody %}
-conn.close([opts, ]callback)
-conn.close([opts]) &rarr; promise
+conn.close([{noreplyWait: true}, ]callback)
+conn.close([{noreplyWait: true}]) &rarr; promise
 {% endapibody %}
 
-Close an open connection.  Accepts the following options:
+Close an open connection.
 
-- `noreplyWait`: whether to wait for noreply writes to complete
-  before closing (default `true`).  If this is set to `false`, some
-  outstanding noreply writes may be aborted.
-
-Closing a connection waits until all outstanding requests have
-finished and then frees any open resources associated with the
-connection.  If `noreplyWait` is set to `false`, all outstanding
-requests are canceled immediately.
+If no callback is provided, a promise will be returned.
 
 __Example:__ Close an open connection, waiting for noreply writes to finish.
 
@@ -80,34 +73,26 @@ __Example:__ Close an open connection, waiting for noreply writes to finish.
 conn.close(function(err) { if (err) throw err; })
 ```
 
-__Example:__ Close an open connection immediately.
-
-```js
-conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
-```
+[Read more about this command &rarr;](close/)
 
 ## [reconnect](reconnect/) ##
 
 {% apibody %}
-conn.reconnect([opts, ]callback)
-conn.reconnect([opts]) &rarr; promise
+conn.reconnect([{noreplyWait: true}, ]callback)
+conn.reconnect([{noreplyWait: true}]) &rarr; promise
 {% endapibody %}
 
-Close and reopen a connection.  Accepts the following options:
+Close and reopen a connection.
 
-- `noreplyWait`: whether to wait for noreply writes to complete
-  before closing (default `true`).  If this is set to `false`, some
-  outstanding noreply writes may be aborted.
-
-Closing a connection waits until all outstanding requests have
-finished.  If `noreplyWait` is set to `false`, all outstanding
-requests are canceled immediately.
+If no callback is provided, a promise will be returned.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```js
-conn.reconnect({noreplyWait: false}, function(errror, connection) { ... })
+conn.reconnect({noreplyWait: false}, function(error, connection) { ... })
 ```
+
+[Read more about this command &rarr;](reconnect/)
 
 ## [use](use/) ##
 
