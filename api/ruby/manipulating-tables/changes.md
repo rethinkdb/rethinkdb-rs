@@ -58,7 +58,7 @@ client would receive and print the following objects:
 
 ```rb
 > r.table('games').insert({:id => 1}).run(conn)
-{:old_val => None, :new_val => {:id => 1}}
+{:old_val => nil, :new_val => {:id => 1}}
 
 > r.table('games').get(1).update({:player1 => 'Bob'}).run(conn)
 {:old_val => {:id => 1}, :new_val => {:id => 1, :player1 => 'Bob'}}
