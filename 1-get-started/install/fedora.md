@@ -25,21 +25,25 @@ sudo yum install rethinkdb
 
 # Compile from source #
 
-The following instructions were tested on Fedora 19.
+The following instructions were tested on Fedora 20.
 
 ## Get the build dependencies ##
+
 Install the main dependencies:
 
 ```bash
-sudo yum install git-core gcc-c++ protobuf-devel nodejs npm ncurses-devel \
-    gperftools-devel boost-static
+sudo yum install gcc-c++ protobuf-devel ncurses-devel jemalloc-devel \
+         boost-static wget protobuf-compiler which zlib-devel \
+         openssl-devel libcurl-devel make m4
 ```
 
 ## Get the source code ##
-Clone the RethinkDB repository:
+
+Download and extract the source tarball:
 
 ```bash
-git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
 ## Build RethinkDB ##
@@ -47,9 +51,10 @@ git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/re
 Kick off the build process:
 
 ```bash
-cd rethinkdb
-./configure --dynamic tcmalloc_minimal
+cd rethinkdb-{{site.version.full}}
+./configure --dynamic jemalloc
 make
+sudo make install
 ```
 
 {% include install-next-step.md %}

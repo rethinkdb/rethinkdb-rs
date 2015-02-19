@@ -18,14 +18,18 @@ These instructions have been tested on OpenSuse 13.1.
 Install the main dependencies:
 
 ```
-sudo zypper in git-core make gcc gcc-c++ protobuf-devel nodejs v8-devel ncurses-devel gperftools-devel boost-devel
+sudo zypper in make gcc gcc-c++ protobuf-devel ncurses-devel \
+               jemalloc-devel boost-devel tar wget m4 which \
+               openssl-devel libcurl-devel
 ```
 
 ## Get the source code ##
-Clone the RethinkDB repository:
 
-```
-git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+Download and extract the archive:
+
+```bash
+wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
 ## Build RethinkDB ##
@@ -33,9 +37,10 @@ git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/re
 Kick off the build process:
 
 ```
-cd rethinkdb
-./configure --dynamic tcmalloc_minimal
+cd rethinkdb-{{site.version.full}}
+./configure --dynamic jemalloc
 make
+sudo make install
 ```
 
 {% include install-next-step.md %}

@@ -19,32 +19,44 @@ sudo wget http://download.rethinkdb.com/centos/6/`uname -m`/rethinkdb.repo \
           -O /etc/yum.repos.d/rethinkdb.repo
 sudo yum install rethinkdb
 ```
-# Compile from source with the Epel repository #
+# Compile from source #
 
 These instructions have been tested on CentOS 6.5.
 
 ## Get the build dependencies ##
 
-CentOS provides neither a v8-devel package nor Node.js, so we need to get them
-from the Epel repository:
+The version of GCC included with Centos 6 is too old to compile RethinkDB. A newer version can be installed using devtoolset:
 
+```bash
+rpm --import http://ftp.scientificlinux.org/linux/scientific/5x/x86_64/RPM-GPG-KEYs/RPM-GPG-KEY-cern
+sudo wget -O /etc/yum.repos.d/slc6-devtoolset.repo http://linuxsoft.cern.ch/cern/devtoolset/slc6-devtoolset.repo
+```
+
+Install the main dependencies:
+
+```
+sudo yum install devtoolset-2 ncurses-devel boost-static openssl-devel \
+                 libcurl-devel wget tar which m4
+```
+
+### Install optional build dependencies ###
+
+CentOS provides neither a protobuf-devel package nor a jemalloc-devel
+package. Installing these dependencies from the EPEL repositories will
+allow RethinkDB to build more quickly:
 
 ```bash
 sudo rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-```
-
-Install the main dependencies:
-
-```
-sudo yum install git-core gcc-c++ ncurses-devel boost-static protobuf-devel nodejs \
-    npm gperftools-devel
+sudo yum install protobuf-devel jemalloc-devel
 ```
 
 ## Get the source code ##
-Clone RethinkDB repository:
+
+Download and extract the source tarball:
 
 ```bash
-git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
 ## Build RethinkDB ##
@@ -52,40 +64,10 @@ git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/re
 Kick off the build process:
 
 ```bash
-cd rethinkdb
-./configure --dynamic tcmalloc_minimal
-make
+cd rethinkdb-{{site.version.full}}
+scl enable devtoolset-2 -- ./configure --dynamic jemalloc --allow-fetch
+scl enable devtoolset-2 -- make
+sudo make install
 ```
-
-# Compile from source without the Epel repository #
-
-These instructions have been tested on CentOS 6.5.
-
-## Get the build dependencies ##
-
-Install the main dependencies:
-
-```
-sudo yum install git-core gcc-c++ ncurses-devel boost-static svn
-```
-
-## Get the source code ##
-
-Clone RethinkDB repository:
-
-```bash
-git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
-```
-
-## Build RethinkDB ##
-
-Kick off the build process:
-
-```
-cd rethinkdb
-./configure --fetch protoc --fetch npm --fetch tcmalloc_minimal
-make
-```
-
 
 {% include install-next-step.md %}

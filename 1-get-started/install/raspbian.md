@@ -8,7 +8,8 @@ permalink: docs/install/raspbian/
 ---
 {% include install-docs-header.md %}
 {% include install-community-platform-warning.md %}
-The following instructions were tested on Raspbian January 2014 (Debian Wheezy)
+
+These instructions were updated after the 1.16 release, but have not been tested.
 
 # Compile from source #
 
@@ -17,8 +18,8 @@ The following instructions were tested on Raspbian January 2014 (Debian Wheezy)
 Install the main dependencies:
 
 ```
-sudo apt-get install git g++ protobuf-compiler libprotobuf-dev libv8-dev \
-libboost-dev curl
+sudo apt-get install g++ protobuf-compiler libprotobuf-dev \
+                     libboost-dev curl m4 wget
 ```
 
 ## Prepare the raspberrypi ##
@@ -31,10 +32,11 @@ Make also sure that you have at least 1GB available on your SD card.
 
 ## Get the source code ##
 
-Clone the RethinkDB repository:
+Download and extract the archive:
 
 ```bash
-git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
 ## Build RethinkDB ##
@@ -42,12 +44,10 @@ git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/re
 Kick off the build process:
 
 ```bash
-cd rethinkdb
-./configure --without-tcmalloc --allow-fetch
+cd rethinkdb-{{site.version.full}}
+./configure --with-system-malloc --allow-fetch
 make
+sudo make install
 ```
-
-The binary will be in `build/release_notcmalloc/`.
-
 
 {% include install-next-step.md %}

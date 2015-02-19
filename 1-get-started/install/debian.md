@@ -25,35 +25,6 @@ sudo apt-get update
 sudo apt-get install rethinkdb
 ```
 
-# Compiling from source #
-
-## Get the build dependencies ##
-
-Install the main dependencies:
-
-```
-sudo apt-get install git g++ protobuf-compiler libprotobuf-dev libv8-dev \
-lib64ncurses5-dev libgoogle-perftools-dev libboost-dev curl
-```
-
-## Get the source code ##
-
-Clone the RethinkDB repository:
-
-```bash
-git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
-```
-
-## Build RethinkDB ##
-
-Kick off the build process:
-
-```bash
-cd rethinkdb
-./configure --fetch npm
-make
-```
-
-_Note_: If you have `nodejs` and `npm` installed, you do not need the `--fetch npm` argument.
+{% include debian-based-install-from-source.md %}
 
 {% include install-next-step.md %}

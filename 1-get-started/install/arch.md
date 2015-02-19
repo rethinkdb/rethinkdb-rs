@@ -75,15 +75,16 @@ $ makepkg -s
 You will need to install the `base-devel` group and several additional build dependencies:
 
 ```bash
-# pacman -S base-devel protobuf boost python2 gperftools v8 nodejs
+# pacman -S base-devel protobuf boost python2 jemalloc
 ```
 
 ## Get the source code ##
 
-Clone the RethinkDB repository:
+Download and extract the archive:
 
 ```bash
-$ git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+$ wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+$ tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
 ## Build RethinkDB ##
@@ -106,8 +107,8 @@ This will redirect calls to `python` originating from your RethinkDB working dir
 To run the build:
 
 ```bash
-$ cd ~/rethinkdb
-$ ./configure --dynamic tcmalloc_minimal
+$ cd ~/rethinkdb-{{site.version.full}}
+$ ./configure --dynamic jemalloc
 $ make
 ```
 
