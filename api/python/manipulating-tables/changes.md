@@ -37,7 +37,7 @@ Changefeed notifications take the form of a two-field object:
 
 The first notification object in the changefeed stream will contain the query's initial value in `new_val` and have no `old_val` field. When a document is deleted, `new_val` will be `None`; when a document is inserted, `old_val` will be `None`.
 
-Certain document transformation commands can be chained before changefeeds. For more information, read the [discussion of changefeeds](docs/changefeeds/python/) in the "Query language" documentation.
+Certain document transformation commands can be chained before changefeeds. For more information, read the [discussion of changefeeds](/docs/changefeeds/python/) in the "Query language" documentation.
 
 The server will buffer up to 100,000 elements. If the buffer limit is hit, early changes will be discarded, and the client will receive an object of the form `{"error": "Changefeed cache over array size limit, skipped X elements."}` where `X` is the number of elements skipped.
 
