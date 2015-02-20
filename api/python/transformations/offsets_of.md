@@ -3,6 +3,7 @@ layout: api-command
 language: Python
 permalink: api/python/offsets_of/
 command: offsets_of
+alias: api/python/indexes_of/
 ---
 
 

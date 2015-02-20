@@ -3,6 +3,7 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/offsets_of/
 command: offsetsOf
+alias: api/javascript/indexes_of/
 io:
     -   - sequence
         - array

@@ -3,6 +3,7 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/offsets_of/
 command: offsets_of
+alias: api/ruby/indexes_of/
 ---
 
 # Command syntax #
