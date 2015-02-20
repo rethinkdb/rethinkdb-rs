@@ -1,8 +1,8 @@
 ---
 layout: api-command
 language: JavaScript
-permalink: api/javascript/indexes_of/
-command: indexesOf
+permalink: api/javascript/offsets_of/
+command: offsetsOf
 io:
     -   - sequence
         - array
@@ -11,7 +11,7 @@ io:
 # Command syntax #
 
 {% apibody %}
-sequence.indexesOf(datum | predicate) &rarr; array
+sequence.offsetsOf(datum | predicate) &rarr; array
 {% endapibody %}
 
 # Description #
@@ -21,13 +21,13 @@ Get the indexes of an element in a sequence. If the argument is a predicate, get
 __Example:__ Find the position of the letter 'c'.
 
 ```js
-r.expr(['a','b','c']).indexesOf('c').run(conn, callback)
+r.expr(['a','b','c']).offsetsOf('c').run(conn, callback)
 ```
 
 __Example:__ Find the popularity ranking of invisible heroes.
 
 ```js
-r.table('marvel').union(r.table('dc')).orderBy('popularity').indexesOf(
+r.table('marvel').union(r.table('dc')).orderBy('popularity').offsetsOf(
     r.row('superpowers').contains('invisibility')
 ).run(conn, callback)
 ```

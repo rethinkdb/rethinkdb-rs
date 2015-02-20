@@ -980,10 +980,10 @@ r.expr([1,2,3]).nth(1).run(conn, callback)
 ```
 
 
-## [indexesOf](indexes_of/) ##
+## [offsetsOf](offsets_of/) ##
 
 {% apibody %}
-sequence.indexesOf(datum | predicate) &rarr; array
+sequence.offsetsOf(datum | predicate) &rarr; array
 {% endapibody %}
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.
@@ -991,10 +991,10 @@ Get the indexes of an element in a sequence. If the argument is a predicate, get
 __Example:__ Find the position of the letter 'c'.
 
 ```js
-r.expr(['a','b','c']).indexesOf('c').run(conn, callback)
+r.expr(['a','b','c']).offsetsOf('c').run(conn, callback)
 ```
 
-[Read more about this command &rarr;](indexes_of/)
+[Read more about this command &rarr;](offsets_of/)
 
 
 ## [isEmpty](is_empty/) ##

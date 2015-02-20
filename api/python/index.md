@@ -956,10 +956,10 @@ r.expr([1,2,3]).nth(1).run(conn)
 ```
 
 
-## [indexes_of](indexes_of/) ##
+## [offsets_of](offsets_of/) ##
 
 {% apibody %}
-sequence.indexes_of(datum | predicate) &rarr; array
+sequence.offsets_of(datum | predicate) &rarr; array
 {% endapibody %}
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.
@@ -967,10 +967,10 @@ Get the indexes of an element in a sequence. If the argument is a predicate, get
 __Example:__ Find the position of the letter 'c'.
 
 ```py
-r.expr(['a','b','c']).indexes_of('c').run(conn)
+r.expr(['a','b','c']).offsets_of('c').run(conn)
 ```
 
-[Read more about this command &rarr;](indexes_of/)
+[Read more about this command &rarr;](offsets_of/)
 
 
 ## [is_empty](is_empty/) ##
