@@ -49,6 +49,8 @@ r.table('marvel').merge(function (hero) {
 
 __Example:__ Use `merge` to join each blog post with its comments.
 
+Note that the sequence being merged&mdash;in this example, the comments&mdash;must be coerced from a selection to an array. Without `coerceTo` the operation will throw an error ("Expected type DATUM but found SELECTION").
+
 ```js
 r.table('posts').merge(function (post) {
     return {

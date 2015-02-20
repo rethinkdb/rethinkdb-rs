@@ -40,6 +40,8 @@ r.table('marvel').merge(lambda hero:
 
 __Example:__ Use `merge` to join each blog post with its comments.
 
+Note that the sequence being merged&mdash;in this example, the comments&mdash;must be coerced from a selection to an array. Without `coerce_to` the operation will throw an error ("Expected type DATUM but found SELECTION").
+
 ```py
 r.table('posts').merge(lambda post:
     { 'comments': r.table('comments').get_all(post['id'],
