@@ -16,34 +16,57 @@ if you are looking for a specific platform.
 There are a number of packages required for the build process. Most
 should be available for your operating system's repository. These packages are:
 
-- git
-- g++
-- protobuf
-- gperftools
-- ncurses
-- boost
-- nodejs/npm
-- Python 2
-- libcurl
+- [GCC (G++)](https://gcc.gnu.org/) or [Clang](http://clang.llvm.org/)
+- [Protocol Buffers](https://github.com/google/protobuf/)
+- [jemalloc](http://www.canonware.com/jemalloc/)
+- [Ncurses](https://www.gnu.org/software/ncurses/)
+- [Boost](http://www.boost.org/)
+- [Python 2](https://www.python.org/)
+- [libcurl](http://curl.haxx.se/libcurl/)
+- [libcrypto](https://www.openssl.org/)
 
+On Ubuntu, you can install the build dependencies with apt-get, [following the instructions here](/docs/install/ubuntu/).
 
-On Ubuntu 13.10+, you can install build dependencies with apt-get ([see instructions for previous versions](/docs/install/ubuntu/)):
-
-```bash
-sudo apt-get install git-core g++ nodejs npm libprotobuf-dev \
-libgoogle-perftools-dev libncurses5-dev libboost-all-dev nodejs-legacy \
-curl libcurl3 libcurl4-openssl-dev protobuf-compiler
-```
+The `./configure` script can install some of these dependencies if they are missing.
 
 ## Get the source code ##
 
-Clone the RethinkDB repository:
+Download and extract the archive:
 
 ```bash
-git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
 ## Build the server ##
+
+Kick off the build process:
+
+```bash
+cd rethinkdb-{{site.version.full}}
+./configure --allow-fetch
+make
+```
+
+# Building from git #
+
+The git version of RethinkDB contains unreleased and unstable
+changes. It is meant for developers and contributors.
+
+## Get the build dependencies ##
+
+In addition to the standard dependencies, building from git also
+depends on [npm](http://nodejs.org/).
+
+## Get the source code ##
+
+Clone the development branch:
+
+```bash
+git clone https://github.com/rethinkdb/rethinkdb.git
+```
+
+## Build RethinkDB ##
 
 Kick off the build process:
 

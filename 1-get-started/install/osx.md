@@ -12,7 +12,7 @@ permalink: docs/install/osx/
 
 _Prerequisites:_ We provide native binaries for OS X Lion and above (>= 10.7).
 
-[Download](http://download.rethinkdb.com/osx/rethinkdb-latest.dmg) the disk
+[Download](http://download.rethinkdb.com/osx/rethinkdb-{{site.version.full}}.dmg) the disk
 image, run `rethinkdb.pkg`, and follow the installation instructions.
 
 # Using Homebrew #
@@ -29,21 +29,16 @@ brew update && brew install rethinkdb
 
 ## Get the build dependencies ##
 
-There are a number of packages required for the build process. On OS X,
-[Xcode](https://developer.apple.com/xcode/) is required to build from source.
-
-You will also need to install boost with
-[Homebrew](http://mxcl.github.com/homebrew/):
-
-```bash
-brew install boost
-```
+On OS X, [Xcode](https://developer.apple.com/xcode/) is required to
+build from source.
 
 ## Get the source code ##
-Clone the RethinkDB repository:
+
+Download and extract the archive:
 
 ```bash
-git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/rethinkdb.git
+wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
 ## Build RethinkDB ##
@@ -51,11 +46,11 @@ git clone --depth 1 -b v{{site.version.major}}.x https://github.com/rethinkdb/re
 Kick off the build process:
 
 ```bash
-cd rethinkdb
-./configure --fetch protobuf --fetch v8
+cd rethinkdb-{{site.version.full}}
+./configure --allow-fetch
 make
 ```
 
-You will find the `rethinkdb` binary in the `build/release/` subfolder.  
+You will find the `rethinkdb` binary in the `build/release/` subfolder.
 
 {% include install-next-step.md %}
