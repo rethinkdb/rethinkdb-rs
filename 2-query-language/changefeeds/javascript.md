@@ -50,9 +50,11 @@ The output format of a point changefeed is identical to a table changefeed, with
 Like any ReQL command, `changes` integrates with the rest of the query language. You can call `changes` after most commands that transform or select data:
 
 * [filter](/api/javascript/filter)
+* [getAll](/api/javascript/get_all)
 * [map](/api/javascript/map)
 * [pluck](/api/javascript/pluck)
 * [between](/api/javascript/between)
+* [union](/api/javascript/union)
 * [min](/api/javascript/min) (returns an initial value)
 * [max](/api/javascript/max) (returns an initial value)
 * [orderBy](/api/javascript/order_by).[limit](/api/javascript/limit) (returns an initial value)

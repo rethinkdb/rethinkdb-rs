@@ -48,9 +48,11 @@ The output format of a point changefeed is identical to a table changefeed, with
 Like any ReQL command, `changes` integrates with the rest of the query language. You can call `changes` after most commands that transform or select data:
 
 * [filter](/api/ruby/filter)
+* [get_all](/api/ruby/get_all)
 * [map](/api/ruby/map)
 * [pluck](/api/ruby/pluck)
 * [between](/api/ruby/between)
+* [union](/api/ruby/union)
 * [min](/api/ruby/min) (returns an initial value)
 * [max](/api/ruby/max) (returns an initial value)
 * [order_by](/api/ruby/order_by).[limit](/api/ruby/limit) (returns an initial value)
