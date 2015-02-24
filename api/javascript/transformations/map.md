@@ -11,6 +11,7 @@ io:
 related_commands:
     concatMap: concat_map/
     reduce: reduce/
+    do: do/
 ---
 
 # Command syntax #
@@ -25,6 +26,8 @@ r.map(array1[, array2, ...], mappingFunction) &rarr; array
 # Description #
 
 Transform each element of one or more sequences by applying a mapping function to them. If `map` is run with two or more sequences, it will iterate for as many items as there are in the shortest sequence.
+
+Note that `map` can only be applied to sequences, not single values. If you wish to apply a function to a single value/selection (including an array), use the [do](/api/javascript/do) command.
 
 __Example:__ Return the first five squares.
 
