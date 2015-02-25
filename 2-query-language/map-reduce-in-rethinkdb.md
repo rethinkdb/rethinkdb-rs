@@ -143,7 +143,7 @@ Now for something more complicated: calculating the total and average quantities
 ```py
 r.table('orders').concat_map(lambda order:
     order['items'].map(lambda item:
-        {'item_id': item['item_id'], 'quantity': item['quantity']. 'count': 1}
+        {'item_id': item['item_id'], 'quantity': item['quantity'], 'count': 1}
     ))
 ```
 
@@ -154,7 +154,7 @@ Now, we'll `group` by the `item_id` field and use a custom `reduce` function to 
 ```py
 r.table('orders').concat_map(lambda order:
     order['items'].map(lambda item:
-        {'item_id': item['item_id'], 'quantity': item['quantity']. 'count': 1}
+        {'item_id': item['item_id'], 'quantity': item['quantity'], 'count': 1}
     )).group('item_id').reduce(lambda left, right: {
         'item_id': left['item_id'],
         'quantity': left['quantity'] + right['quantity'],
@@ -167,7 +167,7 @@ Finally, we'll use [ungroup][] to turn this grouped data into an array of object
 ```py
 r.table('orders').concat_map(lambda order:
     order['items'].map(lambda item:
-        {'item_id': item['item_id'], 'quantity': item['quantity']. 'count': 1}
+        {'item_id': item['item_id'], 'quantity': item['quantity'], 'count': 1}
     )).group('item_id').reduce(lambda left, right: {
         'item_id': left['item_id'],
         'quantity': left['quantity'] + right['quantity'],
