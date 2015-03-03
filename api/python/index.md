@@ -162,14 +162,15 @@ conn.noreply_wait()
 ## [next](next/) ##
 
 {% apibody %}
-cursor.next()
+cursor.next([wait=True])
 {% endapibody %}
 
 Get the next element in the cursor.
 
-__Example:__ Let's grab the next element!
+__Example:__ Retrieve the next element.
 
 ```py
+cursor = r.table('superheroes').run(conn)
 doc = cursor.next()
 ```
 

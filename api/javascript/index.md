@@ -163,7 +163,7 @@ array.next() &rarr; promise
 
 Get the next element in the cursor.
 
-__Example:__ Let's grab the next element!
+__Example:__ Retrieve the next element.
 
 ```js
 cursor.next(function(err, row) {

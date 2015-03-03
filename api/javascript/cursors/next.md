@@ -3,7 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/next/
 command: next
-rb: false
 io:
     -   - cursor
         - undefined
@@ -28,7 +27,7 @@ Get the next element in the cursor.
 
 Calling `next` the first time on a cursor provides the first element of the cursor. If the data set is exhausted (e.g., you have retrieved all the documents in a table), a `RqlDriverError` error will be passed to the callback when `next` is called.
 
-__Example:__ Let's grab the next element!
+__Example:__ Retrieve the next element.
 
 ```js
 cursor.next(function(err, row) {
@@ -37,11 +36,7 @@ cursor.next(function(err, row) {
 });
 ```
 
-__Note:__ The canonical way to retrieve all the results is to use [each](../each/)
-or [toArray](../to_array/). The `next` command should be used only when you may not
-retrieve all the elements of a cursor or want to delay some operations.
-
-
+__Note:__ The canonical way to retrieve all the results is to use [each](../each/) or [toArray](../to_array/). The `next` command should be used only when you may not retrieve all the elements of a cursor or want to delay some operations.
 
 __Example:__ You can retrieve all the elements of a cursor with the `next`
 command using recursion.

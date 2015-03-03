@@ -155,6 +155,23 @@ conn.noreply_wait
 
 {% apisection Cursors %}
 
+## [next](next/) ##
+
+{% apibody %}
+cursor.next([true])
+{% endapibody %}
+
+Get the next element in the cursor.
+
+__Example:__ Retrieve the next element.
+
+```rb
+cursor = r.table('superheroes').run(conn)
+doc = cursor.next()
+```
+
+[Read more about this command &rarr;](next/)
+
 ## [each](each/) ##
 
 {% apibody %}
