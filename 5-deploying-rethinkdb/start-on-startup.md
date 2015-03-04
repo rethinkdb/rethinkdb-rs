@@ -89,10 +89,11 @@ The `chmod` for the two files should be 644 (`chmod 644 <file>`).
 
 ## Starting RethinkDB instances ##
 
-First, create the RethinkDB data directory with the following command:
+First, create the RethinkDB data directory with the following command and set the ownership to the `rethinkdb` user:
 
 ```
 rethinkdb create -d /path/to/your/rethinkdb/directory
+sudo chown -R rethinkdb.rethinkdb /path/to/your/rethinkdb/directory
 ```
 
 Then, copy the sample configuration file and use the [configuration file](/docs/config-file) documentation as a guide to customize it. (If you don't have the sample `.conf` file, you can download it [here][conf].)
@@ -100,6 +101,12 @@ Then, copy the sample configuration file and use the [configuration file](/docs/
 ```bash
 sudo cp /etc/rethinkdb/default.conf.sample /etc/rethinkdb/instances.d/instance1.conf
 sudo vim /etc/rethinkdb/instances.d/instance1.conf
+```
+
+While you may be able to leave many options at their defaults, you'll definitely need to change the `directory=` line in the configuration file to point to your RethinkDB data directory.
+
+```
+directory=/path/to/your/rethinkdb/directory
 ```
 
 Then, enable the service:
