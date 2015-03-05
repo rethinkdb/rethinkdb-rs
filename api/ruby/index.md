@@ -60,8 +60,7 @@ conn.repl
 Set the default connection to make REPL use easier. Allows calling
 `.run` on queries without specifying a connection.
 
-Connection objects are not thread-safe and REPL connections should not
-be used in multi-threaded environments.
+__Note:__ Avoid using `repl` in application code. RethinkDB connection objects are not thread-safe, and calls to `connect` from multiple threads may change the global connection object used by `repl`. Applications should specify connections explicitly.
 
 __Example:__ Set the default connection for the REPL, then call
 `run` without specifying the connection.
