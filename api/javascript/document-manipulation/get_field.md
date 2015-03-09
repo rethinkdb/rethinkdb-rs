@@ -2,7 +2,7 @@
 layout: api-command
 language: JavaScript
 permalink: api/javascript/get_field/
-command: () (getField)
+command: getField
 io:
     -   - sequence
         - sequence
@@ -11,15 +11,16 @@ io:
     -   - object
         - value
 related_commands:
-    row: row/
+    '() (bracket)': bracket/
+    nth: nth/
 ---
 
 # Command syntax #
 
 {% apibody %}
-sequence(attr) &rarr; sequence
-singleSelection(attr) &rarr; value
-object(attr) &rarr; value
+sequence.getField(attr) &rarr; sequence
+singleSelection.getField(attr) &rarr; value
+object.getField(attr) &rarr; value
 {% endapibody %}
 
 # Description #
@@ -30,7 +31,5 @@ object in the sequence, skipping objects that lack it.
 __Example:__ What was Iron Man's first appearance in a comic?
 
 ```js
-r.table('marvel').get('IronMan')('firstAppearance').run(conn, callback)
+r.table('marvel').get('IronMan').getField('firstAppearance').run(conn, callback)
 ```
-
-

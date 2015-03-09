@@ -2,11 +2,12 @@
 layout: api-command
 language: Ruby
 permalink: api/ruby/nth/
-command: 'nth, []'
+command: nth
 related_commands:
     order_by: order_by/
     skip: skip/
     limit: limit/
+    '[] (bracket)': bracket/
     'slice, []': slice/
 ---
 
