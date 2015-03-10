@@ -10,8 +10,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.changes(squash=True) &rarr; stream
-singleSelection.changes(squash=True) &rarr; stream
+table.changes(squash=True, include_states=False) &rarr; stream
+singleSelection.changes(squash=True, include_states=False) &rarr; stream
 {% endapibody %}
 
 # Description #
@@ -23,6 +23,13 @@ The `squash` optional argument controls how `changes` batches change notificatio
 * `True`: When multiple changes to the same document occur before a batch of notifications is sent, the changes are "squashed" into one change. The client receives a notification that will bring it fully up to date with the server. This is the default.
 * `False`: All changes will be sent to the client verbatim.
 * `n`: A numeric value (floating point). Similar to `True`, but the server will wait `n` seconds to respond in order to squash as many changes together as possible, reducing network traffic.
+
+If the `include_states` optional argument is `True`, the changefeed stream will include special status documents consisting of the field `state` and a string indicating a change in the feed's state. These documents can occur at any point in the feed between the notification documents described below. There are currently two states:
+
+* `{"state": "initializing"}` indicates the following documents represent initial values on the feed rather than changes. This will be the first document of a feed that returns initial values.
+* `{"state": "ready"}` indicates the following documents represent changes. This will be the first document of a feed that does *not* return initial values; otherwise, it will indicate the initial values have all been sent.
+
+If `include_states` is `False` (the default), the status documents will not be sent on the feed.
 
 If the table becomes unavailable, the changefeed will be disconnected, and a runtime exception will be thrown by the driver.
 

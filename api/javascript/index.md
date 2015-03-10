@@ -467,11 +467,11 @@ r.table('test').indexWait('timestamp').run(conn, callback)
 ## [changes](changes/) ##
 
 {% apibody %}
-table.changes() &rarr; stream
-singleSelection.changes() &rarr; stream
+table.changes({squash: true, includeStates: false}) &rarr; stream
+singleSelection.changes({squash: true, includeStates: false}) &rarr; stream
 {% endapibody %}
 
-Return an infinite stream of objects representing changes to a table or a document.
+Return an infinite stream of objects representing changes to a query.
 
 __Example:__ Subscribe to the changes on a table.
 
