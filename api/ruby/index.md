@@ -1390,8 +1390,26 @@ __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed lis
 r.table('marvel').get('IronMan')[:equipment].set_difference(['newBoots', 'arc_reactor']).run(conn)
 ```
 
+## [\[\]](bracket/) ##
 
-## [\[\]](get_field/) ##
+{% apibody %}
+sequence[attr] &rarr; sequence
+singleSelection[attr] &rarr; value
+object[attr] &rarr; value
+array[index] &rarr; value
+{% endapibody %}
+
+Get a single field from an object or a single element from a sequence.
+
+__Example:__ What was Iron Man's first appearance in a comic?
+
+```rb
+r.table('marvel').get('IronMan')[:first_appearance].run(conn)
+```
+
+[Read more about this command &rarr;](bracket/)
+
+## [get_field](get_field/) ##
 
 {% apibody %}
 sequence[attr] &rarr; sequence
@@ -1405,7 +1423,7 @@ object in the sequence, skipping objects that lack it.
 __Example:__ What was Iron Man's first appearance in a comic?
 
 ```rb
-r.table('marvel').get('IronMan')[:first_appearance].run(conn)
+r.table('marvel').get('IronMan').get_field['first_appearance'].run(conn)
 ```
 
 
