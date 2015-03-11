@@ -13,7 +13,7 @@ This document explains how to set up RethinkDB to run as a system service on sup
 
 In general, you'll have to follow these steps:
 
-* Install RethinkDB as a service for your operating system. (This document describes how to do that for both `init.d` and `systemd`-based Linux distributions. Depending on how you've installed RethinkDB, this may already be done for you.)
+* Install RethinkDB as a service for your operating system. (This document describes how to do that for both `init.d` and `systemd`-based Linux distributions, as well as OS X using `launchd`. Depending on how you've installed RethinkDB, this may already be done for you.)
 * Create a RethinkDB configuration file for each RethinkDB instance running on this physical server.
 
 # Startup with init.d #
@@ -44,7 +44,7 @@ The basic setup is complete &mdash; __you've now got a working server!__
 The init.d script supports starting multiple instances on the same server via
 multiple `.conf` files in `/etc/rethinkdb/instances.d`.
 
-Include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
+In each configuration file, set a different data directory, and include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
 
 {% infobox %}
 The `bind=all` option is a security risk if your machine is open to the internet, and you should take steps to prevent unauthorized access. See the [security page](/docs/security/) for more details.
@@ -122,12 +122,121 @@ __You've now got a working server!__
 
 As systemd supports multiple instances on the same server, you simply need to create multiple `.conf` files in `/etc/rethinkdb/instances.d`.
 
-Include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
+In each configuration file, set a different data directory, and include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
 
 {% infobox %}
 The `bind=all` option is a security risk if your machine is open to the internet, and you should take steps to prevent unauthorized access. See the [security page](/docs/security/) for more details.
 {% endinfobox %}
 
+# Startup with launchd (OS X)
+
+If you install RethinkDB using [Homebrew][], a `launchd` configuration file will be installed for you in `~/Library/LaunchAgents/`, although that file may need to be modified.
+
+[Homebrew]: http://brew.sh
+
+## Basic setup
+
+If you didn't install using Homebrew, you'll need to create a launchd configuration file, and decide where you want to store your data files. These instructions assume the following locations:
+
+* RethinkDB binary installed by the official package in `/usr/local/bin/rethinkdb`
+* RethinkDB data directory will be `/Library/RethinkDB/data`
+* RethinkDB log will be `/var/log/rethinkdb.log`
+
+If you wish other locations, change the text in the file appropriately.
+
+Create `/Library/LaunchDaemons/com.rethinkdb.server.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.rethinkdb.server</string>
+  <key>ProgramArguments</key>
+  <array>
+      <string>/usr/local/bin/rethinkdb</string>
+      <string>-d</string>
+      <string>/Library/RethinkDB/data</string>
+  </array>
+  <key>StandardOutPath</key>
+  <string>/var/log/rethinkdb.log</string>
+  <key>StandardErrorPath</key>
+  <string>/var/log/rethinkdb.log</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>LowPriorityIO</key>
+  <false/>
+</dict>
+</plist>
+```
+
+Set this file to be owned by the `root` user:
+
+```bash
+sudo chown root:wheel /Library/LaunchDaemons/com.rethinkdb.server.plist
+sudo chmod 622 /Library/LaunchDaemons/com.rethinkdb.server.plist
+```
+
+Then you'll need to create the RethinkDB data directory.
+
+```bash
+sudo mkdir -p /Library/RethinkDB
+sudo rethinkdb create -d /Library/RethinkDB/data
+```
+
+## Using a RethinkDB configuration file
+
+By default, neither Homebrew nor the example configuration file above will read options from a [configuration file](/docs/config-file). If you wish to use one, you'll need to do the following:
+
+* Download the [sample configuration file][conf] and copy it to a new location.
+
+```bash
+cp default.conf.sample /etc/rethinkdb.conf
+```
+
+* Edit the configuration file in your favorite editor. While you may be able to leave many options at their defaults, you'll definitely need to change the `directory=` line in the file to point to your data directory.
+
+```
+sudo pico /etc/rethinkdb.conf
+```
+
+* Edit `/Library/LaunchDaemons/com.rethinkdb.server.plist` to change the `ProgramArguments` key so RethinkDB will use your configuration file.
+
+```xml
+<key>ProgramArguments</key>
+<array>
+    <string>/usr/local/bin/rethinkdb</string>
+    <string>--config-file</string>
+    <string>/etc/rethinkdb.conf</string>
+</array>
+```
+
+## Starting RethinkDB instances
+
+To start RethinkDB, use `launchctl`:
+
+```bash
+launchctl load /Library/LaunchDaemons/com.rethinkdb.server.plist
+```
+
+RethinkDB will automatically load on startup. To disable this behavior, change the `RunAtLoad` key to `<false/>` in the `plist` file.
+
+## Multiple instances
+
+To run multiple instances of RethinkDB under OS X, you will need to create new copies of the `com.rethinkdb.server.plist` file with different names (e.g., `com.rethinkdb.server2.plist`), making the following changes:
+
+* Set the `Label` key value to the name of the file (e.g., `com.rethinkdb.server2.plist`).
+* Set the `ProgramArguments` key to a new configuration file (e.g., `/etc/rethinkdb2.conf`).
+* Set the `StandardOutPath` and `StandardErrorPath` keys to a new log file.
+
+In each configuration file, set a different data directory, and include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
+
+{% infobox %}
+The `bind=all` option is a security risk if your machine is open to the internet, and you should take steps to prevent unauthorized access. See the [security page](/docs/security/) for more details.
+{% endinfobox %}
 
 # Troubleshooting #
 
