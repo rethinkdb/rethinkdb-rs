@@ -30,6 +30,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [connect-rethinkdb](https://github.com/guillaumervls/connect-rethinkdb) by [@guillaumervls](https://github.com/guillaumervls)
   A RethinkDB session store for Connect, similar to connect-redis.
 
+- [express-session-rethinkdb](https://www.npmjs.com/package/express-session-rethinkdb) by [@armenfilipetyan](https://github.com/armenfilipetyan)
+  Use RethinkDB as session store with Express 4.x framework. Adapted from connect-rethinkdb.
+
 - [Rethinkdb-pool](https://github.com/hden/rethinkdb-pool) by [@hden](https://github.com/hden)  
   Connection pool for RethinkDB connections.
 
