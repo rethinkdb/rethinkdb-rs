@@ -227,7 +227,7 @@ WHERE name LIKE "P%"
         </td><td>
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("^P")}
+    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("^P")
 )
 </pre>
 
@@ -243,7 +243,7 @@ WHERE name LIKE "%er"
 
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("er$")}
+    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("er$")
 )
 </pre>
 
