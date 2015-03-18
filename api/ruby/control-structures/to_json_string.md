@@ -10,7 +10,6 @@ related_commands:
 
 {% apibody %}
 value.to_json_string() &rarr; string
-value.to_json() &rarr; string
 {% endapibody %}
 
 # Description #
@@ -20,7 +19,7 @@ Convert a ReQL value or object to a JSON string. You may use either `to_json_str
 __Example:__ Get a ReQL document as a JSON string.
 
 ```rb
-> r.table('hero').get(1).to_json()
+> r.table('hero').get(1).to_json_string()
 
 '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
 ```
