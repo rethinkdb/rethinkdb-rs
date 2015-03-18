@@ -72,7 +72,7 @@ __Example:__ Get all users who are more than 18 years old or have their parental
 
 ```py
 r.table("users").filter(
-    r.row["age"] < 18) | (r.row["hasParentalConsent"])).run(conn)
+    (r.row["age"] < 18) | (r.row["hasParentalConsent"])).run(conn)
 ```
 
 ## More complex predicates ##
