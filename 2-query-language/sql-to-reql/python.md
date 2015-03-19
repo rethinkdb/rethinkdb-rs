@@ -3,17 +3,16 @@ layout: documentation
 title: SQL to ReQL cheat sheet
 active: docs
 docs_active: sql-to-reql
-permalink: docs/sql-to-reql/
+permalink: docs/sql-to-reql/python/
+alias: docs/sql-to-reql/
+switcher: true
+language: Python
 ---
 
 <img alt="Data Modeling Illustration" class="api_command_illustration"
     src="/assets/images/docs/api_illustrations/SQL-to-ReQL-cheat-sheet.png" />
 
 &nbsp;
-
-{% infobox info %}
-__Note:__ Examples below are in Python. Head to the [API reference](/api/) to see the commands in other languages.
-{% endinfobox %}
 
 # Terminology #
 
@@ -227,7 +226,7 @@ WHERE name LIKE "P%"
         </td><td>
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("^P")
+    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("^P")}
 )
 </pre>
 
@@ -243,7 +242,7 @@ WHERE name LIKE "%er"
 
 <pre>
 r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("er$")
+    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("er$")}
 )
 </pre>
 
@@ -331,7 +330,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/skip/">sk
 
 <pre>
 SELECT * FROM users
-WHERE name IN {'Peter', 'John'}
+WHERE name IN ('Peter', 'John')
 </pre>
 
         </td><td>
@@ -357,7 +356,7 @@ r.<a href="/api/python/table/">table</a>("users")
 
 <pre>
 SELECT * FROM users
-WHERE name NOT IN {'Peter', 'John'}
+WHERE name NOT IN ('Peter', 'John')
 </pre>
 
         </td><td>
@@ -728,7 +727,7 @@ r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/inner_joi
 
 <p><em>Note:</em> <code>zip()</code> will merge the user in the post, overwriting fields in case of conflict.</p>
 
-<p>If you have an index (primary key or secondary index) built on the field of the right table, you can perform a more efficient join with <a href="/api/python/eq_join/">eq_join</a></p>
+<p>If you have an index (primary key or secondary index) built on the field of the right table, you can perform a more efficient join with <a href="/api/python/eq_join/">eq_join</a>.</p>
 <pre>
 r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/eq_join/">eq_join</a>(
     "id",
@@ -802,8 +801,7 @@ r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/outer_joi
 ).<a href="/api/python/zip/">zip</a>()
 </pre>
 
-<p><em>Note</em>: You can perform efficient <code>OUTER JOIN</code> operations with the <a href="/api/python/concat_map/">concat_map</a> command.<br/>
-The <code>eq_join</code> command will eventually be able to behave like an OUTER JOIn, see <a href="https://github.com/rethinkdb/rethinkdb/issues/1223">this github issue</a>.
+<p><em>Note</em>: You can perform more efficient <code>OUTER JOIN</code> operations with the <a href="/api/python/concat_map/">concat_map</a> command.</p>
 
 <pre>
 r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/concat_map/">concat_map</a>(lambda post:
@@ -1047,7 +1045,7 @@ r.<a href="/api/python/table_create/">table_create</a>('users', primary_key="id"
 <p><em>Note:</em> RethinkDB is a NoSQL database and does not enforce
 schemas.</p>
 
-<p><em>Note²:</em> The default primary key is <code>id</code></p>
+<p><em>Note:</em> The default primary key is <code>id</code></p>
 
 
 
