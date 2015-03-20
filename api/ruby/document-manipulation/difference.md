@@ -22,4 +22,10 @@ __Example:__ Retrieve Iron Man's equipment list without boots.
 r.table('marvel').get('IronMan')[:equipment].difference(['Boots']).run(conn)
 ```
 
+__Example:__ Remove Iron Man's boots from his equipment.
 
+```rb
+r.table('marvel').get('IronMan')[:equipment].update{ |doc|
+    {:equipment => doc['equipment'].difference(['Boots'])}
+}.run(conn)
+```

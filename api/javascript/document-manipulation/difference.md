@@ -31,7 +31,7 @@ r.table('marvel').get('IronMan')('equipment')
   .run(conn, callback)
 ```
 
-__Example 2:__ Remove Iron Man's boots from his equipment.
+__Example:__ Remove Iron Man's boots from his equipment.
 
 ```js
 r.table('marvel').get('IronMan')
