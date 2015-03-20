@@ -26,7 +26,7 @@ array.next() &rarr; promise
 
 Get the next element in the cursor.
 
-Calling `next` the first time on a cursor provides the first element of the cursor.
+Calling `next` the first time on a cursor provides the first element of the cursor. If the data set is exhausted (e.g., you have retrieved all the documents in a table), a `RqlDriverError` error will be passed to the callback when `next` is called.
 
 __Example:__ Let's grab the next element!
 

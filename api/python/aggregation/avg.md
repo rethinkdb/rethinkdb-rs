@@ -53,7 +53,7 @@ r.table('games').avg(lambda game:
 ```
 
 __Example:__ What's the average number of points scored in a game?
-(But return `None` instead of erroring of there are no games where
+(But return `None` instead of raising an error if there are no games where
 points have been scored.)
 
 ```py

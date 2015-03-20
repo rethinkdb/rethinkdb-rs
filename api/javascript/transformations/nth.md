@@ -9,6 +9,7 @@ io:
 related_commands:
     skip: skip/
     limit: limit/
+    '() (bracket)': bracket/
     slice: slice/
 ---
 
@@ -23,10 +24,13 @@ selection.nth(index) &rarr; selection&lt;object&gt;
 
 Get the *nth* element of a sequence.
 
+In JavaScript, you can use `()` with an integer as a shorthand for `nth`.
+
 __Example:__ Select the second element in the array.
 
 ```js
 r.expr([1,2,3]).nth(1).run(conn, callback)
+r.expr([1,2,3])(1).run(conn, callback)
 ```
 
 **Example:** Select the bronze medalist from the competitors.

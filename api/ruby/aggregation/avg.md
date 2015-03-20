@@ -51,7 +51,7 @@ r.table('games').avg{|game| game['points'] + game['bonus_points']}.run(conn)
 ```
 
 __Example:__ What's the average number of points scored in a game?
-(But return `nil` instead of erroring of there are no games where
+(But return `nil` instead of raising an error if there are no games where
 points have been scored.)
 
 ```rb

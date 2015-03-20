@@ -61,8 +61,7 @@ conn.repl()
 Set the default connection to make REPL use easier. Allows calling
 `.run()` on queries without specifying a connection.
 
-Connection objects are not thread-safe and REPL connections should not
-be used in multi-threaded environments.
+__Note:__ Avoid using `repl` in application code. RethinkDB connection objects are not thread-safe, and calls to `connect` from multiple threads may change the global connection object used by `repl`. Applications should specify connections explicitly.
 
 __Example:__ Set the default connection for the REPL, then call
 `run()` without specifying the connection.
@@ -1434,8 +1433,26 @@ __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed lis
 r.table('marvel').get('IronMan')['equipment'].set_difference(['newBoots', 'arc_reactor']).run(conn)
 ```
 
+## [\[\]](bracket/) ##
 
-## [\[\]](get_field/) ##
+{% apibody %}
+sequence[attr] &rarr; sequence
+singleSelection[attr] &rarr; value
+object[attr] &rarr; value
+array[index] &rarr; value
+{% endapibody %}
+
+Get a single field from an object or a single element from a sequence.
+
+__Example:__ What was Iron Man's first appearance in a comic?
+
+```py
+r.table('marvel').get('IronMan')['firstAppearance'].run(conn)
+```
+
+[Read more about this command &rarr;](bracket/)
+
+## [get_field](get_field/) ##
 
 {% apibody %}
 sequence[attr] &rarr; sequence
@@ -1449,7 +1466,7 @@ object in the sequence, skipping objects that lack it.
 __Example:__ What was Iron Man's first appearance in a comic?
 
 ```py
-r.table('marvel').get('IronMan')['firstAppearance'].run(conn)
+r.table('marvel').get('IronMan').get_field('firstAppearance').run(conn)
 ```
 
 
