@@ -4,7 +4,9 @@ title: Start RethinkDB at system startup
 active: docs
 docs_active: start-on-startup
 permalink: docs/start-on-startup/
-alias: docs/guides/startup/
+alias:
+    - docs/guides/startup/
+    - docs/cluster-on-startup/
 ---
 
 This document explains how to set up RethinkDB to run as a system service on supported operating systems, automatically launching on boot. For general instructions on starting RethinkDB, see [Start a RethinkDB server][srv].
