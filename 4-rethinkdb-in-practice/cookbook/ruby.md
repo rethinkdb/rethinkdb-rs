@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Cookbook for Ruby
-active: docs
 docs_active: cookbook
 js: faq_index
 permalink: docs/cookbook/ruby/

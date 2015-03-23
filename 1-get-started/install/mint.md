@@ -2,7 +2,6 @@
 layout: documentation
 title: Install RethinkDB on Linux Mint
 title_image: /assets/images/docs/install-platforms/mint.png
-active: docs
 docs_active: install
 permalink: docs/install/mint/
 ---

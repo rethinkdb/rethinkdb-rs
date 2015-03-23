@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: RethinkDB compared to MongoDB
-active: docs
 docs_active: rethinkdb-vs-mongodb
 permalink: docs/rethinkdb-vs-mongodb/
 js: [fancybox]

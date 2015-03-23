@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Start a RethinkDB server
-active: docs
 docs_active: start-a-server
 permalink: docs/start-a-server/
 alias: docs/start-a-cluster/

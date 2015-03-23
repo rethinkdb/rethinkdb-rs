@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Accessing nested fields
-active: docs
 docs_active: nested-fields
 permalink: docs/nested-fields/javascript/
 alias: docs/nested-fields/

@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Full-text search with Elasticsearch
-active: docs
 docs_active: full-text-search
 permalink: docs/elasticsearch/
 ---

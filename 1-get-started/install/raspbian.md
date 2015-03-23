@@ -2,7 +2,6 @@
 layout: documentation
 title: Install RethinkDB on Raspbian
 title_image: /assets/images/docs/install-platforms/raspbian.png
-active: docs
 docs_active: install
 permalink: docs/install/raspbian/
 ---

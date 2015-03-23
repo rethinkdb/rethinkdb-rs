@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Changefeeds in RethinkDB
-active: docs
 docs_active: changefeeds
 permalink: docs/changefeeds/javascript/
 alias: docs/changefeeds/

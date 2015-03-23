@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Secure your cluster
-active: docs
 docs_active: security
 permalink: docs/security/
 ---

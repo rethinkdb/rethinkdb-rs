@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Ten-minute guide with RethinkDB and Python
-active: docs
 docs_active: guide
 permalink: docs/guide/python/
 switcher: true

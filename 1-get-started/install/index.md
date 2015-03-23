@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Install RethinkDB
-active: docs
 docs_active: install
 permalink: docs/install/
 alias: install/

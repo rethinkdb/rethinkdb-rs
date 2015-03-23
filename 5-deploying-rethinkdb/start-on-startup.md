@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Start RethinkDB at system startup
-active: docs
 docs_active: start-on-startup
 permalink: docs/start-on-startup/
 alias:

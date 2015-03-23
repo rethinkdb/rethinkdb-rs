@@ -2,7 +2,6 @@
 layout: documentation
 title: Install RethinkDB on openSUSE
 title_image: /assets/images/docs/install-platforms/opensuse.png
-active: docs
 docs_active: install
 permalink: docs/install/opensuse/
 ---

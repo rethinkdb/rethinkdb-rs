@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Dates and times in RethinkDB
-active: docs
 docs_active: dates-and-times
 permalink: docs/dates-and-times/ruby/
 alias: docs/dates-and-times/

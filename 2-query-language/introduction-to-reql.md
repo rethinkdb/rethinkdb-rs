@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Introduction to ReQL
-active: docs
 docs_active: introduction-to-reql
 permalink: docs/introduction-to-reql/
 ---

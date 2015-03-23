@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Example projects 
-active: docs
 docs_active: examples
 permalink: docs/examples/
 ---

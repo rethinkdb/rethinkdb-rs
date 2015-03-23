@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Importing your data
-active: docs
 docs_active: importing
 permalink: docs/importing/
 ---

@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Geospatial queries
-active: docs
 docs_active: geo-support
 permalink: docs/geo-support/ruby/
 alias: docs/geo-support/

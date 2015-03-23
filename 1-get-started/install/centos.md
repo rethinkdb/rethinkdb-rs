@@ -2,7 +2,6 @@
 layout: documentation
 title: Install RethinkDB on CentOS
 title_image: /assets/images/docs/install-platforms/centos.png
-active: docs
 docs_active: install
 permalink: docs/install/centos/
 ---

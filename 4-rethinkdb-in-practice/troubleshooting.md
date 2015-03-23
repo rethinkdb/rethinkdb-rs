@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Troubleshooting common RethinkDB problems
-active: docs
 docs_active: troubleshooting 
 permalink: docs/troubleshooting/
 js: faq_index

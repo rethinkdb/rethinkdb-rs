@@ -2,7 +2,6 @@
 layout: documentation
 title: Installing the JavaScript driver
 title_image: /assets/images/docs/driver-languages/javascript.png
-active: docs
 docs_active: install-drivers
 permalink: docs/install-drivers/javascript/
 ---

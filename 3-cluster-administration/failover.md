@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Failover
-active: docs
 docs_active: failover
 permalink: docs/failover/
 ---

@@ -2,7 +2,6 @@
 layout: documentation
 title: Install RethinkDB on Ubuntu
 title_image: /assets/images/docs/install-platforms/ubuntu.png
-active: docs
 docs_active: install
 permalink: docs/install/ubuntu/
 ---

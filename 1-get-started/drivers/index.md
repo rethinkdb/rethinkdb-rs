@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Installing RethinkDB client drivers
-active: docs
 docs_active: install-drivers
 permalink: docs/install-drivers/
 alias: docs/guides/drivers/

@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Map-reduce in RethinkDB
-active: docs
 docs_active: map-reduce
 permalink: docs/map-reduce/
 ---

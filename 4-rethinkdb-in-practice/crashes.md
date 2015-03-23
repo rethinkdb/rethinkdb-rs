@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Crash recovery
-active: docs
 docs_active: crashes
 permalink: docs/crashes/
 ---

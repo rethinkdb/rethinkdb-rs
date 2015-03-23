@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Cookbook for JavaScript
-active: docs
 docs_active: cookbook
 js: [faq_index, fancybox]
 permalink: docs/cookbook/javascript/

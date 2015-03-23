@@ -2,7 +2,6 @@
 layout: documentation
 title: Install RethinkDB on Arch Linux
 title_image: /assets/images/docs/install-platforms/arch.png
-active: docs
 docs_active: install
 permalink: docs/install/arch/
 ---

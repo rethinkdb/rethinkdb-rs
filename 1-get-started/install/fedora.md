@@ -2,7 +2,6 @@
 layout: documentation
 title: Install RethinkDB on Fedora
 title_image: /assets/images/docs/install-platforms/fedora.png
-active: docs
 docs_active: install
 permalink: docs/install/fedora/
 ---

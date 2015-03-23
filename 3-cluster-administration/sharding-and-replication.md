@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Sharding and replication
-active: docs
 docs_active: sharding-and-replication
 permalink: docs/sharding-and-replication/
 ---

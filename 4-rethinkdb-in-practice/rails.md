@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Using RethinkDB with Ruby on Rails
-active: docs
 docs_active: rails
 permalink: docs/rails/
 ---

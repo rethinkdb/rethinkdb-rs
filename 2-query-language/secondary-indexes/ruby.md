@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Using secondary indexes in RethinkDB
-active: docs
 docs_active: secondary-indexes
 permalink: docs/secondary-indexes/ruby/
 switcher: true

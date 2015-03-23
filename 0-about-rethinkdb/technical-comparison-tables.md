@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: "Technical comparison: RethinkDB and MongoDB"
-active: docs
 docs_active: comparison-tables
 permalink: docs/comparison-tables/
 alias: docs/comparisons/mongodb/

@@ -2,7 +2,6 @@
 layout: documentation
 title: Install RethinkDB on Gentoo
 title_image: /assets/images/docs/install-platforms/gentoo.png
-active: docs
 docs_active: install
 permalink: docs/install/gentoo/
 ---

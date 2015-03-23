@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: ReQL data types
-active: docs
 docs_active: data-types
 permalink: docs/data-types/
 ---

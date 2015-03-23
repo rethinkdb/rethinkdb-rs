@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: System current issues table
-active: docs
 docs_active: system-issues
 permalink: docs/system-issues/
 ---

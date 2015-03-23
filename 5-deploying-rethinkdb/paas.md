@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: "Deploying with PaaS"
-active: docs
 docs_active: paas
 permalink: docs/paas/
 ---

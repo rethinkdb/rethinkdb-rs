@@ -2,7 +2,6 @@
 layout: documentation
 title: Installing the Python driver
 title_image: /assets/images/docs/driver-languages/python.png
-active: docs
 docs_active: install-drivers
 permalink: docs/install-drivers/python/
 ---

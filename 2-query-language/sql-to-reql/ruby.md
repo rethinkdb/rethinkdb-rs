@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: SQL to ReQL cheat sheet
-active: docs
 docs_active: sql-to-reql
 permalink: docs/sql-to-reql/ruby/
 switcher: true

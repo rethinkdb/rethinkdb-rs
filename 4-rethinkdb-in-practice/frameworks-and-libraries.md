@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Integrations
-active: docs
 docs_active: frameworks-and-libraries
 permalink: docs/frameworks-and-libraries/
 ---

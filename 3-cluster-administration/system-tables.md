@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: System tables
-active: docs
 docs_active: system-tables
 permalink: docs/system-tables/
 ---

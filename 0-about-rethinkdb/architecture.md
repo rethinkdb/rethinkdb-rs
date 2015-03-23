@@ -2,7 +2,6 @@
 layout: documentation
 title: "RethinkDB FAQ for programmers new to distributed databases"
 short_title: Architecture FAQ
-active: docs
 docs_active: architecture
 permalink: docs/architecture/
 alias: docs/advanced-faq/

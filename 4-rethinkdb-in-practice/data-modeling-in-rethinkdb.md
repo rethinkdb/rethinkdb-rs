@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Data modeling in RethinkDB
-active: docs
 docs_active: data-modeling
 permalink: docs/data-modeling/
 ---

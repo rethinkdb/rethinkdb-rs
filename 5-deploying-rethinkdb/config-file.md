@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Configuration file options
-active: docs
 docs_active: config-file
 permalink: docs/config-file/
 ---

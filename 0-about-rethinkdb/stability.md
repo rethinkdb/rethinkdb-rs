@@ -2,7 +2,6 @@
 layout: documentation
 title: "Stability report"
 short_title: Stability report
-active: docs
 docs_active: stability
 permalink: stability/
 alias: docs/stability/

@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Ten-minute guide with RethinkDB and JavaScript
-active: docs
 docs_active: guide
 permalink: docs/guide/javascript/
 alias: docs/guides/ten-min/

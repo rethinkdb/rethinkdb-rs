@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Migrating data from previous versions of RethinkDB
-active: docs
 docs_active: migration
 permalink: docs/migration/
 ---

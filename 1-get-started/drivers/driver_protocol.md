@@ -1,7 +1,6 @@
 ---
 layout: document
 title: RethinkDB client driver protocol
-active: docs
 permalink: docs/driver-spec/
 ---
 {{ 'RethinkDB client driver protocol' | page_title }}

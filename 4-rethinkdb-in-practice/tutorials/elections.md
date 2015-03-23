@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: "Tutorial: analyzing presidential elections"
-active: docs
 permalink: docs/tutorials/elections/
 ---
 

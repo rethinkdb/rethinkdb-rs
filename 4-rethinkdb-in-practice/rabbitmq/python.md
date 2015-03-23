@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Integrating RethinkDB with RabbitMQ
-active: docs
 docs_active: rabbitmq
 permalink: docs/rabbitmq/python/
 switcher: true
