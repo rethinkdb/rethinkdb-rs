@@ -62,14 +62,14 @@ in the cluster.
 
 You can also point the client drivers to `localhost:28015` or
 `localhost:28016` to start running queries (it doesn't matter which
-node you use &mdash; the cluster will automatically route all commands to
+node you use&mdash;the cluster will automatically route all commands to
 appropriate nodes).
 
 Note the command line parameters we used to start the second node:
 
-- `--port-offset` &mdash; increment all ports by 1 so the two nodes don't try to use the same ports on one machine.
-- `--directory` &mdash; use a different data directory so the two nodes don't try to access the same files.
-- `--join` &mdash; tell our new RethinkDB instance to connect to another instance (in this case, `localhost:29015`).
+- `--port-offset`&mdash;increment all ports by 1 so the two nodes don't try to use the same ports on one machine.
+- `--directory`&mdash;use a different data directory so the two nodes don't try to access the same files.
+- `--join`&mdash;tell our new RethinkDB instance to connect to another instance (in this case, `localhost:29015`).
 
 For a complete list of options that can be passed to RethinkDB on the command line, read [RethinkDB command line options](/docs/cli-options), or type `rethinkdb --help` at the terminal prompt.
 

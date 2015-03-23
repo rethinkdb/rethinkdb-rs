@@ -7,7 +7,7 @@ permalink: docs/tutorials/elections/
 {% infobox %}
 __Before you start:__
 
-- Make sure you've [installed RethinkDB](/install) &mdash; it should only take a minute!
+- Make sure you've [installed RethinkDB](/install)&mdash;it should only take a minute!
 {% endinfobox %}
 
 

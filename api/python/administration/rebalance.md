@@ -19,7 +19,7 @@ The `rebalance` command operates by measuring the distribution of primary keys w
 
 A table will lose availability temporarily after `rebalance` is called; use the [wait](/api/python/wait) command to wait for the table to become available again, or [status](/api/python/status) to check if the table is available for writing.
 
-RethinkDB automatically rebalances tables when the number of shards are increased, and as long as your documents have evenly distributed primary keys--such as the default UUIDs--it is rarely necessary to call `rebalance` manually. Cases where `rebalance` may need to be called include:
+RethinkDB automatically rebalances tables when the number of shards are increased, and as long as your documents have evenly distributed primary keys&mdash;such as the default UUIDs&mdash;it is rarely necessary to call `rebalance` manually. Cases where `rebalance` may need to be called include:
 
 * Tables with unevenly distributed primary keys, such as incrementing integers
 * Changing a table's primary key type

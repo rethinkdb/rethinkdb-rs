@@ -22,8 +22,7 @@ perspective.
 
 # The best of both worlds #
 
-First generation NoSQL products fall into roughly two categories
-&mdash; developer-oriented and operations-oriented.
+First generation NoSQL products fall into roughly two categories&mdash;developer-oriented and operations-oriented.
 
 __Developer-oriented__ products include
 [MongoDB](http://www.mongodb.org/) and

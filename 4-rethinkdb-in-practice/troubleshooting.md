@@ -260,7 +260,7 @@ warn: Namespace <x> contains these outdated indexes which should be recreated:
 <index names>
 ```
 
-(This may happen, for instance, between v1.13 and v1.14, when the internal format of secondary indexes changed.) Outdated indexes can still be used--they don't affect availability. However, you should rebuild your index before updating to the next version of RethinkDB.
+(This may happen, for instance, between v1.13 and v1.14, when the internal format of secondary indexes changed.) Outdated indexes can still be used&mdash;they don't affect availability. However, you should rebuild your index before updating to the next version of RethinkDB.
 
 You may rebuild indexes with the `rethinkdb` command line utility:
 

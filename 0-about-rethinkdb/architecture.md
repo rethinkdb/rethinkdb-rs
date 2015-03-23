@@ -457,7 +457,7 @@ case of failures, and support for multiversion concurrency control.
 The storage engine is used in conjunction with a custom, B-Tree-aware
 caching engine which allows file sizes many orders of magnitude
 greater than the amount of available memory. As a result, neither the
-data nor the index have to fit in RAM &mdash; RethinkDB can operate on
+data nor the index have to fit in RAM&mdash;RethinkDB can operate on
 terabytes of data with only a few megabytes of cache space.
 
 ## Which file systems are supported? ##

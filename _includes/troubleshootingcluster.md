@@ -1,4 +1,4 @@
-RethinkDB uses three ports to operate &mdash; the HTTP web UI port,
+RethinkDB uses three ports to operate&mdash;the HTTP web UI port,
 the client drivers port, and the intracluster traffic port. You can
 connect the browser to the web UI port to administer the cluster right
 from your browser, and connect the client drivers to the client driver

@@ -11,7 +11,7 @@ language: Ruby
 {% infobox %}
 __Before you start:__
 
-* Make sure you've [installed RethinkDB](/install) &mdash; it should only take a minute!
+* Make sure you've [installed RethinkDB](/install)&mdash;it should only take a minute!
 * Make also sure you've [installed the Ruby driver](/docs/install-drivers/ruby/).
 * Read the [thirty-second quickstart](/docs/quickstart/).
 {% endinfobox %}
@@ -180,7 +180,7 @@ cursor = r.table("authors").filter{|author| author["name"].eq("William Adama") }
 cursor.each{|document| p document}
 ```
 
-This query returns a cursor with one document &mdash; the record for
+This query returns a cursor with one document&mdash;the record for
 William Adama. The `filter` command evaluates the provided condition
 for every row in the table, and returns only the relevant rows. Here's
 the new commands we used to construct the condition above:

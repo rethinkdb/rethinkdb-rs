@@ -7,7 +7,7 @@ permalink: docs/rails/
 
 It's easy to use RethinkDB with Ruby on Rails. This guide assumes some
 familiarity with Rails and ActiveRecord. We'll be using
-[NoBrainer](http://nobrainer.io) &mdash; a RethinkDB ORM, which is an
+[NoBrainer](http://nobrainer.io)&mdash;a RethinkDB ORM, which is an
 almost drop-in replacement for ActiveRecord.
 
 {% infobox %}

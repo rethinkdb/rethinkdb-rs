@@ -22,7 +22,7 @@ In RethinkDB, map-reduce queries operate on sequences and are composed of two or
 * A __map__ operation which filters and/or transforms the elements in the sequence (or each group) into a new sequence (or grouped sequences).
 * A __reduce__ operation which aggregates the values produced by __map__ into a single value (or a single value for each group).
 
-Some other map-reduce implementations, like Hadoop's, use the mapping step to perform grouping as well; RethinkDB's implementation explicitly separates them. This is sometimes referred to as "group-map-reduce," or GMR. RethinkDB distributes GMR queries over tables and shards efficiently. You write GMR queries with the [group][], [map][] and [reduce][] commands, although as we'll see in our examples, many ReQL commands compile to GMR queries behind the scenes--many common map-reduce cases can be accomplished in one or two lines of ReQL.
+Some other map-reduce implementations, like Hadoop's, use the mapping step to perform grouping as well; RethinkDB's implementation explicitly separates them. This is sometimes referred to as "group-map-reduce," or GMR. RethinkDB distributes GMR queries over tables and shards efficiently. You write GMR queries with the [group][], [map][] and [reduce][] commands, although as we'll see in our examples, many ReQL commands compile to GMR queries behind the scenes&mdash;many common map-reduce cases can be accomplished in one or two lines of ReQL.
 
 # A simple example #
 

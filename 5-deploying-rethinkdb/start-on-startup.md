@@ -38,7 +38,7 @@ Then, restart the service:
 sudo /etc/init.d/rethinkdb restart
 ```
 
-The basic setup is complete &mdash; __you've now got a working server!__
+The basic setup is complete&mdash;__you've now got a working server!__
 
 ## Multiple instances ##
 

@@ -11,7 +11,7 @@ language: Python
 {% infobox %}
 <strong>Before you start:</strong>
 
-* Make sure you've [installed RethinkDB](/install) &mdash; it should only take a minute!
+* Make sure you've [installed RethinkDB](/install)&mdash;it should only take a minute!
 * Make also sure you've [installed the Python driver](/docs/install-drivers/python/).
 * Read the [thirty-second quickstart](/docs/quickstart/).
 {% endinfobox %}
@@ -186,7 +186,7 @@ for document in cursor:
     print document
 ```
 
-This query returns a cursor with one document &mdash; the record for
+This query returns a cursor with one document&mdash;the record for
 William Adama. The `filter` command evaluates the provided condition
 for every row in the table, and returns only the relevant rows. Here's
 the new commands we used to construct the condition above:

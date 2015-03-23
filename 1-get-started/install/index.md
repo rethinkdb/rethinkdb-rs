@@ -69,7 +69,7 @@ __Ready to install the client drivers?__ Take a look at [the drivers install pag
 
 If your platform isn't listed here, you may still be able to build
 from source. You should be able to build RethinkDB on most Linux-based
-systems &mdash; check out the generic <a href="/docs/build">build
+systems&mdash;check out the generic <a href="/docs/build">build
 instructions</a>. If you get RethinkDB running on your platform,
 please <a href="/community">contribute</a> a package!
 

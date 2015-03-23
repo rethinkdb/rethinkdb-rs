@@ -117,7 +117,7 @@ __This design has the following advantages:__
 
 While queries are built up on the client, they're only sent to the
 server once you call the `run` command. All processing happens on the
-server &mdash; the queries don't run on the client, and don't require
+server&mdash;the queries don't run on the client, and don't require
 intermediary network round trips between the client and the
 server. For example, you can store queries in variables, and send them
 to the server later:

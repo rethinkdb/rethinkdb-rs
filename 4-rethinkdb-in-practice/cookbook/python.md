@@ -685,7 +685,7 @@ In addition, the following two fields are set as circumstances dictate:
 
 ## Using dynamic keys in ReQL commands ##
 
-Sometimes you may want to write a ReQL document with a dynamic key--the field name is stored in a variable. You can do this with the `object` command, which takes a list of keys and values (`(key, value, key, value ...)`) and returns an object from them.
+Sometimes you may want to write a ReQL document with a dynamic key&mdash;the field name is stored in a variable. You can do this with the `object` command, which takes a list of keys and values (`(key, value, key, value ...)`) and returns an object from them.
 
 ```py
 r.table('users').get(1).update(r.object(property_name, value)).run(conn)

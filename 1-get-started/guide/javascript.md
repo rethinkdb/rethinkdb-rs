@@ -10,7 +10,7 @@ language : JavaScript
 {% infobox %}
 __Before you start:__
 
-* Make sure you've [installed RethinkDB](/install) &mdash; it should only take a minute!
+* Make sure you've [installed RethinkDB](/install)&mdash;it should only take a minute!
 * Make also sure you've [installed the JavaScript driver](/docs/install-drivers/javascript/).
 * Read the [thirty-second quickstart](/docs/quickstart/).
 {% endinfobox %}
@@ -195,7 +195,7 @@ r.table('authors').filter(r.row('name').eq("William Adama")).
     });
 ```
 
-This query returns a cursor with one document &mdash; the record for
+This query returns a cursor with one document&mdash;the record for
 William Adama. The `filter` command evaluates the provided condition
 for every row in the table, and returns only the relevant rows. Here's
 the new commands we used to construct the condition above:

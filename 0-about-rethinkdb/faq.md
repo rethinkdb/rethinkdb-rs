@@ -70,7 +70,7 @@ For a more conversational take, read "[RethinkDB compared to MongoDB][t2]" as we
 ## When is RethinkDB not a good choice? ##
 
 - RethinkDB is not a good choice if you need full ACID support or strong schema
-  enforcement &mdash; in this case you are better off using a relational
+  enforcement&mdash;in this case you are better off using a relational
   database such as MySQL or PostgreSQL.
 - If you are doing deep, computationally-intensive analytics you are better off
   using a system like Hadoop or a column-oriented store like Vertica.
@@ -140,7 +140,7 @@ The RethinkDB server is licensed under the [GNU Affero General Public License v3
 [agpl]: http://www.gnu.org/licenses/agpl-3.0.html
 [apl]:  http://www.apache.org/licenses/LICENSE-2.0.html
 
-We wanted to pick a license that balances the interests of three parties &mdash; our end users, our company, and the software development community at large. When picking a license, we decided on three simple goals:
+We wanted to pick a license that balances the interests of three parties&mdash;our end users, our company, and the software development community at large. When picking a license, we decided on three simple goals:
 
 - Allow anyone to download RethinkDB, examine the source code, and use it for free (as in speech and beer) for any purpose.
 - Require users who choose to modify RethinkDB to fit their needs to release the patches to the software development community.

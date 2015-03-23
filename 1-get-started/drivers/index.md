@@ -121,7 +121,7 @@ alias: docs/guides/drivers/
 
 # Contribute a driver #
 
-Help make RethinkDB available on more platforms &mdash; contribute a
+Help make RethinkDB available on more platforms&mdash;contribute a
 driver for another language, or join one of the existing projects. To
 get started with driver development:
 
