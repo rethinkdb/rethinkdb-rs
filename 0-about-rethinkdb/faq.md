@@ -103,7 +103,7 @@ No. However, RethinkDB's query language can do nearly anything SQL can do, inclu
 
 ## Are RethinkDB transactions atomic? ##
 
-Most write operations involving a single document in RethinkDB are guaranteed to atomic. Operations that are not deterministic cannot update documents in an atomic fashion (such as random values, or values obtained as the result of a subquery). In addition, multiple documents are not updated atomically.
+Most write operations involving a single document in RethinkDB are guaranteed to be atomic. Operations that are not deterministic cannot update documents in an atomic fashion (such as random values, or values obtained as the result of a subquery). In addition, multiple documents are not updated atomically.
 
 ## How do queries get routed in a RethinkDB cluster? ##
 
