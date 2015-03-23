@@ -88,7 +88,7 @@ __apibody__: defines the method signature of a ReQL command
 __infobox__: produces an info box -- the _info_ version of the infobox produces a blue box
 
 ```
-{% infobox info %}
+{% infobox %}
 <content>
 {% endinfobox %}
 ```

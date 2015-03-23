@@ -5,7 +5,7 @@ docs_active: frameworks-and-libraries
 permalink: docs/frameworks-and-libraries/
 ---
 
-{% infobox info %}
+{% infobox %}
 __Add your library:__ Have you written a cool library related RethinkDB and want us to showcase it?
 Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 {% endinfobox %}

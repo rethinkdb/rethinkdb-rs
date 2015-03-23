@@ -55,8 +55,8 @@ alias: install/
     </a>
 </div>
 
-{% infobox info %}
-<strong>Ready to install the client drivers?</strong> Take a look at [the drivers install page](/docs/install-drivers/).
+{% infobox %}
+__Ready to install the client drivers?__ Take a look at [the drivers install page](/docs/install-drivers/).
 {% endinfobox %}
 
 - - -

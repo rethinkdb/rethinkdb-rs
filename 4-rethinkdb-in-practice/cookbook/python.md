@@ -211,7 +211,7 @@ and want to retrieve all the posts where `author_id` is `1`, `2`, or
 r.table("posts").get_all(1, 2, 3, index='author_id').run()
 ```
 
-{% infobox info %}
+{% infobox %}
 Read about [creating secondary indexes in RethinkDB](/docs/secondary-indexes/).
 {% endinfobox %}
 

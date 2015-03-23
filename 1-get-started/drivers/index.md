@@ -113,8 +113,8 @@ alias: docs/guides/drivers/
 </div>
 
 
-{% infobox info %}
-    <strong>Haven't installed the server yet?</strong> <a href="/install">Go do that</a> first!
+{% infobox %}
+    __Haven't installed the server yet?__ [Go do that](/install) first!
 {% endinfobox %}
 
 ---

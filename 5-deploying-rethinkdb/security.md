@@ -29,7 +29,7 @@ sudo iptables -A INPUT -i eth0 -p tcp --dport 8080 -j DROP
 sudo iptables -I INPUT -i eth0 -s 127.0.0.1 -p tcp --dport 8080 -j ACCEPT
 ```
 
-{% infobox info %}
+{% infobox %}
 __Note__: You may have to replace `eth0` and `8080` above if you are
 using another interface or not using the default web interface port.
 {% endinfobox%}
@@ -166,7 +166,7 @@ r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: null})
 
 You can use any ReQL driver for this operation, not just the Data Explorer. Read [Administration tools](/docs/administration-tools/) for more details about scripting RethinkDB administration tasks.
 
-{% infobox %}
+{% infobox alert %}
 __Note__: the authentication key will be transmitted to and stored on the
 RethinkDB server in plain text, and neither the key nor the data passed
 between the client and the server will be encrypted. The key provides basic
@@ -186,7 +186,7 @@ sudo iptables -A INPUT -i eth0 -p tcp --dport 28015 -j DROP
 sudo iptables -I INPUT -i eth0 -s 127.0.0.1 -p tcp --dport 28015 -j ACCEPT
 ```
 
-{% infobox info %}
+{% infobox %}
 __Note__: You may have to replace `eth0` and `28015` above if you are
 using another interface or not using the default driver port.
 {% endinfobox%}

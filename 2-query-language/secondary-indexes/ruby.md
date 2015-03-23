@@ -59,7 +59,7 @@ r.table("posts").eq_join("author_last_name", r.table("users"), :index => "last_n
     .zip().run(conn)
 ```
 
-{% infobox info %}
+{% infobox %}
 __Want to learn more about joins in RethinkDB?__ See [how to use joins](/docs/table-joins/)
 to query _one to many_ and _many to many_ relations.
 {% endinfobox %}

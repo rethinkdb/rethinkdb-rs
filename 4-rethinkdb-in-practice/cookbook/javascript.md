@@ -259,7 +259,7 @@ r.table("posts").getAll(1, 2, 3, {index: 'author_id'})
 });
 ```
 
-{% infobox info %}
+{% infobox %}
 Read about [creating secondary indexes in RethinkDB](/docs/secondary-indexes/).
 {% endinfobox %}
 

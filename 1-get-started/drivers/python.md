@@ -9,7 +9,7 @@ permalink: docs/install-drivers/python/
 
 # Installation #
 
-{% infobox info %}
+{% infobox %}
 From version 1.14, the Python driver for RethinkDB supports Python 2 and 3. Version 1.13 and older support Python 2 only.
 {% endinfobox %}
 

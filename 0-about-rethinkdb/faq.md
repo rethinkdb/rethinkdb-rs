@@ -7,7 +7,7 @@ permalink: faq/
 alias: docs/faq/
 js: faq_index
 ---
-{% infobox info %}
+{% infobox %}
 
 **Want to learn more about RethinkDB?**
 
@@ -33,7 +33,7 @@ js: faq_index
 
 RethinkDB is an open-source, distributed database built to store JSON documents and effortlessly scale to multiple servers. It's easy to set up and learn and features a simple but powerful query language that supports table joins, groupings, aggregations, and functions.
 
-{% infobox info %}
+{% infobox %}
 
 **RethinkDB in under two minutes:** see the [highlights video][hv].
 
@@ -113,7 +113,7 @@ Users never have to worry about sending queries to specific nodes. Connect your 
 
 RethinkDB comes with strict write durability out of the box and is identical to traditional database systems in this respect. By default, no write is ever acknowledged until it's safely committed to disk.
 
-{% infobox info %}
+{% infobox %}
 
 **Want to speed up your write queries?** Learn how to
 [configure durability options][cdo].

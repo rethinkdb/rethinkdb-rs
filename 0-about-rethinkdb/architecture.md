@@ -8,11 +8,11 @@ alias: docs/advanced-faq/
 js: faq_index
 ---
 
-{% infobox info %}
-<strong>Want to learn more about the basics?</strong>
+{% infobox %}
+__Want to learn more about the basics?__
 
-* Read the <a href="/docs/guide/javascript/">ten-minute guide</a> to get started with using RethinkDB.
-* <a href="/faq/">Read the FAQ</a> for programmers new to distributed systems.
+* Read the [ten-minute guide](/docs/guide/javascript/) to get started with using RethinkDB.
+* [Read the FAQ](/faq/) for programmers new to distributed systems.
 * Jump into the [cookbook](/docs/cookbook/javascript/) and see dozens of examples of common RethinkDB queries.
 {% endinfobox %}
 

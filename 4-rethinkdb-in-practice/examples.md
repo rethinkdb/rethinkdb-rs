@@ -5,7 +5,7 @@ docs_active: examples
 permalink: docs/examples/
 ---
 
-{% infobox info %}
+{% infobox %}
 __Looking for another stack?__ We will try to add as many examples as
 we can. If you have written a cool app and want us to showcase it,
 [let us know](/community)!

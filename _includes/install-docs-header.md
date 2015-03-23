@@ -1,4 +1,3 @@
-{% infobox info %}
-    <p><strong>Looking for another platform?</strong> See the <a
-    href="/install">complete list of platforms</a> RethinkDB supports.</p>
+{% infobox %}
+__Looking for another platform?__ See the [complete list of platforms](/install) RethinkDB supports.
 {% endinfobox %}

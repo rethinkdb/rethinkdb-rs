@@ -5,10 +5,8 @@ docs_active: rethinkdb-vs-mongodb
 permalink: docs/rethinkdb-vs-mongodb/
 js: [fancybox]
 ---
-{% infobox info %}
-<strong>Interested in a less biased overview?</strong> Browse through the
-<a href="/docs/comparison-tables/">technical comparison tables</a>
-between RethinkDB and MongoDB.
+{% infobox %}
+**Interested in a less biased overview?** Browse through the [technical comparison tables](/docs/comparison-tables/) between RethinkDB and MongoDB. 
 {% endinfobox %}
 
 <img src="/assets/images/docs/api_illustrations/mongo_vs_rethink.png" class="api_command_illustration" />
@@ -149,8 +147,8 @@ application.
 Form your own opinion! Take RethinkDB for a spin and don't forget to
 give us your feedback so we can work out the quirks faster.
 
-{% infobox info %}
-    <p><strong>Dive into RethinkDB</strong> with the <a href="/docs/guides/quickstart">thirty-second quickstart</a>. &rarr;</p>
+{% infobox %}
+__Dive into RethinkDB__ with the [thirty-second quickstart](/docs/guides/quickstart)! &rarr;
 {% endinfobox %}
 
 <script type="text/javascript">

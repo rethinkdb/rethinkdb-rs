@@ -5,9 +5,9 @@ permalink: docs/tutorials/elections/
 ---
 
 {% infobox %}
-<strong>Before you start:</strong>
+__Before you start:__
 
-- Make sure you've <a href="/install">installed RethinkDB</a> &mdash; it should only take a minute!
+- Make sure you've [installed RethinkDB](/install) &mdash; it should only take a minute!
 {% endinfobox %}
 
 
@@ -22,7 +22,7 @@ query language support in the [JavaScript](/docs/install-drivers/javascript),
 We'll use this dataset to walk through RethinkDB's [JavaScript query language](/api/javascript) using the Data Explorer.
 
 
-{% infobox info %}
+{% infobox %}
 __If you want to do follow the tutorial with the node driver:__
 
 - If you have not done it yet, you may want to read the [10 minute guide](/docs/guide/javascript/).

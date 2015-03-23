@@ -50,7 +50,7 @@ r.db("blog").table("authors").run()
 r.db("blog").table("authors").get(AUTHOR_ID).run()
 ```
 
-{% infobox info %}
+{% infobox %}
 
 __Advantages of using embedded arrays:__
 
@@ -123,7 +123,7 @@ r.db("blog").table("authors").getAll("7644aaf2-9928-4231-aa68-4e65e31bf219").eq_
 Note that the values for `author_id` correspond to the `id` field of
 the author, which allows us to link the documents.
 
-{% infobox info %}
+{% infobox %}
 
 __Advantages of using multiple tables:__
 

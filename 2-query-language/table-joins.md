@@ -5,7 +5,7 @@ docs_active: table-joins
 permalink: docs/table-joins/
 ---
 
-{% infobox info %}
+{% infobox %}
 __Wondering how to model your data?__ Read about [data modeling in RethinkDB](/docs/data-modeling).{% endinfobox %}
 
 <img src="/assets/images/docs/api_illustrations/table-joins.png"
@@ -164,11 +164,11 @@ r.table("employees").eq_join("company_name",
                              r.table("companies"), index="company").run()
 ```
 
-{% infobox info %}
+{% infobox %}
 __Want to learn more about indexes?__: Read about [using secondary indexes in RethinkDB](/docs/secondary-indexes/).
 {% endinfobox %}
 
-{% infobox info %}
+{% infobox %}
 __Note__: you can also join tables on arbitrary fields without
 creating an index using the [inner_join](/api/python/inner_join/)
 command. However, arbitrary inner joins are less efficient then
@@ -259,7 +259,7 @@ post written by every author in our database:
 If you use the `zip` command after `join`, the document from the right
 table will be merged into the left one.
 
-{% infobox info %}
+{% infobox %}
 ReQL will eventually provide a better function to manipulate the output of a JOIN query.  
 See [Github issue #325](https://github.com/rethinkdb/rethinkdb/issues/325) to track progress.
 {% endinfobox %}

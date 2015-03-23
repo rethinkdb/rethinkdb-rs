@@ -6,9 +6,8 @@ permalink: docs/comparison-tables/
 alias: docs/comparisons/mongodb/
 ---
 
-{% infobox info %}
-<strong>Interested in a more personal perspective?</strong> Read our take on <a
-href="/docs/rethinkdb-vs-mongodb/">what makes RethinkDB different</a>.
+{% infobox %}
+__Interested in a more personal perspective?__ Read our take on [what makes RethinkDB different](/docs/rethinkdb-vs-mongodb/).
 {% endinfobox %}
 
 This document is our attempt at an unbiased comparison between

@@ -6,7 +6,7 @@ permalink: docs/start-a-server/
 alias: docs/start-a-cluster/
 ---
 
-{% infobox info %}
+{% infobox %}
 **Want to start instances of RethinkDB on system startup?** See [Start RethinkDB at system startup](/docs/start-on-startup/) to learn how to set up RethinkDB with `init.d` or `systemd`.
 {% endinfobox %}
 
@@ -31,7 +31,7 @@ Note the port numbers you can use to access RethinkDB:
 * Use the intracluster port (`29015` by default) to connect other nodes in the cluster to this node.
 * Point your browser to the HTTP connections port (`8080` by default) to access the web interface.
 
-{% infobox info %}
+{% infobox %}
 For a complete list of options that can be passed to RethinkDB on the command line, read [RethinkDB command line options](/docs/cli-options) or type `rethinkdb --help` at the terminal prompt.
 {% endinfobox %}
 
@@ -73,14 +73,14 @@ Note the command line parameters we used to start the second node:
 
 For a complete list of options that can be passed to RethinkDB on the command line, read [RethinkDB command line options](/docs/cli-options), or type `rethinkdb --help` at the terminal prompt.
 
-{% infobox info %}
-<strong>Having trouble accessing the web interface?</strong> Try restarting both of your RethinkDB instances with an additional `--bind all` parameter.
+{% infobox %}
+__Having trouble accessing the web interface?__ Try restarting both of your RethinkDB instances with an additional `--bind all` parameter.
 {% endinfobox %}
 
 In production, you'd likely want to specify options via configuration files rather than command line options; read the [configuration file](/docs/config-file/) documentation for details on the format and available options. Also, you'd want your RethinkDB instances to come online at system startup. See [Start RethinkDB at system startup](/docs/start-on-startup/) to learn how to set up RethinkDB with `init.d` or `systemd`.
 
-{% infobox info %}
-<strong>Want to connect a third node?</strong> You can join it with either of the two existing nodes in the cluster.
+{% infobox %}
+__Want to connect a third node?__ You can join it with either of the two existing nodes in the cluster.
 {% endinfobox %}
 
 # A RethinkDB cluster using multiple machines #
@@ -115,8 +115,8 @@ more details.
 
 # Troubleshooting #
 
-{% infobox info %}
-<strong>Seeing a 'received invalid clustering header' message?</strong>
+{% infobox %}
+__Seeing a 'received invalid clustering header' message?__
 {% include troubleshootingcluster.md %} 
 {% endinfobox %}
 

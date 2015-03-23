@@ -8,11 +8,11 @@ switcher: true
 language : JavaScript
 ---
 {% infobox %}
-<strong>Before you start:</strong>
+__Before you start:__
 
-* Make sure you've <a href="/install">installed RethinkDB</a> &mdash; it should only take a minute!
-* Make also sure you've <a href="/docs/install-drivers/javascript/">installed the JavaScript driver</a>.
-* Read the <a href="/docs/quickstart/">thirty-second quickstart</a>.
+* Make sure you've [installed RethinkDB](/install) &mdash; it should only take a minute!
+* Make also sure you've [installed the JavaScript driver](/docs/install-drivers/javascript/).
+* Read the [thirty-second quickstart](/docs/quickstart/).
 {% endinfobox %}
 
 <img src="/assets/images/docs/api_illustrations/10-minute-guide_javascript.png" class="api_command_illustration" />
@@ -245,7 +245,7 @@ Since primary keys are unique, the `get` command returns a single
 document. This way we can retrieve the document directly without
 converting a cursor to an array.
 
-{% infobox info %}
+{% infobox %}
 Learn more about how RethinkDB can efficiently retrieve documents with
 [secondary indexes](/docs/secondary-indexes/).
 {% endinfobox %}
@@ -323,7 +323,7 @@ r.table('authors').filter(r.row("name").eq("Jean-Luc Picard")).
 After processing this query, RethinkDB will add an additional post to
 Jean-Luc Picard's document.
 
-{% infobox info %}
+{% infobox %}
 Browse the [API reference](/api/javascript/) for many more array operations available in RethinkDB.
 {% endinfobox %}
 

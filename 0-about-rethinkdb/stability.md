@@ -14,7 +14,7 @@ Since all complex software systems are quickly evolving, we use the following te
 - No **systemic** issues means there are no underlying architectural problems that would prevent us from quickly fixing a reported bug.
 - A **required** feature is essential for using the product for its intended purpose.
 
-{% infobox info %}
+{% infobox %}
 **Found a problem?** Help make RethinkDB better &mdash; [ask a question](/community) or [submit a bug report](https://github.com/rethinkdb/rethinkdb/issues/new).
 {% endinfobox %}
 

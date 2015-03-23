@@ -77,7 +77,7 @@ systems.
   you're writing using soft durability, a few seconds worth of data
   might be lost in case of power failure.
 
-  {% infobox info %}
+  {% infobox %}
   __Note:__ while some data may be lost in case of power failure in soft
   durability mode, the RethinkDB database will not get corrupted.
   {% endinfobox %}
@@ -125,7 +125,7 @@ UI:
 - Safari 6.02 or higher
 - Opera 1.62 or higher
 
-{% infobox info %}
+{% infobox %}
 The web UI requires `DataView` and `Uint8Array` JavaScript features to
 be supported by your browser.
 {% endinfobox %}

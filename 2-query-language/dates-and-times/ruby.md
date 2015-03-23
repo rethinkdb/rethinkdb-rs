@@ -135,8 +135,8 @@ You may also insert a time by inserting a literal pseudotype object.  This is
 useful if, for instance, you exported a row using `:time_format => 'raw'` (see
 <strong>Retrieving Times</strong> below).
 
-{% infobox info %}
-<strong>Note:</strong> Avoid using keys matching the regular expression
+{% infobox %}
+__Note:__ Avoid using keys matching the regular expression
 `^\$reql_.+\$$` in your objects.  RethinkDB considers those to be reserved
 keywords.
 {% endinfobox %}

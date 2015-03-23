@@ -61,7 +61,7 @@ r.table("posts").eqJoin("author_last_name", r.table("users"), {index: "last_name
     .zip().run(conn, callback)
 ```
 
-{% infobox info %}
+{% infobox %}
 __Want to learn more about joins in RethinkDB?__ See [how to use joins](/docs/table-joins/)
 to query _one to many_ and _many to many_ relations.
 {% endinfobox %}

@@ -68,7 +68,7 @@ In both cases, each documents is a JSON object, bracketed with `{ }` characters.
 
 There are more options than what we've covered here. Run `rethinkdb help import` for a full list of parameters and examples.
 
-{% infobox info %}
+{% infobox alert %}
 
 While `import` has the ability to import a directory full of files, those files are expected to be in the format and directory structure created by the `export` command.
 

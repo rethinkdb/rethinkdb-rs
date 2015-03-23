@@ -1,8 +1,8 @@
 # Learn more #
 
-{% infobox info %}
+{% infobox %}
 
-<strong>Want to keep learning?</strong> Dive into the documentation:
+__Want to keep learning?__ Dive into the documentation:
 
 - Read the [introduction to RQL](/docs/introduction-to-reql/) to learn about the ReQL concepts in more depth.
 - Learn how to use [map-reduce](/docs/map-reduce/) in RethinkDB.

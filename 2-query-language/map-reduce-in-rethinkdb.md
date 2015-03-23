@@ -216,7 +216,7 @@ Suppose we have ten documents in a single category in a sharded table. Four of t
 2. The number of documents on shard 2 is computed. The query returns the value `6` for the shard.
 3. The final reduction step is executed to combine the values of the two shards. Instead of computing `4 + 6`, the query executes `4 + 1`.
 
-{% infobox %}
+{% infobox alert %}
 
 __Be careful!__ Make sure your reduction function doesn't assume the
 reduction step executes from left to right!

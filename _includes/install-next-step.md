@@ -1,5 +1,3 @@
-{% infobox padded %}
-    <p><strong>Next steps:</strong> Now that you've installed RethinkDB, it's
-    time to <a href="/docs/install-drivers">install client drivers</a> for your
-    language.</p>
+{% infobox %}
+__Next steps:__ Now that you've installed RethinkDB, it's time to [install client drivers](/docs/install-drivers) for your language.
 {% endinfobox %}
