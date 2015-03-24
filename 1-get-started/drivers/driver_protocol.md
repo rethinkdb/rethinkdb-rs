@@ -1,9 +1,12 @@
 ---
-layout: document
+layout: documentation
 title: RethinkDB client driver protocol
 permalink: docs/driver-spec/
+active: docs
+docs_active: install
 ---
-{{ 'RethinkDB client driver protocol' | page_title }}
+
+{% toctag %}
 
 # Stage 0: Connect
 

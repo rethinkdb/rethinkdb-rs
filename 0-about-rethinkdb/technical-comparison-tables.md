@@ -18,14 +18,7 @@ with our commentary to allow the reader to form their own
 opinion. Whenever possible, we provide links to the original
 documentation for further details.
 
-The document is organized by four main categories:
-
-* [Development](#development)
-* [Administrative operations](#administration)
-* [Scaling](#scaling)
-* [Database architecture](#architecture)
-
-<div class="comparison-section"><a name="development" class="comparison-anchor"></a></div>
+{% toctag %}
 
 # Development #
 
@@ -134,8 +127,6 @@ solutions.
 
 RethinkDB can be manually deployed on cloud platforms such as AWS.
 
-
-<div class="comparison-section"><a name="administration" class="comparison-anchor"></a></div>
 # Administration #
 
 |           | RethinkDB | MongoDB |
@@ -190,7 +181,6 @@ MongoDB provides different mechanisms for backing up data:
 
 RethinkDB supports [hot backup](/docs/backup/) on a live cluster via `dump` and `restore` commands.
 
-<div class="comparison-section"><a name="scaling" class="comparison-anchor"></a></div>
 # Scaling #
 
 |             | RethinkDB | MongoDB |
@@ -275,8 +265,6 @@ control](/docs/architecture/#how-does-rethinkdb-execute-queries)
 . In case multiple writes are performed on documents that are close together in
 the B-Tree, RethinkDB does take exclusive block-level locks, but reads can
 still proceed.
-
-<div class="comparison-section"><a name="architecture" class="comparison-anchor"></a></div>
 
 # Architecture #
 

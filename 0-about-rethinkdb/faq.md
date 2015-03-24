@@ -23,11 +23,9 @@ js: faq_index
 
 <img src="/assets/images/docs/api_illustrations/faq.png" class="api_command_illustration" />
 
-<div id="faqcontents"></div>
+{% toctag %}
 
----
-
-{% faqsection RethinkDB overview %}
+# RethinkDB overview
 
 ## What is RethinkDB? ##
 
@@ -79,9 +77,7 @@ For a more conversational take, read "[RethinkDB compared to MongoDB][t2]" as we
   mind dealing with conflicts you may be better off with a Dynamo-style system
   like Riak.
 
-{% endfaqsection %}
-
-{% faqsection Practical considerations %}
+# Practical considerations
 
 ## What languages can I use to work with RethinkDB? ##
 
@@ -149,5 +145,3 @@ We wanted to pick a license that balances the interests of three parties&mdash;o
 Given that an enormous amount of software is offered as a service via the network rather than being distributed in binary form, the most effective license to fulfill all three goals is the GNU AGPL.
 
 We chose to release the client drivers under the Apache License v2.0 to remove any ambiguity as to the extent of the server license. You do not have to license any software that uses RethinkDB under AGPL, and are free to use any licensing mechanism of your choice.
-
-{% endfaqsection %}

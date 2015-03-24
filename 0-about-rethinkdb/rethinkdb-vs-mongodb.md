@@ -9,8 +9,6 @@ js: [fancybox]
 **Interested in a less biased overview?** Browse through the [technical comparison tables](/docs/comparison-tables/) between RethinkDB and MongoDB. 
 {% endinfobox %}
 
-<img src="/assets/images/docs/api_illustrations/mongo_vs_rethink.png" class="api_command_illustration" />
-
 Many people have been asking how RethinkDB differs from MongoDB and
 other NoSQL systems. Our first attempt to address these questions is a
 high level [technical overview](/docs/comparison-tables) comparing
@@ -19,6 +17,10 @@ impartial, and it omits some of the more interesting bits about what
 makes RethinkDB special (such as our irrational love for Dota). In
 this post we wanted to describe the product from a more personal
 perspective.
+
+{% toctag %}
+
+<img src="/assets/images/docs/api_illustrations/mongo_vs_rethink.png" class="api_command_illustration" />
 
 # The best of both worlds #
 

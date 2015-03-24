@@ -10,6 +10,10 @@ alias: docs/start-a-cluster/
 **Want to start instances of RethinkDB on system startup?** See [Start RethinkDB at system startup](/docs/start-on-startup/) to learn how to set up RethinkDB with `init.d` or `systemd`.
 {% endinfobox %}
 
+This document describes how to start RethinkDB from the command line in several configurations, from a single instance on one machine to multiple instances on multiple machines.
+
+{% toctag %}
+
 <img src="/assets/images/docs/api_illustrations/cluster.png" class="api_command_illustration" />
 
 # Starting the server

@@ -12,13 +12,14 @@ js: faq_index
 __Want to learn more about the basics?__
 
 * Read the [ten-minute guide](/docs/guide/javascript/) to get started with using RethinkDB.
-* [Read the FAQ](/faq/) for programmers new to distributed systems.
+* [Read the FAQ](/faq/).
 * Jump into the [cookbook](/docs/cookbook/javascript/) and see dozens of examples of common RethinkDB queries.
 {% endinfobox %}
 
-<div id="faqcontents"></div>
----
-{% faqsection Sharding and replication %}
+
+{% toctag %}
+
+# Sharding and replication
 
 ## How does RethinkDB partition data into shards? ##
 
@@ -166,9 +167,7 @@ cluster by automatically enforcing user-specified rules (such as
 resharding the system when the shard balance drops below a certain
 threshold).
 
-{% endfaqsection %}
-
-{% faqsection CAP theorem %}
+# CAP theorem
 
 ## Is RethinkDB immediately or eventually consistent? ##
 
@@ -252,9 +251,7 @@ architecture turns out to have sufficient mathematical properties to
 address all the issues mentioned above (this result has been known in
 distributed systems research for quite a while).
 
-{% endfaqsection %}
-
-{% faqsection Indexing %}
+# Indexing
 
 ## How does RethinkDB index data? ##
 
@@ -278,9 +275,7 @@ indexes that compute arbitrary expressions. You
 can see examples of how to use the secondary index API
 [here](/docs/secondary-indexes).
 
-{% endfaqsection %}
-
-{% faqsection Availability and failover %}
+# Availability and failover
 ## What happens when a server becomes unreachable? ##
 
 The first thing that happens when a node in the cluster becomes
@@ -336,9 +331,7 @@ the number of shards. In many cases availability will be maintained,
 but currently it cannot be guaranteed. We're exploring different
 solutions to remove this limitation.
 
-{% endfaqsection %}
-
-{% faqsection Query execution %}
+# Query execution
 
 ## How does RethinkDB execute queries? ##
 
@@ -439,9 +432,7 @@ problems because the top levels of the B-Tree are all cached along with
 the frequently used blocks, so in most cases writes can be performed
 essentially lock-free.
 
-{% endfaqsection %}
-
-{% faqsection Data storage %}
+# Data storage
 
 ## How is data stored on disk? ##
 
@@ -471,5 +462,3 @@ by default.
 RethinkDB ships with simple tools to perform a hot backup of a running
 cluster. See the [backup instructions](/docs/backup/) for more
 details.
-
-{% endfaqsection %}
