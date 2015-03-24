@@ -14,6 +14,8 @@ productive with RethinkDB, but it helps to understand some basics.
 __Want to write useful queries right away?__ Check out the [ten-minute guide](/docs/guide/javascript/).
 {% endinfobox %}
 
+{% toctag %}
+
 <img src="/assets/images/docs/api_illustrations/introduction_to_reql.png" class="api_command_illustration" />
 
 ReQL is different from other NoSQL query languages. It's built on

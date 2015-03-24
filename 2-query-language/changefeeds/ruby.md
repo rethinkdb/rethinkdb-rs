@@ -8,10 +8,12 @@ switcher: true
 language: Ruby
 ---
 
+**Changefeeds** lie at the heart of RethinkDB's real-time functionality. They allow clients to receive changes on a table, a single document, or even the results from a specific query as they happen. 
+
+{% toctag %}
+
 <img alt="Data Modeling Illustration" class="api_command_illustration"
     src="/assets/images/docs/api_illustrations/change-feeds.png" />
-
-**Changefeeds** lie at the heart of RethinkDB's real-time functionality. They allow clients to receive changes on a table, a single document, or even the results from a specific query as they happen. 
 
 # Basic usage #
 

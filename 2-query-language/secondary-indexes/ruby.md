@@ -8,10 +8,6 @@ language : Ruby
 js: [fancybox]
 ---
 
-<img src="/assets/images/docs/api_illustrations/secondary-indexes.png"
-     alt="Secondary Indexes Illustration"
-     class="api_command_illustration" />
-
 Secondary indexes are data structures that improve the speed of many
 read queries at the slight cost of increased storage space and decreased
 write performance.
@@ -23,13 +19,17 @@ RethinkDB supports different types of secondary indexes:
 - __Multi indexes__ based on arrays of values.
 - Indexes based on __arbitrary expressions__.
 
-# Using indexes #
+{% toctag %}
 
-## Simple indexes ##
+<img src="/assets/images/docs/api_illustrations/secondary-indexes.png"
+     alt="Secondary Indexes Illustration"
+     class="api_command_illustration" />
+
+# Simple indexes #
 
 Use simple indexes to efficiently retrieve and order documents by the value of a single field.
 
-### Creation ###
+## Creation ##
 
 ```rb
 # Create a secondary index on the last_name attribute
@@ -39,7 +39,7 @@ r.table("users").index_create("last_name").run(conn)
 r.table("users").index_wait("last_name").run(conn)
 ```
 
-### Querying ###
+## Querying ##
 
 ```rb
 # Get all users whose last name is "Smith"
@@ -64,11 +64,11 @@ __Want to learn more about joins in RethinkDB?__ See [how to use joins](/docs/ta
 to query _one to many_ and _many to many_ relations.
 {% endinfobox %}
 
-## Compound indexes ##
+# Compound indexes #
 
 Use compound indexes to efficiently retrieve documents by multiple fields.
 
-### Creation ###
+## Creation ##
 
 ```rb
 # Create a compound secondary index based on the first_name and last_name attributes
@@ -80,7 +80,7 @@ r.table("users").index_create("full_name"){ |row|
 r.table("users").index_wait("full_name").run(conn)
 ```
 
-### Querying ###
+## Querying ##
 
 ```rb
 # Get all users whose full name is John Smith.
@@ -98,13 +98,13 @@ r.table("posts").eq_join("author_full_name", r.table("users"), :index => "full_n
     .run(conn)
 ```
 
-## Multi indexes ##
+# Multi indexes #
 
 With simple and compound indexes, a document will be indexed using at most one index key: a single value for a simple index and a set of values for a compound index. Multiple documents may have the same index key. With a _multi index_, a document can be indexed using more than one key in the same index. For instance, a blog post might have multiple tags, and each tag might refer to multiple blog posts.
 
 The keys in a multi index can be single values, compound values or even arbitrary expressions. (See the section below for more detail on indexes using functions.)
 
-### Creation ###
+## Creation ##
 
 Suppose each post has a field `tags` that maps to an array of tags. The schema of the
 table `posts` would be something like:
@@ -126,7 +126,7 @@ r.table("posts").index_create("tags", :multi => true)
 r.table("posts").index_wait("tags").run(conn)
 ```
 
-### Querying ###
+## Querying ##
 
 ```rb
 # Get all posts with the tag "travel" (where the field tags contains "travel")
@@ -138,7 +138,7 @@ r.table("tags").eq_join("tag", r.table("posts"), :index => "tags").run(conn)
 
 Note that queries with `getAll` or `between` may return the same document multiple times unless you use the [distinct](/api/ruby/distinct) command.
 
-## Indexes on arbitrary ReQL expressions ##
+# Indexes on arbitrary ReQL expressions #
 
 You can create an index on an arbitrary expression by passing an anonymous
 function to `index_create`.
@@ -166,7 +166,7 @@ r.table("users").index_create("activities", :multi => true){ |activity|
 }.run(conn)
 ```
 
-### Use a multi index and a mapping function to speed get_all/contains ###
+## Use a multi index and a mapping function to speed get_all/contains ##
 
 If your program frequently executes a [get_all](/api/ruby/get_all) followed by a [contains](/api/ruby/contains), that operation can be made more efficient by creating a compound multi index using a mapping function on the field that contains the list.
 
@@ -184,8 +184,6 @@ r.table("users").get_all([1, "tent"], {:index =>"user_equipment"}).distinct().ru
 ```
 
 # Administrative operations #
-
-## With ReQL ##
 
 ```rb
 # list indexes on table "users"
@@ -272,11 +270,3 @@ Browse the API reference to learn more about secondary index commands:
 
 * Manipulating indexes: [index_create](/api/ruby/index_create/), [index_drop](/api/ruby/index_drop/) and [index_list](/api/ruby/index_list/)
 * Using indexes: [get_all](/api/ruby/get_all/), [between](/api/ruby/between/), [eq_join](/api/ruby/eq_join/) and [order_by](/api/ruby/order_by/)
-
-
-
-<script type="text/javascript">
-    $( function() {
-        $('.screenshots a').fancybox();
-    })
-</script>

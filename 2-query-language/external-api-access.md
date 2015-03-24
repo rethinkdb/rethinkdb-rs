@@ -6,21 +6,19 @@ docs_active: external-api-access
 permalink: docs/external-api-access/
 ---
 
+{% infobox info %}
+__Note:__ the following examples use the JavaScript
+driver. See the [r.http](/api/javascript/http/) command reference for
+documentation for other languages.
+{% endinfobox %}
+
+{% toctag %}
+
 RethinkDB provides an [r.http](/api/javascript/http/) command for
 accessing external APIs directly from the database. Since many APIs
 accept and return JSON, RethinkDB is a convenient platform for
 manipulating and analyzing API data, both interactively and in running
 applications.
-
-Let's look at how we use `r.http` and the GitHub API at RethinkDB to
-find the most influential members of the RethinkDB community so we can
-reach out and thank them for their help and support.
-
-{% infobox info %}
-<strong>Note:</strong> the following examples use the JavaScript
-driver. See the [r.http](/api/javascript/http/) command reference for
-documentation for other languages.
-{% endinfobox %}
 
 # Basic usage #
 
@@ -37,6 +35,7 @@ from the database and return a string with the source of Google's
 homepage.
 
 # Accessing JSON APIs #
+
 
 Now let's access a real JSON API. In this example we're going to use
 GitHub &mdash; a collaborative development platform that hosts

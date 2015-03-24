@@ -5,16 +5,18 @@ docs_active: map-reduce
 permalink: docs/map-reduce/
 ---
 
-<img src="/assets/images/docs/api_illustrations/map-reduce.png"
-     alt="Map-reduce Illustration"
-     class="api_command_illustration" />
-
 [Map-reduce][wp] is a way to summarize and run aggregation functions on large data sets, potentially stored across many servers, in an efficient fashion. It works by processing the data on each server in parallel and then combining those results into one set. It was originally designed by [Google][g] and later implemented in database systems such as [Apache Hadoop][ah] and [MongoDB][md].
 
 [wp]: http://en.wikipedia.org/wiki/MapReduce
 [g]: http://research.google.com/archive/mapreduce.html
 [ah]: http://hadoop.apache.org/
 [md]: http://www.mongodb.org/
+
+{% toctag %}
+
+<img src="/assets/images/docs/api_illustrations/map-reduce.png"
+     alt="Map-reduce Illustration"
+     class="api_command_illustration" />
 
 In RethinkDB, map-reduce queries operate on sequences and are composed of two or three parts:
 

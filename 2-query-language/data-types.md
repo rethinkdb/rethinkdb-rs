@@ -7,6 +7,8 @@ permalink: docs/data-types/
 
 RethinkDB stores six basic single-value data types: *numbers, strings, binary objects, times, boolean* values, and the *null* value. In addition, it stores two basic composite data types. *Objects* and *arrays* are key/value pairs and lists, respectively, with direct counterparts in most programming languages. *Streams, selections* and *tables* are RethinkDB-specific composite data types. Lastly, there are geometry data types: *point, line* and *polygon.*
 
+{% toctag %}
+
 # Basic data types #
 
 * **Numbers** are any real number: `5`, `3.14159`, `-42`. RethinkDB uses double precision (64-bit) floating point numbers internally. (Neither infinity nor [NaN](http://en.wikipedia.org/wiki/NaN) are allowed.)

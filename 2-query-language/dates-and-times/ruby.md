@@ -8,9 +8,6 @@ switcher: true
 language: Ruby
 ---
 
-<img alt="Dates and Times Illustration" class="api_command_illustration"
-     src="/assets/images/docs/api_illustrations/dates-and-times.png" />
-
 RethinkDB has native support for millisecond-precision times with time zones.
 Some highlights:
 
@@ -22,6 +19,11 @@ Some highlights:
    they occurred.
 * **Time operations are pure ReQL**, which means that even complicated date-time
   queries can be distributed efficiently across the cluster.
+
+{% toctag %}
+
+<img alt="Dates and Times Illustration" class="api_command_illustration"
+     src="/assets/images/docs/api_illustrations/dates-and-times.png" />
 
 # A quick example #
 

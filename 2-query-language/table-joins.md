@@ -6,11 +6,8 @@ permalink: docs/table-joins/
 ---
 
 {% infobox %}
-__Wondering how to model your data?__ Read about [data modeling in RethinkDB](/docs/data-modeling).{% endinfobox %}
-
-<img src="/assets/images/docs/api_illustrations/table-joins.png"
-     alt="Table Join Illustration"
-     class="api_command_illustration" />
+__Wondering how to model your data?__ Read about [data modeling in RethinkDB](/docs/data-modeling).
+{% endinfobox %}
 
 Like many traditional database systems, RethinkDB supports `JOIN`
 commands to combine data from multiple tables. In RethinkDB joins are
@@ -20,6 +17,12 @@ combined, and the final result is presented to the user.
 
 Let's see how we can use joins in RethinkDB to query data based on
 __one to many__, and __many to many__ relations.
+
+{% toctag %}
+
+<img src="/assets/images/docs/api_illustrations_redone/table-joins_background.png"
+     alt="Table Join Illustration"
+     class="api_command_illustration" />
 
 # One to many relations #
 
