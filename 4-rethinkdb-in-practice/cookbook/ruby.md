@@ -9,11 +9,11 @@ language : Ruby
 ---
 {% include recipe-forms.html %}
 
+{% toctag %}
+
 <img src="/assets/images/docs/api_illustrations/cookbook.png" class="api_command_illustration" />
 
-<div id="faqcontents"></div>
----
-{% faqsection Basic commands %}
+# Basic commands
 
 ## Creating a database ##
 
@@ -95,9 +95,7 @@ Here is how we'd delete all documents in a table:
 r.table("posts").delete.run
 ```
 
-{% endfaqsection %}
-
-{% faqsection Filtering %}
+# Filtering
 
 ## Filtering based on multiple fields ##
 
@@ -352,9 +350,7 @@ r.table('movies').order_by('rank').limit(25).map{ |doc|
 }.run(conn)
 ```
 
-{% endfaqsection %}
-
-{% faqsection Manipulating documents %}
+# Manipulating documents
 
 ## Adding/overwriting a field in a document ##
 
@@ -421,9 +417,7 @@ r.table('aggregated').get(id).update{ |doc|
 
 Use `default` to ensure that if the `count` field doesn't already exist in the document, it's added correctly, rather than letting `add` throw an error.
 
-{% endfaqsection %}
-
-{% faqsection Pagination %}
+# Pagination
 
 ## Limiting the number of returned documents ##
 
@@ -461,9 +455,7 @@ r.table("users").between(last_name, nil, {:left_bound => "open",
 
 We pass the `last_name` saved from the previous set to `between` as the start index. For the end index, we pass `nil` to return documents from the start index to the table's end. The `left_bound` parameter tells `between` not to include the first record, since it was already returned as part of the previous page.
 
-{% endfaqsection %}
-
-{% faqsection Transformations %}
+# Transformations
 
 ## Counting the number of documents in a table ##
 
@@ -632,9 +624,7 @@ Then you can use that index in the `group` function. This query would return the
 r.table('invoices').group({:index => 'by_day'}).max('price').run(conn)
 ```
 
-{% endfaqsection %}
-
-{% faqsection Miscellaneous %}
+# Miscellaneous
 
 ## Generating monotonically increasing primary key values ##
 
@@ -756,5 +746,3 @@ query = query.filter(request.filter) if request.filter
 query = query.order_by('date')
 query = query.run(conn)
 ```
-
-{% endfaqsection %}

@@ -5,9 +5,6 @@ docs_active: troubleshooting
 permalink: docs/troubleshooting/
 js: faq_index
 ---
-<div id="faqcontents"></div>
-{% faqsection Table of contents | %}
----
 
 ## How can I get a dump of the RethinkDB system tables?
 
@@ -315,5 +312,3 @@ r.table('posts').filter(
     or(r.row('genre').default('foo').eq('mystery'))
 ).run(conn, callback);
 ```
-
-{% endfaqsection %}

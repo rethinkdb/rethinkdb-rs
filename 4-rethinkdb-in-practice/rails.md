@@ -10,6 +10,8 @@ familiarity with Rails and ActiveRecord. We'll be using
 [NoBrainer](http://nobrainer.io)&mdash;a RethinkDB ORM, which is an
 almost drop-in replacement for ActiveRecord.
 
+{% toctag %}
+
 {% infobox %}
 **Before you start**
 
