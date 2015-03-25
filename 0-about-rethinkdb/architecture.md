@@ -276,6 +276,7 @@ can see examples of how to use the secondary index API
 [here](/docs/secondary-indexes).
 
 # Availability and failover
+
 ## What happens when a server becomes unreachable? ##
 
 The first thing that happens when a node in the cluster becomes

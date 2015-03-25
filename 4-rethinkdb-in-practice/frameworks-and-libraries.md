@@ -17,19 +17,19 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [rethinkdbdash](https://github.com/neumino/rethinkdbdash) by [@neumino](https://github.com/neumino)  
   An alternative Node.js driver with native promises and a connection pool.
 
-- [RQL Promise](https://github.com/guillaumervls/rql-promise) by [@guillaumervls](https://github.com/guillaumervls)
+- [RQL Promise](https://github.com/guillaumervls/rql-promise) by [@guillaumervls](https://github.com/guillaumervls)  
    Wraps the RethinkDB driver with [when](https://github.com/cujojs/when) to return promises.
 
 - [rethinkdb-co](https://github.com/hden/rethinkdb-co) by [@hden](https://github.com/hden)  
   Allows using ECMAScript 6 generators with RethinkDB callbacks.
 
-- [rdb-cursor-stream](https://github.com/guillaumervls/rdb-cursor-stream) by [@guillaumervls](https://github.com/guillaumervls)
+- [rdb-cursor-stream](https://github.com/guillaumervls/rdb-cursor-stream) by [@guillaumervls](https://github.com/guillaumervls)  
   Replaces cursors with streams.
 
-- [connect-rethinkdb](https://github.com/guillaumervls/connect-rethinkdb) by [@guillaumervls](https://github.com/guillaumervls)
+- [connect-rethinkdb](https://github.com/guillaumervls/connect-rethinkdb) by [@guillaumervls](https://github.com/guillaumervls)  
   A RethinkDB session store for Connect, similar to connect-redis.
 
-- [express-session-rethinkdb](https://www.npmjs.com/package/express-session-rethinkdb) by [@armenfilipetyan](https://github.com/armenfilipetyan)
+- [express-session-rethinkdb](https://www.npmjs.com/package/express-session-rethinkdb) by [@armenfilipetyan](https://github.com/armenfilipetyan)  
   Use RethinkDB as session store with Express 4.x framework. Adapted from connect-rethinkdb.
 
 - [Rethinkdb-pool](https://github.com/hden/rethinkdb-pool) by [@hden](https://github.com/hden)  
@@ -53,7 +53,8 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 ## Integrations
 
-- [rabbitMQ](/docs/rabbitmq/javascript) Listen for changes in a RethinkDB table over RabbitMQ.
+- [rabbitMQ](/docs/rabbitmq/javascript)  
+  Listen for changes in a RethinkDB table over RabbitMQ.
 
 - [koa-rethinkdb](https://github.com/hden/koa-rethinkdb) by [@hden](https://github.com/hden)  
   Koa middleware that automatically manages connections via a connection pool.
@@ -74,13 +75,14 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [rethink](https://github.com/caoimhghin/rethink) by [@caoimhghin](https://github.com/caoimhghin)  
   A Python object mapper in the style of [App Engine NDB](https://cloud.google.com/appengine/docs/python/ndb/).
 
-- [remodel](https://github.com/linkyndy/remodel) by [@linkyndy](https://github.com/linkyndy)
+- [remodel](https://github.com/linkyndy/remodel) by [@linkyndy](https://github.com/linkyndy)  
   A simple but powerful and extensible Object Document Mapper for RethinkDB. (Also see the [pip package](https://pypi.python.org/pypi/Remodel).)
 
 
 ## Integrations
 
-- [rabbitMQ](/docs/rabbitmq/python) Listen for changes in a RethinkDB table over RabbitMQ.
+- [rabbitMQ](/docs/rabbitmq/python)  
+  Listen for changes in a RethinkDB table over RabbitMQ.
 
 - [celery-backends-rethinkdb](https://github.com/pilwon/celery-backends-rethinkdb) by [@pilwon](https://github.com/pilwon)  
   [Celery](http://www.celeryproject.org/)'s custom result backend for RethinkDB.
@@ -102,7 +104,8 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [Epiphy](https://github.com/kureikain/epiphy) by [@kureikain](https://github.com/kureikain)   
   A light persistence framework for RethinkDB.
 
-- [rabbitMQ](/docs/rabbitmq/ruby) Listen for changes in a RethinkDB table over RabbitMQ.
+- [rabbitMQ](/docs/rabbitmq/ruby)  
+  Listen for changes in a RethinkDB table over RabbitMQ.
 
 - [lotus-rethinkdb](https://github.com/angeloashmore/lotus-rethinkdb) by [@angeloashmore](https://github.com/angeloashmore)  
   A RethinkDB adapter for [Lotus::Model](https://github.com/lotus/model), a persistence framework for Ruby.
@@ -127,7 +130,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [rethinkdb-cli](https://github.com/byterussian/rethinkdb-cli)  
   CLI to run ReQL queries in Ruby.
 
-- [phpReAdmin](https://github.com/billbarsch/phpReAdmin) by [@billbarsch](https://github.com/billbarsch)
+- [phpReAdmin](https://github.com/billbarsch/phpReAdmin) by [@billbarsch](https://github.com/billbarsch)  
   Web frontend written in PHP to create/rename/update/delete RethinkDB databases/tables/docs and run ReQL queries in PHP.
 
 
