@@ -110,7 +110,7 @@ you need to call [**ungroup**](/api/python/ungroup/) before doing so.
 
 ## What does 'received invalid clustering header' mean? ##
 
-{% include troubleshootingcluster.md %}
+{% include docs/troubleshootingcluster.md %}
 
 ## Does the web UI support my browser? ##
 

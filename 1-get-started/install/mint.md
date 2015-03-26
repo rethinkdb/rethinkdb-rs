@@ -5,8 +5,8 @@ title_image: /assets/images/docs/install-platforms/mint.png
 docs_active: install
 permalink: docs/install/mint/
 ---
-{% include install-docs-header.md %}
-{% include install-community-platform-warning.md %}
+{% include docs/install-docs-header.md %}
+{% include docs/install-community-platform-warning.md %}
 The following instructions were tested on Linux Mint 16.
 
 # With binaries #
@@ -30,6 +30,6 @@ sudo apt-get update
 sudo apt-get install rethinkdb
 ```
 
-{% include debian-based-install-from-source.md %}
+{% include docs/debian-based-install-from-source.md %}
 
-{% include install-next-step.md %}
+{% include docs/install-next-step.md %}

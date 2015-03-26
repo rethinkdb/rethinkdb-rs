@@ -324,4 +324,4 @@ is:
 }
 ```
 
-{% include quickstart-footer.md %}
+{% include docs/quickstart-footer.md %}

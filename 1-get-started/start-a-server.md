@@ -121,6 +121,6 @@ more details.
 
 {% infobox %}
 __Seeing a 'received invalid clustering header' message?__
-{% include troubleshootingcluster.md %} 
+{% include docs/troubleshootingcluster.md %} 
 {% endinfobox %}
 

@@ -1,6 +1,6 @@
 ---
 layout: documentation
-title: Install RethinkDB
+title: Installing RethinkDB
 docs_active: install
 permalink: docs/install/
 alias: install/
@@ -11,27 +11,27 @@ alias: install/
         <ul class="platform-buttons">
             <li>
                 <a href="ubuntu/">
-        <img src="/assets/images/docs/install-platforms/ubuntu.png" />
-        <p class="name">Ubuntu</p>
-    </a>
+                    <img src="/assets/images/docs/install-platforms/ubuntu.png" />
+                    <p class="name">Ubuntu</p>
+                </a>
             </li>
             <li>
                 <a href="osx/">
-        <img src="/assets/images/docs/install-platforms/osx.png" />
-        <p class="name">OS X</p>
-    </a>
+                    <img src="/assets/images/docs/install-platforms/osx.png" />
+                    <p class="name">OS X</p>
+                </a>
             </li>
             <li>
                 <a href="centos/">
-        <img src="/assets/images/docs/install-platforms/centos.png" />
-        <p class="name">CentOS</p>
-    </a>
+                    <img src="/assets/images/docs/install-platforms/centos.png" />
+                    <p class="name">CentOS</p>
+                </a>
             </li>
             <li>
                 <a href="debian/">
-        <img src="/assets/images/docs/install-platforms/debian.png" />
-        <p class="name">Debian</p>
-    </a>
+                    <img src="/assets/images/docs/install-platforms/debian.png" />
+                    <p class="name">Debian</p>
+                </a>
             </li>
         </ul>
     </section>
@@ -40,33 +40,33 @@ alias: install/
         <ul class="platform-buttons">
             <li>
                 <a href="arch/">
-        <img src="/assets/images/docs/install-platforms/arch.png" />
-        <p class="name">Arch Linux</p>
-    </a>
+                    <img src="/assets/images/docs/install-platforms/arch.png" />
+                    <p class="name">Arch Linux</p>
+                </a>
             </li>
             <li>
                 <a href="opensuse/">
-        <img src="/assets/images/docs/install-platforms/opensuse.png" />
-        <p class="name">openSUSE</p>
-    </a>
+                    <img src="/assets/images/docs/install-platforms/opensuse.png" />
+                    <p class="name">openSUSE</p>
+                </a>
             </li>
             <li>
                 <a href="fedora/">
-        <img src="/assets/images/docs/install-platforms/fedora.png" />
-        <p class="name">Fedora</p>
-    </a>
+                    <img src="/assets/images/docs/install-platforms/fedora.png" />
+                    <p class="name">Fedora</p>
+                </a>
             </li>
             <li>
                 <a href="mint/">
                     <img src="/assets/images/docs/install-platforms/mint.png"/>
-        <p class="name">Linux Mint</p>
-    </a>
+                    <p class="name">Linux Mint</p>
+                </a>
             </li>
             <li>
                 <a href="raspbian/">
                     <img src="/assets/images/docs/install-platforms/raspbian.png"/>
-        <p class="name">Raspbian</p>
-    </a>
+                    <p class="name">Raspbian</p>
+                </a>
             </li>
         </ul>
     </section>

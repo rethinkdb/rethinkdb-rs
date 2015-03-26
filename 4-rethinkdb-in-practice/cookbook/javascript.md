@@ -7,7 +7,7 @@ permalink: docs/cookbook/javascript/
 switcher: true
 language : JavaScript
 ---
-{% include recipe-forms.html %}
+{% include docs/recipe-forms.html %}
 
 {% toctag %}
 

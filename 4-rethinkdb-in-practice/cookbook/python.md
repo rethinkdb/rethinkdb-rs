@@ -7,7 +7,7 @@ permalink: docs/cookbook/python/
 switcher: true
 language: Python
 ---
-{% include recipe-forms.html %}
+{% include docs/recipe-forms.html %}
 
 {% toctag %}
 

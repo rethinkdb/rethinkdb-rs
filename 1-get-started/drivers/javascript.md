@@ -5,7 +5,7 @@ title_image: /assets/images/docs/driver-languages/javascript.png
 docs_active: install-drivers
 permalink: docs/install-drivers/javascript/
 ---
-{% include install-driver-docs-header.md %}
+{% include docs/install-driver-docs-header.md %}
 
 # Installation #
 

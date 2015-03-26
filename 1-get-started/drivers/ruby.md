@@ -5,7 +5,7 @@ title_image: /assets/images/docs/driver-languages/ruby.png
 docs_active: install-drivers
 permalink: docs/install-drivers/ruby/
 ---
-{% include install-driver-docs-header.md %}
+{% include docs/install-driver-docs-header.md %}
 
 # Installation #
 

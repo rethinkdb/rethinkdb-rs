@@ -5,8 +5,8 @@ title_image: /assets/images/docs/install-platforms/raspbian.png
 docs_active: install
 permalink: docs/install/raspbian/
 ---
-{% include install-docs-header.md %}
-{% include install-community-platform-warning.md %}
+{% include docs/install-docs-header.md %}
+{% include docs/install-community-platform-warning.md %}
 
 These instructions were updated after the 1.16 release, but have not been tested.
 
@@ -49,4 +49,4 @@ make
 sudo make install
 ```
 
-{% include install-next-step.md %}
+{% include docs/install-next-step.md %}

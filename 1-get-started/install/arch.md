@@ -5,8 +5,8 @@ title_image: /assets/images/docs/install-platforms/arch.png
 docs_active: install
 permalink: docs/install/arch/
 ---
-{% include install-docs-header.md %}
-{% include install-community-platform-warning.md %}
+{% include docs/install-docs-header.md %}
+{% include docs/install-community-platform-warning.md %}
 
 # Install binary packages #
 
@@ -120,4 +120,4 @@ $ cd ~/rethinkdb
 # make install
 ```
 
-{% include install-next-step.md %}
+{% include docs/install-next-step.md %}

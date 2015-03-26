@@ -5,4 +5,4 @@ docs_active: quickstart
 permalink: /docs/quickstart/
 alias: /docs/guides/quickstart/
 ---
-{%  include quickstart.md %}
+{%  include docs/quickstart.md %}

@@ -243,6 +243,6 @@ The `bind=all` option is a security risk if your machine is open to the internet
 
 {% infobox %}
 <strong>Seeing a 'received invalid clustering header' message?</strong>
-{% include troubleshootingcluster.md %} 
+{% include docs/troubleshootingcluster.md %} 
 {% endinfobox %}
 

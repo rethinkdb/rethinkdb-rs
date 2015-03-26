@@ -5,7 +5,7 @@ title_image: /assets/images/docs/install-platforms/centos.png
 docs_active: install
 permalink: docs/install/centos/
 ---
-{% include install-docs-header.md %}
+{% include docs/install-docs-header.md %}
 
 # With binaries #
 
@@ -69,4 +69,4 @@ scl enable devtoolset-2 -- make
 sudo make install
 ```
 
-{% include install-next-step.md %}
+{% include docs/install-next-step.md %}

@@ -7,7 +7,7 @@ permalink: docs/cookbook/ruby/
 switcher: true
 language : Ruby
 ---
-{% include recipe-forms.html %}
+{% include docs/recipe-forms.html %}
 
 {% toctag %}
 
