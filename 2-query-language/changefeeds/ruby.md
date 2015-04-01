@@ -85,16 +85,17 @@ select data:
 * [filter](/api/ruby/filter)
 * [map](/api/ruby/map)
 * [pluck](/api/ruby/pluck)
-* [between](/api/ruby/between) (returns an initial value)
+* [between](/api/ruby/between)
 * [min](/api/ruby/min) (returns an initial value)
 * [max](/api/ruby/max) (returns an initial value)
 * [order_by](/api/ruby/order_by).[limit](/api/ruby/limit) (returns an initial value)
 
-Note that `order_by` requires `limit` with changefeeds (neither one will
-work by itself). You can't use changefeeds after
-[concat_map](/api/ruby/concat_map) or other transformations whose results
-cannot be pushed to the shards. Transformations are applied before changes
-are calculated.
+Limitations and caveats on chaining with changefeeds:
+
+* `min`, `max` and `order_by` must be used with indexes.
+* `order_by` requires `limit`; neither command works by itself.
+* You cannot use changefeeds after [concat_map](/api/ruby/concat_map) or other transformations whose results cannot be pushed to the shards.
+* Transformations are applied before changes are calculated.
 
 In addition, `changes` can be chained before any command that operates on
 a sequence of documents, as long as that command doesn't require the

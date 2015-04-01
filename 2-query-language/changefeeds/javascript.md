@@ -87,16 +87,17 @@ select data:
 * [filter](/api/javascript/filter)
 * [map](/api/javascript/map)
 * [pluck](/api/javascript/pluck)
-* [between](/api/javascript/between) (returns an initial value)
+* [between](/api/javascript/between)
 * [min](/api/javascript/min) (returns an initial value)
 * [max](/api/javascript/max) (returns an initial value)
 * [orderBy](/api/javascript/order_by).[limit](/api/javascript/limit) (returns an initial value)
 
-Note that `order_by` requires `limit` with changefeeds (neither one will
-work by itself). You can't use changefeeds after
-[concatMap](/api/javascript/concat_map) or other transformations whose
-results cannot be pushed to the shards. Transformations are applied before
-changes are calculated.
+Limitations and caveats on chaining with changefeeds:
+
+* `min`, `max` and `orderBy` must be used with indexes.
+* `orderBy` requires `limit`; neither command works by itself.
+* You cannot use changefeeds after [concatMap](/api/javascript/concat_map) or other transformations whose results cannot be pushed to the shards.
+* Transformations are applied before changes are calculated.
 
 In addition, `changes` can be chained before any command that operates on
 a sequence of documents, as long as that command doesn't require the
