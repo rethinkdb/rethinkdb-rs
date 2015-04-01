@@ -179,7 +179,7 @@ Set this file to be owned by the `root` user:
 
 ```bash
 sudo chown root:wheel /Library/LaunchDaemons/com.rethinkdb.server.plist
-sudo chmod 622 /Library/LaunchDaemons/com.rethinkdb.server.plist
+sudo chmod 644 /Library/LaunchDaemons/com.rethinkdb.server.plist
 ```
 
 Then you'll need to create the RethinkDB data directory.
