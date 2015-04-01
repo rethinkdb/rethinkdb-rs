@@ -58,7 +58,12 @@ Like any ReQL command, `changes` integrates with the rest of the query language.
 * [max](/api/ruby/max) (returns an initial value)
 * [order_by](/api/ruby/order_by).[limit](/api/ruby/limit) (returns an initial value)
 
-Note that with changefeeds, `orderBy` requires `limit` and vice-versa. Neither command works by itself. You can't use changefeeds after [concat_map](/api/ruby/concat_map) or other transformations not on this list. RethinkDB applies transformations before determining changes.
+Limitations and caveats on chaining with changefeeds:
+
+* `min`, `max` and `order_by` must be used with indexes.
+* `order_by` requires `limit`; neither command works by itself.
+* You cannot use changefeeds after [concat_map](/api/ruby/concat_map) or other transformations whose results cannot be pushed to the shards.
+* Transformations are applied before changes are calculated.
 
 You can also chain `changes` before any command that operates on a sequence of documents, as long as that command doesn't consume the entire sequence. (For instance, `count` and `orderBy` cannot come after the `changes` command.)
 
