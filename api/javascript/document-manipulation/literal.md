@@ -18,7 +18,7 @@ r.literal(object) &rarr; special
 
 # Description #
 
-Replace an object in a field instead of merging it with an existing object in a `merge` or `update` operation.
+Replace an object in a field instead of merging it with an existing object in a `merge` or `update` operation. Using `literal` with no arguments in a `merge` or `update` operation will remove the corresponding field.
 
 __Example:__ Replace one nested document with another rather than merging the fields.
 
@@ -42,11 +42,8 @@ Using `update` to modify the `data` field will normally merge the nested documen
 
 ```js
 r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn, callback)
-```
 
-Result:
-
-```js
+// Result passed to callback
 {
     "id": 1,
     "name": "Alice",
@@ -62,11 +59,8 @@ That will preserve `city` and other existing fields. But to replace the entire `
 
 ```js
 r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)
-```
 
-Result:
-
-```js
+// Result passed to callback
 {
     "id": 1,
     "name": "Alice",
@@ -75,4 +69,16 @@ Result:
         "job": "Engineer"
     }
 }       
+```
+
+__Example:__ Use `literal` to remove a field from a document.
+
+```js
+r.table('users').get(1).merge({ data: r.literal() }).run(conn, callback)
+
+// Result passed to callback
+{
+    "id": 1,
+    "name": "Alice"
+}
 ```
