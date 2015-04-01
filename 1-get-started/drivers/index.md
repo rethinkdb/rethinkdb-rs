@@ -33,7 +33,7 @@ alias: docs/guides/drivers/
     
     <section class="platform-category">
         <h2>Community-supported drivers</h2>
-        <p>These drivers have been updated to at least the RethinkDB v1.11 protocol.</p>
+        <p>These drivers have been updated to use the JSON driver protocol and RethinkDB 1.13 ReQL (geometry support and basic changefeeds).</p>
         <ul class="platform-buttons">
             <li>
                 <a href="https://github.com/mfenniak/rethinkdb-net">
@@ -42,27 +42,15 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
-                <a href="https://github.com/bitemyapp/revise">
-                    <img src="/assets/images/docs/driver-languages/clojure.png" />
-                    <p class="name smaller-font">Clojure <span class="driver-author">@cesarbp</span></p>
-                </a>
-            </li>
-            <li>
                 <a href="https://github.com/apa512/clj-rethinkdb">
                     <img src="/assets/images/docs/driver-languages/clojure.png" />
-                    <p class="name smaller-font">Clojure <span class="driver-author">@apa512</span></p>
+                    <p class="name smaller-font">Clojure <span class="driver-author">apa512</span></p>
                 </a>
             </li>
             <li>
                 <a href="https://github.com/orthecreedence/cl-rethinkdb">
                     <img src="/assets/images/docs/driver-languages/commonlisp.png" />
                     <p class="name smaller-font">Common Lisp</p>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/dbettin/rethinkdb">
-                    <img src="/assets/images/docs/driver-languages/dart.png" />
-                    <p class="name smaller-font">Dart</p>
                 </a>
             </li>
             <li>
@@ -75,18 +63,6 @@ alias: docs/guides/drivers/
                 <a href="http://hackage.haskell.org/package/rethinkdb">
                     <img src="/assets/images/docs/driver-languages/haskell.png" />
                     <p class="name">Haskell</p>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/npiv/rethink-java-driver">
-                    <img src="/assets/images/docs/driver-languages/java.png" />
-                    <p class="name">Java <span class="driver-author">@npiv</span></p>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/dkhenry/rethinkjava">
-                    <img src="/assets/images/docs/driver-languages/java.png" />
-                    <p class="name">Java <span class="driver-author">@dkhenry</span></p>
                 </a>
             </li>
             <li>
@@ -116,7 +92,7 @@ alias: docs/guides/drivers/
             <li>
                 <a href="https://github.com/kclay/rethink-scala">
                     <img src="/assets/images/docs/driver-languages/scala.png" />
-                    <p class="name">Scala <span class="driver-author">@kclay</span></p>
+                    <p class="name">Scala <span class="driver-author">kclay</span></p>
                 </a>
             </li>
         </ul>
@@ -139,6 +115,18 @@ alias: docs/guides/drivers/
             </a>
             </li>
             <li>
+                <a href="https://github.com/bitemyapp/revise">
+                    <img src="/assets/images/docs/driver-languages/clojure.png" />
+                    <p class="name smaller-font">Clojure <span class="driver-author">cesarbp</span></p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/dbettin/rethinkdb">
+                    <img src="/assets/images/docs/driver-languages/dart.png" />
+                    <p class="name smaller-font">Dart</p>
+                </a>
+            </li>
+            <li>
             <a href="https://github.com/azukiapp/elixir-rethinkdb">
                 <img src="/assets/images/docs/driver-languages/elixir.png" />
                 <p class="name">Elixir</p>
@@ -151,6 +139,18 @@ alias: docs/guides/drivers/
             </a>
             </li>
             <li>
+                <a href="https://github.com/npiv/rethink-java-driver">
+                    <img src="/assets/images/docs/driver-languages/java.png" />
+                    <p class="name">Java <span class="driver-author">npiv</span></p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/dkhenry/rethinkjava">
+                    <img src="/assets/images/docs/driver-languages/java.png" />
+                    <p class="name">Java <span class="driver-author">dkhenry</span></p>
+                </a>
+            </li>
+            <li>
             <a href="https://github.com/dparnell/rethink-db-client">
                 <img src="/assets/images/docs/driver-languages/objc.png" />
                 <p class="name">Objective-C</p>
@@ -159,7 +159,7 @@ alias: docs/guides/drivers/
             <li>
             <a href="https://github.com/esycat/rql-scala">
                 <img src="/assets/images/docs/driver-languages/scala.png" />
-                <p class="name">Scala <span class="driver-author">@esycat</span></p>
+                <p class="name">Scala <span class="driver-author">esycat</span></p>
             </a>
             </li>
         </ul>
