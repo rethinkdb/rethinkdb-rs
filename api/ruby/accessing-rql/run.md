@@ -110,3 +110,13 @@ __Example:__ Change the batching parameters for this query.
 ```rb
 r.table('marvel').run(conn, :max_batch_rows => 16, :max_batch_bytes => 2048)
 ```
+
+__Example:__ Use `run` with a Ruby block. This style allows you to pass a cursor to the block as its argument, closing the cursor when execution reaches the end of the block.
+
+```rb
+r.table('marvel').run(conn) { |cursor|
+    cursor.each { |hero| fight(hero) }
+}
+```
+
+```
