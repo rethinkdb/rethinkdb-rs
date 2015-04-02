@@ -990,7 +990,8 @@ SELECT category,
 r.<a href="/api/javascript/table/">table</a>("posts")
  .<a href="/api/javascript/group/">group</a>('category')
  .<a href="/api/javascript/sum/">sum</a>('num_comments')
- .<a href="/api/javascript/filter/">filter</a>(r.row().<a href="/api/javascript/gt/">gt</a>(7))
+ .<a href="/api/javascript/ungroup/">ungroup</a>()
+ .<a href="/api/javascript/filter/">filter</a>(r.<a href="/api/javascript/row/">row</a>("reduction").<a href="/api/javascript/gt/">gt</a>(7))
 </pre>
 
         </td></tr>

@@ -917,7 +917,10 @@ SELECT category,
 r.<a href="/api/ruby/table/">table</a>("posts")
  .<a href="/api/ruby/group/">group</a>('category')
  .<a href="/api/ruby/sum/">sum</a>('num_comments')
- .<a href="/api/ruby/filter/">filter</a>{ |val| val > 7 }
+ .<a href="/api/ruby/ungroup/">ungroup</a>()
+ .<a href="/api/ruby/filter/">filter</a>{ |doc|
+   doc["reduction"] <a href="/api/ruby/gt/">></a> 7
+  }
 </pre>
 
         </td></tr>

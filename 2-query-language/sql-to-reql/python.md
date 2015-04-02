@@ -980,7 +980,8 @@ SELECT category,
 r.<a href="/api/python/table/">table</a>("posts")
  .<a href="/api/python/group/">group</a>('category')
  .<a href="/api/python/sum/">sum</a>('num_comments')
- .<a href="/api/python/filter/">filter</a>(r.row>7)
+ .<a href="/api/python/ungroup/">ungroup</a>()
+ .<a href="/api/python/filter/">filter</a>(r.<a href="/api/python/row/">row</a>["reduction"] <a href="/api/python/gt/">></a> 7)
 </pre>
 
         </td></tr>
