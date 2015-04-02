@@ -46,3 +46,11 @@ conn = r.connect(:host => 'localhost',
                  :db => 'heroes',
                  :auth_key => 'hunter2')
 ```
+
+__Example:__ Open a connection and immediately pass it to a Ruby block. Using this style, the connection will be automatically closed when execution reaches the end of the block.
+
+```rb
+r.connect(:db => 'marvel') { |conn|
+    r.table('superheroes').run(conn)
+}
+```
