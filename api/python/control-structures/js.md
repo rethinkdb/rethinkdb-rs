@@ -19,6 +19,10 @@ __Example:__ Concatenate two strings using JavaScript.
 
 `timeout` is the number of seconds before `r.js` times out. The default value is 5 seconds.
 
+{% infobox %}
+Whenever possible, you should use native ReQL commands rather than `r.js` for better performance.
+{% endinfobox %}
+
 ```py
 r.js("'str1' + 'str2'").run(conn)
 ```
