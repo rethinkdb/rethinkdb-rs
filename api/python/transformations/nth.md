@@ -20,7 +20,7 @@ selection.nth(index) &rarr; selection&lt;object&gt;
 
 # Description #
 
-Get the *nth* element of a sequence.
+Get the *nth* element of a sequence, counting from zero. If the argument is negative, count from the last element.
 
 In Python, you can use `[]` with an integer as a shorthand for `nth`.
 
@@ -31,8 +31,14 @@ r.expr([1,2,3]).nth(1).run(conn)
 r.expr([1,2,3])[1].run(conn)
 ```
 
-**Example:** Select the bronze medalist from the competitors.
+__Example:__ Select the bronze medalist from the competitors.
 
 ```py
 r.table('players').order_by(index=r.desc('score')).nth(3).run(conn)
+```
+
+__Example:__ Select the last place competitor.
+
+```py
+r.table('players').order_by(index=r.desc('score')).nth(-1).run(conn)
 ```

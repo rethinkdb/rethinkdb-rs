@@ -947,7 +947,7 @@ sequence.nth(index) &rarr; object
 selection.nth(index) &rarr; selection&lt;object&gt;
 {% endapibody %}
 
-Get the *nth* element of a sequence.
+Get the *nth* element of a sequence, counting from zero. If the argument is negative, count from the last element.
 
 __Example:__ Select the second element in the array.
 
