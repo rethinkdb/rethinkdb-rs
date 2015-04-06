@@ -3,6 +3,8 @@ layout: api-command
 language: Python
 permalink: api/python/do/
 command: do
+related_commands:
+    map: map/
 ---
 
 # Command syntax #
@@ -16,11 +18,11 @@ r.do([args]*, expr) &rarr; any
 
 # Description #
 
-Evaluate an expression and pass its values as arguments to a function or to an expression.
+Call an anonymous function using return values from other ReQL commands or queries as arguments.
 
-The last argument to `do` (or, in some forms, the only argument) is an expression or an anonymous function which receives values from either the previous arguments or from prefixed commands chained before `do`. A common use, for example, would be to retrieve a document with `get` and pass it to a function via `do`. The type of `do`'s result is the type of the value returned from the function or last expression.
+The last argument to `do` (or, in some forms, the only argument) is an expression or an anonymous function which receives values from either the previous arguments or from prefixed commands chained before `do`. The `do` command is essentially a single-element [map](/api/python/map/), letting you map a function over just one document. This allows you to bind a query result to a local variable within the scope of `do`, letting you compute the result just once and reuse it in a complex expression or in a series of ReQL commands.
 
-Arguments passed to the `do` function must be basic data types, and cannot be streams or selections. (Read about [ReQL data types](/docs/data-types/).) While the arguments will all be evaluated before the function is executed, they may be evaluated in any order, so their values should not be dependent on one another.
+Arguments passed to the `do` function must be basic data types, and cannot be streams or selections. (Read about [ReQL data types](/docs/data-types/).) While the arguments will all be evaluated before the function is executed, they may be evaluated in any order, so their values should not be dependent on one another. The type of `do`'s result is the type of the value returned from the function or last expression.
 
 __Example:__ Compute a golfer's net score for a game.
 
@@ -38,7 +40,22 @@ r.do(r.table('players').get(id1), r.table('players').get(id2),
         r.branch(player1['gross_score'].lt(player2['gross_score']),
         player1, player2))
 ).run(conn)
-
 ```
 
 Note that `branch`, the ReQL conditional command, must be used instead of `if`. See the `branch` [documentation](/api/python/branch) for more.
+
+__Example:__ Take different actions based on the result of a ReQL [insert](/api/python/insert) command.
+
+```py
+new_data = {
+    'id': 100,
+    'name': 'Agatha',
+    'gross_score': 57,
+    'course_handicap': 4
+}
+r.table('players').insert(new_data).do(lambda doc:
+    r.branch((doc['inserted'] != 0),
+        r.table('log').insert({'time': r.now(), 'response': doc, 'result': 'ok'}),
+        r.table('log').insert({'time': r.now(), 'response': doc, 'result': 'error'}))
+).run(conn)
+```

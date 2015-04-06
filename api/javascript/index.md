@@ -2360,7 +2360,7 @@ any.do(expr) &rarr; any
 r.do([args]*, expr) &rarr; any
 {% endapibody %}
 
-Evaluate an expression and pass its values as arguments to a function or to an expression.
+Call an anonymous function using return values from other ReQL commands or queries as arguments.
 
  __Example:__ Compute a golfer's net score for a game.
 
