@@ -110,7 +110,7 @@ When you parse the response string as JSON, you get the object:
 
 ```js
 {
-    t: 1          // protodef.Response.ResponseType.SUCCESS_ATOM
+    t: 1,         // protodef.Response.ResponseType.SUCCESS_ATOM
     r: ["foo"]    // the response is the string 'foo"
 }
 ```
@@ -164,7 +164,7 @@ Thus, this is how our previous query is represented:
 
 If you want to use a prefix notation, you just need to implement all the commands on a module. If you want to use an infix notation, you should implement all the functions on a class "term" and some prefix commands on the module.
 
-You can only check arity of the methods to a certain extent. If an `ARG` term is one of the argument, only the server can effectively verify that enough arguments are provided (or not too many). The arity errors reported by the server suppose a prefix notation. Things may change if the solution in [#2463][2463] is implemented.
+You can only check arity of the methods to a certain extent. If an `ARGS` term is one of the argument, only the server can effectively verify that enough arguments are provided (or not too many). The arity errors reported by the server suppose a prefix notation. Things may change if the solution in [#2463][2463] is implemented.
 
 [2463]: https://github.com/rethinkdb/rethinkdb/issues/2463#issuecomment-44584491
 
@@ -355,12 +355,9 @@ To close a cursor and stop receiving data from the stream or feed, send a query 
 
 # Notes on connections #
 
-While it's technically possible to run multiple queries on the same connection, there are caveats to be aware of:
+Starting with RethinkDB 2.0 (`V0_4`), the server will process multiple queries in parallel rather than sequentially, and there is no guarantee that a read following a write on the same connection will "see" the results of the write as long as it's successful. (Previous versions of the server would process multiple queries on the same connection sequentially.)
 
-* Your TCP connection must be threadsafe.
-* The server will process queries on the same connection sequentially. If you send  `query1` and `query2` on the same connection, you will receive the responses in the same order. This gives you a de facto guarantee that a read following a write on the same connection will always "see" the write as long as it's successful, even if the write has not yet been acknowledged.
-
-Because the server sequentially executes queries on the same connection, you should not release a connection in the pool as soon as you receive a response. Only release the connection when you receive a response of a type other than `SUCCESS_PARTIAL` or `SUCCESS_FEED`.
+You should not release a connection in the pool as soon as you receive a response. Only release the connection when you receive a response of a type other than `SUCCESS_PARTIAL` or `SUCCESS_FEED`.
 
 # Get help #
 
