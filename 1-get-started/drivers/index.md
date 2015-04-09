@@ -32,13 +32,19 @@ alias: docs/guides/drivers/
     </section>
     
     <section class="platform-category">
-        <h2>Community-supported drivers</h2>
-        <p>These drivers have been updated to use the JSON driver protocol and RethinkDB 1.13 ReQL (geometry support and basic changefeeds).</p>
+        <h2>Current community-supported drivers</h2>
+        <p>These drivers have been updated to use the JSON driver protocol and at least RethinkDB 1.15 ReQL terms (geometry support and basic changefeeds).</p>
         <ul class="platform-buttons">
             <li>
                 <a href="https://github.com/mfenniak/rethinkdb-net">
                     <img src="/assets/images/docs/driver-languages/csharp.png" />
                     <p class="name">C# / .NET</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/AtnNn/librethinkdbxx">
+                    <img src="/assets/images/docs/driver-languages/cpp.png" />
+                    <p class="name">C++ <span class="driver-author">atnnn</span></p>
                 </a>
             </li>
             <li>
@@ -99,7 +105,7 @@ alias: docs/guides/drivers/
     </section>
 
     <section class="platform-category">
-        <h2>Other community-supported drivers</h2>
+        <h2>Older community-supported drivers</h2>
         <p>These drivers have not been updated with more recent additions to the RethinkDB driver protocol, and will require work to take advantage of newer features. If you want to work with one of these languages, these may provide a good starting point.</p>
         <ul class="platform-buttons">
             <li>
@@ -111,7 +117,7 @@ alias: docs/guides/drivers/
             <li>
             <a href="https://github.com/jurajmasar/rethink-db-cpp-driver">
                 <img src="/assets/images/docs/driver-languages/cpp.png" />
-                <p class="name">C++</p>
+                <p class="name">C++ <span class="driver-author">jurajmasar</span></p>
             </a>
             </li>
             <li>
@@ -123,7 +129,7 @@ alias: docs/guides/drivers/
             <li>
                 <a href="https://github.com/dbettin/rethinkdb">
                     <img src="/assets/images/docs/driver-languages/dart.png" />
-                    <p class="name smaller-font">Dart</p>
+                    <p class="name">Dart</p>
                 </a>
             </li>
             <li>
