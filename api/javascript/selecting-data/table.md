@@ -35,7 +35,7 @@ r.db('heroes').table('marvel').run(conn, callback)
 
 There are two optional arguments.
 
-* `useOutdated`: if `true`, this allows potentially out-of-date data to be returned, with potentially faster reads. Default `false`.
+* `useOutdated`: if `true`, this allows potentially out-of-date data to be returned, with potentially faster reads. It also allows you to perform reads from a secondary replica if a primary has failed. Default `false`.
 * `identifierFormat`: possible values are `name` and `uuid`, with a default of `name`. If set to `uuid`, then [system tables](/docs/system-tables/) will refer to servers, databases and tables by UUID rather than name. (This only has an effect when used with system tables.)
 
 __Example:__ Allow potentially out-of-date data in exchange for faster reads.
