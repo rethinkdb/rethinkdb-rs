@@ -77,7 +77,7 @@ VALUES ("f62255a8259f",
             </td>
             <td>
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/insert/">insert</a>({
+r.table("users").insert({
    "user_id": "f62255a8259f",
    "age": 30,
    "name": "Peter"
@@ -104,7 +104,7 @@ SELECT * FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users")
+r.table("users")
 </pre>
 
         </td></tr>
@@ -115,8 +115,8 @@ SELECT user_id, name FROM users
 </pre>
         </td><td>
 <pre>
-r.<a href="/api/python/table/">table</a>("users")
- .<a href="/api/python/pluck/">pluck</a>("user_id", "name")
+r.table("users")
+ .pluck("user_id", "name")
 </pre>
 
         </td></tr>
@@ -128,46 +128,16 @@ WHERE name = "Peter"
 </pre>
         </td><td>
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>({
+r.table("users").filter({
     "name": "Peter"
 })
-</pre>
-
-<p>An alternative is to use the implicit variable <code>r.row</code> (the currently visited document):</p>
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    r.<a href="/api/python/row/">row</a>["name"] <a href="/api/python/eq/">==</a> "Peter"
-)
-</pre>
-
-<p>Another alternative is to use an anonymous function:</p>
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(lambda doc:
-    doc["name"] <a href="/api/python/eq/">==</a> "Peter"
-)
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
 <pre>
-r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/get_all/">get_all</a>("Peter", index="name")
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT user_id, name FROM users
-WHERE name = "Peter"
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>({
-    "name": "Peter"
-}).<a href="/api/python/pluck/">pluck</a>("user_id", "name")
+r.table("users")
+    .get_all("Peter", index="name")
 </pre>
 
         </td></tr>
@@ -183,38 +153,15 @@ AND age = 30
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>({
+r.table("users").filter({
     "name": "Peter",
     "age": 30
 })
 </pre>
 
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    (r.<a href="/api/python/row/">row</a>["name"] <a href="/api/python/eq/">==</a> "Peter")
-     <a href="/api/python/and/">&</a> (r.<a href="/api/python/row/">row</a>["age"] <a href="/api/python/eq/">==</a> 30)
-)
-</pre>
-
         </td></tr>
 
 
-        <tr><td>
-
-<pre>
-SELECT * FROM users
-WHERE age &gt; 30
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    r.<a href="/api/python/row/">row</a>["age"] <a href="/api/python/gt/">&gt;</a> 30
-)
-</pre>
-
-        </td></tr>
         <tr><td>
 
 <pre>
@@ -224,24 +171,8 @@ WHERE name LIKE "P%"
 
         </td><td>
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("^P")}
-)
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT * FROM users
-WHERE name LIKE "%er"
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    r.<a href="/api/python/row/">row</a>['name'].<a href="/api/python/match/">match</a>("er$")}
+r.table("users").filter(
+    r.row['name'].match("^P")}
 )
 </pre>
 
@@ -256,7 +187,7 @@ ORDER BY name ASC
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/order_by/">order_by</a>("name")
+r.table("users").order_by("name")
 </pre>
 
         </td></tr>
@@ -271,7 +202,7 @@ ORDER BY name DESC
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/order_by/">order_by</a>(
+r.table("users").order_by(
     r.desc("name")
 )
 </pre>
@@ -289,24 +220,11 @@ ORDER BY name DESC
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>({
+r.table("users").filter({
     "name": "Peter"
-}).<a href="/api/python/order_by/">order_by</a>(
+}).order_by(
     r.desc("name")
-).<a href="/api/python/pluck/">pluck</a>("user_id")
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT * FROM users LIMIT 5
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/limit/">limit</a>(5)
+).pluck("user_id")
 </pre>
 
         </td></tr>
@@ -320,7 +238,7 @@ SELECT * FROM users LIMIT 5 SKIP 10
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/skip/">skip</a>(10).<a href="/api/python/limit/">limit</a>(5)
+r.table("users").skip(10).limit(5)
 </pre>
 
         </td></tr>
@@ -361,9 +279,9 @@ WHERE name NOT IN ('Peter', 'John')
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(lambda doc:
-    r.<a href="/api/python/expr/"</a>expr</a>(["Peter", "John"])
-        .<a href="/api/python/contains/">contains</a>(doc["name"])
+r.table("users").filter(lambda doc:
+    r.expr(["Peter", "John"])
+        .contains(doc["name"])
         .not()
 )
 </pre>
@@ -378,22 +296,7 @@ SELECT COUNT(*) FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/count/">count</a>()
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT COUNT(name) FROM users
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(lambda doc:
-    doc.<a href="/api/python/has_fields/">has_fields</a>("name")
-).<a href="/api/python/count/">count</a>()
+r.table("users").count()
 </pre>
 
         </td></tr>
@@ -408,10 +311,10 @@ WHERE age &gt; 18
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    (r.<a href="/api/python/row/">row</a>.<a href="/api/python/has_fields/">has_fields</a>("name"))
-     <a href="/api/python/and/">&</a> (r.<a href="/api/python/row/">row</a>["age"] <a href="/api/python/gt/">&gt;</a> 18)
-).<a href="/api/python/count/">count</a>()
+r.table("users").filter(
+    (r.row.has_fields("name"))
+     & (r.row["age"] &gt; 18)
+).count()
 </pre>
 
         </td></tr>
@@ -425,8 +328,8 @@ SELECT AVG("age")
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users")
- .<a href="/api/python/avg/">avg</a>("age")
+r.table("users")
+ .avg("age")
 </pre>
 
         </td></tr>
@@ -441,42 +344,12 @@ SELECT MAX("age")
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users")["age"]
- .<a href="/api/python/max/">max</a>()
+r.table("users")["age"]
+ .max()
 </pre>
 
         </td></tr>
 
-        <tr><td>
-
-<pre>
-SELECT MIN("age")
-    FROM users
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users")["age"]
- .<a href="/api/python/min/">min</a>()
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT SUM("num_posts")
-    FROM users
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users")
- .<a href="/api/python/sum/">sum</a>("num_posts")
-</pre>
-
-        </td></tr>
         <tr><td>
 
 <pre>
@@ -486,7 +359,7 @@ SELECT DISTINCT(name) FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/pluck/">pluck</a>("name").<a href="/api/python/distinct/">distinct</a>()
+r.table("users").pluck("name").distinct()
 </pre>
 
         </td></tr>
@@ -501,16 +374,16 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    (r.row["age"] <a href="/api/python/ge/">>=</a> 18)
-    & (r.row["age"] <a href="/api/python/le/">>=</a> 65)
+r.table("users").filter(
+    (r.row["age"] >= 18)
+    & (r.row["age"] >= 65)
 </pre>
 
 If you have a secondary index built on the field <code>age</code>, you can run a
 more efficient query:
 <pre>
-r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/between/">between</a>(18, 65, index="age")
+r.table("users")
+    .between(18, 65, index="age")
 </pre>
 
         </td></tr>
@@ -528,26 +401,14 @@ FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/map/">map</a>({
-    "name": r.<a href="/api/python/row/">row</a>["name"],
-    "is_adult": r.<a href="/api/python/branch/">branch</a>(
-        r.<a href="/api/python/row/">row</a>["age"] <a href="/api/python/gt/">&gt;</a> 18,
+r.table("users").map({
+    "name": r.row["name"],
+    "is_adult": r.branch(
+        r.row["age"] &gt; 18,
         "yes",
         "no"
     )
 })
-</pre>
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/map/">map</a>(lambda user:
-    {
-        "name": user["name"],
-        "is_adult": r.<a href="/api/python/branch/">branch</a>(
-            user["age"] <a href="/api/python/gt/">&gt;</a> 18
-            "yes",
-            "no"
-        )
-    }
-)
 </pre>
 
         </td></tr>
@@ -567,12 +428,12 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts")
-  .<a href="/api/python/filter/">filter</a>(lambda post:
-    r.<a href="/api/python/table/">table</a>("users")
-      .<a href="/api/python/filter/">filter</a>( lambda user:
-        user.id <a href="/api/python/eq/">==</a> post.author_id
-      ).<a href="/api/python/count/">count</a>() <a href="/api/python/gt/">&gt;</a> 0
+r.table("posts")
+  .filter(lambda post:
+    r.table("users")
+      .filter( lambda user:
+        user.id == post.author_id
+      ).count() &gt; 0
     )
 </pre>
 
@@ -604,18 +465,9 @@ UPDATE users
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(
-    r.<a href="/api/python/row/">row</a>["age"] < 18
-).<a href="/api/python/update/">update</a>({
-    "age": 18
-})
-</pre>
-
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(lambda doc:
-    doc["age"] < 18
-).<a href="/api/python/update/">update</a>({
+r.table("users").filter(
+    r.row["age"] < 18
+).update({
     "age": 18
 })
 </pre>
@@ -632,14 +484,8 @@ UPDATE users
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/update/">update</a>(
-    { "age": r.<a href="/api/python/row/">row</a>["age"]+1 }
-)
-</pre>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/update/">update</a>(lambda doc:
-    { "age": doc["age"]+1 }
+r.table("users").update(
+    { "age": r.row["age"]+1 }
 )
 </pre>
 
@@ -664,7 +510,7 @@ DELETE FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/delete/">delete</a>()
+r.table("users").delete()
 </pre>
 
         </td></tr>
@@ -678,16 +524,9 @@ WHERE age &lt; 18
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/filter/">filter</a>( r.<a href="/api/python/row/">row</a>["age"] < 18)
-    .<a href="/api/python/delete/">delete</a>()
-</pre>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/filter/">filter</a>(lambda doc:
-    doc["age"] < 18
-    ).<a href="/api/python/delete/">delete</a>()
+r.table("users")
+    .filter( r.row["age"] < 18)
+    .delete()
 </pre>
 
         </td></tr>
@@ -717,22 +556,22 @@ ON posts.user_id = users.id
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/inner_join/">inner_join</a>(
-    r.<a href="/api/python/table/">table</a>("users"),
+r.table("posts").inner_join(
+    r.table("users"),
     lambda post, user:
-        post["user_id"] <a href="/api/python/eq/">==</a> user["id"]
-).<a href="/api/python/zip/">zip</a>()
+        post["user_id"] == user["id"]
+).zip()
 </pre>
 
 <p><em>Note:</em> <code>zip()</code> will merge the user in the post, overwriting fields in case of conflict.</p>
 
 <p>If you have an index (primary key or secondary index) built on the field of the right table, you can perform a more efficient join with <a href="/api/python/eq_join/">eq_join</a>.</p>
 <pre>
-r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/eq_join/">eq_join</a>(
+r.table("posts").eq_join(
     "id",
-    r.<a href="/api/python/table/">table</a>("users"),
+    r.table("users"),
     index="id"
-).<a href="/api/python/zip/">zip</a>()
+).zip()
 </pre>
 
         </td></tr>
@@ -745,9 +584,7 @@ SELECT posts.id AS post_id,
     FROM posts
     JOIN users
         ON posts.user_id = users.id
-</pre>
 
-<pre>
 SELECT posts.id AS post_id,
        user.name,
        users.id AS user_id
@@ -759,18 +596,16 @@ SELECT posts.id AS post_id,
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/inner_join/">inner_join</a>(
-  r.<a href="/api/python/table/">table</a>("users"),
+r.table("posts").inner_join(
+  r.table("users"),
   lambda post, user:
-    post["user_id"] <a href="/api/python/eq/">==</a> user["id"]
-).<a href="/api/python/map/">map</a>({
-  "post_id": r.<a href="/api/python/row/">row</a>["left"]["id"],
-  "user_id": r.<a href="/api/python/row/">row</a>["right"]["id"],
-  "name": r.<a href="/api/python/row/">row</a>["right"]["name"]
+    post["user_id"] == user["id"]
+).map({
+  "post_id": r.row["left"]["id"],
+  "user_id": r.row["right"]["id"],
+  "name": r.row["right"]["name"]
 })
 </pre>
-
-
 
         </td></tr>
 
@@ -780,9 +615,7 @@ SELECT *
     FROM posts
     RIGHT JOIN users
         ON posts.user_id = users.id
-</pre>
 
-<pre>
 SELECT *
     FROM posts
     RIGHT OUTER JOIN users
@@ -793,24 +626,24 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/outer_join/">outer_join</a>(
-    r.<a href="/api/python/table/">table</a>("users"),
+r.table("posts").outer_join(
+    r.table("users"),
     lambda post, user:
-        post["user_id"] <a href="/api/python/eq/">==</a> user["id"]
-).<a href="/api/python/zip/">zip</a>()
+        post["user_id"] == user["id"]
+).zip()
 </pre>
 
 <p><em>Note</em>: You can perform more efficient <code>OUTER JOIN</code> operations with the <a href="/api/python/concat_map/">concat_map</a> command.</p>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/concat_map/">concat_map</a>(lambda post:
-  r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/get_all/">get_all</a>(post["id"],index="id")
-    .<a href="/api/python/do/">do</a>( lambda results:
-      r.<a href="/api/python/branch/">branch</a>(
-        results.<a href="/api/python/count/">count</a>() <a href="/api/python/eq/">==</a> 0,
+r.table("posts").concat_map(lambda post:
+  r.table("users")
+    .get_all(post["id"],index="id")
+    .do( lambda results:
+      r.branch(
+        results.count() == 0,
         [{"left": post}],
-        results.<a href="/api/python/map/">map</a>( lambda user:
+        results.map( lambda user:
           {
             "left": post
             "right": user
@@ -818,7 +651,7 @@ r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/concat_ma
         )
       )
     )
-).<a href="/api/python/zip/">zip</a>()
+).zip()
 </pre>
 
         </td></tr>
@@ -841,22 +674,22 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/outer_join/">outer_join</a>(
-    r.<a href="/api/python/table/">table</a>("posts"),
+r.table("users").outer_join(
+    r.table("posts"),
     lambda user, post:
-        post.user_id <a href="/api/python/eq/">==</a> user.id
-).<a href="/api/python/zip/">zip</a>()
+        post.user_id == user.id
+).zip()
 </pre>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/concat_map/">concat_map</a>(lambda user:
-  r.<a href="/api/python/table/">table</a>("posts")
-    .<a href="/api/python/get_all/">get_all</a>(user["id"],index="id")
-    .<a href="/api/python/do/">do</a>( lambda results:
-      r.<a href="/api/python/branch/">branch</a>(
-        results.<a href="/api/python/count/">count</a>() <a href="/api/python/eq/">==</a> 0,
+r.table("users").concat_map(lambda user:
+  r.table("posts")
+    .get_all(user["id"],index="id")
+    .do( lambda results:
+      r.branch(
+        results.count() == 0,
         [{"left": user}],
-        results.<a href="/api/python/map/">map</a>( lambda post:
+        results.map( lambda post:
           {
             "left": user
             "right": post
@@ -864,7 +697,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/concat_ma
         )
       )
     )
-).<a href="/api/python/zip/">zip</a>()
+).zip()
 </pre>
 
         </td></tr>
@@ -891,15 +724,9 @@ SELECT category
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts").<a href="/api/python/map/">map</a>(
-    r.<a href="/api/python/row/">row</a>["category"]
-).<a href="/api/python/distinct/">distinct</a>()
-</pre>
-
-<pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/map/">map</a>(lambda user:
-    user["category"]
-).<a href="/api/python/distinct/">distinct</a>()
+r.table("posts").map(
+    r.row["category"]
+).distinct()
 </pre>
 
         </td></tr>
@@ -915,9 +742,9 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>('posts')
- .<a href="/api/python/group/">group</a>('category')
- .<a href="/api/python/sum/">sum</a>('num_comments')
+r.table('posts')
+ .group('category')
+ .sum('num_comments')
 </pre>
 
         </td></tr>
@@ -935,9 +762,9 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts")
- .<a href="/api/python/group/">group</a>('category', 'status')
- .<a href="/api/python/sum/">sum</a>('num_comments')
+r.table("posts")
+ .group('category', 'status')
+ .sum('num_comments')
 </pre>
         </td></tr>
 
@@ -955,10 +782,10 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts")
- .<a href="/api/python/filter/">filter</a>(r.row['num_comments']>7)
- .<a href="/api/python/group/">group</a>('category')
- .<a href="/api/python/sum/">sum</a>('num_comments')
+r.table("posts")
+ .filter(r.row['num_comments']>7)
+ .group('category')
+ .sum('num_comments')
 </pre>
 
         </td></tr>
@@ -977,11 +804,11 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("posts")
- .<a href="/api/python/group/">group</a>('category')
- .<a href="/api/python/sum/">sum</a>('num_comments')
- .<a href="/api/python/ungroup/">ungroup</a>()
- .<a href="/api/python/filter/">filter</a>(r.<a href="/api/python/row/">row</a>["reduction"] <a href="/api/python/gt/">></a> 7)
+r.table("posts")
+ .group('category')
+ .sum('num_comments')
+ .ungroup()
+ .filter(r.row["reduction"] > 7)
 </pre>
 
         </td></tr>
@@ -1007,7 +834,7 @@ CREATE DATABASE my_database;
         </td><td>
 
 <pre>
-r.<a href="/api/python/db_create/">db_create</a>('my_database')
+r.db_create('my_database')
 </pre>
 
         </td></tr>
@@ -1021,7 +848,7 @@ DROP DATABASE my_database;
         </td><td>
 
 <pre>
-r.<a href="/api/python/db_drop/">db_drop</a>('my_database')
+r.db_drop('my_database')
 </pre>
 
         </td></tr>
@@ -1040,7 +867,7 @@ CREATE TABLE users
         </td><td>
 
 <pre>
-r.<a href="/api/python/table_create/">table_create</a>('users', primary_key="id")
+r.table_create('users', primary_key="id")
 </pre>
 <p><em>Note:</em> RethinkDB is a NoSQL database and does not enforce
 schemas.</p>
@@ -1061,7 +888,7 @@ TRUNCATE TABLE users;
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/delete/">delete</a>()
+r.table("users").delete()
 </pre>
 
 
@@ -1077,7 +904,7 @@ DROP TABLE users;
         </td><td>
 
 <pre>
-r.<a href="/api/python/table_drop/">table_drop</a>("users")
+r.table_drop("users")
 </pre>
 
         </td></tr>

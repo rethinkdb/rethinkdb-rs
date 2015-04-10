@@ -77,7 +77,7 @@ VALUES ("f62255a8259f",
             </td>
             <td>
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/insert/">insert</a>({
+r.table("users").insert({
    userId: "f62255a8259f",
    age: 30,
    name: "Peter"
@@ -105,7 +105,7 @@ SELECT * FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users")
+r.table("users")
 </pre>
 
         </td></tr>
@@ -116,8 +116,8 @@ SELECT user_id, name FROM users
 </pre>
         </td><td>
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users")
- .<a href="/api/javascript/pluck/">pluck</a>("userId", "name")
+r.table("users")
+ .pluck("userId", "name")
 </pre>
 
         </td></tr>
@@ -129,50 +129,19 @@ WHERE name = "Peter"
 </pre>
         </td><td>
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>({
+r.table("users").filter({
     name: "Peter"
-})
-</pre>
-
-<p>An alternative is to use the implicit variable <code>r.row</code> (the currently visited document):</p>
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-    r.<a href="/api/javascript/row/">row</a>("name").<a href="/api/javascript/eq/">eq</a>("Peter")
-)
-</pre>
-
-<p>Another alternative is to use an anonymous function:</p>
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(function(doc) {
-    return doc("name").<a href="/api/javascript/eq/">eq</a>("Peter");
 })
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users")
-    .<a href="/api/javascript/get_all/">getAll</a>("Peter", {index: "name"})
+r.table("users")
+    .getAll("Peter", {index: "name"})
 </pre>
 
         </td></tr>
-        <tr><td>
-
-<pre>
-SELECT user_id, name FROM users
-WHERE name = "Peter"
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>({
-    name: "Peter"
-}).<a href="/api/javascript/pluck/">pluck</a>("userId", "name")
-</pre>
-
-        </td></tr>
-
         <tr><td>
 
 <pre>
@@ -184,38 +153,15 @@ AND age = 30
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>({
+r.table("users").filter({
     name: "Peter",
     age: 30
 })
 </pre>
 
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-    (r.<a href="/api/javascript/row/">row</a>("name").<a href="/api/javascript/eq/">eq</a> "Peter")
-     <a href="/api/javascript/and/">&</a> (r.<a href="/api/javascript/row/">row</a>("age").<a href="/api/javascript/eq/">eq</a>(30))
-)
-</pre>
-
         </td></tr>
 
 
-        <tr><td>
-
-<pre>
-SELECT * FROM users
-WHERE age &gt; 30
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-    r.<a href="/api/javascript/row/">row</a>("age").<a href="/api/javascript/gt/">gt</a>(30)
-)
-</pre>
-
-        </td></tr>
         <tr><td>
 
 <pre>
@@ -225,24 +171,8 @@ WHERE name LIKE "P%"
 
         </td><td>
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-    r.<a href="/api/javascript/row/">row</a>("name").<a href="/api/javascript/match/">match</a>("^P")}
-)
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT * FROM users
-WHERE name LIKE "%er"
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-    r.<a href="/api/javascript/row/">row</a>("name").<a href="/api/javascript/match/">match</a>("er$")}
+r.table("users").filter(
+    r.row("name").match("^P")}
 )
 </pre>
 
@@ -257,7 +187,7 @@ ORDER BY name ASC
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/order_by/">orderBy</a>("name")
+r.table("users").orderBy("name")
 </pre>
 
         </td></tr>
@@ -272,7 +202,7 @@ ORDER BY name DESC
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/order_by/">orderBy</a>(
+r.table("users").orderBy(
     r.desc("name")
 )
 </pre>
@@ -290,24 +220,11 @@ ORDER BY name DESC
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>({
+r.table("users").filter({
     name: "Peter"
-}).<a href="/api/javascript/order_by/">orderBy</a>(
+}).orderBy(
     r.desc("name")
-).<a href="/api/javascript/pluck/">pluck</a>("userId")
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT * FROM users LIMIT 5
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/limit/">limit</a>(5)
+).pluck("userId")
 </pre>
 
         </td></tr>
@@ -321,7 +238,7 @@ SELECT * FROM users LIMIT 5 SKIP 10
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/skip/">skip</a>(10).<a href="/api/javascript/limit/">limit</a>(5)
+r.table("users").skip(10).limit(5)
 </pre>
 
         </td></tr>
@@ -336,10 +253,10 @@ WHERE name IN ('Peter', 'John')
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
+r.table("users").filter(
   function (doc) {
-    return r.<a href="/api/javascript/expr/"</a>expr</a>(["Peter","John"])
-            .<a href="/api/javascript/contains">contains</a>(doc("name"));
+    return r.expr(["Peter","John"])
+            .contains(doc("name"));
   }
 )
 </pre>
@@ -347,8 +264,8 @@ r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/f
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users")
-    .<a href="/api/javascript/get_all/">getAll</a>("Peter", "John",
+r.table("users")
+    .getAll("Peter", "John",
         {index: "name"})
 </pre>
 
@@ -364,10 +281,10 @@ WHERE name NOT IN ('Peter', 'John')
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
+r.table("users").filter(
   function (doc) {
-    return r.<a href="/api/javascript/expr/"</a>expr</a>(["Peter","John"])
-            .<a href="/api/javascript/contains">contains</a>(doc("name"))
+    return r.expr(["Peter","John"])
+            .contains(doc("name"))
             .not();
   }
 )
@@ -383,22 +300,7 @@ SELECT COUNT(*) FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/count/">count</a>()
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT COUNT(name) FROM users
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(function (doc) {
-  return doc.<a href="/api/javascript/has_fields/">hasFields</a>("name")
-}).<a href="/api/javascript/count/">count</a>()
+r.table("users").count()
 </pre>
 
         </td></tr>
@@ -413,10 +315,10 @@ WHERE age &gt; 18
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-    r.<a href="/api/javascript/row/">row</a>.<a href="/api/javascript/hasFields/">hasFields</a>("name")
-    .<a href="/api/javascript/and/">and</a>(r.<a href="/api/javascript/row/">row</a>("age").<a href="/api/javascript/gt/">gt</a>(18))
-).<a href="/api/javascript/count/">count</a>()
+r.table("users").filter(
+    r.row.hasFields("name")
+    .and(r.row("age").gt(18))
+).count()
 </pre>
 
         </td></tr>
@@ -430,7 +332,7 @@ SELECT AVG("age")
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/avg/">avg</a>("age")
+r.table("users").avg("age")
 </pre>
 
         </td></tr>
@@ -445,39 +347,11 @@ SELECT MAX("age")
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users")("age").<a href="/api/javascript/max/">max</a>()
+r.table("users")("age").max()
 </pre>
 
         </td></tr>
 
-        <tr><td>
-
-<pre>
-SELECT MIN("age")
-    FROM users
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users")("age").<a href="/api/javascript/min/">min</a>()
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT SUM("num_posts")
-    FROM users
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/sum/">sum</a>("num_posts")
-</pre>
-
-        </td></tr>
         <tr><td>
 
 <pre>
@@ -487,8 +361,8 @@ SELECT DISTINCT(name) FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/pluck/">pluck</a>("name")
- .<a href="/api/javascript/distinct/">distinct</a>()
+r.table("users").pluck("name")
+ .distinct()
 </pre>
 
         </td></tr>
@@ -503,17 +377,17 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-    r.<a href="/api/javascript/row/">row</a>("age").<a href="/api/javascript/ge/">ge</a>(18)
-     .<a href="/api/javascript/and/">and</a>(r.<a href="/api/javascript/row/">row</a>("age").<a href="/api/javascript/le/">le</a>(65))
-).<a href="/api/javascript/count/">count</a>()
+r.table("users").filter(
+    r.row("age").ge(18)
+     .and(r.row("age").le(65))
+).count()
 </pre>
 
 If you have a secondary index built on the field <code>age</code>, you can run a
 more efficient query:
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users")
- .<a href="/api/javascript/between/">between</a>(18, 65, {index: "age"})
+r.table("users")
+ .between(18, 65, {index: "age"})
 </pre>
 
         </td></tr>
@@ -531,29 +405,16 @@ FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/map/">map</a>({
-    name: r.<a href="/api/javascript/row/">row</a>("name"),
-    is_adult: r.<a href="/api/javascript/branch/">branch</a>(
-        r.<a href="/api/javascript/row/">row</a>("age").<a href="/api/javascript/gt/">gt</a>(18),
+r.table("users").map({
+    name: r.row("name"),
+    is_adult: r.branch(
+        r.row("age").gt(18),
         "yes",
         "no"
     )
 })
 </pre>
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/map/">map</a>(
-  function (user) {
-    return {
-      name: user("name"),
-      is_adult: r.<a href="/api/javascript/branch/">branch</a>(
-        user("age").<a href="/api/javascript/gt/">gt</a>(18),
-        "yes",
-        "no"
-      )
-    };
-  }
-)
-</pre>
+
 
         </td></tr>
 
@@ -572,12 +433,12 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts")
-  .<a href="/api/javascript/filter/">filter</a>(function (post) {
-    return r.<a href="/api/javascript/table/">table</a>("users")
-      .<a href="/api/javascript/filter/">filter</a>(function (user) {
-        return user("id").<a href="/api/javascript/eq/">eq</a>(post("authorId"))
-      }).<a href="/api/javascript/count/">count</a>().<a href="/api/javascript/gt/">gt</a>(0)
+r.table("posts")
+  .filter(function (post) {
+    return r.table("users")
+      .filter(function (user) {
+        return user("id").eq(post("authorId"))
+      }).count().gt(0)
     })
 </pre>
 
@@ -609,18 +470,11 @@ UPDATE users
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-    r.<a href="/api/javascript/row/">row</a>("age").<a href="/api/javascript/lt">lt</a>(18)
-).<a href="/api/javascript/update/">update</a>({age: 18})
+r.table("users").filter(
+    r.row("age").lt(18)
+).update({age: 18})
 </pre>
 
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-  function (doc) {
-    return doc("age").<a href="/api/javascript/lt">lt</a>(18);
-  }).<a href="/api/javascript/update/">update</a>({age: 18})
-</pre>
 
         </td></tr>
 
@@ -634,16 +488,8 @@ UPDATE users
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/update/">update</a>(
-    {age: r.<a href="/api/javascript/row/">row</a>("age").add(1)}
-)
-</pre>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/update/">update</a>(
-    function (doc) {
-        return {age: doc("age").add(1)};
-    }
+r.table("users").update(
+    {age: r.row("age").add(1)}
 )
 </pre>
 
@@ -668,7 +514,7 @@ DELETE FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/delete/">delete</a>()
+r.table("users").delete()
 </pre>
 
         </td></tr>
@@ -682,17 +528,9 @@ WHERE age &lt; 18
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users")
-    .<a href="/api/javascript/filter/">filter</a>(r.<a href="/api/javascript/row/">row</a>("age").<a href="/api/javascript/lt/">lt</a>(18))
-    .<a href="/api/javascript/delete/">delete</a>()
-</pre>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/filter/">filter</a>(
-  function (doc) {
-    return doc("age").<a href="/api/javascript/lt">(18)</a>;
-  }
-).<a href="/api/javascript/delete/">delete</a>()
+r.table("users")
+    .filter(r.row("age").lt(18))
+    .delete()
 </pre>
 
         </td></tr>
@@ -722,11 +560,11 @@ ON posts.user_id = users.id
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts").<a href="/api/javascript/inner_join/">innerJoin</a>(
-  r.<a href="/api/javascript/table/">table</a>("users"),
+r.table("posts").innerJoin(
+  r.table("users"),
   function (post, user) {
-    return post("userId").<a href="/api/javascript/eq/">eq</a>(user("id"));
-}).<a href="/api/javascript/zip/">zip</a>()
+    return post("userId").eq(user("id"));
+}).zip()
 </pre>
 
 <p><em>Note:</em> <code>zip()</code> will merge the user in the post, overwriting fields in case of conflict.</p>
@@ -734,11 +572,11 @@ r.<a href="/api/javascript/table/">table</a>("posts").<a href="/api/javascript/i
 <p>If you have an index (primary key or secondary index) built on the field of the right table, you can perform a more efficient join with <a href="/api/javascript/eq_join/">eqJoin</a>.</p>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts").<a href="/api/javascript/eq_join/">eqJoin</a>(
+r.table("posts").eqJoin(
     "id",
-    r.<a href="/api/javascript/table/">table</a>("users"),
+    r.table("users"),
     {index: "id"}
-).<a href="/api/javascript/zip/">zip</a>()
+).zip()
 </pre>
 
         </td></tr>
@@ -751,9 +589,7 @@ SELECT posts.id AS post_id,
     FROM posts
     JOIN users
         ON posts.user_id = users.id
-</pre>
 
-<pre>
 SELECT posts.id AS post_id,
        user.name,
        users.id AS user_id
@@ -765,14 +601,14 @@ SELECT posts.id AS post_id,
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts").<a href="/api/javascript/inner_join/">innerJoin</a>(
-  r.<a href="/api/javascript/table/">table</a>("users"),
+r.table("posts").innerJoin(
+  r.table("users"),
   function (post, user) {
-    return post("userId").<a href="/api/javascript/eq/">eq</a>(user("id"));
-}).<a href="/api/javascript/map/">map</a>({
-  postId: r.<a href="/api/javascript/row/">row</a>("left")("id"),
-  userId: r.<a href="/api/javascript/row/">row</a>("right")("id"),
-  name: r.<a href="/api/javascript/row/">row</a>("right")("name")
+    return post("userId").eq(user("id"));
+}).map({
+  postId: r.row("left")("id"),
+  userId: r.row("right")("id"),
+  name: r.row("right")("name")
 })
 </pre>
 
@@ -786,9 +622,7 @@ SELECT *
     FROM posts
     RIGHT JOIN users
         ON posts.user_id = users.id
-</pre>
 
-<pre>
 SELECT *
     FROM posts
     RIGHT OUTER JOIN users
@@ -799,26 +633,26 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts").<a href="/api/javascript/outer_join/">outerJoin</a>(
-  r.<a href="/api/javascript/table/">table</a>("users"),
+r.table("posts").outerJoin(
+  r.table("users"),
   function (post, user) {
-    return post("userId").<a href="/api/javascript/eq/">eq</a>(user("id"));
-}).<a href="/api/javascript/zip/">zip</a>()
+    return post("userId").eq(user("id"));
+}).zip()
 </pre>
 
 <p><em>Note</em>: You can perform more efficient <code>OUTER JOIN</code> operations with the <a href="/api/javascript/concat_map/">concatMap</a> command.</p>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts").<a href="/api/javascript/concat_map/">concatMap</a>(
+r.table("posts").concatMap(
   function (post) {
-    return r.<a href="/api/javascript/table/">table</a>("users")
-    .<a href="/api/javascript/get_all/">getAll</a>(post("id"), {index: id})
-    .<a href="/api/javascript/do/">do</a>(
+    return r.table("users")
+    .getAll(post("id"), {index: id})
+    .do(
       function (result) {
-        return r.<a href="/api/javascript/branch/">branch</a>(
-          result.<a href="/api/javascript/count/">count</a>().eq(0),
+        return r.branch(
+          result.count().eq(0),
           [{left: post}],
-          result.<a href="/api/javascript/map/">map</a>(function (user) {
+          result.map(function (user) {
             return {
               left: post, right: user
             };
@@ -827,7 +661,7 @@ r.<a href="/api/javascript/table/">table</a>("posts").<a href="/api/javascript/c
       }
     );
   }
-).<a href="/api/javascript/zip/">zip</a>();
+).zip();
 </pre>
 
         </td></tr>
@@ -850,30 +684,30 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/outer_join/">outerJoin</a>(
-  r.<a href="/api/javascript/table/">table</a>("posts"),
+r.table("users").outerJoin(
+  r.table("posts"),
   function (user, post) {
-    return post("userId").<a href="/api/javascript/eq/">eq</a>(user("id"));
+    return post("userId").eq(user("id"));
   }
-).<a href="/api/javascript/zip/">zip</a>()
+).zip()
 </pre>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/concat_map/">concatMap</a>(
+r.table("users").concatMap(
   function (user) {
-    return r.<a href="/api/javascript/table/">table</a>("posts").<a href="/api/javascript/get_all/">getAll</a>(user("id"), {index: "id"}).<a href="/api/javascript/do/">do</a>(
+    return r.table("posts").getAll(user("id"), {index: "id"}).do(
       function (results) {
-        return r.<a href="/api/javascript/branch/">branch</a>(
-          results.<a href="/api/javascript/count/">count</a>().<a href="/api/javascript/eq/">eq</a>(0),
+        return r.branch(
+          results.count().eq(0),
           [{left: user}],
-          results.<a href="/api/javascript/map/">map</a>(function (post) {
+          results.map(function (post) {
             return {left: user, right: post};
           })
         );
       }
     );
   }
-).<a href="/api/javascript/zip/">zip</a>()
+).zip()
 </pre>
 
         </td></tr>
@@ -900,17 +734,9 @@ SELECT category
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts").<a href="/api/javascript/map/">map</a>(
-    r.<a href="/api/javascript/row/">row</a>("category")
-).<a href="/api/javascript/distinct/">distinct</a>()
-</pre>
-
-<pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/map/">map</a>(
-  function (user) {
-    return user("category");
-  }
-).<a href="/api/javascript/distinct/">distinct</a>()
+r.table("posts").map(
+    r.row("category")
+).distinct()
 </pre>
 
         </td></tr>
@@ -926,9 +752,9 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>('posts')
- .<a href="/api/javascript/group/">group</a>('category')
- .<a href="/api/javascript/sum/">sum</a>('num_comments')
+r.table('posts')
+ .group('category')
+ .sum('num_comments')
 </pre>
 
         </td></tr>
@@ -946,9 +772,9 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts")
- .<a href="/api/javascript/group/">group</a>('category', 'status')
- .<a href="/api/javascript/sum/">sum</a>('num_comments')
+r.table("posts")
+ .group('category', 'status')
+ .sum('num_comments')
 </pre>
         </td></tr>
 
@@ -966,10 +792,10 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts")
- .<a href="/api/javascript/filter/">filter</a>(r.row('num_comments').<a href="/api/javascript/gt/">gt</a>(7))
- .<a href="/api/javascript/group/">group</a>('category')
- .<a href="/api/javascript/sum/">sum</a>('num_comments')
+r.table("posts")
+ .filter(r.row('num_comments').gt(7))
+ .group('category')
+ .sum('num_comments')
 </pre>
 
         </td></tr>
@@ -988,11 +814,11 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("posts")
- .<a href="/api/javascript/group/">group</a>('category')
- .<a href="/api/javascript/sum/">sum</a>('num_comments')
- .<a href="/api/javascript/ungroup/">ungroup</a>()
- .<a href="/api/javascript/filter/">filter</a>(r.<a href="/api/javascript/row/">row</a>("reduction").<a href="/api/javascript/gt/">gt</a>(7))
+r.table("posts")
+ .group('category')
+ .sum('num_comments')
+ .ungroup()
+ .filter(r.row("reduction").gt(7))
 </pre>
 
         </td></tr>
@@ -1018,7 +844,7 @@ CREATE DATABASE my_database;
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/db_create/">dbCreate</a>('my_database')
+r.dbCreate('my_database')
 </pre>
 
         </td></tr>
@@ -1032,7 +858,7 @@ DROP DATABASE my_database;
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/db_drop/">dbDrop</a>('my_database')
+r.dbDrop('my_database')
 </pre>
 
         </td></tr>
@@ -1051,7 +877,7 @@ CREATE TABLE users
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table_create/">tableCreate</a>('users', {primaryKey: "id"})
+r.tableCreate('users', {primaryKey: "id"})
 </pre>
 <p><em>Note:</em> RethinkDB is a NoSQL database and does not enforce
 schemas.</p>
@@ -1072,7 +898,7 @@ TRUNCATE TABLE users;
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/delete/">delete</a>()
+r.table("users").delete()
 </pre>
 
 
@@ -1088,7 +914,7 @@ DROP TABLE users;
         </td><td>
 
 <pre>
-r.<a href="/api/javascript/table_drop/">tableDrop</a>("users")
+r.tableDrop("users")
 </pre>
 
         </td></tr>
