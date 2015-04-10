@@ -9,7 +9,7 @@ __Q__: What's the best way to perform [full-text searches][fts] with RethinkDB?
 
 __A__: Use the [Elasticsearch River for RethinkDB][err].
 
-[rts]: http://en.wikipedia.org/wiki/Full_text_search
+[fts]: http://en.wikipedia.org/wiki/Full_text_search
 [err]: https://github.com/rethinkdb/elasticsearch-river-rethinkdb
 
 {% infobox %}

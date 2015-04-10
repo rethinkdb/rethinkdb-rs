@@ -7,7 +7,11 @@ permalink: docs/cookbook/ruby/
 switcher: true
 language : Ruby
 ---
-{% include docs/recipe-forms.html %}
+{% infobox %}
+__Don't see the recipe you're looking for?__ Request or add a recipe by [opening an issue][] on GitHub.
+
+[opening an issue]: https://github.com/rethinkdb/docs/issues
+{% endinfobox %}
 
 {% toctag %}
 

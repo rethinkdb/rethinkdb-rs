@@ -3,7 +3,6 @@ layout: documentation
 title: RethinkDB compared to MongoDB
 docs_active: rethinkdb-vs-mongodb
 permalink: docs/rethinkdb-vs-mongodb/
-js: [fancybox]
 ---
 {% infobox %}
 **Interested in a less biased overview?** Browse through the [technical comparison tables](/docs/comparison-tables/) between RethinkDB and MongoDB. 
@@ -93,16 +92,11 @@ that we're constantly adding to the query language.
 * The built-in data explorer offers online documentation and query
   language suggestions.
 
-Many products are easy to use, but we think RethinkDB is
-__beautiful__. See the screenshots or the [screencast
-video](/screencast) and be the judge yourself.
+Many products are easy to use, but we think RethinkDB is __beautiful__. See the
+[screencast video](/screencast) and be the judge yourself.
 
-<div class="wide-screenshot-row row-fluid screenshots">
-    <div class="span4"><a class="screenshot-thumbnail" href="/assets/images/screenshots/performance.png"><img src="/assets/images/screenshots/thumbnails/wide/performance.png" /></a></div>
-    <div class="span4"><a class="screenshot-thumbnail" href="/assets/images/screenshots/sharding.png"><img src="/assets/images/screenshots/thumbnails/wide/sharding.png" /></a></div>
-    <div class="span4"><a class="screenshot-thumbnail" href="/assets/images/screenshots/data_explorer.png"><img src="/assets/images/screenshots/thumbnails/wide/data_explorer.png" /></a></div>
-</div>
-  
+<img src="/assets/images/screenshots/data_explorer_cropped.png">
+
 ## Massively parallelized distributed infrastructure ##
 
 > wow joins across shards, this is distributed data dream come true - [@kapso](https://twitter.com/kapso/status/267153230230847488)
@@ -151,9 +145,3 @@ give us your feedback so we can work out the quirks faster.
 {% infobox %}
 __Dive into RethinkDB__ with the [thirty-second quickstart](/docs/guides/quickstart)! &rarr;
 {% endinfobox %}
-
-<script type="text/javascript">
-    $(function() {
-        $('a.screenshot-thumbnail').fancybox()
-    })
-</script>

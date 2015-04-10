@@ -4,7 +4,6 @@ title: Failover
 docs_active: failover
 permalink: docs/failover/
 ---
-# About automatic failover #
 {% infobox %}
 __Note__: RethinkDB does not support fully automatic failover yet, but it is on
 the roadmap. Follow [Github

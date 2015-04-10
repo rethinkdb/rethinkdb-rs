@@ -18,6 +18,7 @@ sudo wget http://download.rethinkdb.com/centos/6/`uname -m`/rethinkdb.repo \
           -O /etc/yum.repos.d/rethinkdb.repo
 sudo yum install rethinkdb
 ```
+
 # Compile from source #
 
 These instructions have been tested on CentOS 6.5.

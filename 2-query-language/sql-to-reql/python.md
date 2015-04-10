@@ -148,7 +148,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
-more efficient query:
+more efficient query:</p>
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/get_all/">get_all</a>("Peter", index="name")
@@ -342,7 +342,7 @@ r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
-more efficient query:
+more efficient query:</p>
 <pre>
 r.<a href="/api/python/table/">table</a>("users")
     .<a href="/api/python/get_all/">get_all</a>("Peter", "John",
