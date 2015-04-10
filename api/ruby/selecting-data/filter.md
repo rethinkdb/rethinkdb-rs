@@ -74,7 +74,7 @@ __Example:__ Get all users who are more than 18 years old or have their parental
 
 ```rb
 r.table("users").filter{ |user|
-    (user["age"] < 18) & (user["age"] > 13)
+    (user["age"] >= 18) | (user["hasParentalConsent"])
 }.run(conn)
 ```
 

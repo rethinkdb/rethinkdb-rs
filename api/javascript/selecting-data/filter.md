@@ -83,7 +83,7 @@ __Example:__ Get all users who are more than 18 years old or have their parental
 
 ```js
 r.table("users").filter(
-    r.row("age").lt(18).or(r.row("hasParentalConsent"))
+    r.row("age").ge(18).or(r.row("hasParentalConsent"))
 ).run(conn, callback);
 ```
 
