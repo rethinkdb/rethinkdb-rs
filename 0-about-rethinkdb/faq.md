@@ -27,6 +27,11 @@ In addition to being designed from the ground up for realtime apps,
 RethinkDB offers a flexible query language, intuitive operations and
 monitoring APIs, and is easy to setup and learn.
 
+See the post [Advancing the realtime web][] for more technical details
+on RethinkDB's mission.
+
+[Advancing the realtime web]: http://rethinkdb.com/blog/realtime-web/
+
 ## When is RethinkDB a good choice? ##
 
 RethinkDB is a great choice when your applications could benefit from
