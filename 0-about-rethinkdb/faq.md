@@ -99,39 +99,43 @@ example use cases:
 
 RethinkDB has a vibrant community of over 100,000 developers, and hundreds of contributors from around the world.
 
-## Is RethinkDB based on another database? ##
+## Is RethinkDB based on existing technology? ##
 
 Implementing efficient realtime push architecture required redesigning
 most database components, including the query execution engine, the
 distributed system, the caching subsystem, and the storage
 engine. Because the architecture affects every database component,
 RethinkDB has been implemented in C++ from scratch. RethinkDB is built
-by a team of database experts with the help of hundreds of
-contributors from around the world.
+over five years by a team of database experts with the help of
+hundreds of contributors from around the world.
 
-## How is RethinkDB different from Firebase? ##
+## How is RethinkDB different from realtime sync? ##
 
-RethinkDB is fundamentally different from Firebase in three important
-ways.
+RethinkDB is fundamentally different from realtime sync APIs like
+[Firebase], [PubNub], or [Pusher] in three important ways.
 
-Firstly, Firebase is a cloud service and RethinkDB is an open-source
-project. While RethinkDB is available in the cloud via our partners at
-[Compose.io][] and [Amazon AWS][], it can also be deployed in your own
-infrastructures without restrictions.
+[Firebase]: https://www.firebase.com/
+[PubNub]: https://www.pubnub.com/
+[Pusher]: https://pusher.com/
+
+Firstly, realtime sync APIs are cloud services and RethinkDB is an
+open-source project. While RethinkDB is available in the cloud via our
+partners at [Compose.io][] and [Amazon AWS][], it can also be deployed
+in your own infrastructures without restrictions.
 
 [Compose.io]: https://www.compose.io/
 [Amazon AWS]: https://aws.amazon.com/marketplace/pp/B00E9EZ5DK
 
-Secondly, Firebase's API is limited to realtime sync, while RethinkDB
-is a general purpose database system. In RethinkDB you can run
-arbitrary queries including table joins, subqueries, geospatial
-queries, aggregation, and map-reduce. Firebase's querying capabilities
-are much more limited.
+Secondly, realtime sync APIs are limited to syncing documents, while
+RethinkDB is a general purpose database system. In RethinkDB you can
+run arbitrary queries including table joins, subqueries, geospatial
+queries, aggregation, and map-reduce. Realtime sync services have much
+more limited querying capabilities.
 
-Finally, Firebase is designed to be accessed directly from the
-browser. This makes it very easy to get basic apps up and running, but
-limits the flexibility as the app expands. RethinkDB is designed to be
-accessed from an application server, much like a traditional
+Finally, realtime sync APIs are designed to be accessed directly from
+the browser. This makes it very easy to get basic apps up and running,
+but limits the flexibility as the app expands. RethinkDB is designed
+to be accessed from an application server, much like a traditional
 database. This requires slightly more setup code, but allows a lot of
 flexibility as the application becomes more sophisticated.
 
@@ -160,9 +164,9 @@ r.table('users').get('coffeemug').changes().run()
 RethinkDB's realtime architecture can be compared to MongoDB's oplog,
 but offers a much higher level of abstraction. RethinkDB's feeds
 integrate seamlessly with the query computation engine, and allow you
-to subscribe to changes on queries, not just changes on data. This
-architecture dramatically reduces the time and effort necessary to
-build scalable realtime apps.
+to subscribe to changes on queries, not just raw replication changes
+on data. This architecture dramatically reduces the time and effort
+necessary to build scalable realtime apps.
 
 In addition to the realtime push architecture, RethinkDB offers a
 number of other advantages over MongoDB:
