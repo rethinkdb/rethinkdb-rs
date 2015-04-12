@@ -164,8 +164,8 @@ r.table('users').get('coffeemug').changes().run()
 RethinkDB's realtime architecture can be compared to MongoDB's oplog,
 but offers a much higher level of abstraction. RethinkDB's feeds
 integrate seamlessly with the query computation engine, and allow you
-to subscribe to changes on queries, not just raw replication changes
-on data. This architecture dramatically reduces the time and effort
+to subscribe to changes on query results, not just raw replication
+data. This architecture dramatically reduces the time and effort
 necessary to build scalable realtime apps.
 
 In addition to the realtime push architecture, RethinkDB offers a
@@ -182,8 +182,8 @@ number of other advantages over MongoDB:
 
 See a [technical comparison of RethinkDB and MongoDB][t1] for an
 unbiased point-by-point overview. For a more conversational take, read
-[@coffeemug][t2]'s biased but more personal take on what makes
-RethinkDB different, "[RethinkDB vs today's NoSQL][t3]."
+[@coffeemug][t2]'s biased but more personal take on [what makes
+RethinkDB different][t3].
 
 [t1]: /docs/comparison-tables/
 [t2]: https://github.com/coffeemug
