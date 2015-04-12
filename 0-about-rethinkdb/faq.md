@@ -8,24 +8,10 @@ alias: docs/faq/
 js: faq_index
 ---
 {% infobox %}
+**RethinkDB in under two minutes:** see the [highlights video][hv].
 
-**Want to learn more about RethinkDB?**
-
-* Read the [ten-minute guide][tmg] to get started with RethinkDB.
-* Browse the [architecture overview][ao] for programmers familiar with distributed systems. 
-* Jump into the [cookbook][cb] and see dozens of examples of common RethinkDB queries.
-
-[tmg]: /docs/guide/javascript/
-[ao]:  /docs/architecture/
-[cb]:  /docs/cookbook/javascript/
-
+[hv]: /videos/what-is-rethinkdb
 {% endinfobox %}
-
-<img src="/assets/images/docs/api_illustrations/faq.png" class="api_command_illustration" />
-
-{% toctag %}
-
-# RethinkDB overview
 
 ## What is RethinkDB? ##
 
@@ -40,14 +26,6 @@ the time and effort necessary to build scalable realtime apps.
 In addition to being designed from the ground up for realtime apps,
 RethinkDB offers a flexible query language, intuitive operations and
 monitoring APIs, and is easy to setup and learn.
-
-{% infobox %}
-
-**RethinkDB in under two minutes:** see the [highlights video][hv].
-
-[hv]: /videos/what-is-rethinkdb
-
-{% endinfobox %}
 
 ## When is RethinkDB a good choice? ##
 
@@ -200,6 +178,20 @@ RethinkDB different][t3].
   consistency. If high write availability is critical and you don't
   mind dealing with conflicts you may be better off with a Dynamo-style system
   like Riak.
+
+{% infobox %}
+
+**Want to learn more about RethinkDB?**
+
+* Read the [ten-minute guide][tmg] to get started with RethinkDB.
+* Browse the [architecture overview][ao] for programmers familiar with distributed systems. 
+* Jump into the [cookbook][cb] and see dozens of examples of common RethinkDB queries.
+
+[tmg]: /docs/guide/javascript/
+[ao]:  /docs/architecture/
+[cb]:  /docs/cookbook/javascript/
+
+{% endinfobox %}
 
 # Practical considerations
 
