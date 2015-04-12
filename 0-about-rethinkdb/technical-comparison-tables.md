@@ -10,26 +10,26 @@ alias: docs/comparisons/mongodb/
 __Interested in a more personal perspective?__ Read our take on [what makes RethinkDB different](/docs/rethinkdb-vs-mongodb/).
 {% endinfobox %}
 
-This document is our attempt at an unbiased comparison between
-RethinkDB and MongoDB (for a more partisan view, take a look at the
-[biased comparison](/blog/mongodb-biased-comparison/) written by
-[@coffeemug](https://github.com/coffeemug)). We tried to be spartan
-with our commentary to allow the reader to form their own
+RethinkDB is based on a fundamentally different architecture from
+MongoDB. Instead of polling for changes, the developer can tell
+RethinkDB to continuously push updated query results in realtime.
+
+However, since RethinkDB is sometimes compared to MongoDB we wrote up
+an unbiased technical comparison (for a more partisan view, take a
+look at the [biased comparison](/blog/mongodb-biased-comparison/)
+written by [@coffeemug](https://github.com/coffeemug)). We tried to be
+spartan with our commentary to allow the reader to form their own
 opinion. Whenever possible, we provide links to the original
 documentation for further details.
 
-{% toctag %}
-
 # Development #
-
-
 
 | | RethinkDB | MongoDB |  
 | ------ | ------ | ------ |  
-|Platforms | Linux, OS X | Linux, OS X, Windows, Solaris |  
-|Data model | JSON documents | BSON documents |  
-|Data access | Unified chainable dynamic query language | Dynamic rich query language |  
-|JavaScript integration | V8 engine | Spidermonkey/V8 engine |  
+| Platforms | Linux, OS X | Linux, OS X, Windows, Solaris |  
+| Data model | JSON documents | BSON documents |  
+| Data access | Unified chainable dynamic query language | Dynamic rich query language |  
+| JavaScript integration | V8 engine | Spidermonkey/V8 engine |  
 | Access languages | JSON protocol<br>3 official libraries<br>Many community supported libraries | BSON protocol<br>13 official libraries<br>Many community supported libraries |  
 | Index types | Primary key<br>Compound<br>Secondary<br>Geospatial<br>Arbitrarily computed | Unique (unsharded only)<br>Compound<br>Secondary<br>Geospatial<br>Sparse |  
 | Cloud deployment | AWS, dotCloud, Compose.io | Many cloud platforms |  
