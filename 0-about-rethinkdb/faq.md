@@ -29,7 +29,17 @@ js: faq_index
 
 ## What is RethinkDB? ##
 
-RethinkDB is an open-source, distributed database built to store JSON documents and effortlessly scale to multiple servers. It's easy to set up and learn and features a simple but powerful query language that supports table joins, groupings, aggregations, and functions.
+RethinkDB is the first open-source, scalable JSON database built from
+the ground up for the realtime web. It inverts the traditional
+database architecutre by exposing an exciting new access model --
+instead of polling for changes, the developer can tell RethinkDB to
+continuously push updated query results to applications in
+realtime. RethinkDB's realtime push architecture dramatically reduces
+the time and effort necessary to build scalable realtime apps.
+
+In addition to being designed from the ground up for realtime apps,
+RethinkDB offers a flexible query language, intuitive operations and
+monitoring APIs, and is easy to setup and learn.
 
 {% infobox %}
 
@@ -39,31 +49,141 @@ RethinkDB is an open-source, distributed database built to store JSON documents 
 
 {% endinfobox %}
 
-## What are the main differences from other NoSQL databases? ##
-
-We've prepared a [technical comparison of RethinkDB and MongoDB][t1] for an unbiased point-by-point overview comparing us to MongoDB.
-
-For a more conversational take, read "[RethinkDB compared to MongoDB][t2]" as well as [@coffeemug][t3]'s biased but more personal take on what makes RethinkDB different, "[RethinkDB vs today's NoSQL][t4]."
-
-[t1]: /docs/comparison-tables/
-[t2]: /docs/rethinkdb-vs-mongodb
-[t3]: https://github.com/coffeemug
-[t4]: /blog/mongodb-biased-comparison/
-
 ## When is RethinkDB a good choice? ##
 
-- RethinkDB is a great choice if you need flexible schemas, value ease of use,
-  and are planning to run anywhere from a single node to a sixteen-node
-  cluster.
-- If you periodically copy your data into a separate system to do analytics
-  (such as Hadoop) but your analytics are not incredibly computationally
-  intensive, you can significantly simplify things by running your analytical
-  queries in RethinkDB directly. RethinkDB will _not_ lock your database.
-- Finally, if you are already running a database cluster and feel overwhelmed by
-  cluster administration and the complexities of sharding, replication, and
-  failover, you will love RethinkDB. Sharding and replication can be done in a
-  few clicks in the Web UI or on the command line.
+RethinkDB is a great choice when your applications could benefit from
+realtime feeds to your data.
 
+The query-response database access model works well on the web because
+it maps directly to HTTP's request-response. However, modern
+applications require sending data directly to the client in
+realtime. Use cases where companies benefited from RethinkDB's
+realtime push architecture include:
+
+- Collaborative web and mobile apps
+- Streaming analytics apps
+- Multiplayer games
+- Realtime marketplaces
+- Connected devices
+
+For example, when a user changes the position of a button in
+a collaborative design app, the server has to notify other users that
+are simultaneously working on the same project. Web browsers support
+these use cases via WebSockets and long-lived HTTP connections, but
+adapting database systems to realtime needs still presents a huge
+engineering challenge.
+
+RethinkDB is the first open-source, scalable database designed
+specifically to push data to applications in realtime. It dramatically
+reduces the time and effort necessary to build scalable realtime apps.
+
+## Who is using RethinkDB in production? ##
+
+RethinkDB is being used in production by hundreds of technology
+startups, consulting studios, and Fortune 500 companies. Here are some
+example use cases:
+
+- [Jive Software][] and [Mediafly][] use RethinkDB to power reactive web and mobile apps
+- [Pristine.io][] and [Narrative Clip][] use RethinkDB to power cloud infrastructure for connected devices
+- [Dropbox][] and [Workshape.io][] use RethinkDB to power realtime analytics
+- [CMUNE][] and [NodeCraft][] use RethinkDB to power massively scalable multiplayer games
+
+[Pristine.io]: https://pristine.io/
+[Narrative Clip]: http://getnarrative.com/
+[Jive Software]: https://www.jivesoftware.com/
+[Mediafly]: http://www.mediafly.com/
+[Dropbox]: https://www.dropbox.com/
+[Workshape.io]: https://www.workshape.io/
+[CMUNE]: http://www.cmune.com/
+[NodeCraft]: https://nodecraft.com/
+
+RethinkDB has a vibrant community of over 100,000 developers, and hundreds of contributors from around the world.
+
+## Is RethinkDB based on another database? ##
+
+Implementing efficient realtime push architecture required redesigning
+most database components, including the query execution engine, the
+distributed system, the caching subsystem, and the storage
+engine. Because the architecture affects every database component,
+RethinkDB has been implemented in C++ from scratch. RethinkDB is built
+by a team of database experts with the help of hundreds of
+contributors from around the world.
+
+## How is RethinkDB different from Firebase? ##
+
+RethinkDB is fundamentally different from Firebase in three important
+ways.
+
+Firstly, Firebase is a cloud service and RethinkDB is an open-source
+project. While RethinkDB is available in the cloud via our partners at
+[Compose.io][] and [Amazon AWS][], it can also be deployed in your own
+infrastructures without restrictions.
+
+[Compose.io]: https://www.compose.io/
+[Amazon AWS]: https://aws.amazon.com/marketplace/pp/B00E9EZ5DK
+
+Secondly, Firebase's API is limited to realtime sync, while RethinkDB
+is a general purpose database system. In RethinkDB you can run
+arbitrary queries including table joins, subqueries, geospatial
+queries, aggregation, and map-reduce. Firebase's querying capabilities
+are much more limited.
+
+Finally, Firebase is designed to be accessed directly from the
+browser. This makes it very easy to get basic apps up and running, but
+limits the flexibility as the app expands. RethinkDB is designed to be
+accessed from an application server, much like a traditional
+database. This requires slightly more setup code, but allows a lot of
+flexibility as the application becomes more sophisticated.
+
+## How is RethinkDB different from MongoDB? ##
+
+RethinkDB is based on a fundamentally different architecture from
+MongoDB. Instead of polling for changes, the developer can tell
+RethinkDB to continuously push updated query results in realtime. You
+can also write applications on top of RethinkDB using traditional
+query-response paradigm, and subscribe to realtime feeds later as you
+start adding realtime functionality to your app.
+
+For example, here is how you query RethinkDB for a document:
+
+```js
+r.table('users').get('coffeemug').run()
+```
+
+And here is how you subscribe to a stream of updates from RethinkDB
+any time the document changes:
+
+```js
+r.table('users').get('coffeemug').changes().run()
+```
+
+RethinkDB's realtime architecture can be compared to MongoDB's oplog,
+but offers a much higher level of abstraction. RethinkDB's feeds
+integrate seamlessly with the query computation engine, and allow you
+to subscribe to changes on queries, not just changes on data. This
+architecture dramatically reduces the time and effort necessary to
+build scalable realtime apps.
+
+In addition to the realtime push architecture, RethinkDB offers a
+number of other advantages over MongoDB:
+
+- An advanced query language that supports table joins, subqueries,
+  and massively parallelized distributed computation.
+- An elegant and powerful operations and monitoring API that
+  integrates with the query language and makes scaling RethinkDB
+  dramatically easier.
+- A simple and beautiful administration UI that lets you shard and
+  replicate in a few clicks, and offers online documentation and query
+  language suggestions.
+
+See a [technical comparison of RethinkDB and MongoDB][t1] for an
+unbiased point-by-point overview. For a more conversational take, read
+[@coffeemug][t2]'s biased but more personal take on what makes
+RethinkDB different, "[RethinkDB vs today's NoSQL][t3]."
+
+[t1]: /docs/comparison-tables/
+[t2]: https://github.com/coffeemug
+[t3]: /blog/mongodb-biased-comparison/
 
 ## When is RethinkDB not a good choice? ##
 
