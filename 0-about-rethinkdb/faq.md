@@ -30,7 +30,7 @@ monitoring APIs, and is easy to setup and learn.
 See the post [Advancing the realtime web][] for more technical details
 on RethinkDB's mission.
 
-[Advancing the realtime web]: http://rethinkdb.com/blog/realtime-web/
+[Advancing the realtime web]: /blog/realtime-web/
 
 ## When is RethinkDB a good choice? ##
 
