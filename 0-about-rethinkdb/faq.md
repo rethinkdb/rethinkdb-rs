@@ -60,6 +60,8 @@ RethinkDB is the first open-source, scalable database designed
 specifically to push data to applications in realtime. It dramatically
 reduces the time and effort necessary to build scalable realtime apps.
 
+<a name="production-use"></a>
+
 ## Who is using RethinkDB in production? ##
 
 RethinkDB is being used in production by hundreds of technology
