@@ -1014,15 +1014,15 @@ r.table('marvel').isEmpty().run(conn, callback)
 ## [union](union/) ##
 
 {% apibody %}
-sequence.union(sequence) &rarr; array
+sequence.union(sequence[, sequence, ...]) &rarr; array
 {% endapibody %}
 
-Concatenate two sequences.
+Concatenate two or more sequences.
 
-__Example:__ Construct a stream of all heroes.
+__Example:__ Construct an array of all heroes.
 
 ```js
-r.table('marvel').union(r.table('dc')).run(conn, callback)
+r.table('marvel').union(r.table('dc')).run(conn, callback);
 ```
 
 
