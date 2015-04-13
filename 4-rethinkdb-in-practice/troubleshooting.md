@@ -312,3 +312,35 @@ r.table('posts').filter(
     or(r.row('genre').default('foo').eq('mystery'))
 ).run(conn, callback);
 ```
+
+## "Nesting depth limit exceeded" error ##
+
+Typically, this indicates that a JSON object with subdocuments is too deeply nested:
+
+```json
+{ level: 1,
+  data: {
+    level: 2,
+    data: {
+      level: 3,
+      data: {
+        level: 4
+      }
+    }
+  }
+}
+```
+
+ReQL's nesting depth is limited to 20 levels. This can be changed with the undocumented `nestingDepth` (or `nesting_depth`) option to `r.expr()`, but before using that, consider whether the document can be reorganized to avoid the error.
+
+It's also possible for this error to be caused by a circular reference, where a document inadvertently contains itself:
+
+```js
+user1 = { id: 1, name: 'Bob' };
+user2 = { id: 2, name: 'Agatha' };
+user1['friends'] = [ user1, user2 ];
+```
+
+Trying to access `user1` in ReQL will cause a nesting depth error.
+
+Depending on the driver, this error may also appear as "Maximum expression depth exceeded."
