@@ -155,6 +155,29 @@ wait until the server has processed them.
 conn.noreply_wait()
 ```
 
+## [set_loop_type](set_loop_type/) ##
+
+{% apibody %}
+r.set_loop_type(string)
+{% endapibody %}
+
+Set an asynchronous event loop model. Currently, the only event loop model RethinkDB supports is `"tornado"`, for use with the [Tornado web framework](http://www.tornadoweb.org). After setting the event loop to `"tornado"` then the [connect](/api/python/connect) command will return Tornado `Future` objects.
+
+__Example:__ Read a table's data using Tornado.
+
+```python
+r.set_loop_type("tornado")
+conn = r.connect(host='localhost', port=28015)
+
+@gen.coroutine
+def use_cursor(conn):
+    # Print every row in the table.
+    cursor = yield r.table('test').order_by(index="id").run(yield conn)
+    while (yield cursor.fetch_next()):
+        item = yield cursor.next()
+        print(item)
+```
+
 {% endapisection %}
 
 {% apisection Cursors %}
