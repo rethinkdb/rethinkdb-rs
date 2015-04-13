@@ -311,9 +311,9 @@ EventMachine.run {
 
 ## Stopping a Handler
 
-If you call the `stop` method on a `Handler`, it will stop processing changes and open streams using that handler will be closed. Queries registered to use that handler instance will stop.
+If you call the `stop` method on a `Handler`, it will stop processing changes and open streams using that handler will be closed. Queries registered with that handler instance will not be interrupted if they are currently processing (e.g., a batch write), but will close rather than executing after the handler has been stopped.
 
-__Example:__ Printing the first five changes to a table
+__Example:__ Print the first five changes to a table. After the handler has been stopped, the changefeed query will be closed on the next change to the table rather than returning a value.
 
 ```rb
 class FeedPrinter < RethinkDB::Handler

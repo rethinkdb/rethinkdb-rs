@@ -89,7 +89,7 @@ class UserHandler < RethinkDB::Handler
     p [:user, val]
   end
 
-  # Receive a list of posts
+  # Receive an array of posts
   def on_atom(val)
     p [:posts, val]
   end
