@@ -11,7 +11,8 @@ io:
 # Command syntax #
 
 {% apibody %}
-sequence.union(sequence) &rarr; array
+stream.union(sequence[, sequence, ...]) &rarr; stream
+array.union(sequence[, sequence, ...]) &rarr; array
 {% endapibody %}
 
 # Description #

@@ -1014,7 +1014,8 @@ r.table('marvel').is_empty().run(conn)
 ## [union](union/) ##
 
 {% apibody %}
-sequence.union(sequence) &rarr; array
+stream.union(sequence[, sequence, ...]) &rarr; stream
+array.union(sequence[, sequence, ...]) &rarr; array
 {% endapibody %}
 
 Concatenate two sequences.
