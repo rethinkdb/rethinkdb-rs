@@ -990,12 +990,13 @@ r.table('marvel').is_empty().run(conn)
 ## [union](union/) ##
 
 {% apibody %}
-sequence.union(sequence[, sequence, ...]) &rarr; array
+stream.union(sequence[, sequence, ...]) &rarr; stream
+array.union(sequence[, sequence, ...]) &rarr; array
 {% endapibody %}
 
 Concatenate two or more sequences.
 
-__Example:__ Construct an array of all heroes.
+__Example:__ Construct a stream of all heroes.
 
 ```py
 r.table('marvel').union(r.table('dc')).run(conn)
