@@ -18,7 +18,7 @@ language: JavaScript
 SQL and RethinkDB share very similar terminology. Below is a table
 of terms and concepts in the two systems.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead>
         <tr>
             <th>SQL</th>
@@ -61,28 +61,28 @@ of terms and concepts in the two systems.
 
 This is a list of queries for inserting data into a database.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
         <tr>
             <td>
-<pre>
+{% highlight sql %}
 INSERT INTO users(user_id,
                   age,
                   name)
 VALUES ("f62255a8259f",
         30,
         Peter)
-</pre>
+{% endhighlight %}
             </td>
             <td>
-<pre>
+{% highlight javascript %}
 r.table("users").insert({
    userId: "f62255a8259f",
    age: 30,
    name: "Peter"
 })
-</pre>
+{% endhighlight %}
             </td>
         </tr>
     </tbody>
@@ -93,194 +93,194 @@ r.table("users").insert({
 
 This is a list of queries for selecting data out of a database.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users")
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT user_id, name FROM users
-</pre>
+{% endhighlight %}
         </td><td>
-<pre>
+{% highlight javascript %}
 r.table("users")
  .pluck("userId", "name")
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name = "Peter"
-</pre>
+{% endhighlight %}
         </td><td>
-<pre>
+{% highlight javascript %}
 r.table("users").filter({
     name: "Peter"
 })
-</pre>
+{% endhighlight %}
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
-<pre>
+{% highlight javascript %}
 r.table("users")
     .getAll("Peter", {index: "name"})
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name = "Peter"
 AND age = 30
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").filter({
     name: "Peter",
     age: 30
 })
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name LIKE "P%"
-</pre>
+{% endhighlight %}
 
         </td><td>
-<pre>
+{% highlight javascript %}
 r.table("users").filter(
     r.row("name").match("^P")}
 )
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 ORDER BY name ASC
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").orderBy("name")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 ORDER BY name DESC
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").orderBy(
     r.desc("name")
 )
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT user_id FROM users
 WHERE name = "Peter"
 ORDER BY name DESC
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").filter({
     name: "Peter"
 }).orderBy(
     r.desc("name")
 ).pluck("userId")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users LIMIT 5 SKIP 10
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").skip(10).limit(5)
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name IN ('Peter', 'John')
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").filter(
   function (doc) {
     return r.expr(["Peter","John"])
             .contains(doc("name"));
   }
 )
-</pre>
+{% endhighlight %}
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
-<pre>
+{% highlight javascript %}
 r.table("users")
     .getAll("Peter", "John",
         {index: "name"})
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name NOT IN ('Peter', 'John')
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").filter(
   function (doc) {
     return r.expr(["Peter","John"])
@@ -288,123 +288,123 @@ r.table("users").filter(
             .not();
   }
 )
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT COUNT(*) FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").count()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT COUNT(name) FROM users
-WHERE age &gt; 18
-</pre>
+WHERE age > 18
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").filter(
     r.row.hasFields("name")
     .and(r.row("age").gt(18))
 ).count()
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT AVG("age")
     FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").avg("age")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT MAX("age")
     FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users")("age").max()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT DISTINCT(name) FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").pluck("name")
  .distinct()
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT *
     FROM users
     WHERE age BETWEEN 18 AND 65;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").filter(
     r.row("age").ge(18)
      .and(r.row("age").le(65))
 ).count()
-</pre>
+{% endhighlight %}
 
 If you have a secondary index built on the field <code>age</code>, you can run a
 more efficient query:
-<pre>
+{% highlight javascript %}
 r.table("users")
  .between(18, 65, {index: "age"})
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT name, 'is_adult' = CASE
     WHEN age>18 THEN 'yes'
     ELSE 'no'
     END
 FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").map({
     name: r.row("name"),
     is_adult: r.branch(
@@ -413,7 +413,7 @@ r.table("users").map({
         "no"
     )
 })
-</pre>
+{% endhighlight %}
 
 
         </td></tr>
@@ -421,18 +421,18 @@ r.table("users").map({
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT *
   FROM posts
   WHERE EXISTS
     (SELECT * FROM users
      WHERE posts.author_id
          = users.id)
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("posts")
   .filter(function (post) {
     return r.table("users")
@@ -440,7 +440,7 @@ r.table("posts")
         return user("id").eq(post("authorId"))
       }).count().gt(0)
     })
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -455,43 +455,43 @@ r.table("posts")
 
 This is a list of commands for updating data in the database.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 UPDATE users
     SET age = 18
-    WHERE age &lt; 18
-</pre>
+    WHERE age < 18
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").filter(
     r.row("age").lt(18)
 ).update({age: 18})
-</pre>
+{% endhighlight %}
 
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 UPDATE users
     SET age = age+1
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").update(
     {age: r.row("age").add(1)}
 )
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -502,36 +502,36 @@ r.table("users").update(
 
 This is a list of queries for deleting data from the database.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 DELETE FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").delete()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 DELETE FROM users
-WHERE age &lt; 18
-</pre>
+WHERE age < 18
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users")
     .filter(r.row("age").lt(18))
     .delete()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -545,44 +545,44 @@ r.table("users")
 This is a list of queries for performing joins between multiple
 tables.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 SELECT *
 FROM posts
 JOIN users
 ON posts.user_id = users.id
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("posts").innerJoin(
   r.table("users"),
   function (post, user) {
     return post("userId").eq(user("id"));
 }).zip()
-</pre>
+{% endhighlight %}
 
 <p><em>Note:</em> <code>zip()</code> will merge the user in the post, overwriting fields in case of conflict.</p>
 
 <p>If you have an index (primary key or secondary index) built on the field of the right table, you can perform a more efficient join with <a href="/api/javascript/eq_join/">eqJoin</a>.</p>
 
-<pre>
+{% highlight javascript %}
 r.table("posts").eqJoin(
     "id",
     r.table("users"),
     {index: "id"}
 ).zip()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 SELECT posts.id AS post_id,
        user.name,
        users.id AS user_id
@@ -596,11 +596,11 @@ SELECT posts.id AS post_id,
     FROM posts
     INNER JOIN users
         ON posts.user_id = users.id
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("posts").innerJoin(
   r.table("users"),
   function (post, user) {
@@ -610,14 +610,14 @@ r.table("posts").innerJoin(
   userId: r.row("right")("id"),
   name: r.row("right")("name")
 })
-</pre>
+{% endhighlight %}
 
 
 
         </td></tr>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 SELECT *
     FROM posts
     RIGHT JOIN users
@@ -627,22 +627,22 @@ SELECT *
     FROM posts
     RIGHT OUTER JOIN users
         ON posts.user_id = users.id
-</pre>
+{% endhighlight %}
 
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("posts").outerJoin(
   r.table("users"),
   function (post, user) {
     return post("userId").eq(user("id"));
 }).zip()
-</pre>
+{% endhighlight %}
 
 <p><em>Note</em>: You can perform more efficient <code>OUTER JOIN</code> operations with the <a href="/api/javascript/concat_map/">concatMap</a> command.</p>
 
-<pre>
+{% highlight javascript %}
 r.table("posts").concatMap(
   function (post) {
     return r.table("users")
@@ -662,37 +662,37 @@ r.table("posts").concatMap(
     );
   }
 ).zip();
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 SELECT *
     FROM posts
     LEFT JOIN users
         ON posts.user_id = users.id
-</pre>
-<pre>
+{% endhighlight %}
+{% highlight sql %}
 SELECT *
     FROM posts
     LEFT OUTER JOIN users
         ON posts.user_id = users.id
-</pre>
+{% endhighlight %}
 
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").outerJoin(
   r.table("posts"),
   function (user, post) {
     return post("userId").eq(user("id"));
   }
 ).zip()
-</pre>
+{% endhighlight %}
 
-<pre>
+{% highlight javascript %}
 r.table("users").concatMap(
   function (user) {
     return r.table("posts").getAll(user("id"), {index: "id"}).do(
@@ -708,7 +708,7 @@ r.table("users").concatMap(
     );
   }
 ).zip()
-</pre>
+{% endhighlight %}
 
         </td></tr>
     </tbody>
@@ -719,107 +719,107 @@ r.table("users").concatMap(
 
 This is a list of queries for performing data aggregation.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category
     FROM posts
     GROUP BY category
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("posts").map(
     r.row("category")
 ).distinct()
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category,
        SUM('num_comments')
     FROM posts
     GROUP BY category
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table('posts')
  .group('category')
  .sum('num_comments')
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category,
        status,
        SUM('num_comments')
     FROM posts
     GROUP BY category, status
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("posts")
  .group('category', 'status')
  .sum('num_comments')
-</pre>
+{% endhighlight %}
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category,
        SUM(num_comments)
     FROM posts
-    WHERE num_comments &gt; 7
+    WHERE num_comments > 7
     GROUP BY category
 
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("posts")
  .filter(r.row('num_comments').gt(7))
  .group('category')
  .sum('num_comments')
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category,
        SUM(num_comments)
     FROM posts
     GROUP BY category
-    HAVING num_comments &gt; 7
+    HAVING num_comments > 7
 
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("posts")
  .group('category')
  .sum('num_comments')
  .ungroup()
  .filter(r.row("reduction").gt(7))
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -831,35 +831,35 @@ r.table("posts")
 This is a list of queries for creating and dropping tables and
 databases.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 CREATE DATABASE my_database;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.dbCreate('my_database')
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 DROP DATABASE my_database;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.dbDrop('my_database')
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -867,18 +867,18 @@ r.dbDrop('my_database')
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 CREATE TABLE users
     (id INT IDENTITY(1,1) PRIMARY KEY,
     name VARCHAR(50),
     age INT);
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.tableCreate('users', {primaryKey: "id"})
-</pre>
+{% endhighlight %}
 <p><em>Note:</em> RethinkDB is a NoSQL database and does not enforce
 schemas.</p>
 
@@ -891,15 +891,15 @@ schemas.</p>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 TRUNCATE TABLE users;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.table("users").delete()
-</pre>
+{% endhighlight %}
 
 
 
@@ -907,15 +907,15 @@ r.table("users").delete()
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 DROP TABLE users;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight javascript %}
 r.tableDrop("users")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
