@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Start RethinkDB at system startup
-active: docs
 docs_active: start-on-startup
 permalink: docs/start-on-startup/
 alias:
@@ -39,7 +38,7 @@ Then, restart the service:
 sudo /etc/init.d/rethinkdb restart
 ```
 
-The basic setup is complete &mdash; __you've now got a working server!__
+The basic setup is complete&mdash;__you've now got a working server!__
 
 ## Multiple instances ##
 
@@ -48,7 +47,7 @@ multiple `.conf` files in `/etc/rethinkdb/instances.d`.
 
 In each configuration file, set a different data directory, and include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
 
-{% infobox %}
+{% infobox alert %}
 The `bind=all` option is a security risk if your machine is open to the internet, and you should take steps to prevent unauthorized access. See the [security page](/docs/security/) for more details.
 {% endinfobox %}
 
@@ -126,7 +125,7 @@ As systemd supports multiple instances on the same server, you simply need to cr
 
 In each configuration file, set a different data directory, and include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
 
-{% infobox %}
+{% infobox alert %}
 The `bind=all` option is a security risk if your machine is open to the internet, and you should take steps to prevent unauthorized access. See the [security page](/docs/security/) for more details.
 {% endinfobox %}
 
@@ -236,14 +235,14 @@ To run multiple instances of RethinkDB under OS X, you will need to create new c
 
 In each configuration file, set a different data directory, and include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
 
-{% infobox %}
+{% infobox alert %}
 The `bind=all` option is a security risk if your machine is open to the internet, and you should take steps to prevent unauthorized access. See the [security page](/docs/security/) for more details.
 {% endinfobox %}
 
 # Troubleshooting #
 
-{% infobox info %}
+{% infobox %}
 <strong>Seeing a 'received invalid clustering header' message?</strong>
-{% include troubleshootingcluster.md %} 
+{% include docs/troubleshootingcluster.md %} 
 {% endinfobox %}
 

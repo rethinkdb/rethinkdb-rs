@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: "Cookbooks"
-active: docs
 docs_active: cookbook
 permalink: docs/cookbook/
 ---

@@ -1,13 +1,9 @@
 ---
 layout: documentation
 title: Troubleshooting common RethinkDB problems
-active: docs
 docs_active: troubleshooting 
 permalink: docs/troubleshooting/
 js: faq_index
----
-<div id="faqcontents"></div>
-{% faqsection Table of contents | %}
 ---
 
 ## How can I get a dump of the RethinkDB system tables?
@@ -78,7 +74,7 @@ systems.
   you're writing using soft durability, a few seconds worth of data
   might be lost in case of power failure.
 
-  {% infobox info %}
+  {% infobox %}
   __Note:__ while some data may be lost in case of power failure in soft
   durability mode, the RethinkDB database will not get corrupted.
   {% endinfobox %}
@@ -114,7 +110,7 @@ you need to call [**ungroup**](/api/python/ungroup/) before doing so.
 
 ## What does 'received invalid clustering header' mean? ##
 
-{% include troubleshootingcluster.md %}
+{% include docs/troubleshootingcluster.md %}
 
 ## Does the web UI support my browser? ##
 
@@ -126,7 +122,7 @@ UI:
 - Safari 6.02 or higher
 - Opera 1.62 or higher
 
-{% infobox info %}
+{% infobox %}
 The web UI requires `DataView` and `Uint8Array` JavaScript features to
 be supported by your browser.
 {% endinfobox %}
@@ -261,7 +257,7 @@ warn: Namespace <x> contains these outdated indexes which should be recreated:
 <index names>
 ```
 
-(This may happen, for instance, between v1.13 and v1.14, when the internal format of secondary indexes changed.) Outdated indexes can still be used--they don't affect availability. However, you should rebuild your index before updating to the next version of RethinkDB.
+(This may happen, for instance, between v1.13 and v1.14, when the internal format of secondary indexes changed.) Outdated indexes can still be used&mdash;they don't affect availability. However, you should rebuild your index before updating to the next version of RethinkDB.
 
 You may rebuild indexes with the `rethinkdb` command line utility:
 
@@ -317,4 +313,34 @@ r.table('posts').filter(
 ).run(conn, callback);
 ```
 
-{% endfaqsection %}
+## "Nesting depth limit exceeded" error ##
+
+Typically, this indicates that a JSON object with subdocuments is too deeply nested:
+
+```json
+{ level: 1,
+  data: {
+    level: 2,
+    data: {
+      level: 3,
+      data: {
+        level: 4
+      }
+    }
+  }
+}
+```
+
+ReQL's nesting depth is limited to 20 levels. This can be changed with the undocumented `nestingDepth` (or `nesting_depth`) option to `r.expr()`, but before using that, consider whether the document can be reorganized to avoid the error.
+
+It's also possible for this error to be caused by a circular reference, where a document inadvertently contains itself:
+
+```js
+user1 = { id: 1, name: 'Bob' };
+user2 = { id: 2, name: 'Agatha' };
+user1['friends'] = [ user1, user2 ];
+```
+
+Trying to access `user1` in ReQL will cause a nesting depth error.
+
+Depending on the driver, this error may also appear as "Maximum expression depth exceeded."

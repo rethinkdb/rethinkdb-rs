@@ -2,11 +2,10 @@
 layout: documentation
 title: Installing the Ruby driver
 title_image: /assets/images/docs/driver-languages/ruby.png
-active: docs
 docs_active: install-drivers
 permalink: docs/install-drivers/ruby/
 ---
-{% include install-driver-docs-header.md %}
+{% include docs/install-driver-docs-header.md %}
 
 # Installation #
 

@@ -1,13 +1,9 @@
 ---
 layout: documentation
 title: Data modeling in RethinkDB
-active: docs
 docs_active: data-modeling
 permalink: docs/data-modeling/
 ---
-
-<img alt="Data Modeling Illustration" class="api_command_illustration"
-    src="/assets/images/docs/api_illustrations/data-modeling.png" />
 
 There are two ways to model relationships between documents in
 RethinkDB:
@@ -19,6 +15,11 @@ RethinkDB:
 Let's explore the advantages and disadvantages of each approach. We'll use
 a simple blog database that stores information about authors and their
 posts to demonstrate them.
+
+{% toctag %}
+
+<img alt="Data Modeling Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/data-modeling.png" />
 
 # Using embedded arrays #
 
@@ -51,7 +52,7 @@ r.db("blog").table("authors").run()
 r.db("blog").table("authors").get(AUTHOR_ID).run()
 ```
 
-{% infobox info %}
+{% infobox %}
 
 __Advantages of using embedded arrays:__
 
@@ -124,7 +125,7 @@ r.db("blog").table("authors").getAll("7644aaf2-9928-4231-aa68-4e65e31bf219").eq_
 Note that the values for `author_id` correspond to the `id` field of
 the author, which allows us to link the documents.
 
-{% infobox info %}
+{% infobox %}
 
 __Advantages of using multiple tables:__
 

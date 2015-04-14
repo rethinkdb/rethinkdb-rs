@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Ten-minute guide with RethinkDB and Python
-active: docs
 docs_active: guide
 permalink: docs/guide/python/
 switcher: true
@@ -12,12 +11,12 @@ language: Python
 {% infobox %}
 <strong>Before you start:</strong>
 
-* Make sure you've <a href="/install">installed RethinkDB</a> &mdash; it should only take a minute!
-* Make also sure you've <a href="/docs/install-drivers/python/">installed the Python driver</a>.
-* Read the <a href="/docs/quickstart/">thirty-second quickstart</a>.
+* Make sure you've [installed RethinkDB](/install)&mdash;it should only take a minute!
+* Make also sure you've [installed the Python driver](/docs/install-drivers/python/).
+* Read the [thirty-second quickstart](/docs/quickstart/).
 {% endinfobox %}
 
-{% infobox info %}
+{% infobox %}
 From version 1.14, the Python driver for RethinkDB supports Python 2 and 3. Version 1.13 and older support Python 2 only.
 {% endinfobox %}
 
@@ -50,7 +49,7 @@ r.connect( "localhost", 28015).repl()
 
 The `repl` command is a convenience method that sets a default connection in your shell so you don't have to pass it to the `run` command to run your queries.
 
-{% infobox info %}
+{% infobox %}
 __Note:__ the `repl` command is useful to experiment in the shell, but
 you should pass the connection to the `run` command explicitly in
 real applications. See [an example
@@ -187,7 +186,7 @@ for document in cursor:
     print document
 ```
 
-This query returns a cursor with one document &mdash; the record for
+This query returns a cursor with one document&mdash;the record for
 William Adama. The `filter` command evaluates the provided condition
 for every row in the table, and returns only the relevant rows. Here's
 the new commands we used to construct the condition above:
@@ -229,7 +228,7 @@ Since primary keys are unique, the `get` command returns a single
 document. This way we can retrieve the document directly without
 iterating through a cursor.
 
-{% infobox info %}
+{% infobox %}
 Learn more about how RethinkDB can efficiently retrieve documents with
 [secondary indexes](/docs/secondary-indexes/).
 {% endinfobox %}
@@ -296,7 +295,7 @@ r.table('authors').filter(r.row["name"] == "Jean-Luc Picard").
 After processing this query, RethinkDB will add an additional post to
 Jean-Luc Picard's document.
 
-{% infobox info %}
+{% infobox %}
 Browse the [API reference](/api/python/) for many more array operations available in RethinkDB.
 {% endinfobox %}
 
@@ -325,4 +324,4 @@ is:
 }
 ```
 
-{% include quickstart-footer.md %}
+{% include docs/quickstart-footer.md %}

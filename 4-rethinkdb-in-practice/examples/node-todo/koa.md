@@ -2,7 +2,6 @@
 layout: example-app 
 title: "Node.js TODO with AngularJS, Koa and RethinkDB"
 github_url: "https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-koa"
-active: docs
 docs_active: examples
 permalink: docs/examples/node-todo-koa/
 ---

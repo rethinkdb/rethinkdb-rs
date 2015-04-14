@@ -37,7 +37,7 @@ parents = {
 
 # The real python names for names used in the docs
 tags = {
-    '[] (get_field)': [(query, '__getitem__')],
+    '[] (bracket)': [(query, '__getitem__')],
     'nth, []': [(query, 'nth')],
     'slice, []': [(query, 'slice')],
     '+': [(query, '__add__'), ('rethinkdb.', 'add')],

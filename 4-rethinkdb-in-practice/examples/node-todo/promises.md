@@ -2,7 +2,6 @@
 layout: example-app 
 title: "Node.js TODO with RethinkDB (using promises)"
 github_url: "https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express"
-active: docs
 docs_active: examples
 permalink: docs/examples/node-todo-promises/
 ---

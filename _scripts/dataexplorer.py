@@ -6,7 +6,7 @@ import yaml
 import json
 import codecs
 
-IGNORED_FILES = "index.md"
+IGNORED_FILES = ["index.md", "accessing-rql/event_emitter.md"]
 
 def read_index(script_path, result):
     """
@@ -128,18 +128,12 @@ def add_io_field(file_name, result):
     details_file.close()
 
 def browse_files(base, result):
-    subdirlist = []
-    for item in os.listdir(base):
-        if item[0] != '.' and item not in IGNORED_FILES:
-            full_path = os.path.join(base, item)
-            if os.path.isfile(full_path):
-                add_io_field(full_path, result)
-            else:
-                #print os.path.join(base, item)
-                subdirlist.append(full_path)
-
-    for subdir in subdirlist:
-        browse_files(subdir, result)
+    for path, dirs, files in os.walk(base):
+        rel = path[len(base)+1:]
+        for item in files:
+            print os.path.join(rel, item)
+            if os.path.join(rel, item) not in IGNORED_FILES:
+                add_io_field(os.path.join(path, item), result)
 
 if __name__ == "__main__":
     script_path = os.path.dirname(os.path.realpath(__file__))

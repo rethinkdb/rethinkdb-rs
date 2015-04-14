@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: System current issues table
-active: docs
 docs_active: system-issues
 permalink: docs/system-issues/
 ---
@@ -86,7 +85,7 @@ info: {
 
 RethinkDB has failed to write to its log file (or to `stdout/stderr`). The `message` string will be the error that RethinkDB received from the operating system on the failed write; `servers` will be a list of servers affected.
 
-Find and solve the problem preventing the server from writing to the logs (for example, freeing up disk space if the disk is full). There will only be one issue per unique error message received--if multiple servers encounter the same error, only one issue will appear in the table.
+Find and solve the problem preventing the server from writing to the logs (for example, freeing up disk space if the disk is full). There will only be one issue per unique error message received&mdash;if multiple servers encounter the same error, only one issue will appear in the table.
 
 ## Name collision issues ##
 
@@ -104,7 +103,7 @@ info: {
 
 Multiple servers, databases, or tables in the same database have been assigned the same name. The `name` field shows the conflicting name; `ids` are the UUIDs of the entities that have that name. In the case of `table_name_collision`, `db` will be the database that the tables are in. Rename the conflicting entities.
 
-Under normal circumstances the system will prevent name collisions, but a collision could occur due to a race condition--for instance, two clients trying to create tables with the same name on different servers simultaneously. This is a critical error, as a name collision on a table or database makes it impossible to read or write from that table or from tables in that database.
+Under normal circumstances the system will prevent name collisions, but a collision could occur due to a race condition&mdash;for instance, two clients trying to create tables with the same name on different servers simultaneously. This is a critical error, as a name collision on a table or database makes it impossible to read or write from that table or from tables in that database.
 
 There will be one issue per name in conflict.
 

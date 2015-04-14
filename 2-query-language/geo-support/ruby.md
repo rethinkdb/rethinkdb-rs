@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Geospatial queries
-active: docs
 docs_active: geo-support
 permalink: docs/geo-support/ruby/
 alias: docs/geo-support/
@@ -9,7 +8,13 @@ switcher: true
 language: Ruby
 ---
 
-RethinkDB supports spatial and geographic queries. Geometry objects are implemented through a geographic coordinate system, with points and shapes plotted on the surface of a sphere in three-dimensional space. This is an overview of the system; for more details, consult the API documentation for individual geospatial commands.
+RethinkDB supports spatial and geographic queries through geometry object support.
+
+{% toctag %}
+
+Geometry objects are implemented through a geographic coordinate system, with points and shapes plotted on the surface of a sphere in three-dimensional space. In addition, ReQL geometry objects can be converted to and from GeoJSON, with some limitations.
+
+This is an overview of the system. For more details, consult the API documentation for individual geospatial commands.
 
 # Getting started #
 

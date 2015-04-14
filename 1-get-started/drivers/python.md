@@ -2,15 +2,14 @@
 layout: documentation
 title: Installing the Python driver
 title_image: /assets/images/docs/driver-languages/python.png
-active: docs
 docs_active: install-drivers
 permalink: docs/install-drivers/python/
 ---
-{% include install-driver-docs-header.md %}
+{% include docs/install-driver-docs-header.md %}
 
 # Installation #
 
-{% infobox info %}
+{% infobox %}
 From version 1.14, the Python driver for RethinkDB supports Python 2 and 3. Version 1.13 and older support Python 2 only.
 {% endinfobox %}
 

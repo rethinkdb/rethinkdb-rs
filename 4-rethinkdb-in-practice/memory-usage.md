@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Understanding RethinkDB memory requirements
-active: docs
 docs_active: memory-usage
 permalink: docs/memory-usage/
 ---

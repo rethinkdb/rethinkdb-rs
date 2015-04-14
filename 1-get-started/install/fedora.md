@@ -2,12 +2,11 @@
 layout: documentation
 title: Install RethinkDB on Fedora
 title_image: /assets/images/docs/install-platforms/fedora.png
-active: docs
 docs_active: install
 permalink: docs/install/fedora/
 ---
-{% include install-docs-header.md %}
-{% include install-community-platform-warning.md %}
+{% include docs/install-docs-header.md %}
+{% include docs/install-community-platform-warning.md %}
 
 # With binaries #
 
@@ -57,4 +56,4 @@ make
 sudo make install
 ```
 
-{% include install-next-step.md %}
+{% include docs/install-next-step.md %}

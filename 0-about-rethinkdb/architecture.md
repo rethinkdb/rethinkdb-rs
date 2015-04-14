@@ -2,24 +2,24 @@
 layout: documentation
 title: "RethinkDB FAQ for programmers new to distributed databases"
 short_title: Architecture FAQ
-active: docs
 docs_active: architecture
 permalink: docs/architecture/
 alias: docs/advanced-faq/
 js: faq_index
 ---
 
-{% infobox info %}
-<strong>Want to learn more about the basics?</strong>
+{% infobox %}
+__Want to learn more about the basics?__
 
-* Read the <a href="/docs/guide/javascript/">ten-minute guide</a> to get started with using RethinkDB.
-* <a href="/faq/">Read the FAQ</a> for programmers new to distributed systems.
+* Read the [ten-minute guide](/docs/guide/javascript/) to get started with using RethinkDB.
+* [Read the FAQ](/faq/).
 * Jump into the [cookbook](/docs/cookbook/javascript/) and see dozens of examples of common RethinkDB queries.
 {% endinfobox %}
 
-<div id="faqcontents"></div>
----
-{% faqsection Sharding and replication %}
+
+{% toctag %}
+
+# Sharding and replication
 
 ## How does RethinkDB partition data into shards? ##
 
@@ -167,9 +167,7 @@ cluster by automatically enforcing user-specified rules (such as
 resharding the system when the shard balance drops below a certain
 threshold).
 
-{% endfaqsection %}
-
-{% faqsection CAP theorem %}
+# CAP theorem
 
 ## Is RethinkDB immediately or eventually consistent? ##
 
@@ -253,9 +251,7 @@ architecture turns out to have sufficient mathematical properties to
 address all the issues mentioned above (this result has been known in
 distributed systems research for quite a while).
 
-{% endfaqsection %}
-
-{% faqsection Indexing %}
+# Indexing
 
 ## How does RethinkDB index data? ##
 
@@ -279,9 +275,8 @@ indexes that compute arbitrary expressions. You
 can see examples of how to use the secondary index API
 [here](/docs/secondary-indexes).
 
-{% endfaqsection %}
+# Availability and failover
 
-{% faqsection Availability and failover %}
 ## What happens when a server becomes unreachable? ##
 
 The first thing that happens when a node in the cluster becomes
@@ -337,9 +332,7 @@ the number of shards. In many cases availability will be maintained,
 but currently it cannot be guaranteed. We're exploring different
 solutions to remove this limitation.
 
-{% endfaqsection %}
-
-{% faqsection Query execution %}
+# Query execution
 
 ## How does RethinkDB execute queries? ##
 
@@ -440,9 +433,7 @@ problems because the top levels of the B-Tree are all cached along with
 the frequently used blocks, so in most cases writes can be performed
 essentially lock-free.
 
-{% endfaqsection %}
-
-{% faqsection Data storage %}
+# Data storage
 
 ## How is data stored on disk? ##
 
@@ -458,7 +449,7 @@ case of failures, and support for multiversion concurrency control.
 The storage engine is used in conjunction with a custom, B-Tree-aware
 caching engine which allows file sizes many orders of magnitude
 greater than the amount of available memory. As a result, neither the
-data nor the index have to fit in RAM &mdash; RethinkDB can operate on
+data nor the index have to fit in RAM&mdash;RethinkDB can operate on
 terabytes of data with only a few megabytes of cache space.
 
 ## Which file systems are supported? ##
@@ -472,5 +463,3 @@ by default.
 RethinkDB ships with simple tools to perform a hot backup of a running
 cluster. See the [backup instructions](/docs/backup/) for more
 details.
-
-{% endfaqsection %}

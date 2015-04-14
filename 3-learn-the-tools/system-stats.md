@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: System statistics table
-active: docs
 docs_active: system-stats
 permalink: docs/system-stats/
 ---

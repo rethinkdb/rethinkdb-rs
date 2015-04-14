@@ -1,12 +1,13 @@
 ---
 layout: documentation
 title: System tables
-active: docs
 docs_active: system-tables
 permalink: docs/system-tables/
 ---
 
 Starting with version 1.16, RethinkDB maintains special *system tables* that contain configuration and status information about servers, databases, individual tables, and issues with the cluster. Querying system tables returns information about the status of the cluster and current objects (such as servers and tables) within the cluster. By inserting or deleting records and updating fields in these tables, the configuration of the objects they represent can be modified.
+
+{% toctag %}
 
 # Overview #
 

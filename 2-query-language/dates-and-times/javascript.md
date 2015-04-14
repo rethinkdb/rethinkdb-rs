@@ -1,16 +1,12 @@
 ---
 layout: documentation
 title: Dates and times in RethinkDB
-active: docs
 docs_active: dates-and-times
 permalink: docs/dates-and-times/javascript/
 alias: docs/dates-and-times/
 switcher: true
 language: JavaScript
 ---
-
-<img alt="Dates and Times Illustration" class="api_command_illustration"
-     src="/assets/images/docs/api_illustrations/dates-and-times.png" />
 
 RethinkDB has native support for millisecond-precision times with time zones.
 Some highlights:
@@ -23,6 +19,11 @@ Some highlights:
    they occurred.
 * **Time operations are pure ReQL**, which means that even complicated date-time
   queries can be distributed efficiently across the cluster.
+
+{% toctag %}
+
+<img alt="Dates and Times Illustration" class="api_command_illustration"
+     src="/assets/images/docs/api_illustrations/dates-and-times.png" />
 
 # A quick example #
 
@@ -148,8 +149,8 @@ You may also insert a time by inserting a literal pseudotype object.  This is
 useful if, for instance, you exported a row using `{timeFormat: 'raw'}` (see
 <strong>Retrieving Times</strong> below).
 
-{% infobox info %}
-<strong>Note:</strong> Avoid using keys matching the regular expression
+{% infobox %}
+__Note:__ Avoid using keys matching the regular expression
 `^\$reql_.+\$$` in your objects.  RethinkDB considers those to be reserved
 keywords.
 {% endinfobox %}

@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Sharding and replication
-active: docs
 docs_active: sharding-and-replication
 permalink: docs/sharding-and-replication/
 ---
@@ -11,7 +10,7 @@ permalink: docs/sharding-and-replication/
 
 RethinkDB allows you to shard and replicate your cluster on a per-table basis. Settings can be controlled easily from the web administration console. In addition, ReQL commands for table configuration allow both scripting capability and more fine-grained control over replication, distributing replicas for individual tables across user-defined groups of servers using server tags.
 
-{% infobox info %}
+{% infobox %}
 
 __Note__: Currently, RethinkDB implements range shards, but will eventually be
 switching to hash shards. Follow [Github issue #364][gh364] to track progress.
@@ -70,7 +69,7 @@ r.db('rethinkdb').table('server_config').get(
 
 If no tags are specified on startup, the server will be started with one tag, `default`. Changing the sharding/replica information from the web UI or from ReQL commands that do not specify server tags will affect all servers with the `default` tag.
 
-{% infobox info %}
+{% infobox alert %}
 The web UI only affects servers with the `default` tag. If you remove the `default` tag from a server or start it without that tag, it will not be used for tables configured through the web UI.
 {% endinfobox %}
 

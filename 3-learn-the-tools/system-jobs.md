@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: System jobs table
-active: docs
 docs_active: system-jobs
 permalink: docs/system-jobs/
 ---

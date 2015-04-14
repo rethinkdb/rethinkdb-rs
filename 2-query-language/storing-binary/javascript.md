@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Storing binary objects
-active: docs
 docs_active: storing-binary
 permalink: docs/storing-binary/javascript/
 alias: docs/storing-binary/

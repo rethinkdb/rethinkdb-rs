@@ -1,14 +1,9 @@
 ---
 layout: documentation
 title: Map-reduce in RethinkDB
-active: docs
 docs_active: map-reduce
 permalink: docs/map-reduce/
 ---
-
-<img src="/assets/images/docs/api_illustrations/map-reduce.png"
-     alt="Map-reduce Illustration"
-     class="api_command_illustration" />
 
 [Map-reduce][wp] is a way to summarize and run aggregation functions on large data sets, potentially stored across many servers, in an efficient fashion. It works by processing the data on each server in parallel and then combining those results into one set. It was originally designed by [Google][g] and later implemented in database systems such as [Apache Hadoop][ah] and [MongoDB][md].
 
@@ -17,13 +12,19 @@ permalink: docs/map-reduce/
 [ah]: http://hadoop.apache.org/
 [md]: http://www.mongodb.org/
 
+{% toctag %}
+
+<img src="/assets/images/docs/api_illustrations/map-reduce.png"
+     alt="Map-reduce Illustration"
+     class="api_command_illustration" />
+
 In RethinkDB, map-reduce queries operate on sequences and are composed of two or three parts:
 
 * An optional __group__ operation which partitions the elements of the sequence into multiple groups.
 * A __map__ operation which filters and/or transforms the elements in the sequence (or each group) into a new sequence (or grouped sequences).
 * A __reduce__ operation which aggregates the values produced by __map__ into a single value (or a single value for each group).
 
-Some other map-reduce implementations, like Hadoop's, use the mapping step to perform grouping as well; RethinkDB's implementation explicitly separates them. This is sometimes referred to as "group-map-reduce," or GMR. RethinkDB distributes GMR queries over tables and shards efficiently. You write GMR queries with the [group][], [map][] and [reduce][] commands, although as we'll see in our examples, many ReQL commands compile to GMR queries behind the scenes--many common map-reduce cases can be accomplished in one or two lines of ReQL.
+Some other map-reduce implementations, like Hadoop's, use the mapping step to perform grouping as well; RethinkDB's implementation explicitly separates them. This is sometimes referred to as "group-map-reduce," or GMR. RethinkDB distributes GMR queries over tables and shards efficiently. You write GMR queries with the [group][], [map][] and [reduce][] commands, although as we'll see in our examples, many ReQL commands compile to GMR queries behind the scenes&mdash;many common map-reduce cases can be accomplished in one or two lines of ReQL.
 
 # A simple example #
 
@@ -217,7 +218,7 @@ Suppose we have ten documents in a single category in a sharded table. Four of t
 2. The number of documents on shard 2 is computed. The query returns the value `6` for the shard.
 3. The final reduction step is executed to combine the values of the two shards. Instead of computing `4 + 6`, the query executes `4 + 1`.
 
-{% infobox %}
+{% infobox alert %}
 
 __Be careful!__ Make sure your reduction function doesn't assume the
 reduction step executes from left to right!

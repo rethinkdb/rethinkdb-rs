@@ -155,6 +155,29 @@ wait until the server has processed them.
 conn.noreply_wait()
 ```
 
+## [set_loop_type](set_loop_type/) ##
+
+{% apibody %}
+r.set_loop_type(string)
+{% endapibody %}
+
+Set an asynchronous event loop model. Currently, the only event loop model RethinkDB supports is `"tornado"`, for use with the [Tornado web framework](http://www.tornadoweb.org). After setting the event loop to `"tornado"` then the [connect](/api/python/connect) command will return Tornado `Future` objects.
+
+__Example:__ Read a table's data using Tornado.
+
+```python
+r.set_loop_type("tornado")
+conn = r.connect(host='localhost', port=28015)
+
+@gen.coroutine
+def use_cursor(conn):
+    # Print every row in the table.
+    cursor = yield r.table('test').order_by(index="id").run(yield conn)
+    while (yield cursor.fetch_next()):
+        item = yield cursor.next()
+        print(item)
+```
+
 {% endapisection %}
 
 {% apisection Cursors %}
@@ -162,14 +185,15 @@ conn.noreply_wait()
 ## [next](next/) ##
 
 {% apibody %}
-cursor.next()
+cursor.next([wait=True])
 {% endapibody %}
 
 Get the next element in the cursor.
 
-__Example:__ Let's grab the next element!
+__Example:__ Retrieve the next element.
 
 ```py
+cursor = r.table('superheroes').run(conn)
 doc = cursor.next()
 ```
 
@@ -445,11 +469,11 @@ r.table('test').index_wait('timestamp').run(conn)
 ## [changes](changes/) ##
 
 {% apibody %}
-table.changes() &rarr; stream
-singleSelection.changes() &rarr; stream
+table.changes(squash=True, include_states=False) &rarr; stream
+singleSelection.changes(squash=True, include_states=False) &rarr; stream
 {% endapibody %}
 
-Return an infinite stream of objects representing changes to a table or a document.
+Return an infinite stream of objects representing changes to a query.
 
 __Example:__ Subscribe to the changes on a table.
 
@@ -956,10 +980,10 @@ r.expr([1,2,3]).nth(1).run(conn)
 ```
 
 
-## [indexes_of](indexes_of/) ##
+## [offsets_of](offsets_of/) ##
 
 {% apibody %}
-sequence.indexes_of(datum | predicate) &rarr; array
+sequence.offsets_of(datum | predicate) &rarr; array
 {% endapibody %}
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.
@@ -967,10 +991,10 @@ Get the indexes of an element in a sequence. If the argument is a predicate, get
 __Example:__ Find the position of the letter 'c'.
 
 ```py
-r.expr(['a','b','c']).indexes_of('c').run(conn)
+r.expr(['a','b','c']).offsets_of('c').run(conn)
 ```
 
-[Read more about this command &rarr;](indexes_of/)
+[Read more about this command &rarr;](offsets_of/)
 
 
 ## [is_empty](is_empty/) ##

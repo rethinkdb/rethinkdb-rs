@@ -1,20 +1,23 @@
 ---
 layout: documentation
 title: Cookbook for Ruby
-active: docs
 docs_active: cookbook
 js: faq_index
 permalink: docs/cookbook/ruby/
 switcher: true
 language : Ruby
 ---
-{% include recipe-forms.html %}
+{% infobox %}
+__Don't see the recipe you're looking for?__ Request or add a recipe by [opening an issue][] on GitHub.
+
+[opening an issue]: https://github.com/rethinkdb/docs/issues
+{% endinfobox %}
+
+{% toctag %}
 
 <img src="/assets/images/docs/api_illustrations/cookbook.png" class="api_command_illustration" />
 
-<div id="faqcontents"></div>
----
-{% faqsection Basic commands %}
+# Basic commands
 
 ## Creating a database ##
 
@@ -96,9 +99,7 @@ Here is how we'd delete all documents in a table:
 r.table("posts").delete.run
 ```
 
-{% endfaqsection %}
-
-{% faqsection Filtering %}
+# Filtering
 
 ## Filtering based on multiple fields ##
 
@@ -213,7 +214,7 @@ and want to retrieve all the posts where `author_id` is `1`, `2`, or
 r.table("posts").get_all(1, 2, 3, :index=>'author_id').run
 ```
 
-{% infobox info %}
+{% infobox %}
 Read about [creating secondary indexes in RethinkDB](/docs/secondary-indexes/).
 {% endinfobox %}
 
@@ -353,9 +354,7 @@ r.table('movies').order_by('rank').limit(25).map{ |doc|
 }.run(conn)
 ```
 
-{% endfaqsection %}
-
-{% faqsection Manipulating documents %}
+# Manipulating documents
 
 ## Adding/overwriting a field in a document ##
 
@@ -422,9 +421,7 @@ r.table('aggregated').get(id).update{ |doc|
 
 Use `default` to ensure that if the `count` field doesn't already exist in the document, it's added correctly, rather than letting `add` throw an error.
 
-{% endfaqsection %}
-
-{% faqsection Pagination %}
+# Pagination
 
 ## Limiting the number of returned documents ##
 
@@ -462,9 +459,7 @@ r.table("users").between(last_name, nil, {:left_bound => "open",
 
 We pass the `last_name` saved from the previous set to `between` as the start index. For the end index, we pass `nil` to return documents from the start index to the table's end. The `left_bound` parameter tells `between` not to include the first record, since it was already returned as part of the previous page.
 
-{% endfaqsection %}
-
-{% faqsection Transformations %}
+# Transformations
 
 ## Counting the number of documents in a table ##
 
@@ -633,9 +628,7 @@ Then you can use that index in the `group` function. This query would return the
 r.table('invoices').group({:index => 'by_day'}).max('price').run(conn)
 ```
 
-{% endfaqsection %}
-
-{% faqsection Miscellaneous %}
+# Miscellaneous
 
 ## Generating monotonically increasing primary key values ##
 
@@ -679,7 +672,7 @@ In addition, the following two fields are set as circumstances dictate:
 
 ## Using dynamic keys in ReQL commands ##
 
-Sometimes you may want to write a ReQL document with a dynamic key--the field name is stored in a variable. You can do this with the `object` command, which takes a list of keys and values (`(key, value, key, value ...)`) and returns an object from them.
+Sometimes you may want to write a ReQL document with a dynamic key&mdash;the field name is stored in a variable. You can do this with the `object` command, which takes a list of keys and values (`(key, value, key, value ...)`) and returns an object from them.
 
 ```rb
 r.table('users').get(1).update(r.object(property_name, value)).run(conn)
@@ -757,5 +750,3 @@ query = query.filter(request.filter) if request.filter
 query = query.order_by('date')
 query = query.run(conn)
 ```
-
-{% endfaqsection %}

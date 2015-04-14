@@ -2,11 +2,10 @@
 layout: documentation
 title: Install RethinkDB on OS X
 title_image: /assets/images/docs/install-platforms/osx.png
-active: docs
 docs_active: install
 permalink: docs/install/osx/
 ---
-{% include install-docs-header.md %}
+{% include docs/install-docs-header.md %}
 
 # Using the installer #
 
@@ -53,4 +52,4 @@ make
 
 You will find the `rethinkdb` binary in the `build/release/` subfolder.
 
-{% include install-next-step.md %}
+{% include docs/install-next-step.md %}

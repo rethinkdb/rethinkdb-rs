@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: SQL to ReQL cheat sheet
-active: docs
 docs_active: sql-to-reql
 permalink: docs/sql-to-reql/ruby/
 switcher: true
@@ -141,7 +140,7 @@ r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filt
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
-more efficient query:
+more efficient query:</p>
 <pre>
 r.<a href="/api/ruby/table/">table</a>("users")
     .<a href="/api/ruby/get_all/">get_all</a>("Peter", :index => "name")
@@ -328,7 +327,7 @@ r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filt
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
-more efficient query:
+more efficient query:</p>
 <pre>
 r.<a href="/api/ruby/table/">table</a>("users")
     .<a href="/api/ruby/get_all/">get_all</a>("Peter", "John",

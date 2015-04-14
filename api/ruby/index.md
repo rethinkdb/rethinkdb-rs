@@ -135,6 +135,28 @@ r.table('marvel').run(conn).each{|x| p x}
 
 [Read more about this command &rarr;](run/)
 
+## [em_run](em_run/) ##
+
+{% apibody %}
+query.em_run(conn, block) &rarr; cursor
+query.em_run(conn, block) &rarr; object
+{% endapibody %}
+
+Run a query asynchronously on a connection using [EventMachine](http://rubyeventmachine.com). If the query returns a sequence (including a stream), the block will be called once with each element of the sequence. Otherwise, the block will be called just once with the returned value.
+
+__Example:__ return a list of users in an EventMachine loop.
+
+```rb
+EventMachine.run {
+  r.table('users').order_by(:index => 'username').em_run(conn) { |row|
+    # do something with returned row data
+    p row
+  }
+}
+```
+
+[Read more about this command &rarr;](em_run/)
+
 ## [noreply_wait](noreply_wait/) ##
 
 {% apibody %}
@@ -154,6 +176,23 @@ conn.noreply_wait
 {% endapisection %}
 
 {% apisection Cursors %}
+
+## [next](next/) ##
+
+{% apibody %}
+cursor.next([true])
+{% endapibody %}
+
+Get the next element in the cursor.
+
+__Example:__ Retrieve the next element.
+
+```rb
+cursor = r.table('superheroes').run(conn)
+doc = cursor.next()
+```
+
+[Read more about this command &rarr;](next/)
 
 ## [each](each/) ##
 
@@ -425,11 +464,11 @@ r.table('test').index_wait('timestamp').run(conn)
 ## [changes](changes/) ##
 
 {% apibody %}
-table.changes() &rarr; stream
-singleSelection.changes() &rarr; stream
+table.changes({:squash => true, :include_states => false}) &rarr; stream
+singleSelection.changes({:squash => true, :include_states => false}) &rarr; stream
 {% endapibody %}
 
-Return an infinite stream of objects representing changes to a table or a document.
+Return an infinite stream of objects representing changes to a query.
 
 __Example:__ Subscribe to the changes on a table.
 
@@ -935,10 +974,10 @@ __Example:__ Select the second element in the array.
 r.expr([1,2,3]).nth(1).run(conn)
 ```
 
-## [indexes_of](indexes_of/) ##
+## [offsets_of](offsets_of/) ##
 
 {% apibody %}
-sequence.indexes_of(datum | predicate) &rarr; array
+sequence.offsets_of(datum | predicate) &rarr; array
 {% endapibody %}
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.
@@ -946,10 +985,10 @@ Get the indexes of an element in a sequence. If the argument is a predicate, get
 __Example:__ Find the position of the letter 'c'.
 
 ```rb
-r.expr(['a','b','c']).indexes_of('c').run(conn)
+r.expr(['a','b','c']).offsets_of('c').run(conn)
 ```
 
-[Read more about this command &rarr;](indexes_of/)
+[Read more about this command &rarr;](offsets_of/)
 
 
 

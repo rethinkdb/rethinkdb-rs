@@ -1,14 +1,13 @@
 ---
 layout: documentation
 title: Migrating data from previous versions of RethinkDB
-active: docs
 docs_active: migration
 permalink: docs/migration/
 ---
 
 Starting with version **1.13** of RethinkDB, manual migration of data when upgrading between major versions (1.x &rarr; 1.y) is no longer necessary. Data is migrated to the new version automatically. While it's not strictly necessary to back up your data before upgrading, it's always a good idea. You should make a backup by using the `dump` command *before* updating RethinkDB to its new version! Databases that have been automatically upgraded are not backward-compatible (that is, a database from version 1.14 cannot be used with version 1.13).
 
-{% infobox info %}
+{% infobox %}
 If you are upgrading from version 1.13 to a later version, you will not need to export and re-import your data. If you are upgrading from version 1.12.x or earlier to a new major version, you will need to follow these instructions.
 
 If you're upgrading from a version before RethinkDB **1.7,** you'll need to use the deprecated [migration script](https://github.com/rethinkdb/rethinkdb/tree/02b4f29e1e7f15b3edffcb68bf015578ec5783ab/scripts/migration).
@@ -20,7 +19,7 @@ Migration consists of three simple steps:
   - Upgrade RethinkDB to a new version
   - Import the data into the new version of RethinkDB
 
-{% infobox info %}
+{% infobox alert %}
 You must export your data **before** you've upgraded RethinkDB to a new version! If you've already updated, you can find binaries for previous versions in the [download archive](http://download.rethinkdb.com).
 {% endinfobox %}
 
@@ -44,7 +43,7 @@ This command will export all your data to a `tar.gz` file named
 Use `rethinkdb dump --help` to see the complete list of options for dumping
 your data.
 
-{% infobox info %}
+{% infobox alert %}
 
 __Note:__ The `dump` command requires the [Python driver](/docs/install-drivers/python/) to be installed. Don't upgrade the Python driver until *after* you've dumped the data!
 
@@ -58,7 +57,7 @@ __First__, upgrade the RethinkDB server and drivers to the latest version:
 - See [server install instructions](/install) for your platform.
 - See [driver install instructions](/docs/install-drivers/) for your language.
 
-{% infobox info %}
+{% infobox %}
 __Keep in mind__: 
 
 - Don't upgrade the Python driver until *after* you've dumped the data.

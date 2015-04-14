@@ -1,10 +1,9 @@
 ---
 layout: documentation
 title: RethinkDB Documentation
-active: docs
-alias: docs/pragmatic-faq/
+doc_index: true
 ---
-<table class="docs-grid docs-index">
+<!--<table class="docs-grid docs-index">
     <tbody>
         <tr>
             <td>
@@ -49,7 +48,7 @@ alias: docs/pragmatic-faq/
                         Read through the annotated source code for
                         example applications written on top of
                         RethinkDB. Todo lists, chat servers, data
-                        analysis &mdash; it's all there!
+                        analysis&mdash;it's all there!
                     </p>
                     <a href="/docs/examples/">Learn RethinkDB by example &raquo;</a>
                 </div>
@@ -73,4 +72,74 @@ alias: docs/pragmatic-faq/
             </td>
         </tr>
     </tbody>
-</table>
+</table> -->
+
+<section class="docs-landing">
+    <section class="docs-intro">
+        <h2>Welcome to the RethinkDB documentation</h2>
+        <p>
+            RethinkDB makes building and scaling realtime apps dramatically easier.
+            Get started by installing the server, and jump into our geting started
+            guide to start building your first app in minutes.
+        </p>
+        <ul class="primary-docs">
+            <li class="quickstart">
+                <a href="/docs/quickstart/">
+                    <p>Quickstart</p>
+                </a>
+            </li>
+            <li class="install">
+                <a href="/docs/install/">
+                    <p>Install RethinkDB</p>
+                </a>
+            </li>
+            <li class="api">
+                <a href="/api/">
+                    <p>API reference</p>
+                </a>
+            </li>
+         </ul>
+    </section>
+    <section class="featured-articles">
+        <h1>Featured articles</h1>
+        <ul class="article-list">
+            {% for article in site.data['docs-featured'] %}
+                <li>
+                    <h1><a href="{{ article.permalink }}">{{ article.title }}</a></h1>
+                    <p>{{ article.description }}</p>
+                </li>
+            {% endfor %}
+
+        </ul>
+    </section>
+    <!--
+    <section class="docs-intro">
+        <h2>Try some example RethinkDB apps</h2>
+        <ul class="example-apps"><!-- flexbox of six example apps --><!--
+            <li>
+                <a href="#">
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                </a>
+            </li>
+        </ul>
+        -->
+</section>

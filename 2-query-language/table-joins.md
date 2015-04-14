@@ -1,26 +1,28 @@
 ---
 layout: documentation
 title: Table joins in RethinkDB
-active: docs
 docs_active: table-joins
 permalink: docs/table-joins/
 ---
 
-{% infobox info %}
-__Wondering how to model your data?__ Read about [data modeling in RethinkDB](/docs/data-modeling).{% endinfobox %}
-
-<img src="/assets/images/docs/api_illustrations/table-joins.png"
-     alt="Table Join Illustration"
-     class="api_command_illustration" />
+{% infobox %}
+__Wondering how to model your data?__ Read about [data modeling in RethinkDB](/docs/data-modeling).
+{% endinfobox %}
 
 Like many traditional database systems, RethinkDB supports `JOIN`
 commands to combine data from multiple tables. In RethinkDB joins are
-automatically distributed &mdash; a join command is automatically sent
+automatically distributed&mdash;a join command is automatically sent
 to the appropriate nodes across the cluster, the relevant data is
 combined, and the final result is presented to the user.
 
 Let's see how we can use joins in RethinkDB to query data based on
 __one to many__, and __many to many__ relations.
+
+{% toctag %}
+
+<img src="/assets/images/docs/api_illustrations_redone/table-joins_background.png"
+     alt="Table Join Illustration"
+     class="api_command_illustration" />
 
 # One to many relations #
 
@@ -59,7 +61,7 @@ r.table("employees").eq_join("company_id", r.table("companies")).run()
 
 This query joins the `company_id` of the employee table with the
 primary key of the company table. It returns a sequence of documents
-where each document contains two fields &mdash; the employee
+where each document contains two fields&mdash;the employee
 information and the company information:
 
 ```json
@@ -165,11 +167,11 @@ r.table("employees").eq_join("company_name",
                              r.table("companies"), index="company").run()
 ```
 
-{% infobox info %}
+{% infobox %}
 __Want to learn more about indexes?__: Read about [using secondary indexes in RethinkDB](/docs/secondary-indexes/).
 {% endinfobox %}
 
-{% infobox info %}
+{% infobox %}
 __Note__: you can also join tables on arbitrary fields without
 creating an index using the [inner_join](/api/python/inner_join/)
 command. However, arbitrary inner joins are less efficient then
@@ -183,8 +185,7 @@ suppose we have a collaborative blogging platform where authors
 collaborate to create posts (multiple authors can work on any given
 post, and publish multiple posts).
 
-In order to model this data we'd create three tables &mdash;
-`authors`, `posts` and `authors_posts`, similarly to how we'd do it in a
+In order to model this data we'd create three tables&mdash;`authors`, `posts` and `authors_posts`, similarly to how we'd do it in a
 relational system. Here is example data for the `authors` table:
 
 ```json
@@ -260,7 +261,7 @@ post written by every author in our database:
 If you use the `zip` command after `join`, the document from the right
 table will be merged into the left one.
 
-{% infobox info %}
+{% infobox %}
 ReQL will eventually provide a better function to manipulate the output of a JOIN query.  
 See [Github issue #325](https://github.com/rethinkdb/rethinkdb/issues/325) to track progress.
 {% endinfobox %}

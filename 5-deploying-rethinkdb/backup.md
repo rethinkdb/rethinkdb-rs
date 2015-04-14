@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Back up your data
-active: docs
 docs_active: backup
 permalink: docs/backup/
 ---

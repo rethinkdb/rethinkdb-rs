@@ -1,12 +1,10 @@
 ---
 layout: documentation
 title: Failover
-active: docs
 docs_active: failover
 permalink: docs/failover/
 ---
-# About automatic failover #
-{% infobox info %}
+{% infobox %}
 __Note__: RethinkDB does not support fully automatic failover yet, but it is on
 the roadmap. Follow [Github
 issue #223](https://github.com/rethinkdb/rethinkdb/issues/223) for more information.
@@ -48,7 +46,7 @@ In this case, if we don't want to wait for the server to come back online, we
 can resolve the issue by permanently removing the server. This will delete the
 server and all its data from the cluster.
 
-{% infobox %}
+{% infobox alert %}
 __Warning__: Once we have permanently removed a server, all of its data will be
 lost. Even if we later restart a RethinkDB instance with the same data
 directory, we will not be able to reuse the data.

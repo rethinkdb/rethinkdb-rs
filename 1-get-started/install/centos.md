@@ -2,11 +2,10 @@
 layout: documentation
 title: Install RethinkDB on CentOS
 title_image: /assets/images/docs/install-platforms/centos.png
-active: docs
 docs_active: install
 permalink: docs/install/centos/
 ---
-{% include install-docs-header.md %}
+{% include docs/install-docs-header.md %}
 
 # With binaries #
 
@@ -19,6 +18,7 @@ sudo wget http://download.rethinkdb.com/centos/6/`uname -m`/rethinkdb.repo \
           -O /etc/yum.repos.d/rethinkdb.repo
 sudo yum install rethinkdb
 ```
+
 # Compile from source #
 
 These instructions have been tested on CentOS 6.5.
@@ -70,4 +70,4 @@ scl enable devtoolset-2 -- make
 sudo make install
 ```
 
-{% include install-next-step.md %}
+{% include docs/install-next-step.md %}

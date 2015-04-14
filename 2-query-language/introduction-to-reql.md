@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Introduction to ReQL
-active: docs
 docs_active: introduction-to-reql
 permalink: docs/introduction-to-reql/
 ---
@@ -11,9 +10,11 @@ convenient way to manipulate JSON documents. This document is a gentle
 introduction to ReQL concepts. You don't have to read it to be
 productive with RethinkDB, but it helps to understand some basics.
 
-{% infobox info %}
-<strong>Want to write useful queries right away?</strong> Check out the [ten-minute guide](/docs/guide/javascript/).
+{% infobox %}
+__Want to write useful queries right away?__ Check out the [ten-minute guide](/docs/guide/javascript/).
 {% endinfobox %}
+
+{% toctag %}
 
 <img src="/assets/images/docs/api_illustrations/introduction_to_reql.png" class="api_command_illustration" />
 
@@ -34,8 +35,8 @@ three key principles:
 
 Let's look at these concepts in more detail.
 
-{% infobox info %}
-<strong>Note:</strong> the following examples use the Python driver,
+{% infobox %}
+__Note:__ the following examples use the Python driver,
 but most of them also apply to RethinkDB drivers for other languages.
 {% endinfobox %}
 
@@ -61,7 +62,7 @@ r.table('users').run(conn)          # get an iterable cursor to the `users` tabl
 Every ReQL query, from filters, to updates, to table joins is done by
 calling appropriate methods.
 
-{% infobox info %}
+{% infobox %}
 __This design has the following advantages:__
 
 * You can use the same programming environment and tools you're
@@ -103,7 +104,7 @@ distributed programs that get the data from relevant nodes, perform
 the necessary computations, and present you with final results
 without you ever worrying about it.
 
-{% infobox info %}
+{% infobox %}
 __This design has the following advantages:__
 
 * The language is easy to learn, read, and modify.
@@ -118,7 +119,7 @@ __This design has the following advantages:__
 
 While queries are built up on the client, they're only sent to the
 server once you call the `run` command. All processing happens on the
-server &mdash; the queries don't run on the client, and don't require
+server&mdash;the queries don't run on the client, and don't require
 intermediary network round trips between the client and the
 server. For example, you can store queries in variables, and send them
 to the server later:
@@ -131,7 +132,7 @@ distinct_lastnames_query = r.table('users').pluck('last_name').distinct()
 distinct_lastnames_query.run(conn)
 ```
 
-{% infobox info %}
+{% infobox %}
 Read about [how this technology is implemented](/blog/lambda-functions/) for more details.
 {% endinfobox %}
 
@@ -156,7 +157,7 @@ indexes to allow efficient data access. You can also create compound
 indexes and indexes based on arbitrary ReQL expressions to speed up
 complex queries.
 
-{% infobox info %}
+{% infobox %}
 Learn how to use [primary and secondary indexes](/docs/secondary-indexes/) in RethinkDB.
 {% endinfobox %}
 
@@ -207,7 +208,7 @@ to an efficient ReQL query that will be executed on the server:
   query. This representation is then sent to the server over the
   network and evaluated on the cluster.
 
-{% infobox info %}
+{% infobox %}
 Read about [how this technology is implemented](/blog/lambda-functions/) for more details.
 {% endinfobox %}
 
@@ -226,7 +227,7 @@ r.table('users').filter(lambda user:
     r.branch(user['age'] > 30, True, False)).run(conn)
 ```
 
-{% infobox info %}
+{% infobox %}
 __This design has the following advantages:__
 
 * For most queries, you can write familiar, easy to learn code without
@@ -299,7 +300,7 @@ the right thing and evaluate relevant parts of the query above on the
 appropriate shards, combine bits of data as necessary, and return the
 complete result.
 
-{% infobox info %}
+{% infobox %}
 __A few things to note about this query:__
 
 * We compose the query on the client and call `run` only
@@ -332,7 +333,7 @@ described here. See the following documentation for more details:
 * Learn how to use [table joins](/docs/table-joins/) in RethinkDB.
 * Browse the [API reference](/api) for more commands.
 
-{% infobox info %}
+{% infobox %}
 __This design has the following advantages:__
 
 * Unlike most NoSQL languages, you can use ReQL to build queries of

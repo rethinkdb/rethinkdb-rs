@@ -21,6 +21,8 @@ table.between(lower_key, upper_key
 
 Get all documents between two keys. Accepts three optional arguments: `index`, `left_bound`, and `right_bound`. If `index` is set to the name of a secondary index, `between` will return all documents where that index's value is in the specified range (it uses the primary key by default). `left_bound` or `right_bound` may be set to `open` or `closed` to indicate whether or not to include that endpoint of the range (by default, `left_bound` is closed and `right_bound` is open).
 
+You may also use the special constants `r.minval` and `r.maxval` for boundaries, which represent "less than any index key" and "more than any index key" respectively. For instance, if you use `r.minval` as the lower key, then `between` will return all documents whose primary keys (or indexes) are less than the specified upper key.
+
 Note that compound indexes are sorted using [lexicographical order][lo]. Take the following range as an example:
 
 	[[1, "c"] ... [5, "e"]]
@@ -45,11 +47,16 @@ __Example:__ Find all users with primary key >= 10 and <= 20 (an interval closed
 r.table('marvel').between(10, 20, :right_bound => 'closed').run(conn)
 ```
 
-
-__Example:__ Find all users with primary key < 20. (You can use `nil` to mean "unbounded" for either endpoint.)
+__Example:__ Find all users with primary key < 20.
 
 ```rb
-r.table('marvel').between(nil, 20, :right_bound => 'closed').run(conn)
+r.table('marvel').between(r.minval, 20).run(conn)
+```
+
+__Example:__ Find all users with primary key > 10.
+
+```rb
+r.table('marvel').between(10, r.maxval, :left_bound => 'open').run(conn)
 ```
 
 __Example:__ Between can be used on secondary indexes too. Just pass an optional index argument giving the secondary index to query.

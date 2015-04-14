@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Working with Node.js and RethinkDB
-active: docs
 docs_active: nodejs
 permalink: docs/nodejs/
 ---

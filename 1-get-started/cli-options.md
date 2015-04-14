@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: RethinkDB command line options
-active: docs
 docs_active: cli-options
 permalink: /docs/cli-options/
 ---

@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: "Deploying with PaaS"
-active: docs
 docs_active: paas
 permalink: docs/paas/
 ---
@@ -51,7 +50,7 @@ The smallest recommended instance type is `m1.small`. However, `t1.micro` works 
 [rmp]: https://aws.amazon.com/marketplace/pp/B00E9EZ5DK
 [ys]: https://aws.amazon.com/marketplace/library
 
-{% infobox info %}
+{% infobox %}
 __Note__: RethinkDB uses a self-signed certificate to encrypt your
 password. You'll have to accept the self-signed certificate in your
 browser to access the instance.
@@ -66,7 +65,7 @@ The RethinkDB AMI is preconfigured with the following options:
 - Official RethinkDB client drivers for Python, JavaScript, and Ruby
 - 5 GB of free EBS space for your data
 
-{% infobox info %}
+{% infobox %}
 __Note__: it is possible to attach more specialized EBS volumes and
 have RethinkDB store your data on them, but this option is not yet
 available out of the box. If you manually attach an EBS volume, you can

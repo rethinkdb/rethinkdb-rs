@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Administration tools
-active: docs
 docs_active: administration-tools
 permalink: docs/administration-tools/
 alias: docs/guides/administration/

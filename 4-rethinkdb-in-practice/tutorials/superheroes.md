@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: "Tutorial: playing with a superhero dataset (RethinkDB and Python)"
-active: docs
 permalink: docs/tutorials/superheroes/
 ---
 In this tutorial we'll introduce using RethinkDB in Python by playing

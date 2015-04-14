@@ -1,44 +1,35 @@
 ---
 layout: documentation
 title: "Technical comparison: RethinkDB and MongoDB"
-active: docs
 docs_active: comparison-tables
 permalink: docs/comparison-tables/
 alias: docs/comparisons/mongodb/
 ---
 
-{% infobox info %}
-<strong>Interested in a more personal perspective?</strong> Read our take on <a
-href="/docs/rethinkdb-vs-mongodb/">what makes RethinkDB different</a>.
+{% infobox %}
+__Interested in a more personal perspective?__ Read our take on [what makes RethinkDB different](/docs/rethinkdb-vs-mongodb/).
 {% endinfobox %}
 
-This document is our attempt at an unbiased comparison between
-RethinkDB and MongoDB (for a more partisan view, take a look at the
-[biased comparison](/blog/mongodb-biased-comparison/) written by
-[@coffeemug](https://github.com/coffeemug)). We tried to be spartan
-with our commentary to allow the reader to form their own
+RethinkDB is based on a fundamentally different architecture from
+MongoDB. Instead of polling for changes, the developer can tell
+RethinkDB to continuously push updated query results in realtime.
+
+However, since RethinkDB is sometimes compared to MongoDB we wrote up
+an unbiased technical comparison (for a more partisan view, take a
+look at the [biased comparison](/blog/mongodb-biased-comparison/)
+written by [@coffeemug](https://github.com/coffeemug)). We tried to be
+spartan with our commentary to allow the reader to form their own
 opinion. Whenever possible, we provide links to the original
 documentation for further details.
 
-The document is organized by four main categories:
-
-* [Development](#development)
-* [Administrative operations](#administration)
-* [Scaling](#scaling)
-* [Database architecture](#architecture)
-
-<div class="comparison-section"><a name="development" class="comparison-anchor"></a></div>
-
 # Development #
-
-
 
 | | RethinkDB | MongoDB |  
 | ------ | ------ | ------ |  
-|Platforms | Linux, OS X | Linux, OS X, Windows, Solaris |  
-|Data model | JSON documents | BSON documents |  
-|Data access | Unified chainable dynamic query language | Dynamic rich query language |  
-|JavaScript integration | V8 engine | Spidermonkey/V8 engine |  
+| Platforms | Linux, OS X | Linux, OS X, Windows, Solaris |  
+| Data model | JSON documents | BSON documents |  
+| Data access | Unified chainable dynamic query language | Dynamic rich query language |  
+| JavaScript integration | V8 engine | Spidermonkey/V8 engine |  
 | Access languages | JSON protocol<br>3 official libraries<br>Many community supported libraries | BSON protocol<br>13 official libraries<br>Many community supported libraries |  
 | Index types | Primary key<br>Compound<br>Secondary<br>Geospatial<br>Arbitrarily computed | Unique (unsharded only)<br>Compound<br>Secondary<br>Geospatial<br>Sparse |  
 | Cloud deployment | AWS, dotCloud, Compose.io | Many cloud platforms |  
@@ -136,8 +127,6 @@ solutions.
 
 RethinkDB can be manually deployed on cloud platforms such as AWS.
 
-
-<div class="comparison-section"><a name="administration" class="comparison-anchor"></a></div>
 # Administration #
 
 |           | RethinkDB | MongoDB |
@@ -192,7 +181,6 @@ MongoDB provides different mechanisms for backing up data:
 
 RethinkDB supports [hot backup](/docs/backup/) on a live cluster via `dump` and `restore` commands.
 
-<div class="comparison-section"><a name="scaling" class="comparison-anchor"></a></div>
 # Scaling #
 
 |             | RethinkDB | MongoDB |
@@ -277,8 +265,6 @@ control](/docs/architecture/#how-does-rethinkdb-execute-queries)
 . In case multiple writes are performed on documents that are close together in
 the B-Tree, RethinkDB does take exclusive block-level locks, but reads can
 still proceed.
-
-<div class="comparison-section"><a name="architecture" class="comparison-anchor"></a></div>
 
 # Architecture #
 

@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: SQL to ReQL cheat sheet
-active: docs
 docs_active: sql-to-reql
 permalink: docs/sql-to-reql/javascript/
 alias: docs/sql-to-reql/
@@ -89,6 +88,7 @@ r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/i
     </tbody>
 </table>
 
+
 # SELECT #
 
 This is a list of queries for selecting data out of a database.
@@ -149,7 +149,7 @@ r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/f
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
-more efficient query:
+more efficient query:</p>
 <pre>
 r.<a href="/api/javascript/table/">table</a>("users")
     .<a href="/api/javascript/get_all/">getAll</a>("Peter", {index: "name"})
@@ -345,7 +345,7 @@ r.<a href="/api/javascript/table/">table</a>("users").<a href="/api/javascript/f
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
-more efficient query:
+more efficient query:</p>
 <pre>
 r.<a href="/api/javascript/table/">table</a>("users")
     .<a href="/api/javascript/get_all/">getAll</a>("Peter", "John",

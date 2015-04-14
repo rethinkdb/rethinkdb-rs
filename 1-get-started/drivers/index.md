@@ -1,134 +1,196 @@
 ---
 layout: documentation
 title: Installing RethinkDB client drivers
-active: docs
 docs_active: install-drivers
 permalink: docs/install-drivers/
 alias: docs/guides/drivers/
 ---
 
-<div class="icon-box-category">
-    <h1>Official drivers &raquo;</h1>
-    <a class="icon-box driver-language" href="javascript/">
-        <img src="/assets/images/docs/driver-languages/javascript.png" />
-        <p class="name">JavaScript</p>
-    </a>
-    <a class="icon-box driver-language" href="ruby/">
-        <img src="/assets/images/docs/driver-languages/ruby.png" />
-        <p class="name">Ruby</p>
-    </a>
-    <a class="icon-box driver-language" href="python/">
-        <img src="/assets/images/docs/driver-languages/python.png" />
-        <p class="name">Python</p>
-    </a>
-</div>
+<section class="supported-platforms">
+    <section class="platform-category">
+        <h2>Official drivers</h2>
+        <ul class="platform-buttons">
+            <li>
+                <a href="javascript/">
+                    <img src="/assets/images/docs/driver-languages/javascript.png" />
+                    <p class="name">JavaScript</p>
+                </a>
+            </li>
+            <li>
+                <a href="ruby/">
+                    <img src="/assets/images/docs/driver-languages/ruby.png" />
+                    <p class="name">Ruby</p>
+                </a>
+            </li>
+            <li>
+                <a href="python/">
+                    <img src="/assets/images/docs/driver-languages/python.png" />
+                    <p class="name">Python</p>
+                </a>
+            </li>
+        </ul>
+    </section>
+    
+    <section class="platform-category">
+        <h2>Current community-supported drivers</h2>
+        <p>These drivers have been updated to use the JSON driver protocol and at least RethinkDB 1.15 ReQL terms (geometry support and basic changefeeds).</p>
+        <ul class="platform-buttons">
+            <li>
+                <a href="https://github.com/mfenniak/rethinkdb-net">
+                    <img src="/assets/images/docs/driver-languages/csharp.png" />
+                    <p class="name">C# / .NET</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/AtnNn/librethinkdbxx">
+                    <img src="/assets/images/docs/driver-languages/cpp.png" />
+                    <p class="name">C++ <span class="driver-author">atnnn</span></p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/apa512/clj-rethinkdb">
+                    <img src="/assets/images/docs/driver-languages/clojure.png" />
+                    <p class="name smaller-font">Clojure <span class="driver-author">apa512</span></p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/orthecreedence/cl-rethinkdb">
+                    <img src="/assets/images/docs/driver-languages/commonlisp.png" />
+                    <p class="name smaller-font">Common Lisp</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/dancannon/gorethink">
+                    <img src="/assets/images/docs/driver-languages/go.png" />
+                    <p class="name">Go</p>
+                </a>
+            </li>
+            <li>
+                <a href="http://hackage.haskell.org/package/rethinkdb">
+                    <img src="/assets/images/docs/driver-languages/haskell.png" />
+                    <p class="name">Haskell</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/grandquista/Lua-ReQL">
+                    <img src="/assets/images/docs/driver-languages/lua.png" />
+                    <p class="name">Lua</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/neumino/rethinkdbdash">
+                    <img src="/assets/images/docs/driver-languages/nodejs.png" />
+                    <p class="name">Node.js</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/njlg/perl-rethinkdb">
+                    <img src="/assets/images/docs/driver-languages/perl.png" />
+                    <p class="name">Perl</p>
+                </a>
+            </li>
+            <li>
+                <a href="http://danielmewes.github.io/php-rql/">
+                    <img src="/assets/images/docs/driver-languages/php.png" />
+                    <p class="name">PHP</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/kclay/rethink-scala">
+                    <img src="/assets/images/docs/driver-languages/scala.png" />
+                    <p class="name">Scala <span class="driver-author">kclay</span></p>
+                </a>
+            </li>
+        </ul>
+    </section>
 
-<div class="icon-box-category">
-    <h1>Community-supported drivers &raquo;</h1>
-    <p>These drivers have been updated to at least the RethinkDB v1.11 protocol.</p>
-    <a class="mini icon-box driver-language" href="https://github.com/mfenniak/rethinkdb-net">
-        <img src="/assets/images/docs/driver-languages/csharp.png" />
-        <p class="name">C# / .NET</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/bitemyapp/revise">
-        <img src="/assets/images/docs/driver-languages/clojure.png" />
-        <p class="name smaller-font">Clojure <span class="driver-author">@cesarbp</span></p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/apa512/clj-rethinkdb">
-        <img src="/assets/images/docs/driver-languages/clojure.png" />
-        <p class="name smaller-font">Clojure <span class="driver-author">@apa512</span></p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/orthecreedence/cl-rethinkdb">
-        <img src="/assets/images/docs/driver-languages/commonlisp.png" />
-        <p class="name smaller-font">Common Lisp</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/dbettin/rethinkdb">
-        <img src="/assets/images/docs/driver-languages/dart.png" />
-        <p class="name smaller-font">Dart</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/dancannon/gorethink">
-        <img src="/assets/images/docs/driver-languages/go.png" />
-        <p class="name">Go</p>
-    </a>
-    <a class="mini icon-box driver-language" href="http://hackage.haskell.org/package/rethinkdb">
-        <img src="/assets/images/docs/driver-languages/haskell.png" />
-        <p class="name">Haskell</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/npiv/rethink-java-driver">
-        <img src="/assets/images/docs/driver-languages/java.png" />
-        <p class="name">Java <span class="driver-author">@npiv</span></p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/dkhenry/rethinkjava">
-        <img src="/assets/images/docs/driver-languages/java.png" />
-        <p class="name">Java <span class="driver-author">@dkhenry</span></p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/grandquista/Lua-ReQL">
-        <img src="/assets/images/docs/driver-languages/lua.png" />
-        <p class="name">Lua</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/neumino/rethinkdbdash">
-        <img src="/assets/images/docs/driver-languages/nodejs.png" />
-        <p class="name">Node.js</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/njlg/perl-rethinkdb">
-        <img src="/assets/images/docs/driver-languages/perl.png" />
-        <p class="name">Perl</p>
-    </a>
-    <a class="mini icon-box driver-language" href="http://danielmewes.github.io/php-rql/">
-        <img src="/assets/images/docs/driver-languages/php.png" />
-        <p class="name">PHP</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/kclay/rethink-scala">
-        <img src="/assets/images/docs/driver-languages/scala.png" />
-        <p class="name">Scala <span class="driver-author">@kclay</span></p>
-    </a>
-</div>
+    <section class="platform-category">
+        <h2>Older community-supported drivers</h2>
+        <p>These drivers have not been updated with more recent additions to the RethinkDB driver protocol, and will require work to take advantage of newer features. If you want to work with one of these languages, these may provide a good starting point.</p>
+        <ul class="platform-buttons">
+            <li>
+            <a href="https://github.com/unbit/librethinkdb">
+                <img src="/assets/images/docs/driver-languages/c.png" />
+                <p class="name">C</p>
+            </a>
+            </li>
+            <li>
+            <a href="https://github.com/jurajmasar/rethink-db-cpp-driver">
+                <img src="/assets/images/docs/driver-languages/cpp.png" />
+                <p class="name">C++ <span class="driver-author">jurajmasar</span></p>
+            </a>
+            </li>
+            <li>
+                <a href="https://github.com/bitemyapp/revise">
+                    <img src="/assets/images/docs/driver-languages/clojure.png" />
+                    <p class="name smaller-font">Clojure <span class="driver-author">cesarbp</span></p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/dbettin/rethinkdb">
+                    <img src="/assets/images/docs/driver-languages/dart.png" />
+                    <p class="name">Dart</p>
+                </a>
+            </li>
+            <li>
+            <a href="https://github.com/azukiapp/elixir-rethinkdb">
+                <img src="/assets/images/docs/driver-languages/elixir.png" />
+                <p class="name">Elixir</p>
+            </a>
+            </li>
+            <li>
+            <a href="https://github.com/taybin/lethink">
+                <img src="/assets/images/docs/driver-languages/erlang.png" />
+                <p class="name">Erlang</p>
+            </a>
+            </li>
+            <li>
+                <a href="https://github.com/npiv/rethink-java-driver">
+                    <img src="/assets/images/docs/driver-languages/java.png" />
+                    <p class="name">Java <span class="driver-author">npiv</span></p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/dkhenry/rethinkjava">
+                    <img src="/assets/images/docs/driver-languages/java.png" />
+                    <p class="name">Java <span class="driver-author">dkhenry</span></p>
+                </a>
+            </li>
+            <li>
+            <a href="https://github.com/dparnell/rethink-db-client">
+                <img src="/assets/images/docs/driver-languages/objc.png" />
+                <p class="name">Objective-C</p>
+            </a>
+            </li>
+            <li>
+            <a href="https://github.com/esycat/rql-scala">
+                <img src="/assets/images/docs/driver-languages/scala.png" />
+                <p class="name">Scala <span class="driver-author">esycat</span></p>
+            </a>
+            </li>
+        </ul>
+    </section>
+</section>
 
-<div class="icon-box-category">
-    <h1>Other community-supported drivers &raquo;</h1>
-    <p>These drivers have not been updated with more recent additions to the RethinkDB driver protocol, and will require work to take advantage of newer features. If you want to work with one of these languages, these may provide a good starting point.</p>
-    <a class="mini icon-box driver-language" href="https://github.com/unbit/librethinkdb">
-        <img src="/assets/images/docs/driver-languages/c.png" />
-        <p class="name">C</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/jurajmasar/rethink-db-cpp-driver">
-        <img src="/assets/images/docs/driver-languages/cpp.png" />
-        <p class="name">C++</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/azukiapp/elixir-rethinkdb">
-        <img src="/assets/images/docs/driver-languages/elixir.png" />
-        <p class="name">Elixir</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/taybin/lethink">
-        <img src="/assets/images/docs/driver-languages/erlang.png" />
-        <p class="name">Erlang</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/dparnell/rethink-db-client">
-        <img src="/assets/images/docs/driver-languages/objc.png" />
-        <p class="name">Objective-C</p>
-    </a>
-    <a class="mini icon-box driver-language" href="https://github.com/esycat/rql-scala">
-        <img src="/assets/images/docs/driver-languages/scala.png" />
-        <p class="name">Scala <span class="driver-author">@esycat</span></p>
-    </a>
-</div>
-
-
-{% infobox info %}
-    <strong>Haven't installed the server yet?</strong> <a href="/install">Go do that</a> first!
+{% infobox %}
+    __Haven't installed the server yet?__ [Go do that](/install) first!
 {% endinfobox %}
 
 ---
 
 # Contribute a driver #
 
-Help make RethinkDB available on more platforms &mdash; contribute a
+Help make RethinkDB available on more platforms&mdash;contribute a
 driver for another language, or join one of the existing projects. To
 get started with driver development:
 
-- [Subscribe](https://groups.google.com/forum/?fromgroups=#!forum/rethinkdb-dev) to the RethinkDB driver developers group
-- [Read](/docs/driver-spec/) the driver protocol specification
-- [Browse](https://github.com/rethinkdb/rethinkdb/tree/v{{site.version.major}}.x/drivers) the source code for existing drivers
+- Read the article on [writing RethinkDB drivers][wd].
+- Subscribe to the [RethinkDB driver developers group][gg].
+- Read the [source code for existing drivers][sc].
+
+[wd]: /docs/writing-drivers/
+[gg]: https://groups.google.com/forum/?fromgroups=#!forum/rethinkdb-dev
+[sc]: https://github.com/rethinkdb/rethinkdb/tree/v{{site.version.major}}.x/drivers
 
 __Thanks to all our amazing driver contributors!__
 

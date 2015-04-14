@@ -1,7 +1,6 @@
 ---
 layout: documentation
 title: Storing binary objects
-active: docs
 docs_active: storing-binary
 permalink: docs/storing-binary/python/
 alias: docs/storing-binary/
