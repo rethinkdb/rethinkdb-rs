@@ -4,7 +4,7 @@ title: Writing RethinkDB drivers
 permalink: docs/writing-drivers/
 alias: docs/driver-spec/
 active: docs
-docs_active: install
+docs_active: writing-drivers
 ---
 
 
