@@ -4,7 +4,7 @@ title: "Cookbooks"
 docs_active: cookbook
 permalink: docs/cookbook/
 ---
-You can find three cookbooks for the three official drivers. The recipes comes from the most
+You can find three cookbooks for the three official drivers. The recipes come from the most
 frequently asked questions.
 
 - [JavaScript](javascript/)
