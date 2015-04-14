@@ -368,7 +368,7 @@ __Example:__ Simple use
 @gen.coroutine
 def single_row(connection):
     # Insert some data
-    yield r.table('test').insert([{"id": 0}, {"id": 1}, {"id": 2}]).run(connection)
+    yield r.table('test').insert([{"id": 0}, {"id": 1}, {"id": 2}]).run(yield connection)
     # Print the first row in the table
     row = yield r.table('test').get(0).run(connection)
     print(row)
@@ -559,7 +559,8 @@ class ChangefeedNoticer(object):
     def print_cfeed_data(self, table):
         feed = yield r.table(table).changes().run(yield self._connection)
         self._feeds_ready[table].set_result(True)
-        for cursor in feed:
+        while (yield feed.fetch_next()):
+            cursor = feed.next()
             chain_future(self._cancel_future, cursor)
             item = yield cursor
             if item is self._sentinel:
@@ -568,7 +569,7 @@ class ChangefeedNoticer(object):
     @gen.coroutine
     def table_write(self, table):
         for i in range(10):
-            yield r.table(table).insert({'id': i}).run(self._connection)
+            yield r.table(table).insert({'id': i}).run(yield self._connection)
     @gen.coroutine
     def exercise_changefeeds(self):
         self._feeds_ready = {'a': Future(), 'b': Future()}
@@ -581,13 +582,13 @@ class ChangefeedNoticer(object):
     @classmethod
     @gen.coroutine
     def run(cls, connection):
-        if 'a' in (yield r.table_list().run(connection)):
-            yield r.table_drop('a').run(connection)
-        yield r.table_create('a').run(connection)
-        if 'b' in (yield r.table_list().run(connection)):
-            yield r.table_drop('b').run(connection)
-        yield r.table_create('b').run(connection)
-        noticer = cls(connection)
+        if 'a' in (yield r.table_list().run(yield connection)):
+            yield r.table_drop('a').run(yield connection)
+        yield r.table_create('a').run(yield connection)
+        if 'b' in (yield r.table_list().run(yield connection)):
+            yield r.table_drop('b').run(yield connection)
+        yield r.table_create('b').run(yield connection)
+        noticer = cls(yield connection)
         yield noticer.exercise_changefeeds()
 
 # Output

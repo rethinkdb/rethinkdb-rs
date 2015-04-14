@@ -35,23 +35,6 @@ def use_cursor(conn):
         print(item)
 ```
 
-
-```rb
-EventMachine.run {
-  printed = 0
-  handle = r.table('test').order_by(:index => 'id').em_run(conn) { |row|
-    printed += 1
-    if printed > 3
-      handle.close
-    else
-      p row
-    end
-  }
-}
-```
-
-
-
 For a longer discussion with Tornado examples, see the documentation article on [Asynchronous connections][ac].
 
 [ac]: /docs/async-connections/
