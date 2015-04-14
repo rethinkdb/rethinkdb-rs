@@ -246,41 +246,24 @@ cursor = r.table("authors").changes.run
 cursor.each{|document| p document}
 ```
 
-As you run data modification commands in the next two sections, the
-feed will push notifications to your program, and the code above will
-print the following messages:
+Now switch back to your first terminal. We'll be updating and deleting
+some documents in the next two sections. As we run these commands, the
+feed will push notifications to your program. The code above will
+print the following messages in the second terminal:
 
 ```json
 {
   "new_val": {
     "id": "1d854219-85c6-4e6c-8259-dbda0ab386d4",
     "name": "Laura Roslin",
-    "posts": [
-      {
-        "content": "I, Laura Roslin, ...",
-        "title": "The oath of office"
-      },
-      {
-        "content": "The Cylons have the ability...",
-        "title": "They look like us"
-      }
-    ],
+    "posts": [...],
     "tv_show": "Battlestar Galactica",
     "type": "fictional"
   },
   "old_val": {
     "id": "1d854219-85c6-4e6c-8259-dbda0ab386d4",
     "name": "Laura Roslin",
-    "posts": [
-      {
-        "content": "I, Laura Roslin, ...",
-        "title": "The oath of office"
-      },
-      {
-        "content": "The Cylons have the ability...",
-        "title": "They look like us"
-      }
-    ],
+    "posts": [...],
     "tv_show": "Battlestar Galactica"
   }
 }
