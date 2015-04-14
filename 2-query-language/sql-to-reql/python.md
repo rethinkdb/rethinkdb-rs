@@ -18,7 +18,7 @@ language: Python
 SQL and RethinkDB share very similar terminology. Below is a table
 of terms and concepts in the two systems.
 
-<table class="table-2-columns">
+<table class="table-top-aligned table-top-aligned">
     <thead>
         <tr>
             <th>SQL</th>
@@ -61,7 +61,7 @@ of terms and concepts in the two systems.
 
 This is a list of queries for inserting data into a database.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
         <tr>
@@ -92,7 +92,7 @@ r.table("users").insert({
 
 This is a list of queries for selecting data out of a database.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
         <tr><td>
@@ -450,7 +450,7 @@ r.table("posts")
 
 This is a list of commands for updating data in the database.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
@@ -498,7 +498,7 @@ r.table("users").update(
 
 This is a list of queries for deleting data from the database.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
@@ -541,7 +541,7 @@ r.table("users")
 This is a list of queries for performing joins between multiple
 tables.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
@@ -709,7 +709,7 @@ r.table("users").concat_map(lambda user:
 
 This is a list of queries for performing data aggregation.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
@@ -821,7 +821,7 @@ r.table("posts")
 This is a list of queries for creating and dropping tables and
 databases.
 
-<table class="table-2-columns">
+<table class="table-top-aligned">
     <thead><tr><th>SQL</th><th>ReQL</th></tr></thead>
     <tbody>
 
