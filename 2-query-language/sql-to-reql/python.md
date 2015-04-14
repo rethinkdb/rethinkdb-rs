@@ -253,17 +253,17 @@ WHERE name IN ('Peter', 'John')
         </td><td>
 
 <pre>
-r.<a href="/api/python/table/">table</a>("users").<a href="/api/python/filter/">filter</a>(lambda doc:
-    r.<a href="/api/python/expr/"</a>expr</a>(["Peter", "John"])
-        .<a href="/api/python/contains">contains</a>(doc["name"])
+r.table("users").filter(lambda doc:
+    r.expr(["Peter", "John"])
+        .contains(doc["name"])
 )
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
 <pre>
-r.<a href="/api/python/table/">table</a>("users")
-    .<a href="/api/python/get_all/">get_all</a>("Peter", "John",
+r.table("users")
+    .get_all("Peter", "John",
         index="name")
 </pre>
 
