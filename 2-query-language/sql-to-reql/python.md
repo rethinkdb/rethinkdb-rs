@@ -305,7 +305,7 @@ r.table("users").count()
 
 {% highlight sql %}
 SELECT COUNT(name) FROM users
-WHERE age &gt; 18
+WHERE age > 18
 {% endhighlight %}
 
         </td><td>
@@ -313,7 +313,7 @@ WHERE age &gt; 18
 {% highlight python %}
 r.table("users").filter(
     (r.row.has_fields("name"))
-     & (r.row["age"] &gt; 18)
+     & (r.row["age"] > 18)
 ).count()
 {% endhighlight %}
 
@@ -404,7 +404,7 @@ FROM users
 r.table("users").map({
     "name": r.row["name"],
     "is_adult": r.branch(
-        r.row["age"] &gt; 18,
+        r.row["age"] > 18,
         "yes",
         "no"
     )
@@ -433,7 +433,7 @@ r.table("posts")
     r.table("users")
       .filter( lambda user:
         user.id == post.author_id
-      ).count() &gt; 0
+      ).count() > 0
     )
 {% endhighlight %}
 
@@ -459,7 +459,7 @@ This is a list of commands for updating data in the database.
 {% highlight sql %}
 UPDATE users
     SET age = 18
-    WHERE age &lt; 18
+    WHERE age < 18
 {% endhighlight %}
 
         </td><td>
@@ -518,7 +518,7 @@ r.table("users").delete()
         <tr><td>
 {% highlight sql %}
 DELETE FROM users
-WHERE age &lt; 18
+WHERE age < 18
 {% endhighlight %}
 
         </td><td>
@@ -774,7 +774,7 @@ r.table("posts")
 SELECT category,
        SUM(num_comments)
     FROM posts
-    WHERE num_comments &gt; 7
+    WHERE num_comments > 7
     GROUP BY category
 
 {% endhighlight %}
@@ -797,7 +797,7 @@ SELECT category,
        SUM(num_comments)
     FROM posts
     GROUP BY category
-    HAVING num_comments &gt; 7
+    HAVING num_comments > 7
 
 {% endhighlight %}
 
