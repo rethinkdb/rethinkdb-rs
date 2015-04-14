@@ -20,7 +20,7 @@ __one to many__, and __many to many__ relations.
 
 {% toctag %}
 
-<img src="/assets/images/docs/api_illustrations_redone/table-joins_background.png"
+<img src="/assets/images/docs/api_illustrations/table-joins.png"
      alt="Table Join Illustration"
      class="api_command_illustration" />
 

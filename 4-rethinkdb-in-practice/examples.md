@@ -37,7 +37,7 @@ we can. If you have written a cool app and want us to showcase it,
           <li>Express</li>
           <li>Passport</li>
         </ul>
-        <i class="tag javascript"></i> <a class="action" href="/docs/examples/node-socket-chat/">See the annotated source &raquo;</a> 
+        <i class="tag javascript"></i> <a class="action" href="https://github.com/rethinkdb/rethinkdb-example-nodejs-chat">See the source &raquo;</a> 
       </div>
       </td>
     </tr>
@@ -65,7 +65,7 @@ we can. If you have written a cool app and want us to showcase it,
           <li>Sinatra</li>
           <li><code>filter</code>, <code>pluck</code>, <code>order_by</code></li>
         </ul>
-        <i class="tag ruby"></i> <a class="action" href="/docs/examples/sinatra-pastie/">See the annotated source &raquo;</a> 
+        <i class="tag ruby"></i> <a class="action" href="https://github.com/rethinkdb/rethinkdb-example-sinatra-pastie">See the code &raquo;</a> 
       </div>
       </td>
     </tr>
@@ -93,7 +93,7 @@ we can. If you have written a cool app and want us to showcase it,
           <li>Flask</li>
           <li>Backbone.js</li>
         </ul>
-        <i class="tag python"></i> <a class="action" href="/docs/examples/flask-backbone-todo/">See the annotated source &raquo;</a> 
+        <i class="tag python"></i> <a class="action" href="https://github.com/rethinkdb/rethinkdb-example-flask-backbone-todo">See the source &raquo;</a> 
       </div>
       </td>
     </tr>
@@ -108,7 +108,7 @@ we can. If you have written a cool app and want us to showcase it,
           <li>Bottle</li>
           <li>Ember.js</li>
         </ul>
-        <i class="tag python"></i> <a class="action" href="/docs/examples/bottle-ember-todo/">See the annotated source &raquo;</a> 
+        <i class="tag python"></i> <a class="action" href="https://github.com/rethinkdb/rethinkdb-example-bottle-ember-todo">See the source &raquo;</a> 
       </div>
       </td>
       <td> 
@@ -121,7 +121,7 @@ we can. If you have written a cool app and want us to showcase it,
           <li>web.py</li>
           <li>Basic updates and filtering</li>
         </ul>
-        <i class="tag python"></i> <a class="action" href="/docs/examples/webpy-blog/">See the annotated source &raquo;</a> 
+        <i class="tag python"></i> <a class="action" href="https://github.com/rethinkdb/rethinkdb-example-webpy-blog">See the source &raquo;</a> 
       </div>
       </td>
     </tr>
