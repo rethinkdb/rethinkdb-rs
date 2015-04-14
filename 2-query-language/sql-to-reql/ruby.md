@@ -96,310 +96,310 @@ This is a list of queries for selecting data out of a database.
     <tbody>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users")
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT user_id, name FROM users
-</pre>
+{% endhighlight %}
         </td><td>
-<pre>
+{% highlight ruby %}
 r.table("users")
  .pluck("user_id", "name")
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name = "Peter"
-</pre>
+{% endhighlight %}
         </td><td>
-<pre>
+{% highlight ruby %}
 r.table("users").filter({
     :name => "Peter"
 })
-</pre>
+{% endhighlight %}
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
-<pre>
+{% highlight ruby %}
 r.table("users")
     .get_all("Peter", :index => "name")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name = "Peter"
 AND age = 30
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").filter({
     :name => "Peter",
     :age => 30
 })
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name LIKE "P%"
-</pre>
+{% endhighlight %}
 
         </td><td>
-<pre>
+{% highlight ruby %}
 r.table("users").filter{ |row|
     row['name'].match("^P")
 }
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 ORDER BY name ASC
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").order_by("name")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 ORDER BY name DESC
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").order_by(
     r.desc("name")
 )
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT user_id FROM users
 WHERE name = "Peter"
 ORDER BY name DESC
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").filter({
     :name => "Peter"
 }).order_by(
     r.desc("name")
 ).pluck("user_id")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users LIMIT 5 SKIP 10
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").skip(10).limit(5)
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name IN ('Peter', 'John')
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").filter{ |doc|
     r.expr(["Peter", "John"])
         .contains(doc["name"])
 }
-</pre>
+{% endhighlight %}
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
-<pre>
+{% highlight ruby %}
 r.table("users")
     .get_all("Peter", "John",
         :index => "name")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT * FROM users
 WHERE name NOT IN ('Peter', 'John')
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").filter{ |doc|
     r.expr(["Peter", "John"])
         .contains(doc["name"])
         .not()
 }
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT COUNT(*) FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").count()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT COUNT(name) FROM users
 WHERE age &gt; 18
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").filter{ |doc|
     (doc.has_fields("name") & doc["age"] > 18)
 }.count()
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT AVG("age")
     FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users")
  .avg("age")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT MAX("age")
     FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users")["age"]
  .max()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT DISTINCT(name) FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").pluck("name").distinct()
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT *
     FROM users
     WHERE age BETWEEN 18 AND 65;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").filter{ |doc|
     (doc["age"] >= 18) & (doc["age"] <= 65)
 }
-</pre>
+{% endhighlight %}
 
 If you have a secondary index built on the field <code>age</code>, you can run a
 more efficient query:
-<pre>
+{% highlight ruby %}
 r.table("users")
     .between(18, 65, :index => "age")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT name, 'is_adult' = CASE
     WHEN age>18 THEN 'yes'
     ELSE 'no'
     END
 FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").map{ |user|
     {
         :name => user["name"],
@@ -410,25 +410,25 @@ r.table("users").map{ |user|
         )
     }
 }
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT *
   FROM posts
   WHERE EXISTS
     (SELECT * FROM users
      WHERE posts.author_id
          = users.id)
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("posts")
   .filter{ |post|
     r.table("users")
@@ -436,7 +436,7 @@ r.table("posts")
         user.id == post.author_id
       }.count() &gt; 0
     }
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -457,39 +457,39 @@ This is a list of commands for updating data in the database.
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 UPDATE users
     SET age = 18
     WHERE age &lt; 18
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").filter{ |doc|
     doc["age"] < 18
 }.update({
     :age => 18
 })
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 UPDATE users
     SET age = age+1
-</pre>
+{% endhighlight %}
 
         </td><td>
 
 
-<pre>
+{% highlight ruby %}
 r.table("users").update{ |doc|
     { :age => doc["age"]+1 }
 }
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -505,31 +505,31 @@ This is a list of queries for deleting data from the database.
     <tbody>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 DELETE FROM users
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").delete()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 DELETE FROM users
 WHERE age &lt; 18
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").filter{ |doc|
     doc["age"] < 18
 }.delete()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -548,38 +548,38 @@ tables.
     <tbody>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 SELECT *
 FROM posts
 JOIN users
 ON posts.user_id = users.id
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("posts").inner_join(
     r.table("users")
 ) { |post, user|
     post["user_id"] == user["id"]
 }.zip()
-</pre>
+{% endhighlight %}
 
 <p><em>Note:</em> <code>zip()</code> will merge the user in the post, overwriting fields in case of conflict.</p>
 
 <p>If you have an index (primary key or secondary index) built on the field of the right table, you can perform a more efficient join with <a href="/api/ruby/eq_join/">eq_join</a>.</p>
 
-<pre>
+{% highlight ruby %}
 r.table("posts").eq_join("id",
     r.table("users"),
     :index => "id"
 ).zip()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 SELECT posts.id AS post_id,
        user.name,
        users.id AS user_id
@@ -593,11 +593,11 @@ SELECT posts.id AS post_id,
     FROM posts
     INNER JOIN users
         ON posts.user_id = users.id
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("posts").inner_join(
   r.table("users")
 ) { |post, user|
@@ -607,14 +607,14 @@ r.table("posts").inner_join(
   :user_id => user["id"],
   :name => user["name"]
 }
-</pre>
+{% endhighlight %}
 
 
 
         </td></tr>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 SELECT *
     FROM posts
     RIGHT JOIN users
@@ -624,22 +624,22 @@ SELECT *
     FROM posts
     RIGHT OUTER JOIN users
         ON posts.user_id = users.id
-</pre>
+{% endhighlight %}
 
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("posts").outer_join(
     r.table("users")
 ) { |post, user|
         post["user_id"] == user["id"]
 }.zip()
-</pre>
+{% endhighlight %}
 
 <p><em>Note</em>: You can perform more efficient <code>OUTER JOIN</code> operations with the <a href="/api/ruby/concat_map/">concat_map</a> command.</p>
 
-<pre>
+{% highlight ruby %}
 r.table("posts").concat_map{ |post|
   r.table("users").get_all(
     post["id"], :index => "id"
@@ -651,12 +651,12 @@ r.table("posts").concat_map{ |post|
     }
   )}
 }.zip()
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
-<pre>
+{% highlight sql %}
 SELECT *
     FROM posts
     LEFT JOIN users
@@ -666,20 +666,20 @@ SELECT *
     FROM posts
     LEFT OUTER JOIN users
         ON posts.user_id = users.id
-</pre>
+{% endhighlight %}
 
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("posts").outer_join(
     r.table("users")
 ) { |user, post|
         post["user_id"] == user["id"]
 }.zip()
-</pre>
+{% endhighlight %}
 
-<pre>
+{% highlight ruby %}
 r.table("posts").concat_map{ |post|
   r.table("users").get_all(
     post["id"], :index => "id"
@@ -691,7 +691,7 @@ r.table("posts").concat_map{ |post|
     }
   )}
 }.zip()
-</pre>
+{% endhighlight %}
 
         </td></tr>
     </tbody>
@@ -708,95 +708,95 @@ This is a list of queries for performing data aggregation.
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category
     FROM posts
     GROUP BY category
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("posts").map{ |doc|
     doc["category"]
 }.distinct()
-</pre>
+{% endhighlight %}
 
         </td></tr>
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category,
        SUM('num_comments')
     FROM posts
     GROUP BY category
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table('posts')
  .group('category')
  .sum('num_comments')
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category,
        status,
        SUM('num_comments')
     FROM posts
     GROUP BY category, status
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("posts")
  .group('category', 'status')
  .sum('num_comments')
-</pre>
+{% endhighlight %}
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category,
        SUM(num_comments)
     FROM posts
     WHERE num_comments &gt; 7
     GROUP BY category
 
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("posts").filter{ |doc|
     doc['num_comments'] > 7
 }.group('category')
  .sum('num_comments')
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 SELECT category,
        SUM(num_comments)
     FROM posts
     GROUP BY category
     HAVING num_comments &gt; 7
 
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("posts")
  .group('category')
  .sum('num_comments')
@@ -804,7 +804,7 @@ r.table("posts")
  .filter{ |doc|
    doc["reduction"] > 7
   }
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -822,29 +822,29 @@ databases.
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 CREATE DATABASE my_database;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.db_create('my_database')
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 DROP DATABASE my_database;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.db_drop('my_database')
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
@@ -852,19 +852,19 @@ r.db_drop('my_database')
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 CREATE TABLE users
     (id INT IDENTITY(1,1) PRIMARY KEY,
     name VARCHAR(50),
     age INT);
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table_create('users',
     :primary_key => "id")
-</pre>
+{% endhighlight %}
 <p><em>Note:</em> RethinkDB is a NoSQL database and does not enforce
 schemas.</p>
 
@@ -877,15 +877,15 @@ schemas.</p>
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 TRUNCATE TABLE users;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table("users").delete()
-</pre>
+{% endhighlight %}
 
 
 
@@ -893,15 +893,15 @@ r.table("users").delete()
 
         <tr><td>
 
-<pre>
+{% highlight sql %}
 DROP TABLE users;
-</pre>
+{% endhighlight %}
 
         </td><td>
 
-<pre>
+{% highlight ruby %}
 r.table_drop("users")
-</pre>
+{% endhighlight %}
 
         </td></tr>
 
