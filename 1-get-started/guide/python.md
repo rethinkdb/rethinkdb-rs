@@ -233,6 +233,74 @@ Learn more about how RethinkDB can efficiently retrieve documents with
 [secondary indexes](/docs/secondary-indexes/).
 {% endinfobox %}
 
+# Realtime feeds #
+
+{% infobox %}
+Feel free to skip this section if you don't want to learn about
+realtime feeds yet. You can always go back and start a feed later.
+{% endinfobox %}
+
+RethinkDB inverts the traditional database architecutre by exposing an
+exciting new access model -- instead of polling for changes, the
+developer can tell RethinkDB to continuously push updated query
+results to applications in realtime.
+
+To start a feed, open a new terminal and open a new RethinkDB
+connection. Then, run the following query:
+
+```python
+cursor = r.table("authors").changes().run()
+for document in cursor:
+    print document
+```
+
+As you run data modification commands in the next two sections, the
+feed will push notifications to your program, and the code above will
+print the following messages:
+
+```json
+{
+  "new_val": {
+    "id": "1d854219-85c6-4e6c-8259-dbda0ab386d4",
+    "name": "Laura Roslin",
+    "posts": [
+      {
+        "content": "I, Laura Roslin, ...",
+        "title": "The oath of office"
+      },
+      {
+        "content": "The Cylons have the ability...",
+        "title": "They look like us"
+      }
+    ],
+    "tv_show": "Battlestar Galactica",
+    "type": "fictional"
+  },
+  "old_val": {
+    "id": "1d854219-85c6-4e6c-8259-dbda0ab386d4",
+    "name": "Laura Roslin",
+    "posts": [
+      {
+        "content": "I, Laura Roslin, ...",
+        "title": "The oath of office"
+      },
+      {
+        "content": "The Cylons have the ability...",
+        "title": "They look like us"
+      }
+    ],
+    "tv_show": "Battlestar Galactica"
+  }
+}
+```
+
+RethinkDB will notify your program of all changes in the `authors`
+table and will include the old value and the new value of each
+modified document. See the [changefeeds][] documentation entry for
+more details on how to use realtime feeds in RethinkDB.
+
+[changefeeds]: /docs/changefeeds
+
 # Update documents #
 
 Let's update all documents in the `authors` table and add a `type`

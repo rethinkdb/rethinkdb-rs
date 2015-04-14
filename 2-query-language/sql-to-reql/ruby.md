@@ -76,7 +76,7 @@ VALUES ("f62255a8259f",
             </td>
             <td>
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/insert/">insert</a>({
+r.table("users").insert({
    :user_id => "f62255a8259f",
    :age => 30,
    :name => "Peter"
@@ -103,7 +103,7 @@ SELECT * FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users")
+r.table("users")
 </pre>
 
         </td></tr>
@@ -114,8 +114,8 @@ SELECT user_id, name FROM users
 </pre>
         </td><td>
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users")
- .<a href="/api/ruby/pluck/">pluck</a>("user_id", "name")
+r.table("users")
+ .pluck("user_id", "name")
 </pre>
 
         </td></tr>
@@ -127,39 +127,16 @@ WHERE name = "Peter"
 </pre>
         </td><td>
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>({
+r.table("users").filter({
     :name => "Peter"
 })
-</pre>
-
-<p>An alternative is to use a block:</p>
-<pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |doc|
-    doc["name"] <a href="/api/ruby/eq/">==</a> "Peter"
-}
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users")
-    .<a href="/api/ruby/get_all/">get_all</a>("Peter", :index => "name")
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT user_id, name FROM users
-WHERE name = "Peter"
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>({
-    :name => "Peter"
-}).<a href="/api/ruby/pluck/">pluck</a>("user_id", "name")
+r.table("users")
+    .get_all("Peter", :index => "name")
 </pre>
 
         </td></tr>
@@ -175,7 +152,7 @@ AND age = 30
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>({
+r.table("users").filter({
     :name => "Peter",
     :age => 30
 })
@@ -188,49 +165,18 @@ r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filt
 
 <pre>
 SELECT * FROM users
-WHERE age &gt; 30
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |row|
-    row['age'] <a href="/api/ruby/gt/">&gt;</a>(30)
-}
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT * FROM users
 WHERE name LIKE "P%"
 </pre>
 
         </td><td>
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |row|
-    row['name'].<a href="/api/ruby/match/">match</a>("^P")
+r.table("users").filter{ |row|
+    row['name'].match("^P")
 }
 </pre>
 
         </td></tr>
-        <tr><td>
 
-<pre>
-SELECT * FROM users
-WHERE name LIKE "%er"
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |row|
-    row['name'].<a href="/api/ruby/match/">match</a>("er$")}
-)
-</pre>
-
-        </td></tr>
         <tr><td>
 
 <pre>
@@ -241,7 +187,7 @@ ORDER BY name ASC
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/order_by/">order_by</a>("name")
+r.table("users").order_by("name")
 </pre>
 
         </td></tr>
@@ -256,7 +202,7 @@ ORDER BY name DESC
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/order_by/">order_by</a>(
+r.table("users").order_by(
     r.desc("name")
 )
 </pre>
@@ -274,24 +220,11 @@ ORDER BY name DESC
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>({
+r.table("users").filter({
     :name => "Peter"
-}).<a href="/api/ruby/order_by/">order_by</a>(
+}).order_by(
     r.desc("name")
-).<a href="/api/ruby/pluck/">pluck</a>("user_id")
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT * FROM users LIMIT 5
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/limit/">limit</a>(5)
+).pluck("user_id")
 </pre>
 
         </td></tr>
@@ -305,7 +238,7 @@ SELECT * FROM users LIMIT 5 SKIP 10
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/skip/">skip</a>(10).<a href="/api/ruby/limit/">limit</a>(5)
+r.table("users").skip(10).limit(5)
 </pre>
 
         </td></tr>
@@ -320,17 +253,17 @@ WHERE name IN ('Peter', 'John')
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |doc|
-    r.<a href="/api/ruby/expr/"</a>expr</a>(["Peter", "John"])
-        .<a href="/api/ruby/contains">contains</a>(doc["name"])
+r.table("users").filter{ |doc|
+    r.expr(["Peter", "John"])
+        .contains(doc["name"])
 }
 </pre>
 
 <p>If you have a secondary index built on the field <code>name</code>, you can run a
 more efficient query:</p>
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users")
-    .<a href="/api/ruby/get_all/">get_all</a>("Peter", "John",
+r.table("users")
+    .get_all("Peter", "John",
         :index => "name")
 </pre>
 
@@ -346,9 +279,9 @@ WHERE name NOT IN ('Peter', 'John')
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |doc|
-    r.<a href="/api/ruby/expr/"</a>expr</a>(["Peter", "John"])
-        .<a href="/api/ruby/contains/">contains</a>(doc["name"])
+r.table("users").filter{ |doc|
+    r.expr(["Peter", "John"])
+        .contains(doc["name"])
         .not()
 }
 </pre>
@@ -363,22 +296,7 @@ SELECT COUNT(*) FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/count/">count</a>()
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT COUNT(name) FROM users
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |doc|
-    doc.<a href="/api/ruby/has_fields/">has_fields</a>("name")
-}.<a href="/api/ruby/count/">count</a>()
+r.table("users").count()
 </pre>
 
         </td></tr>
@@ -393,9 +311,9 @@ WHERE age &gt; 18
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |doc|
-    (doc.<a href="/api/ruby/has_fields/">has_fields</a>("name") & doc["age"] <a href="/api/ruby/gt/">></a> 18)
-}.<a href="/api/ruby/count/">count</a>()
+r.table("users").filter{ |doc|
+    (doc.has_fields("name") & doc["age"] > 18)
+}.count()
 </pre>
 
         </td></tr>
@@ -409,8 +327,8 @@ SELECT AVG("age")
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users")
- .<a href="/api/ruby/avg/">avg</a>("age")
+r.table("users")
+ .avg("age")
 </pre>
 
         </td></tr>
@@ -425,42 +343,12 @@ SELECT MAX("age")
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users")["age"]
- .<a href="/api/ruby/max/">max</a>()
+r.table("users")["age"]
+ .max()
 </pre>
 
         </td></tr>
 
-        <tr><td>
-
-<pre>
-SELECT MIN("age")
-    FROM users
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/ruby/table/">table</a>("users")["age"]
- .<a href="/api/ruby/min/">min</a>()
-</pre>
-
-        </td></tr>
-        <tr><td>
-
-<pre>
-SELECT SUM("num_posts")
-    FROM users
-</pre>
-
-        </td><td>
-
-<pre>
-r.<a href="/api/ruby/table/">table</a>("users")
- .<a href="/api/ruby/sum/">sum</a>("num_posts")
-</pre>
-
-        </td></tr>
         <tr><td>
 
 <pre>
@@ -470,7 +358,7 @@ SELECT DISTINCT(name) FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/pluck/">pluck</a>("name").<a href="/api/ruby/distinct/">distinct</a>()
+r.table("users").pluck("name").distinct()
 </pre>
 
         </td></tr>
@@ -485,16 +373,16 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |doc|
-    (doc["age"] <a href="/api/ruby/ge/">>=</a> 18) & (doc["age"] <a href="/api/ruby/le/"><=</a> 65)
+r.table("users").filter{ |doc|
+    (doc["age"] >= 18) & (doc["age"] <= 65)
 }
 </pre>
 
 If you have a secondary index built on the field <code>age</code>, you can run a
 more efficient query:
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users")
-    .<a href="/api/ruby/between/">between</a>(18, 65, :index => "age")
+r.table("users")
+    .between(18, 65, :index => "age")
 </pre>
 
         </td></tr>
@@ -512,11 +400,11 @@ FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/map/">map</a>{ |user|
+r.table("users").map{ |user|
     {
         :name => user["name"],
-        :is_adult => r.<a href="/api/ruby/branch/">branch</a>(
-            user["age"] <a href="/api/ruby/gt/">&gt;</a> 18
+        :is_adult => r.branch(
+            user["age"] &gt; 18
             "yes",
             "no"
         )
@@ -541,12 +429,12 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts")
-  .<a href="/api/ruby/filter/">filter</a>{ |post|
-    r.<a href="/api/ruby/table/">table</a>("users")
-      .<a href="/api/ruby/filter/">filter</a>{ |user|
-        user.id <a href="/api/ruby/eq/">==</a> post.author_id
-      }.<a href="/api/ruby/count/">count</a>() <a href="/api/ruby/gt/">&gt;</a> 0
+r.table("posts")
+  .filter{ |post|
+    r.table("users")
+      .filter{ |user|
+        user.id == post.author_id
+      }.count() &gt; 0
     }
 </pre>
 
@@ -578,9 +466,9 @@ UPDATE users
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |doc|
+r.table("users").filter{ |doc|
     doc["age"] < 18
-}.<a href="/api/ruby/update/">update</a>({
+}.update({
     :age => 18
 })
 </pre>
@@ -598,7 +486,7 @@ UPDATE users
 
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/update/">update</a>{ |doc|
+r.table("users").update{ |doc|
     { :age => doc["age"]+1 }
 }
 </pre>
@@ -624,7 +512,7 @@ DELETE FROM users
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/delete/">delete</a>()
+r.table("users").delete()
 </pre>
 
         </td></tr>
@@ -638,9 +526,9 @@ WHERE age &lt; 18
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/filter/">filter</a>{ |doc|
+r.table("users").filter{ |doc|
     doc["age"] < 18
-}.<a href="/api/ruby/delete/">delete</a>()
+}.delete()
 </pre>
 
         </td></tr>
@@ -670,10 +558,10 @@ ON posts.user_id = users.id
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/inner_join/">inner_join</a>(
-    r.<a href="/api/ruby/table/">table</a>("users")
+r.table("posts").inner_join(
+    r.table("users")
 ) { |post, user|
-    post["user_id"] <a href="/api/ruby/eq/">==</a> user["id"]
+    post["user_id"] == user["id"]
 }.zip()
 </pre>
 
@@ -682,10 +570,10 @@ r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/inner_join/">
 <p>If you have an index (primary key or secondary index) built on the field of the right table, you can perform a more efficient join with <a href="/api/ruby/eq_join/">eq_join</a>.</p>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/eq_join/">eq_join</a>("id",
-    r.<a href="/api/ruby/table/">table</a>("users"),
+r.table("posts").eq_join("id",
+    r.table("users"),
     :index => "id"
-).<a href="/api/ruby/zip/">zip</a>()
+).zip()
 </pre>
 
         </td></tr>
@@ -698,9 +586,7 @@ SELECT posts.id AS post_id,
     FROM posts
     JOIN users
         ON posts.user_id = users.id
-</pre>
 
-<pre>
 SELECT posts.id AS post_id,
        user.name,
        users.id AS user_id
@@ -712,11 +598,11 @@ SELECT posts.id AS post_id,
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/inner_join/">inner_join</a>(
-  r.<a href="/api/ruby/table/">table</a>("users")
+r.table("posts").inner_join(
+  r.table("users")
 ) { |post, user|
-    post["user_id"] <a href="/api/ruby/eq/">==</a> user["id"]
-}.<a href="/api/ruby/map/">map</a> { |post, user|
+    post["user_id"] == user["id"]
+}.map { |post, user|
   :post_id => post["id"],
   :user_id => user["id"],
   :name => user["name"]
@@ -733,9 +619,7 @@ SELECT *
     FROM posts
     RIGHT JOIN users
         ON posts.user_id = users.id
-</pre>
 
-<pre>
 SELECT *
     FROM posts
     RIGHT OUTER JOIN users
@@ -746,23 +630,23 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/outer_join/">outer_join</a>(
-    r.<a href="/api/ruby/table/">table</a>("users")
+r.table("posts").outer_join(
+    r.table("users")
 ) { |post, user|
-        post["user_id"] <a href="/api/ruby/eq/">==</a> user["id"]
-}.<a href="/api/ruby/zip/">zip</a>()
+        post["user_id"] == user["id"]
+}.zip()
 </pre>
 
 <p><em>Note</em>: You can perform more efficient <code>OUTER JOIN</code> operations with the <a href="/api/ruby/concat_map/">concat_map</a> command.</p>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/concat_map/">concat_map</a>{ |post|
-  r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/get_all/">get_all</a>(
+r.table("posts").concat_map{ |post|
+  r.table("users").get_all(
     post["id"], :index => "id"
-  ).<a href="/api/ruby/do/">do</a>{ |results| r.branch(
-    results.<a href="/api/ruby/count/">count</a>() <a href="/api/ruby/eq/">==</a> 0,
+  ).do{ |results| r.branch(
+    results.count() == 0,
     [{:left => post}],
-    results.<a href="/api/ruby/map/">map</a> { |user|
+    results.map { |user|
       {:left => post, :right => user}
     }
   )}
@@ -777,8 +661,7 @@ SELECT *
     FROM posts
     LEFT JOIN users
         ON posts.user_id = users.id
-</pre>
-<pre>
+
 SELECT *
     FROM posts
     LEFT OUTER JOIN users
@@ -789,21 +672,21 @@ SELECT *
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/outer_join/">outer_join</a>(
-    r.<a href="/api/ruby/table/">table</a>("users")
+r.table("posts").outer_join(
+    r.table("users")
 ) { |user, post|
-        post["user_id"] <a href="/api/ruby/eq/">==</a> user["id"]
-}.<a href="/api/ruby/zip/">zip</a>()
+        post["user_id"] == user["id"]
+}.zip()
 </pre>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/concat_map/">concat_map</a>{ |post|
-  r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/get_all/">get_all</a>(
+r.table("posts").concat_map{ |post|
+  r.table("users").get_all(
     post["id"], :index => "id"
-  ).<a href="/api/ruby/do/">do</a>{ |results| r.branch(
-    results.<a href="/api/ruby/count/">count</a>() <a href="/api/ruby/eq/">==</a> 0,
+  ).do{ |results| r.branch(
+    results.count() == 0,
     [{:left => user}],
-    results.<a href="/api/ruby/map/">map</a> { |post|
+    results.map { |post|
       {:left => user, :right => post}
     }
   )}
@@ -834,9 +717,9 @@ SELECT category
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/map/">map</a>{ |doc|
+r.table("posts").map{ |doc|
     doc["category"]
-}.<a href="/api/ruby/distinct/">distinct</a>()
+}.distinct()
 </pre>
 
         </td></tr>
@@ -852,9 +735,9 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>('posts')
- .<a href="/api/ruby/group/">group</a>('category')
- .<a href="/api/ruby/sum/">sum</a>('num_comments')
+r.table('posts')
+ .group('category')
+ .sum('num_comments')
 </pre>
 
         </td></tr>
@@ -872,9 +755,9 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts")
- .<a href="/api/ruby/group/">group</a>('category', 'status')
- .<a href="/api/ruby/sum/">sum</a>('num_comments')
+r.table("posts")
+ .group('category', 'status')
+ .sum('num_comments')
 </pre>
         </td></tr>
 
@@ -892,10 +775,10 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts").<a href="/api/ruby/filter/">filter</a>{ |doc|
+r.table("posts").filter{ |doc|
     doc['num_comments'] > 7
-}.<a href="/api/ruby/group/">group</a>('category')
- .<a href="/api/ruby/sum/">sum</a>('num_comments')
+}.group('category')
+ .sum('num_comments')
 </pre>
 
         </td></tr>
@@ -914,12 +797,12 @@ SELECT category,
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("posts")
- .<a href="/api/ruby/group/">group</a>('category')
- .<a href="/api/ruby/sum/">sum</a>('num_comments')
- .<a href="/api/ruby/ungroup/">ungroup</a>()
- .<a href="/api/ruby/filter/">filter</a>{ |doc|
-   doc["reduction"] <a href="/api/ruby/gt/">></a> 7
+r.table("posts")
+ .group('category')
+ .sum('num_comments')
+ .ungroup()
+ .filter{ |doc|
+   doc["reduction"] > 7
   }
 </pre>
 
@@ -946,7 +829,7 @@ CREATE DATABASE my_database;
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/db_create/">db_create</a>('my_database')
+r.db_create('my_database')
 </pre>
 
         </td></tr>
@@ -960,7 +843,7 @@ DROP DATABASE my_database;
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/db_drop/">db_drop</a>('my_database')
+r.db_drop('my_database')
 </pre>
 
         </td></tr>
@@ -979,7 +862,7 @@ CREATE TABLE users
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table_create/">table_create</a>('users',
+r.table_create('users',
     :primary_key => "id")
 </pre>
 <p><em>Note:</em> RethinkDB is a NoSQL database and does not enforce
@@ -1001,7 +884,7 @@ TRUNCATE TABLE users;
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table/">table</a>("users").<a href="/api/ruby/delete/">delete</a>()
+r.table("users").delete()
 </pre>
 
 
@@ -1017,7 +900,7 @@ DROP TABLE users;
         </td><td>
 
 <pre>
-r.<a href="/api/ruby/table_drop/">table_drop</a>("users")
+r.table_drop("users")
 </pre>
 
         </td></tr>
