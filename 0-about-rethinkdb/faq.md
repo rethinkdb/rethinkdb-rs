@@ -70,14 +70,14 @@ example use cases:
 
 - [Jive Software][] and [Mediafly][] use RethinkDB to power reactive web and mobile apps
 - [Pristine.io][] and [Narrative Clip][] use RethinkDB to power cloud infrastructure for connected devices
-- [Dropbox][] and [Workshape.io][] use RethinkDB to power realtime analytics
+- [Platzi][] and [Workshape.io][] use RethinkDB to power realtime analytics
 - [CMUNE][] and [NodeCraft][] use RethinkDB to power massively scalable multiplayer games
 
 [Pristine.io]: https://pristine.io/
 [Narrative Clip]: http://getnarrative.com/
 [Jive Software]: https://www.jivesoftware.com/
 [Mediafly]: http://www.mediafly.com/
-[Dropbox]: https://www.dropbox.com/
+[Platzi]: https://platzi.com
 [Workshape.io]: https://www.workshape.io/
 [CMUNE]: http://www.cmune.com/
 [NodeCraft]: https://nodecraft.com/
@@ -90,7 +90,7 @@ Implementing efficient realtime push architecture required redesigning
 most database components, including the query execution engine, the
 distributed system, the caching subsystem, and the storage
 engine. Because the architecture affects every database component,
-RethinkDB has been implemented in C++ from scratch. RethinkDB is built
+RethinkDB has been implemented in C++ from scratch. RethinkDB was built
 over five years by a team of database experts with the help of
 hundreds of contributors from around the world.
 
