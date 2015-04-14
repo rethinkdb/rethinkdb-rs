@@ -45,7 +45,7 @@ The server will respond with a `null`-terminated ASCII string describing the res
 
 | Step | Direction | Element | Bytes |  
 | --- | --- | --- | --- |  
-| 1 | SEND | V0_4 | `20 2d 0c 40` |  
+| 1 | SEND | `V0_4` | `20 2d 0c 40` |  
 | 2 | SEND | key size | `00 00 00 00` |  
 | 3 | SEND | auth key | |   
 | 4 | SEND | JSON | `c7 70 69 7e` |  
@@ -55,7 +55,7 @@ The server will respond with a `null`-terminated ASCII string describing the res
 
 | Step | Direction | Element | Bytes |  
 | --- | --- | --- | --- |  
-| 1 | SEND | V0_4 | `20 2d 0c 40` |  
+| 1 | SEND | `V0_4` | `20 2d 0c 40` |  
 | 2 | SEND | key size | `07 00 00 00` |  
 | 3 | SEND | auth key | `68 75 6e 74 65 72 32` |  
 | 4 | SEND | JSON | `c7 70 69 7e` |  
