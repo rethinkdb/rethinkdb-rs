@@ -135,6 +135,28 @@ r.table('marvel').run(conn).each{|x| p x}
 
 [Read more about this command &rarr;](run/)
 
+## [em_run](em_run/) ##
+
+{% apibody %}
+query.em_run(conn, block) &rarr; cursor
+query.em_run(conn, block) &rarr; object
+{% endapibody %}
+
+Run a query asynchronously on a connection using [EventMachine](http://rubyeventmachine.com). If the query returns a sequence (including a stream), the block will be called once with each element of the sequence. Otherwise, the block will be called just once with the returned value.
+
+__Example:__ return a list of users in an EventMachine loop.
+
+```rb
+EventMachine.run {
+  r.table('users').order_by(:index => 'username').em_run(conn) { |row|
+    # do something with returned row data
+    p row
+  }
+}
+```
+
+[Read more about this command &rarr;](em_run/)
+
 ## [noreply_wait](noreply_wait/) ##
 
 {% apibody %}
@@ -987,10 +1009,11 @@ r.table('marvel').is_empty().run(conn)
 ## [union](union/) ##
 
 {% apibody %}
-sequence.union(sequence) &rarr; array
+stream.union(sequence[, sequence, ...]) &rarr; stream
+array.union(sequence[, sequence, ...]) &rarr; array
 {% endapibody %}
 
-Concatenate two sequences.
+Concatenate two or more sequences.
 
 __Example:__ Construct a stream of all heroes.
 
