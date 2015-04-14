@@ -98,7 +98,7 @@ r.table("posts").delete.run
 
 ## Renaming a database ##
 
-The easiest way to rename a database is to use the [config](/api/javascript/config/) command to access the `db_config` [system table](/docs/system-tables/), and then simply use the `update` command.
+The easiest way to rename a database is to use the [config](/api/ruby/config/) command to access the `db_config` [system table](/docs/system-tables/), and then simply use the `update` command.
 
 ```rb
 r.db("old_db_name").config().update({:name => "new_db_name"}).run
