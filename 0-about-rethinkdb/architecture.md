@@ -1,6 +1,6 @@
 ---
 layout: documentation
-title: "RethinkDB FAQ for programmers new to distributed databases"
+title: "Architecture FAQ"
 short_title: Architecture FAQ
 docs_active: architecture
 permalink: docs/architecture/
