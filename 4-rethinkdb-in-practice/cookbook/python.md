@@ -98,6 +98,14 @@ Here is how we'd delete all documents in a table:
 r.table("posts").delete().run()
 ```
 
+## Renaming a database ##
+
+The easiest way to rename a database is to use the [config](/api/python/config/) command to access the `db_config` [system table](/docs/system-tables/), and then simply use the `update` command.
+
+```python
+r.db("old_db_name").config().update({"name": "new_db_name"}).run()
+```
+
 # Filtering
 
 ## Filtering based on multiple fields ##

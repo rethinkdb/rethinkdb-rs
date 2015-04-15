@@ -123,6 +123,19 @@ r.table("posts").delete().run(conn, function(err, result) {
 });
 ```
 
+## Renaming a database ##
+
+The easiest way to rename a database is to use the [config](/api/javascript/config/) command to access the `db_config` [system table](/docs/system-tables/), and then simply use the `update` command.
+
+```js
+r.db("old_db_name").config().update({name: "new_db_name"}).run(conn,
+    function(err, result) {
+        if (err) throw err;
+        console.log(result);
+    }
+);
+```
+
 # Filtering
 
 ## Filtering based on multiple fields ##
