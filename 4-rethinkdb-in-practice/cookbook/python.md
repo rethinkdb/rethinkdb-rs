@@ -403,6 +403,19 @@ r.table("pages").update(lambda page:
     )), {"return_changes": True}).run()
 ```
 
+## Performing a conditional insert or replace ##
+
+Using a similar technique to the last recipe, we can use `branch` and `replace` to maintain a document's `updated_at` and `created_at` fields by either inserting a new document or updating one depending on whether a document with a specified ID exists.
+
+```python
+def update_with_date(id, user_object):
+    r.table('users').get(id).replace(
+        lambda doc: r.branch(
+            (doc == None),
+            r.expr(user_object).merge({'id': id, 'created_at': r.now()}),
+            doc.merge(user_object).merge({'updated_at': r.now()}))).run()
+```
+
 ## Storing timestamps and JSON date strings as Time data types ##
 
 You can use the `epoch_time` and `iso8601` commands to convert Unix timestamps (in seconds) and JSON date-time strings (which are in ISO 8601 format) to the ReQL time type. The ReQL driver will also convert Python datetime objects into ReQL time.

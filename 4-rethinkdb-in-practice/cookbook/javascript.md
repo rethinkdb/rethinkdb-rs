@@ -505,6 +505,23 @@ r.table("pages").update(function(page) {
 });
 ```
 
+## Performing a conditional insert or replace ##
+
+Using a similar technique to the last recipe, we can use `branch` and `replace` to maintain a document's `updated_at` and `created_at` fields by either inserting a new document or updating one depending on whether a document with a specified ID exists.
+
+```javascript
+r.table('users').get(id).replace(function (doc) {
+    return r.branch(
+        doc.eq(null),
+        r.expr(userObject).merge({id: id, created_at: r.now()}),
+        doc.merge(userObject).merge({updated_at: r.now()})
+    )
+}).run(conn, function(err, result) {
+    if (err) throw err;
+    console.log(result);
+});
+```
+
 ## Storing timestamps and JSON date strings as Time data types ##
 
 You can use the `epochTime` and `ISO8601` commands to convert Unix timestamps (in seconds) and JSON date-time strings (which are in ISO 8601 format) to the ReQL time type. The ReQL driver will also convert JavaScript Date objects into ReQL time.
@@ -741,6 +758,7 @@ r.table("users").map(
     console.log(result);
 });
 ```
+
 ## Grouping query results by date/time periods ##
 
 ReQL has commands for extracting parts of [dates and times](/docs/dates-and-times/), including [year](/api/javascript/year), [month](/api/javascript/month), [day](/api/javascript/day), [dayOfWeek](/api/javascript/day_of_week) and more. You can use these with [group](/api/javascript/group) to group by various intervals. Suppose you had a table of invoices and wanted to retrieve them in groups ordered by year and month:
