@@ -24,6 +24,7 @@ Run the following in your terminal:
 ```bash
 brew update && brew install rethinkdb
 ```
+
 # Compile from source #
 
 ## Get the build dependencies ##
