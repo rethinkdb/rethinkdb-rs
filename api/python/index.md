@@ -178,6 +178,8 @@ def use_cursor(conn):
         print(item)
 ```
 
+[Read more about this command &rarr;](set_loop_type/)
+
 {% endapisection %}
 
 {% apisection Cursors %}
