@@ -233,7 +233,7 @@ Feel free to skip this section if you don't want to learn about
 realtime feeds yet. You can always go back and start a feed later.
 {% endinfobox %}
 
-RethinkDB inverts the traditional database architecutre by exposing an
+RethinkDB inverts the traditional database architecture by exposing an
 exciting new access model -- instead of polling for changes, the
 developer can tell RethinkDB to continuously push updated query
 results to applications in realtime.

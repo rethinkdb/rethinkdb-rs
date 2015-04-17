@@ -157,7 +157,7 @@ topic = exchange.topic({
 })
 
 topic.publish('Today Batman, Superman and the Joker teamed up '
-              'in a suprising turn of events...')
+              'in a surprising turn of events...')
 ```
 
 There are multiple subscriptions we could have set up that would receive this news:
