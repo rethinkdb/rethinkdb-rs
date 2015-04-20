@@ -2276,12 +2276,14 @@ r.table("posts").filter(function(post) {
 time.toISO8601() &rarr; string
 {% endapibody %}
 
-Convert a time object to its iso 8601 format.
+Convert a time object to a string in ISO 8601 format.
 
-__Example:__ Return the current time in an ISO8601 format.
+__Example:__ Return the current ISO 8601 time.
 
 ```js
-r.now().toISO8601()
+r.now().toISO8601().run(conn, callback)
+// Result passed to callback
+"2015-04-20T18:37:52.690+00:00"
 ```
 
 
