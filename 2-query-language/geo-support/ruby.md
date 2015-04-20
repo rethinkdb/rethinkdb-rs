@@ -149,7 +149,7 @@ Only longitude/latitude coordinates are supported. GeoJSON objects that use Cart
 * [to_geojson](to_geojson/)/[to_geojson](/api/ruby/to_geojson/): convert a geometry object to a GeJSON object
 * [point](/api/ruby/point/): create a point object
 * [line](/api/ruby/line/): create a line object
-* [polygon](/api/ruby/polygon/): create a line object
+* [polygon](/api/ruby/polygon/): create a polygon object
 * [circle](/api/ruby/circle/): create a line or polygon that approximates a circle
 * [distance](/api/ruby/distance/): compute the distance between a point and another geometry object
 * [intersects](/api/ruby/intersects/): determine whether two geometry objects intersect

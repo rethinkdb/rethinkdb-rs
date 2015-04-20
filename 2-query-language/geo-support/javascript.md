@@ -151,7 +151,7 @@ Only longitude/latitude coordinates are supported. GeoJSON objects that use Cart
 * [toGeojson](to_geojson/)/[to_geojson](/api/javascript/to_geojson/): convert a geometry object to a GeJSON object
 * [point](/api/javascript/point/): create a point object
 * [line](/api/javascript/line/): create a line object
-* [polygon](/api/javascript/polygon/): create a line object
+* [polygon](/api/javascript/polygon/): create a polygon object
 * [circle](/api/javascript/circle/): create a line or polygon that approximates a circle
 * [distance](/api/javascript/distance/): compute the distance between a point and another geometry object
 * [intersects](/api/javascript/intersects/): determine whether two geometry objects intersect
