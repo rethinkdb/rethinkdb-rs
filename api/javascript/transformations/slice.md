@@ -11,7 +11,7 @@ io:
     -   - binary
         - binary
 related_commands:
-    order_by: order_by/
+    orderBy: order_by/
     skip: skip/
     limit: limit/
     nth: nth/

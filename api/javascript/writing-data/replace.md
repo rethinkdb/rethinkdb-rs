@@ -19,11 +19,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(json | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
+table.replace(object | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
-selection.replace(json | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
+selection.replace(object | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
-singleSelection.replace(json | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
+singleSelection.replace(object | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
 {% endapibody %}
 

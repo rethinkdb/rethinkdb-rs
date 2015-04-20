@@ -491,7 +491,7 @@ r.table('games').changes().run(conn, function(err, cursor) {
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json][, {durability: "hard", returnChanges: false, conflict: "error"}]) &rarr; object
+table.insert(object | [object1, object2, ...][, {durability: "hard", returnChanges: false, conflict: "error"}]) &rarr; object
 {% endapibody %}
 
 Insert JSON documents into a table. Accepts a single JSON document or an array of
@@ -513,13 +513,13 @@ r.table("posts").insert({
 ## [update](update/) ##
 
 {% apibody %}
-table.update(json | expr
+table.update(object | expr
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-selection.update(json | expr
+selection.update(object | expr
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-singleSelection.update(json | expr
+singleSelection.update(object | expr
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 {% endapibody %}
@@ -541,13 +541,13 @@ r.table("posts").get(1).update({status: "published"}).run(conn, callback)
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(json | expr
+table.replace(object | expr
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-selection.replace(json | expr
+selection.replace(object | expr
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-singleSelection.replace(json | expr
+singleSelection.replace(object | expr
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 
@@ -924,7 +924,7 @@ array.skip(n) &rarr; array
 
 Skip a number of elements from the head of the sequence.
 
-__Example:__ Here in conjunction with `order_by` we choose to ignore the most successful heroes.
+__Example:__ Here in conjunction with `orderBy` we choose to ignore the most successful heroes.
 
 ```js
 r.table('marvel').orderBy('successMetric').skip(10).run(conn, callback)
@@ -1089,7 +1089,7 @@ player, with the highest scorers first?
 ```js
 r.table('games')
     .group('player').max('points')['points']
-    .ungroup().order_by(r.desc('reduction')).run(conn)
+    .ungroup().orderBy(r.desc('reduction')).run(conn)
 ```
 
 [Read more about this command &rarr;](ungroup/)
@@ -1478,9 +1478,9 @@ r.table('marvel').get('IronMan')('firstAppearance').run(conn, callback)
 ## [getField](get_field/) ##
 
 {% apibody %}
-sequence(attr) &rarr; sequence
-singleSelection(attr) &rarr; value
-object(attr) &rarr; value
+sequence.getField(attr) &rarr; sequence
+singleSelection.getField(attr) &rarr; value
+object.getField(attr) &rarr; value
 {% endapibody %}
 
 Get a single field from an object. If called on a sequence, gets that field from every
@@ -2592,7 +2592,7 @@ Convert a ReQL value or object to a JSON string. You may use either `toJsonStrin
 __Example:__ Get a ReQL document as a JSON string.
 
 ```js
-> r.table('hero').get(1).toJson()
+> r.table('hero').get(1).toJSON()
 // result returned to callback
 '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
 ```

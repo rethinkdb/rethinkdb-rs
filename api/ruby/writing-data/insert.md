@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, :durability => "hard", :return_changes => false, :conflict => "error"])
+table.insert(object | [object1, object2, ...][, :durability => "hard", :return_changes => false, :conflict => "error"])
     &rarr; object
 {% endapibody %}
 

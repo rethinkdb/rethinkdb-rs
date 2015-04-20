@@ -485,7 +485,7 @@ r.table('games').changes().run(conn).each{|change| p(change)}
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json][, :durability => "hard", :return_changes => false :conflict => "error"])
+table.insert(object | [object1, object2, ...][, :durability => "hard", :return_changes => false, :conflict => "error"])
     &rarr; object
 {% endapibody %}
 
@@ -510,13 +510,13 @@ r.table("posts").insert({
 ## [update](update/) ##
 
 {% apibody %}
-table.update(json | expr
+table.update(object | expr
     [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
-selection.update(json | expr
+selection.update(object | expr
     [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
-singleSelection.update(json | expr
+singleSelection.update(object | expr
     [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
 {% endapibody %}
@@ -536,13 +536,13 @@ r.table("posts").get(1).update({status: "published"}).run(conn)
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(json | expr
+table.replace(object | expr
     [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
-selection.replace(json | expr
+selection.replace(object | expr
     [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
-singleSelection.replace(json | expr
+singleSelection.replace(object | expr
     [, :durability => "hard", :return_changes => false, :non_atomic => false])
         &rarr; object
 {% endapibody %}
@@ -1452,9 +1452,9 @@ r.table('marvel').get('IronMan')[:first_appearance].run(conn)
 ## [get_field](get_field/) ##
 
 {% apibody %}
-sequence[attr] &rarr; sequence
-singleSelection[attr] &rarr; value
-object[attr] &rarr; value
+sequence.get_field(attr) &rarr; sequence
+singleSelection.get_field(attr) &rarr; value
+object.get_field(attr) &rarr; value
 {% endapibody %}
 
 Get a single field from an object. If called on a sequence, gets that field from every

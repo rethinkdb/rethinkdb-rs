@@ -13,11 +13,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(json | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
+table.replace(object | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
-selection.replace(json | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
+selection.replace(object | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
-singleSelection.replace(json | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
+singleSelection.replace(object | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
 {% endapibody %}
 
