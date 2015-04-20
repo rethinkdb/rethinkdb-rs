@@ -19,7 +19,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, {durability: "hard", returnChanges: false, conflict: "error"}]) &rarr; object
+table.insert(object | [object1, object2, ...][, {durability: "hard", returnChanges: false, conflict: "error"}]) &rarr; object
 {% endapibody %}
 
 # Description #

@@ -12,11 +12,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.update(json | expr[, durability="hard", return_changes=False, non_atomic=False])
+table.update(object | expr[, durability="hard", return_changes=False, non_atomic=False])
     &rarr; object
-selection.update(json | expr[, durability="hard", return_changes=False, non_atomic=False])
+selection.update(object | expr[, durability="hard", return_changes=False, non_atomic=False])
     &rarr; object
-singleSelection.update(json | expr[, durability="hard", return_changes=False, non_atomic=False])
+singleSelection.update(object | expr[, durability="hard", return_changes=False, non_atomic=False])
     &rarr; object
 {% endapibody %}
 

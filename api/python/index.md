@@ -494,7 +494,7 @@ for change in r.table('games').changes().run(conn):
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(json | [json][, durability="hard", return_changes=False, conflict="error"])
+table.insert(object | [object1, object2, ...][, durability="hard", return_changes=False, conflict="error"])
     &rarr; object
 {% endapibody %}
 
@@ -517,13 +517,13 @@ r.table("posts").insert({
 ## [update](update/) ##
 
 {% apibody %}
-table.update(json | exp
+table.update(object | exp
     [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
-selection.update(json | exp
+selection.update(object | exp
     [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
-singleSelection.update(json | exp
+singleSelection.update(object | exp
     [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
 {% endapibody %}
@@ -543,13 +543,13 @@ r.table("posts").get(1).update({"status": "published"}).run(conn)
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(json | expr
+table.replace(object | expr
     [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
-selection.replace(json | expr
+selection.replace(object | expr
     [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
-singleSelection.replace(json | expr
+singleSelection.replace(object | expr
     [, durability="hard", return_changes=False, non_atomic=False])
         &rarr; object
 {% endapibody %}
@@ -1482,9 +1482,9 @@ r.table('marvel').get('IronMan')['firstAppearance'].run(conn)
 ## [get_field](get_field/) ##
 
 {% apibody %}
-sequence[attr] &rarr; sequence
-singleSelection[attr] &rarr; value
-object[attr] &rarr; value
+sequence.get_field(attr) &rarr; sequence
+singleSelection.get_field(attr) &rarr; value
+object.get_field(attr) &rarr; value
 {% endapibody %}
 
 Get a single field from an object. If called on a sequence, gets that field from every
