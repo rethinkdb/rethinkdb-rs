@@ -11,17 +11,19 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-time.to_iso8601() &rarr; number
+time.to_iso8601() &rarr; string
 {% endapibody %}
 
 # Description #
 
-Convert a time object to its iso 8601 format.
+Convert a time object to a string in ISO 8601 format.
 
-__Example:__ Return the current time in an ISO8601 format.
+__Example:__ Return the current ISO 8601 time.
 
 ```py
-r.now().to_iso8601()
+> r.now().to_iso8601().run(conn)
+
+"2015-04-20T18:37:52.690+00:00"
 ```
 
 
