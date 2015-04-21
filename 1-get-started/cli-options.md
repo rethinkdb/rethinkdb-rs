@@ -5,7 +5,7 @@ docs_active: cli-options
 permalink: /docs/cli-options/
 ---
 
-These options can be passed to the `rethinkdb` server on the command line on startup. Many of these options can also be set in the configuration file; read [Create a cluster on system startup](/docs/cluster-on-startup/) for a detailed list.
+These options can be passed to the `rethinkdb` server on the command line on startup. Many of these options can also be set in the configuration file; read [Configuration file options](/docs/config-file/) for a detailed list.
 
 ## File path options ##
 
