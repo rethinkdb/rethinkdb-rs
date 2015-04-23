@@ -3,12 +3,15 @@ layout: documentation
 title: "Deploying with PaaS"
 docs_active: paas
 permalink: docs/paas/
+alias: /docs/aws
 ---
 
 RethinkDB can be easily deployed on [Compose][cio] and [Amazon Web Services][aws].
 
 [cio]: http://compose.io/
 [aws]: http://aws.amazon.com/
+
+{% toctag %}
 
 # Deploying on Compose #
 
