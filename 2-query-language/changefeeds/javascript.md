@@ -17,7 +17,9 @@ language: JavaScript
 
 # Basic usage #
 
-Subscribe to a feed by calling [changes](/api/javascript/changes) on a table:
+Subscribe to a feed by calling [changes][] on a table:
+
+[changes]: /api/javascript/changes
 
 ```js
 r.table('users').changes().run(conn, function(err, cursor) {
@@ -85,11 +87,15 @@ r.table('scores').changes().filter(
 )('new_val').run(conn, callback)
 ```
 
+# Including state changes #
+
+The `includeStates` optional argument to `changes` allows you to receive extra "status" documents in changefeed streams. These can allow your application to distinguish between initial values returned at the start of a stream and subsequent changes. Read the [changes][] API documentation for a full explanation and example.
+
 # Handling latency #
 
 Depending on how fast your application makes changes to monitored data and how fast it processes change notifications, it's possible that more than one change will happen between calls to the `changes` command. You can control what happens in that case with the `squash` optional argument.
 
-By default, if more than one change occurs between invocations of `change`, your application will receive a single change object whose `new_val` will incorporate *all* the changes to the data. Suppose three updates occurred to a monitored document between `change` reads:
+By default, if more than one change occurs between invocations of `changes`, your application will receive a single change object whose `new_val` will incorporate *all* the changes to the data. Suppose three updates occurred to a monitored document between `change` reads:
 
 | Change | Data |
 | ----- | ------ |

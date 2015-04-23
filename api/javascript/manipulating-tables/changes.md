@@ -34,6 +34,10 @@ If the `includeStates` optional argument is `true`, the changefeed stream will i
 * `{state: 'initializing'}` indicates the following documents represent initial values on the feed rather than changes. This will be the first document of a feed that returns initial values.
 * `{state: 'ready'}` indicates the following documents represent changes. This will be the first document of a feed that does *not* return initial values; otherwise, it will indicate the initial values have all been sent.
 
+Point changefeeds will always return initial values and have an `initializing` state; feeds that return changes on unfiltered tables will never return initial values. Feeds that return changes on more complex queries may or may not return return initial values, depending on the kind of aggregation. Read the article on [Changefeeds in RethinkDB][cfr] for a more detailed discussion. If `includeStates` is `true` on a changefeed that does not return initial values, the first document on the feed will be `{state: 'ready'}`.
+
+[cfr]: /docs/changefeeds/javascript/
+
 If `includeStates` is `false` (the default), the status documents will not be sent on the feed.
 
 If the table becomes unavailable, the changefeed will be disconnected, and a runtime exception will be thrown by the driver.
@@ -49,7 +53,7 @@ Changefeed notifications take the form of a two-field object:
 
 The first notification object in the changefeed stream will contain the query's initial value in `new_val` and have no `old_val` field. When a document is deleted, `new_val` will be `null`; when a document is inserted, `old_val` will be `null`.
 
-Certain document transformation commands can be chained before changefeeds. For more information, read the [discussion of changefeeds](/docs/changefeeds/javascript/) in the "Query language" documentation.
+Certain document transformation commands can be chained before changefeeds. For more information, read the [discussion of changefeeds][cfr] in the "Query language" documentation.
 
 The server will buffer up to 100,000 elements. If the buffer limit is hit, early changes will be discarded, and the client will receive an object of the form `{error: "Changefeed cache over array size limit, skipped X elements."}` where `X` is the number of elements skipped.
 
@@ -111,10 +115,22 @@ __Example:__ Return all the inserts on a table.
 r.table('test').changes().filter(r.row('old_val').eq(null)).run(conn, callback)
 ```
 
-__Example:__ Return all the changes to game 1.
+__Example:__ Return all the changes to game 1, with state notifications.
 
 ```js
-r.table('games').get(1).changes().run(conn, callback);
+r.table('games').get(1).changes({includeStates: true}).run(conn, callback);
+// Result returned on changefeed
+{state: 'initializing'}
+{new_val: {id: 1, score: 12, arena: 'Hobbiton Field'}}
+{state: 'ready'}
+{
+	old_val: {id: 1, score: 12, arena: 'Hobbiton Field'},
+	new_val: {id: 1, score: 14, arena: 'Hobbiton Field'}
+}
+{
+	old_val: {id: 1, score: 14, arena: 'Hobbiton Field'},
+	new_val: {id: 1, score: 17, arena: 'Hobbiton Field', winner: 'Frodo'}
+}
 ```
 
 __Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
