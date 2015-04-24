@@ -64,6 +64,7 @@ Limitations and caveats on chaining with changefeeds:
 
 * `min`, `max` and `orderBy` must be used with indexes.
 * `orderBy` requires `limit`; neither command works by itself.
+* `order_by` must be used with a [secondary index](/docs/secondary-indexes/javascript); it cannot be used with an unindexed field.
 * You cannot use changefeeds after [concatMap](/api/javascript/concat_map) or other transformations whose results cannot be pushed to the shards.
 * Transformations are applied before changes are calculated.
 
