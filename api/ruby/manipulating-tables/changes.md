@@ -29,7 +29,7 @@ If the `include_states` optional argument is `true`, the changefeed stream will 
 * `{:state => "initializing"}` indicates the following documents represent initial values on the feed rather than changes. This will be the first document of a feed that returns initial values.
 * `{:state => "ready"}` indicates the following documents represent changes. This will be the first document of a feed that does *not* return initial values; otherwise, it will indicate the initial values have all been sent.
 
-Point changefeeds will always return initial values and have an `initializing` state; feeds that return changes on unfiltered tables will never return initial values. Feeds that return changes on more complex queries may or may not return return initial values, depending on the kind of aggregation. Read the article on [Changefeeds in RethinkDB][cfr] for a more detailed discussion. If `include_states` is `true` on a changefeed that does not return initial values, the first document on the feed will be `{state: 'ready'}`.
+Point changefeeds will always return initial values and have an `initializing` state; feeds that return changes on unfiltered tables will never return initial values. Feeds that return changes on more complex queries may or may not return return initial values, depending on the kind of aggregation. Read the article on [Changefeeds in RethinkDB][cfr] for a more detailed discussion. If `include_states` is `true` on a changefeed that does not return initial values, the first document on the feed will be `{:state => 'ready'}`.
 
 [cfr]: /docs/changefeeds/ruby/
 
