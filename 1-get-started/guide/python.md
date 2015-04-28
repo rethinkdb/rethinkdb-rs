@@ -162,7 +162,7 @@ the query `r.table('authors')`:
 ```python
 cursor = r.table("authors").run()
 for document in cursor:
-    print document
+    print(document)
 ```
 
 The query returns the three previously inserted documents, along with
@@ -183,7 +183,7 @@ chaining a `filter` command to the end of the query:
 ```python
 cursor = r.table("authors").filter(r.row["name"] == "William Adama").run()
 for document in cursor:
-    print document
+    print(document)
 ```
 
 This query returns a cursor with one document&mdash;the record for
@@ -202,7 +202,7 @@ two posts:
 ```python
 cursor = r.table("authors").filter(r.row["posts"].count() > 2).run()
 for document in cursor:
-    print document
+    print(document)
 ```
 
 In this case, we're using a predicate that returns `True` only if the
@@ -251,7 +251,7 @@ connection. Then, run the following query:
 ```python
 cursor = r.table("authors").changes().run()
 for document in cursor:
-    print document
+    print(document)
 ```
 
 Now switch back to your first terminal. We'll be updating and deleting
