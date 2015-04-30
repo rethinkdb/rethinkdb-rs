@@ -24,23 +24,18 @@ singleSelection.update(object | expr[, :durability => "hard", :return_changes =>
 
 # Description #
 
-Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
-combination of the two.
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a combination of the two.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. This option will override the
-table or query's durability setting (set in [run](/api/ruby/run/)).  
-In soft durability mode RethinkDB will acknowledge the write immediately after
-receiving it, but before the write has been committed to disk.
+- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/ruby/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving it, but before the write has been committed to disk.
 - `return_changes`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
 - `non_atomic`: if set to `true`, executes the update and distributes the result to replicas in a non-atomic fashion. This flag is required to perform non-deterministic updates, such as those that require reading data from another table.
 
 Update returns an object that contains the following attributes:
 
 - `replaced`: the number of documents that were updated.
-- `unchanged`: the number of documents that would have been modified except the new
-value was the same as the old value.
+- `unchanged`: the number of documents that would have been modified except the new value was the same as the old value.
 - `skipped`: the number of documents that were skipped because the document didn't exist.
 - `errors`: the number of errors encountered while performing the update.
 - `first_error`: If errors were encountered, contains the text of the first error.
@@ -60,12 +55,11 @@ __Example:__ Update the status of all posts to `published`.
 r.table("posts").update({:status => "published"}).run(conn)
 ```
 
-__Example:__ Update the status of all the post written by William.
+__Example:__ Update the status of all the posts written by William.
 
 ```rb
 r.table("posts").filter({:author => "William"}).update({:status => "published"}).run(conn)
 ```
-
 
 __Example:__ Increment the field `view` with `id` of `1`.
 This query will throw an error if the field `views` doesn't exist.
@@ -98,24 +92,21 @@ r.table("posts").get(1).update{ |post|
 }.run(conn)
 ```
 
-__Example:__ Update the field `num_comments` with the result of a sub-query. Because
-this update is not atomic, you must pass the `non_atomic` flag.
+__Example:__ Update the field `num_comments` with the result of a sub-query. Because this update is not atomic, you must pass the `non_atomic` flag.
 
 ```rb
 r.table("posts").get(1).update({
     :num_comments => r.table("comments").filter({:id_post => 1}).count()
-}, :non_atomic => true ).run(conn)
+}, :non_atomic => true).run(conn)
 ```
 
-If you forget to specify the `non_atomic` flag, you will get a `RqlRuntimeError`.
+If you forget to specify the `non_atomic` flag, you will get a `RqlRuntimeError`:
 
 ```
 RqlRuntimeError: Could not prove function deterministic.  Maybe you want to use the non_atomic flag? 
 ```
 
-__Example:__ Update the field `num_comments` with a random value between 0 and 100.  
-This update cannot be proven deterministic because of `r.js` (and in fact is not), so you
-must pass the `non_atomic` flag.
+__Example:__ Update the field `num_comments` with a random value between 0 and 100. This update cannot be proven deterministic because of `r.js` (and in fact is not), so you must pass the `non_atomic` flag.
 
 ```rb
 r.table("posts").get(1).update({
@@ -129,8 +120,7 @@ __Example:__ Update the status of the post with `id` of `1` using soft durabilit
 r.table("posts").get(1).update({:status => "published"}, :durability => "soft").run(conn)
 ```
 
-__Example:__ Increment the field `views` and return the values of the document before
-and after the update operation.
+__Example:__ Increment the field `views` and return the values of the document before and after the update operation.
 
 ```rb
 r.table("posts").get(1).update(:return_changes => true) { |post|
@@ -138,7 +128,7 @@ r.table("posts").get(1).update(:return_changes => true) { |post|
 }.run(conn)
 ```
 
-The result will have two fields `old_val` and `new_val`.
+The result will now include a `changes` field:
 
 ```rb
 {
@@ -169,3 +159,90 @@ The result will have two fields `old_val` and `new_val`.
 }
 ```
 
+## Updating nested fields ##
+
+The `update` command supports RethinkDB's [nested field][nf] syntax to update subdocuments. Consider a user table with contact information in this format:
+
+[nf]: /docs/nested-fields/ruby
+
+```rb
+{
+    :id => 10001,
+    :name => "Bob Smith",
+    :contact => {
+        :phone => {
+            :work => "408-555-1212",
+            :home => "408-555-1213",
+            :cell => "408-555-1214"
+        },
+        :email => {
+            :work => "bob@smith.com",
+            :home => "bobsmith@example.com",
+            :other => "bobbys@moosecall.net"
+        },
+        :im => {
+            :skype => "Bob Smith",
+            :aim => "bobmoose",
+            :icq => "nobodyremembersicqnumbers"
+        }
+    },
+    :notes => [
+        {
+            :date => r.time(2014,1,1,'Z'),
+            :from => "John Doe",
+            :subject => "My name is even more boring than Bob's"
+        },
+        {
+            :date => r.time(2014,2,2,'Z'),
+            :from => "Bob Smith Sr",
+            :subject => "Happy Second of February"
+        }
+    ]
+}
+```
+
+__Example:__ Update Bob Smith's cell phone number.
+
+```rb
+r.table("users").get(10001).update(
+    {:contact => {:phone => {:cell => "408-555-4242"}}}
+).run(conn)
+```
+
+__Example:__ Add another note to Bob Smith's record.
+
+```rb
+new_note = {
+    :date => r.now(),
+    :from => "Inigo Montoya",
+    :subject => "You killed my father"
+}
+r.table("users").get(10001).update{ |row|
+    {:notes => row["notes"].append(new_note)}
+}.run(conn)
+```
+
+__Example:__ Send a note to every user with an ICQ number.
+
+```rb
+icq_note = {
+    :date => r.now(),
+    :from => "Admin",
+    :subject => "Welcome to the future"
+}
+r.table("users").filter{ |row|
+    row.has_fields({:contact => {:im => "icq"}})
+}.update{ |row|
+    {:notes => row["notes"].append(icq_note)}
+}.run(conn)
+```
+
+__Example:__ Replace all of Bob's IM records. Normally, `update` will merge nested documents together; to replace the entire `"im"` document, use the [literal][] command.
+
+[literal]: /api/ruby/literal/
+
+```rb
+r.table('users').get(10001).update(
+    {:contact => {:im => r.literal({:aim => "themoosemeister"})}}
+).run(conn)
+```

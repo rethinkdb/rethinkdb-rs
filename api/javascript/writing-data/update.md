@@ -30,23 +30,18 @@ singleSelection.update(object | expr[, {durability: "hard", returnChanges: false
 
 # Description #
 
-Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
-combination of the two.
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a combination of the two.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. This option will override the
-table or query's durability setting (set in [run](/api/javascript/run/)).  
-In soft durability mode RethinkDB will acknowledge the write immediately after
-receiving it, but before the write has been committed to disk.
+- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/javascript/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving it, but before the write has been committed to disk.
 - `returnChanges`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
 - `nonAtomic`: if set to `true`, executes the update and distributes the result to replicas in a non-atomic fashion. This flag is required to perform non-deterministic updates, such as those that require reading data from another table.
 
 Update returns an object that contains the following attributes:
 
 - `replaced`: the number of documents that were updated.
-- `unchanged`: the number of documents that would have been modified except the new
-value was the same as the old value.
+- `unchanged`: the number of documents that would have been modified except the new value was the same as the old value.
 - `skipped`: the number of documents that were skipped because the document didn't exist.
 - `errors`: the number of errors encountered while performing the update.
 - `first_error`: If errors were encountered, contains the text of the first error.
@@ -66,7 +61,7 @@ __Example:__ Update the status of all posts to `published`.
 r.table("posts").update({status: "published"}).run(conn, callback)
 ```
 
-__Example:__ Update the status of all the post written by William.
+__Example:__ Update the status of all the posts written by William.
 
 ```js
 r.table("posts").filter({author: "William"}).update({status: "published"}).run(conn, callback)
@@ -104,31 +99,28 @@ r.table("posts").get(1).update(function(post) {
 }).run(conn, callback)
 ```
 
-__Example:__ Update the field `numComments` with the result of a sub-query. Because
-this update is not atomic, you must pass the `nonAtomic` flag.
+__Example:__ Update the field `numComments` with the result of a sub-query. Because this update is not atomic, you must pass the `nonAtomic` flag.
 
 ```js
 r.table("posts").get(1).update({
     numComments: r.table("comments").filter({idPost: 1}).count()
-},{
+}, {
     nonAtomic: true
 }).run(conn, callback)
 ```
 
-If you forget to specify the `nonAtomic` flag, you will get a `RqlRuntimeError`.
+If you forget to specify the `nonAtomic` flag, you will get a `RqlRuntimeError`:
 
 ```
 RqlRuntimeError: Could not prove function deterministic.  Maybe you want to use the non_atomic flag? 
 ```
 
-__Example:__ Update the field `numComments` with a random value between 0 and 100.  
-This update cannot be proven deterministic because of `r.js` (and in fact is not), so you
-must pass the `nonAtomic` flag.
+__Example:__ Update the field `numComments` with a random value between 0 and 100. This update cannot be proven deterministic because of `r.js` (and in fact is not), so you must pass the `nonAtomic` flag.
 
 ```js
 r.table("posts").get(1).update({
     num_comments: r.js("Math.floor(Math.random()*100)")
-},{
+}, {
     nonAtomic: true
 }).run(conn, callback)
 ```
@@ -139,8 +131,7 @@ __Example:__ Update the status of the post with `id` of `1` using soft durabilit
 r.table("posts").get(1).update({status: "published"}, {durability: "soft"}).run(conn, callback)
 ```
 
-__Example:__ Increment the field `views` and return the values of the document before
-and after the update operation.
+__Example:__ Increment the field `views` and return the values of the document before and after the update operation.
 
 ```js
 r.table("posts").get(1).update({
@@ -150,7 +141,7 @@ r.table("posts").get(1).update({
 }).run(conn, callback)
 ```
 
-The result will have two fields `old_val` and `new_val`.
+The result will now include a `changes` field:
 
 ```js
 {
@@ -181,3 +172,91 @@ The result will have two fields `old_val` and `new_val`.
 }
 ```
 
+
+## Updating nested fields ##
+
+The `update` command supports RethinkDB's [nested field][nf] syntax to update subdocuments. Consider a user table with contact information in this format:
+
+[nf]: /docs/nested-fields/javascript
+
+```js
+{
+	id: 10001,
+	name: "Bob Smith",
+	contact: {
+		phone: {
+			work: "408-555-1212",
+			home: "408-555-1213",
+			cell: "408-555-1214"
+		},
+		email: {
+			work: "bob@smith.com",
+			home: "bobsmith@example.com",
+			other: "bobbys@moosecall.net"
+		},
+		im: {
+			skype: "Bob Smith",
+			aim: "bobmoose",
+			icq: "nobodyremembersicqnumbers"
+		}
+	},
+	notes: [
+		{
+			date: r.time(2014,1,1,'Z'),
+			from: "John Doe",
+			subject: "My name is even more boring than Bob's"
+		},
+		{
+			date: r.time(2014,2,2,'Z'),
+			from: "Bob Smith Sr",
+			subject: "Happy Second of February"
+		}
+	]
+}
+```
+
+__Example:__ Update Bob Smith's cell phone number.
+
+```js
+r.table("users").get(10001).update(
+    {contact: {phone: {cell: "408-555-4242"}}}
+).run(conn, callback)
+```
+
+__Example:__ Add another note to Bob Smith's record.
+
+```js
+var newNote = {
+    date: r.now(),
+    from: "Inigo Montoya",
+    subject: "You killed my father"
+};
+r.table("users").get(10001).update(
+    {notes: r.row("notes").append(newNote)}
+).run(conn, callback)
+```
+
+__Example:__ Send a note to every user with an ICQ number.
+
+```js
+var icqNote = {
+    date: r.now(),
+    from: "Admin",
+    subject: "Welcome to the future"
+};
+r.table("users").filter(
+    r.row.hasFields({contact: {im: "icq"}})
+).update(
+    {notes: r.row("notes").append(icqNote)}
+).run(conn, callback)
+```
+
+__Example:__ Replace all of Bob's IM records. Normally, `update` will merge nested documents together; to replace the entire `"im"` document, use the [literal][] command.
+
+[literal]: /api/javascript/literal/
+
+```js
+r.table('users').get(10001).update(
+    {contact: {im: r.literal({aim: "themoosemeister"})}}
+).run(conn, callback)
+```
