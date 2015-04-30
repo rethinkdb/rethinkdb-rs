@@ -64,7 +64,7 @@ Limitations and caveats on chaining with changefeeds:
 
 * `min`, `max` and `order_by` must be used with indexes.
 * `order_by` requires `limit`; neither command works by itself.
-* `order_by` must be used with a [secondary index](/docs/secondary-indexes/ruby); it cannot be used with an unindexed field.
+* `order_by` must be used with a [secondary index](/docs/secondary-indexes/ruby) or the primary index; it cannot be used with an unindexed field.
 * You cannot use changefeeds after [concat_map](/api/ruby/concat_map) or other transformations whose results cannot be pushed to the shards.
 * Transformations are applied before changes are calculated.
 
