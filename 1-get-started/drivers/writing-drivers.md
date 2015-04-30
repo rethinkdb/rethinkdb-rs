@@ -324,6 +324,7 @@ The `Response` object will have the following fields:
 * `r`: data from the result, as a JSON array
 * `b`: a backtrace if `t` is an error type; this field will not be present otherwise
 * `p`: a profile if the global optarg `profile: true` was specified; this field will not be present otherwise
+* `n`: an optional array of `ResponseNote` values, as defined in `ql2.proto`
 
 ## Response types ##
 
@@ -333,13 +334,24 @@ These will be numeric values, corresponding to the types in `ql2.proto`.
 * `2` `SUCCESS_SEQUENCE`: Either the whole query has been returned in `r`, or the last section of a multi-response query has been returned.
 * `3` `SUCCESS_PARTIAL`: The query has returned a stream, which may or may not be complete. To retrieve more results for the query, send a `CONTINUE` message (see below).
 * `4` `WAIT_COMPLETE`: This `ResponseType` indicates all queries run in `noreply` mode have finished executing. `r` will be empty. 
-* `5` `SUCCESS_FEED`: The query has returned a changefeed. `r` will contain the initial data on the feed, which may be empty.
 * `16` `CLIENT_ERROR`: The server failed to run the query due to a bad client request. The error message will be in the first element of `r`.
 * `17` `COMPILE_ERROR`: The server failed to run the query due to an ReQL compilation error. The error message will be in the first element of `r`.
 
+## Response notes ##
+
+The `n` field, if present, will be an array of one or more `ResponseNote` values, giving further information about the kind of the stream being returned. These will be numeric values, corresponding to the notes in `ql2.proto`.
+
+All of the response notes involve changefeeds; read [Changefeeds in RethinkDB](/docs/changefeeds/) for more detailed information.
+
+* `1` `SEQUENCE_FEED`: The stream is a changefeed.
+* `2` `ATOM_FEED`: The stream is a *point* changefeed, i.e., returning changes from a single document.
+* `3` `ORDER_BY_LIMIT_FEED`: The stream is a changefeed generated with an `order_by().limit()` query.
+* `4` `UNIONED_FEED`: The stream is a union of multiple changefeed types that cannot be collapsed to a single type, e.g., `r.table('test').changes().union(r.table('test').get(0).changes())`.
+* `5` `INCLUDES_STATES`: The stream is a changefeed that includes states notes, e.g., `{state: 'initializing'}.
+
 ## Multipart responses ##
 
-Streams and feeds are lazily-computed sequences, and return a `ResponseType` of `SUCCESS_PARTIAL` (`3`) and `SUCCESS_FEED` (`5`) respectively, with currently available data in the `r` array. When the driver receives a feed or stream, it should return a cursor (or an object with a cursor-like interface).
+Streams and feeds are lazily-computed sequences, and return a `ResponseType` of `SUCCESS_PARTIAL` (`3`), with currently available data in the `r` array. When the driver receives a feed or stream, it should return a cursor (or an object with a cursor-like interface).
 
 To retrieve more data for the cursor, the driver should send a query with a `QueryType` of `CONTINUE` _on the same connection with the same token._ As with other queries, this must be sent with the query token, the size of the query, and the query itself, simply `[2]`.
 
@@ -357,7 +369,7 @@ To close a cursor and stop receiving data from the stream or feed, send a query 
 
 Starting with RethinkDB 2.0 (`V0_4`), the server will process multiple queries in parallel rather than sequentially, and there is no guarantee that a read following a write on the same connection will "see" the results of the write as long as it's successful. (Previous versions of the server would process multiple queries on the same connection sequentially.)
 
-You should not release a connection in the pool as soon as you receive a response. Only release the connection when you receive a response of a type other than `SUCCESS_PARTIAL` or `SUCCESS_FEED`.
+You should not release a connection in the pool as soon as you receive a response. Only release the connection when you receive a response of a type other than `SUCCESS_PARTIAL`.
 
 # Get help #
 
