@@ -78,6 +78,17 @@ alias: install/
 
 - - -
 
+# Docker #
+
+Docker provides an [official RethinkDB repository][docker] on the Docker Hub. To deploy RethinkDB on Docker, run the following command:
+
+    $ docker run -d -P --name rethink1 rethinkdb
+
+You can find unofficial community-supported Docker images on our [Frameworks and Libraries][fnl] list under "Docker images."
+
+[docker]: https://registry.hub.docker.com/_/rethinkdb/
+[fnl]: /docs/frameworks-and-libraries/
+
 # Installing on other platforms #
 
 <img class="install-illustration" src="/assets/images/docs/api_illustrations/install.png"/>
