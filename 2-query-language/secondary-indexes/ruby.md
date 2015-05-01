@@ -66,14 +66,14 @@ to query _one to many_ and _many to many_ relations.
 
 # Compound indexes #
 
-Use compound indexes to efficiently retrieve documents by multiple fields.
+Compound indexes use arrays to efficiently retrieve documents by multiple fields.
 
 ## Creation ##
 
 ```rb
 # Create a compound secondary index based on the first_name and last_name attributes
 r.table("users").index_create("full_name"){ |row|
-    [row["first_name"], row["last_name"]]
+    [row["last_name"], row["first_name"]]
 }.run(conn)
 
 # Wait for the index to be ready to use
@@ -84,11 +84,17 @@ r.table("users").index_wait("full_name").run(conn)
 
 ```rb
 # Get all users whose full name is John Smith.
-r.table("users").get_all(["John", "Smith"], :index => "full_name").run(conn)
+r.table("users").get_all(["Smith", "John"], :index => "full_name").run(conn)
 
 # Get all users whose full name is between "John Smith" and "Wade Welles"
-r.table("users").between(["John", "Smith"], ["Wade", "Welles"], :index => "full_name") \
-    .run(conn)
+r.table("users").between(
+    ["Smith", "John"], ["Welles", "Wade"], :index => "full_name"
+).run(conn)
+
+# Get all users whose last name is Smith.
+r.table("users").between(
+    ["Smith", r.minval], ["Smith", r.maxval], :index => "full_name"
+).run(conn)
 
 # Efficiently order users by first name and last name using an index
 r.table("users").order_by(:index => "full_name").run(conn)
@@ -97,6 +103,8 @@ r.table("users").order_by(:index => "full_name").run(conn)
 r.table("posts").eq_join("author_full_name", r.table("users"), :index => "full_name") \
     .run(conn)
 ```
+
+Internally, compound indexes and simple indexes are the same type of index in RethinkDB; compound indexes are simply a special case of regular index that returns an array rather than a single value.
 
 # Multi indexes #
 
@@ -151,8 +159,11 @@ r.table("users").index_create("full_name2"){ |user|
 }.run(conn)
 ```
 
-The function you give to `index_create` must be deterministic. In practice this means that
-that you cannot use a function that contains a sub-query or the `r.js` command.
+The function you give to `index_create` must be deterministic. In practice this means that that you cannot use a function that contains a sub-query or the `r.js` command.
+
+{% infobox %}
+If the function passed to `index_create` returns an error for a given document, that document will not be indexed. No error will be returned for those documents.
+{% endinfobox %}
 
 ### Using multi indexes and arbitrary expressions together ###
 
@@ -257,10 +268,6 @@ Secondary indexes have the following limitations:
   efficiently retrieve documents by multiple fields.
 
 - Currently, you cannot chain an `order_by` using a secondary index after a `get_all` but only after a `table`. (You can, however, chain an `order_by` using a secondary index after a `between` *if* they use the same index.)
-
-- Currently, compound indexes cannot be queried by a prefix.  
-  See [Github issue #955](https://github.com/rethinkdb/rethinkdb/issues/955)
-  to track progress.
 
 - RethinkDB does not support unique secondary indexes even for non-sharded tables.
 
