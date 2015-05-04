@@ -43,7 +43,7 @@ The basic setup is complete&mdash;__you've now got a working server!__
 ## Multiple instances ##
 
 The init.d script supports starting multiple instances on the same server via
-multiple `.conf` files in `/etc/rethinkdb/instances.d`.
+multiple `.conf` files in `/etc/rethinkdb/instances.d`. This may be desirable for isolating databases for separate applications running on the same server, or for testing purposes. (There is no performance gain from running multiple nodes of the same cluster on the same physical machine.)
 
 In each configuration file, set a different data directory, and include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
 
@@ -121,7 +121,7 @@ __You've now got a working server!__
 
 ## Multiple instances ##
 
-As systemd supports multiple instances on the same server, you simply need to create multiple `.conf` files in `/etc/rethinkdb/instances.d`.
+As systemd supports multiple instances on the same server, you simply need to create multiple `.conf` files in `/etc/rethinkdb/instances.d`. This may be desirable for isolating databases for separate applications running on the same server, or for testing purposes. (There is no performance gain from running multiple nodes of the same cluster on the same physical machine.)
 
 In each configuration file, set a different data directory, and include the `join` configuration option for each node with the IP address and port of another node in the cluster. If the instances are not running on the same machine, specify `bind=all` in the configuration file (or `--bind all` on the command line). Take care that each instance on the same machine specifies different values for `driver-port`, `cluster-port` and `http-port`.
 
@@ -227,7 +227,9 @@ RethinkDB will automatically load on startup. To disable this behavior, change t
 
 ## Multiple instances
 
-To run multiple instances of RethinkDB under OS X, you will need to create new copies of the `com.rethinkdb.server.plist` file with different names (e.g., `com.rethinkdb.server2.plist`), making the following changes:
+Running multiple instances of RethinkDB on the same server may be desirable for isolating databases for separate applications running on the same server, or for testing purposes. (There is no performance gain from running multiple nodes of the same cluster on the same physical machine.)
+ 
+You will need to create new copies of the `com.rethinkdb.server.plist` file with different names (e.g., `com.rethinkdb.server2.plist`), making the following changes:
 
 * Set the `Label` key value to the name of the file (e.g., `com.rethinkdb.server2.plist`).
 * Set the `ProgramArguments` key to a new configuration file (e.g., `/etc/rethinkdb2.conf`).
