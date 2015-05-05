@@ -112,9 +112,9 @@ A third option is to specify how many seconds to wait between squashes. Passing 
 
 # Scaling considerations #
 
-Available memory affects changefeed performance, and running multiple changefeeds on the same database may scale linearly at worst case. If you have an application with dozens (or hundreds or thousands) of clients that need real-time updating, rather than creating a changefeed for each client consider using a [publish-subscribe][ps] model that distributes to the clients through a message exchange.
+Changefeeds perform well as they scale, although they create extra intracluster messages in proportion to the number of servers with open feed connections on each write. Also, since changefeeds are unidirectional with no acknowledgement returned from clients, they cannot guarantee delivery. If you need real-time updating with delivery guarantees, consider using a model that distributes to the clients through a message broker such as [RabbitMQ][ps].
 
-[ps]: /docs/publish-subscribe/ruby/
+[ps]: /docs/rabbitmq/ruby/
 
 # Read more #
 
