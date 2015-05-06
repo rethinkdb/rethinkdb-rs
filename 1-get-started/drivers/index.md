@@ -60,6 +60,12 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
+                <a href="https://github.com/billysometimes/rethinkdb">
+                    <img src="/assets/images/docs/driver-languages/dart.png" />
+                    <p class="name">Dart <span class="driver-author">billys</span></p>
+                </a>
+            </li>
+            <li>
                 <a href="https://github.com/dancannon/gorethink">
                     <img src="/assets/images/docs/driver-languages/go.png" />
                     <p class="name">Go</p>
@@ -109,16 +115,16 @@ alias: docs/guides/drivers/
         <p>These drivers have not been updated with more recent additions to the RethinkDB driver protocol, and will require work to take advantage of newer features. If you want to work with one of these languages, these may provide a good starting point.</p>
         <ul class="platform-buttons">
             <li>
-            <a href="https://github.com/unbit/librethinkdb">
-                <img src="/assets/images/docs/driver-languages/c.png" />
-                <p class="name">C</p>
-            </a>
+                <a href="https://github.com/unbit/librethinkdb">
+                    <img src="/assets/images/docs/driver-languages/c.png" />
+                    <p class="name">C</p>
+                </a>
             </li>
             <li>
-            <a href="https://github.com/jurajmasar/rethink-db-cpp-driver">
-                <img src="/assets/images/docs/driver-languages/cpp.png" />
-                <p class="name">C++ <span class="driver-author">jurajmasar</span></p>
-            </a>
+                <a href="https://github.com/jurajmasar/rethink-db-cpp-driver">
+                    <img src="/assets/images/docs/driver-languages/cpp.png" />
+                    <p class="name">C++ <span class="driver-author">jurajmasar</span></p>
+                </a>
             </li>
             <li>
                 <a href="https://github.com/bitemyapp/revise">
@@ -129,7 +135,7 @@ alias: docs/guides/drivers/
             <li>
                 <a href="https://github.com/dbettin/rethinkdb">
                     <img src="/assets/images/docs/driver-languages/dart.png" />
-                    <p class="name">Dart</p>
+                    <p class="name">Dart <span class="driver-author">dbettin</span></p>
                 </a>
             </li>
             <li>
@@ -197,6 +203,7 @@ __Thanks to all our amazing driver contributors!__
 - [@apa512](https://github.com/apa512) (Clojure): <https://github.com/apa512/clj-rethinkdb>
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
 - [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): <https://github.com/bitemyapp/revise>
+- [@billysometimes](https://github.com/billysometimes) (Dart): <https://github.com/billysometimes/rethinkdb>
 - [@christopherhesse](https://github.com/christopherhesse) (Go): <https://github.com/christopherhesse/rethinkgo>
 - [@dancannon](https://github.com/dancannon) (Go): <https://github.com/dancannon/gorethink>
 - [@danielmewes](https://github.com/danielmewes) (PHP): <https://github.com/danielmewes/php-rql>
