@@ -37,6 +37,14 @@ __Example:__ Return the players who have won games.
 r.table('players').hasFields('games_won').run(conn, callback)
 ```
 
+__Example:__ Return the players who have *not* won games. To do this, use `hasFields` with [not](/api/javascript/not), wrapped with [filter](/api/javascript/filter).
+
+```js
+r.table('players').filter(
+    r.row.hasFields('games_won').not()
+).run(conn, callback)
+```
+
 __Example:__ Test if a specific player has won any games.
 
 ```js
