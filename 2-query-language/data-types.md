@@ -60,6 +60,58 @@ r.table('users').get(1).typeOf().run(conn, callback)
 
 Returns `"SELECTION<OBJECT>"`.
 
+# Sorting order #
+
+Arrays (and strings) sort lexicographically. Objects are coerced to arrays before sorting. Strings are sorted by UTF-8 codepoint and do not support Unicode collations.
+
+Mixed sequences of data sort in the following order:
+
+* arrays
+* booleans
+* null
+* numbers
+* objects
+* binary objects
+* geometry objects
+* times
+* strings
+
+This is the alphabetical order of their type name as returned by the `typeOf()` command. (Binary objects, geometry objects and times are "pseudotypes," and return `PTYPE<BINARY>`, `PTYPE<GEOMETRY>` and `PTYPE<TIME>`, respectively.)
+
+This example in the Data Explorer demonstrates sorting mixed types:
+
+```js
+r.expr([
+    {val: 1},
+    {val: 2},
+    {val: null},
+    {val: 'foo'},
+    {val: 'bar'},
+    {val: [1, 2, 4]},
+    {val: [1, 2, 3]},
+    {val: true},
+    {val: r.now()},
+    {val: {foo: 100}},
+    {val: {bar: 200}}
+]).orderBy('val')
+```
+
+```json
+[
+    {"val":[1,2,3]},
+    {"val":[1,2,4]},
+    {"val":true},
+    {"val":null},
+    {"val":1},
+    {"val":2},
+    {"val":{"bar":200}},
+    {"val":{"foo":100}},
+    {"val":{"$reql_type$":"TIME"}},
+    {"val":"bar"},
+    {"val":"foo"}
+]
+```
+
 # Geometry data types #
 
 For more information on these data types, read about RethinkDB's [geospatial support][geo].

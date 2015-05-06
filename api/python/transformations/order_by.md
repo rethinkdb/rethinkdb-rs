@@ -26,7 +26,7 @@ Sort the sequence by document values of the given key(s). To specify
 the ordering, wrap the attribute with either `r.asc` or `r.desc`
 (defaults to ascending).
 
-__Note:__ RethinkDB uses byte-wise ordering for `orderBy` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
+__Note:__ RethinkDB uses byte-wise ordering for `orderBy` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint. For more information on RethinkDB's sorting order, read the section in [ReQL data types](/docs/data-types/#sorting-order).
 
 Sorting without an index requires the server to hold the sequence in
 memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/python/run)). Sorting with an index can
