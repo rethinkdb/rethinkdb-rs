@@ -3,6 +3,9 @@ layout: api-command
 language: Ruby
 permalink: api/ruby/between/
 command: between
+alias:
+    - api/ruby/minval/
+    - api/ruby/maxval/
 related_commands:
     get: get/
     get_all: get_all/

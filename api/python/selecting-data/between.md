@@ -3,6 +3,9 @@ layout: api-command
 language: Python
 permalink: api/python/between/
 command: between
+alias:
+    - api/python/minval/
+    - api/python/maxval/
 related_commands:
     get: get/
     get_all: get_all/
