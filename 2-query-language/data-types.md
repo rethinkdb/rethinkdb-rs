@@ -67,16 +67,16 @@ Arrays (and strings) sort lexicographically. Objects are coerced to arrays befor
 Mixed sequences of data sort in the following order:
 
 * arrays
-* binary objects
 * booleans
 * null
 * numbers
 * objects
+* binary objects
 * geometry objects
 * times
 * strings
 
-This is the alphabetical order of their type name as returned by the `typeOf()` command. (Geometry objects and times are `PTYPE<GEOMETRY>` and `PTYPE<TIME>`, respectively.)
+This is the alphabetical order of their type name as returned by the `typeOf()` command. (Binary objects, geometry objects and times are "pseudotypes," and return `PTYPE<BINARY>`, `PTYPE<GEOMETRY>` and `PTYPE<TIME>`, respectively.)
 
 This example in the Data Explorer demonstrates sorting mixed types:
 
