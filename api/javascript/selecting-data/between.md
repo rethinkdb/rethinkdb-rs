@@ -3,6 +3,9 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/between/
 command: between
+alias:
+    - api/javascript/minval/
+    - api/javascript/maxval/
 io:
     -   - table
         - selection
