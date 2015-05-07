@@ -17,7 +17,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.indexCreate(indexName[, indexFunction][, {multi: false, geo:false}]) &rarr; object
+table.indexCreate(indexName[, indexFunction][, {multi: false, geo: false}]) &rarr; object
 {% endapibody %}
 
 # Description #

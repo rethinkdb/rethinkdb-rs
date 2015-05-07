@@ -366,7 +366,7 @@ r.db('test').tableList().run(conn, callback)
 ## [indexCreate](index_create/) ##
 
 {% apibody %}
-table.indexCreate(indexName[, indexFunction][, {multi: false}]) &rarr; object
+table.indexCreate(indexName[, indexFunction][, {multi: false, geo: false}]) &rarr; object
 {% endapibody %}
 
 Create a new secondary index on a table.
