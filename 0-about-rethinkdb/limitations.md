@@ -44,3 +44,5 @@ RethinkDB uses byte-wise ordering for indexes, `orderBy` and `between`. While th
 Some file systems, typically compressed or encrypted ones, may require the `--no-direct-io` option (see [Create a cluster on system startup](/docs/cluster-on-startup/) for more information on RethinkDB options).
 
 There are currently issues with `btrfs`. Follow [issue #2781](https://github.com/rethinkdb/rethinkdb/issues/2781) for more information.
+
+It is possible for RethinkDB to return data from concurrent writes that have not been committed to disk yet, even when `useOutdated` is set to `false` (the default). The upcoming release of RethinkDB (2.1) will allow more fine-grained control of the isolation level.

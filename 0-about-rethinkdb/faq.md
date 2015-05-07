@@ -224,6 +224,10 @@ No. However, RethinkDB's query language can do nearly anything SQL can do, inclu
 
 Most write operations involving a single document in RethinkDB are guaranteed to be atomic. Operations that are not deterministic cannot update documents in an atomic fashion (such as random values, or values obtained as the result of a subquery). In addition, multiple documents are not updated atomically.
 
+## Can RethinkDB reads ever see stale data? ##
+
+Reads run with the `useOutdated` flag set to `false` (which is the default) will never see stale data, but they may see changes from concurrent writes that have not been safely committed to disk yet. This is equivalent to SQL's `READ UNCOMMITTED` isolation level. Reads run with the `useOutdated` flag set to `true` may see stale data. The upcoming release of RethinkDB (2.1) will allow more fine-grained control of the isolation level.
+
 ## How do queries get routed in a RethinkDB cluster? ##
 
 Users never have to worry about sending queries to specific nodes. Connect your clients to any node in a cluster, and queries will be routed to the proper destination. Advanced queries such as joins and filters will be executed in parallel, with results recombined and streamed back to the client transparently. Everything happens automatically behind the scenes.
