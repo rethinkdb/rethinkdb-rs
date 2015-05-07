@@ -2733,7 +2733,7 @@ __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 ## [get_intersecting](get_intersecting/) ##
 
 {% apibody %}
-table.get_intersecting(geometry, {:index => 'indexname'}) &rarr; selection<array>
+table.get_intersecting(geometry, {:index => 'indexname'}) &rarr; selection<stream>
 {% endapibody %}
 
 Get all documents where the given geometry object intersects the geometry object of the requested geospatial index.
