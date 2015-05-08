@@ -10,7 +10,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.get_intersecting(geometry, {:index => 'indexname'}) &rarr; selection<array>
+table.get_intersecting(geometry, {:index => 'indexname'}) &rarr; selection<stream>
 {% endapibody %}
 
 # Description #

@@ -2754,7 +2754,7 @@ r.table(geo).get('sfo')('location').toGeojson.run(conn, callback);
 ## [getIntersecting](get_intersecting/) ##
 
 {% apibody %}
-table.getIntersecting(geometry, {index: 'indexname'}) &rarr; selection<array>
+table.getIntersecting(geometry, {index: 'indexname'}) &rarr; selection<stream>
 {% endapibody %}
 
 Get all documents where the given geometry object intersects the geometry object of the requested geospatial index.

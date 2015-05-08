@@ -5,7 +5,7 @@ permalink: api/javascript/get_intersecting/
 command: getIntersecting
 io:
     -   - table
-        - array
+        - stream
 related_commands:
     getNearest: get_nearest/
 ---
@@ -13,7 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.getIntersecting(geometry, {index: 'indexname'}) &rarr; selection<array>
+table.getIntersecting(geometry, {index: 'indexname'}) &rarr; selection<stream>
 {% endapibody %}
 
 # Description #
