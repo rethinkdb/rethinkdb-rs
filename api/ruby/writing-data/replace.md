@@ -35,7 +35,10 @@ The optional arguments are:
 table or query's durability setting (set in [run](/api/ruby/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
-- `return_changes`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
+- `return_changes`:
+    - `true`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
+    - `false`: do not return a `changes` array (the default).
+    - `"always"`: behave as `true`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `true` pre-2.0.)
 - `non_atomic`: if set to `true`, executes the replacement and distributes the result to replicas in a non-atomic fashion. This flag is required to perform non-deterministic updates, such as those that require reading data from another table.
 
 Replace returns an object that contains the following attributes:
