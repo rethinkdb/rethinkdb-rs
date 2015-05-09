@@ -14,17 +14,20 @@ related_commands:
 
 {% apibody %}
 sequence.distinct() &rarr; array
-table.distinct() &rarr; stream
-table.distinct(:index => <indexname>) &rarr; stream
+table.distinct([:index => <indexname>]) &rarr; stream
 {% endapibody %}
 
 # Description #
 
 Removes duplicate elements from a sequence.
 
-The `distinct` command can be called on any sequence, a table, or called on a table with an index.
+The `distinct` command can be called on any sequence or table with an index.
 
-__Example:__ Which unique villains have been vanquished by marvel heroes?
+{% infobox %}
+While `distinct` can be called on a table without an index, the only effect will be to convert the table into a stream; the content of the stream will not be affected.
+{% endinfobox %}
+
+__Example:__ Which unique villains have been vanquished by Marvel heroes?
 
 ```rb
 r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)

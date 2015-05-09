@@ -1221,8 +1221,7 @@ r([3, 5, 7]).max().run(conn)
 
 {% apibody %}
 sequence.distinct() &rarr; array
-table.distinct() &rarr; stream
-table.distinct(:index => <indexname>) &rarr; stream
+table.distinct([:index => <indexname>]) &rarr; stream
 {% endapibody %}
 
 Remove duplicate elements from the sequence.
