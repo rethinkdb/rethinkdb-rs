@@ -25,7 +25,7 @@ sequence.max(index='index') &rarr; element
 Finds the maximum element of a sequence. The `max` command can be called with:
 
 * a **field name**, to return the element of the sequence with the largest value in that field;
-* an **index**, to return the element of the sequence with the largest value in that index;
+* an **index** (the primary key or a secondary index), to return the element of the sequence with the largest value in that index;
 * a **function**, to apply the function to every element within the sequence and return the element which returns the largest value from the function, ignoring any elements where the function returns `None` or produces a non-existence error.
 
 Calling `max` on an empty sequence will throw a non-existence error; this can be handled using the [default](/api/python/default/) command.

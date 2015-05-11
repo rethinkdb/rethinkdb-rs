@@ -139,7 +139,7 @@ __Example:__ How many matches have been played this year by month?
 }
 ```
 
-You can also group by an index.
+You can also group on an index (primary key or secondary).
 
 __Example:__ What is the maximum number of points scored by game type?
 
