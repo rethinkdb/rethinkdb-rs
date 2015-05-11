@@ -87,3 +87,5 @@ __Note:__ Between works with secondary indexes on date fields, but will not work
 Secondary indexes can be used in extremely powerful ways with `between` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 
 __Note:__ RethinkDB uses byte-wise ordering for `between` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
+
+__Note:__ If you chain `between` after [orderBy](/api/javascript/order_by), the `between` command must use the index specified in `orderBy`, and will default to that index. Trying to specify another index will result in a `RqlRuntimeError`.
