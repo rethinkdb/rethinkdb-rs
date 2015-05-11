@@ -31,7 +31,7 @@ r.connect(host="localhost", port=28015, db="test", auth_key="", timeout=20) &rar
 r.connect(host) &rarr; connection
 {% endapibody %}
 
-Create a new connection to the database server. The keyword arguments are:
+Create a new connection to the database server.
 
 - `host`: host of the RethinkDB instance. The default value is `localhost`.
 - `port`: the driver port, by default `28015`.
@@ -41,13 +41,13 @@ Create a new connection to the database server. The keyword arguments are:
 
 If the connection cannot be established, a `RqlDriverError` exception will be thrown.
 
-__Example:__ Opens a new connection to the database.
+__Example:__ Open a new connection to the database.
 
 ```py
-conn = r.connect(host = 'localhost',
-                 port = 28015,
-                 db = 'heroes',
-                 auth_key = 'hunter2')
+conn = r.connect(host='localhost',
+                 port=28015,
+                 db='heroes',
+                 auth_key='hunter2')
 ```
 
 [Read more about this command &rarr;](connect/)
