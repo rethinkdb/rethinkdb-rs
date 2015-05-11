@@ -29,7 +29,9 @@ Finds the minimum element of a sequence. The `min` command can be called with:
 
 * a **field name**, to return the element of the sequence with the smallest value in that field;
 * an **index**, to return the element of the sequence with the smallest value in that index;
-* a **function**, to apply the function to every element within the sequence and return the element which returns the smallest value from the function, ignoring any elements where the function returns `null` or produces a non-existence error.
+* a **function**, to apply the function to every element within the sequence and return the element which returns the smallest value from the function, ignoring any elements where the function produces a non-existence error.
+
+For more information on RethinkDB's sorting order, read the section in [ReQL data types](/docs/data-types/#sorting-order).
 
 Calling `min` on an empty sequence will throw a non-existence error; this can be handled using the [default](/api/javascript/default/) command.
 
