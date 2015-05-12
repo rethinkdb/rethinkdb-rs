@@ -85,9 +85,7 @@ minute-precision time offsets from UTC, but we may add support for DST-aware
 time zones in the future.  Time zones are strings as specified by ISO
 8601.
 
-Times are considered equal if their seconds since epoch (UTC) are equal,
-<strong>regardless of what time zone they're in</strong>.  This is true for both
-comparisons and indexed operations.
+Times are considered equal when their epoch (UTC) time values are equal, **regardless of what time zone they're in**. This is true for both comparisons and indexed operations. Times are compared in floating point with millisecond precision.
 
 Most date operations are only defined on years in the range `[1400, 10000]` (but
 note that times in the year `10000` cannot be printed as ISO 8601 dates).
