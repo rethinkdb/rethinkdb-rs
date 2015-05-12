@@ -195,16 +195,16 @@ You can put a time into a new time zone:
 
 You can also add or subtract a duration (in seconds):
 
-```ruby
-> (r.epoch_time(123.456) + 123.456).to_epoch_time().run(conn)
-246.912
-```
+```rb
+> (r.time(2015, 1, 1, 'Z') + 86400).run(conn)
+ 2015-01-02 00:00:00 +0000
+ ```
 
 If you subtract two times, you get a duration:
 
-```ruby
-> (r.epoch_time(246.912) - r.epoch_time(123.456)).run(conn)
-123.456
+```rb
+> (r.time(2015, 1, 2, 'Z') - r.time(2015, 1, 1, 'Z')).run(conn)
+86400
 ```
 
 ## Comparing times ##

@@ -219,16 +219,17 @@ to another time, or retrieve a portion of it.
 You can add or subtract a duration (in seconds):
 
 ```js
-> r.epochTime(123.456).add(123.456).toEpochTime().run(conn, callback);
+> r.time(2015, 1, 1, 'Z').add(86400).run(conn, callback);
 // Result passed to callback
-246.912
+Fri Jan 02 2015 00:00:00 GMT+00:00
 ```
 
 If you subtract two times, you get a duration:
 
 ```js
-> r.epochTime(246.912).sub(r.epochTime(123.456)).run(conn, callback);
-123.456
+> r.time(2015, 1, 2, 'Z').sub(r.time(2015, 1, 1, 'Z')).run(conn, callback);
+// Result passed to callback
+86400
 ```
 
 ## Comparing times ##
