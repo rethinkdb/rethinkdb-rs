@@ -10,7 +10,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.changes(squash=True, include_states=False) &rarr; stream
+stream.changes(squash=True, include_states=False) &rarr; stream
 singleSelection.changes(squash=True, include_states=False) &rarr; stream
 {% endapibody %}
 

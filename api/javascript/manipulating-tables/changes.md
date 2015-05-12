@@ -6,7 +6,7 @@ command: changes
 related_commands:
     table: table/
 io:
-    -   - table
+    -   - stream
         - stream
     -   - singleSelection
         - stream
@@ -15,7 +15,7 @@ io:
 # Command syntax #
 
 {% apibody %}
-table.changes({squash: true, includeStates: false}) &rarr; stream
+stream.changes({squash: true, includeStates: false}) &rarr; stream
 singleSelection.changes({squash: true, includeStates: false}) &rarr; stream
 {% endapibody %}
 

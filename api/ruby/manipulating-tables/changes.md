@@ -10,7 +10,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.changes({:squash => true, :include_states => false}) &rarr; stream
+stream.changes({:squash => true, :include_states => false}) &rarr; stream
 singleSelection.changes({:squash => true, :include_states => false}) &rarr; stream
 {% endapibody %}
 
