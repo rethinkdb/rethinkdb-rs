@@ -822,6 +822,28 @@ r.table("posts")
 {% endhighlight %}
 
         </td></tr>
+        
+        <tr><td>
+
+{% highlight sql %}
+SELECT title,
+        COUNT(title)
+    FROM movies
+    GROUP BY title
+    HAVING COUNT(title) > 1
+{% endhighlight %}
+
+        </td><td>
+
+{% highlight javascript %}
+r.table("movies")
+ .group("title")
+ .count()
+ .ungroup()
+ .filter(r.row("reduction").gt(1))
+{% endhighlight %}
+
+        </td></tr>
 
     </tbody>
 </table>

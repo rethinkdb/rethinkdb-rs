@@ -807,6 +807,29 @@ r.table("posts")
 {% endhighlight %}
 
         </td></tr>
+        <tr><td>
+
+{% highlight sql %}
+SELECT title,
+        COUNT(title)
+    FROM movies
+    GROUP BY title
+    HAVING COUNT(title) > 1
+{% endhighlight %}
+
+        </td><td>
+
+{% highlight ruby %}
+r.table("movies")
+ .group("title")
+ .count()
+ .ungroup()
+ .filter{ |doc|
+   doc["reduction"] > 1
+  }
+{% endhighlight %}
+
+        </td></tr>
 
     </tbody>
 </table>
