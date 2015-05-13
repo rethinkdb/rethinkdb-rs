@@ -195,8 +195,8 @@ You can also add or subtract a duration (in seconds):
 
 ```rb
 > (r.time(2015, 1, 1, 'Z') + 86400).run(conn)
- 2015-01-02 00:00:00 +0000
- ```
+2015-01-02 00:00:00 +0000
+```
 
 If you subtract two times, you get a duration:
 
