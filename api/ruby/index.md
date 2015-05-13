@@ -464,7 +464,7 @@ r.table('test').index_wait('timestamp').run(conn)
 ## [changes](changes/) ##
 
 {% apibody %}
-table.changes({:squash => true, :include_states => false}) &rarr; stream
+stream.changes({:squash => true, :include_states => false}) &rarr; stream
 singleSelection.changes({:squash => true, :include_states => false}) &rarr; stream
 {% endapibody %}
 
