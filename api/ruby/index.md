@@ -2714,8 +2714,6 @@ geometry.to_geojson() &rarr; object
 
 Convert a ReQL geometry object to a [GeoJSON][] object.
 
-[GeoJSON]: http://geojson.org
-
 __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 
 ```rb
