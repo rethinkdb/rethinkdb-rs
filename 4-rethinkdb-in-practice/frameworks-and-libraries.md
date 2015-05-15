@@ -41,8 +41,8 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [reheat](https://github.com/jmdobry/reheat) by [@jmdobry](https://github.com/jmdobry)  
   JavaScript ORM for RethinkDB with promises.
 
-- [thinky](https://github.com/neumino/thinky) by [@neumino](https://github.com/neumino)  
-  JavaScript ORM for RethinkDB
+- [Thinky][] by [@neumino](https://github.com/neumino)  
+  JavaScript ORM for RethinkDB.
 
 - [JugglingDB-RethinkDB](https://github.com/fuwaneko/jugglingdb-rethink) by [@fuwaneko](https://github.com/fuwaneko)  
   A RethinkDB adapter for [JugglingDB](https://github.com/1602/jugglingdb), a multi-database ORM for Node.js.
@@ -50,6 +50,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [Osmos](https://github.com/mtabini/osmos) by [@mtabini](https://github.com/mtabini)  
   A store-agnostic object data mapper for Node.js with support for RethinkDB.
 
+[Thinky]: https://github.com/neumino/thinky
 
 ## Integrations
 
@@ -58,6 +59,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 - [koa-rethinkdb](https://github.com/hden/koa-rethinkdb) by [@hden](https://github.com/hden)  
   Koa middleware that automatically manages connections via a connection pool.
+
+- [sails-hook-thinky](https://github.com/mwielbut/sails-hook-thinky) by [@mwielbut](https://github.com/mwielbut)  
+  A hook to use [Thinky][] with [Sails](http://sailsjs.org/).
 
 # Python libraries
 
