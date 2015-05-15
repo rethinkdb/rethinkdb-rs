@@ -1330,19 +1330,20 @@ r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn, call
 ## [merge](merge/) ##
 
 {% apibody %}
-singleSelection.merge(object) &rarr; object
-object.merge(object) &rarr; object
-sequence.merge(object) &rarr; stream
-array.merge(object) &rarr; array
+singleSelection.merge(object|function[, object|function, ...]) &rarr; object
+object.merge(object|function[, object|function, ...]) &rarr; object
+sequence.merge(object|function[, object|function, ...]) &rarr; stream
+array.merge(object|function[, object|function, ...]) &rarr; array
 {% endapibody %}
 
-Merge two objects together to construct a new object with properties from both. Gives preference to attributes from other when there is a conflict.
+Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list.
 
-__Example:__ Equip IronMan for battle.
+__Example:__ Equip Thor for battle.
 
 ```js
-r.table('marvel').get('IronMan').merge(
-    r.table('loadouts').get('alienInvasionKit')
+r.table('marvel').get('thor').merge(
+    r.table('equipment').get('hammer'),
+    r.table('equipment').get('pimento_sandwich')
 ).run(conn, callback)
 ```
 
