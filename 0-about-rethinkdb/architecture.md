@@ -55,15 +55,6 @@ become unbalanced. However, the user can manually rebalance shards when
 necessary, as well as reconfigure tables with new sharding and
 replication settings. Users cannot set split points for shards manually.
 
-In advanced situations, the user can specify the split points
-manually, and the system will partition the table into shards
-according to the user's request. When the split points for the table
-change, RethinkDB uses a bit of math to figure out the optimal way to
-copy as little data as possible. For example, if the split point for a
-table used to be 'M', and is later changed to 'O', RethinkDB will
-figure out that it only needs to copy the data between keys 'M' and
-'O' from one shard to another.
-
 Internally this approach is more difficult to implement than the more
 commonly used consistent hashing, but it has significant advantages
 because it allows for an efficient implementation of range queries.
