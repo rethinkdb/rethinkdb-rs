@@ -2,7 +2,7 @@
 layout: api-command
 language: Ruby
 permalink: api/ruby/to_json_string/
-command: 'to_json_string, to_json'
+command: to_json_string
 related_commands:
     json: json/
 ---
@@ -14,7 +14,7 @@ value.to_json_string() &rarr; string
 
 # Description #
 
-Convert a ReQL value or object to a JSON string. You may use either `to_json_string` or `to_json`.
+Convert a ReQL value or object to a JSON string.
 
 __Example:__ Get a ReQL document as a JSON string.
 
