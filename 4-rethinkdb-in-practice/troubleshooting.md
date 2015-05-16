@@ -29,84 +29,57 @@ Ordering without an index requires the server to load the whole sequence in an a
 
 ## My insert queries are slow. How can I speed them up? ##
 
-RethinkDB uses a safe default configuration for write
-acknowledgement. Each write is committed to disk before the server
-acknowledges it to the client. If you're running a single thread that
-inserts documents into RethinkDB in a loop, each insert must wait for
-the server acknowledgement before proceeding to the next one. This can
-significantly slow down the overall throughput.
+RethinkDB uses a safe default configuration for write acknowledgement. Each write is committed to disk before the server acknowledges it to the client. If you're running a single thread that inserts documents into RethinkDB in a loop, each insert must wait for the server acknowledgement before proceeding to the next one. This can significantly slow down the overall throughput.
 
-This behavior is similar to any other safe database system. Below is a
-number of steps you can take to speed up insert performance in
-RethinkDB. Most of these guidelines will also apply to other database
-systems.
+This behavior is similar to any other safe database system. Below is a number of steps you can take to speed up insert performance in RethinkDB. Most of these guidelines will also apply to other database systems.
 
-- __Increase concurrency.__ Instead of having a single thread
-  inserting data in a loop, create multiple threads with multiple
-  connections. This will allow parallelization of insert queries
-  without spending most of the time waiting on disk acknowledgement.
+__Increase concurrency.__ Instead of having a single thread inserting data in a loop, create multiple threads with multiple connections. This will allow parallelization of insert queries without spending most of the time waiting on disk acknowledgement.
 
-- __Batch writes.__ Instead of doing single writes in a loop, group
-  writes together. This can result in significant increases in
-  throughput. Instead of doing multiple queries like this:
+__Batch writes.__ Instead of doing single writes in a loop, group writes together. This can result in significant increases in throughput. Instead of doing multiple queries like this:
 
-   ```python
-   r.db("foo").table("bar").insert(document_1).run()
-   r.db("foo").table("bar").insert(document_2).run()
-   r.db("foo").table("bar").insert(document_3).run()
-   ```
-   Combine them into a single query:
+```py
+r.db("foo").table("bar").insert(document_1).run()
+r.db("foo").table("bar").insert(document_2).run()
+r.db("foo").table("bar").insert(document_3).run()
+```
 
-   ```python
-   r.db("foo").table("bar").insert([document_1, document_2, document_3]).run()
-   ```
+Combine them into a single query:
 
-   RethinkDB operates at peak performance when the batch size is
-   around two hundred documents.
+```py
+r.db("foo").table("bar").insert([document_1, document_2, document_3]).run()
+```
 
-- __Consider using soft durability mode.__ In soft durability mode
-  RethinkDB will acknowledge the write immediately after receiving it,
-  but before the write has been committed to disk. The server will use
-  main memory to absorb the write, and will flush new data to disk in
-  the background.
+RethinkDB operates at peak performance when the batch size is around two hundred documents.
 
-  This mode is __not as safe__ as the default hard durability mode. If
-  you're writing using soft durability, a few seconds worth of data
-  might be lost in case of power failure.
+__Consider using soft durability mode.__ In soft durability mode RethinkDB will acknowledge the write immediately after receiving it, but before the write has been committed to disk. The server will use main memory to absorb the write, and will flush new data to disk in the background.
 
-  {% infobox %}
-  __Note:__ while some data may be lost in case of power failure in soft
-  durability mode, the RethinkDB database will not get corrupted.
-  {% endinfobox %}
+This mode is __not as safe__ as the default hard durability mode. If you're writing using soft durability, a few seconds worth of data might be lost in case of power failure.
 
-  You can insert data in soft durability mode as follows:
+You can insert data in soft durability mode as follows:
 
-  ```python
-  r.db("foo").table("bar").insert(document).run(durability="soft")
-  ```
+```py
+r.db("foo").table("bar").insert(document).run(durability="soft")
+```
 
-- __Consider using `noreply` mode.__ In this mode, the client driver
-  will not wait for the server acknowledgement of the query before
-  moving on to the next query. This mode is even less safe than the
-  soft durability mode, but can result in the highest performance
-  improvement. You can run a command in a `noreply` mode as follows:
+{% infobox %}
+__Note:__ while some data may be lost in case of power failure in soft durability mode, the RethinkDB database will not get corrupted.
+{% endinfobox %}
 
-  ```python
-  r.db("foo").table("bar").insert(document).run(noreply=True)
-  ```
+__Consider using `noreply` mode.__ In this mode, the client driver will not wait for the server acknowledgement of the query before moving on to the next query. This mode is even less safe than the soft durability mode, but can result in the highest performance improvement. You can run a command in a `noreply` mode as follows:
 
-  You can also combine soft durability and `noreply` for the highest
-  performance:
+```python
+r.db("foo").table("bar").insert(document).run(noreply=True)
+```
 
-  ```python
-  r.db("foo").table("bar").insert(document).run(durability="soft", noreply=True)
-  ```
+You can also combine soft durability and `noreply` for the highest performance:
+
+```python
+r.db("foo").table("bar").insert(document).run(durability="soft", noreply=True)
+```
 
 ## How can I order the output of `group`? ##
 
-Commands chained after `group` operate on each group separately.  If
-you want to operate on all the groups at once (e.g. to order them),
-you need to call [**ungroup**](/api/python/ungroup/) before doing so.
+Commands chained after `group` operate on each group separately.  If you want to operate on all the groups at once (e.g. to order them), you need to call [**ungroup**](/api/python/ungroup/) before doing so.
 
 ## What does 'received invalid clustering header' mean? ##
 
@@ -114,8 +87,7 @@ you need to call [**ungroup**](/api/python/ungroup/) before doing so.
 
 ## Does the web UI support my browser? ##
 
-The following browsers are supported and known to work with the web
-UI:
+The following browsers are supported and known to work with the web UI:
 
 - Chrome 9 or higher
 - Firefox 15 or higher
@@ -129,23 +101,17 @@ be supported by your browser.
 
 ## Which versions of Node.js are supported? ##
 
-The JavaScript driver currently works with Node.js versions 0.10.0 and
-above. You can check your node version as follows:
+The JavaScript driver currently works with Node.js versions 0.10.0 and above. You can check your node version as follows:
 
-```
-node --version
-```
+``` node --version ```
 
 You can upgrade your version of Node.js via `npm`:
 
-```
-sudo npm install -g n
-```
+``` sudo npm install -g n ```
 
-If you're trying to run the RethinkDB JavaScript driver on an older
-version of Node.js, you might get an error similar to this one:
+If you're trying to run the RethinkDB JavaScript driver on an older version of Node.js, you might get an error similar to this one:
 
-```js
+```
 /home/user/rethinkdb.js:13727
 return buffer.slice(offset, end);
              ^
@@ -156,10 +122,9 @@ at Socket.TcpConnection.rawSocket.once.handshake_callback (/home/user/rethinkdb.
 
 ## I get back a connection in my callback with the Node driver ##
 
-Many people have been reporting that they get back a connection object when they
-run a query, the object being:
+Many people have been reporting that they get back a connection object when they run a query, the object being:
 
-```js
+```text
 {
     _conn: {
         host: 'localhost',
@@ -183,11 +148,9 @@ run a query, the object being:
 }
 ```
 
-This object is not a connection, but a cursor. To retrieve the results, you can
-call `next`, `each` or `toArray` on this object.
+This object is not a connection, but a cursor. To retrieve the results, you can call `next`, `each` or `toArray` on this object.
 
-For example you can retrieve all the results and put them in an array with
-`toArray`:
+For example you can retrieve all the results and put them in an array with `toArray`:
 
 ```js
 r.table("test").run( conn, function(error, cursor) {
@@ -196,6 +159,7 @@ r.table("test").run( conn, function(error, cursor) {
     })
 })
 ```
+
 ## RethinkDB is running out of memory ##
 
 You may need to adjust RethinkDB's page cache size, using the `--cache-size` argument or configuration file option. Read "[Understanding RethinkDB memory requirements](/docs/memory-usage/)" for a more detailed explanation of how RethinkDB uses memory and how to tune its performance.
@@ -318,13 +282,13 @@ r.table('posts').filter(
 Typically, this indicates that a JSON object with subdocuments is too deeply nested:
 
 ```json
-{ level: 1,
-  data: {
-    level: 2,
-    data: {
-      level: 3,
-      data: {
-        level: 4
+{ "level": 1,
+  "data": {
+    "level": 2,
+    "data": {
+      "level": 3,
+      "data": {
+        "level": 4
       }
     }
   }
