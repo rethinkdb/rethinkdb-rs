@@ -148,6 +148,25 @@ wait until the server has processed them.
 conn.noreplyWait(function(err) { ... })
 ```
 
+## [EventEmitter (connection)](event_emitter/) ##
+
+{% apibody %}
+connection.addListener(event, listener)
+connection.on(event, listener)
+connection.once(event, listener)
+connection.removeListener(event, listener)
+connection.removeAllListeners([event])
+connection.setMaxListeners(n)
+connection.listeners(event)
+connection.emit(event, [arg1], [arg2], [...])
+{% endapibody %}
+
+Connections implement the same interface as Node's [EventEmitter][ee]. This allows you to listen for changes in connection state.
+
+[ee]: http://nodejs.org/api/events.html#events_class_events_eventemitter
+
+[Read more about this command &rarr;](event_emitter/)
+
 {% endapisection %}
 
 {% apisection Cursors %}
@@ -237,7 +256,7 @@ cursor.close()
 ```
 
 
-## [EventEmitter](event_emitter-cursor/) ##
+## [EventEmitter (cursor)](event_emitter-cursor/) ##
 
 {% apibody %}
 cursor.addListener(event, listener)
@@ -250,7 +269,7 @@ cursor.listeners(event)
 cursor.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
-Cursors and feeds implement the same interface as Node's [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
+Cursors and feeds implement the same interface as Node's [EventEmitter][ee].
 
 [Read more about this command &rarr;](event_emitter-cursor/)
 

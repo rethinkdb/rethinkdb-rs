@@ -10,7 +10,7 @@ alias:
     - api/javascript/remove_all_listeners/
     - api/javascript/listeners/
     - api/javascript/emit/
-command: "EventEmitter methods"
+command: "EventEmitter (connection)"
 py: false
 rb: false
 io:
@@ -37,10 +37,18 @@ connection.emit(event, [arg1], [arg2], [...])
 
 # Description #
 
-The connection object supports the event emitter interface so you can listen for
-changes in connection state.
+Connections implement the same interface as Node's [EventEmitter][ee]. This allows you to listen for changes in connection state.
 
-__Example:__ Monitor connection state with events 'connect', 'close', and 'error'.
+[ee]: http://nodejs.org/api/events.html#events_class_events_eventemitter
+
+Four events are emitted: `connect`, `close`, `timeout` and `error`.
+
+- `connect`: a successful connection to the server.
+- `close`: the connection has been closed, either thorugh an error or by calling `connection.close()`.
+- `timeout`: the underlying socket has timed out.
+- `error`: a protocol-level error has occurred. (This will *not* be sent on a query error; those are returned to callbacks/promises.)
+
+__Example:__ Monitor the connection state with events.
 
 
 ```js
@@ -59,7 +67,7 @@ r.connect({}, function(err, conn) {
 });
 ```
 
-__Example:__ As in Node, 'on' is a synonym for 'addListener'.
+__Example:__ As in Node, `on` is a synonym for `addListener`.
 
 ```js
 conn.on('close', function() {

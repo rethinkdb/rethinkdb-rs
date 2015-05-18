@@ -10,7 +10,7 @@ alias:
     - api/javascript/remove_all_listeners-cursor/
     - api/javascript/listeners-cursor/
     - api/javascript/emit-cursor/
-command: EventEmitter
+command: "EventEmitter (cursor)"
 py: false
 rb: false
 io:
