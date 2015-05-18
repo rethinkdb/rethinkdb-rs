@@ -226,51 +226,49 @@ view.
 </div>
 
 
-# Limitations #
+# Notes #
 
-Secondary indexes have the following limitations:
+The primary index of a table can be used in any ReQL command that uses a secondary index.
 
-- The part of a secondary index key that's used for fast lookups depends on the length of the primary key (which must be 127 bytes or less). The length of this part is 238&minus;*PK*, where *PK* is the primary key length; if the primary key length is a 36-character GUID, for instance, this means that 202 characters in the secondary index will be significant. If a table has multiple entries where the first 238&minus;*PK* characters are identical, lookup performance will be sharply degraded, as RethinkDB will have to perform a linear search to find the correct entries.
+The part of a secondary index key that's used for fast lookups depends on the length of the primary key (which must be 127 bytes or less). The length of this part is 238&minus;*PK*, where *PK* is the primary key length; if the primary key length is a 36-character GUID, for instance, this means that 202 characters in the secondary index will be significant. If a table has multiple entries where the first 238&minus;*PK* characters are identical, lookup performance will be sharply degraded, as RethinkDB will have to perform a linear search to find the correct entries.
 
-- Secondary indexes will not store `None` values or objects. Thus, the results of a command such as:
+Secondary indexes will not store `None` values or objects. Thus, the results of a command such as:
 
-    ```py
-    r.table("users").index_create("group").run(conn)
-    r.table("users").order_by(index="group").run(conn)
-    ```
-    
-    may be different from an equivalent command without an index:
-    
-    ```py
-    r.table("users").order_by("group").run(conn)
-    ```
-    
-    if the field being indexed has non-indexable values.
-    
-    This limitation will be removed in a future version of RethinkDB. See GitHub issue [#1032](https://github.com/rethinkdb/rethinkdb/issues/1032) to track progress on this.
+```py
+r.table("users").index_create("group").run(conn)
+r.table("users").order_by(index="group").run(conn)
+```
 
-- RethinkDB does not currently have an optimizer. As an example,
-  the following query will not automatically use an index:
+may be different from an equivalent command without an index:
 
-  ```python
-  # This query does not use a secondary index! Use get_all instead.
-  r.table("users").filter({"last_name": "Smith" }).run(conn)
-  ```
+```py
+r.table("users").order_by("group").run(conn)
+```
 
-  You have to explicitly use the `get_all` command to take advantage
-  of secondary indexes.
+if the field being indexed has non-indexable values.
 
-  ```python
-  # This query uses a secondary index.
-  r.table("users").get_all("Smith", index="last_name").run(conn)
-  ```
+This limitation will be removed in a future version of RethinkDB. See GitHub issue [#1032](https://github.com/rethinkdb/rethinkdb/issues/1032) to track progress on this.
 
-- You cannot chain multiple `get_all` commands. Use a compound index to
-  efficiently retrieve documents by multiple fields.
+RethinkDB does not currently have an optimizer. As an example, the following query will not automatically use an index:
 
-- Currently, you cannot chain an `order_by` using a secondary index after a `get_all` but only after a `table`. (You can, however, chain an `order_by` using a secondary index after a `between` *if* they use the same index.)
+```python
+# This query does not use a secondary index! Use get_all instead.
+r.table("users").filter({"last_name": "Smith" }).run(conn)
+```
 
-- RethinkDB does not support unique secondary indexes even for non-sharded tables.
+You have to explicitly use the `get_all` command to take advantage
+of secondary indexes.
+
+```python
+# This query uses a secondary index.
+r.table("users").get_all("Smith", index="last_name").run(conn)
+```
+
+You cannot chain multiple `get_all` commands. Use a compound index to efficiently retrieve documents by multiple fields.
+
+Currently, you cannot chain an `order_by` using a secondary index after a `get_all` but only after a `table`. (You can, however, chain an `order_by` using a secondary index after a `between` *if* they use the same index.)
+
+RethinkDB does not support unique secondary indexes even for non-sharded tables.
 
 # More #
 
