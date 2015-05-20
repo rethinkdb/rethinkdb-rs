@@ -63,7 +63,7 @@ The server will respond with a `null`-terminated ASCII string describing the res
 
 # Serializing queries #
 
-Your driver should assign each query a unique 8-byte token. (The official RethinkDB drivers implement this an 8-byte little-endian counter per connection.) The server will send responses to queries using this token as an identifier so the response can be matched to its query. The token can also be used to request more data for the query if all the results were not returned in the first response.
+Your driver should assign each query a unique 8-byte token per connection. (The official RethinkDB drivers implement this as an unsigned 8-byte little-endian counter per connection.) The server will send responses to queries using this token as an identifier so the response can be matched to its query. The token can also be used to request more data for the query if all the results were not returned in the first response.
 
 ## A simple example ##
 
