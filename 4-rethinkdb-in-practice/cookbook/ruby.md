@@ -31,6 +31,14 @@ Another way to create a database is through the web UI. You can reach
 the web UI at `http://HOST:8080`. Click on the _Tables_ tab at the top
 and then use the _Add Database_ button.
 
+## Renaming a database ##
+
+The easiest way to rename a database is to use the [config](/api/ruby/config/) command to access the `db_config` [system table](/docs/system-tables/), and then simply use the `update` command.
+
+```rb
+r.db("old_db_name").config().update({:name => "new_db_name"}).run
+```
+
 ## Creating a table ##
 
 You can select the database where you'd like to create the table with
@@ -99,13 +107,35 @@ Here is how we'd delete all documents in a table:
 r.table("posts").delete.run
 ```
 
-## Renaming a database ##
+## Retrieving documents ##
 
-The easiest way to rename a database is to use the [config](/api/ruby/config/) command to access the `db_config` [system table](/docs/system-tables/), and then simply use the `update` command.
+To get all documents in a table, simply use the `table` command:
 
-```rb
-r.db("old_db_name").config().update({:name => "new_db_name"}).run
+```ruby
+r.table("posts").run()
 ```
+
+The `table` command returns a cursor; use the [next](/api/ruby/next) or [each](/api/ruby/each) command to iterate through the result set, or [to_a](/api/ruby/to_array) to retrieve the set as an array.
+
+To get a specific document by ID, use `get`:
+
+```ruby
+r.table("posts").get(1).run()
+```
+
+To retrieve documents by the value of a specific field, use `filter`:
+
+```ruby
+r.table("posts").filter({:author => "Michel"}).run()
+```
+
+To retrieve documents by the value of a specific [index](/docs/secondary-indexes), use `get_all`:
+
+```ruby
+r.table("posts").get_all("review", {:index => "category"}).run()
+```
+
+(For more complex filtering recipes, read on.)
 
 # Filtering
 
@@ -458,13 +488,13 @@ r.table("posts").order_by("date")
 
 ## Implementing pagination ##
 
-There are multiple ways to paginate results in RethinkDB. The most straightforward way is using `skip` and `limit` (similar to the way SQL's `OFFSET` and `LIMIT` work), but that's also the least efficient. It's more efficient to use `slice`, and even more efficient to use `between` with a secondary index.The [slice](/api/python/slice) command returns a range from a given start value through but not including a given end value. This makes it easy to use as a `skip`/`limit` replacement: the start value is the first item to retrieve, and the end value is the first item plus the limit. To retrieve posts 11-20 from the database using `slice`:
+There are multiple ways to paginate results in RethinkDB. The most straightforward way is using `skip` and `limit` (similar to the way SQL's `OFFSET` and `LIMIT` work), but that's also the least efficient. It's more efficient to use `slice`, and even more efficient to use `between` with a secondary index.The [slice](/api/ruby/slice) command returns a range from a given start value through but not including a given end value. This makes it easy to use as a `skip`/`limit` replacement: the start value is the first item to retrieve, and the end value is the first item plus the limit. To retrieve posts 11-20 from the database using `slice`:
 
 ```rb
 r.table("posts").order_by("date").slice(11,21).run(conn)
 ```
 
-Last, if you have a secondary index, you can use the [between](/api/python/between) command in conjunction with [order_by](/api/python/order_by) and `limit`. This is extremely efficient, but it requires starting each fetch by looking up a record by actual index value. That is, instead of fetching the 11th record with the number `15`, you need to fetch it by the value it has in the indexed field.
+Last, if you have a secondary index, you can use the [between](/api/ruby/between) command in conjunction with [order_by](/api/ruby/order_by) and `limit`. This is extremely efficient, but it requires starting each fetch by looking up a record by actual index value. That is, instead of fetching the 11th record with the number `15`, you need to fetch it by the value it has in the indexed field.
 
 Suppose you wanted to paginate through a set of users, 25 at a time. You could get the first 25 records efficiently just with `limit`.
 
@@ -710,7 +740,7 @@ r.table('users').for_each{ |doc|
 
 For a practical example, imagine a data set like the one from the [pivot example][pivotx], where each document represents a student's course record.
 
-[pivotx]: http://www.rethinkdb.com/docs/cookbook/python/#performing-a-pivot-operation
+[pivotx]: http://www.rethinkdb.com/docs/cookbook/ruby/#performing-a-pivot-operation
 
 ```rb
 [

@@ -31,6 +31,14 @@ Another way to create a database is through the web UI. You can reach
 the web UI at `http://HOST:8080`. Click on the _Tables_ tab at the top
 and then use the _Add Database_ button.
 
+## Renaming a database ##
+
+The easiest way to rename a database is to use the [config](/api/python/config/) command to access the `db_config` [system table](/docs/system-tables/), and then simply use the `update` command.
+
+```python
+r.db("old_db_name").config().update({"name": "new_db_name"}).run()
+```
+
 ## Creating a table ##
 
 You can select the database where you'd like to create the table with
@@ -98,13 +106,34 @@ Here is how we'd delete all documents in a table:
 r.table("posts").delete().run()
 ```
 
-## Renaming a database ##
+## Retrieving documents ##
 
-The easiest way to rename a database is to use the [config](/api/python/config/) command to access the `db_config` [system table](/docs/system-tables/), and then simply use the `update` command.
+To get all documents in a table, simply use the `table` command:
 
 ```python
-r.db("old_db_name").config().update({"name": "new_db_name"}).run()
+r.table("posts").run()
 ```
+The `table` command returns a cursor; use the [next](/api/python/next) or [for](/api/python/each) command to iterate through the result set, or [list](/api/python/to_array) to retrieve the set as an array.
+
+To get a specific document by ID, use `get`:
+
+```python
+r.table("posts").get(1).run()
+```
+
+To retrieve documents by the value of a specific field, use `filter`:
+
+```python
+r.table("posts").filter({"author": "Michel"}).run()
+```
+
+To retrieve documents by the value of a specific [index](/docs/secondary-indexes), use `get_all`:
+
+```python
+r.table("posts").get_all("review", index="category").run()
+```
+
+(For more complex filtering recipes, read on.)
 
 # Filtering
 
