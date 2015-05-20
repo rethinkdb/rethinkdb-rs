@@ -19,18 +19,20 @@ table.index_wait([, index...]) &rarr; array
 Wait for the specified indexes on this table to be ready, or for all
 indexes on this table to be ready if no indexes are specified.
 
-The result is an array where for each index, there will be an object like:
+The result is an array containing one object for each table index:
 
 ```rb
 {
     :index => <index_name>,
     :ready => true,
+    :function => <binary>,
     :multi => <bool>,
+    :geo => <bool>,
     :outdated => <bool>
 }
 ```
 
-The `multi` field will be `true` or `false` depending on whether this index was created as a multi index (see [index_create](/api/ruby/index_create/) for details). The `outdated` field will be true if the index is outdated in the current version of RethinkDB and needs to be rebuilt.
+See the [index_status](/api/ruby/index_status) documentation for a description of the field values.
 
 
 __Example:__ Wait for all indexes on the table `test` to be ready:
