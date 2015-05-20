@@ -159,9 +159,8 @@ connection.listeners(event)
 connection.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
-Connections implement the same interface as Node's [EventEmitter][ee]. This allows you to listen for changes in connection state.
-
-[ee]: http://nodejs.org/api/events.html#events_class_events_eventemitter
+Connections implement the same interface as Node's [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
+This allows you to listen for changes in connection state.
 
 [Read more about this command &rarr;](event_emitter/)
 
@@ -267,7 +266,7 @@ cursor.listeners(event)
 cursor.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
-Cursors and feeds implement the same interface as Node's [EventEmitter][ee].
+Cursors and feeds implement the same interface as Node's [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
 [Read more about this command &rarr;](event_emitter-cursor/)
 
