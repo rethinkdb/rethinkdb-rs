@@ -16,6 +16,10 @@ RethinkDB client drivers are responsible for serializing queries, sending them t
 * Send the message
 * Receive responses
 
+{% infobox %}
+For updates on protocol and behavior changes in new versions of RethinkDB and general assistance with writing drivers, join the [RethinkDB-Dev Google Group](https://groups.google.com/forum/?fromgroups#!forum/rethinkdb-dev).
+{% endinfobox %}
+
 # Initial steps #
 
 ReQL types and commands are defined in the [ql2.proto][ql2] file.
