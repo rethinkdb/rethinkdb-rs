@@ -35,7 +35,7 @@ __Note:__ RethinkDB uses byte-wise ordering for `orderBy` and does not support U
 
 Sorting without an index requires the server to hold the sequence in
 memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/javascript/run)). Sorting with an index can
-be done on arbitrarily large tables, or after a `between` command
+be done on arbitrarily large tables, or after a [between](/api/javascript/between/) command
 using the same index.
 
 __Example:__ Order all the posts using the index `date`.   
@@ -84,7 +84,7 @@ Order by date and title.
 r.table('posts').orderBy({index: 'dateAndTitle'}).run(conn, callback)
 ```
 
-The index must have been previously created with [indexCreate](/api/javascript/index_create/).
+The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
 r.table('posts').indexCreate('dateAndTitle', [r.row('date'), r.row('title')]).run(conn, callback)

@@ -52,7 +52,7 @@ r.map(sequence1, sequence2, sequence3, function (val1, val2, val3) {
 [111, 222, 333, 444]
 ```
 
-__Example:__ Rename a field when retrieving documents using `map` and `merge`.
+__Example:__ Rename a field when retrieving documents using `map` and [merge](/api/javascript/merge/).
 
 This example renames the field `id` to `userId` when retrieving documents from the table `users`.
 

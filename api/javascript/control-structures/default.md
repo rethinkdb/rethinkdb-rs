@@ -77,7 +77,7 @@ r.table("users").filter( function(user) {
 }).run(conn, callback)
 ```
 
-Another way to do the same query is to use `hasFields`.
+Another way to do the same query is to use [hasFields](/api/javascript/has_fields/).
 
 ```js
 r.table("users").filter( function(user) {
@@ -85,7 +85,7 @@ r.table("users").filter( function(user) {
 }).run(conn, callback)
 ```
 
-The body of every `filter` is wrapped in an implicit `.default(false)`. You can overwrite
+The body of every [filter](/api/javascript/filter/) is wrapped in an implicit `.default(false)`. You can overwrite
 the value `false` by passing an option in filter, so the previous query can also be
 written like this.
 

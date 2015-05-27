@@ -22,7 +22,7 @@ array.withFields([selector1, selector2...]) &rarr; array
 
 # Description #
 
-Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to `hasFields` followed by `pluck` on a sequence.
+Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to [hasFields](/api/javascript/has_fields/) followed by [pluck](/api/javascript/pluck/) on a sequence.
 
 __Example:__ Get a list of users and their posts, excluding any users who have not made any posts.
 

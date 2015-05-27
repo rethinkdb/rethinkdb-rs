@@ -19,7 +19,7 @@ db.table(name[, {useOutdated: false, identifierFormat: 'name'}]) &rarr; table
 
 # Description #
 
-Return all documents in a table. Other commands may be chained after `table` to return a subset of documents (such as `get` and `filter`) or perform further processing.
+Return all documents in a table. Other commands may be chained after `table` to return a subset of documents (such as [get](/api/javascript/get/) and [filter](/api/javascript/filter/)) or perform further processing.
 
 __Example:__ Return all documents in the table 'marvel' of the default database.
 

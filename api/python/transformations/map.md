@@ -44,7 +44,7 @@ __Example:__ Sum the elements of three sequences.
 [111, 222, 333, 444]
 ```
 
-__Example:__ Rename a field when retrieving documents using `map` and `merge`.
+__Example:__ Rename a field when retrieving documents using `map` and [merge](/api/python/merge/).
 
 This example renames the field `id` to `user_id` when retrieving documents from the table `users`.
 

@@ -18,7 +18,7 @@ array.with_fields([selector1, selector2...]) &rarr; array
 
 # Description #
 
-Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to `has_fields` followed by `pluck` on a sequence.
+Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to [has_fields](/api/ruby/has_fields/) followed by [pluck](/api/ruby/pluck/) on a sequence.
 
 __Example:__ Get a list of users and their posts, excluding any users who have not made any posts.
 
