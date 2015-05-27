@@ -18,7 +18,7 @@ r.args(array) &rarr; special
 
 `r.args` is a special term that's used to splice an array of arguments
 into another term.  This is useful when you want to call a variadic
-term such as `getAll` with a set of arguments produced at runtime.
+term such as [getAll](/api/javascript/get_all/) with a set of arguments produced at runtime.
 
 This is analogous to using **apply** in JavaScript.
 

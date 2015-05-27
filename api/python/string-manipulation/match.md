@@ -32,7 +32,7 @@ You can enable case-insensitive matching by prefixing the regular expression wit
 The `match` command does not support backreferences.
 
 __Example:__ Get all users whose name starts with "A". Because `None` evaluates to `false` in
-`filter`, you can just use the result of `match` for the predicate.
+[filter](/api/python/filter/), you can just use the result of `match` for the predicate.
 
 
 ```py

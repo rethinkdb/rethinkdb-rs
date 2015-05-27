@@ -16,7 +16,7 @@ db.table(name[, {:use_outdated => false, :identifier_format => 'name'}) &rarr; t
 
 # Description #
 
-Return all documents in a table. Other commands may be chained after `table` to return a subset of documents (such as `get` and `filter`) or perform further processing.
+Return all documents in a table. Other commands may be chained after `table` to return a subset of documents (such as [get](/api/ruby/get/) and [filter](/api/ruby/filter/)) or perform further processing.
 
 __Example:__ Return all documents in the table 'marvel' of the default database.
 

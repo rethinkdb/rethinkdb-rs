@@ -71,7 +71,7 @@ r.table("users").filter{ |user|
 }.run(conn)
 ```
 
-One last way to do the same query is to use `has_fields`.
+One last way to do the same query is to use [has_fields](/api/ruby/has_fields/).
 
 ```rb
 r.table("users").filter{ |user|
@@ -79,7 +79,7 @@ r.table("users").filter{ |user|
 }.run(conn)
 ```
 
-The body of every `filter` is wrapped in an implicit `.default(false)`. You can overwrite
+The body of every [filter](/api/ruby/filter/) is wrapped in an implicit `.default(false)`. You can overwrite
 the value `false` by passing an option in filter, so the previous query can also be
 written like this.
 

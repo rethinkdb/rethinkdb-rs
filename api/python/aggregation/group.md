@@ -327,7 +327,7 @@ data rather than a grouped stream, *all* of the data has to be
 available on the node processing the query.  This means that the
 operation will only use one server's resources, and will require
 memory proportional to the size of the grouped data it's operating
-on.  (In the case of the `order_by` in the inefficient example, that
+on.  (In the case of the [order_by](/api/python/order_by/) in the inefficient example, that
 means memory proportional **to the size of the table**.)  The array
 limit is also enforced for grouped data, so the `order_by` example
 would fail for tables with more than 100,000 rows unless you used the `array_limit` option with `run`.

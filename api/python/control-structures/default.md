@@ -72,7 +72,7 @@ r.table("users").filter(lambda user:
 ).run(conn)
 ```
 
-One last way to do the same query is to use `has_fields`.
+One last way to do the same query is to use [has_fields](/api/python/has_fields/).
 
 ```py
 r.table("users").filter(lambda user:
@@ -80,7 +80,7 @@ r.table("users").filter(lambda user:
 ).run(conn)
 ```
 
-The body of every `filter` is wrapped in an implicit `.default(False)`. You can overwrite
+The body of every [filter](/api/python/filter/) is wrapped in an implicit `.default(False)`. You can overwrite
 the value `False` by passing an option in filter, so the previous query can also be
 written like this.
 

@@ -15,7 +15,7 @@ r.args(array) &rarr; special
 
 `r.args` is a special term that's used to splice an array of arguments
 into another term.  This is useful when you want to call a variadic
-term such as `get_all` with a set of arguments produced at runtime.
+term such as [get_all](/api/python/get_all/) with a set of arguments produced at runtime.
 
 This is analogous to unpacking argument lists in Python.
 
