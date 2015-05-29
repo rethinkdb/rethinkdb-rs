@@ -111,7 +111,7 @@ A common data access task is retrieving one document with associated "child" doc
 
 ```py
 id = "064058b6-cea9-4117-b92d-c911027a725a"
-r.table("companies").get(id).merge(lamdba company:
+r.table("companies").get(id).merge(lambda company:
     { 'employees': r.table('employees').get_all(company['id'],
                            index='company_id').coerce_to('array') }
 ).run()
