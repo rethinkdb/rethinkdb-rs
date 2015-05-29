@@ -35,8 +35,8 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [Rethinkdb-pool](https://github.com/hden/rethinkdb-pool) by [@hden](https://github.com/hden)  
   Connection pool for RethinkDB connections.
 
-- [second-thought](https://github.com/robconery/second-thought) by [@robconery](https://github.com/robconery)
-  A light abstraction layer over RethinkDB adding methods you “wished you had”.
+- [second-thought](https://github.com/robconery/second-thought) by [@robconery](https://github.com/robconery)  
+  A light abstraction layer over RethinkDB adding methods you "wished you had."
 
 ## ORMs
 
@@ -133,7 +133,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [phpReAdmin](https://github.com/billbarsch/phpReAdmin) by [@billbarsch](https://github.com/billbarsch)  
   Web frontend written in PHP to create/rename/update/delete RethinkDB databases/tables/docs and run ReQL queries in PHP.
 
-- [rethinkdb_nightly](https://github.com/robconery/rethinkdb_nightly) by [@robconery](https://github.com/robconery)
+- [rethinkdb_nightly](https://github.com/robconery/rethinkdb_nightly) by [@robconery](https://github.com/robconery)  
   A node module that will execute a nightly backup and push it to S3.
 
 ## Logging tools
