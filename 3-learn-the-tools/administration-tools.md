@@ -42,7 +42,7 @@ Now, you can use ReQL commands to query system tables and perform reconfiguratio
 ```py
 list(r.db('rethinkdb').table('server_status').run())
 
-[{u'status': u'available', u'network': {u'canonical_addresses': [{u'host':
+[{u'status': u'connected', u'network': {u'canonical_addresses': [{u'host':
 u'127.0.0.1', u'port': 29015}, {u'host': u'::1', u'port': 29015}],
 u'http_admin_port': 8080, u'hostname': u'rethinkdb.local', u'cluster_port':
 29015, u'reql_port': 28015}, u'process': {u'version': u'rethinkdb

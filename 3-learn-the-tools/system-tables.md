@@ -213,7 +213,7 @@ This is a typical document schema for a server connected to the host server&mdas
 {
     id: "de8b75d1-3184-48f0-b1ef-99a9c04e2be5",
     name: "servername",
-    status: "available"
+    status: "connected",
     connection: {
         time_connected: <ReQL time object>,
         time_disconnected: null
@@ -239,7 +239,7 @@ This is a typical document schema for a server connected to the host server&mdas
 
 * `id`: the UUID of the server.
 * `name`: the name of the server.
-* `status`: always `available` if the server is connected.
+* `status`: always `connected` if the server is responding.
 * `connection`: two timestamp fields:
 	* `time_connected`: the time the server connected to the host server. 
 	* `time_disconnected`: always `null` if the server is connected.
@@ -257,7 +257,7 @@ This is a typical document schema for a server connected to the host server&mdas
 
 If the server is not connected to the host server:
 
-* `status` becomes `unreachable`;
+* `status` becomes `disconnected`;
 * `time_connected` becomes `null`;
 * If the server was connected to the host server since the last time the host server restarted, `time_disconnected` becomes the time that the server was last seen. If not, it will be `null`;
 * All the fields in `network` and `process` become `null`. (The field names are still present, but the values are `null`.)
