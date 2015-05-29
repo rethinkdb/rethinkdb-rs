@@ -16,6 +16,10 @@ exchange. We've built a small example library called
 [repubsub](https://github.com/rethinkdb/example-pubsub/tree/master/ruby)
 implementing the pattern for use in Ruby applications.
 
+{% infobox %}
+If you haven't read the [article on changefeeds](/docs/changefeeds/) yet, start there! You can subscribe to notifications on tables and queries with changefeeds alone, without using publish-subscribe. If you'd like to see how to implement a message queue with topics using changefeeds, read on!
+{% endinfobox %}
+
 This article will explain how to use repubsub, as well as describe how
 it's implemented on top of changefeeds. If your application needs
 asynchronous broadcast notifications, this may be a good fit.
