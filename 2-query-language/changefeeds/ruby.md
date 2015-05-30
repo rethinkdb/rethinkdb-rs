@@ -8,9 +8,11 @@ switcher: true
 language: Ruby
 ---
 
-**Changefeeds** lie at the heart of RethinkDB's real-time functionality. They allow clients to receive changes on a table, a single document, or even the results from a specific query as they happen. 
+**Changefeeds** lie at the heart of RethinkDB's real-time functionality.  
 
 {% toctag %}
+
+They allow clients to receive changes on a table, a single document, or even the results from a specific query as they happen. 
 
 <img alt="Data Modeling Illustration" class="api_command_illustration"
     src="/assets/images/docs/api_illustrations/change-feeds.png" />
@@ -112,7 +114,9 @@ A third option is to specify how many seconds to wait between squashes. Passing 
 
 # Scaling considerations #
 
-Changefeeds perform well as they scale, although they create extra intracluster messages in proportion to the number of servers with open feed connections on each write. Also, since changefeeds are unidirectional with no acknowledgement returned from clients, they cannot guarantee delivery. If you need real-time updating with delivery guarantees, consider using a model that distributes to the clients through a message broker such as [RabbitMQ][ps].
+Changefeeds perform well as they scale, although they create extra intracluster messages in proportion to the number of servers with open feed connections on each write. This can be mitigated by running a RethinkDB proxy server (the `rethinkdb proxy` startup option); read read [Running a proxy node](/docs/sharding-and-replication/#running-a-proxy-node) in "Scaling, sharding and replication" for details.
+
+Since changefeeds are unidirectional with no acknowledgement returned from clients, they cannot guarantee delivery. If you need real-time updating with delivery guarantees, consider using a model that distributes to the clients through a message broker such as [RabbitMQ][ps].
 
 [ps]: /docs/rabbitmq/ruby/
 

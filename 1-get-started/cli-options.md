@@ -68,7 +68,7 @@ These options can be passed to the `rethinkdb` server on the command line on sta
 
 * `rethinkdb create`: prepare files on disk for a new server instance
 * `rethinkdb serve`: use an existing data directory to host data and serve queries
-* `rethinkdb proxy`: serve queries from an existing cluster but don't host data
+* `rethinkdb proxy`: run a proxy server (serve queries from an existing cluster but don't host data)
 * `rethinkdb export`: export data from an existing cluster into a file or directory
 * `rethinkdb import`: import data from from a file or directory into an existing cluster
 * `rethinkdb dump`: export and compress data from an existing cluster
@@ -76,3 +76,5 @@ These options can be passed to the `rethinkdb` server on the command line on sta
 * `rethinkdb index-rebuild`: rebuild outdated secondary indexes
 
 For more information about subcommands, type `rethinkdb help [subcommand]` at the command line.
+
+For information about running RethinkDB as a proxy server, read [Running a proxy node](/docs/sharding-and-replication/#running-a-proxy-node) in "Scaling, sharding and replication."

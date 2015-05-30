@@ -1,23 +1,42 @@
 ---
 layout: documentation
-title: Sharding and replication
+title: Scaling, sharding and replication
 docs_active: sharding-and-replication
 permalink: docs/sharding-and-replication/
 ---
 
-<img alt="Sharding and Replication Illustration" class="api_command_illustration"
-    src="/assets/images/docs/api_illustrations/shard-and-replicate.png" />
+{% toctag %}
 
 RethinkDB allows you to shard and replicate your cluster on a per-table basis. Settings can be controlled easily from the web administration console. In addition, ReQL commands for table configuration allow both scripting capability and more fine-grained control over replication, distributing replicas for individual tables across user-defined groups of servers using server tags.
 
-{% infobox %}
+<img alt="Sharding and Replication Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/shard-and-replicate.png" />
 
-__Note__: Currently, RethinkDB implements range shards, but will eventually be
-switching to hash shards. Follow [Github issue #364][gh364] to track progress.
+# Multi-datacenter setup #
 
-[gh364]: https://github.com/rethinkdb/rethinkdb/issues/364
+To group servers together in data centers, RethinkDB uses [Server tags](#server-tags). Servers can be "tagged" with one or more group names on startup:
 
-{% endinfobox %}
+```
+rethinkdb ---server-tag data_center_1
+```
+
+Once a server has been given a tag, the tags may be used to assign table replicas to servers with the same tags using the `reconfigure` command. Read the section of this document on [Server tags](#server-tags) for more details.
+
+# Running a proxy node #
+
+Once you have several machines in a RethinkDB cluster, you can improve your cluster's efficiency by running a _proxy node_ on each application server and having the client application connect to the proxy on `localhost`.
+
+A proxy node doesn't store any data; instead it acts as a query router. This offers some performance advantages:
+
+* The proxy will send queries directly to the correct machines, reducing intracluster traffic.
+* If you're using [changefeeds][cf], the proxy will de-duplicate changefeed messages sent from other cluster nodes, further reducing traffic.
+* The proxy node can do some query processing itself, reducing CPU load on database servers.
+
+To run a proxy node, simply use the `proxy` command line option on startup.
+
+```
+rethinkdb proxy
+```
 
 # Sharding and replication via the web console #
 
@@ -42,6 +61,14 @@ There are three primary commands for changing sharding and replication in ReQL. 
 For more information about administration via ReQL, consult the API documentation for the individual commands as well as the [Administration tools][at] documentation.
 
 [at]: /docs/administration-tools/
+
+{% infobox %}
+__Note__: Currently, RethinkDB implements range shards, but will eventually be
+switching to hash shards. Follow [Github issue #364][gh364] to track progress.
+
+[gh364]: https://github.com/rethinkdb/rethinkdb/issues/364
+{% endinfobox %}
+
 
 # Advanced configuration #
 
