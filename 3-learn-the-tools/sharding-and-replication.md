@@ -17,7 +17,7 @@ RethinkDB allows you to shard and replicate your cluster on a per-table basis. S
 To group servers together in data centers, RethinkDB uses [Server tags](#server-tags). Servers can be "tagged" with one or more group names on startup:
 
 ```
-rethinkdb ---server-tag data_center_1
+rethinkdb --server-tag data_center_1
 ```
 
 Once a server has been given a tag, the tags may be used to assign table replicas to servers with the same tags using the `reconfigure` command. Read the section of this document on [Server tags](#server-tags) for more details.
@@ -35,7 +35,7 @@ A proxy node doesn't store any data; instead it acts as a query router. This off
 To run a proxy node, simply use the `proxy` command line option on startup.
 
 ```
-rethinkdb proxy
+rethinkdb proxy --join hostname:29015
 ```
 
 # Sharding and replication via the web console #

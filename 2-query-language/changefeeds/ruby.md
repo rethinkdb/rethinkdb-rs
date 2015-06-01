@@ -114,7 +114,7 @@ A third option is to specify how many seconds to wait between squashes. Passing 
 
 # Scaling considerations #
 
-Changefeeds perform well as they scale, although they create extra intracluster messages in proportion to the number of servers with open feed connections on each write. This can be mitigated by running a RethinkDB proxy server (the `rethinkdb proxy` startup option); read read [Running a proxy node](/docs/sharding-and-replication/#running-a-proxy-node) in "Scaling, sharding and replication" for details.
+Changefeeds perform well as they scale, although they create extra intracluster messages in proportion to the number of servers with open feed connections on each write. This can be mitigated by running a RethinkDB proxy server (the `rethinkdb proxy` startup option); read [Running a proxy node](/docs/sharding-and-replication/#running-a-proxy-node) for details.
 
 Since changefeeds are unidirectional with no acknowledgement returned from clients, they cannot guarantee delivery. If you need real-time updating with delivery guarantees, consider using a model that distributes to the clients through a message broker such as [RabbitMQ][ps].
 
