@@ -27,6 +27,10 @@ By default, `filter` will silently skip documents with missing fields: if the pr
 * If `default` is set to `r.error()`, an `RqlRuntimeError` will be thrown when a document with a missing field is tested.
 * If `default` is set to `False` (the default), documents with missing fields will be skipped.
 
+{% infobox %}
+__Note:__ `filter` does not use secondary indexes. For retrieving documents via secondary indexes, consider [get_all](/api/python/get_all/), [between](/api/python/between/) and [eq_join](/api/python/eq_join/).
+{% endinfobox %}
+
 ## Basic predicates ##
 
 __Example:__ Get all users who are 30 years old.

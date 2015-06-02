@@ -16,7 +16,6 @@ related_commands:
 selection.filter(predicate[, :default => false]) &rarr; selection
 stream.filter(predicate[, :default => false]) &rarr; stream
 array.filter(predicate[, :default => false]) &rarr; array
-
 {% endapibody %}
 
 # Description #
@@ -29,10 +28,13 @@ By default, `filter` will silently skip documents with missing fields: if the pr
 * If `default` is set to `r.error()`, an `RqlRuntimeError` will be thrown when a document with a missing field is tested.
 * If `default` is set to `false` (the default), documents with missing fields will be skipped.
 
+{% infobox %}
+__Note:__ `filter` does not use secondary indexes. For retrieving documents via secondary indexes, consider [get_all](/api/ruby/get_all/), [between](/api/ruby/between/) and [eq_join](/api/ruby/eq_join/).
+{% endinfobox %}
+
 ## Basic predicates ##
 
 __Example:__ Get all users who are 30 years old.
-
 
 ```rb
 r.table('users').filter({:age => 30}).run(conn)

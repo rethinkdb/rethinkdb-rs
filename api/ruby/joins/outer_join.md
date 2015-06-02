@@ -20,8 +20,10 @@ array.outer_join(other_sequence, predicate) &rarr; array
 
 Returns a left outer join of two sequences. The returned sequence represents a union of the left-hand sequence and the right-hand sequence: all documents in the left-hand sequence will be returned, each matched with a document in the right-hand sequence if one satisfies the predicate condition. In most cases, you will want to follow the join with [zip](/api/ruby/zip) to combine the left and right results.
 
-Note that `outer_join` is slower and much less efficient than using [concat_map](/api/ruby/concat_map/) with [get_all](/api/ruby/get_all). You should avoid using `outer_join` in commands when possible.
 
+{% infobox %}
+Note that `outer_join` is slower and much less efficient than using [concat_map](/api/ruby/concat_map/) with [get_all](/api/ruby/get_all). You should avoid using `outer_join` in commands when possible.
+{% endinfobox %}
 
 __Example:__ Return a list of all Marvel heroes, paired with any DC heroes who could beat them in a fight.
 
