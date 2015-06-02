@@ -162,12 +162,13 @@ threshold).
 
 ## Is RethinkDB immediately or eventually consistent? ##
 
-In RethinkDB data always remains immediately consistent and
-conflict-free, and a read that follows a write is always guaranteed to
-see the write. This is accomplished by always assigning every shard to
-a single authoritative primary replica. All reads and writes to any key in a
-given shard always get routed to its respective primary where they're
-ordered and evaluated.
+Every shard in RethinkDB is assigned to a single authoritative primary
+replica. All reads and writes to any key in a given shard always get routed
+to its respective primary, where they're ordered and evaluated. Data always
+remains immediately consistent and conflict-free, and a read that follows an
+acknowledged write is always guaranteed to see the write. However, neither
+reads nor writes are guaranteed to succeed if the primary replica is
+unavailable.
 
 RethinkDB supports both up-to-date and out-of-date reads. By default,
 all read queries are executed up-to-date, which means that every read
