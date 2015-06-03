@@ -308,3 +308,16 @@ user1['friends'] = [ user1, user2 ];
 Trying to access `user1` in ReQL will cause a nesting depth error.
 
 Depending on the driver, this error may also appear as "Maximum expression depth exceeded."
+
+## "RqlTzinfo object is not JSON serializable" error ##
+
+If you try to serialize a document containing a ReQL time zone object using Python's `json` library, you may receive this error. Solve this by passing the `time_format="raw"` option to `run`:
+
+```py
+import json
+today = r.expr(datetime.datetime.now(timezone('US/Pacific'))).run(conn,
+    time_format="raw")
+json.dumps(today)
+
+'{"timezone": "-07:00", "$reql_type$": "TIME", "epoch_time": 1433368112.289}'
+```

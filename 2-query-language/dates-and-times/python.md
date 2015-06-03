@@ -315,7 +315,7 @@ r.table('sales').filter(lambda sale:
 ).group(lambda sale: sale['time'].month()).sum('dollars').run(conn)
 ```
 
-<a id="native-time-objects"></a>
+## Native time objects
 
 RethinkDB accepts Python `datetime` objects:
 
@@ -336,17 +336,38 @@ timezone values with r.make_timezone("[+-]HH:MM"). Alternatively,
 use one of ReQL's builtin time constructors, r.now, r.time, or r.iso8601.
 ```
 
-To pass a valid time object to the Python driver, you can:
+To pass a valid time object to the Python driver, you can do one of two things.
 
-- Use `r.make_timezone`
+Use `r.make_timezone`:
 
-    ```py
-    r.expr(datetime.now(r.make_timezone('-07:00'))).run(conn)
-    ```
+```py
+r.expr(datetime.now(r.make_timezone('-07:00'))).run(conn)
+```
 
-- Use the `pytz` module
+Or, use the `pytz` module:
 
-    ```py
-    from pytz import timezone
-    r.expr(datetime.now(timezone('US/Pacific'))).run(conn)
-    ```
+```py
+from pytz import timezone
+r.expr(datetime.now(timezone('US/Pacific'))).run(conn)
+```
+
+__Note:__ `RqlTzinfo` objects cannot be directly serialized to JSON.
+
+```py
+import json
+today = r.expr(datetime.datetime.now(timezone('US/Pacific'))).run(conn)
+json.dumps(today)
+
+TypeError: datetime.datetime(2015, 6, 3, 14, 46, 11, 142000, tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x103c5a890>) is not JSON serializable
+```
+
+Solve this by passing the `time_format="raw"` optional argument to [run](/api/python/run):
+
+```py
+import json
+today = r.expr(datetime.datetime.now(timezone('US/Pacific'))).run(conn,
+    time_format="raw")
+json.dumps(today)
+
+'{"timezone": "-07:00", "$reql_type$": "TIME", "epoch_time": 1433368112.289}'
+```
