@@ -21,7 +21,7 @@ singleSelection.changes({squash: true, includeStates: false}) &rarr; stream
 
 # Description #
 
-Return an infinite stream of objects representing changes to a query.
+Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
 
 The `squash` optional argument controls how `changes` batches change notifications:
 
@@ -53,7 +53,9 @@ Changefeed notifications take the form of a two-field object:
 
 The first notification object in the changefeed stream will contain the query's initial value in `new_val` and have no `old_val` field. When a document is deleted, `new_val` will be `null`; when a document is inserted, `old_val` will be `null`.
 
-Certain document transformation commands can be chained before changefeeds. For more information, read the [discussion of changefeeds][cfr] in the "Query language" documentation.
+{% infobox %}
+Certain document transformation commands can be chained before changefeeds. For more information, read the [discussion of changefeeds](/docs/changefeeds/javascript/) in the "Query language" documentation.
+{% endinfobox %}
 
 The server will buffer up to 100,000 elements. If the buffer limit is hit, early changes will be discarded, and the client will receive an object of the form `{error: "Changefeed cache over array size limit, skipped X elements."}` where `X` is the number of elements skipped.
 
@@ -100,13 +102,10 @@ r.table('test').changes().filter(
 ).run(conn, callback)
 ```
 
-__Example:__ Return all the changes to Bob's score.
+__Example:__ Return all the changes to a specific player's score that increase it past 10.
 
 ```js
-// Note that this will have to look at and discard all the changes to
-// rows besides Bob's.  This is currently no way to filter with an index
-// on changefeeds.
-r.table('test').changes().filter(r.row('new_val')('name').eq('Bob')).run(conn, callback)
+r.table('test').get(1).filter(r.row('score').gt(10)).changes().run(conn, callback)
 ```
 
 __Example:__ Return all the inserts on a table.
