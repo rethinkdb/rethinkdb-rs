@@ -25,7 +25,9 @@ array.innerJoin(otherSequence, predicate) &rarr; array
 
 Returns an inner join of two sequences. The returned sequence represents an intersection of the left-hand sequence and the right-hand sequence: each row of the left-hand sequence will be compared with each row of the right-hand sequence to find all pairs of rows which satisfy the predicate. Each matched pair of rows of both sequences are combined into a result row. In most cases, you will want to follow the join with [zip](/api/javascript/zip) to combine the left and right results.
 
+{% infobox %}
 Note that `innerJoin` is slower and much less efficient than using [eqJoin](/api/javascript/eq_join/) or [concatMap](/api/javascript/concat_map/) with [getAll](/api/javascript/get_all/). You should avoid using `innerJoin` in commands when possible.
+{% endinfobox %}
 
 __Example:__ Return a list of all matchups between Marvel and DC heroes in which the DC hero could beat the Marvel hero in a fight.
 
