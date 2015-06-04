@@ -643,12 +643,13 @@ r.db(dbName) &rarr; db
 
 Reference a database.
 
-__Example:__ Before we can query a table we have to select the correct database.
+__Example:__ Explicitly specify a database for a query.
 
 ```js
 r.db('heroes').table('marvel').run(conn, callback)
 ```
 
+[Read more about this command &rarr;](db/)
 
 ## [table](table/) ##
 

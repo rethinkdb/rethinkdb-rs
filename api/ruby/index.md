@@ -619,12 +619,13 @@ r.db(db_name) &rarr; db
 
 Reference a database.
 
-__Example:__ Before we can query a table we have to select the correct database.
+__Example:__ Explicitly specify a database for a query.
 
 ```rb
 r.db('heroes').table('marvel').run(conn)
 ```
 
+[Read more about this command &rarr;](db/)
 
 ## [table](table/) ##
 
