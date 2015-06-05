@@ -34,6 +34,8 @@ A proxy node doesn't store any data; instead it acts as a query router. This off
 
 To run a proxy node, simply use the `proxy` command line option on startup.
 
+[cf]: /docs/changefeeds
+
 ```
 rethinkdb proxy --join hostname:29015
 ```
