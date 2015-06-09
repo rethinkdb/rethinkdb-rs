@@ -52,8 +52,7 @@ The `repl` command is a convenience method that sets a default connection in you
 {% infobox %}
 __Note:__ the `repl` command is useful to experiment in the shell, but
 you should pass the connection to the `run` command explicitly in
-real applications. See [an example
-project](/docs/examples/flask-backbone-todo/) for more details.
+real applications. See [an example project](//github.com/rethinkdb/rethinkdb-example-flask-backbone-todo) for more details.
 {% endinfobox%}
 
 # Create a new table #
