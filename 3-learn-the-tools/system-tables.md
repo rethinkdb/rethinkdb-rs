@@ -67,18 +67,8 @@ Sharding and replication can be controlled through the `table_config` table, alo
 * `shards`: a list of the table's shards. Each shard is an object with these fields:
 	* `primary_replica`: the name or UUID of the server acting as the shard's primary. If `primary_replica` is `null`, the table will be unavailable. This may happen if the server acting as the shard's primary is deleted.
 	* `replicas`: a list of servers, including the primary, storing replicas of the shard.
-* `write_acks`: the write acknowledgement settings for the table. When set to `majority` (the default), writes will be acknowledged when a majority of replicas have acknowledged their writes; when set to `single` writes will be acknowledged when a single replica acknowledges it. This may also be set to a list of requirements; see below.
+* `write_acks`: the write acknowledgement settings for the table. When set to `majority` (the default), writes will be acknowledged when a majority of replicas have acknowledged their writes; when set to `single` writes will be acknowledged when a single replica acknowledges it.
 * `durability`: `soft` or `hard` (the default). In `hard` durability mode, writes are committed to disk before acknowledgements are sent; in `soft` mode, writes are acknowledged immediately upon receipt. The `soft` mode is faster but slightly less resilient to failure.
-
-If `write_acks` is set to a list of requirements, they should take the form of:
-
-```js
-[
-	{replicas: ['a', 'b'], acks: 'single'},
-	{replicas: ['c', 'd'], acks: 'majority'},
-	...
-]
-```
 
 If you `delete` a row from `table_config` the table will be deleted. If you `insert` a row, the `name` and `db` fields are required; the other fields are optional, and will be automatically generated or set to their default if they are not specified. Do not include the `id` field. The system will auto-generate a UUID. 
 
