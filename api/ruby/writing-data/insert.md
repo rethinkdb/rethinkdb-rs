@@ -126,12 +126,11 @@ r.table("users").insert([
 
 __Example:__ Insert a document into the table `users`, replacing the document if the document
 already exists.  
-_Note_: If the document exists, the `insert` command will behave like [replace](/api/ruby/replace/), not like [update](/api/ruby/update/) 
 
 ```rb
 r.table("users").insert(
     {:id => "william", :email => "william@rethinkdb.com"},
-    :conflict => "error"
+    :conflict => "replace"
 ).run(conn)
 ```
 

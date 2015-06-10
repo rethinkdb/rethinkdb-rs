@@ -131,7 +131,7 @@ already exists.
 ```py
 r.table("users").insert(
     {"id": "william", "email": "william@rethinkdb.com"},
-    conflict="error"
+    conflict="replace"
 ).run(conn)
 ```
 
