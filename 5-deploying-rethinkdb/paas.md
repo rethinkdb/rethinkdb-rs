@@ -79,6 +79,12 @@ instructions](/docs/cluster-on-startup/) for more details.
 
 # Instance administration #
 
+The primary way to administer a RethinkDB AMI is through the web UI.
+Advanced tasks can be performed with ReQL administration commands, using
+the Data Explorer interactively or scripting through any RethinkDB driver.
+Read [Administration tools](/docs/administration-tools/) for more details
+about scripting administration tasks.
+
 ## SSH access ##
 
 To connect to your instance over SSH, log in as the user `ubuntu`. Use
@@ -87,15 +93,6 @@ public hostname of the instance. For example:
 
 ```
 ssh -i rethinkdb.prv -l ubuntu ec2-184-72-203-271.compute-1.amazonaws.com
-```
-
-## RethinkDB command line administration ##
-
-You can launch the administration tool from the command line after
-logging in over ssh:
-
-```
-rethinkdb admin --join localhost:29015
 ```
 
 # Security #
