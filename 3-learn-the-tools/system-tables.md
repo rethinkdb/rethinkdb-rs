@@ -18,7 +18,7 @@ The metadata in the system tables applies to the RethinkDB cluster as a whole. E
 ## The Tables ##
 
 * `table_config` stores table configurations, including sharding and replication. By writing to `table_config`, you can create, delete, and reconfigure tables.
-* `server_config` stores server names and tags. By writing to this table you can rename servers, assign them tags, and remove them from the cluster entirely.
+* `server_config` stores server names and tags. By writing to this table you can rename servers and assign them tags.
 * `db_config` stores database UUIDs and names. By writing to this table, databases can be created, deleted or modified.
 * `cluster_config` stores the authentication key for the cluster.
 * `table_status` is a read-only table which returns the status and configuration of tables in the system.
@@ -98,14 +98,7 @@ Every server that has ever been part of the cluster and has not been permanently
 
 If tags aren't specified when a server starts, the server is automatically assigned the `default` tag. Documents cannot be inserted into `server_config`. A new document gets created when a server connects to the cluster.
 
-Documents *can* be deleted from this table. Doing so permanently removes the server from the cluster. When a server is permanently removed from a cluster, the following occurs:
-
-* all references to it are deleted from `table_config`;
-* if it was a replica for a shard, that entry is removed from the shard's `replicas` list;
-* if it was the primary replica for a shard, the `primary_replica` field in that shard's entry becomes `null`;
-* if it was in a list of replicas in the `write_acks` field, it's removed from that list.
-
-Permanently deleting a server is *irreversible:* a deleted server cannot rejoin the cluster, even by restarting the RethinkDB process on that server. You can make a server "new" again by entirely deleting that server's RethinkDB data directory.
+Documents cannot be deleted from this table. When a server loses its connection to the cluster, its corresponding document will be automatically deleted.
 
 ## db_config ##
 
@@ -195,62 +188,50 @@ This table stores information about table availability. There is one document pe
 
 ## server_status ##
 
-This table returns information about the status and availability of servers within a RethinkDB cluster. A single document is created for each server that connects to the cluster. These documents remain in the `server_status` table even if the server loses its connection to the cluster; they are deleted only when a server is permanently removed.
+This table returns information about the status and availability of servers within a RethinkDB cluster. A single document is created for each server that connects to the cluster. If a server loses its connection to the cluster, it will be removed from the `server_status` table.
 
-This is a typical document schema for a server connected to the host server&mdash;that is, the server the client's connecting to when they query the `server_status` table. If a server is *not* connected to the host server there will be differences noted below.
+This is a typical document schema for a server connected to the host server&mdash;that is, the server the client's connecting to when they query the `server_status` table.
 
 ```js
 {
     id: "de8b75d1-3184-48f0-b1ef-99a9c04e2be5",
     name: "servername",
-    status: "connected",
-    connection: {
-        time_connected: <ReQL time object>,
-        time_disconnected: null
-    },
     network: {
         hostname: "companion-cube",
         cluster_port: 29015,
         http_admin_port: 8080,
         reql_port: 28015,
+        time_connected: <ReQL time object>,
         canonical_addresses: [
             { host: "127.0.0.1", port: 29015 },
             { host: "::1", port: 29015 }
             ]
     },
     process: {
+        argv: ["/usr/bin/rethinkdb"],
         cache_size_mb: 1882.30078125,
         pid: 28580,
         time_started: <ReQL time object>,
-        version: "rethinkdb 1.16.0-xxx (CLANG 3.4 (tags/RELEASE_34/final))"
+        version: "rethinkdb 2.1.0-xxx (CLANG 3.4 (tags/RELEASE_34/final))"
     },
 }
 ```
 
 * `id`: the UUID of the server.
 * `name`: the name of the server.
-* `status`: always `connected` if the server is responding.
-* `connection`: two timestamp fields:
-	* `time_connected`: the time the server connected to the host server. 
-	* `time_disconnected`: always `null` if the server is connected.
 * `network`: information about the network the server is on:
 	* `hostname`: the host name as returned by `gethostname()`.
 	* `*_port`: the RethinkDB ports on that server (from the server's own point of view).
 	* `canonical_addresses`: a list of the canonical addresses and ports of the server. These may differ from `hostname` and `cluster_port` depending on your network configuration.
+	* `time_connected`: the time the server connected (or reconnected) to the cluster.
 * `process`: information about the RethinkDB server process:
+    * `argv`: the command line arguments the server started with, as an array of strings.
 	* `cache_size_mb`: the cache size in megabytes. (This can be [configured on startup][startup].)
 	* `pid`: the process ID.
 	* `time_started`: the time the server process started.
 	* `version`: the version string of the RethinkDB server.
 
 [startup]: /docs/cluster-on-startup/
-
-If the server is not connected to the host server:
-
-* `status` becomes `disconnected`;
-* `time_connected` becomes `null`;
-* If the server was connected to the host server since the last time the host server restarted, `time_disconnected` becomes the time that the server was last seen. If not, it will be `null`;
-* All the fields in `network` and `process` become `null`. (The field names are still present, but the values are `null`.)
 
 # Other tables #
 
