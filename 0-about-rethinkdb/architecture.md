@@ -301,11 +301,11 @@ line tools, availability is restored, and the cluster continues
 operating as normal.
 
 The second option is to permanently remove the server from the cluster. If
-the server is permanently removed, it is absolved of all responsibilities,
-and one of the secondary replicas is automatically elected to act as a new
-primary. After the server is removed, availability is quickly restored and
-the cluster begins operating normally. (If the removed server comes back
-up, it is rejected by the cluster as a ghost).
+the server is permanently removed, the system will attempt to recover itself
+automatically; if that server was acting as the primary replica for one or
+more shards, those tables will lose availability, and the shards will need
+to be manually assigned new primaries. Once a server is removed it cannot
+reconnect to the cluster.
 
 Currently, RethinkDB does not automatically remove servers after a
 timeout. The user must permanently remove the server manually, either by
