@@ -139,7 +139,7 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
-            <a href="https://github.com/azukiapp/elixir-rethinkdb">
+            <a href="https://github.com/hamiltop/rethinkdb-elixir">
                 <img src="/assets/images/docs/driver-languages/elixir.png" />
                 <p class="name">Elixir</p>
             </a>
