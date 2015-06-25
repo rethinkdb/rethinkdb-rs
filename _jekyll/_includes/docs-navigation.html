@@ -1,6 +1,6 @@
 {% assign this_doc = page.docs_active %}
 <nav class="docs-nav">
-    {% for each in site.data['docs-nav'] %}
+    {% for each in site.data.docs['docs-nav'] %}
         {% assign docs_in_section = each.section.docs | map: 'permalink' %}
 
         {% comment %}
