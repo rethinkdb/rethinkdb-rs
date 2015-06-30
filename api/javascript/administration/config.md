@@ -28,16 +28,24 @@ __Example:__ Get the configuration for the `users` table.
 > r.table('users').config().run(conn, callback);
 // Result passed to callback
 {
-    id: "31c92680-f70c-4a4b-a49e-b238eb12c023",
-    name: "users",
-    db: "superstuff",
-    primary_key: "id",
-    shards: [
-        {primary_replica: "a", "replicas": ["a", "b"]},
-        {primary_replica: "d", "replicas": ["c", "d"]}
+    "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
+    "name": "users",
+    "db": "superstuff",
+    "primary_key": "id",
+    "shards": [
+        {
+            "primary_replica": "a", 
+            "replicas": ["a", "b"],
+            "nonvoting_replicas": []
+        },
+        {
+            "primary_replica": "d",
+            "replicas": ["c", "d"],
+            "nonvoting_replicas": []
+        }
     ],
-    write_acks: "majority",
-    durability: "hard"
+    "write_acks": "majority",
+    "durability": "hard"
 }
 ```
 

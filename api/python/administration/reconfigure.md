@@ -58,8 +58,16 @@ r.table('superheroes').reconfigure(shards=2, replicas=1).run(conn)
         "db": "superstuff",
         "primary_key": "id",
         "shards": [
-          {"primary_replica": "jeeves", "replicas": ["jeeves"]},
-          {"primary_replica": "alfred", "replicas": ["alfred"]}
+          {
+            "primary_replica": "jeeves",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          },
+          {
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          }
         ],
         "write_acks": "majority",
         "durability": "hard"
@@ -70,7 +78,11 @@ r.table('superheroes').reconfigure(shards=2, replicas=1).run(conn)
         "db": "superstuff",
         "primary_key": "id",
         "shards": [
-          {"primary_replica": "alfred", "replicas": ["alfred"]}
+          {
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          }
         ],
         "write_acks": "majority",
         "durability": "hard"
@@ -101,8 +113,16 @@ r.table('superheroes').reconfigure(shards=2, replicas={'wooster': 1, 'wayne': 1}
         "db": "superstuff",
         "primary_key": "id",
         "shards": [
-          {"primary_replica": "jeeves", "replicas": ["jeeves", "alfred"]},
-          {"primary_replica": "jeeves", "replicas": ["jeeves", "alfred"]}
+          {
+            "primary_replica": "jeeves",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          },
+          {
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          }
         ],
         "write_acks": "majority",
         "durability": "hard"
@@ -113,7 +133,11 @@ r.table('superheroes').reconfigure(shards=2, replicas={'wooster': 1, 'wayne': 1}
         "db": "superstuff",
         "primary_key": "id",
         "shards": [
-          {"primary_replica": "alfred", "replicas": ["alfred"]}
+          {
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          }
         ],
         "write_acks": "majority",
         "durability": "hard"
