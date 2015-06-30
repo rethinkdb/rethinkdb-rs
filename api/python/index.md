@@ -471,8 +471,8 @@ r.table('test').index_wait('timestamp').run(conn)
 ## [changes](changes/) ##
 
 {% apibody %}
-stream.changes(squash=True, include_states=False) &rarr; stream
-singleSelection.changes(squash=True, include_states=False) &rarr; stream
+stream.changes(squash=False, include_states=False) &rarr; stream
+singleSelection.changes(squash=False, include_states=False) &rarr; stream
 {% endapibody %}
 
 Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
