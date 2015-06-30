@@ -7,8 +7,8 @@ command: reconfigure
 # Command syntax #
 
 {% apibody %}
-table.reconfigure({:shards => <s>, :replicas => <r>[, :primary_replica_tag => <t>, :dry_run => false]}) &rarr; object
-database.reconfigure({:shards => <s>, :replicas => <r>[, :primary_replica_tag => <t>, :dry_run => false]}) &rarr; object
+table.reconfigure({:shards => <s>, :replicas => <r>[, :primary_replica_tag => <t>, :dry_run => false, :nonvoting_replica_tags => nil]}) &rarr; object
+database.reconfigure({:shards => <s>, :replicas => <r>[, :primary_replica_tag => <t>, :dry_run => false, :nonvoting_replica_tags => nil]}) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -21,6 +21,7 @@ Reconfigure a table's sharding and replication.
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{:tag1 => 2, :tag2 => 4, :tag3 => 2, ...}`. For more information about server tags, read [Administration tools](/docs/administration-tools/).
 * `primary_replica_tag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 * `dry_run`: if `true` the generated configuration will not be applied to the table, only returned.
+* `nonvoting_replica_tags`: replicas with these server tags will be added to the `nonvoting_replicas` list of the resulting configuration. (See [failover](/docs/failover) for details about non-voting replicas.)
 * `emergency_repair`: Used for the Emergency Repair mode. See the separate section below.
 
 The return value of `reconfigure` is an object with three fields:
@@ -58,8 +59,16 @@ r.table('superheroes').reconfigure({:shards => 2, :replicas => 1}).run(conn)
         :db => "superstuff",
         :primary_key => "id",
         :shards => [
-          {:primary_replica => "jeeves", :replicas => ["jeeves"]},
-          {:primary_replica => "alfred", :replicas => ["alfred"]}
+          {
+            :primary_replica => "jeeves",
+            :replicas => ["jeeves"],
+            :nonvoting_replica_tags => []
+          },
+          {
+            :primary_replica => "alfred",
+            :replicas => ["alfred"],
+            :nonvoting_replica_tags => []
+          }
         ],
         :write_acks => "majority",
         :durability => "hard"
@@ -70,7 +79,11 @@ r.table('superheroes').reconfigure({:shards => 2, :replicas => 1}).run(conn)
         :db => "superstuff",
         :primary_key => "id",
         :shards => [
-          {:primary_replica => "alfred", :replicas => ["alfred"]}
+          {
+            :primary_replica => "alfred",
+            :replicas => ["alfred"],
+            :nonvoting_replica_tags => []
+          }
         ],
         :write_acks => "majority",
         :durability => "hard"
@@ -101,8 +114,16 @@ r.table('superheroes').reconfigure({:shards => 2, :replicas => {:wooster => 1, :
         :db => "superstuff",
         :primary_key => "id",
         :shards => [
-          {:primary_replica => "jeeves", :replicas => ["jeeves", "alfred"]},
-          {:primary_replica => "jeeves", :replicas => ["jeeves", "alfred"]}
+          {
+            :primary_replica => "jeeves",
+            :replicas => ["jeeves"],
+            :nonvoting_replica_tags => []
+          },
+          {
+            :primary_replica => "alfred",
+            :replicas => ["alfred"],
+            :nonvoting_replica_tags => []
+          }
         ],
         :write_acks => "majority",
         :durability => "hard"
@@ -113,7 +134,11 @@ r.table('superheroes').reconfigure({:shards => 2, :replicas => {:wooster => 1, :
         :db => "superstuff",
         :primary_key => "id",
         :shards => [
-          {:primary_replica => "alfred", :replicas => ["alfred"]}
+          {
+            :primary_replica => "alfred",
+            :replicas => ["alfred"],
+            :nonvoting_replica_tags => []
+          }
         ],
         :write_acks => "majority",
         :durability => "hard"

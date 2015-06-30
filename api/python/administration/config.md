@@ -28,8 +28,16 @@ r.table('users').config().run(conn)
     "db": "superstuff",
     "primary_key": "id",
     "shards": [
-        {"primary_replica": "a", "replicas": ["a", "b"]},
-        {"primary_replica": "d", "replicas": ["c", "d"]}
+        {
+            "primary_replica": "a",
+            "replicas": ["a", "b"],
+            "nonvoting_replicas": []
+        },
+        {
+            "primary_replica": "d",
+            "replicas": ["c", "d"],
+            "nonvoting_replicas": []
+        }
     ],
     "write_acks": "majority",
     "durability": "hard"
