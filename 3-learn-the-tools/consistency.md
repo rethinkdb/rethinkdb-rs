@@ -63,7 +63,7 @@ r.table("foo").get(register_id).update({
 RethinkDB operations are never atomic across multiple keys. For this reason, RethinkDB cannot be considered an ACID database.
 {% endinfobox %}
 
-Currently, `filter`, `get_all` and similar operations execute as separate operations from `update` and other mutation operations. (These operations are usually atomic, although not all `filter` operations are, depending on the predicate.) Therefore, the following is *not* a correct implementation of a check-and-set register, since `filter` and `update` will not execute in one atomic operation:
+Currently, `filter`, `get_all` and similar operations execute as separate operations from `update` and other mutation operations. Therefore, the following is *not* a correct implementation of a check-and-set register, since `filter` and `update` will not execute in one atomic operation:
 
 ```js
 r.table("foo").filter({
@@ -79,9 +79,9 @@ This behavior may change in the future. See [Github issue #3992][gh3992] to trac
 
 # Availability guarantees
 
-Except for brief periods, a table will remain fully available as long as more than half of the voting replicas for each shard are available. If half or more of the voting replicas for a shard are lost, then read or write operations on that shard will fail.
+Except for brief periods table will remain fully available as long as more than half of the voting replicas for each shard and for the table overall are available. If half or more of the voting replicas for a shard are lost, then read or write operations on that shard will fail.
 
-Reconfiguring a table (changing the number of shards, shard boundaries, etc.) causes brief losses of availability at various points during the reconfiguration.
+Reconfiguring a table (changing the number of shards, rebalancing, etc.) causes brief losses of availability at various points during the reconfiguration.
 
 If the primary replica is lost but more than half of the voting replicas are still available, an arbitrary voting replica will be elected as primary. The new primary will appear in `table_status`, but the `primary_replica` field of `table_config` will not change. If the old primary ever becomes available again, the system will switch back. When the primary changes there will be a brief period of unavailability.
 
