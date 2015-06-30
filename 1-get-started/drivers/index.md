@@ -66,6 +66,12 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
+            <a href="https://github.com/hamiltop/rethinkdb-elixir">
+                <img src="/assets/images/docs/driver-languages/elixir.png" />
+                <p class="name">Elixir</p>
+            </a>
+            </li>
+            <li>
                 <a href="https://github.com/dancannon/gorethink">
                     <img src="/assets/images/docs/driver-languages/go.png" />
                     <p class="name">Go</p>
@@ -139,12 +145,6 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
-            <a href="https://github.com/azukiapp/elixir-rethinkdb">
-                <img src="/assets/images/docs/driver-languages/elixir.png" />
-                <p class="name">Elixir</p>
-            </a>
-            </li>
-            <li>
             <a href="https://github.com/taybin/lethink">
                 <img src="/assets/images/docs/driver-languages/erlang.png" />
                 <p class="name">Erlang</p>
@@ -202,8 +202,8 @@ __Thanks to all our amazing driver contributors!__
 
 - [@apa512](https://github.com/apa512) (Clojure): <https://github.com/apa512/clj-rethinkdb>
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
-- [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): <https://github.com/bitemyapp/revise>
 - [@billysometimes](https://github.com/billysometimes) (Dart): <https://github.com/billysometimes/rethinkdb>
+- [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): <https://github.com/bitemyapp/revise>
 - [@christopherhesse](https://github.com/christopherhesse) (Go): <https://github.com/christopherhesse/rethinkgo>
 - [@dancannon](https://github.com/dancannon) (Go): <https://github.com/dancannon/gorethink>
 - [@danielmewes](https://github.com/danielmewes) (PHP): <https://github.com/danielmewes/php-rql>
@@ -212,12 +212,12 @@ __Thanks to all our amazing driver contributors!__
 - [@dparnell](https://github.com/dparnell) (Objective-C): <https://github.com/dparnell/rethink-db-client>
 - [@esycat](https://github.com/esycat) (Scala): <https://github.com/esycat/rql-scala>
 - [@grandquista](https://github.com/grandquista) (Lua): <https://github.com/grandquista/Lua-ReQL>
+- [@hamiltop](https://github.com/hamiltop) (Elixir): <https://github.com/hamiltop/rethinkdb-elixir>
 - [@jurajmasar](https://github.com/jurajmasar) (C++): <https://github.com/jurajmasar/rethink-db-cpp-driver>
 - [@kclay](https://github.com/kclay) (Scala): <https://github.com/kclay/rethink-scala>
 - [@neumino](https://github.com/neumino) (Node.js): <https://github.com/neumino/rethinkdbdash>
 - [@njlg](https://github.com/njlg) (Perl): <https://github.com/njlg/perl-rethinkdb>
 - [@npiv](https://github.com/npiv/) (Java): <https://github.com/npiv/rethink-java-driver>
-- [@nuxlli](https://github.com/nuxlli) (Elixir): <https://github.com/azukiapp/elixir-rethinkdb>
 - [@orthecreedence](https://github.com/orthecreedence) (Common Lisp): <https://github.com/orthecreedence/cl-rethinkdb>
 - [@taybin](https://github.com/taybin) (Erlang): <https://github.com/taybin/lethink>
 - [@unbit](https://github.com/unbit) (C): <https://github.com/unbit/librethinkdb>
