@@ -125,11 +125,10 @@ Note that tables are configured on creation and when the `reconfigure` command i
 
 Two settings for tables, write acknowledgements and write durability, cannot be set through either the web interface or the `reconfigure` command. They must be set by modifying the `table_config` table for individual tables.
 
-The write acknowledgement setting for a table controls when the cluster acknowledges a write request as fulfilled. There are three possible settings:
+The write acknowledgement setting for a table controls when the cluster acknowledges a write request as fulfilled. There are two possible settings:
 
 * `majority`: The cluster sends the acknowledgement when the majority of replicas have acknowledged it. This is the default.
 * `single`: The cluster sends the acknowledgement when any replica has acknowledged it.
-* `complex`: a list of requirements describing sets of replicas with either `majority` or `single` write acknowledgements. This takes the form of `[{replicas: ["replica1", "replica2", ...], acks: "single"}, {replicas: ["replica3", "replica4", ...], acks: "majority"}]`.
 
 To change these settings for a table:
 
