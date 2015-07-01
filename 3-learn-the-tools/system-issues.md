@@ -47,31 +47,6 @@ r.db("rethinkdb").table("current_issues").filter({type: "outdated_index"}).run(c
 
 Note that if you call [table](/api/javascript/table) with `identifier_format` set to `uuid`, then references to servers, tables and databases in the `info` subdocument will be UUIDs rather than names.
 
-## Invalid configuration issues ##
-
-The system will never show more than one configuration issue for the same table at the same time.
-
-```
-type: "table_needs_primary" | "data_lost" | "write_acks"
-critical: true
-info: {
-    table: "tablename",
-    db: "databasename"
-}
-```
-
-### table\_needs\_primary ###
-
-A `primary_replica` field in `table_config` is `null`. This can happen when the server that had been acting as primary is permanently removed from the cluster. To clear this issue, assign a new primary replica using [reconfigure](/api/javascript/reconfigure) or by writing to [table_config][st].
-
-### data_lost ###
-
-A `replicas` field in `table_config` is empty. This can only happen if *all* the servers for one of the table's shards have been permanently removed from the cluster; some data in that table will likely be lost. Assign new replicas using [reconfigure](/api/javascript/reconfigure) or by writing to [table_config][st]. The lost parts of the table will become available for writes again, but will be empty.
-
-### write_acks ###
-
-Write acknowledgements set in `table_config` for a table cannot be met. This can happen if one or more servers for this table were permanently removed from the cluster and different shards now have different numbers of replicas. The `majority` write ack setting applies the same threshold to every shard, but computes the threshold based on the shard with the most replicas. Change the replica assignments in `rethinkdb.table_config` or change the write ack setting to `single`.
-
 ## Log write issues ##
 
 ```
@@ -129,37 +104,34 @@ Indexes built with an older version of RethinkDB need to be rebuilt due to chang
 
 This issue will only appear in the `current_issues` table once&mdash;check the `info` field for the tables and indexes it affects.
 
-## Server disconnection issues ##
+## Table availability issues ##
 
 ```
-type: "server_disconnected"
-critical: true
+type: "table_availability"
+critical: true | false
 info: {
-    disconnected_server: "<server>",
-    reporting_servers: ["<server1>", "<server2>", ...]
+    table: "foo",
+    db: "bar",
+    shards: [
+        {
+            primary_replicas: ["replica1"],
+            replicas: [
+                { server: "replica1", state: "ready" },
+                { server: "replica2", state: "disconnected" }
+            ]
+        }
+    ],
+    status: {
+        all_replicas_ready: false,
+        ready_for_writes: false,
+        ready_for_reads: true,
+        ready_for_outdated_reads: true
+    }
 }
 ```
 
-A server within the cluster has lost contact with one or more of the other servers within the cluster; `reporting_servers` is a list of the names (or UUIDs) of servers that report they've lost contact with the `disconnected_server`.
+A table on the cluster is missing at least one server. The `description` string will depend on the roles the missing server(s) played in the table. If the table is not available for reads and/or writes, `critical` will be `true`; if the table can be both read from and written to, it will be `false`.
 
-Fix this by resolving the communication problem between the servers. If the server has crashed and lost data and the problem cannot be resolved, you can permanently delete the server's entry from the [server_config][st] table. (See  `server_config` in [System tables][st] for more details about the effects of deleting a server.)
+If a table is unavailable for reads and/or writes but all its servers are still available, no issue will be shown.
 
-This issue will only appear in the table once per disconnected server.
-
-## Server ghost issues ##
-
-```
-type: server_ghost
-critical: false
-info: {
-    server_id: "<uuid>",
-    hostname: "<hostname>",
-    pid: <number>
-}
-```
-
-A server that's been permanently removed&mdash;deleted from the `server_config` table&mdash;has tried to reconnect to the cluster. The UUID of the "ghost" server will be in `server_id` (note this will always be the UUID, regardless of the `identifier_format` setting); other `info` fields are the `hostname` of the "ghost" server and the `pid` (process ID) of the RethinkDB process on that server.
-
-When a server has been permanently deleted, it can only rejoin the cluster after the RethinkDB data files on that server are deleted and the process is restarted with an empty data directory, thus making it a "new" server.
-
-This issue will only appear in the table once per server.
+This issue will appear at most once for each table.
