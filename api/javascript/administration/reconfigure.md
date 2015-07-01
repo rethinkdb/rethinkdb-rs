@@ -156,8 +156,6 @@ Specify `emergencyRepair` with one of two string options:
 * `unsafe_rollback`: shards that are beyond repair will be left alone.
 * `unsafe_rollback_or_erase`: a shard that is beyond repair will be destroyed and recreated on an available server that holds another shard for that table.
 
-If no tables are repairable, emergency repair mode will throw an error.
-
 The return value of `reconfigure` in emergency repair mode is the same as before. Examine the `config_changes` field to see the old and new configuration settings for the table. As in the normal mode, if you specify `emergencyRepair` with `dryRun: true`, the table will not actually be reconfigured.
 
 __Note:__ `emergencyRepair` may only be used on individual tables, not on databases. It cannot be used after the `db` command.

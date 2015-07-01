@@ -85,7 +85,9 @@ Reconfiguring a table (changing the number of shards, shard boundaries, etc.) ca
 
 If the primary replica is lost but more than half of the voting replicas are still available, an arbitrary voting replica will be elected as primary. The new primary will appear in `table_status`, but the `primary_replica` field of `table_config` will not change. If the old primary ever becomes available again, the system will switch back. When the primary changes there will be a brief period of unavailability.
 
-If half or more of the voting replicas of a shard are lost, the only way to recover availability is to run [config][co] with the `emergency_repair` option. Consult the documentation for `reconfigure` for more details.
+If half or more of the voting replicas of a shard are lost, the only way to recover availability is to run [reconfigure][rec] with the `emergency_repair` option. Consult the documentation for `reconfigure` for more details.
+
+[rec]: /api/javascript/reconfigure
 
 Reads run in `single` mode may succeed even if the table is not available, but this is not guaranteed. Reads run in `outdated` mode will succeed as long as at least one replica for each of the relevant shards is available.
 

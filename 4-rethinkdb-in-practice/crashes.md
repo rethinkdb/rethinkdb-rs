@@ -68,6 +68,7 @@ The most important things for you to provide for us are:
 Other things that might be helpful to us, if you have them:
 
 * A dump of the [system tables](/docs/system-tables/) (see below)
+* A dump of the `rethinkdb._debug_table_status` table (a "hidden" table in the `rethinkdb` system database)
 * The core file, if it was dumped on crash
 * The data files if RethinkDB cannot restart&sup1;
 * The output of `rethinkdb` on startup
