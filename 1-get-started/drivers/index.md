@@ -113,6 +113,12 @@ alias: docs/guides/drivers/
                     <p class="name">Scala <span class="driver-author">kclay</span></p>
                 </a>
             </li>
+            <li>
+                <a href="https://github.com/brandonhamilton/rethinkdb-delphi">
+                    <img src="/assets/images/docs/driver-languages/delphi.png" />
+                    <p class="name">Delphi <span class="driver-author">brandonhamilton</span></p>
+                </a>
+            </li>
         </ul>
     </section>
 
