@@ -66,6 +66,12 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
+                <a href="https://github.com/brandonhamilton/rethinkdb-delphi">
+                    <img src="/assets/images/docs/driver-languages/delphi.png" />
+                    <p class="name">Delphi</p>
+                </a>
+            </li>
+            <li>
             <a href="https://github.com/hamiltop/rethinkdb-elixir">
                 <img src="/assets/images/docs/driver-languages/elixir.png" />
                 <p class="name">Elixir</p>
@@ -111,12 +117,6 @@ alias: docs/guides/drivers/
                 <a href="https://github.com/kclay/rethink-scala">
                     <img src="/assets/images/docs/driver-languages/scala.png" />
                     <p class="name">Scala <span class="driver-author">kclay</span></p>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/brandonhamilton/rethinkdb-delphi">
-                    <img src="/assets/images/docs/driver-languages/delphi.png" />
-                    <p class="name">Delphi <span class="driver-author">brandonhamilton</span></p>
                 </a>
             </li>
         </ul>
@@ -210,6 +210,7 @@ __Thanks to all our amazing driver contributors!__
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
 - [@billysometimes](https://github.com/billysometimes) (Dart): <https://github.com/billysometimes/rethinkdb>
 - [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): <https://github.com/bitemyapp/revise>
+- [@brandonhamilton](https://github.com/brandonhamilton) (Delphi): <https://github.com/brandonhamilton/rethinkdb-delphi>
 - [@christopherhesse](https://github.com/christopherhesse) (Go): <https://github.com/christopherhesse/rethinkgo>
 - [@dancannon](https://github.com/dancannon) (Go): <https://github.com/dancannon/gorethink>
 - [@danielmewes](https://github.com/danielmewes) (PHP): <https://github.com/danielmewes/php-rql>
