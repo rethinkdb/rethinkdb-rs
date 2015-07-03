@@ -44,13 +44,13 @@ alias: docs/guides/drivers/
             <li>
                 <a href="https://github.com/AtnNn/librethinkdbxx">
                     <img src="/assets/images/docs/driver-languages/cpp.png" />
-                    <p class="name">C++ <span class="driver-author">atnnn</span></p>
+                    <p class="name">C++</p>
                 </a>
             </li>
             <li>
                 <a href="https://github.com/apa512/clj-rethinkdb">
                     <img src="/assets/images/docs/driver-languages/clojure.png" />
-                    <p class="name smaller-font">Clojure <span class="driver-author">apa512</span></p>
+                    <p class="name">Clojure</p>
                 </a>
             </li>
             <li>
@@ -62,7 +62,7 @@ alias: docs/guides/drivers/
             <li>
                 <a href="https://github.com/billysometimes/rethinkdb">
                     <img src="/assets/images/docs/driver-languages/dart.png" />
-                    <p class="name">Dart <span class="driver-author">billys</span></p>
+                    <p class="name">Dart</p>
                 </a>
             </li>
             <li>
@@ -116,7 +116,7 @@ alias: docs/guides/drivers/
             <li>
                 <a href="https://github.com/kclay/rethink-scala">
                     <img src="/assets/images/docs/driver-languages/scala.png" />
-                    <p class="name">Scala <span class="driver-author">kclay</span></p>
+                    <p class="name">Scala</p>
                 </a>
             </li>
         </ul>
@@ -133,28 +133,10 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
-                <a href="https://github.com/jurajmasar/rethink-db-cpp-driver">
-                    <img src="/assets/images/docs/driver-languages/cpp.png" />
-                    <p class="name">C++ <span class="driver-author">jurajmasar</span></p>
+                <a href="https://github.com/taybin/lethink">
+                    <img src="/assets/images/docs/driver-languages/erlang.png" />
+                    <p class="name">Erlang</p>
                 </a>
-            </li>
-            <li>
-                <a href="https://github.com/bitemyapp/revise">
-                    <img src="/assets/images/docs/driver-languages/clojure.png" />
-                    <p class="name smaller-font">Clojure <span class="driver-author">cesarbp</span></p>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/dbettin/rethinkdb">
-                    <img src="/assets/images/docs/driver-languages/dart.png" />
-                    <p class="name">Dart <span class="driver-author">dbettin</span></p>
-                </a>
-            </li>
-            <li>
-            <a href="https://github.com/taybin/lethink">
-                <img src="/assets/images/docs/driver-languages/erlang.png" />
-                <p class="name">Erlang</p>
-            </a>
             </li>
             <li>
                 <a href="https://github.com/npiv/rethink-java-driver">
@@ -169,16 +151,10 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
-            <a href="https://github.com/dparnell/rethink-db-client">
-                <img src="/assets/images/docs/driver-languages/objc.png" />
-                <p class="name">Objective-C</p>
-            </a>
-            </li>
-            <li>
-            <a href="https://github.com/esycat/rql-scala">
-                <img src="/assets/images/docs/driver-languages/scala.png" />
-                <p class="name">Scala <span class="driver-author">esycat</span></p>
-            </a>
+                <a href="https://github.com/dparnell/rethink-db-client">
+                    <img src="/assets/images/docs/driver-languages/objc.png" />
+                    <p class="name">Objective-C</p>
+                </a>
             </li>
         </ul>
     </section>
@@ -209,15 +185,11 @@ __Thanks to all our amazing driver contributors!__
 - [@apa512](https://github.com/apa512) (Clojure): <https://github.com/apa512/clj-rethinkdb>
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
 - [@billysometimes](https://github.com/billysometimes) (Dart): <https://github.com/billysometimes/rethinkdb>
-- [@bitemyapp](https://github.com/bitemyapp) and [@cesarbp](https://github.com/cesarbp) (Clojure): <https://github.com/bitemyapp/revise>
 - [@brandonhamilton](https://github.com/brandonhamilton) (Delphi): <https://github.com/brandonhamilton/rethinkdb-delphi>
-- [@christopherhesse](https://github.com/christopherhesse) (Go): <https://github.com/christopherhesse/rethinkgo>
 - [@dancannon](https://github.com/dancannon) (Go): <https://github.com/dancannon/gorethink>
 - [@danielmewes](https://github.com/danielmewes) (PHP): <https://github.com/danielmewes/php-rql>
-- [@dbettin](https://github.com/dbettin) (Dart): <https://github.com/dbettin/rethinkdb>
 - [@dkhenry](https://github.com/dkhenry) (Java): <https://github.com/dkhenry/rethinkjava>
 - [@dparnell](https://github.com/dparnell) (Objective-C): <https://github.com/dparnell/rethink-db-client>
-- [@esycat](https://github.com/esycat) (Scala): <https://github.com/esycat/rql-scala>
 - [@grandquista](https://github.com/grandquista) (Lua): <https://github.com/grandquista/Lua-ReQL>
 - [@hamiltop](https://github.com/hamiltop) (Elixir): <https://github.com/hamiltop/rethinkdb-elixir>
 - [@jurajmasar](https://github.com/jurajmasar) (C++): <https://github.com/jurajmasar/rethink-db-cpp-driver>
