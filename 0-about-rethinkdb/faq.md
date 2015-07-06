@@ -226,7 +226,7 @@ Most write operations involving a single document in RethinkDB are guaranteed to
 
 ## Can RethinkDB reads ever see stale data? ##
 
-Reads run with the `useOutdated` flag set to `false` (which is the default) will never see stale data, but they may see changes from concurrent writes that have not been safely committed to disk yet. This is equivalent to SQL's `READ UNCOMMITTED` isolation level. Reads run with the `useOutdated` flag set to `true` may see stale data. The upcoming release of RethinkDB (2.1) will allow more fine-grained control of the isolation level.
+Not by default. Reads run with the `read_mode` option set to `single` (the default) will never see stale data, but they may see changes from concurrent writes that have not been safely committed to disk yet. This is equivalent to SQL's `READ UNCOMMITTED` isolation level. Reads run with `read_mode` set to `outdated` may see stale data.
 
 ## How do queries get routed in a RethinkDB cluster? ##
 

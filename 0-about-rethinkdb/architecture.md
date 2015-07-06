@@ -207,17 +207,17 @@ associated with data inconsistency do not arise. In exchange, these
 applications will occasionally experience availability issues.
 
 In RethinkDB, if there is a network partition, the behavior of the
-system from any given client's perspective depends on which side of
-the netsplit that client is on. If the client is on the same side of
-the netsplit as the primary replica for the shard the client is trying to
-reach, it will continue operating without any problems. If the client
-is on the opposite side of the netsplit from the primary for the shard
-the client is trying to reach, the client's up-to-date queries and
-write queries will encounter a failure of availability. For example,
-if the client is running an up-to-date range query that spans multiple
-shards, the primaries for all shards must be on the same side of the
-netsplit as the client, or the client will encounter a failure of
-availability.
+system from any given client's perspective depends on which side of the
+netsplit that client is on. If the client is on the same side of the
+netsplit as the majority of voting replicas for the shard the client is
+trying to reach, it will continue operating without any problems. If the
+client is on the side of the netsplit with half or fewer of the voting
+replicas for the shard the client is trying to reach, the client's
+up-to-date queries and write queries will encounter a failure of
+availability. For example, if the client is running an up-to-date range
+query that spans multiple shards, the primaries for all shards must be
+on the same side of the netsplit as the client, or the client will
+encounter a failure of availability.
 
 If the programmer marks a read query to be ok with out-of-date data,
 RethinkDB will route the query to the closest available replica
@@ -230,18 +230,20 @@ isn't imperative.
 
 ## How is cluster configuration propagated? ##
 
-Updating the state of a the cluster is a surprisingly difficult
-problem in distributed systems. At any given point different (and
-potentially) conflicting configurations can be selected on different
-sides of a netsplit, different configurations can reach different
-nodes in the cluster at unpredictable times, etc.
+Updating the state of a cluster is a surprisingly difficult problem in
+distributed systems. At any given point different (and potentially)
+conflicting configurations can be selected on different sides of a
+netsplit, different configurations can reach different nodes in the
+cluster at unpredictable times, etc.
 
-RethinkDB uses semilattices to store and propagate cluster
-configuration (including goals and blueprints). Various parts of the
-semilattices are versioned via internal vector clocks. This
-architecture turns out to have sufficient mathematical properties to
-address all the issues mentioned above (this result has been known in
-distributed systems research for quite a while).
+RethinkDB uses the [Raft algorithm][ra] to store and propagate cluster
+configuration in most cases, although there are some situations it uses
+semilattices, versioned with internal timestamps. This architecture
+turns out to have sufficient mathematical properties to address all the
+issues mentioned above (this result has been known in distributed
+systems research for quite a while).
+
+[ra]: https://en.wikipedia.org/wiki/Raft_(computer_science)
 
 # Indexing
 
@@ -271,46 +273,21 @@ can see examples of how to use the secondary index API
 
 ## What happens when a server becomes unreachable? ##
 
-The first thing that happens when a node in the cluster becomes
-unreachable is that an issue is raised by the RethinkDB cluster. It is
-immediately and prominently displayed in the WebUI, and is accessible
-via the command line administration tools.
+If your cluster has at least three servers, then in most cases RethinkDB
+will be able to perform automatic failover and maintain table availability.
 
-While the server remains unreachable, table availability is
-determined by the following three cases:
+- If the primary replica for a table fails, as long as more than half of the
+table's voting replicas and more than half of the voting replicas for each
+shard remain available, one of the voting replicas will become the new
+primary replica.
 
-- If the server is acting as a primary replica for any shards, the
-  corresponding tables lose read and write availability (out-of-date
-  reads remain possible as long as there are other replicas of the
-  shards).
-- If the server is acting as a secondary replica for a given table and there
-  aren't enough replicas in the cluster to respect the user's write
-  acknowledgement settings, the table loses write availability (but
-  maintains read availability). 
-- If the server isn't acting as a primary replica for any tables, and there
-  are enough secondary replicas to respect the user's write acknowledgement
-  settings, the system continues operating as normal.
+- If half or more of the voting replicas for a shard are lost (including the
+case of a two-server cluster losing one server), the cluster will need to be
+repaired manually using the *emergency repair* option.
 
-There are two possible solutions to this issue. The first option is to
-simply wait for the server to become reachable again. If the server
-comes back up RethinkDB automatically performs the following actions
-without any user interaction: secondary replicas on the server are brought up
-to date with the latest changes, primaries on the server become active
-again, the cluster clears the reachability issue from web and command
-line tools, availability is restored, and the cluster continues
-operating as normal.
+For more details, read about [Failover][f].
 
-The second option is to permanently remove the server from the cluster. If
-the server is permanently removed, it is absolved of all responsibilities,
-and one of the secondary replicas is automatically elected to act as a new
-primary. After the server is removed, availability is quickly restored and
-the cluster begins operating normally. (If the removed server comes back
-up, it is rejected by the cluster as a ghost).
-
-Currently, RethinkDB does not automatically remove servers after a
-timeout. The user must permanently remove the server manually, either by
-using "Resolve issues" in the web UI or by updating the `server_config`
-[system table](/docs/system-tables).
+[f]: /docs/failover
 
 ## What are availability and performance impacts of sharding and replication? ##
 
