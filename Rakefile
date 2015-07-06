@@ -65,3 +65,17 @@ def jekyll(opts = '')
     sh "bundle exec jekyll #{opts}#{dev} --trace"
 end
 
+# Check if all generated files are present: by default abort if files aren't present, otherwise show a warning
+def check_for_required_files(opts={})
+    missing_files = 0
+    $generated_files.each do |f|
+        if !File.exists?(f)
+            puts "Required file missing: #{f}"
+            missing_files +=1
+        end
+    end
+    if missing_files > 0
+        error = "#{missing_files} required files not found. Run `rake build` before deploying."
+        if opts[:warning] then puts error else fail error end
+    end
+end
