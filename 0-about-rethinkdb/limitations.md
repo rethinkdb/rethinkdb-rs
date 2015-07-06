@@ -47,4 +47,4 @@ Some file systems, typically compressed or encrypted ones, may require the `--no
 
 There are currently issues with `btrfs`. Follow [issue #2781](https://github.com/rethinkdb/rethinkdb/issues/2781) for more information.
 
-It is possible for RethinkDB to return data from concurrent writes that have not been committed to disk yet, even when `useOutdated` is set to `false` (the default). The upcoming release of RethinkDB (2.1) will allow more fine-grained control of the isolation level.
+By default, RethinkDB can return data from concurrent writes that have not been committed to disk yet. The `read_mode` option to `table` allows control of the isolation level (starting in RethinkDB 2.1).

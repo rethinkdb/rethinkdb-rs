@@ -133,7 +133,7 @@ RethinkDB can be manually deployed on cloud platforms such as AWS.
 | :-------- | --------- | ------- |
 | CLI tools | Admin CLI | JavaScript interactive shell |
 | UI tools  | Web-based admin UI | Simple HTTP interface |
-| Failover  | 1-click replication with customizable per-table acknowledgements | Replica-sets with auto primary re-election |
+| Failover  | Auto primary re-election | Replica-sets with auto primary re-election |
 | Backup    | `rethinkdb-dump` | `mongodump` or snapshotting |
 
 ## CLI Tools ##
@@ -168,9 +168,9 @@ available](http://docs.mongodb.org/manual/core/sharded-cluster-high-availability
 For servers storing data, MongoDB allows setting up replica sets with automatic
 primary election.
 
-For failover, RethinkDB supports setting up 1-click replication with custom
-per-table acknowledgements. RethinkDB doesn't yet support primary auto
-re-elections.
+RethinkDB supports automatic primary re-election using the [Raft algorithm][ra].
+
+[ra]: https://en.wikipedia.org/wiki/Raft_(computer_science)
 
 ## Backup ##
 
