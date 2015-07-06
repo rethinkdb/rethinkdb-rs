@@ -14,7 +14,7 @@ io:
 # Command syntax #
 
 {% apibody %}
-db.table(name[, {useOutdated: false, identifierFormat: 'name'}]) &rarr; table
+db.table(name[, {readMode: 'single', identifierFormat: 'name'}]) &rarr; table
 {% endapibody %}
 
 # Description #
@@ -35,11 +35,14 @@ r.db('heroes').table('marvel').run(conn, callback)
 
 There are two optional arguments.
 
-* `useOutdated`: if `true`, this allows potentially out-of-date data to be returned, with potentially faster reads. It also allows you to perform reads from a secondary replica if a primary has failed. Default `false`.
+* `readMode`: One of three possible values affecting the consistency guarantee for the table read:
+    * `single` returns values that are in memory (but not necessarily written to disk) on the primary replica. This is the default.
+    * `majority` will only return values that are safely committed on disk on a majority of replicas. This requires sending a message to every replica on each read, so it is the slowest but most consistent.
+    * `outdated` will return values that are in memory on an arbitrarily-selected replica. This is the fastest but least consistent.
 * `identifierFormat`: possible values are `name` and `uuid`, with a default of `name`. If set to `uuid`, then [system tables](/docs/system-tables/) will refer to servers, databases and tables by UUID rather than name. (This only has an effect when used with system tables.)
 
 __Example:__ Allow potentially out-of-date data in exchange for faster reads.
 
 ```js
-r.db('heroes').table('marvel', {useOutdated: true}).run(conn, callback)
+r.db('heroes').table('marvel', {readMode: 'outdated'}).run(conn, callback)
 ```
