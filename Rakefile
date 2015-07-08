@@ -2,8 +2,13 @@
 #   - _includes: Jekyll includes
 #   - assets/images/docs: Images for the docs repo
 $generated_files = [
+    '_data',
     '_includes',
-    'assets/images/docs'
+    '_layouts',
+    '_plugins',
+    '_sass',
+    'assets/images/docs',
+    'assets/css',
 ]
 
 # ---- Rake tasks
@@ -19,13 +24,19 @@ end
 desc 'Copy assets and includes for the Jekyll build'
 task :copy_assets do
     # Create each destination directory, if it doesn't already exist
-    ['_includes','assets/images/docs'].each{ |dir_name|
+    ['_data/docs','_includes','assets/images/docs'].each{ |dir_name|
         FileUtils.mkdir_p(dir_name) unless Dir.exists?(dir_name)
     }
 
     assets_to_copy = [
-        {:source => '_jekyll/_includes/.', :target => '_includes/'},
-        {:source => '_jekyll/_images/.', :target => 'assets/images/docs/'}
+        {:source => '_jekyll/_includes/.', :target => '_includes/docs/'},
+        {:source => '_jekyll/_images/.', :target => 'assets/images/docs/'},
+        {:source => '_jekyll/_data/.', :target => '_data/docs/'},
+        #{:source => '_jekyll/_standalone/_includes/.', :target => '_includes/'},
+        {:source => '_jekyll/_standalone/_layouts/.', :target => '_layouts/'},
+        {:source => '_jekyll/_standalone/_plugins/.', :target => '_plugins/'},
+        #{:source => '_jekyll/_standalone/_sass/.', :target => '_sass/'},
+        #{:source => '_jekyll/_standalone/css/.', :target => 'assets/css'},
     ]
     assets_to_copy.each{ |asset|
         FileUtils.cp_r(asset[:source], asset[:target], :verbose => true)

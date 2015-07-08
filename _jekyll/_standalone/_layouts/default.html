@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+    <head>
+        <title>
+            {% if page.body_class == 'landing' %}
+                RethinkDB: the open-source database for the realtime web
+            {% else %}
+                {{ page.title }} - RethinkDB
+            {% endif %}
+        </title>
+        <meta charset="utf-8">
+        <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" media="screen" href="/assets/css/styles.css"/>
+        <link rel="stylesheet" media="screen" href="/assets/css/jekyll-github.css"/>
+        <link rel="icon" type="image/png" href="/favicon.png">
+
+        <!-- typekit -->
+        <script type="text/javascript" src="//use.typekit.net/lmb6cah.js"></script>
+        <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+        <!-- jquery -->
+        <script type="text/javascript" src="/assets/js/jquery-2.1.3.min.js"></script>
+        <!-- js-cookie -->
+        <script type="text/javascript" src="/assets/js/js.cookie.js"></script>
+        <!-- waypoints -->
+        <script type="text/javascript" src="/assets/js/waypoints/jquery.waypoints.min.js"></script>
+        <script type="text/javascript" src="/assets/js/waypoints/shortcuts/sticky.min.js"></script>
+
+        <script type="text/javascript" src="/assets/js/site.js"></script>
+        {% if page.body_class == 'api' %}
+            <script type="text/javascript" src="/assets/js/api.js"></script>
+        {% endif %}
+    </head>
+    <body class="{{ page.body_class}}">
+        <div id="wrapper">
+            {{ content }}
+
+            <!-- site footer -->
+            <footer class="site-footer">
+                <div class="site-container">
+                    <section class="get-started">
+                        <h1>Join {{ site.rethinkdb_users }} developers</h1>
+                        <p>Install in seconds on Linux or OS X.</p>
+                        <a class="button small install" href="/install">Install</a>
+                        <a class="button small outlined learn-more" href="/faq">Learn more</a>
+
+                        <hr>
+                        <section class="contact-info">
+                            <address>
+                                156 E Dana St,<br>
+                                Mountain View, CA 94041
+                            </address>
+                            <p class="irc">#rethinkdb on freenode</p>
+                        </section>
+                    </section>
+                    <ul class="footer-links">
+                        <li>
+                            <header>
+                                <span>Getting started</span>
+                            </header>
+                            <ul>
+                                <li><a href="/faq">FAQ</a></li>
+                                <li><a href="/install">Install</a></li>
+                                <li><a href="/docs/quickstart">Quickstart</a></li>
+                                <li><a href="/docs/guide">Tutorial</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <header>
+                                <span>Documentation</span>
+                            </header>
+                            <ul>
+                                <li><a href="/api">API</a></li>
+                                <li><a href="/docs/introduction-to-reql/">Intro to ReQL</a></li>
+                                <li><a href="/docs/cookbook">Cookbook</a></li>
+                                <li><a href="/docs/architecture">Architecture</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <header>
+                                <span>Community</span>
+                            </header>
+                            <ul>
+                                <li><a href="/community">Events</a></li>
+                                <li><a href="/community/shirts-for-stories/">Shirts for Stories</a></li>
+                                <li><a href="https://github.com/rethinkdb/rethinkdb">GitHub</a></li>
+                                <li><a href="https://twitter.com/rethinkdb">Twitter</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <header>
+                                <span>RethinkDB</span>
+                            </header>
+                            <ul>
+                                <li><a href="/about/">Company</a></li>
+                                <li><a href="/services/">Services</a></li>
+                                <li><a href="/blog/">Blog</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>
