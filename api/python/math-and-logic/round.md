@@ -1,11 +1,8 @@
 ---
 layout: api-command
-language: JavaScript
-permalink: api/javascript/round/
+language: Python
+permalink: api/python/round/
 command: round
-io:
-    -   - number
-        - number
 related_commands:
     ceil: ceil/
     floor: floor/
@@ -21,14 +18,14 @@ number.round() &rarr; number
 
 Rounds the given value to the nearest whole integer. For example, values of 1.0 up to but not including 1.5 will return 1.0, similar to [floor][]; values of 1.5 up to 2.0 will return 2.0, similar to [ceil][].
 
-[floor]: /api/javascript/floor/
-[ceil]:  /api/javascript/ceil/
+[floor]: /api/python/floor/
+[ceil]:  /api/python/ceil/
 
 __Example:__ Round 12.345 to the nearest integer.
 
-```js
-r.round(12.345).run(conn, callback);
-// Result passed to callback
+```py
+> r.round(12.345).run(conn)
+
 12.0
 ```
 
@@ -36,14 +33,14 @@ The `round` command can also be chained after an expression.
 
 __Example:__ Round -12.345 to the nearest integer.
 
-```js
-r.expr(-12.345).round().run(conn, callback);
-// Result passed to callback
+```py
+> r.expr(-12.345).round().run(conn)
+
 -12.0
 ```
 
 __Example:__ Return Iron Man's weight, rounded to the nearest integer.
 
-```js
-r.table('superheroes').get('ironman')('weight').round().run(conn, callback);
+```py
+r.table('superheroes').get('ironman')['weight'].round().run(conn)
 ```
