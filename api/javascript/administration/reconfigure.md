@@ -63,8 +63,16 @@ __Example:__ Reconfigure a table.
         "db": "superstuff",
         "primary_key": "id",
         "shards": [
-          {"primary_replica": "jeeves", "replicas": ["jeeves"]},
-          {"primary_replica": "alfred", "replicas": ["alfred"]}
+          {
+            "primary_replica": "jeeves",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          },
+          {
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          }
         ],
         "write_acks": "majority",
         "durability": "hard"
@@ -75,7 +83,9 @@ __Example:__ Reconfigure a table.
         "db": "superstuff",
         "primary_key": "id",
         "shards": [
-          {"primary_replica": "alfred", "replicas": ["alfred"]}
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
         ],
         "write_acks": "majority",
         "durability": "hard"
@@ -106,8 +116,16 @@ __Example:__ Reconfigure a table, specifying replicas by server tags.
         "db": "superstuff",
         "primary_key": "id",
         "shards": [
-          {"primary_replica": "jeeves", "replicas": ["jeeves", "alfred"]},
-          {"primary_replica": "jeeves", "replicas": ["jeeves", "alfred"]}
+          {
+            "primary_replica": "jeeves",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          },
+          {
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          }
         ],
         "write_acks": "majority",
         "durability": "hard"
@@ -118,7 +136,9 @@ __Example:__ Reconfigure a table, specifying replicas by server tags.
         "db": "superstuff",
         "primary_key": "id",
         "shards": [
-          {"primary_replica": "alfred", "replicas": ["alfred"]}
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
         ],
         "write_acks": "majority",
         "durability": "hard"

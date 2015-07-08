@@ -52,9 +52,17 @@ Sharding and replication can be controlled through the `table_config` table, alo
     db: "test",
     primary_key: "id",
     shards: [
-        {primary_replica: "a", "replicas": ["a", "b"]},
-        {primary_replica: "b", "replicas": ["a", "b"]}
-        ],
+        {
+            primary_replica: "a",
+            "replicas": ["a", "b"],
+            "nonvoting_replicas": []
+        },
+        {
+            primary_replica: "b",
+            "replicas": ["a", "b"]
+            "nonvoting_replicas": []
+        }
+    ],
     write_acks: "majority",
     durability: "hard"
 }
@@ -67,8 +75,11 @@ Sharding and replication can be controlled through the `table_config` table, alo
 * `shards`: a list of the table's shards. Each shard is an object with these fields:
 	* `primary_replica`: the name or UUID of the server acting as the shard's primary. If `primary_replica` is `null`, the table will be unavailable. This may happen if the server acting as the shard's primary is deleted.
 	* `replicas`: a list of servers, including the primary, storing replicas of the shard.
+	* `nonvoting_replicas`: a list of servers which do not participate in "voting" as part of [failover][]. If this field is omitted, it is treated as an empty list. This list must be a subset of the `replicas` field and must not contain the primary replica.
 * `write_acks`: the write acknowledgement settings for the table. When set to `majority` (the default), writes will be acknowledged when a majority of replicas have acknowledged their writes; when set to `single` writes will be acknowledged when a single replica acknowledges it.
 * `durability`: `soft` or `hard` (the default). In `hard` durability mode, writes are committed to disk before acknowledgements are sent; in `soft` mode, writes are acknowledged immediately upon receipt. The `soft` mode is faster but slightly less resilient to failure.
+
+[failover]: /docs/failover/
 
 If you `delete` a row from `table_config` the table will be deleted. If you `insert` a row, the `name` and `db` fields are required; the other fields are optional, and will be automatically generated or set to their default if they are not specified. Do not include the `id` field. The system will auto-generate a UUID. 
 
@@ -160,11 +171,11 @@ This table stores information about table availability. There is one document pe
     },
     shards: [
         {
-            primary_replica: "a",
+            primary_replicas: ["a"],
             replicas: [{server: "a", state: "ready"}, {server: "b", state: "ready"}]
         },
         {
-            primary_replica: "b",
+            primary_replicas: ["b"],
             replicas: [{server: "a", state: "ready"}, {server: "b", state: "ready"}]
         }]
 }
@@ -176,15 +187,14 @@ This table stores information about table availability. There is one document pe
 * `db`: the database the table is in, either a name or UUID depending on the value of `identifier_format` (see "caveats" in the overview at the top of this document).
 * `status`: the subfields in this field indicate whether all shards of the table are ready to accept the given type of query: `outdated_reads`, `reads` and `writes`. The `all_replicas_ready` field indicates whether all backfills have finished.
 * `shards`: one entry for each shard in `table_config`. Each shard's object has the following fields:
-	* `primary_replica`: the name of the shard's primary or `null` if one is not set.
+	* `primary_replicas`: a list of zero or more servers acting as primary replicas for the shard. If it contains more than one server, different parts of the shard are being served by different primaries; this is a temporary condition.
 	* `replicas`: a list of all servers acting as a replica for that shard. This may include servers which are no longer configured as replicas but are still storing data until it can be safely deleted. The `state` field may be one of the following:
-		* `missing`: the server is not connected to the cluster.
-		* `backfilling_data`: the server is receiving data from another server.
-		* `offloading_data`: the server is waiting for all other servers to report `ready` so it can erase its data.
-		* `erasing_data`: the server is erasing its data.
-		* `looking_for_primary`: the server is waiting for its primary replica to be available.
 		* `ready`: the server is ready to serve queries.
 		* `transitioning`: the server is between one of the above states. A transitioning state should typically only last a fraction of a second.
+		* `backfilling`: the server is receiving data from another server.
+		* `disconnected`: the server is not connected to the cluster.
+		* `waiting_for_primary`: the server is waiting for its primary replica to be available.
+		* `waiting_for_quorum`: the primary is waiting for a quorum of the table's replicas to be available before it starts accepting writes.
 
 ## server_status ##
 
