@@ -130,7 +130,7 @@ info: {
 }
 ```
 
-A table on the cluster is missing at least one server. The `description` string will depend on the roles the missing server(s) played in the table. If the table is not available for reads and/or writes, `critical` will be `true`; if the table can be both read from and written to, it will be `false`.
+A table on the cluster is missing at least one replica. The `description` string will depend on the roles the missing server(s) played in the table. If the table is not available for reads and/or writes, `critical` will be `true`; if the table can be both read from and written to, it will be `false`.
 
 If a table is unavailable for reads and/or writes but all its servers are still available, no issue will be shown.
 
