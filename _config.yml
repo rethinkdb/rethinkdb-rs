@@ -1,0 +1,13 @@
+port: 4000
+markdown: kramdown
+kramdown:
+    input: GFM
+    syntax_highlighter: rouge
+    hard_wrap: false
+    toc_levels: '1'
+highlighter: rouge
+gems: ['bourbon', 'neat']
+exclude: [Rakefile, node_modules, Gemfile, Gemfile.lock, README.md]
+
+sass:
+    sass_dir: _sass
