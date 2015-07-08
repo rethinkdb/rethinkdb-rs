@@ -652,7 +652,7 @@ r.db('heroes').table('marvel').run(conn, callback)
 ## [table](table/) ##
 
 {% apibody %}
-db.table(name[, {useOutdated: false}]) &rarr; table
+db.table(name[, {readMode: 'single', identifierFormat: 'name'}]) &rarr; table
 {% endapibody %}
 
 Select all documents in a table. This command can be chained with other commands to do

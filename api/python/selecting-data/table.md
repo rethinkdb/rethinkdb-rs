@@ -11,7 +11,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-db.table(name[, use_outdated=False, identifier_format='name']) &rarr; table
+db.table(name[, read_mode='single', identifier_format='name']) &rarr; table
 {% endapibody %}
 
 # Description #
@@ -33,11 +33,14 @@ r.db('heroes').table('marvel').run(conn)
 
 There are two optional arguments.
 
-* `use_outdated`: if `True`, this allows potentially out-of-date data to be returned, with potentially faster reads. It also allows you to perform reads from a secondary replica if a primary has failed. Default `False`.
+* `read_mode`: One of three possible values affecting the consistency guarantee for the table read:
+    * `single` returns values that are in memory (but not necessarily written to disk) on the primary replica. This is the default.
+    * `majority` will only return values that are safely committed on disk on a majority of replicas. This requires sending a message to every replica on each read, so it is the slowest but most consistent.
+    * `outdated` will return values that are in memory on an arbitrarily-selected replica. This is the fastest but least consistent.
 * `identifier_format`: possible values are `name` and `uuid`, with a default of `name`. If set to `uuid`, then [system tables](/docs/system-tables/) will refer to servers, databases and tables by UUID rather than name. (This only has an effect when used with system tables.)
 
 __Example:__ Allow potentially out-of-date data in exchange for faster reads.
 
 ```py
-r.db('heroes').table('marvel', use_outdated=True).run(conn)
+r.db('heroes').table('marvel', read_mode='outdated').run(conn)
 ```
