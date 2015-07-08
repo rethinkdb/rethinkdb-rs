@@ -283,11 +283,12 @@ primary replica.
 
 - If half or more of the voting replicas for a shard are lost (including the
 case of a two-server cluster losing one server), the cluster will need to be
-repaired manually using the *emergency repair* option.
+repaired manually using the [emergency repair][er] option of `reconfigure`.
 
 For more details, read about [Failover][f].
 
-[f]: /docs/failover
+[er]: /api/javascript/reconfigure/#emergency-repair-mode
+[f]:  /docs/failover
 
 ## What are availability and performance impacts of sharding and replication? ##
 
