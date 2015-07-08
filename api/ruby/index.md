@@ -1941,6 +1941,57 @@ r.random().run(conn)
 
 [Read more about this command &rarr;](random/)
 
+## [round](round/) ##
+
+{% apibody %}
+r.round(number) &rarr; number
+number.round() &rarr; number
+{% endapibody %}
+
+Rounds the given value to the nearest whole integer.
+
+__Example:__ Round 12.345 to the nearest integer.
+
+```rb
+> r.round(12.345).run(conn)
+
+12.0
+```
+
+## [ceil](ceil/) ##
+
+{% apibody %}
+r.ceil(number) &rarr; number
+number.ceil() &rarr; number
+{% endapibody %}
+
+Rounds the given value up, returning the smallest integer value greater than or equal to the given value (the value's ceiling).
+
+__Example:__ Return the ceiling of 12.345.
+
+```rb
+> r.ceil(12.345).run(conn)
+
+13.0
+```
+
+## [floor](floor/) ##
+
+{% apibody %}
+r.floor(number) &rarr; number
+number.floor() &rarr; number
+{% endapibody %}
+
+Rounds the given value down, returning the largest integer value less than or equal to the given value (the value's floor).
+
+__Example:__ Return the floor of 12.345.
+
+```rb
+> r.floor(12.345).run(conn)
+
+12.0
+```
+
 {% endapisection %}
 
 
