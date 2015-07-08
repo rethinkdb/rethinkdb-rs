@@ -36,7 +36,7 @@ doc_index: true
     <section class="featured-articles">
         <h1>Featured articles</h1>
         <ul class="article-list">
-            {% for article in site.data['docs-featured'] %}
+            {% for article in site.data.docs['docs-featured'] %}
                 <li>
                     <h1><a href="{{ article.permalink }}">{{ article.title }}</a></h1>
                     <p>{{ article.description }}</p>

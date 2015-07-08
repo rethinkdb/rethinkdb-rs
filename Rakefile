@@ -19,9 +19,8 @@ end
 desc 'Copy assets and includes for the Jekyll build'
 task :copy_assets do
     # Create each destination directory, if it doesn't already exist
-    #,'assets/images/docs'
-    ['_includes'].each{ |dir_name|
-        Dir.mkdir(dir_name) unless Dir.exists?(dir_name)
+    ['_includes','assets/images/docs'].each{ |dir_name|
+        FileUtils.mkdir_p(dir_name) unless Dir.exists?(dir_name)
     }
 
     assets_to_copy = [
