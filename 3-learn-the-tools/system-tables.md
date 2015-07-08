@@ -187,7 +187,7 @@ This table stores information about table availability. There is one document pe
 * `db`: the database the table is in, either a name or UUID depending on the value of `identifier_format` (see "caveats" in the overview at the top of this document).
 * `status`: the subfields in this field indicate whether all shards of the table are ready to accept the given type of query: `outdated_reads`, `reads` and `writes`. The `all_replicas_ready` field indicates whether all backfills have finished.
 * `shards`: one entry for each shard in `table_config`. Each shard's object has the following fields:
-	* `primary_replicas`: a list of zero or more servers acting as primary replicas for the table. If it contains more than one server, different parts of the shard are being served by different primaries; this is a temporary condition.
+	* `primary_replicas`: a list of zero or more servers acting as primary replicas for the shard. If it contains more than one server, different parts of the shard are being served by different primaries; this is a temporary condition.
 	* `replicas`: a list of all servers acting as a replica for that shard. This may include servers which are no longer configured as replicas but are still storing data until it can be safely deleted. The `state` field may be one of the following:
 		* `ready`: the server is ready to serve queries.
 		* `transitioning`: the server is between one of the above states. A transitioning state should typically only last a fraction of a second.
