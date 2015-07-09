@@ -42,24 +42,22 @@ Now, you can use ReQL commands to query system tables and perform reconfiguratio
 ```py
 list(r.db('rethinkdb').table('server_status').run())
 
-[{u'status': u'connected', u'network': {u'canonical_addresses': [{u'host':
-u'127.0.0.1', u'port': 29015}, {u'host': u'::1', u'port': 29015}],
-u'http_admin_port': 8080, u'hostname': u'rethinkdb.local', u'cluster_port':
-29015, u'reql_port': 28015}, u'process': {u'version': u'rethinkdb
-1.15.2-1425-gad513b (CLANG 6.0 (clang-600.0.56))', u'pid': 69596,
-u'cache_size_mb': 100, u'argv': [u'./build/release_clang/rethinkdb'],
-u'time_started': datetime.datetime(2014, 12, 12, 22, 43, 56, 651000,
-tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x10c13d1d0>)}, u'connection':
-{u'time_connected': datetime.datetime(2014, 12, 12, 22, 43, 56, 654000,
-tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x10c13d250>), u'time_disconnected':
-None}, u'id': u'6dbc31fe-8f78-4128-af76-cdac43bcc195', u'name':
-u'rethinkdb_local_qpp'}]
+[{u'network': { u'canonical_addresses': [{u'host': u'127.0.0.1', u'port':
+29015}, {u'host': u'::1', u'port': 29015}], u'http_admin_port': 8080,
+u'hostname': u'companion-cube', u'cluster_port': 29015, u'reql_port': 28015,
+u'time_connected': datetime.datetime(2015, 06, 12, 22, 43, 56, 651000,
+tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x10c13d1d0>)}, u'process': {
+u'version': u'rethinkdb 2.1.0-xxx (CLANG 3.4 (tags/RELEASE_34/final))',
+u'pid': 69596, u'cache_size_mb': 100, u'argv': [u'/usr/bin/rethinkdb'],
+u'time_started': datetime.datetime(2015, 06, 12, 22, 43, 56, 651000,
+tzinfo=<rethinkdb.ast.RqlTzinfo object at 0x10c13d1d0>)}, u'id':
+u'6dbc31fe-8f78-4128-af76-cdac43bcc195', u'name': u'rethinkdb'}]
 ```
 
 To return the status on a specific table, you can use the [status](/api/python/status) command.
 
 ```py
-list(r.table('superheroes').status().run())
+r.table('superheroes').status().run()
 ```
 
 And reconfiguring a table can be done the [reconfigure](/api/python/reconfigure) command.
@@ -96,7 +94,7 @@ for table in tables:
 
 # Retrieve the current configuration of all the tables
 # This uses the table_config system table
-configs = r.db('rethinkdb').table('table_config')
+configs = r.db('rethinkdb').table('table_config').run()
 
 # Restore the configuration of tables saved in 'configs'
 for config in configs:

@@ -9,7 +9,7 @@ When a server fails, it may be because of a network availability issue or someth
 
 If the primary replica for a table fails, as long as more than half of the table's voting replicas and more than half of the voting replicas for each shard remain available, one of those voting replicas will be arbitrarily selected as the new primary. There will be a brief period of unavailability, but no data will be lost.
 
-If half or more of the voting replicas of a shard are lost, an *emergency repair* will need to be performed. For more information on the emergency repair option, read the documentation for [reconfigure][rc].
+If half or more of the voting replicas of a shard are lost and cannot be reconnected, an *emergency repair* will need to be performed. For more information on the emergency repair option, read the documentation for [reconfigure][rc].
 
 [rc]: /api/javascript/reconfigure
 
@@ -23,4 +23,4 @@ In most circumstances, automatic failover can be performed as long as a majority
 
 [gh4357]: https://github.com/rethinkdb/rethinkdb/issues/4357
 
-Since automatic failover requires a majority of servers for a table to be available, it requires a minimum of three servers to be involved. If you have a two-machine cluster, automatic failover will never occur; if the primary replica for a table becomes unavailable, you must fix the problem manually using the emergency repair option of `reconfigure`.
+Since automatic failover requires a majority of servers for a table to be available, it requires a minimum of three servers to be involved. In a two-machine cluster, automatic failover will never occur, and tables will lose availability for writes if either machine loses connectivity. In this case, if the machine cannot be reconnected, you must fix the problem manually using the emergency repair option of `reconfigure`.
