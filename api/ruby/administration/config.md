@@ -15,7 +15,7 @@ database.config() &rarr; selection&lt;object&gt;
 
 Query (read and/or update) the configurations for individual tables or databases.
 
-The `config` command is a shorthand way to access the `table_config` or `db_config` [System tables](/docs/system-tables/). It will return the single row from the system that corresponds to the database or table configuration, as if [get](/api/ruby/get) had been called on the system table with the UUID of the database or table in question.
+The `config` command is a shorthand way to access the `table_config` or `db_config` [System tables](/docs/system-tables/#configuration-tables). It will return the single row from the system that corresponds to the database or table configuration, as if [get](/api/ruby/get) had been called on the system table with the UUID of the database or table in question.
 
 __Example:__ Get the configuration for the `users` table.
 
