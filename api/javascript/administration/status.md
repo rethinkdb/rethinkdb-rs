@@ -17,7 +17,7 @@ table.status() &rarr; selection&lt;object&gt;
 
 Return the status of a table.
 
-The return value is an object providing information about the table's shards, replicas and replica readiness states. For a more complete discussion of the object fields, read about the `table_status` table in [System tables](/docs/system-tables/).
+The return value is an object providing information about the table's shards, replicas and replica readiness states. For a more complete discussion of the object fields, read about the `table_status` table in [System tables](/docs/system-tables/#status-tables).
 
 * `id`: the UUID of the table.
 * `name`: the table's name.

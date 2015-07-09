@@ -62,12 +62,12 @@ r.table('superheroes').reconfigure({:shards => 2, :replicas => 1}).run(conn)
           {
             :primary_replica => "jeeves",
             :replicas => ["jeeves"],
-            :nonvoting_replica_tags => []
+            :nonvoting_replicas => []
           },
           {
             :primary_replica => "alfred",
             :replicas => ["alfred"],
-            :nonvoting_replica_tags => []
+            :nonvoting_replicas => []
           }
         ],
         :write_acks => "majority",
@@ -82,7 +82,7 @@ r.table('superheroes').reconfigure({:shards => 2, :replicas => 1}).run(conn)
           {
             :primary_replica => "alfred",
             :replicas => ["alfred"],
-            :nonvoting_replica_tags => []
+            :nonvoting_replicas => []
           }
         ],
         :write_acks => "majority",
@@ -117,12 +117,12 @@ r.table('superheroes').reconfigure({:shards => 2, :replicas => {:wooster => 1, :
           {
             :primary_replica => "jeeves",
             :replicas => ["jeeves"],
-            :nonvoting_replica_tags => []
+            :nonvoting_replicas => []
           },
           {
             :primary_replica => "alfred",
             :replicas => ["alfred"],
-            :nonvoting_replica_tags => []
+            :nonvoting_replicas => []
           }
         ],
         :write_acks => "majority",
@@ -137,7 +137,7 @@ r.table('superheroes').reconfigure({:shards => 2, :replicas => {:wooster => 1, :
           {
             :primary_replica => "alfred",
             :replicas => ["alfred"],
-            :nonvoting_replica_tags => []
+            :nonvoting_replicas => []
           }
         ],
         :write_acks => "majority",

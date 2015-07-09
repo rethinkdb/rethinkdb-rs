@@ -7,8 +7,8 @@ command: reconfigure
 # Command syntax #
 
 {% apibody %}
-table.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False]) &rarr; object
-database.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False]) &rarr; object
+table.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False, nonvoting_replica_tags=None]) &rarr; object
+database.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False, nonvoting_replica_tags=None]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -21,6 +21,7 @@ Reconfigure a table's sharding and replication.
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{"tag1": 2, "tag2": 4, "tag3": 2, ...}`. For more information about server tags, read [Administration tools](/docs/administration-tools/).
 * `primary_replica_tag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 * `dry_run`: if `True` the generated configuration will not be applied to the table, only returned.
+* `nonvoting_replica_tags`: replicas with these server tags will be added to the `nonvoting_replicas` list of the resulting configuration. (See [failover](/docs/failover) for details about non-voting replicas.)
 * `emergency_repair`: Used for the Emergency Repair mode. See the separate section below.
 
 The return value of `reconfigure` is an object with three fields:
