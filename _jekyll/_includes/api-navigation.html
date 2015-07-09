@@ -4,13 +4,13 @@
 {% endcomment %}
 {% case page.language %}
     {% when 'JavaScript' %}
-        {% assign api = site.data.api_javascript %}
+        {% assign api = site.data.docs.api_javascript %}
         {% assign lang = 'javascript' %}
     {% when 'Python' %}
-        {% assign api = site.data.api_python %}
+        {% assign api = site.data.docs.api_python %}
         {% assign lang = 'python' %}
     {% when 'Ruby' %}
-        {% assign api = site.data.api_ruby %}
+        {% assign api = site.data.docs.api_ruby %}
         {% assign lang = 'ruby' %}
 {% endcase %}
 

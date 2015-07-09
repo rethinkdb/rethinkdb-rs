@@ -6,8 +6,7 @@ kramdown:
     hard_wrap: false
     toc_levels: '1'
 highlighter: rouge
-gems: ['bourbon', 'neat']
 exclude: [Rakefile, node_modules, Gemfile, Gemfile.lock, README.md]
 
-sass:
-    sass_dir: _sass
+# Version of RethinkDB this documenation applies to
+version: 2.0

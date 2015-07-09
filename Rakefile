@@ -6,9 +6,8 @@ $generated_files = [
     '_includes',
     '_layouts',
     '_plugins',
-    '_sass',
+    'assets/',
     'assets/images/docs',
-    'assets/css',
 ]
 
 # ---- Rake tasks
@@ -29,14 +28,12 @@ task :copy_assets do
     }
 
     assets_to_copy = [
-        {:source => '_jekyll/_includes/.', :target => '_includes/docs/'},
+        {:source => '_jekyll/_standalone/assets/.', :target => 'assets/'},
         {:source => '_jekyll/_images/.', :target => 'assets/images/docs/'},
         {:source => '_jekyll/_data/.', :target => '_data/docs/'},
-        #{:source => '_jekyll/_standalone/_includes/.', :target => '_includes/'},
+        {:source => '_jekyll/_includes/.', :target => '_includes/docs/'},
         {:source => '_jekyll/_standalone/_layouts/.', :target => '_layouts/'},
         {:source => '_jekyll/_standalone/_plugins/.', :target => '_plugins/'},
-        #{:source => '_jekyll/_standalone/_sass/.', :target => '_sass/'},
-        #{:source => '_jekyll/_standalone/css/.', :target => 'assets/css'},
     ]
     assets_to_copy.each{ |asset|
         FileUtils.cp_r(asset[:source], asset[:target], :verbose => true)

@@ -1,0 +1,23 @@
+#docs-archive-nav p {
+    display: inline-block;
+    color: white;
+    margin-bottom: 0;
+    padding: 0.4rem 0;
+}
+
+#docs-archive-nav p a {
+    border-bottom: thin dotted white;
+}
+
+#docs-archive-nav ul {
+    display: inline-block;
+    text-align: left;
+    width: auto;
+    margin-right: 4rem;
+}
+
+#docs-archive-nav li {
+    margin-left: 0;
+    margin-right: 2rem;
+}
+

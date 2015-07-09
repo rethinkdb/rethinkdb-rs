@@ -13,6 +13,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" media="screen" href="/assets/css/styles.css"/>
         <link rel="stylesheet" media="screen" href="/assets/css/jekyll-github.css"/>
+        <link rel="stylesheet" media="screen" href="/assets/css/docs-archive.css"/>
         <link rel="icon" type="image/png" href="/favicon.png">
 
         <!-- typekit -->
@@ -33,6 +34,31 @@
     </head>
     <body class="{{ page.body_class}}">
         <div id="wrapper">
+            {% assign active=' class="active"' %}
+            <!-- site nav -->
+            <nav class="mobile-menu push-menu-right">
+                <ul>
+                    <li class="menu-trigger"><a href="/">Close</a></li>
+                    <li><a href="/">Docs</a></li>
+                    <li><a href="/api">API</a></li>
+                </ul>
+                {% case page.include_nav %}
+                    {% when 'docs' %}
+                        {% include docs/docs-navigation.html %}
+                    {% when 'api' %}
+                        {% include docs/api-navigation.html %}
+                {% endcase %}
+            </nav>
+            <nav id="docs-archive-nav" class="site-nav">
+                <div class="site-container">
+                    <ul>
+                        <li class="menu-trigger"><a href="/"><img class="menu-trigger-icon" src="/assets/images/icons/icon-menu-white.png"></a></li>
+                        <li{% if page.active == 'docs' and page.docs_active != 'faq' %}{{ active }}{% endif %}><a href="/docs">Docs</a></li>
+                        <li{% if page.active == 'api' %}{{ active }}{% endif %}><a href="/api">API</a></li>
+                    </ul>
+                    <p>You're viewing documentation for RethinkDB <strong>{{ site.version }}</strong>. For updates, <a href="http://rethinkdb.com{{ page.url }}">see the latest version</a> of this page.
+                </div>
+            </nav>
             {{ content }}
 
             <!-- site footer -->
