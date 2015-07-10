@@ -53,7 +53,7 @@
                 <div class="site-container">
                     <ul>
                         <li class="menu-trigger"><a href="/"><img class="menu-trigger-icon" src="/assets/images/icons/icon-menu-white.png"></a></li>
-                        <li{% if page.active == 'docs' and page.docs_active != 'faq' %}{{ active }}{% endif %}><a href="/docs">Docs</a></li>
+                        <li{% if page.active == 'docs' and page.docs_active != 'faq' %}{{ active }}{% endif %}><a href="/">Docs</a></li>
                         <li{% if page.active == 'api' %}{{ active }}{% endif %}><a href="/api">API</a></li>
                     </ul>
                     <p>You're viewing documentation for RethinkDB <strong>{{ site.version }}</strong>. For updates, <a href="http://rethinkdb.com{{ page.url }}">see the latest version</a> of this page.
