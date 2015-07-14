@@ -102,6 +102,9 @@
     for (i = 0, len = links_on_page.length; i < len; i++) {
       link = links_on_page[i];
       href = $(link).attr('href');
+      if (href.substr(-1) !== '/') {
+        href = href + "/";
+      }
       if (routes[href] != null) {
         results.push($(link).attr('href', href + lang + '/'));
       } else {
