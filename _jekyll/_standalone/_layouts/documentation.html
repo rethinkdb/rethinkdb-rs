@@ -1,0 +1,26 @@
+---
+layout: default
+active: docs
+body_class: docs
+include_nav: docs
+---
+<section class="documentation">
+    <div class="site-container">
+        <section class="docs-sidebar-left">
+            {% include docs/docs-search.html %}
+            {% include docs/docs-navigation.html %}
+        </section>
+        <section class="docs-article">
+            {% if page.title_image %}
+                <img class="title-image" src="{{page.title_image}}" />
+            {% endif %}
+            {{ page.title | page_title }}
+            {% if page.switcher %}
+                <section class="byline">
+                    {% include docs/docs-switcher.html %}
+                </section>
+            {% endif %}
+            {{ content }}
+        </section>
+    </div>
+</section>

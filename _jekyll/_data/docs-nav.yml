@@ -1,0 +1,178 @@
+- section:
+    name: About RethinkDB
+    docs:
+        - name: Frequently asked questions
+          permalink: faq
+          url: /faq/
+        - name: Architecture details
+          permalink: architecture
+          url: /docs/architecture/
+        - name: Stability report
+          permalink: stability
+          url: /stability/
+        - name: Limitations in RethinkDB
+          permalink: limitations
+          url: /limitations/
+- section:
+    name: Get started
+    docs:
+        - name: Thirty-second quickstart
+          permalink: quickstart
+          url: /docs/quickstart/
+        - name: Ten-minute guide
+          permalink: guide
+          url: /docs/guide/
+        - name: Install RethinkDB server
+          permalink: install
+          url: /docs/install/
+        - name: Install client drivers
+          permalink: install-drivers
+          url: /docs/install-drivers/
+        - name: Writing drivers
+          permalink: writing-drivers
+          url: /docs/writing-drivers/
+        - name: Start a RethinkDB server 
+          permalink: start-a-server
+          url: /docs/start-a-server/
+        - name: Importing your data
+          permalink: importing
+          url: /docs/importing/
+- section:
+    name: Query language
+    docs:
+        - name: API reference
+          permalink: api
+          url: /api/
+        - name: Introduction to ReQL
+          permalink: introduction-to-reql
+          url: /docs/introduction-to-reql/
+        - name: ReQL data types
+          permalink: data-types
+          url: /docs/data-types/
+        - name: Map-reduce in RethinkDB
+          permalink: map-reduce
+          url: /docs/map-reduce/
+        - name: Table joins in RethinkDB
+          permalink: table-joins
+          url: /docs/table-joins/
+        - name: Using secondary indexes
+          permalink: secondary-indexes
+          url: /docs/secondary-indexes/
+        - name: Accessing nested fields
+          permalink: nested-fields
+          url: /docs/nested-fields/
+        - name: Dates and times in RethinkDB
+          permalink: dates-and-times
+          url: /docs/dates-and-times
+        - name: Binary objects
+          permalink: storing-binary
+          url: /docs/storing-binary/
+        - name: Geospatial queries
+          permalink: geo-support
+          url: /docs/geo-support/
+        - name: Changefeeds in RethinkDB
+          permalink: changefeeds
+          url: /docs/changefeeds
+        - name: External API access
+          permalink: external-api-access
+          url: /docs/external-api-access/
+        - name: Asynchronous connections
+          permalink: async-connections
+          url: /docs/async-connections/
+        - name: SQL to ReQL cheat sheet
+          permalink: sql-to-reql
+          url: /docs/sql-to-reql
+- section:
+    name: Learn the tools
+    docs:
+        - name: Administration tools
+          permalink: administration-tools
+          url: /docs/administration-tools/
+        - name: Scaling, sharding and replication
+          permalink: sharding-and-replication
+          url: /docs/sharding-and-replication
+        - name: Failover
+          permalink: failover
+          url: /docs/failover/
+        - name: System tables
+          permalink: system-tables
+          url: /docs/system-tables
+        - name: Current issues
+          permalink: system-issues
+          url: /docs/system-issues/
+          nested: true
+        - name: Statistics
+          permalink: system-stats
+          url: /docs/system-stats/
+          nested: true
+        - name: Jobs
+          permalink: system-jobs
+          url: /docs/system-jobs/
+          nested: true
+        - name: Version migration
+          permalink: migration
+          url: /docs/migration/
+- section:
+    name: RethinkDB in practice
+    docs:
+        - name: Cookbook
+          permalink: cookbook
+          url: /docs/cookbook/
+        - name: Troubleshooting
+          permalink: troubleshooting
+          url: /docs/troubleshooting/
+        - name: Example projects
+          permalink: examples
+          url: /docs/examples/
+        - name: Integrations
+          permalink: frameworks-and-libraries
+          url: /docs/frameworks-and-libraries/
+        - name: Full-text search
+          permalink: full-text-search
+          url: /docs/elasticsearch/
+          nested: true
+        - name: Node.js
+          permalink: nodejs
+          url: /docs/nodejs/
+          nested: true
+        - name: Ruby on Rails
+          permalink: rails
+          url: /docs/rails/
+          nested: true
+        - name: RabbitMQ
+          permalink: rabbitmq
+          url: /docs/rabbitmq/
+          nested: true
+        - name: Publish-Subscribe
+          permalink: publish-subscribe
+          url: /docs/publish-subscribe/
+        - name: Data modeling in RethinkDB
+          permalink: data-modeling
+          url: /docs/data-modeling/
+        - name: Data exploration
+          permalink: reql-data-exploration
+          url: /docs/reql-data-exploration/
+        - name: Crash recovery
+          permalink: crashes
+          url: /docs/crashes/
+- section:
+    name: Deploying RethinkDB
+    docs:
+        - name: Start on system startup
+          permalink: start-on-startup
+          url: /docs/start-on-startup/
+        - name: Back up your data
+          permalink: backup
+          url: /docs/backup/
+        - name: Secure your cluster
+          permalink: security
+          url: /docs/security/
+        - name: Deploying with PaaS
+          permalink: paas
+          url: /docs/paas/
+        - name: Command line options
+          permalink: cli-options
+          url: /docs/cli-options
+        - name: Configuration file settings
+          permalink: config-file
+          url: /docs/config-file
