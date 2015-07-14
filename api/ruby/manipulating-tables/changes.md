@@ -10,8 +10,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-stream.changes({:squash => true, :include_states => false}) &rarr; stream
-singleSelection.changes({:squash => true, :include_states => false}) &rarr; stream
+stream.changes({:squash => false, :include_states => false}) &rarr; stream
+singleSelection.changes({:squash => false, :include_states => false}) &rarr; stream
 {% endapibody %}
 
 # Description #
@@ -20,8 +20,8 @@ Return a changefeed, an infinite stream of objects representing changes to a que
 
 The `squash` optional argument controls how `changes` batches change notifications:
 
-* `true`: When multiple changes to the same document occur before a batch of notifications is sent, the changes are "squashed" into one change. The client receives a notification that will bring it fully up to date with the server. This is the default.
-* `false`: All changes will be sent to the client verbatim.
+* `true`: When multiple changes to the same document occur before a batch of notifications is sent, the changes are "squashed" into one change. The client receives a notification that will bring it fully up to date with the server.
+* `false`: All changes will be sent to the client verbatim. This is the default.
 * `n`: A numeric value (floating point). Similar to `true`, but the server will wait `n` seconds to respond in order to squash as many changes together as possible, reducing network traffic.
 
 If the `include_states` optional argument is `true`, the changefeed stream will include special status documents consisting of the field `state` and a string indicating a change in the feed's state. These documents can occur at any point in the feed between the notification documents described below. There are currently two states:

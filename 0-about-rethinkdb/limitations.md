@@ -27,6 +27,8 @@ RethinkDB has a few hard limitations, as well as some soft limitations that are 
 
 * The maximum size of a JSON query is 64M.
 
+* RethinkDB requires data structures in RAM on each server proportional to the size of the data on that server's disk, usually around 1% of the size of the total data set. See [Understanding RethinkDB memory requirements](/docs/memory-usage) for more details.
+
 ## Key lengths ##
 
 * Primary keys are limited to 127 characters.

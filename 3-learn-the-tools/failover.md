@@ -4,10 +4,9 @@ title: Failover
 docs_active: failover
 permalink: docs/failover/
 ---
+
 {% infobox %}
-__Note__: RethinkDB does not support fully automatic failover yet, but it is on
-the roadmap. Follow [Github
-issue #223](https://github.com/rethinkdb/rethinkdb/issues/223) for more information.
+__Note__: RethinkDB does not support fully automatic failover yet, but it is scheduled for release 2.1. Follow [Github issue #223](https://github.com/rethinkdb/rethinkdb/issues/223) for more information.
 {% endinfobox %}
 
 When a server fails, it may be because of a network availability issue or something more serious, such as system failure. If the server will not be able to reconnect to the cluster, you can permanently remove it.
@@ -33,7 +32,9 @@ In general, when a server goes down, there are two possible solutions. The first
 line tools, availability is restored, and the cluster continues
 operating as normal.
 
-The second option is to permanently remove the server. If a server is permanently removed, it is absolved of all responsibilities, and one of the replicas is automatically elected as a new primary replica. After the server is removed, availability is quickly restored and the cluster begins operating normally. (If the server comes back up, it is rejected by the cluster as a "ghost," since it might have data conflicts.)
+The second option is to permanently remove the server. Shards that had their primary replicas on that server must be reconfigured to have a new primary, using the `reconfigure` command or by writing to the `table_config` [system table][st]. (If the server comes back up, it is rejected by the cluster as a "ghost," since it might have data conflicts.)
+
+[st]: /docs/system/tables/
 
 ## Example failover scenario using the web interface ##
 
@@ -56,7 +57,9 @@ Once the server is removed, the problem is resolved&mdash;the tables that had re
 
 ## Permanently removing a server with ReQL ##
 
-Administration through ReQL is performed by querying [system tables](/docs/system-tables/). Server issues can be listed by querying the [current_issues](/docs/system-issues/) system table.
+Administration through ReQL is performed by querying [system tables][st]. Server issues can be listed by querying the [current_issues][ci] system table.
+
+[ci]: /docs/system-issues/
 
 An unreachable server will be listed with a `server_disconnected` issue, with its UUID in the `disconnected_server` field. To permanently remove a server using ReQL administration commands, delete it by UUID from the `server_config` system table.
 

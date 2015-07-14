@@ -471,8 +471,8 @@ r.table('test').index_wait('timestamp').run(conn)
 ## [changes](changes/) ##
 
 {% apibody %}
-stream.changes(squash=True, include_states=False) &rarr; stream
-singleSelection.changes(squash=True, include_states=False) &rarr; stream
+stream.changes(squash=False, include_states=False) &rarr; stream
+singleSelection.changes(squash=False, include_states=False) &rarr; stream
 {% endapibody %}
 
 Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
@@ -787,9 +787,10 @@ r.table('marvel').outer_join(r.table('dc'),
 
 {% apibody %}
 sequence.eq_join(left_field, right_table[, index='id']) &rarr; sequence
+sequence.eq_join(function, right_table[, index='id']) &rarr; sequence
 {% endapibody %}
 
-Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
+Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
 **Example:** Match players with the games they've played against one another.
 
