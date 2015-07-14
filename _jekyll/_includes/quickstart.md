@@ -1,5 +1,8 @@
 {% infobox %}
-<p>__Before you start:__ make sure you've [installed RethinkDB](/install)&mdash;it should only take a minute!</p>
+__Before you start:__ make sure you've [installed RethinkDB][install]&mdash;it
+should only take a minute!
+
+[install]: /install
 {% endinfobox %}
 
 # Start the server #
