@@ -19,6 +19,7 @@ related_commands:
 
 {% apibody %}
 sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
+sequence.eqJoin(function, rightTable[, {index:'id'}]) &rarr; sequence
 {% endapibody %}
 
 # Description #
@@ -26,7 +27,7 @@ sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
 <img alt="Data Modeling Illustration" class="api_command_illustration"
     src="/assets/images/docs/api_illustrations/table-joins.png" />
 
-Join tables using a field on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
+Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
 The result set of `eqJoin` is a stream or array of objects. Each object in the returned set will be an object of the form `{ left: <left-document>, right: <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the <code><a href="/api/javascript/zip/">zip</a></code> command to merge the `left` and `right` fields together.
 

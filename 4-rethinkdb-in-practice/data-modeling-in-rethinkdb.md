@@ -137,7 +137,7 @@ __Advantages of using multiple tables:__
 __Disadvantages of using multiple tables:__
 
 - The queries linking the data between the authors and their posts
-  tend to more complicated.
+  tend to be more complicated.
 - With this approach you cannot atomically update both the author data
   and and the posts data.
 
