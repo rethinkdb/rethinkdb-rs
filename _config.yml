@@ -9,4 +9,4 @@ highlighter: rouge
 exclude: [Rakefile, node_modules, Gemfile, Gemfile.lock, README.md]
 
 # Version of RethinkDB this documenation applies to
-version: 2.0
+version: 2.1
