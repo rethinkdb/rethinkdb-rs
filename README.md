@@ -6,7 +6,13 @@ This repository contains all the documentation available at [rethinkdb.com](http
 
 The documentation for the latest RethinkDB release is always available at [rethinkdb.com/docs](). However, if you like, you can build a local version of the docs for offline viewing or to preview changes.
 
-To build and serve the docs, simply run:
+Start by setting up your build environment:
+
+```
+rake init
+```
+
+Then, to build and serve the docs, simply run:
 
 ```
 rake
