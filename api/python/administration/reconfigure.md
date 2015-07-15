@@ -70,6 +70,7 @@ r.table('superheroes').reconfigure(shards=2, replicas=1).run(conn)
             "nonvoting_replicas": []
           }
         ],
+        "indexes": [],
         "write_acks": "majority",
         "durability": "hard"
       },
@@ -85,6 +86,7 @@ r.table('superheroes').reconfigure(shards=2, replicas=1).run(conn)
             "nonvoting_replicas": []
           }
         ],
+        "indexes": [],
         "write_acks": "majority",
         "durability": "hard"
       }
@@ -125,6 +127,7 @@ r.table('superheroes').reconfigure(shards=2, replicas={'wooster': 1, 'wayne': 1}
             "nonvoting_replicas": []
           }
         ],
+        "indexes": [],
         "write_acks": "majority",
         "durability": "hard"
       },
@@ -140,6 +143,7 @@ r.table('superheroes').reconfigure(shards=2, replicas={'wooster': 1, 'wayne': 1}
             "nonvoting_replicas": []
           }
         ],
+        "indexes": [],
         "write_acks": "majority",
         "durability": "hard"
       }

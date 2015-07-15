@@ -76,6 +76,7 @@ __Example:__ Reconfigure a table.
             "nonvoting_replicas": []
           }
         ],
+        "indexes": [],
         "write_acks": "majority",
         "durability": "hard"
       },
@@ -89,6 +90,7 @@ __Example:__ Reconfigure a table.
             "replicas": ["jeeves", "alfred"],
             "nonvoting_replicas": []
         ],
+        "indexes": [],
         "write_acks": "majority",
         "durability": "hard"
       }
@@ -129,6 +131,7 @@ __Example:__ Reconfigure a table, specifying replicas by server tags.
             "nonvoting_replicas": []
           }
         ],
+        "indexes": [],
         "write_acks": "majority",
         "durability": "hard"
       },
@@ -142,6 +145,7 @@ __Example:__ Reconfigure a table, specifying replicas by server tags.
             "replicas": ["jeeves", "alfred"],
             "nonvoting_replicas": []
         ],
+        "indexes": [],
         "write_acks": "majority",
         "durability": "hard"
       }
