@@ -156,6 +156,12 @@ alias: docs/guides/drivers/
                     <p class="name">Objective-C</p>
                 </a>
             </li>
+            <li>
+                <a href="https://github.com/kureikain/relang">
+                    <img src="/assets/images/docs/driver-languages/erlang.png" />
+                    <p class="name">Erlang</p>
+                </a>
+            </li>
         </ul>
     </section>
 </section>
