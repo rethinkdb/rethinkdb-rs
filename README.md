@@ -6,6 +6,10 @@ This repository contains all the documentation available at [rethinkdb.com](http
 
 The documentation for the latest RethinkDB release is always available at [rethinkdb.com/docs](). However, if you like, you can build a local version of the documentation for offline viewing or to preview changes.
 
+__Prerequisites:__
+  - Ruby
+  - [Bundler](http://bundler.io/)
+
 Start by setting up your build environment:
 
 ```
@@ -20,7 +24,9 @@ rake
 
 ...and visit [http://localhost:4000]() in your browser.
 
-To reset the build environment and purge all generated files, use `rake clean`.
+To reset the build environment and purge all generated files:
+  - `rake clean`.
+
 ## Contributing ##
 
 Check out our [contributing guidelines](https://github.com/rethinkdb/docs/blob/master/CONTRIBUTING.md).
