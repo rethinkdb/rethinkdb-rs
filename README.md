@@ -1,12 +1,37 @@
 # RethinkDB Documentation #
 
-This repository contains all the documentation available at [rethinkdb.com](http://rethinkdb.com/). Documentation is written in [Github Flavored Markdown](https://help.github.com/articles/github-flavored-markdown).
+This repository contains all the documentation available at [rethinkdb.com](http://rethinkdb.com/). Documentation is written in [kramdown](http://kramdown.gettalong.org/), which is a superset of Markdown.
+
+## Building standalone documentation ##
+
+The documentation for the latest RethinkDB release is always available at [rethinkdb.com/docs](). However, if you like, you can build a local version of the documentation for offline viewing or to preview changes.
+
+__Prerequisites:__
+  - Ruby
+  - [Bundler](http://bundler.io/)
+
+Start by setting up your build environment:
+
+```
+rake init
+```
+
+Then, to build and serve the docs, simply run:
+
+```
+rake
+```
+
+...and visit [http://localhost:4000]() in your browser.
+
+To reset the build environment and purge all generated files:
+  - `rake clean`.
 
 ## Contributing ##
 
 Check out our [contributing guidelines](https://github.com/rethinkdb/docs/blob/master/CONTRIBUTING.md).
 
-## Documentation Layout ##
+## Documentation layout ##
 
 ### YAML front-matter ###
 
@@ -24,7 +49,7 @@ permalink: docs/introduction-to-reql/ # URL of the page
 
 ### Markdown parser ###
 
-We use use [Redcarpet](https://github.com/vmg/redcarpet) to parse the Markdown files, so make sure you use the appropriate syntax. See this [handy guide](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) to get started with Markdown. Use Markdown as much as you can. Use HTML markup only if needed.
+We use use [kramdown](http://kramdown.gettalong.org/) to parse the Markdown files, so make sure you use the appropriate syntax. See this [handy guide](http://kramdown.gettalong.org/quickref.html) to get started with Markdown and kramdown syntax. Use Markdown as much as you can. Use HTML markup only if needed.
 
 ### Consistency for multi-version docs ###
 
@@ -85,7 +110,7 @@ __apibody__: defines the method signature of a ReQL command
 {% endapibody %}
 ```
 
-__infobox__: produces an info box -- the _info_ version of the infobox produces a blue box
+__infobox__: produces an info box
 
 ```
 {% infobox %}
