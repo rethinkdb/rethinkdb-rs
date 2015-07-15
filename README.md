@@ -25,7 +25,10 @@ rake
 ...and visit [http://localhost:4000]() in your browser.
 
 To reset the build environment and purge all generated files:
-  - `rake clean`.
+
+```
+rake clean
+```
 
 ## Contributing ##
 
