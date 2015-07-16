@@ -102,6 +102,9 @@
     for (i = 0, len = links_on_page.length; i < len; i++) {
       link = links_on_page[i];
       href = $(link).attr('href');
+      if (href.substr(-1) === '#') {
+        href = href.substr(0, href.length - 1);
+      }
       if (href.substr(-1) !== '/') {
         href = href + "/";
       }
