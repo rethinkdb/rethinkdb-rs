@@ -78,6 +78,12 @@ alias: docs/guides/drivers/
             </a>
             </li>
             <li>
+                <a href="https://github.com/kureikain/relang">
+                    <img src="/assets/images/docs/driver-languages/erlang.png" />
+                    <p class="name">Erlang</p>
+                </a>
+            </li>
+            <li>
                 <a href="https://github.com/dancannon/gorethink">
                     <img src="/assets/images/docs/driver-languages/go.png" />
                     <p class="name">Go</p>
@@ -130,12 +136,6 @@ alias: docs/guides/drivers/
                 <a href="https://github.com/unbit/librethinkdb">
                     <img src="/assets/images/docs/driver-languages/c.png" />
                     <p class="name">C</p>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/taybin/lethink">
-                    <img src="/assets/images/docs/driver-languages/erlang.png" />
-                    <p class="name">Erlang</p>
                 </a>
             </li>
             <li>
@@ -194,10 +194,10 @@ __Thanks to all our amazing driver contributors!__
 - [@hamiltop](https://github.com/hamiltop) (Elixir): <https://github.com/hamiltop/rethinkdb-elixir>
 - [@jurajmasar](https://github.com/jurajmasar) (C++): <https://github.com/jurajmasar/rethink-db-cpp-driver>
 - [@kclay](https://github.com/kclay) (Scala): <https://github.com/kclay/rethink-scala>
+- [@kureikain](https://github.com/kureikain) (Erlang): <https://github.com/kureikain/relang>
 - [@neumino](https://github.com/neumino) (Node.js): <https://github.com/neumino/rethinkdbdash>
 - [@njlg](https://github.com/njlg) (Perl): <https://github.com/njlg/perl-rethinkdb>
 - [@npiv](https://github.com/npiv/) (Java): <https://github.com/npiv/rethink-java-driver>
 - [@orthecreedence](https://github.com/orthecreedence) (Common Lisp): <https://github.com/orthecreedence/cl-rethinkdb>
-- [@taybin](https://github.com/taybin) (Erlang): <https://github.com/taybin/lethink>
 - [@unbit](https://github.com/unbit) (C): <https://github.com/unbit/librethinkdb>
 - The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C# / .NET): <https://github.com/mfenniak/rethinkdb-net>

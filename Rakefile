@@ -140,32 +140,40 @@ def rewrite_html(root='', baseurl='')
         num_docs += 1
         doc = Nokogiri::HTML(open(path))
 
-
         # Rewrite links
         doc.css('a').each do |a|
-            # Exclude anchor links
-            a['href'] = rewrite.call(a['href'])
+            if a.key?('href')
+                # Exclude anchor links
+                a['href'] = rewrite.call(a['href'])
+            end
         end
 
         # Rewrite image paths
         doc.css('img').each do |img|
-            img['src'] = rewrite.call(img['src'])
+            if img.key?('src')
+                img['src'] = rewrite.call(img['src'])
+            end
         end
 
         # Rewrite JavaScript file paths
         doc.css('script').each do |script|
-            script['src'] = rewrite.call(script['src'], starts_with='/assets')
+            if script.key?('src')
+                script['src'] = rewrite.call(script['src'], starts_with='/assets')
+            end
         end
 
         # Rewrite CSS stylesheet paths
         doc.css('link').each do |link|
-            link['href'] = rewrite.call(link['href'], starts_with='/assets')
+            if link.key?('href')
+                link['href'] = rewrite.call(link['href'], starts_with='/assets')
+            end
         end
 
         doc.write_to(open(path, 'w'))
     end
     puts "Processed #{num_docs} documents and rewrote #{num_links} links."
 end
+
 # Rewrite resources in a CSS file to start with a given baseurl
 #   - css_file: the file to rewrite
 #   - baseurl: the baseurl to prepend all links with
