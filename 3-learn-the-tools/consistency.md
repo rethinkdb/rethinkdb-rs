@@ -79,7 +79,7 @@ This behavior may change in the future. See [Github issue #3992][gh3992] to trac
 
 # Availability guarantees
 
-Except for brief periods table will remain fully available as long as more than half of the voting replicas for each shard and for the table overall are available. If half or more of the voting replicas for a shard are lost, then read or write operations on that shard will fail.
+Except for brief periods, a table will remain fully available as long as more than half of the voting replicas for each shard and for the table overall are available. If half or more of the voting replicas for a shard are lost, then read or write operations on that shard will fail.
 
 Reconfiguring a table (changing the number of shards, rebalancing, etc.) causes brief losses of availability at various points during the reconfiguration.
 
