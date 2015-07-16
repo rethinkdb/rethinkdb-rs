@@ -8,11 +8,7 @@
 <html>
     <head>
         <title>
-            {% if page.body_class == 'landing' %}
-                RethinkDB: the open-source database for the realtime web
-            {% else %}
-                {{ page.title }} - RethinkDB
-            {% endif %}
+            {{ page.title }} - RethinkDB {{ site.version }}
         </title>
         <meta charset="utf-8">
         <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
@@ -62,7 +58,13 @@
                         <li{% if page.active == 'docs' and page.docs_active != 'faq' %}{{ active }}{% endif %}><a href="/">Docs</a></li>
                         <li{% if page.active == 'api' %}{{ active }}{% endif %}><a href="/api">API</a></li>
                     </ul>
-                    <p>This documentation is for <strong>RethinkDB {{ site.version }}</strong>. For updates, <a href="http://rethinkdb.com{{ page_url }}">see the latest version</a> of this page.
+                    <p>
+                        {% if site.beta %}
+                            This documentation is for the <strong>RethinkDB {{ site.version }} beta</strong>. <a href="http://rethinkdb.com{{ page_url }}">See the latest version</a> of this page for a stable release.
+                        {% else %}
+                            This documentation is for <strong>RethinkDB {{ site.version }}</strong>. For updates, <a href="http://rethinkdb.com{{ page_url }}">see the latest version</a> of this page.
+                        {% endif %}
+                    </p>
                 </div>
             </nav>
             {{ content }}

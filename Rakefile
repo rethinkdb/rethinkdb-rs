@@ -173,6 +173,7 @@ def rewrite_html(root='', baseurl='')
     end
     puts "Processed #{num_docs} documents and rewrote #{num_links} links."
 end
+
 # Rewrite resources in a CSS file to start with a given baseurl
 #   - css_file: the file to rewrite
 #   - baseurl: the baseurl to prepend all links with
