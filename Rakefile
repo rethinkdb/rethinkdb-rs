@@ -127,6 +127,8 @@ def rewrite_html(root='', baseurl='')
     #   - starts_with: only rewrite the link if it starts with the given string
     #     (defaults to '/')
     rewrite = Proc.new do |link, starts_with='/'|
+        # Strip newlines and whitespace
+        link = link.strip
         if link and link.start_with?(starts_with)
             num_links += 1
             "#{baseurl}#{link}"
