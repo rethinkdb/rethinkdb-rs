@@ -63,6 +63,7 @@ Sharding and replication can be controlled through the `table_config` table, alo
             "nonvoting_replicas": []
         }
     ],
+    indexes: ["index1", "index2"],
     write_acks: "majority",
     durability: "hard"
 }
@@ -76,6 +77,7 @@ Sharding and replication can be controlled through the `table_config` table, alo
 	* `primary_replica`: the name or UUID of the server acting as the shard's primary. If `primary_replica` is `null`, the table will be unavailable. This may happen if the server acting as the shard's primary is deleted.
 	* `replicas`: a list of servers, including the primary, storing replicas of the shard.
 	* `nonvoting_replicas`: a list of servers which do not participate in "voting" as part of [failover][]. If this field is omitted, it is treated as an empty list. This list must be a subset of the `replicas` field and must not contain the primary replica.
+* `indexes`: a list of secondary indexes in the table. Read-only.
 * `write_acks`: the write acknowledgement settings for the table. When set to `majority` (the default), writes will be acknowledged when a majority of replicas have acknowledged their writes; when set to `single` writes will be acknowledged when a single replica acknowledges it.
 * `durability`: `soft` or `hard` (the default). In `hard` durability mode, writes are committed to disk before acknowledgements are sent; in `soft` mode, writes are acknowledged immediately upon receipt. The `soft` mode is faster but slightly less resilient to failure.
 

@@ -39,6 +39,7 @@ r.table('users').config().run(conn)
             "nonvoting_replicas": []
         }
     ],
+    "indexes": [],
     "write_acks": "majority",
     "durability": "hard"
 }

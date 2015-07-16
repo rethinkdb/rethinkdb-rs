@@ -44,6 +44,7 @@ __Example:__ Get the configuration for the `users` table.
             "nonvoting_replicas": []
         }
     ],
+    "indexes": [],
     "write_acks": "majority",
     "durability": "hard"
 }
