@@ -14,6 +14,7 @@ io:
 {% apibody %}
 table.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false, nonvotingReplicaTags: null}]) &rarr; object
 database.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false, nonvotingReplicaTags: null}]) &rarr; object
+table.reconfigure(emergencyRepair: <option>, dryRun: false) &rarr; object
 {% endapibody %}
 
 # Description #
