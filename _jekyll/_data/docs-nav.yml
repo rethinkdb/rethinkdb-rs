@@ -7,6 +7,9 @@
         - name: Architecture details
           permalink: architecture
           url: /docs/architecture/
+        - name: Consistency guarantees
+          permalink: consistency
+          url: /docs/consistency/
         - name: Stability report
           permalink: stability
           url: /stability/
