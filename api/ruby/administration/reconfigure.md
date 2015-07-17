@@ -9,6 +9,7 @@ command: reconfigure
 {% apibody %}
 table.reconfigure({:shards => <s>, :replicas => <r>[, :primary_replica_tag => <t>, :dry_run => false, :nonvoting_replica_tags => nil]}) &rarr; object
 database.reconfigure({:shards => <s>, :replicas => <r>[, :primary_replica_tag => <t>, :dry_run => false, :nonvoting_replica_tags => nil]}) &rarr; object
+table.reconfigure(:emergency_repair => <option>, :dry_run => false) &rarr; object
 {% endapibody %}
 
 # Description #

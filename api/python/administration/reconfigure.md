@@ -9,6 +9,7 @@ command: reconfigure
 {% apibody %}
 table.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False, nonvoting_replica_tags=None]) &rarr; object
 database.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False, nonvoting_replica_tags=None]) &rarr; object
+table.reconfigure(emergency_repair=<option>, dry_run=False) &rarr; object
 {% endapibody %}
 
 # Description #
