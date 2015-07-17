@@ -1477,7 +1477,7 @@ __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed lis
 r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_reactor']).run(conn, callback)
 ```
 
-## [()](bracket/) ##
+## [() (bracket)](bracket/) ##
 
 {% apibody %}
 sequence(attr) &rarr; sequence

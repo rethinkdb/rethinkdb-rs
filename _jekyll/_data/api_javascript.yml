@@ -176,7 +176,9 @@
           permalink: set_intersection
         - name: setDifference
           permalink: set_difference
-        - name: ()
+        - name: () (bracket)
+          permalink: bracket
+        - name: getField
           permalink: get_field
         - name: hasFields
           permalink: has_fields
