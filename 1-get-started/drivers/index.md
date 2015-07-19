@@ -199,5 +199,6 @@ __Thanks to all our amazing driver contributors!__
 - [@njlg](https://github.com/njlg) (Perl): <https://github.com/njlg/perl-rethinkdb>
 - [@npiv](https://github.com/npiv/) (Java): <https://github.com/npiv/rethink-java-driver>
 - [@orthecreedence](https://github.com/orthecreedence) (Common Lisp): <https://github.com/orthecreedence/cl-rethinkdb>
+- [@rgv151](https://github.com/rgv151/rethinkdb.nim) (Nim): <https://github.com/rgv151/rethinkdb.nim>
 - [@unbit](https://github.com/unbit) (C): <https://github.com/unbit/librethinkdb>
 - The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C# / .NET): <https://github.com/mfenniak/rethinkdb-net>
