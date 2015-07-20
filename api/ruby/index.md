@@ -812,7 +812,7 @@ These commands are used to transform data in a sequence.
 
 {% apibody %}
 sequence1.map([sequence2, ...], mapping_function) &rarr; stream
-array1.map([sequence2, ...], mapping_function) &rarr; array
+array1.map([array2, ...], mapping_function) &rarr; array
 r.map(sequence1[, sequence2, ...], mapping_function) &rarr; stream
 r.map(array1[, array2, ...], mapping_function) &rarr; array
 {% endapibody %}
@@ -1426,7 +1426,7 @@ __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed lis
 r.table('marvel').get('IronMan')[:equipment].set_difference(['newBoots', 'arc_reactor']).run(conn)
 ```
 
-## [\[\]](bracket/) ##
+## [\[\] (bracket)](bracket/) ##
 
 {% apibody %}
 sequence[attr] &rarr; sequence

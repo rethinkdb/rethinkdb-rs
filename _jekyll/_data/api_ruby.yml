@@ -174,7 +174,9 @@
           permalink: set_intersection
         - name: set_difference
           permalink: set_difference
-        - name: []
+        - name: "[] (bracket)"
+          permalink: bracket
+        - name: get_field
           permalink: get_field
         - name: has_fields
           permalink: has_fields
