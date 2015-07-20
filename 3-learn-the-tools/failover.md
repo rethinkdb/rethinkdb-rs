@@ -7,6 +7,12 @@ permalink: docs/failover/
 
 When a server fails, it may be because of a network availability issue or something more serious, such as system failure. In a multi-server configuration, where tables have multiple replicas distributed among multiple physical machines, RethinkDB will be able to maintain availability automatically in many cases.
 
+To perform automatic failover for a table, the following requirements must be met:
+
+* The cluster must have three or more servers
+* The table must be configured to have three or more replicas
+* A majority (greater than half) of replicas for the table must be available
+
 If the primary replica for a table fails, as long as more than half of the table's voting replicas and more than half of the voting replicas for each shard remain available, one of those voting replicas will be arbitrarily selected as the new primary. There will be a brief period of unavailability, but no data will be lost. If the primary replica specified in a table's configuration comes back online after a failure, it will return to being the primary.
 
 If half or more of the voting replicas of a shard are lost and cannot be reconnected, an *emergency repair* will need to be performed. For more information on the emergency repair option, read the documentation for [reconfigure][rc].
