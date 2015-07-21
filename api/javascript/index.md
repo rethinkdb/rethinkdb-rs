@@ -2718,7 +2718,7 @@ r.table('geo').insert({
 
 r.table('geo').get(201).update({
     rectangle: r.row('rectangle').fill()
-}).run(conn, callback);
+}, {nonAtomic: true}).run(conn, callback);
 ```
 
 [Read more about this command &rarr;](fill/)

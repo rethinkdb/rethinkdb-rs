@@ -17,7 +17,7 @@ table.get_intersecting(geometry, {:index => 'indexname'}) &rarr; selection<strea
 
 Get all documents where the given geometry object intersects the geometry object of the requested geospatial index.
 
-The `index` argument is mandatory. This command returns the same results as `table.filter(r.row('index').intersects(geometry))`. The total number of results is limited to the array size limit which defaults to 100,000, but can be changed with the `array_limit` option to [run](/api/ruby/run).
+The `index` argument is mandatory. This command returns the same results as `table.filter{ |row| row['index'].intersects(geometry) }`. The total number of results is limited to the array size limit which defaults to 100,000, but can be changed with the `array_limit` option to [run](/api/ruby/run).
 
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 
