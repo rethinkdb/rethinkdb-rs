@@ -33,6 +33,7 @@ parents = {
     'cursor': 'rethinkdb.net.Cursor.',
     'db': 'rethinkdb.ast.DB.',
     'table': 'rethinkdb.ast.Table.',
+    'set_loop_type': 'rethinkdb.'
 }
 
 # The real python names for names used in the docs
@@ -60,7 +61,8 @@ tags = {
     'rethinkdb': [('', 'rethinkdb')],
     'to_json_string, to_json': [(query, 'to_json_string'), (query, 'to_json')],
     'for': [],
-    'list': []
+    'list': [],
+    'set_loop_type': [('rethinkdb.', 'set_loop_type')]
 }
 
 # Write the header of the docs.py file
