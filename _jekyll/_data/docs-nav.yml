@@ -82,6 +82,9 @@
         - name: Asynchronous connections
           permalink: async-connections
           url: /docs/async-connections/
+        - name: ReQL error types
+          permalink: error-types
+          url: /docs/error-types/
         - name: SQL to ReQL cheat sheet
           permalink: sql-to-reql
           url: /docs/sql-to-reql
