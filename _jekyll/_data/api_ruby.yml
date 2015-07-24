@@ -15,6 +15,8 @@
           permalink: use
         - name: run
           permalink: run
+        - name: changes
+          permalink: changes
         - name: noreply_wait
           permalink: noreply_wait
         - name: em_run
@@ -60,8 +62,6 @@
           permalink: index_status
         - name: index_wait
           permalink: index_wait
-        - name: changes
-          permalink: changes
 - section:
     name: Writing data
     commands:
