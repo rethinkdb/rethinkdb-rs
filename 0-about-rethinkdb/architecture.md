@@ -396,10 +396,12 @@ way. Currently, values obtained by executing JavaScript code, random
 values, and values obtained as a result of a subquery
 (e.g. incrementing the value of an attribute by the value of an
 attribute in a different document) cannot be performed atomically. If
-the user runs a query that cannot be executed atomically, by default
+an update or replace query cannot be executed atomically, by default
 RethinkDB will throw an error. The user can choose to set the flag on
 the update operation in the client driver to execute the query in a
-non-atomic way.
+non-atomic way. Note that non-atomic operations can only be detected when
+they involve functions (including `row()`) being passed to `update` or
+`replace`; a non-atomic `insert` operation will not throw an error.
 
 In addition, like most NoSQL systems, RethinkDB does not support
 updating multiple documents atomically.
