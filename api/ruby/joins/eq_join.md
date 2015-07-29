@@ -89,7 +89,7 @@ r.table('players').eq_join('game_id', r.table('games')).without({:right => "id"}
 ]
 ```
 
-For more information, see [Table joins in Rethink_dB](/docs/table-joins/).
+For more information, see [Table joins in RethinkDB](/docs/table-joins/).
 
 **Example:** Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
 
