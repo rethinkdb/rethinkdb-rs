@@ -30,7 +30,7 @@ RethinkDB supports different types of secondary indexes:
 
 The `index_function` can be an anonymous function or a binary representation obtained from the `function` field of [index_status](/api/python/index_status).
 
-If successful, `create_index` will return an object of the form `{"created": 1}`. If an index by that name already exists on the table, a `RqlRuntimeError` will be thrown.
+If successful, `create_index` will return an object of the form `{"created": 1}`. If an index by that name already exists on the table, a `ReqlRuntimeError` will be thrown.
 
 __Example:__ Create a simple index based on the field `post_id`.
 

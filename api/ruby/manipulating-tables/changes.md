@@ -84,7 +84,7 @@ client would receive and print the following objects:
 {:old_val => {:id => 1, :player1 => 'Bob', :player2 => 'Alice'}, :new_val => nil}
 
 > r.table_drop('games').run(conn)
-RqlRuntimeError: Changefeed aborted (table unavailable)
+ReqlRuntimeError: Changefeed aborted (table unavailable)
 ```
 
 __Example:__ Return all the changes that increase a player's score.

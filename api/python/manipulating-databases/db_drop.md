@@ -26,7 +26,7 @@ If successful, the command returns an object with two fields:
     * `old_val`: the database's original [config](/api/python/config) value.
     * `new_val`: always `None`.
 
-If the given database does not exist, the command throws `RqlRuntimeError`.
+If the given database does not exist, the command throws `ReqlRuntimeError`.
 
 __Example:__ Drop a database named 'superheroes'.
 

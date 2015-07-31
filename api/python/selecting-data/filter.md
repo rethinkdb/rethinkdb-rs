@@ -24,7 +24,7 @@ Return all the elements in a sequence for which the given predicate is true. The
 By default, `filter` will silently skip documents with missing fields: if the predicate tries to access a field that doesn't exist (for instance, the predicate `{'age': 30}` applied to a document with no `age` field), that document will not be returned in the result set, and no error will be generated. This behavior can be changed with the `default` optional argument.
 
 * If `default` is set to `True`, documents with missing fields will be returned rather than skipped.
-* If `default` is set to `r.error()`, an `RqlRuntimeError` will be thrown when a document with a missing field is tested.
+* If `default` is set to `r.error()`, an `ReqlRuntimeError` will be thrown when a document with a missing field is tested.
 * If `default` is set to `False` (the default), documents with missing fields will be skipped.
 
 {% infobox %}

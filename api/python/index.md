@@ -33,14 +33,6 @@ r.connect(host) &rarr; connection
 
 Create a new connection to the database server.
 
-- `host`: host of the RethinkDB instance. The default value is `localhost`.
-- `port`: the driver port, by default `28015`.
-- `db`: the database used if not explicitly specified in a query, by default `test`.
-- `auth_key`: the authentication key, by default the empty string.
-- `timeout`: timeout period in seconds for the connection to be opened (default `20`).
-
-If the connection cannot be established, a `RqlDriverError` exception will be thrown.
-
 __Example:__ Open a new connection to the database.
 
 ```py
@@ -269,7 +261,7 @@ Create a database. A RethinkDB database is a collection of tables, similar to
 relational databases.
 
 If successful, the operation returns an object: `{"created": 1}`. If a database with the
-same name already exists the operation throws `RqlRuntimeError`.
+same name already exists the operation throws `ReqlRuntimeError`.
 
 Note: that you can only use alphanumeric characters and underscores for the database name.
 
@@ -289,7 +281,7 @@ r.db_drop(db_name) &rarr; object
 Drop a database. The database, all its tables, and corresponding data will be deleted.
 
 If successful, the operation returns the object `{"dropped": 1}`. If the specified database
-doesn't exist a `RqlRuntimeError` is thrown.
+doesn't exist a `ReqlRuntimeError` is thrown.
 
 __Example:__ Drop a database named 'superheroes'.
 
@@ -728,7 +720,7 @@ if a non-existence errors is thrown (when you try to access a field that does no
 in a document), RethinkDB will just ignore the document.
 The `default` value can be changed by passing the named argument `default`.
 Setting this optional argument to `r.error()` will cause any non-existence errors to
-return a `RqlRuntimeError`.
+return a `ReqlRuntimeError`.
 
 
 __Example:__ Get all the users that are 30 years old.

@@ -31,7 +31,7 @@ options:
 - `ssl`: a hash of options to support SSL connections (default `nil`). Currently, there is only one option available, and if the `ssl` option is specified, this key is required:
     - `ca_certs`: a path to the SSL CA certificate.
 
-If the connection cannot be established, a `RqlDriverError` exception will be thrown.
+If the connection cannot be established, a `ReqlDriverError` exception will be thrown.
 
 {% infobox %}
 Using SSL with RethinkDB requires proxy software on the server, such as [Nginx][], [HAProxy][] or an SSL tunnel. RethinkDB will encrypt traffic and verify the CA certification to prevent [man-in-the-middle][mitm] attacks. Consult your proxy's documentation for more details.
