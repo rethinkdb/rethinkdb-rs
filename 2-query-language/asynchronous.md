@@ -360,15 +360,17 @@ r.set_loop_type("tornado")
 connection = r.connect(host='localhost', port=28015)
 ```
 
-After this, `r.connect` will return a Tornado `Future`, as will `r.run`.
+After executing `set_loop_type`, `r.connect` will return a Tornado `Future`, as will `r.run`.
 
 __Example:__ Simple use
 
 ```python
 @gen.coroutine
-def single_row(connection):
+def single_row(connection_future):
+    # Wait for the connection to be ready
+    connection = yield connection_future
     # Insert some data
-    yield r.table('test').insert([{"id": 0}, {"id": 1}, {"id": 2}]).run(yield connection)
+    yield r.table('test').insert([{"id": 0}, {"id": 1}, {"id": 2}]).run(connection)
     # Print the first row in the table
     row = yield r.table('test').get(0).run(connection)
     print(row)
@@ -381,11 +383,13 @@ __Example:__ Using a cursor
 
 ```python
 @gen.coroutine
-def use_cursor(connection):
-    # Insert some data.
-    yield r.table('test').insert([{"id": 0}, {"id": 1}, {"id": 2}]).run(yield connection)
+def use_cursor(connection_future):
+    # Wait for the connection to be ready
+    connection = yield connection_future
+    # Insert some data
+    yield r.table('test').insert([{"id": 0}, {"id": 1}, {"id": 2}]).run(connection)
     # Print every row in the table.
-    cursor = yield r.table('test').order_by(index="id").run(yield connection)
+    cursor = yield r.table('test').order_by(index="id").run(connection)
     while (yield cursor.fetch_next()):
         item = yield cursor.next()
         print(item)
@@ -532,8 +536,9 @@ The asynchronous database API allows you to handle multiple changefeeds simultan
 
 ```python
 @gen.coroutine
-def print_cfeed_data(connection, table):
-    feed = yield r.table(table).changes().run(yield connection)
+def print_cfeed_data(connection_future, table):
+    connection = yield connection_future
+    feed = yield r.table(table).changes().run(connection)
     while (yield feed.fetch_next()):
         item = yield field.next()
         print(item)
@@ -557,7 +562,7 @@ class ChangefeedNoticer(object):
         self._cancel_future = Future()
     @gen.coroutine
     def print_cfeed_data(self, table):
-        feed = yield r.table(table).changes().run(yield self._connection)
+        feed = yield r.table(table).changes().run(self._connection)
         self._feeds_ready[table].set_result(True)
         while (yield feed.fetch_next()):
             cursor = feed.next()
@@ -569,7 +574,7 @@ class ChangefeedNoticer(object):
     @gen.coroutine
     def table_write(self, table):
         for i in range(10):
-            yield r.table(table).insert({'id': i}).run(yield self._connection)
+            yield r.table(table).insert({'id': i}).run(self._connection)
     @gen.coroutine
     def exercise_changefeeds(self):
         self._feeds_ready = {'a': Future(), 'b': Future()}
@@ -581,14 +586,15 @@ class ChangefeedNoticer(object):
         self._cancel_future.set_result(self._sentinel)
     @classmethod
     @gen.coroutine
-    def run(cls, connection):
-        if 'a' in (yield r.table_list().run(yield connection)):
-            yield r.table_drop('a').run(yield connection)
-        yield r.table_create('a').run(yield connection)
-        if 'b' in (yield r.table_list().run(yield connection)):
-            yield r.table_drop('b').run(yield connection)
-        yield r.table_create('b').run(yield connection)
-        noticer = cls(yield connection)
+    def run(cls, connection_future):
+        connection = yield connection_future
+        if 'a' in (yield r.table_list().run(connection)):
+            yield r.table_drop('a').run(connection)
+        yield r.table_create('a').run(connection)
+        if 'b' in (yield r.table_list().run(connection)):
+            yield r.table_drop('b').run(connection)
+        yield r.table_create('b').run(connection)
+        noticer = cls(connection)
         yield noticer.exercise_changefeeds()
 
 # Output
