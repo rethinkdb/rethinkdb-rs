@@ -355,7 +355,7 @@ All of the response notes involve changefeeds; read [Changefeeds in RethinkDB](/
 
 ## Multipart responses ##
 
-Streams and feeds are lazily-computed sequences, and return a `ResponseType` of `SUCCESS_PARTIAL` (`3`), with currently available data in the `r` array. When the driver receives a feed or stream, it should return a cursor (or an object with a cursor-like interface).
+Streams and feeds are lazily-computed sequences, and return a `ResponseType` of `SUCCESS_PARTIAL` (`3`), with currently available data in the `r` array. When the driver receives a feed or stream, it should return a cursor (or an object with a cursor-like interface). *N.B.* `SUCCESS_SEQUENCE` and `SUCCESS_PARTIAL` responses should be both be represented as cursors. Depending on the size of the query results, and the time it takes to return them, you may receive either one `SUCCESS_SEQUENCE` result, or one or more `SUCCESS_PARTIAL` results followed by a final `SUCCESS_SEQUENCE` result.
 
 To retrieve more data for the cursor, the driver should send a query with a `QueryType` of `CONTINUE` _on the same connection with the same token._ As with other queries, this must be sent with the query token, the size of the query, and the query itself, simply `[2]`.
 
