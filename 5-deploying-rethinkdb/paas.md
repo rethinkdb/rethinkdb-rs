@@ -21,7 +21,7 @@ Each deployment provided by Compose is configured as a high-availability cluster
 2. Select "RethinkDB."
 3. Enter a name for the deployment.
 
-![Deploying on Compose](/assets/images/posts/2014-10-14-compose-newdep.png)
+![Deploying on Compose](/assets/images/docs/compose.png)
 
 If you haven't already added billing information to your Compose account, you'll be prompted to do so before deployment.
 

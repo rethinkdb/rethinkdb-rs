@@ -13,6 +13,8 @@
           permalink: use
         - name: run
           permalink: run
+        - name: changes
+          permalink: changes
         - name: noreplyWait
           permalink: noreply_wait
         - name: EventEmitter (connection)
@@ -60,8 +62,6 @@
           permalink: index_status
         - name: indexWait
           permalink: index_wait
-        - name: changes
-          permalink: changes
 - section:
     name: Writing data
     commands:

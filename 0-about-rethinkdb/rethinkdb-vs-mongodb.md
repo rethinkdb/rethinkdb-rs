@@ -95,7 +95,7 @@ that we're constantly adding to the query language.
 Many products are easy to use, but we think RethinkDB is __beautiful__. See the
 [screencast video](/screencast) and be the judge yourself.
 
-<img src="/assets/images/screenshots/data_explorer_cropped.png">
+<img src="/assets/images/docs/data_explorer.png">
 
 ## Massively parallelized distributed infrastructure ##
 

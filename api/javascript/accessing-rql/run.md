@@ -42,7 +42,7 @@ been committed to disk.
 - `binaryFormat`: what format to return binary data in (default: `'native'`). Set this to `'raw'` if you want the raw pseudotype.
 - `minBatchRows`: minimum number of rows to wait for before batching a result set (default: 8). This is an integer.
 - `maxBatchRows`: maximum number of rows to wait for before batching a result set (default: unlimited). This is an integer.
-- `maxBatchBytes`: maximum number of bytes to wait for before batching a result set (default: 1024). This is an integer.
+- `maxBatchBytes`: maximum number of bytes to wait for before batching a result set (default: 1MB). This is an integer.
 - `maxBatchSeconds`: maximum number of seconds to wait before batching a result set (default: 0.5). This is a float (not an integer) and may be specified to the microsecond.
 - `firstBatchScaledownFactor`: factor to scale the other parameters down by on the first batch (default: 4). For example, with this set to 8 and `maxBatchRows` set to 80, on the first batch `maxBatchRows` will be adjusted to 10 (80 / 8). This allows the first batch to return faster.
 

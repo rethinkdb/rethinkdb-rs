@@ -26,7 +26,7 @@ Get all documents between two keys. Accepts three optional arguments: `index`, `
 
 You may also use the special constants `r.minval` and `r.maxval` for boundaries, which represent "less than any index key" and "more than any index key" respectively. For instance, if you use `r.minval` as the lower key, then `between` will return all documents whose primary keys (or indexes) are less than the specified upper key.
 
-Note that compound indexes are sorted using [lexicographical order][lo]. Take the following range as an example:
+If you use arrays as indexes (compound indexes), they will be sorted using [lexicographical order][lo]. Take the following range as an example:
 
 	[[1, "c"] ... [5, "e"]]
 

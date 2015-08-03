@@ -1022,7 +1022,7 @@ stream.union(sequence[, sequence, ...]) &rarr; stream
 array.union(sequence[, sequence, ...]) &rarr; array
 {% endapibody %}
 
-Concatenate two or more sequences.
+Merge two or more sequences. (Note that ordering is not guaranteed by `union`.)
 
 __Example:__ Construct a stream of all heroes.
 
@@ -2760,8 +2760,8 @@ r.table('geo').insert({
 }).run(conn)
 
 r.table('geo').get(201).update({
-    'rectangle': r.row('rectangle').fill()
-}).run(conn)
+    'rectangle': r.row['rectangle'].fill()
+}, non_atomic=True).run(conn)
 ```
 
 [Read more about this command &rarr;](fill/)
@@ -2803,7 +2803,7 @@ Convert a ReQL geometry object to a [GeoJSON][] object.
 __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 
 ```py
-> r.table(geo).get('sfo')['location'].to_geojson.run(conn)
+> r.table('geo').get('sfo')['location'].to_geojson.run(conn)
 
 {
     'type': 'Point',

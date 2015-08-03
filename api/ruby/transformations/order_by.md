@@ -31,7 +31,7 @@ __Note:__ RethinkDB uses byte-wise ordering for `orderBy` and does not support U
 Sorting without an index requires the server to hold the sequence in
 memory, and is limited to 100,000 documents (or the setting of the `array_limit` option for [run](/api/ruby/run)). Sorting with an index can
 be done on arbitrarily large tables, or after a [between](/api/ruby/between/) command
-using the same index.
+using the same index. This applies to both secondary indexes and the primary key (e.g., `:index => 'id'`).
 
 __Example:__ Order all the posts using the index `date`.   
 
