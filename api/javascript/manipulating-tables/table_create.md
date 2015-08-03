@@ -36,7 +36,7 @@ Note: Only alphanumeric characters and underscores are valid for the table name.
 
 When creating a table you can specify the following options:
 
-* `primaryKey`: the name of the primary key. The default primary key is `id`. The [data type](/docs/data-types/) of a primary key is usually a string (like a UUID) or a number, but it can also be a time, binary object, boolean or an array. It cannot be an object.
+* `primaryKey`: the name of the primary key. The default primary key is `id`.
 * `durability`: if set to `soft`, writes will be acknowledged by the server immediately and flushed to disk in the background. The default is `hard`: acknowledgment of writes happens after data has been written to disk.
 * `shards`: the number of shards, an integer from 1-32. Defaults to `1`.
 * `replicas`: either an integer or a mapping object. Defaults to `1`.
@@ -44,6 +44,9 @@ When creating a table you can specify the following options:
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`.
 * `primaryReplicaTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 
+The [data type](/docs/data-types/) of a primary key is usually a string (like a UUID) or a number, but it can also be a time, binary object, boolean or an array. Data types can be mixed in the primary key field, but all values must be unique. Using an array as a primary key creates a compound index; read the documentation on [compound secondary indexes][ci] for more information, as it applies to primary keys as well. Primary keys cannot be objects.
+
+[ci]: /docs/secondary-indexes/javascript/#compound-indexes
 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 

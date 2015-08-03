@@ -41,7 +41,9 @@ When creating a table you can specify the following options:
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{:tag1 => 2, :tag2 => 4, :tag3 => 2, ...}`.
 * `primary_replica_tag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
 
-The [data type](/docs/data-types/) of a primary key is usually a string (like a UUID) or a number, but it can also be a time, binary object, boolean or an array. It cannot be an object.
+The [data type](/docs/data-types/) of a primary key is usually a string (like a UUID) or a number, but it can also be a time, binary object, boolean or an array. Data types can be mixed in the primary key field, but all values must be unique. Using an array as a primary key creates a compound index; read the documentation on [compound secondary indexes][ci] for more information, as it applies to primary keys as well. Primary keys cannot be objects.
+
+[ci]: /docs/secondary-indexes/ruby/#compound-indexes
 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
