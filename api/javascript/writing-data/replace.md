@@ -65,10 +65,7 @@ Replace returns an object that contains the following attributes:
 - `replaced`: the number of documents that were replaced.
 - `unchanged`: the number of documents that would have been modified, except
   that the new value was the same as the old value.
-- `inserted`: the number of new documents added. You can have new documents
-  inserted if you do a point-replace on a key that isn't in the table or you do
-  a replace on a selection and one of the documents you are replacing has been
-  deleted.
+- `inserted`: the number of new documents added. A document is considered inserted if its primary key did not exist in the table at the time of the `replace` operation.
 - `deleted`: the number of deleted documents when doing a replace with `null`.
 - `errors`: the number of errors encountered while performing the replace.
 - `first_error`: If errors were encountered, contains the text of the first
