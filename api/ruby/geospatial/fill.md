@@ -35,7 +35,7 @@ r.table('geo').insert({
     )
 }).run(conn)
 
-r.table('geo').get(201).update({
-    :rectangle => r.row('rectangle').fill()
-}).run(conn)
+r.table('geo').get(201).update(:non_atomic => true){ |doc|
+    { :rectangle => doc['rectangle'].fill() }
+}.run(conn)
 ```

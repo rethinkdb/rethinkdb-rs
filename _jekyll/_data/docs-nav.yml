@@ -46,6 +46,9 @@
       - name: Accessing HTTP APIs
         permalink: external-api-access
         url: /docs/external-api-access/
+      - name: ReQL error types
+        permalink: error-types
+        url: /docs/error-types/
 - section:
     name: The RethinkDB data model
     docs:

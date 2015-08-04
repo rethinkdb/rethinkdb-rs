@@ -36,6 +36,6 @@ r.table('geo').insert({
 }).run(conn)
 
 r.table('geo').get(201).update({
-    'rectangle': r.row('rectangle').fill()
-}).run(conn)
+    'rectangle': r.row['rectangle'].fill()
+}, non_atomic=True).run(conn)
 ```

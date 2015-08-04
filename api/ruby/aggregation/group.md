@@ -198,15 +198,7 @@ r.table('games3').group(:multi => true){ |row| row['matches'].keys()
             set['matches'][doc['group']].sum()
         }
     }
-}.run
-
-
-r.table('games2').group(r.row['matches'].keys(), multi=True).ungroup().map(
-    lambda doc: { 'match': doc['group'], 'total': doc['reduction'].sum(
-        lambda set: set['matches'][doc['group']].sum()
-    )}).run(conn)
-
-
+}.run(conn)
 
 [
     { 'match': 'a', 'total': 36 },
