@@ -171,7 +171,7 @@ NoBrainer adds a light wrapper around ReQL queries. Here are some examples:
 
 ```ruby
 # Find a specific document by its primary key
-Article.find "2FrYybOfzezVpT
+Article.find "2FrYybOfzezVpT"
 
 # Find a comment from a user with 'bob' in its name sorted by the name.
 # Note: NoBrainer will use the :name index from User by default
