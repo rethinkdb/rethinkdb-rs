@@ -226,7 +226,11 @@ Most write operations involving a single document in RethinkDB are guaranteed to
 
 ## Can RethinkDB reads ever see stale data? ##
 
-Not by default. Reads run with the `read_mode` option set to `single` (the default) will never see stale data, but they may see changes from concurrent writes that have not been safely committed to disk yet. This is equivalent to SQL's `READ UNCOMMITTED` isolation level. Reads run with `read_mode` set to `outdated` may see stale data.
+Reads run with the `read_mode` option set to `single` (the default) will normally never see stale data, but they may see changes from concurrent writes that have not been safely committed to disk yet. This is equivalent to SQL's `READ UNCOMMITTED` isolation level. Reads run with `read_mode` set to `outdated` may see stale data.
+
+If your cluster experiences a netsplit, then the `single` read mode can no longer make this guarantee: you might receive a response from the old primary, even though a new primary has been elected on the other side of the netsplit. Setting `read_mode` to `majority` guarantees no stale reads in this case as well, although reads will be slower. Read the [Consistency guarantees][cg] documentation for more information.
+
+[cg]: /docs/consistency/
 
 ## How do queries get routed in a RethinkDB cluster? ##
 
