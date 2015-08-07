@@ -34,9 +34,6 @@
       - name: Map-reduce in RethinkDB
         permalink: map-reduce
         url: /docs/map-reduce/
-      - name: Geospatial queries
-        permalink: geo-support
-        url: /docs/geo-support/
       - name: Changefeeds
         permalink: changefeeds
         url: /docs/changefeeds/
@@ -49,6 +46,9 @@
       - name: ReQL error types
         permalink: error-types
         url: /docs/error-types/
+      - name: API command reference
+        permalink: api
+        url: /api/
 - section:
     name: The RethinkDB data model
     docs:
@@ -61,6 +61,9 @@
       - name: Binary objects
         permalink: storing-binary
         url: /docs/storing-binary/
+      - name: Geospatial queries
+        permalink: geo-support
+        url: /docs/geo-support/
       - name: Modeling relationships
         permalink: data-modeling
         url: /docs/data-modeling/
@@ -79,9 +82,6 @@
       - name: SQL to ReQL cheat sheet
         permalink: sql-to-reql
         url: /docs/sql-to-reql/
-      - name: API command reference
-        permalink: api
-        url: /api/
 - section:
     name: Administration
     docs:
@@ -155,7 +155,7 @@
         permalink: memory-usage
         url: /docs/memory-usage/
 - section:
-    name: Developing with RethinkDB
+    name: Integration
     docs:
       - name: Publish-subscribe
         permalink: publish-subscribe
