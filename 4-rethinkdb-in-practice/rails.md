@@ -26,10 +26,11 @@ almost drop-in replacement for ActiveRecord.
 First, generate a new Rails application using NoBrainer:
 
 ```bash
-$ rails new nb_app --skip-active-record
+$ rails new nb_app
 $ cd nb_app
 $ echo "gem 'nobrainer'" >> Gemfile
 $ bundle install
+$ rails g nobrainer:install
 ```
 
 You can now generate models individually or use the scaffolding
@@ -47,9 +48,8 @@ class Article
   include NoBrainer::Document::Timestamps
 
   field :title, :type => String
-  field :author, :type => String
+  field :text, :type => String
   field :tags, :type => Array
-
 end
 ```
 
@@ -76,7 +76,6 @@ class User
 
   field :name, :type => String, :index => true
   field :custom_data
-
 end
 ```
 
@@ -84,12 +83,11 @@ The NoBrainer generator automatically includes the
 [TimeStamps](http://nobrainer.io/docs/timestamps) mixin that adds the
 fields `created_on` and `updated_on`. You'll also notice this created
 a simple secondary index on the `name`
-field. [NoBrainer can handle different index types](http://nobrainer.io/docs/indexes/)
-as well. In order to add the index to the database, you can use the
+field. In order to add the index to the database, you can use the
 Rake task:
 
 ```bash
-$ rake db:update_indexes
+$ rake nobrainer:sync_schema
 ```
 
 ## Associations
@@ -112,7 +110,6 @@ class Comment
   field :liked, :type => Boolean
   belongs_to :user
   belongs_to :article
-
 end
 ```
 
@@ -174,7 +171,7 @@ NoBrainer adds a light wrapper around ReQL queries. Here are some examples:
 
 ```ruby
 # Find a specific document by its primary key
-Article.find "091234f8ad9e0123f"
+Article.find "2FrYybOfzezVpT"
 
 # Find a comment from a user with 'bob' in its name sorted by the name.
 # Note: NoBrainer will use the :name index from User by default

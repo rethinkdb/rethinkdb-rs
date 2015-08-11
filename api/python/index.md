@@ -1713,13 +1713,13 @@ __Example:__
 ## [+](add/) ##
 
 {% apibody %}
-number + number &rarr; number
-string + string &rarr; string
-array + array &rarr; array
-time + number &rarr; time
+value + value[ + value ...] &rarr; value
+time + number[ + number ...] &rarr; time
+value.add(value[, value ...]) &rarr; value
+time.add(number[, number, ...]) &rarr; time
 {% endapibody %}
 
-Sum two numbers, concatenate two strings, or concatenate 2 arrays.
+Sum two or more numbers, or concatenate two or more strings or arrays.
 
 __Example:__ It's as easy as 2 + 2 = 4.
 
