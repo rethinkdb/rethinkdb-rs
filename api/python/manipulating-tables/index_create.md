@@ -50,7 +50,7 @@ __Example:__ Create a geospatial index based on the field `location`.
 r.table('places').index_create('location', geo=True).run(conn)
 ```
 
-A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([get_intersecting](/api/python/get_intersecting/) and [get_nearest](/api/python/get_nearest/)) as well as index-specific terms ([index_status](/api/python/index_status), [index_wait](/api/python/index_wait), [index_drop](/api/python/index_drop) and [index_list](/api/python/index_list)). Using terms that rely on non-geometric ordering such as [get_all](/api/python/get_all/), [order_by](/api/python/order_by/) and [between](/api/python/order_by/) will result in an error.
+A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([get_intersecting](/api/python/get_intersecting/) and [get_nearest](/api/python/get_nearest/)) as well as index-specific terms ([index_status](/api/python/index_status), [index_wait](/api/python/index_wait), [index_drop](/api/python/index_drop) and [index_list](/api/python/index_list)). Using terms that rely on non-geometric ordering such as [get_all](/api/python/get_all/), [order_by](/api/python/order_by/) and [between](/api/python/between/) will result in an error.
 
 __Example:__ Create a compound index based on the fields `post_id` and `date`.
 
