@@ -22,8 +22,6 @@ selection.nth(index) &rarr; selection&lt;object&gt;
 
 Get the *nth* element of a sequence, counting from zero. If the argument is negative, count from the last element.
 
-In Python, you can use `[]` with an integer as a shorthand for `nth`.
-
 __Example:__ Select the second element in the array.
 
 ```py
