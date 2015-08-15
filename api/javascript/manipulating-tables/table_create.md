@@ -30,7 +30,7 @@ If successful, the command returns an object with two fields:
     * `old_val`: always `null`.
     * `new_val`: the table's new [config](/api/javascript/config) value.
 
-If a table with the same name already exists, the command throws `ReqlRuntimeError`.
+If a table with the same name already exists, the command throws `ReqlOpFailedError`.
 
 Note: Only alphanumeric characters and underscores are valid for the table name.
 
