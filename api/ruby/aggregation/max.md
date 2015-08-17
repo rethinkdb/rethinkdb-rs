@@ -17,7 +17,7 @@ related_commands:
 
 {% apibody %}
 sequence.max(field_or_function) &rarr; element
-sequence.max({:index => 'index'}) &rarr; element
+sequence.max({:index => <indexname>}) &rarr; element
 {% endapibody %}
 
 # Description #

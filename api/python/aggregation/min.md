@@ -17,7 +17,7 @@ related_commands:
 
 {% apibody %}
 sequence.min(field_or_function) &rarr; element
-sequence.min(index='index') &rarr; element
+sequence.min(index=<indexname>) &rarr; element
 {% endapibody %}
 
 # Description #

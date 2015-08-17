@@ -1050,7 +1050,7 @@ These commands are used to compute smaller values from large sequences.
 ## [group](group/) ##
 
 {% apibody %}
-sequence.group(field_or_function..., [index='index_name', multi=False]) &rarr; grouped_stream
+sequence.group(field_or_function..., [index=<indexname>, multi=False]) &rarr; grouped_stream
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the
@@ -1187,7 +1187,7 @@ r.expr([3, 5, 7]).avg().run(conn)
 
 {% apibody %}
 sequence.min(field_or_function) &rarr; element
-sequence.min(index='index') &rarr; element
+sequence.min(index=<indexname>) &rarr; element
 {% endapibody %}
 
 Finds the minimum element of a sequence.
@@ -1205,7 +1205,7 @@ r.expr([3, 5, 7]).min().run(conn)
 
 {% apibody %}
 sequence.max(field_or_function) &rarr; element
-sequence.max(index='index') &rarr; element
+sequence.max(index=<indexname>) &rarr; element
 {% endapibody %}
 
 Finds the maximum element of a sequence.
