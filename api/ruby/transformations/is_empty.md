@@ -4,7 +4,7 @@ language: Ruby
 permalink: api/ruby/is_empty/
 command: is_empty
 related_commands:
-    indexes_of: indexes_of/
+    offsets_of: offsets_of/
 ---
 
 # Command syntax #
