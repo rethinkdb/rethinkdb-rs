@@ -27,7 +27,7 @@ The optional `wait` argument specifies whether to wait for the next available el
 
 The behavior of `next` will be identical with `False`, `None` or the number `0`.
 
-Calling `next` the first time on a cursor provides the first element of the cursor. If the data set is exhausted (e.g., you have retrieved all the documents in a table), a `StopIteration` error will be raised when `next` is called.
+Calling `next` the first time on a cursor provides the first element of the cursor. If the data set is exhausted (e.g., you have retrieved all the documents in a table), a `ReqlCursorEmpty` error will be raised when `next` is called.
 
 __Example:__ Retrieve the next element.
 
