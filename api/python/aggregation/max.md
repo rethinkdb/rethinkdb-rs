@@ -16,7 +16,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.max(field_or_function) &rarr; element
+sequence.max(field | function) &rarr; element
 sequence.max(index=<indexname>) &rarr; element
 {% endapibody %}
 

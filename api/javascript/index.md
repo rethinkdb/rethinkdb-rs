@@ -530,13 +530,13 @@ r.table("posts").insert({
 ## [update](update/) ##
 
 {% apibody %}
-table.update(object | expr
+table.update(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-selection.update(object | expr
+selection.update(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-singleSelection.update(object | expr
+singleSelection.update(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 {% endapibody %}
@@ -558,13 +558,13 @@ r.table("posts").get(1).update({status: "published"}).run(conn, callback)
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(object | expr
+table.replace(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-selection.replace(object | expr
+selection.replace(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-singleSelection.replace(object | expr
+singleSelection.replace(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 
@@ -727,9 +727,9 @@ r.table('marvel').between(10, 20).run(conn, callback)
 ## [filter](filter/) ##
 
 {% apibody %}
-selection.filter(predicate[, {default: false}]) &rarr; selection
-stream.filter(predicate[, {default: false}]) &rarr; stream
-array.filter(predicate[, {default: false}]) &rarr; array
+selection.filter(predicate_function[, {default: false}]) &rarr; selection
+stream.filter(predicate_function[, {default: false}]) &rarr; stream
+array.filter(predicate_function[, {default: false}]) &rarr; array
 {% endapibody %}
 
 Get all the documents for which the given predicate is true.
@@ -761,8 +761,8 @@ These commands allow the combination of multiple sequences into a single sequenc
 ## [innerJoin](inner_join/) ##
 
 {% apibody %}
-sequence.innerJoin(otherSequence, predicate) &rarr; stream
-array.innerJoin(otherSequence, predicate) &rarr; array
+sequence.innerJoin(otherSequence, predicate_function) &rarr; stream
+array.innerJoin(otherSequence, predicate_function) &rarr; array
 {% endapibody %}
 
 Returns an inner join of two sequences.
@@ -780,8 +780,8 @@ r.table('marvel').innerJoin(r.table('dc'), function(marvelRow, dcRow) {
 ## [outerJoin](outer_join/) ##
 
 {% apibody %}
-sequence.outerJoin(otherSequence, predicate) &rarr; stream
-array.outerJoin(otherSequence, predicate) &rarr; array
+sequence.outerJoin(otherSequence, predicate_function) &rarr; stream
+array.outerJoin(otherSequence, predicate_function) &rarr; array
 {% endapibody %}
 
 Returns a left outer join of two sequences.
@@ -800,7 +800,7 @@ r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
 
 {% apibody %}
 sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
-sequence.eqJoin(function, rightTable[, {index:'id'}]) &rarr; sequence
+sequence.eqJoin(predicate_function, rightTable[, {index:'id'}]) &rarr; sequence
 {% endapibody %}
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
@@ -840,10 +840,10 @@ These commands are used to transform data in a sequence.
 ## [map](map/) ##
 
 {% apibody %}
-sequence1.map([sequence2, ...], mappingFunction) &rarr; stream
-array1.map([array2, ...], mappingFunction) &rarr; array
-r.map(sequence1[, sequence2, ...], mappingFunction) &rarr; stream
-r.map(array1[, array2, ...], mappingFunction) &rarr; array
+sequence1.map([sequence2, ...], function) &rarr; stream
+array1.map([array2, ...], function) &rarr; array
+r.map(sequence1[, sequence2, ...], function) &rarr; stream
+r.map(array1[, array2, ...], function) &rarr; array
 {% endapibody %}
 
 Transform each element of one or more sequences by applying a mapping function to them. If `map` is run with two or more sequences, it will iterate for as many items as there are in the shortest sequence.
@@ -880,8 +880,8 @@ r.table('users').withFields('id', 'username', 'posts').run(conn, callback)
 ## [concatMap](concat_map/) ##
 
 {% apibody %}
-stream.concatMap(mappingFunction) &rarr; stream
-array.concatMap(mappingFunction) &rarr; array
+stream.concatMap(function) &rarr; stream
+array.concatMap(function) &rarr; array
 {% endapibody %}
 
 Concatenate one or more elements into a single sequence using a mapping function.
@@ -899,9 +899,9 @@ r.table('marvel').concatMap(function(hero) {
 ## [orderBy](order_by/) ##
 
 {% apibody %}
-table.orderBy([key1...], {index: index_name}) &rarr; selection<stream>
-selection.orderBy(key1, [key2...]) &rarr; selection<array>
-sequence.orderBy(key1, [key2...]) &rarr; array
+table.orderBy([key | function...], {index: index_name}) &rarr; selection<stream>
+selection.orderBy(key | function[, ...]) &rarr; selection<array>
+sequence.orderBy(key | function[, ...]) &rarr; array
 {% endapibody %}
 
 Sort the sequence by document values of the given key(s). To specify
@@ -1002,7 +1002,7 @@ r.expr([1,2,3]).nth(1).run(conn, callback)
 ## [offsetsOf](offsets_of/) ##
 
 {% apibody %}
-sequence.offsetsOf(datum | predicate) &rarr; array
+sequence.offsetsOf(datum | predicate_function) &rarr; array
 {% endapibody %}
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.
@@ -1073,7 +1073,7 @@ These commands are used to compute smaller values from large sequences.
 ## [group](group/) ##
 
 {% apibody %}
-sequence.group(fieldOrFunction..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
+sequence.group(field | function..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the
@@ -1119,7 +1119,7 @@ r.table('games')
 ## [reduce](reduce/) ##
 
 {% apibody %}
-sequence.reduce(reductionFunction) &rarr; value
+sequence.reduce(function) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction
@@ -1140,7 +1140,7 @@ r.table("posts").map(function(doc) {
 ## [count](count/) ##
 
 {% apibody %}
-sequence.count([filter]) &rarr; number
+sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
 {% endapibody %}
 
@@ -1161,7 +1161,7 @@ r.table('marvel').count().add(r.table('dc').count()).run(conn, callback)
 ## [sum](sum/) ##
 
 {% apibody %}
-sequence.sum([fieldOrFunction]) &rarr; number
+sequence.sum([field | function]) &rarr; number
 {% endapibody %}
 
 Sums all the elements of a sequence.  If called with a field name,
@@ -1183,7 +1183,7 @@ r.expr([3, 5, 7]).sum().run(conn, callback)
 ## [avg](avg/) ##
 
 {% apibody %}
-sequence.avg([fieldOrFunction]) &rarr; number
+sequence.avg([field | function]) &rarr; number
 {% endapibody %}
 
 Averages all the elements of a sequence.  If called with a field name,
@@ -1206,7 +1206,7 @@ r.expr([3, 5, 7]).avg().run(conn, callback)
 ## [min](min/) ##
 
 {% apibody %}
-sequence.min(fieldOrFunction) &rarr; element
+sequence.min(field | function) &rarr; element
 sequence.min({index: <indexname>}) &rarr; element
 {% endapibody %}
 
@@ -1226,7 +1226,7 @@ r.expr([3, 5, 7]).min().run(conn, callback);
 ## [max](max/) ##
 
 {% apibody %}
-sequence.max(fieldOrFunction) &rarr; element
+sequence.max(field | function) &rarr; element
 sequence.max({index: <indexname>}) &rarr; element
 {% endapibody %}
 
@@ -1265,7 +1265,7 @@ r.table('marvel').concatMap(function(hero) {
 ## [contains](contains/) ##
 
 {% apibody %}
-sequence.contains(value|predicate[, value|predicate, ...]) &rarr; bool
+sequence.contains([value | predicate_function, ...]) &rarr; bool
 {% endapibody %}
 
 Returns whether or not a sequence contains all the specified values, or if functions are
@@ -1349,10 +1349,10 @@ r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn, call
 ## [merge](merge/) ##
 
 {% apibody %}
-singleSelection.merge(object|function[, object|function, ...]) &rarr; object
-object.merge(object|function[, object|function, ...]) &rarr; object
-sequence.merge(object|function[, object|function, ...]) &rarr; stream
-array.merge(object|function[, object|function, ...]) &rarr; array
+singleSelection.merge([object | function, object | function, ...]) &rarr; object
+object.merge([object | function, object | function, ...]) &rarr; object
+sequence.merge([object | function, object | function, ...]) &rarr; stream
+array.merge([object | function, object | function, ...]) &rarr; array
 {% endapibody %}
 
 Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list.
@@ -2472,7 +2472,7 @@ r.table('marvel').map(
 ## [forEach](for_each/) ##
 
 {% apibody %}
-sequence.forEach(write_query) &rarr; object
+sequence.forEach(write_function) &rarr; object
 {% endapibody %}
 
 Loop over a sequence, evaluating the given write query for each element.

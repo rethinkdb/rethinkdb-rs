@@ -11,8 +11,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-stream.concat_map(mapping_function) &rarr; stream
-array.concat_map(mapping_function) &rarr; array
+stream.concat_map(function) &rarr; stream
+array.concat_map(function) &rarr; array
 {% endapibody %}
 
 # Description #

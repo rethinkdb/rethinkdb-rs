@@ -12,9 +12,9 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-selection.filter(predicate[, default=False]) &rarr; selection
-stream.filter(predicate[, default=False]) &rarr; stream
-array.filter(predicate[, default=False]) &rarr; array
+selection.filter(predicate_function[, default=False]) &rarr; selection
+stream.filter(predicate_function[, default=False]) &rarr; stream
+array.filter(predicate_function[, default=False]) &rarr; array
 {% endapibody %}
 
 # Description #

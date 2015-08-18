@@ -20,9 +20,9 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.orderBy([key1...], {index: index_name}) &rarr; selection<stream>
-selection.orderBy(key1, [key2...]) &rarr; selection<array>
-sequence.orderBy(key1, [key2...]) &rarr; array
+table.orderBy([key | function...], {index: index_name}) &rarr; selection<stream>
+selection.orderBy(key | function[, ...]) &rarr; selection<array>
+sequence.orderBy(key | function[, ...]) &rarr; array
 {% endapibody %}
 
 # Description #

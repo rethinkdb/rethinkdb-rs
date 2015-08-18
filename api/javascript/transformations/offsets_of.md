@@ -12,7 +12,7 @@ io:
 # Command syntax #
 
 {% apibody %}
-sequence.offsetsOf(datum | predicate) &rarr; array
+sequence.offsetsOf(datum | predicate_function) &rarr; array
 {% endapibody %}
 
 # Description #

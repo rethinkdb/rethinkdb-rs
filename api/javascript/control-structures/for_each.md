@@ -13,7 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.forEach(write_query) &rarr; object
+sequence.forEach(write_function) &rarr; object
 {% endapibody %}
 
 # Description #

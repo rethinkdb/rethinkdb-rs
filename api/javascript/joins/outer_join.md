@@ -17,8 +17,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.outerJoin(otherSequence, predicate) &rarr; stream
-array.outerJoin(otherSequence, predicate) &rarr; array
+sequence.outerJoin(otherSequence, predicate_function) &rarr; stream
+array.outerJoin(otherSequence, predicate_function) &rarr; array
 {% endapibody %}
 
 # Description #

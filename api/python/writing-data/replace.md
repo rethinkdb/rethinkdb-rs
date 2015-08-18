@@ -12,11 +12,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(object | expr[, durability="hard", return_changes=False, non_atomic=False])
+table.replace(object | function[, durability="hard", return_changes=False, non_atomic=False])
     &rarr; object
-selection.replace(object | expr[, durability="hard", return_changes=False, non_atomic=False])
+selection.replace(object | function[, durability="hard", return_changes=False, non_atomic=False])
     &rarr; object
-singleSelection.replace(object | expr[, durability="hard", return_changes=False, non_atomic=False])
+singleSelection.replace(object | function[, durability="hard", return_changes=False, non_atomic=False])
     &rarr; object
 {% endapibody %}
 

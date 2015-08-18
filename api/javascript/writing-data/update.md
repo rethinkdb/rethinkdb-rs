@@ -20,11 +20,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.update(object | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
+table.update(object | function[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
-selection.update(object | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
+selection.update(object | function[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
-singleSelection.update(object | expr[, {durability: "hard", returnChanges: false, nonAtomic: false}])
+singleSelection.update(object | function[, {durability: "hard", returnChanges: false, nonAtomic: false}])
     &rarr; object
 {% endapibody %}
 
