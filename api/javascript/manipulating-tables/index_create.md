@@ -34,7 +34,7 @@ RethinkDB supports different types of secondary indexes:
 
 The `indexFunction` can be an anonymous function or a binary representation obtained from the `function` field of [indexStatus](/api/javascript/index_status).
 
-If successful, `createIndex` will return an object of the form `{"created": 1}`. If an index by that name already exists on the table, a `RqlRuntimeError` will be thrown.
+If successful, `createIndex` will return an object of the form `{"created": 1}`. If an index by that name already exists on the table, a `ReqlRuntimeError` will be thrown.
 
 __Example:__ Create a simple index based on the field `postId`.
 
@@ -48,7 +48,7 @@ __Example:__ Create a geospatial index based on the field `location`.
 r.table('places').indexCreate('location', {geo: true}).run(conn, callback)
 ```
 
-A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([getIntersecting](/api/javascript/get_intersecting/) and [getNearest](/api/javascript/get_nearest/)) as well as index-specific terms ([indexStatus](/api/javascript/index_status), [indexWait](/api/javascript/index_wait), [indexDrop](/api/javascript/index_drop) and [indexList](/api/javascript/index_list)). Using terms that rely on non-geometric ordering such as [getAll](/api/javascript/get_all/), [orderBy](/api/javascript/order_by/) and [between](/api/javascript/order_by/) will result in an error.
+A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([getIntersecting](/api/javascript/get_intersecting/) and [getNearest](/api/javascript/get_nearest/)) as well as index-specific terms ([indexStatus](/api/javascript/index_status), [indexWait](/api/javascript/index_wait), [indexDrop](/api/javascript/index_drop) and [indexList](/api/javascript/index_list)). Using terms that rely on non-geometric ordering such as [getAll](/api/javascript/get_all/), [orderBy](/api/javascript/order_by/) and [between](/api/javascript/between/) will result in an error.
 
 __Example:__ Create a simple index based on the nested field `author > name`.
 

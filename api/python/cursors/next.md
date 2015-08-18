@@ -22,12 +22,12 @@ Get the next element in the cursor.
 The optional `wait` argument specifies whether to wait for the next available element and how long to wait:
 
 * `True`: Wait indefinitely (the default).
-* `False`: Do not wait at all. If data is immediately available, it will be returned; if it is not available, a `RqlDriverError` will be raised.
-* number: Wait up the specified number of seconds for data to be available before raising `RqlDriverError`.
+* `False`: Do not wait at all. If data is immediately available, it will be returned; if it is not available, a `ReqlTimeoutError` will be raised.
+* number: Wait up to the specified number of seconds for data to be available before raising `ReqlTimeoutError`.
 
 The behavior of `next` will be identical with `False`, `None` or the number `0`.
 
-Calling `next` the first time on a cursor provides the first element of the cursor. If the data set is exhausted (e.g., you have retrieved all the documents in a table), a `StopIteration` error will be raised when `next` is called.
+Calling `next` the first time on a cursor provides the first element of the cursor. If the data set is exhausted (e.g., you have retrieved all the documents in a table), a `ReqlCursorEmpty` error will be raised when `next` is called.
 
 __Example:__ Retrieve the next element.
 

@@ -285,7 +285,7 @@ Create a database. A RethinkDB database is a collection of tables, similar to
 relational databases.
 
 If successful, the operation returns an object: `{created: 1}`. If a database with the
-same name already exists the operation throws `RqlRuntimeError`.
+same name already exists the operation throws `ReqlRuntimeError`.
 
 Note: that you can only use alphanumeric characters and underscores for the database name.
 
@@ -305,7 +305,7 @@ r.dbDrop(dbName) &rarr; object
 Drop a database. The database, all its tables, and corresponding data will be deleted.
 
 If successful, the operation returns the object `{dropped: 1}`. If the specified database
-doesn't exist a `RqlRuntimeError` is thrown.
+doesn't exist a `ReqlRuntimeError` is thrown.
 
 __Example:__ Drop a database named 'superheroes'.
 
@@ -742,7 +742,7 @@ if a non-existence errors is thrown (when you try to access a field that does no
 in a document), RethinkDB will just ignore the document.
 The `default` value can be changed by passing an object with a `default` field.
 Setting this optional argument to `r.error()` will cause any non-existence errors to
-return a `RqlRuntimeError`.
+return a `ReqlRuntimeError`.
 
 __Example:__ Get all the users that are 30 years old.
 
@@ -1073,7 +1073,7 @@ These commands are used to compute smaller values from large sequences.
 ## [group](group/) ##
 
 {% apibody %}
-sequence.group(fieldOrFunction..., [{index: "indexName", multi: false}]) &rarr; grouped_stream
+sequence.group(fieldOrFunction..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the
@@ -1207,7 +1207,7 @@ r.expr([3, 5, 7]).avg().run(conn, callback)
 
 {% apibody %}
 sequence.min(fieldOrFunction) &rarr; element
-sequence.min({index: 'index'}) &rarr; element
+sequence.min({index: <indexname>}) &rarr; element
 {% endapibody %}
 
 Finds the minimum element of a sequence.
@@ -1227,7 +1227,7 @@ r.expr([3, 5, 7]).min().run(conn, callback);
 
 {% apibody %}
 sequence.max(fieldOrFunction) &rarr; element
-sequence.max({index: 'index'}) &rarr; element
+sequence.max({index: <indexname>}) &rarr; element
 {% endapibody %}
 
 Finds the maximum element of a sequence.
@@ -1733,13 +1733,11 @@ r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 ## [add](add/) ##
 
 {% apibody %}
-number.add(number) &rarr; number
-string.add(string) &rarr; string
-array.add(array) &rarr; array
-time.add(number) &rarr; time
+value.add(value[, value ...]) &rarr; value
+time.add(number[, number, ...]) &rarr; time
 {% endapibody %}
 
-Sum two numbers, concatenate two strings, or concatenate 2 arrays.
+Sum two or more numbers, or concatenate two or more strings or arrays.
 
 __Example:__ It's as easy as 2 + 2 = 4.
 

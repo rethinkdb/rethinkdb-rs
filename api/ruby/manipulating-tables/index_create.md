@@ -30,7 +30,7 @@ RethinkDB supports different types of secondary indexes:
 
 The `index_function` can be an anonymous function or a binary representation obtained from the `function` field of [index_status](/api/ruby/index_status).
 
-If successful, `create_index` will return an object of the form `{:created => 1}`. If an index by that name already exists on the table, a `RqlRuntimeError` will be thrown.
+If successful, `create_index` will return an object of the form `{:created => 1}`. If an index by that name already exists on the table, a `ReqlRuntimeError` will be thrown.
 
 __Example:__ Create a simple index based on the field `post_id`.
 
@@ -52,7 +52,7 @@ __Example:__ Create a geospatial index based on the field `location`.
 r.table('places').index_create('location', :geo => true).run(conn)
 ```
 
-A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([get_intersecting](/api/ruby/get_intersecting/) and [get_nearest](/api/ruby/get_nearest/)) as well as index-specific terms ([index_status](/api/ruby/index_status), [index_wait](/api/ruby/index_wait), [index_drop](/api/ruby/index_drop) and [index_list](/api/ruby/index_list)). Using terms that rely on non-geometric ordering such as [get_all](/api/ruby/get_all/), [order_by](/api/ruby/order_by/) and [between](/api/ruby/order_by/) will result in an error.
+A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([get_intersecting](/api/ruby/get_intersecting/) and [get_nearest](/api/ruby/get_nearest/)) as well as index-specific terms ([index_status](/api/ruby/index_status), [index_wait](/api/ruby/index_wait), [index_drop](/api/ruby/index_drop) and [index_list](/api/ruby/index_list)). Using terms that rely on non-geometric ordering such as [get_all](/api/ruby/get_all/), [order_by](/api/ruby/order_by/) and [between](/api/ruby/between/) will result in an error.
 
 
 __Example:__ Create a compound index based on the fields `post_id` and `date`.

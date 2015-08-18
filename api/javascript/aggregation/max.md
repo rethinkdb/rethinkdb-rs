@@ -20,7 +20,7 @@ related_commands:
 
 {% apibody %}
 sequence.max(fieldOrFunction) &rarr; element
-sequence.max({index: 'index'}) &rarr; element
+sequence.max({index: <indexname>}) &rarr; element
 {% endapibody %}
 
 # Description #

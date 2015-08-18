@@ -238,6 +238,12 @@
           permalink: not
         - name: random
           permalink: random
+        - name: round
+          permalink: round
+        - name: ceil
+          permalink: ceil
+        - name: floor
+          permalink: floor
 - section:
     name: Dates and times
     commands:
@@ -305,7 +311,7 @@
         - name: coerce_to
           permalink: coerce_to
         - name: type_of
-          permalink: type_o
+          permalink: type_of
         - name: info
           permalink: info
         - name: json

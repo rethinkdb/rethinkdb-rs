@@ -329,7 +329,7 @@ without a time zone.
 ```py
 > r.expr(datetime.now()).run(conn)
 
-RqlDriverError: Cannot convert datetime to ReQL time object
+ReqlDriverError: Cannot convert datetime to ReQL time object
 without timezone information. You can add timezone information with
 the third party module "pytz" or by constructing ReQL compatible
 timezone values with r.make_timezone("[+-]HH:MM"). Alternatively,

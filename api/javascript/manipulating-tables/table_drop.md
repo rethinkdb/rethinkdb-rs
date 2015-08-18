@@ -28,7 +28,7 @@ If successful, the command returns an object with two fields:
     * `old_val`: the dropped table's [config](/api/javascript/config) value.
     * `new_val`: always `null`.
 
-If the given table does not exist in the database, the command throws `RqlRuntimeError`.
+If the given table does not exist in the database, the command throws `ReqlRuntimeError`.
 
 __Example:__ Drop a table named 'dc_universe'.
 

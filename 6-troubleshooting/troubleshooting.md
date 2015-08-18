@@ -23,7 +23,7 @@ r.expr(["current_issues", "jobs", "stats", "server_config", "server_status",
 
 (That command is suitable for running in the Data Explorer, but can be easily adapted into other languages.)
 
-## I get a "RqlRuntimeError: Array over size limit 100000" when trying to order a table
+## I get a "ReqlResourceLimitError: Array over size limit 100000" when trying to order a table
 
 Ordering without an index requires the server to load the whole sequence in an array, which is limited by default to 100,000 documents. You can use the `arrayLimit` option to [run](/api/javascript/run/) to temporarily raise this limit. However, a more efficient option is to use an index. See the documentation for [orderBy](/api/javascript/order_by/) for more information.
 

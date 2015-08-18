@@ -68,10 +68,10 @@ EventMachine.run {
 
 ## Handling errors
 
-In the form above&mdash;with a block that accepts a single argument&mdash;RethinkDB's EventMachine adapter will throw errors back up to your application for you to handle in the same fashion as you would using RethinkDB without EventMachine. If the table `test` did not exist in the database above, you would receive the standard `RqlRunTimeError`:
+In the form above&mdash;with a block that accepts a single argument&mdash;RethinkDB's EventMachine adapter will throw errors back up to your application for you to handle in the same fashion as you would using RethinkDB without EventMachine. If the table `test` did not exist in the database above, you would receive the standard `ReqlRunTimeError`:
 
 ```
-RethinkDB::RqlRunTimeError: Table `test.test` does not exist.
+RethinkDB::ReqlRunTimeError: Table `test.test` does not exist.
 Backtrace:
 r.table('test')
 ^^^^^^^^^^^^^^^
@@ -406,7 +406,7 @@ Note that looping over a cursor must be done with `while` and `fetch_next`, rath
 
 If an error occurs during an asynchronous operation, the `yield` statement will throw an exception as normal. This may happen immediately (for example, you might reference a table that doesn't exist), but your application might receive large amounts of data before the error (for example, your network might be disrupted after the connection is established).
 
-One error in particular is notable. If you have a coroutine set to consume a changefeed indefinitely, and the connection closes, the coroutine will experience a `RqlRuntimeError`.
+One error in particular is notable. If you have a coroutine set to consume a changefeed indefinitely, and the connection closes, the coroutine will experience a `ReqlRuntimeError`.
 
 __Example:__ Re-thrown errors
 
@@ -417,7 +417,7 @@ def bad_table(connection):
 
 Traceback (most recent call last):
 ... elided ...
-rethinkdb.errors.RqlRuntimeError: Table `test.non_existent` does not exist. in:
+rethinkdb.errors.ReqlRuntimeError: Table `test.non_existent` does not exist. in:
 r.table('non_existent')
 ^^^^^^^^^^^^^^^^^^^^^^^
 ```
@@ -429,7 +429,7 @@ __Example:__ Catching errors in the coroutine
 def catch_bad_table(connection):
     try:
         yield r.table('non_existent').run(connection)
-    except r.RqlRuntimeError:
+    except r.ReqlRuntimeError:
         print("Saw error")
 
 # Output

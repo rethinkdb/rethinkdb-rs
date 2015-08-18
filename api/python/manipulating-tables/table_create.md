@@ -27,7 +27,7 @@ If successful, the command returns an object with two fields:
     * `old_val`: always `None`.
     * `new_val`: the table's new [config](/api/python/config) value.
 
-If a table with the same name already exists, the command throws `RqlRuntimeError`.
+If a table with the same name already exists, the command throws `ReqlRuntimeError`.
 
 Note: Only alphanumeric characters and underscores are valid for the table name.
 

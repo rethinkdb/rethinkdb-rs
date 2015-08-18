@@ -61,8 +61,6 @@ The server will buffer up to 100,000 elements. If the buffer limit is hit, early
 
 Commands that operate on streams (such as [filter](/api/javascript/filter/) or [map](/api/javascript/map/)) can usually be chained after `changes`.  However, since the stream produced by `changes` has no ending, commands that need to consume the entire stream before returning (such as [reduce](/api/javascript/reduce/) or [count](/api/javascript/count/)) cannot.
 
-It's a good idea to open changefeeds on their own connection. If you don't, other queries run on the same connection will experience unpredictable latency spikes while the connection blocks on more changes.
-
 __Example:__ Subscribe to the changes on a table.
 
 Start monitoring the changefeed in one client:
@@ -91,7 +89,7 @@ client would receive and print the following objects:
 {old_val: {id: 1, player1: 'Bob', player2: 'Alice'}, new_val: null}
 
 > r.tableDrop('games').run(conn, callback);
-RqlRuntimeError: Changefeed aborted (table unavailable)
+ReqlRuntimeError: Changefeed aborted (table unavailable)
 ```
 
 __Example:__ Return all the changes that increase a player's score.

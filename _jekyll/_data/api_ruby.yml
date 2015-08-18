@@ -238,6 +238,12 @@
           permalink: not
         - name: random
           permalink: random
+        - name: round
+          permalink: round
+        - name: ceil
+          permalink: ceil
+        - name: floor
+          permalink: floor
 - section:
     name: Dates and times
     commands:

@@ -56,8 +56,6 @@ The server will buffer up to 100,000 elements. If the buffer limit is hit, early
 
 Commands that operate on streams (such as [filter](/api/python/filter/) or [map](/api/python/map/)) can usually be chained after `changes`.  However, since the stream produced by `changes` has no ending, commands that need to consume the entire stream before returning (such as [reduce](/api/python/reduce/) or [count](/api/python/count/)) cannot.
 
-It's a good idea to open changefeeds on their own connection. If you don't, other queries run on the same connection will experience unpredictable latency spikes while the connection blocks on more changes.
-
 __Example:__ Subscribe to the changes on a table.
 
 Start monitoring the changefeed in one client:
@@ -84,7 +82,7 @@ As these queries are performed in a second client, the first client would receiv
 {'old_val': {'id': 1, 'player1': 'Bob', 'player2': 'Alice'}, 'new_val': None}
 
 > r.table_drop('games').run(conn)
-RqlRuntimeError: Changefeed aborted (table unavailable)
+ReqlRuntimeError: Changefeed aborted (table unavailable)
 ```
 
 __Example:__ Return all the changes that increase a player's score.

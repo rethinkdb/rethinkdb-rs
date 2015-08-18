@@ -25,7 +25,7 @@ array.next() &rarr; promise
 
 Get the next element in the cursor.
 
-Calling `next` the first time on a cursor provides the first element of the cursor. If the data set is exhausted (e.g., you have retrieved all the documents in a table), a `RqlDriverError` error will be passed to the callback when `next` is called.
+Calling `next` the first time on a cursor provides the first element of the cursor. If the data set is exhausted (e.g., you have retrieved all the documents in a table), a `ReqlDriverError` error will be passed to the callback when `next` is called.
 
 __Example:__ Retrieve the next element.
 
@@ -47,7 +47,7 @@ query.run( conn, function(err, cursor) {
 
     var fetchNext = function(err, result) {
         if (err) {
-            if (((err.name === "RqlDriverError") && err.message === "No more rows in the cursor.")) {
+            if (((err.name === "ReqlDriverError") && err.message === "No more rows in the cursor.")) {
                 console.log("No more data to process")
                 // If you use one connection per query, the connection should be closed here.
                 // conn.close()
@@ -75,7 +75,7 @@ query.run( conn, function(err, cursor) {
 
     var fetchNext = function(err, result) {
         if (err) {
-            if (((err.name === "RqlDriverError") && err.message === "No more rows in the cursor.")) {
+            if (((err.name === "ReqlDriverError") && err.message === "No more rows in the cursor.")) {
                 console.log("No more data to process")
                 // If you use one connection per query, the connection should be closed here.
                 // conn.close()
@@ -105,7 +105,7 @@ command using recursion and promises.
 ```js
 query.run(conn).then(function(cursor) {
     var errorHandler = function(err) {
-        if (((err.name === "RqlDriverError") && err.message === "No more rows in the cursor.")) {
+        if (((err.name === "ReqlDriverError") && err.message === "No more rows in the cursor.")) {
             console.log("No more data to process")
             // If you use one connection per query, the connection should be closed here.
             // conn.close()
