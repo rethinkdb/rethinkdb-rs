@@ -20,5 +20,5 @@ __Example:__ Generate a UUID.
 ```py
 > r.uuid().run(conn)
 
-27961a0e-f4e8-4eb3-bf95-c5203e1d87b9
+"27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
 ```
