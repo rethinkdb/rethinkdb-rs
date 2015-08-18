@@ -1233,6 +1233,7 @@ r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)
 {% apibody %}
 sequence.contains([value | predicate_function, ...]) &rarr; bool
 {predicate_function}
+{% endapibody %}
 
 Returns whether or not a sequence contains all the specified values, or if functions are
 provided instead, returns whether or not a sequence contains values matching all the
