@@ -11,8 +11,8 @@ related_commands:
 
 {% apibody %}
 bool | bool &rarr; bool
-bool.or(bool) &rarr; bool
-r.or(bool, bool) &rarr; bool
+bool.or(bool[, bool, ...]) &rarr; bool
+r.or(bool, bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #

@@ -1807,8 +1807,8 @@ __Example:__ It's as easy as 2 % 2 = 0.
 
 {% apibody %}
 bool & bool &rarr; bool
-r.and_(bool, bool) &rarr; bool
-bool.and_(bool) &rarr; bool
+bool.and_(bool[, bool, ...]) &rarr; bool
+r.and_(bool, bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
 Compute the logical "and" of two or more values.
@@ -1828,8 +1828,8 @@ False
 
 {% apibody %}
 bool | bool &rarr; bool
-bool.or_(bool) &rarr; bool
-r.or_(bool, bool) &rarr; bool
+bool.or_(bool[, bool, ...]) &rarr; bool
+r.or_(bool, bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
 Compute the logical "or" of two or more values.

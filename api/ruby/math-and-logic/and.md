@@ -11,8 +11,8 @@ related_commands:
 
 {% apibody %}
 bool & bool &rarr; bool
-bool.and(bool) &rarr; bool
-r.and(bool, bool) &rarr; bool
+bool.and(bool[, bool, ...]) &rarr; bool
+r.and(bool, bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
