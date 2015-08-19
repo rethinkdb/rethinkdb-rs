@@ -16,7 +16,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-number.div(number) &rarr; number
+number.div(number[, number ...]) &rarr; number
 {% endapibody %}
 
 # Description #

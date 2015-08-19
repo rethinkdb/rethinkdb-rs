@@ -1733,7 +1733,7 @@ r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 ## [add](add/) ##
 
 {% apibody %}
-value.add(value[, value ...]) &rarr; value
+value.add(value[, value, ...]) &rarr; value
 time.add(number[, number, ...]) &rarr; time
 {% endapibody %}
 
@@ -1751,9 +1751,9 @@ r.expr(2).add(2).run(conn, callback)
 ## [sub](sub/) ##
 
 {% apibody %}
-number.sub(number) &rarr; number
+number.sub(number[, number, ...]) &rarr; number
+time.sub(number[, number, ...]) &rarr; time
 time.sub(time) &rarr; number
-time.sub(number) &rarr; time
 {% endapibody %}
 
 Subtract two numbers.
@@ -1770,8 +1770,8 @@ r.expr(2).sub(2).run(conn, callback)
 ## [mul](mul/) ##
 
 {% apibody %}
-number.mul(number) &rarr; number
-array.mul(number) &rarr; array
+number.mul(number[, number, ...]) &rarr; number
+array.mul(number[, number, ...]) &rarr; array
 {% endapibody %}
 
 Multiply two numbers, or make a periodic array.
@@ -1788,7 +1788,7 @@ r.expr(2).mul(2).run(conn, callback)
 ## [div](div/) ##
 
 {% apibody %}
-number.div(number) &rarr; number
+number.div(number[, number ...]) &rarr; number
 {% endapibody %}
 
 Divide two numbers.

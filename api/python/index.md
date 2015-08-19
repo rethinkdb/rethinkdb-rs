@@ -1714,9 +1714,9 @@ __Example:__
 ## [+](add/) ##
 
 {% apibody %}
-value + value[ + value ...] &rarr; value
-time + number[ + number ...] &rarr; time
-value.add(value[, value ...]) &rarr; value
+value + value &rarr; value
+time + number &rarr; time
+value.add(value[, value, ...]) &rarr; value
 time.add(number[, number, ...]) &rarr; time
 {% endapibody %}
 
@@ -1735,8 +1735,11 @@ __Example:__ It's as easy as 2 + 2 = 4.
 
 {% apibody %}
 number - number &rarr; number
-time - time &rarr; number
 time - number &rarr; time
+time - time &rarr; number
+number.sub(number[, number, ...]) &rarr; number
+time.sub(number[, number, ...]) &rarr; time
+time.sub(time) &rarr; number
 {% endapibody %}
 
 Subtract two numbers.
@@ -1755,6 +1758,8 @@ __Example:__ It's as easy as 2 - 2 = 0.
 {% apibody %}
 number * number &rarr; number
 array * number &rarr; array
+number.mul(number[, number, ...]) &rarr; number
+array.mul(number[, number, ...]) &rarr; array
 {% endapibody %}
 
 Multiply two numbers, or make a periodic array.
@@ -1771,6 +1776,7 @@ __Example:__ It's as easy as 2 * 2 = 4.
 
 {% apibody %}
 number / number &rarr; number
+number.div(number[, number ...]) &rarr; number
 {% endapibody %}
 
 Divide two numbers.

@@ -18,8 +18,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-number.mul(number) &rarr; number
-array.mul(number) &rarr; array
+number.mul(number[, number, ...]) &rarr; number
+array.mul(number[, number, ...]) &rarr; array
 {% endapibody %}
 
 # Description #

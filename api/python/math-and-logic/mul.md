@@ -15,6 +15,8 @@ related_commands:
 {% apibody %}
 number * number &rarr; number
 array * number &rarr; array
+number.mul(number[, number, ...]) &rarr; number
+array.mul(number[, number, ...]) &rarr; array
 {% endapibody %}
 
 # Description #

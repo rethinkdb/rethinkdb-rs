@@ -15,11 +15,13 @@ related_commands:
 {% apibody %}
 number * number &rarr; number
 array * number &rarr; array
+number.mul(number[, number, ...]) &rarr; number
+array.mul(number[, number, ...]) &rarr; array
 {% endapibody %}
 
 # Description #
 
-Multiply two numbers, or make a periodic array.
+Multiply two or more numbers, or make a periodic array.
 
 __Example:__ It's as easy as 2 * 2 = 4.
 
