@@ -12,7 +12,7 @@ related_commands:
 {% apibody %}
 bool | bool &rarr; bool
 bool.or_(bool[, bool, ...]) &rarr; bool
-r.or_(bool, bool) &rarr; bool
+r.or_(bool, bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
