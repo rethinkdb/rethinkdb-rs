@@ -14,6 +14,7 @@ related_commands:
 
 {% apibody %}
 geometry.distance(geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
+r.distance(geometry, geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
 {% endapibody %}
 
 # Description #

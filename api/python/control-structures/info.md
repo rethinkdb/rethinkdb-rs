@@ -9,6 +9,7 @@ command: info
 
 {% apibody %}
 any.info() &rarr; object
+r.info(any) &rarr; object
 {% endapibody %}
 
 # Description #
