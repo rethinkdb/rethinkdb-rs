@@ -1820,97 +1820,99 @@ true
 ## [eq](eq/) ##
 
 {% apibody %}
-value.eq(value) &rarr; bool
+value.eq(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
-Test if two values are equal.
+Test if two or more values are equal.
 
-__Example:__ Does 2 equal 2?
+__Example:__ See if a user's `role` field is set to `administrator`. 
 
 ```rb
-r.expr(2).eq(2).run(conn)
+r.table('users').get(1)['role'].eq('administrator').run(conn)
 ```
 
 
 ## [ne](ne/) ##
 
 {% apibody %}
-value.ne(value) &rarr; bool
+value.ne(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
-Test if two values are not equal.
+Test if two or more values are not equal.
 
-__Example:__ Does 2 not equal 2?
+__Example:__ See if a user's `role` field is not set to `administrator`. 
 
 ```rb
-r.expr(2).ne(2).run(conn)
+r.table('users').get(1)['role'].ne('administrator').run(conn)
 ```
-
 
 ## [>, gt](gt/) ##
 
 {% apibody %}
+value.gt(value[, value, ...]) &rarr; bool
 value > value &rarr; bool
-value.gt(value) &rarr; bool
 {% endapibody %}
 
-Test if the first value is greater than other.
+Compare values, testing if the left-hand value is greater than the right-hand.
 
-__Example:__ Is 2 greater than 2?
+__Example:__ Test if a player has scored more than 10 points.
 
 ```rb
-(r.expr(2) > 2).run(conn)
-r.expr(2).gt(2).run(conn)
+r.table('players').get(1)['score'].gt(10).run(conn)
+# alternative syntax
+(r.table('players').get(1)['score'] > 10).run(conn)
 ```
 
 ## [>=, ge](ge/) ##
 
 {% apibody %}
+value.ge(value[, value, ...]) &rarr; bool
 value >= value &rarr; bool
-value.ge(value) &rarr; bool
 {% endapibody %}
 
-Test if the first value is greater than or equal to other.
+Compare values, testing if the left-hand value is greater than or equal to the right-hand.
 
-__Example:__ Is 2 greater than or equal to 2?
+__Example:__ Test if a player has scored 10 points or more.
 
 ```rb
-(r.expr(2) >= 2).run(conn)
-r.expr(2).ge(2).run(conn)
+r.table('players').get(1)['score'].ge(10).run(conn)
+# alternative syntax
+(r.table('players').get(1)['score'] >= 10).run(conn)
 ```
 
 ## [<, lt](lt/) ##
 
 {% apibody %}
+value.lt(value[, value, ...]) &rarr; bool
 value < value &rarr; bool
-value.lt(value) &rarr; bool
 {% endapibody %}
 
-Test if the first value is less than other.
+Compare values, testing if the left-hand value is less than the right-hand.
 
-__Example:__ Is 2 less than 2?
+__Example:__ Test if a player has scored less than 10 points.
 
 ```rb
-(r.expr(2) < 2).run(conn)
-r.expr(2).lt(2).run(conn)
+r.table('players').get(1)['score'].lt(10).run(conn)
+# alternative syntax
+(r.table('players').get(1)['score'] < 10).run(conn)
 ```
 
 ## [<=, le](le/) ##
 
 {% apibody %}
+value.le(value[, value, ...]) &rarr; bool
 value <= value &rarr; bool
-value.le(value) &rarr; bool
 {% endapibody %}
 
-Test if the first value is less than or equal to other.
+Compare values, testing if the left-hand value is less than or equal to the right-hand.
 
-__Example:__ Is 2 less than or equal to 2?
+__Example:__ Test if a player has scored 10 points or less.
 
 ```rb
-(r.expr(2) <= 2).run(conn)
-r.expr(2).le(2).run(conn)
+r.table('players').get(1)['score'].le(10).run(conn)
+# alternative syntax
+(r.table('players').get(1)['score'] <= 10).run(conn)
 ```
-
 
 ## [not](not/) ##
 

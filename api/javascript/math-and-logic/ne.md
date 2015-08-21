@@ -15,15 +15,21 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-value.ne(value) &rarr; bool
+value.ne(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Test if two values are not equal.
+Test if two or more values are not equal.
 
-__Example:__ Does 2 not equal 2?
+__Example:__ See if a user's `role` field is not set to `administrator`. 
 
 ```js
-r.expr(2).ne(2).run(conn, callback)
+r.table('users').get(1)('role').ne('administrator').run(conn, callback);
+```
+
+__Example:__ See if three variables do not contain equal values.
+
+```js
+r.ne(a, b, c).run(conn, callback);
 ```

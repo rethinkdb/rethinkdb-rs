@@ -12,15 +12,21 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-value.eq(value) &rarr; bool
+value.eq(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Test if two values are equal.
+Test if two or more values are equal.
 
-__Example:__ Does 2 equal 2?
+__Example:__ See if a user's `role` field is set to `administrator`. 
 
 ```rb
-r.expr(2).eq(2).run(conn)
+r.table('users').get(1)['role'].eq('administrator').run(conn)
+```
+
+__Example:__ See if three variables contain equal values.
+
+```rb
+r.eq(a, b, c).run(conn)
 ```
