@@ -12,19 +12,24 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
+value.ne(value[, value, ...]) &rarr; bool
 value != value &rarr; bool
-value.ne(value) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Test if two values are not equal.
+Test if two or more values are not equal.
 
-__Example:__ Does 2 not equal 2?
+__Example:__ See if a user's `role` field is not set to `administrator`. 
 
 ```py
-(r.expr(2) != 2).run(conn)
-r.expr(2).ne(2).run(conn)
+r.table('users').get(1)['role'].ne('administrator').run(conn)
+# alternative syntax
+(r.table('users').get(1)['role'] != 'administrator').run(conn)
 ```
 
+__Example:__ See if three variables do not contain equal values.
 
+```py
+r.ne(a, b, c).run(conn)
+```
