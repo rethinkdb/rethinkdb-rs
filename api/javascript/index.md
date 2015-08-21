@@ -2624,6 +2624,7 @@ r.expr("foo").typeOf().run(conn, callback)
 
 {% apibody %}
 any.info() &rarr; object
+r.info(any) &rarr; object
 {% endapibody %}
 
 Get information about a ReQL value.
@@ -2726,6 +2727,7 @@ r.table('geo').insert({
 
 {% apibody %}
 geometry.distance(geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
+r.distance(geometry, geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
 {% endapibody %}
 
 Compute the distance between a point and another geometry object. At least one of the geometry objects specified must be a point.
@@ -2879,6 +2881,8 @@ true
 {% apibody %}
 sequence.intersects(geometry) &rarr; sequence
 geometry.intersects(geometry) &rarr; bool
+r.intersects(sequence, geometry) &rarr; sequence
+r.intersects(geometry, geometry) &rarr; bool
 {% endapibody %}
 
 Tests whether two geometry objects intersect with one another. When applied to a sequence of geometry objects, `intersects` acts as a [filter](/api/javascript/filter), returning a sequence of objects from the sequence that intersect with the argument.
