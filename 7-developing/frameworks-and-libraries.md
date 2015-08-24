@@ -5,8 +5,10 @@ docs_active: frameworks-and-libraries
 permalink: docs/frameworks-and-libraries/
 ---
 
+{% toctag %}
+
 {% infobox %}
-__Add your library:__ Have you written a cool library related RethinkDB and want us to showcase it?
+__Add your project:__ Have you written a cool library or tool for RethinkDB?
 Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 {% endinfobox %}
 
@@ -110,69 +112,3 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 - [lotus-rethinkdb](https://github.com/angeloashmore/lotus-rethinkdb) by [@angeloashmore](https://github.com/angeloashmore)  
   A RethinkDB adapter for [Lotus::Model](https://github.com/lotus/model), a persistence framework for Ruby.
-
-# Tools and utilities
-
-## Administration
-
-- [Chateau](https://github.com/neumino/chateau) by [@neumino](https://github.com/neumino)  
-  An administrative interface for your data (like phpMyAdmin for RethinkDB).
-
-- [Methink](https://github.com/Calder/methink) by [@Calder](https://github.com/Calder)  
-  A MySQL to RethinkDB migration script.
-
-- [rethink-miner](https://github.com/baruch/rethink-miner) by [@baruch](https://github.com/baruch)  
-  Stores queries and their results, and displays them from a web interface.
-
-- [recli](https://github.com/stiang/recli)  
-  CLI to run ReQL queries in JavaScript.
-
-- [rethinkdb-cli](https://github.com/byterussian/rethinkdb-cli)  
-  CLI to run ReQL queries in Ruby.
-
-- [phpReAdmin](https://github.com/billbarsch/phpReAdmin) by [@billbarsch](https://github.com/billbarsch)  
-  Web frontend written in PHP to create/rename/update/delete RethinkDB databases/tables/docs and run ReQL queries in PHP.
-
-- [rethinkdb_nightly](https://github.com/robconery/rethinkdb_nightly) by [@robconery](https://github.com/robconery)  
-  A node module that will execute a nightly backup and push it to S3.
-
-## Logging tools
-
-- [fluent-plugin-rethinkdb](https://github.com/kureikain/fluent-plugin-rethink)  
-  [FluentD](https://github.com/fluent/fluentd) output plugins to ship logs to RethinkDB.
-
-## For driver developers
-- [rethinkdb-driver-development](https://github.com/neumino/rethinkdb-driver-development) by [@neumino](https://github.com/neumino)  
-  A tool to retrieve the query objects, messages and responses.
-
-## Deployment tools
-
-- [Rethinkdb-vagrant](https://github.com/RyanAmos/rethinkdb-vagrant) by [@RyanAmos](https://github.com/RyanAmos)  
-  Lets you install RethinkDB using Vagrant.
-
-- [puppet-rethinkdb](https://github.com/tmont/puppet-rethinkdb) by [@tmont](https://github.com/tmont)  
-  A Puppet module for RethinkDB.
-
-- [chef-rethinkdb](https://github.com/AVVSDevelopment/chef-rethinkdb) by [@AVVSDevelopment](https://github.com/AVVSDevelopment)  
-  A RethinkDB cookbook for Chef deployment.
-
-- [box-rethinkdb](https://github.com/mies/box-rethinkdb)  
-  Wercker box for RethinkDB, by [@mies](https://github.com/mies).
-
-## Docker images
-
-{% infobox %}
-Docker provides an [official RethinkDB repository](https://registry.hub.docker.com/_/rethinkdb/) on the Docker Hub. (Read [Installing RethinkDB](/docs/install) for more details.) This list highlights community-provided Docker images and tools.
-{% endinfobox %}
-
-- [Docker-rethinkdb](https://github.com/grzesiek/docker-rethinkdb) by [@grzesiek](https://github.com/grzesiek)  
-  A simple Docker image for RethinkDB.
-
-- [Dockerfile/rethinkdb](http://dockerfile.github.io/#/rethinkdb) by [@pilwon](https://github.com/pilwon)  
-  Trusted Docker build and instructions for deploying a RethinkDB cluster.
-
-- [Dockerfiles-examples](https://github.com/kstaken/dockerfile-examples) by [@kstaken](https://github.com/kstaken)  
-  Includes scripts for building an image for Docker with RethinkDB (and other things).
-
-- [Docker-cookbooks](https://github.com/crosbymichael/docker-cookbooks) by [@crosbymichael](https://github.com/crosbymichael)  
-  A collection of Dockerfiles and configurations to build images for RethinkDB.
