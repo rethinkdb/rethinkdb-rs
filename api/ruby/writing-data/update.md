@@ -13,11 +13,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.update(object | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
+table.update(object | function[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
-selection.update(object | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
+selection.update(object | function[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
-singleSelection.update(object | expr[, :durability => "hard", :return_changes => false, :non_atomic => false])
+singleSelection.update(object | function[, :durability => "hard", :return_changes => false, :non_atomic => false])
     &rarr; object
 {% endapibody %}
 

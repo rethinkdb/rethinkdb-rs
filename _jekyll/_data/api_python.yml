@@ -264,7 +264,7 @@
         - name: date
           permalink: date
         - name: time_of_day
-          permalink: time_of_da
+          permalink: time_of_day
         - name: year
           permalink: year
         - name: month
@@ -274,7 +274,7 @@
         - name: day_of_week
           permalink: day_of_week
         - name: day_of_year
-          permalink: day_of_yea
+          permalink: day_of_year
         - name: hours
           permalink: hours
         - name: minutes
@@ -284,7 +284,7 @@
         - name: to_iso8601
           permalink: to_iso8601
         - name: to_epoch_time
-          permalink: to_epoch_tim
+          permalink: to_epoch_time
 - section:
     name: Control structures
     commands:

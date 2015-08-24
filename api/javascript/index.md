@@ -530,13 +530,13 @@ r.table("posts").insert({
 ## [update](update/) ##
 
 {% apibody %}
-table.update(object | expr
+table.update(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-selection.update(object | expr
+selection.update(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-singleSelection.update(object | expr
+singleSelection.update(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 {% endapibody %}
@@ -558,13 +558,13 @@ r.table("posts").get(1).update({status: "published"}).run(conn, callback)
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(object | expr
+table.replace(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-selection.replace(object | expr
+selection.replace(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
-singleSelection.replace(object | expr
+singleSelection.replace(object | function
     [, {durability: "hard", returnChanges: false, nonAtomic: false}])
         &rarr; object
 
@@ -727,9 +727,9 @@ r.table('marvel').between(10, 20).run(conn, callback)
 ## [filter](filter/) ##
 
 {% apibody %}
-selection.filter(predicate[, {default: false}]) &rarr; selection
-stream.filter(predicate[, {default: false}]) &rarr; stream
-array.filter(predicate[, {default: false}]) &rarr; array
+selection.filter(predicate_function[, {default: false}]) &rarr; selection
+stream.filter(predicate_function[, {default: false}]) &rarr; stream
+array.filter(predicate_function[, {default: false}]) &rarr; array
 {% endapibody %}
 
 Get all the documents for which the given predicate is true.
@@ -761,8 +761,8 @@ These commands allow the combination of multiple sequences into a single sequenc
 ## [innerJoin](inner_join/) ##
 
 {% apibody %}
-sequence.innerJoin(otherSequence, predicate) &rarr; stream
-array.innerJoin(otherSequence, predicate) &rarr; array
+sequence.innerJoin(otherSequence, predicate_function) &rarr; stream
+array.innerJoin(otherSequence, predicate_function) &rarr; array
 {% endapibody %}
 
 Returns an inner join of two sequences.
@@ -780,8 +780,8 @@ r.table('marvel').innerJoin(r.table('dc'), function(marvelRow, dcRow) {
 ## [outerJoin](outer_join/) ##
 
 {% apibody %}
-sequence.outerJoin(otherSequence, predicate) &rarr; stream
-array.outerJoin(otherSequence, predicate) &rarr; array
+sequence.outerJoin(otherSequence, predicate_function) &rarr; stream
+array.outerJoin(otherSequence, predicate_function) &rarr; array
 {% endapibody %}
 
 Returns a left outer join of two sequences.
@@ -800,7 +800,7 @@ r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
 
 {% apibody %}
 sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
-sequence.eqJoin(function, rightTable[, {index:'id'}]) &rarr; sequence
+sequence.eqJoin(predicate_function, rightTable[, {index:'id'}]) &rarr; sequence
 {% endapibody %}
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
@@ -840,10 +840,10 @@ These commands are used to transform data in a sequence.
 ## [map](map/) ##
 
 {% apibody %}
-sequence1.map([sequence2, ...], mappingFunction) &rarr; stream
-array1.map([array2, ...], mappingFunction) &rarr; array
-r.map(sequence1[, sequence2, ...], mappingFunction) &rarr; stream
-r.map(array1[, array2, ...], mappingFunction) &rarr; array
+sequence1.map([sequence2, ...], function) &rarr; stream
+array1.map([array2, ...], function) &rarr; array
+r.map(sequence1[, sequence2, ...], function) &rarr; stream
+r.map(array1[, array2, ...], function) &rarr; array
 {% endapibody %}
 
 Transform each element of one or more sequences by applying a mapping function to them. If `map` is run with two or more sequences, it will iterate for as many items as there are in the shortest sequence.
@@ -880,8 +880,8 @@ r.table('users').withFields('id', 'username', 'posts').run(conn, callback)
 ## [concatMap](concat_map/) ##
 
 {% apibody %}
-stream.concatMap(mappingFunction) &rarr; stream
-array.concatMap(mappingFunction) &rarr; array
+stream.concatMap(function) &rarr; stream
+array.concatMap(function) &rarr; array
 {% endapibody %}
 
 Concatenate one or more elements into a single sequence using a mapping function.
@@ -899,9 +899,9 @@ r.table('marvel').concatMap(function(hero) {
 ## [orderBy](order_by/) ##
 
 {% apibody %}
-table.orderBy([key1...], {index: index_name}) &rarr; selection<stream>
-selection.orderBy(key1, [key2...]) &rarr; selection<array>
-sequence.orderBy(key1, [key2...]) &rarr; array
+table.orderBy([key | function...], {index: index_name}) &rarr; selection<stream>
+selection.orderBy(key | function[, ...]) &rarr; selection<array>
+sequence.orderBy(key | function[, ...]) &rarr; array
 {% endapibody %}
 
 Sort the sequence by document values of the given key(s). To specify
@@ -1002,7 +1002,7 @@ r.expr([1,2,3]).nth(1).run(conn, callback)
 ## [offsetsOf](offsets_of/) ##
 
 {% apibody %}
-sequence.offsetsOf(datum | predicate) &rarr; array
+sequence.offsetsOf(datum | predicate_function) &rarr; array
 {% endapibody %}
 
 Get the indexes of an element in a sequence. If the argument is a predicate, get the indexes of all elements matching it.
@@ -1073,7 +1073,7 @@ These commands are used to compute smaller values from large sequences.
 ## [group](group/) ##
 
 {% apibody %}
-sequence.group(fieldOrFunction..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
+sequence.group(field | function..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the
@@ -1119,7 +1119,7 @@ r.table('games')
 ## [reduce](reduce/) ##
 
 {% apibody %}
-sequence.reduce(reductionFunction) &rarr; value
+sequence.reduce(function) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction
@@ -1140,7 +1140,7 @@ r.table("posts").map(function(doc) {
 ## [count](count/) ##
 
 {% apibody %}
-sequence.count([filter]) &rarr; number
+sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
 {% endapibody %}
 
@@ -1161,7 +1161,7 @@ r.table('marvel').count().add(r.table('dc').count()).run(conn, callback)
 ## [sum](sum/) ##
 
 {% apibody %}
-sequence.sum([fieldOrFunction]) &rarr; number
+sequence.sum([field | function]) &rarr; number
 {% endapibody %}
 
 Sums all the elements of a sequence.  If called with a field name,
@@ -1183,7 +1183,7 @@ r.expr([3, 5, 7]).sum().run(conn, callback)
 ## [avg](avg/) ##
 
 {% apibody %}
-sequence.avg([fieldOrFunction]) &rarr; number
+sequence.avg([field | function]) &rarr; number
 {% endapibody %}
 
 Averages all the elements of a sequence.  If called with a field name,
@@ -1206,7 +1206,7 @@ r.expr([3, 5, 7]).avg().run(conn, callback)
 ## [min](min/) ##
 
 {% apibody %}
-sequence.min(fieldOrFunction) &rarr; element
+sequence.min(field | function) &rarr; element
 sequence.min({index: <indexname>}) &rarr; element
 {% endapibody %}
 
@@ -1226,7 +1226,7 @@ r.expr([3, 5, 7]).min().run(conn, callback);
 ## [max](max/) ##
 
 {% apibody %}
-sequence.max(fieldOrFunction) &rarr; element
+sequence.max(field | function) &rarr; element
 sequence.max({index: <indexname>}) &rarr; element
 {% endapibody %}
 
@@ -1265,7 +1265,7 @@ r.table('marvel').concatMap(function(hero) {
 ## [contains](contains/) ##
 
 {% apibody %}
-sequence.contains(value|predicate[, value|predicate, ...]) &rarr; bool
+sequence.contains([value | predicate_function, ...]) &rarr; bool
 {% endapibody %}
 
 Returns whether or not a sequence contains all the specified values, or if functions are
@@ -1349,10 +1349,10 @@ r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn, call
 ## [merge](merge/) ##
 
 {% apibody %}
-singleSelection.merge(object|function[, object|function, ...]) &rarr; object
-object.merge(object|function[, object|function, ...]) &rarr; object
-sequence.merge(object|function[, object|function, ...]) &rarr; stream
-array.merge(object|function[, object|function, ...]) &rarr; array
+singleSelection.merge([object | function, object | function, ...]) &rarr; object
+object.merge([object | function, object | function, ...]) &rarr; object
+sequence.merge([object | function, object | function, ...]) &rarr; stream
+array.merge([object | function, object | function, ...]) &rarr; array
 {% endapibody %}
 
 Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list.
@@ -1733,7 +1733,7 @@ r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 ## [add](add/) ##
 
 {% apibody %}
-value.add(value[, value ...]) &rarr; value
+value.add(value[, value, ...]) &rarr; value
 time.add(number[, number, ...]) &rarr; time
 {% endapibody %}
 
@@ -1751,9 +1751,9 @@ r.expr(2).add(2).run(conn, callback)
 ## [sub](sub/) ##
 
 {% apibody %}
-number.sub(number) &rarr; number
+number.sub(number[, number, ...]) &rarr; number
+time.sub(number[, number, ...]) &rarr; time
 time.sub(time) &rarr; number
-time.sub(number) &rarr; time
 {% endapibody %}
 
 Subtract two numbers.
@@ -1770,8 +1770,8 @@ r.expr(2).sub(2).run(conn, callback)
 ## [mul](mul/) ##
 
 {% apibody %}
-number.mul(number) &rarr; number
-array.mul(number) &rarr; array
+number.mul(number[, number, ...]) &rarr; number
+array.mul(number[, number, ...]) &rarr; array
 {% endapibody %}
 
 Multiply two numbers, or make a periodic array.
@@ -1788,7 +1788,7 @@ r.expr(2).mul(2).run(conn, callback)
 ## [div](div/) ##
 
 {% apibody %}
-number.div(number) &rarr; number
+number.div(number[, number ...]) &rarr; number
 {% endapibody %}
 
 Divide two numbers.
@@ -1855,87 +1855,87 @@ true
 ## [eq](eq/) ##
 
 {% apibody %}
-value.eq(value) &rarr; bool
+value.eq(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
-Test if two values are equal.
+Test if two or more values are equal.
 
-__Example:__ Does 2 equal 2?
+__Example:__ See if a user's `role` field is set to `administrator`. 
 
 ```js
-r.expr(2).eq(2).run(conn, callback)
+r.table('users').get(1)('role').eq('administrator').run(conn, callback);
 ```
 
 
 ## [ne](ne/) ##
 
 {% apibody %}
-value.ne(value) &rarr; bool
+value.ne(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
-Test if two values are not equal.
+Test if two or more values are not equal.
 
-__Example:__ Does 2 not equal 2?
+__Example:__ See if a user's `role` field is not set to `administrator`. 
 
-```js
-r.expr(2).ne(2).run(conn, callback)
+```rb
+r.table('users').get(1)('role').ne('administrator').run(conn, callback);
 ```
 
 
 ## [gt](gt/) ##
 
 {% apibody %}
-value.gt(value) &rarr; bool
+value.gt(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
-Test if the first value is greater than other.
+Compare values, testing if the left-hand value is greater than the right-hand.
 
-__Example:__ Is 2 greater than 2?
+__Example:__ Test if a player has scored more than 10 points.
 
 ```js
-r.expr(2).gt(2).run(conn, callback)
+r.table('players').get(1)('score').gt(10).run(conn, callback);
 ```
 
 ## [ge](ge/) ##
 
 {% apibody %}
-value.ge(value) &rarr; bool
+value.ge(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
-Test if the first value is greater than or equal to other.
+Compare values, testing if the left-hand value is greater than or equal to the right-hand.
 
-__Example:__ Is 2 greater than or equal to 2?
+__Example:__ Test if a player has scored 10 points or more.
 
 ```js
-r.expr(2).ge(2).run(conn, callback)
+r.table('players').get(1)('score').ge(10).run(conn, callback);
 ```
 
 ## [lt](lt/) ##
 
 {% apibody %}
-value.lt(value) &rarr; bool
+value.lt(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
-Test if the first value is less than other.
+Compare values, testing if the left-hand value is less than the right-hand.
 
-__Example:__ Is 2 less than 2?
+__Example:__ Test if a player has scored less than 10 points.
 
 ```js
-r.expr(2).lt(2).run(conn, callback)
+r.table('players').get(1)['score'].lt(10).run(conn, callback);
 ```
 
 ## [le](le/) ##
 
 {% apibody %}
-value.le(value) &rarr; bool
+value.le(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
-Test if the first value is less than or equal to other.
+Compare values, testing if the left-hand value is less than or equal to the right-hand.
 
-__Example:__ Is 2 less than or equal to 2?
+__Example:__ Test if a player has scored 10 points or less.
 
 ```js
-r.expr(2).le(2).run(conn, callback)
+r.table('players').get(1)('score').le(10).run(conn, callback);
 ```
 
 ## [not](not/) ##
@@ -2472,7 +2472,7 @@ r.table('marvel').map(
 ## [forEach](for_each/) ##
 
 {% apibody %}
-sequence.forEach(write_query) &rarr; object
+sequence.forEach(write_function) &rarr; object
 {% endapibody %}
 
 Loop over a sequence, evaluating the given write query for each element.
@@ -2624,6 +2624,7 @@ r.expr("foo").typeOf().run(conn, callback)
 
 {% apibody %}
 any.info() &rarr; object
+r.info(any) &rarr; object
 {% endapibody %}
 
 Get information about a ReQL value.
@@ -2694,7 +2695,7 @@ __Example:__ Generate a UUID.
 ```js
 > r.uuid().run(conn, callback)
 // result returned to callback
-27961a0e-f4e8-4eb3-bf95-c5203e1d87b9
+"27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
 ```
 
 {% endapisection %}
@@ -2726,6 +2727,7 @@ r.table('geo').insert({
 
 {% apibody %}
 geometry.distance(geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
+r.distance(geometry, geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
 {% endapibody %}
 
 Compute the distance between a point and another geometry object. At least one of the geometry objects specified must be a point.
@@ -2879,6 +2881,8 @@ true
 {% apibody %}
 sequence.intersects(geometry) &rarr; sequence
 geometry.intersects(geometry) &rarr; bool
+r.intersects(sequence, geometry) &rarr; sequence
+r.intersects(geometry, geometry) &rarr; bool
 {% endapibody %}
 
 Tests whether two geometry objects intersect with one another. When applied to a sequence of geometry objects, `intersects` acts as a [filter](/api/javascript/filter), returning a sequence of objects from the sequence that intersect with the argument.

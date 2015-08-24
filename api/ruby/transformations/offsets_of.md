@@ -9,7 +9,7 @@ alias: api/ruby/indexes_of/
 # Command syntax #
 
 {% apibody %}
-sequence.offsets_of(datum | predicate) &rarr; array
+sequence.offsets_of(datum | predicate_function) &rarr; array
 {% endapibody %}
 
 # Description #

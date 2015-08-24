@@ -12,10 +12,10 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-singleSelection.merge(object|function[, object|function, ...]) &rarr; object
-object.merge(object|function[, object|function, ...]) &rarr; object
-sequence.merge(object|function[, object|function, ...]) &rarr; stream
-array.merge(object|function[, object|function, ...]) &rarr; array
+singleSelection.merge([object | function, object | function, ...]) &rarr; object
+object.merge([object | function, object | function, ...]) &rarr; object
+sequence.merge([object | function, object | function, ...]) &rarr; stream
+array.merge([object | function, object | function, ...]) &rarr; array
 {% endapibody %}
 
 # Description #

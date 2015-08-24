@@ -15,7 +15,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.contains(value|predicate[, value|predicate, ...]) &rarr; bool
+sequence.contains([value | predicate_function, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #

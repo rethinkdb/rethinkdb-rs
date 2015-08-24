@@ -20,7 +20,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.group(fieldOrFunction..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
+sequence.group(field | function..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
 {% endapibody %}
 
 <img src="/assets/images/docs/api_illustrations/group.png" class="api_command_illustration" />

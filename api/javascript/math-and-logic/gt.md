@@ -17,16 +17,28 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-value.gt(value) &rarr; bool
+value.gt(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Test if the first value is greater than other.
+Compare values, testing if the left-hand value is greater than the right-hand.
 
-__Example:__ Is 2 greater than 2?
+__Example:__ Test if a player has scored more than 10 points.
 
 ```js
-r.expr(2).gt(2).run(conn, callback)
+r.table('players').get(1)('score').gt(10).run(conn, callback);
 ```
 
+__Example:__ Test if variables are ordered from lowest to highest, with no values being equal to one another.
+
+```js
+var a = 10, b = 20, c = 15;
+r.gt(a, b, c).run(conn, callback);
+```
+
+This is the equivalent of the following:
+
+```js
+r.gt(a, b).and(r.gt(b, c)).run(conn, callback);
+```

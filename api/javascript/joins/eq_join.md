@@ -19,7 +19,7 @@ related_commands:
 
 {% apibody %}
 sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
-sequence.eqJoin(function, rightTable[, {index:'id'}]) &rarr; sequence
+sequence.eqJoin(predicate_function, rightTable[, {index:'id'}]) &rarr; sequence
 {% endapibody %}
 
 # Description #

@@ -13,9 +13,9 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-value + value[ + value ...] &rarr; value
-time + number[ + number ...] &rarr; time
-value.add(value[, value ...]) &rarr; value
+value + value &rarr; value
+time + number &rarr; time
+value.add(value[, value, ...]) &rarr; value
 time.add(number[, number, ...]) &rarr; time
 {% endapibody %}
 

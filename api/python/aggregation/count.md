@@ -16,7 +16,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.count([value_or_predicate]) &rarr; number
+sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
 {% endapibody %}
 

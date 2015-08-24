@@ -19,7 +19,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.min(fieldOrFunction) &rarr; element
+sequence.min(field | function) &rarr; element
 sequence.min({index: <indexname>}) &rarr; element
 {% endapibody %}
 

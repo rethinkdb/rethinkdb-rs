@@ -12,10 +12,10 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence1.map([sequence2, ...], mapping_function) &rarr; stream
-array1.map([array2, ...], mapping_function) &rarr; array
-r.map(sequence1[, sequence2, ...], mapping_function) &rarr; stream
-r.map(array1[, array2, ...], mapping_function) &rarr; array
+sequence1.map([sequence2, ...], function) &rarr; stream
+array1.map([array2, ...], function) &rarr; array
+r.map(sequence1[, sequence2, ...], function) &rarr; stream
+r.map(array1[, array2, ...], function) &rarr; array
 {% endapibody %}
 
 # Description #

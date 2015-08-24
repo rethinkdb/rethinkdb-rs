@@ -14,6 +14,7 @@ related_commands:
 
 {% apibody %}
 number / number &rarr; number
+number.div(number[, number ...]) &rarr; number
 {% endapibody %}
 
 # Description #

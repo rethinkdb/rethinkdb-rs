@@ -19,7 +19,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.reduce(reductionFunction) &rarr; value
+sequence.reduce(function) &rarr; value
 {% endapibody %}
 
 # Description #

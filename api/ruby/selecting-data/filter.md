@@ -13,9 +13,9 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-selection.filter(predicate[, :default => false]) &rarr; selection
-stream.filter(predicate[, :default => false]) &rarr; stream
-array.filter(predicate[, :default => false]) &rarr; array
+selection.filter(predicate_function[, :default => false]) &rarr; selection
+stream.filter(predicate_function[, :default => false]) &rarr; stream
+array.filter(predicate_function[, :default => false]) &rarr; array
 {% endapibody %}
 
 # Description #

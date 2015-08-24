@@ -17,15 +17,28 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-value.lt(value) &rarr; bool
+value.lt(value[, value, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Test if the first value is less than other.
+Compare values, testing if the left-hand value is less than the right-hand.
 
-__Example:__ Is 2 less than 2?
+__Example:__ Test if a player has scored less than 10 points.
 
 ```js
-r.expr(2).lt(2).run(conn, callback)
+r.table('players').get(1)('score').lt(10).run(conn, callback);
+```
+
+__Example:__ Test if variables are ordered from highest to lowest, with no values being equal to one another.
+
+```js
+var a = 20, b = 10,c = 15;
+r.lt(a, b, c).run(conn, callback);
+```
+
+This is the equivalent of the following:
+
+```js
+r.lt(a, b).and(r.lt(b, c)).run(conn, callback);
 ```
