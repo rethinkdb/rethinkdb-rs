@@ -376,7 +376,7 @@ SELECT *
 {% highlight python %}
 r.table("users").filter(
     (r.row["age"] >= 18)
-    & (r.row["age"] >= 65)
+    & (r.row["age"] <= 65)
 {% endhighlight %}
 
 If you have a secondary index built on the field <code>age</code>, you can run a
