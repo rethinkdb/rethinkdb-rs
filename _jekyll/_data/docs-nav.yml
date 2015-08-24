@@ -25,12 +25,12 @@
       - name: Using secondary indexes
         permalink: secondary-indexes
         url: /docs/secondary-indexes/
-      - name: Table joins in RethinkDB
-        permalink: table-joins
-        url: /docs/table-joins/
       - name: Accessing nested fields
         permalink: nested-fields
         url: /docs/nested-fields/
+      - name: Table joins in RethinkDB
+        permalink: table-joins
+        url: /docs/table-joins/
       - name: Map-reduce in RethinkDB
         permalink: map-reduce
         url: /docs/map-reduce/
