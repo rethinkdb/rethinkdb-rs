@@ -2944,8 +2944,8 @@ r.table('geo').insert({
 ## [polygon](polygon/) ##
 
 {% apibody %}
-r.polygon([lon1, lat1], [lon2, lat2], ...) &rarr; polygon
-r.polygon(point1, point2, ...) &rarr; polygon
+r.polygon([lon1, lat1], [lon2, lat2], [lon3, lat3], ...) &rarr; polygon
+r.polygon(point1, point2, point3, ...) &rarr; polygon
 {% endapibody %}
 
 Construct a geometry object of type Polygon. The Polygon can be specified in one of two ways:
