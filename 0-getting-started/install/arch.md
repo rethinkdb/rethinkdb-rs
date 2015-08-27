@@ -82,7 +82,7 @@ You will need to install the `base-devel` group and several additional build dep
 Download and extract the archive:
 
 ```bash
-$ wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+$ wget https://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
 $ tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 

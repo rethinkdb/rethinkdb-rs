@@ -14,7 +14,7 @@ We provide binaries for both 32-bit and 64-bit CentOS 6.
 To install the server, add the [RethinkDB yum repository](http://download.rethinkdb.com/centos) to your list of repositories and install:
 
 ```bash
-sudo wget http://download.rethinkdb.com/centos/6/`uname -m`/rethinkdb.repo \
+sudo wget https://download.rethinkdb.com/centos/6/`uname -m`/rethinkdb.repo \
           -O /etc/yum.repos.d/rethinkdb.repo
 sudo yum install rethinkdb
 ```
@@ -46,7 +46,7 @@ package. Installing these dependencies from the EPEL repositories will
 allow RethinkDB to build more quickly:
 
 ```bash
-sudo rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+sudo rpm -Uvh https://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 sudo yum install protobuf-devel jemalloc-devel
 ```
 
@@ -55,7 +55,7 @@ sudo yum install protobuf-devel jemalloc-devel
 Download and extract the source tarball:
 
 ```bash
-wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+wget https://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
 tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
