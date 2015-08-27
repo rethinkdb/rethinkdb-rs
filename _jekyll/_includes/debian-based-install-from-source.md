@@ -8,7 +8,7 @@ Install the dependencies:
 sudo apt-get install build-essential protobuf-compiler python \
                      libprotobuf-dev libcurl4-openssl-dev \
                      libboost-all-dev libncurses5-dev \
-                     libjemalloc-dev wget
+                     libjemalloc-dev wget m4
 ```
 
 ## Get the source code ##
