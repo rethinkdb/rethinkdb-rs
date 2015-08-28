@@ -35,9 +35,15 @@ It also returns results ordered from most relevant to least, not worrying about 
 [st]: http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/controlling-stemming.html
 [es]: http://www.elasticsearch.org
 
-For those applications that need full-text search, we've got you covered. We've written a [plugin for Elasticsearch][err] (called a river) that keeps RethinkDB synced up with Elasticsearch's indexes. It uses [changefeeds][cf] to push new, updated and deleted documents to Elasticsearch in real-time. In addition, it will load existing documents from your RethinkDB tables, so you can get going right away.
+For those applications that need full-text search, we've written a [plugin for Elasticsearch][err] (called a river) that keeps RethinkDB synced up with Elasticsearch's indexes. It uses [changefeeds][cf] to push new, updated and deleted documents to Elasticsearch in real-time. In addition, it loads existing documents from your RethinkDB tables, so you can get going right away.
 
 [cf]: /docs/changefeeds/
+
+{% infobox alert %}
+**Warning!** If the RethinkDB river plugin loses connection with the RethinkDB server it's pulling data from, there's no way to guarantee no documents will be lost. This should change in the future with improvements to changefeeds, but currently the only way to be sure is to backfill every time, which will still miss deleted documents.
+
+For now, the plugin works best when backfilling or replicating into Elasticsearch is an option, and when it's all right to risk having some outdated data in the index.
+{% endinfobox %}
 
 # Venturing into the river
 
