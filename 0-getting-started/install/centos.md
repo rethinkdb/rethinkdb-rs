@@ -46,7 +46,7 @@ package. Installing these dependencies from the EPEL repositories will
 allow RethinkDB to build more quickly:
 
 ```bash
-sudo rpm -Uvh https://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+sudo rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 sudo yum install protobuf-devel jemalloc-devel
 ```
 
