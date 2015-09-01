@@ -17,7 +17,7 @@ RethinkDB has a few hard limitations, as well as some soft limitations that are 
 
 ## Table/document limits ##
 
-* There is no hard limit on the number of tables per database or cluster. However, performance degrades based on the total number of shards across all tables on a cluster. The current recommendation is to keep this number below 300 (i.e., 300 tables with one shard each, or 50 tables with six shards each).
+* There is no hard limit on the number of tables per database or cluster.
 
 * Each table requires a minimum of approximately 10MB disk space on each server in a cluster. (A completely empty table takes up 4MB.)
 
