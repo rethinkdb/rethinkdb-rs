@@ -70,18 +70,21 @@
 - section:
     name: ReQL in practice
     docs:
-      - name: Cookbook
-        permalink: cookbook
-        url: /docs/cookbook/
-      - name: Example projects
-        permalink: examples
-        url: /docs/examples/
+      - name: Optimizing query performance
+        permalink: optimization
+        url: /docs/optimization/
       - name: Data exploration
         permalink: reql-data-exploration
         url: /docs/reql-data-exploration/
       - name: SQL to ReQL cheat sheet
         permalink: sql-to-reql
         url: /docs/sql-to-reql/
+      - name: Cookbook
+        permalink: cookbook
+        url: /docs/cookbook/
+      - name: Example projects
+        permalink: examples
+        url: /docs/examples/
 - section:
     name: Administration
     docs:
