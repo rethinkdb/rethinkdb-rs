@@ -380,7 +380,7 @@ SELECT *
 r.table("users").filter(
     r.row("age").ge(18)
      .and(r.row("age").le(65))
-).count()
+)
 {% endhighlight %}
 
 If you have a secondary index built on the field <code>age</code>, you can run a
