@@ -34,7 +34,7 @@ options:
 - `authKey`: the authentication key (default none).
 - `timeout`: timeout period in seconds for the connection to be opened (default `20`).
 - `ssl`: a hash of options to support SSL connections (default `null`). Currently, there is only one option available, and if the `ssl` option is specified, this key is required:
-    - `caCerts`: a path to the SSL CA certificate.
+    - `ca`: a list of [Node.js](http://nodejs.org) `Buffer` objects containing SSL CA certificates.
 
 If the connection cannot be established, a `ReqlDriverError` will be passed to the callback instead of a connection.
 
@@ -96,15 +96,22 @@ p.then(function(conn) {
 __Example:__ Open a new connection to the database using an SSL proxy.
 
 ```js
-r.connect({
-    host: 'localhost',
-    port: 28015,
-    db: 'marvel',
-    authKey: 'hunter2',
-    ssl: {
-        caCerts: '/path/to/ca.crt'
+var fs = require('fs');
+fs.readFile('/path/to/cert', function (err, caCert) {
+    if (!err) {
+        r.connect({
+            host: 'localhost',
+            port: 28015,
+            db: 'marvel',
+            authKey: 'hunter2',
+            ssl: {
+                ca: caCert
+            }
+        }, function(err, conn) {
+            // ...
+        });
+    } else {
+        console.log(err);
     }
-}, function(err, conn) {
-    // ...
 });
 ```
