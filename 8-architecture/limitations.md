@@ -49,7 +49,9 @@ RethinkDB has a few hard limitations, as well as some soft limitations that are 
 
 RethinkDB uses byte-wise ordering for indexes, `orderBy` and `between`. While this corresponds to codepoint ordering in UTF-8, RethinkDB does not support Unicode collations, and does not normalize for identical characters with multiple codepoints (i.e, `\u0065\u0301` and `\u00e9` both represent the character "&eacute;" but RethinkDB treats them, and sorts them as, distinct characters).
 
-Some file systems, typically compressed or encrypted ones, may require the `--no-direct-io` option (see [Create a cluster on system startup](/docs/cluster-on-startup/) for more information on RethinkDB options).
+Some file systems, typically compressed or encrypted ones, do not support the `--direct-io` option. (See [RethinkDB command line options][cli] for a full list of supported options.)
+
+[cli]: /docs/cli-options/
 
 There are currently issues with `btrfs`. Follow [issue #2781](https://github.com/rethinkdb/rethinkdb/issues/2781) for more information.
 
