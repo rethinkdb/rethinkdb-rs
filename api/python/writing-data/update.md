@@ -63,7 +63,7 @@ r.table("posts").filter({"author": "William"}).update({"status": "published"}).r
 ```
 
 
-__Example:__ Increment the field `view` with `id` of `1`.
+__Example:__ Increment the field `view` of the post with `id` of `1`.
 This query will throw an error if the field `views` doesn't exist.
 
 ```py
@@ -76,7 +76,7 @@ __Example:__ Increment the field `view` of the post with `id` of `1`.
 If the field `views` does not exist, it will be set to `0`.
 
 ```py
-r.table("posts").update({
+r.table("posts").get(1).update({
     "views": (r.row["views"]+1).default(0)
 }).run(conn)
 ```
