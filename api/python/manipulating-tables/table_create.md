@@ -12,6 +12,7 @@ related_commands:
 
 {% apibody %}
 db.table_create(table_name[, options]) &rarr; object
+r.table_create(table_name[, options]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -29,7 +30,11 @@ If successful, the command returns an object with two fields:
 
 If a table with the same name already exists, the command throws `ReqlRuntimeError`.
 
-Note: Only alphanumeric characters and underscores are valid for the table name.
+{% infobox %}
+__Note:__ Only alphanumeric characters and underscores are valid for the table name.
+
+Invoking `table_create` without specifying a database using [db](/api/python/db/) creates a table in the database specified in [connect](/api/python/connect/), or `test` if no database was specified.
+{% endinfobox %}
 
 When creating a table you can specify the following options:
 
@@ -48,7 +53,7 @@ The [data type](/docs/data-types/) of a primary key is usually a string (like a 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```py
-r.db('test').table_create('dc_universe').run(conn)
+r.db('heroes').table_create('dc_universe').run(conn)
 
 {
     "config_changes": [

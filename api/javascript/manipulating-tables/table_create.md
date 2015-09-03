@@ -15,6 +15,7 @@ related_commands:
 
 {% apibody %}
 db.tableCreate(tableName[, options]) &rarr; object
+r.tableCreate(tableName[, options]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -32,7 +33,11 @@ If successful, the command returns an object with two fields:
 
 If a table with the same name already exists, the command throws `ReqlRuntimeError`.
 
-Note: Only alphanumeric characters and underscores are valid for the table name.
+{% infobox %}
+__Note:__ Only alphanumeric characters and underscores are valid for the table name.
+
+Invoking `tableCreate` without specifying a database using [db](/api/javascript/db/) creates a table in the database specified in [connect](/api/javascript/connect/), or `test` if no database was specified.
+{% endinfobox %}
 
 When creating a table you can specify the following options:
 
@@ -51,7 +56,7 @@ The [data type](/docs/data-types/) of a primary key is usually a string (like a 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```js
-> r.db('test').tableCreate('dc_universe').run(conn, callback);
+> r.db('heroes').tableCreate('dc_universe').run(conn, callback);
 // Result passed to callback
 {
     "config_changes": [

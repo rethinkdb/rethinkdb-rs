@@ -314,6 +314,7 @@ r.db_list().run(conn)
 
 {% apibody %}
 db.table_create(table_name[, options]) &rarr; object
+r.table_create(table_name[, options]) &rarr; object
 {% endapibody %}
 
 Create a table. A RethinkDB table is a collection of JSON documents.
@@ -321,7 +322,7 @@ Create a table. A RethinkDB table is a collection of JSON documents.
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```py
-r.db('test').table_create('dc_universe').run(conn)
+r.db('heroes').table_create('dc_universe').run(conn)
 ```
 
 [Read more about this command &rarr;](table_create/)
