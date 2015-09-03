@@ -4,9 +4,7 @@ language: Ruby
 permalink: api/ruby/keys/
 command: keys
 related_commands:
-    insert_at: insert_at/
-    delete_at: delete_at/
-    splice_at: splice_at/
+    values: values/
 ---
 
 # Command syntax #
@@ -18,12 +16,14 @@ object.keys() &rarr; array
 
 # Description #
 
-Return an array containing all of the object's keys.
+Return an array containing all of an object's keys.
 
-__Example:__ Get all the keys of a row.
+__Example:__ Get all the keys from a table row.
 
 ```rb
-r.table('marvel').get('ironman').keys.run(conn)
+# row: { :id => 1, :name => "fred", :email => "fred@example.com" }
+
+r.table('users').get(1).keys().run(conn)
+
+> [ "id", "name", "email" ]
 ```
-
-

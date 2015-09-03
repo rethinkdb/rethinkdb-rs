@@ -1553,12 +1553,35 @@ singleSelection.keys() &rarr; array
 object.keys() &rarr; array
 {% endapibody %}
 
-Return an array containing all of the object's keys.
+Return an array containing all of an object's keys.
 
-__Example:__ Get all the keys of a row.
+__Example:__ Get all the keys from a table row.
 
 ```rb
-r.table('marvel').get('ironman').keys.run(conn)
+# row: { :id => 1, :name => "fred", :email => "fred@example.com" }
+
+r.table('users').get(1).keys().run(conn)
+
+> [ "id", "name", "email" ]
+```
+
+## [values](values/) ##
+
+{% apibody %}
+singleSelection.values() &rarr; array
+object.values() &rarr; array
+{% endapibody %}
+
+Return an array containing all of an object's values. `values()` guarantees the values will come out in the same order as [keys](/api/ruby/keys).
+
+__Example:__ Get all of the values from a table row.
+
+```rb
+# row: { :id => 1, :name => "fred", :email => "fred@example.com" }
+
+r.table('users').get(1).values().run(conn)
+
+> [ 1, "fred", "fred@example.com" ]
 ```
 
 ## [literal](literal/) ##
