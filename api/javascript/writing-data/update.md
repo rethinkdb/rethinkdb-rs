@@ -71,7 +71,7 @@ r.table("posts").filter({author: "William"}).update({status: "published"}).run(c
 ```
 
 
-__Example:__ Increment the field `view` with `id` of `1`.
+__Example:__ Increment the field `view` of the post with `id` of `1`.
 This query will throw an error if the field `views` doesn't exist.
 
 ```js
