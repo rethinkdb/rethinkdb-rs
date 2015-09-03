@@ -84,7 +84,7 @@ __Example:__ Increment the field `view` of the post with `id` of `1`.
 If the field `views` does not exist, it will be set to `0`.
 
 ```js
-r.table("posts").update({
+r.table("posts").get(1).update({
     views: r.row("views").add(1).default(0)
 }).run(conn, callback)
 ```
