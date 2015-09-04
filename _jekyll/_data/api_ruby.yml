@@ -190,6 +190,8 @@
           permalink: change_at
         - name: keys
           permalink: keys
+        - name: values
+          permalink: values
         - name: literal
           permalink: literal
         - name: object

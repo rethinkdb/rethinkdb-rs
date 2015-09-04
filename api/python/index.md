@@ -1584,16 +1584,16 @@ singleSelection.keys() &rarr; array
 object.keys() &rarr; array
 {% endapibody %}
 
-Return an array containing all of an object's keys.
+Return an array containing all of an object's keys. Note that the keys will be sorted as described in [ReQL data types](/docs/data-types/#sorting-order) (for strings, lexicographically).
 
 __Example:__ Get all the keys from a table row.
 
 ```py
-# row: { "id": 1, "name": "fred", "email": "fred@example.com" }
+# row: { "id": 1, "mail": "fred@example.com", "name": "fred"  }
 
 r.table('users').get(1).keys().run(conn)
 
-> [ "id", "name", "email" ]
+> [ "id", "mail", "name" ]
 ```
 
 ## [values](values/) ##
@@ -1608,11 +1608,11 @@ Return an array containing all of an object's values. `values()` guarantees the 
 __Example:__ Get all of the values from a table row.
 
 ```py
-# row: { "id": 1, "name": "fred", "email": "fred@example.com" }
+# row: { "id": 1, "mail": "fred@example.com", "name": "fred"  }
 
 r.table('users').get(1).values().run(conn)
 
-> [ 1, "fred", "fred@example.com" ]
+> [ 1, "fred@example.com", "fred" ]
 ```
 
 ## [literal](literal/) ##
