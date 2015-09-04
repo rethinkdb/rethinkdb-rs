@@ -2474,26 +2474,23 @@ r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do(
 ## [branch](branch/) ##
 
 {% apibody %}
-r.branch(test, true_branch, false_branch) &rarr; any
+r.branch(test, true_action[, test2, else_action, ...], false_action) &rarr; any
 {% endapibody %}
 
-If the `test` expression returns `false` or `null`, the `false_branch` will be evaluated.
-Otherwise, the `true_branch` will be evaluated.
+Perform a branching conditional equivalent to `if-then-else`.
 
-The `branch` command is effectively an `if` renamed due to language constraints.
-The type of the result is determined by the type of the branch that gets executed.
+The `branch` command takes 2n+1 arguments: pairs of conditional expressions and commands to be executed if the conditionals return any value but `false` or `null` (i.e., "truthy" values), with a final "else" command to be evaluated if all of the conditionals are `false` or `null`.
 
-__Example:__ Return heroes and superheroes.
+__Example:__ Test the value of x.
 
 ```js
-r.table('marvel').map(
-    r.branch(
-        r.row('victories').gt(100),
-        r.row('name').add(' is a superhero'),
-        r.row('name').add(' is a hero')
-    )
-).run(conn, callback)
+var x = 10;
+r.branch(r.expr(x).gt(5), 'big', 'small').run(conn, callback);
+// Result passed to callback
+"big"
 ```
+
+[Read more about this command &rarr;](branch/)
 
 ## [forEach](for_each/) ##
 

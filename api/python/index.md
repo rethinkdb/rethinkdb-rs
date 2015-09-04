@@ -2480,25 +2480,23 @@ r.table('players').get('86be93eb-a112-48f5-a829-15b2cb49de1d').do(
 ## [branch](branch/) ##
 
 {% apibody %}
-r.branch(test, true_branch, false_branch) &rarr; any
+r.branch(test, true_action[, test2, else_action, ...], false_action) &rarr; any
 {% endapibody %}
 
-If the `test` expression returns `False` or `None`, the `false_branch` will be evaluated.
-Otherwise, the `true_branch` will be evaluated.
+Perform a branching conditional equivalent to `if-then-else`.
 
-The `branch` command is effectively an `if` renamed due to language constraints.
+The `branch` command takes 2n+1 arguments: pairs of conditional expressions and commands to be executed if the conditionals return any value but `False` or `None` (i.e., "truthy" values), with a final "else" command to be evaluated if all of the conditionals are `False` or `None`.
 
-__Example:__ Return heroes and superheroes.
+__Example:__ Test the value of x.
 
+```py
+x = 10
+r.branch((x > 5), 'big', 'small').run(conn)
+
+> "big"
 ```
-r.table('marvel').map(
-    r.branch(
-        r.row['victories'] > 100,
-        r.row['name'] + ' is a superhero',
-        r.row['name'] + ' is a hero'
-    )
-).run(conn)
-```
+
+[Read more about this command &rarr;](branch/)
 
 ## [for_each](for_each/) ##
 
