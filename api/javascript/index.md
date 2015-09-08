@@ -2607,8 +2607,10 @@ sequence.coerceTo('array') &rarr; array
 value.coerceTo('string') &rarr; string
 string.coerceTo('number') &rarr; number
 array.coerceTo('object') &rarr; object
+sequence.coerceTo('object') &rarr; object
 object.coerceTo('array') &rarr; array
 binary.coerceTo('string') &rarr; string
+string.coerceTo('binary') &rarr; binary
 {% endapibody %}
 
 Convert a value of one type into another.

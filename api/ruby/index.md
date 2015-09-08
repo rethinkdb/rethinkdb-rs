@@ -2575,7 +2575,10 @@ sequence.coerce_to('array') &rarr; array
 value.coerce_to('string') &rarr; string
 string.coerce_to('number') &rarr; number
 array.coerce_to('object') &rarr; object
+sequence.coerce_to('object') &rarr; object
 object.coerce_to('array') &rarr; array
+binary.coerce_to('string') &rarr; string
+string.coerce_to('binary') &rarr; binary
 {% endapibody %}
 
 Convert a value of one type into another.
