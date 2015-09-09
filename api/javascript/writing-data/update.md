@@ -148,7 +148,7 @@ The result will now include a `changes` field:
 
 ```js
 {
-    deleted: 1,
+    replaced: 1,
     errors: 0,
     inserted: 0,
     changes: [
@@ -169,7 +169,7 @@ The result will now include a `changes` field:
             }
         }
     ],
-    replaced: 0,
+    deleted: 0,
     skipped: 0,
     unchanged: 0
 }
