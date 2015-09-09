@@ -65,9 +65,7 @@ __Advantages of using embedded arrays:__
 
 __Disadvantages of using embedded arrays:__
 
-- Any operation on an author document requires loading all posts into
-  memory. Any update to the document requires rewriting the full array
-  to disk.
+- Any operation on a document in the `author` table requires loading all posts into memory. As well, any update to the document requires rewriting the entire document to disk. At the moment, RethinkDB does not support modifying only the single value on disk. 
 - Because of the previous limitation, it's best to keep the size of
   the `posts` array to no more than a few hundred documents.
 
