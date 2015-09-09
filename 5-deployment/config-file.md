@@ -87,6 +87,6 @@ config file without the `.conf` extension.
 * `server-name`: The name for this machine (as it will appear in the metadata).  
   *Default*: Randomly chosen from a short list of names.
 
-* `server_tag`: Specifies tags for this server, which can be used to group servers together for administration purposes (for instance, servers in the same data center). See [Sharding and replication][sar] for more details. To assign multiple tags to a server, repeat `server_tag` lines for each tag.
+* `server-tag`: Specifies tags for this server, which can be used to group servers together for administration purposes (for instance, servers in the same data center). See [Sharding and replication][sar] for more details. To assign multiple tags to a server, repeat `server-tag` lines for each tag.
 
 [sar]: /docs/sharding-and-replication/
