@@ -45,8 +45,8 @@ Kick off the build process:
 ```bash
 cd rethinkdb-{{site.version.full}}
 ./configure --with-system-malloc --allow-fetch
-make
-sudo make install
+make ALLOW_WARNINGS=1
+sudo make install ALLOW_WARNINGS=1
 ```
 
 {% include docs/install-next-step.md %}
