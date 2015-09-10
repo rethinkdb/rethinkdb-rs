@@ -135,7 +135,7 @@ The result will now include a `changes` field:
 
 ```rb
 {
-    :deleted => 1,
+    :deleted => 0,
     :errors => 0,
     :inserted => 0,
     :changes => [
@@ -156,7 +156,7 @@ The result will now include a `changes` field:
             }
         }
     ],
-    :replaced => 0,
+    :replaced => 1,
     :skipped => 0,
     :unchanged => 0
 }
