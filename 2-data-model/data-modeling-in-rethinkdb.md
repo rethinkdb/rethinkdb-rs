@@ -65,7 +65,7 @@ __Advantages of using embedded arrays:__
 
 __Disadvantages of using embedded arrays:__
 
-- Any operation on a document in the `author` table requires loading all posts into memory. Note that any update to a document requires rewriting the entire document to disk. 
+- Deleting, adding or updating a post requires loading the entire `posts` array, modifying it, and writing the entire document back to disk.
 - Because of the previous limitation, it's best to keep the size of
   the `posts` array to no more than a few hundred documents.
 
