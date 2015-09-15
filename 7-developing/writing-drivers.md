@@ -240,7 +240,7 @@ function(x, y, z) {
 
 The function would be serialized as:
 
-    [FUNC,
+    [FUNC, 
      [[MAKE_ARRAY, [1, 2, 3]],
        [ADD,
         [[VAR, [1]],
@@ -262,7 +262,7 @@ Serializing functions depends heavily on your driver's language. The JavaScript 
 
 If your driver uses infix notation, you must make sure that the `VAR` term implements all the ReQL methods.
 
-### Implicit variables ###
+### Serializing IMPLICIT_VAR (r.row) ###
 
 The `IMPLICIT_VAR` term is equivalent to the [row](/api/python/row) command in the official JavaScript and Python drivers. It's useful for languages where anonymous functions are too verbose.
 
@@ -274,6 +274,54 @@ If you do not find one, treat the argument normally.
 
 In the case of nested functions, the `IMPLICIT_VAR` term is ambiguous, and should not be used. Your driver should either throw an error or let the server return an error.
 
+### Serializing BINARY ###
+
+Binary objects created with `r.binary` can be serialized in two different ways.
+
+If the argument is a ReQL term (not including a datum), serialize it using the standard term:
+
+    [BINARY, argument]
+
+If the language's native binary format is used, use the pseudotype serialization described above.
+
+```js
+{
+    $reql_type$: "BINARY",
+    data: <base64 string>
+}
+```
+
+### Serializing FUNCALL (r.do) ###
+
+The `r.do()` command is serialized with the `FUNCALL` term.
+
+    [FUNCALL, [function], arguments]
+
+Take the `do` command:
+
+```js
+r.do(10, 20, function (x, y) {
+  return r.add(x, y);
+})
+```
+
+This would be serialized as:
+
+    [FUNCALL,
+      [FUNC,
+        [[MAKE_ARRAY, [1, 2]],
+          [ADD,
+            [[VAR, [1]],
+             [VAR, [2]]]]]],
+      10,
+      20]
+    
+    // FUNCALL = 64, FUNC = 69, MAKE_ARRAY = 2, ADD = 24, VAR = 10
+    
+    [64, [69, [[2, [1, 2]], [24, [[10, [1]], [10, [2]]]]]], 10, 20]
+
+Note that while `r.do()` takes the function as its *last* argument, `FUNCALL` serializes the function as its *first* argument.
+
 # Send the message #
 
 Because you can keep chaining commands (or calling them in prefix notation), you need a command to signify the end of the chain and send the query to the server. This command is `run` in the official drivers.
@@ -284,7 +332,7 @@ Once the [run](/api/python/run) command is processed, the serialized query needs
 
     [ QueryType, query, options ]
 
-The query types are defined in `ql2.proto`. When a query is first sent to the server, it will be sent with a `QueryType` of `START` (`1`). The options are the options passed to the `run` command itself; see the [run documentation](/api/python/run) for a complete list. (Commands sent to the server are snake_case, not camelCase.)
+The query types are defined in `ql2.proto`. When a query is first sent to the server, it will be sent with a `QueryType` of `START` (`1`). The options (sometimes referred to as "global optargs") are options passed to the `run` command itself; see the [run documentation](/api/python/run) for a complete list. (Commands sent to the server are snake_case, not camelCase.)
 
 Other `QueryType` values will be discussed in "Receiving responses."
 
@@ -313,6 +361,18 @@ is sent as follows on the wire:
 | 1 | query token |  `00 00 00 00 00 00 00 01` |  
 | 2 | length |  `3C 00 00 00` |  
 | 3 | query | `[1,[39,[[15,[[14,["blog"]],"users"]],{"name":"Michel"}]],{}]` |  
+
+## Wrapping the DB query option ##
+
+If the `db` option is passed to the `run` command, its value must be a `DB` term. The query:
+
+```js
+r.table("users").run({db: "blog"});
+```
+
+should be sent as as if the argument to `db` was `r.db("blog")`:
+
+    [1,[15,["users"]],{"db":[14,["blog"]]}]
 
 # Receive responses #
 
