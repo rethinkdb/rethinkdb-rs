@@ -370,3 +370,7 @@ is:
 
 
 {% include docs/quickstart-footer.md %} 
+
+__Note:__ The RethinkDB Ruby driver includes support for asynchronous connections using EventMachine. Read the [asynchronous connections][ac] documentation for more information.
+
+[ac]: /docs/async-connections/#ruby-and-eventmachine

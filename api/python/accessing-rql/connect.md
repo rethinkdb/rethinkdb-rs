@@ -42,7 +42,13 @@ Using SSL with RethinkDB requires proxy software on the server, such as [Nginx][
 
 The authentication key can be set from the RethinkDB command line tool. Once set, client connections must provide the key as an option to `run` in order to make the connection. For more information, read "Using the RethinkDB authentication system" in the documentation on [securing your cluster](http://rethinkdb.com/docs/security/).
 
+{% infobox alert %}
 __Note:__ Currently, the Python driver is not thread-safe. Each thread or multiprocessing PID should be given its own connection object. (This is likely to change in a future release of RethinkDB; you can track issue [#2427](https://github.com/rethinkdb/rethinkdb/issues/2427) for progress.)
+{% endinfobox %}
+
+The RethinkDB Python driver includes support for asynchronous connections using Tornado. Read the [asynchronous connections][ac] documentation for more information.
+
+[ac]: /docs/async-connections/#python-and-tornado
 
 __Example:__ Open a connection using the default host and port, specifying the default database.
 
