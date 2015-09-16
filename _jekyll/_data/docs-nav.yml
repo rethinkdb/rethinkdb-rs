@@ -169,6 +169,9 @@
       - name: Integrating RabbitMQ
         permalink: rabbitmq
         url: /docs/rabbitmq/
+      - name: RethinkDB and Rails
+        permalink: rails
+        url: /docs/rails
       - name: Third-party libraries
         permalink: frameworks-and-libraries
         url: /docs/frameworks-and-libraries/
