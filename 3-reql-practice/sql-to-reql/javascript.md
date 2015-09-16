@@ -172,7 +172,7 @@ WHERE name LIKE "P%"
         </td><td>
 {% highlight javascript %}
 r.table("users").filter(
-    r.row("name").match("^P")}
+    r.row("name").match("^P")
 )
 {% endhighlight %}
 
