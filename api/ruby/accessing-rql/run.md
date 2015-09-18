@@ -24,7 +24,10 @@ a cursor, depending on the query.
 
 The options can be:
 
-- `use_outdated`: whether or not outdated reads are OK (default: `false`).
+- `read_mode`: One of three possible values affecting the consistency guarantee for the query (default: `'single'`).
+    - `'single'` (the default) returns values that are in memory (but not necessarily written to disk) on the primary replica.
+    - `'majority'` will only return values that are safely committed on disk on a majority of replicas. This requires sending a message to every replica on each read, so it is the slowest but most consistent.
+    - `'outdated'` will return values that are in memory on an arbitrarily-selected replica. This is the fastest but least consistent.
 - `time_format`: what format to return times in (default: `'native'`).
   Set this to `'raw'` if you want times returned as JSON objects for exporting.
 - `profile`: whether or not to return a profile of the query's
@@ -59,7 +62,7 @@ for individual tables will supercede this global setting for all
 tables in the query.
 
 ```rb
-r.table('marvel').run(conn, :use_outdated => true)
+r.table('marvel').run(conn, :read_mode => 'outdated')
 ```
 
 
