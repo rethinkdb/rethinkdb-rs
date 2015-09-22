@@ -9,7 +9,7 @@ Certain RethinkDB drivers support asynchronous connections by integrating with p
 
 [cf]: /docs/changefeeds
 
-Due to its event-driven nature, JavaScript can easily execute RethinkDB queries in an asynchronous fashion. The official RethinkDB drivers currently support integration with EventMachine for Ruby and Tornado for Python.
+Due to its event-driven nature, JavaScript can easily execute RethinkDB queries in an asynchronous fashion. The official RethinkDB drivers currently support integration with EventMachine for Ruby, and Tornado and Twisted for Python.
 
 {% toctag %}
 
@@ -23,7 +23,7 @@ In addition, RethinkDB's cursors and feeds implement an [EventEmitter interface]
 
 [ee]: /api/javascript/event_emitter-cursor/
 
-# Ruby and EventMachine
+# Ruby with EventMachine
 
 The RethinkDB Ruby driver adds a new ReQL command, [em_run](/api/ruby/em_run), designed to work with [EventMachine](http://rubyeventmachine.com). In addition, it provides a superclass, `RethinkDB::Handler`, with event-specific methods (e.g., `on_open`, `on_close`) that may be overridden by a class your application defines and passes to `em_run`.
 
@@ -342,15 +342,22 @@ EventMachine.run {
 }
 ```
 
-# Python and Tornado
+# Python with Tornado or Twisted
 
-The RethinkDB Python driver integrates with the [Tornado web framework](http://www.tornadoweb.org). By using the [set_loop_type](/api/python/set_loop_type) command, the ReQL [connect](/api/python/connect) command can be set to return tornado `Future` objects.
+The RethinkDB Python driver integrates with both the [Tornado web framework][tor] and the [Twisted networking engine][twi]. By using the [set_loop_type][slt] command, you can select either the `'tornado'` or `'twisted'` event loop model, returning Tornado `Future` objects or Twisted `Deferred` objects respectively.
 
-## Basic Usage
+[tor]: http://www.tornadoweb.org/
+[twi]: http://twistedmatrix.com/
+[slt]: /api/python/set_loop_type
+[con]: /api/python/connect
 
-The `set_loop_type` command should be used before `connect` to set RethinkDB to use asynchronous event loops. Currently, the only event loop model RethinkDB supports is `"tornado"`.
+## Tornado
 
-```python
+### Basic Usage
+
+Before `connect`, use the `set_loop_type("tornado")` command to set RethinkDB to use asynchronous event loops compatible with Tornado.
+
+```py
 import rethinkdb as r
 from tornado import ioloop, gen
 from tornado.concurrent import Future, chain_future
@@ -364,7 +371,7 @@ After executing `set_loop_type`, `r.connect` will return a Tornado `Future`, as 
 
 __Example:__ Simple use
 
-```python
+```py
 @gen.coroutine
 def single_row(connection_future):
     # Wait for the connection to be ready
@@ -381,7 +388,7 @@ def single_row(connection_future):
 
 __Example:__ Using a cursor
 
-```python
+```py
 @gen.coroutine
 def use_cursor(connection_future):
     # Wait for the connection to be ready
@@ -402,7 +409,7 @@ def use_cursor(connection_future):
 
 Note that looping over a cursor must be done with `while` and `fetch_next`, rather than using a `for x in cursor` loop.
 
-## Error handling
+### Error handling
 
 If an error occurs during an asynchronous operation, the `yield` statement will throw an exception as normal. This may happen immediately (for example, you might reference a table that doesn't exist), but your application might receive large amounts of data before the error (for example, your network might be disrupted after the connection is established).
 
@@ -410,7 +417,7 @@ One error in particular is notable. If you have a coroutine set to consume a cha
 
 __Example:__ Re-thrown errors
 
-```python
+```py
 @gen.coroutine
 def bad_table(connection):
     yield r.table('non_existent').run(connection)
@@ -424,7 +431,7 @@ r.table('non_existent')
 
 __Example:__ Catching errors in the coroutine
 
-```python
+```py
 @gen.coroutine
 def catch_bad_table(connection):
     try:
@@ -436,105 +443,11 @@ def catch_bad_table(connection):
 Saw error
 ```
 
-## Running a coroutine in the background
-
-Starting a background coroutine can be done with the `add_callback` or `add_future` method on Tornado's `IOLoop`.
-
-### Waiting until a coroutine is ready
-
-This example is not specific to RethinkDB, but demonstrates use of `Future` with Tornado.
-
-```python
-@gen.coroutine
-def notifying_background_task(notification):
-    print("In background task")
-    notification.set_result(True)
-    yield gen.sleep(0.5)
-    print("Done with background task")
-
-@gen.coroutine
-def spawn_notifying_background_task(connection):
-    notification = Future()
-    loop = ioloop.IOLoop.current()
-    loop.add_callback(notifying_background_task, notification)
-    print("Callback added")
-    yield notification
-    print("Callback begun work")
-    yield gen.sleep(1.0)
-    print("Done with foreground task")
-
-# Output
-Callback added
-In background task
-Callback begun work
-Done with background task
-Done with foreground task
-```
-
-### Cancelling background coroutines
-
-This is accomplished through Tornado's `chain_future` function:
-
-```python
-@gen.coroutine
-def cancelling_background_task(ready, cancel, sentinel):
-    print("In background task")
-    ready.set_result(True)
-    future = gen.sleep(0.5)
-    chain_future(cancel, future)
-    result = yield future
-    if result is sentinel:
-        print("Background task was cancelled")
-        raise gen.Return(False)
-    else:
-        print("Background task slept normally")
-        raise gen.Return(True)
-
-@gen.coroutine
-def spawn_cancelling_background_task(connection, delay):
-    sentinel = object()
-    ready = Future()
-    cancel = Future()
-    background = cancelling_background_task(ready, cancel, sentinel)
-    print("Callback added")
-    yield ready
-    print("Callback begun work")
-    yield gen.sleep(delay)
-    print("Done with foreground task")
-    cancel.set_result(sentinel)
-    yield background
-    print("Done with everything")
-```
-
-The `sentinel` object here allows `cancelling_background_task` to tell the difference between being woken up from sleep and being woken up by being cancelled.  We don't need to advertise the `cancelling_background_task` to Tornado this time, and we'd like to be sure that it finishes; otherwise we could use `add_callback` as before.
-
-When run with a delay of 0.9 in the foreground task, meaning that the background task will wake from sleep normally rather than be cancelled, we see:
-
-```
-In background task
-Callback added
-Callback begun work
-Background task slept normally
-Done with foreground task
-Done with everything
-```
-
-When run with a delay of 0.2, ensuring the background task is cancelled, we see instead:
-
-```
-In background task
-Callback added
-Callback begun work
-Done with foreground task
-Background task was cancelled
-Done with everything
-```
-
-## Subscribing to changefeeds
+### Subscribing to changefeeds
 
 The asynchronous database API allows you to handle multiple changefeeds simultaneously by scheduling background coroutines. As an example, consider this changefeed handler:
 
-```python
+```py
 @gen.coroutine
 def print_cfeed_data(connection_future, table):
     connection = yield connection_future
@@ -546,7 +459,7 @@ def print_cfeed_data(connection_future, table):
 
 We can schedule it on the Tornado IO loop with this code:
 
-```python
+```py
 ioloop.IOLoop.current().add_callback(print_cfeed_data, connection, table)
 ```
 
@@ -554,7 +467,7 @@ Now the coroutine will run in the background, printing out changes. When we alte
 
 Now, consider a larger example.
 
-```python
+```py
 class ChangefeedNoticer(object):
     def __init__(self, connection):
         self._connection = connection
@@ -619,3 +532,185 @@ Seen on table a: {u'old_val': None, u'new_val': {u'id': 9}}
 Seen on table b: {u'old_val': None, u'new_val': {u'id': 8}}
 Seen on table b: {u'old_val': None, u'new_val': {u'id': 9}}
 ```
+
+Here, we listen for changes on multiple tables at once.  We simultaneously write into the tables, and observe our writes appear in the changefeeds.  We then cancel the changefeeds after we've written 10 items into each of the tables.
+
+## Twisted
+
+### Basic Usage
+
+Before `connect`, use the `set_loop_type("twisted")` command to set RethinkDB to use asynchronous event loops compatible with the Twisted reactor.
+ 
+```py
+import rethinkdb as r
+from twisted.internet import reactor, defer
+from twisted.internet.defer import inlineCallbacks, returnValue
+
+r.set_loop_type('twisted')
+connection = r.connect(host='localhost', port=28015)
+```
+
+After executing `set_loop_type`, `r.connect` will return a Tornado `Deferred`, as will `r.run`.
+
+__Example:__ Simple use
+
+```py
+@inlineCallbacks
+def single_row(conn_deferred):
+    # Wait for the connection to be ready
+    conn = yield conn_deferred
+    # Insert some data
+    yield r.table('test').insert([{"id": 0}, {"id": 1}, {"id": 2}]).run(conn)
+    # Print the first row in the table
+    row = yield r.table('test').get(0).run(conn)
+    print(row)
+
+# Output
+{u'id': 0}
+```
+
+__Example:__ Using a cursor
+
+```py
+@inlineCallbacks
+def use_cursor(conn):
+    # Insert some data
+    yield r.table('test').insert([{"id": 0}, {"id": 1}, {"id": 2}]).run(conn)
+    # Print every row in the table.
+    cursor = yield r.table('test').order_by(index="id").run(conn)
+    while (yield cursor.fetch_next()):
+        item = yield cursor.next()
+        print(item)
+
+# Output:
+{u'id': 0}
+{u'id': 1}
+{u'id': 2}
+```
+
+Note that looping over a cursor must be done with `while` and `fetch_next`, rather than using a `for x in cursor` loop.
+
+### Error handling
+
+If an error occurs during an asynchronous operation, the `yield` statement will throw an exception as normal. This may happen immediately (for example, you might reference a table that doesn’t exist), but your application might receive large amounts of data before the error (for example, your network might be disrupted after the connection is established).
+
+One error in particular is notable. If you have a task that consumes a changefeed indefinitely, and the connection closes, the task will experience a `ReqlRuntimeError`.
+
+__Example:__ Re-thrown errors
+
+```py
+@inlineCallbacks
+def bad_table(conn):
+    yield r.table('non_existent').run(conn)
+
+Unhandled error in Deferred:
+Traceback (most recent call last):
+Failure: rethinkdb.errors.ReqlOpFailedError: Table `test.non_existent` does not exist in:
+r.table('non_existent')
+^^^^^^^^^^^^^^^^^^^^^^^
+
+```
+
+__Example:__ Catching runtime errors
+
+```py
+@inlineCallbacks
+def catch_bad_table(conn):
+    try:
+        yield r.table('non_existent').run(conn)
+    except r.ReqlRuntimeError:
+        print("Saw error")
+
+# Output
+Saw error
+```
+
+### Subscribing to changefeeds
+
+The asynchronous database API allows you to handle multiple changefeeds simultaneously by running multiple background tasks. As an example, consider this changefeed handler:
+
+```py
+@inlineCallbacks
+def print_feed(conn, table):
+    feed = yield r.table(table).changes().run(conn)
+    while (yield feed.fetch_next()):
+        item = yield feed.next()
+        print("Seen on table %s: %s" % (table, str(item)))
+```
+
+We can schedule it on the Twisted `reactor` with this code:
+
+```py
+reactor.callLater(0, print_cfeed_data, conn, table)
+```
+
+Now the task will run in the background, printing out changes. When we alter the table, the changes will be noticed.
+
+Now consider a larger example:
+
+```py
+@inlineCallbacks
+def print_feed(conn, table, ready, cancel):
+    def errback_feed(feed, err):
+        feed.close()
+        return err
+
+    feed = yield r.table(table).changes().run(conn)
+    cancel.addErrback(lambda err: errback_feed(feed, err))
+    ready.callback(None)
+    while (yield feed.fetch_next()):
+        item = yield feed.next()
+        print("Seen on table %s: %s" % (table, str(item)))
+
+@inlineCallbacks
+def table_write(conn, table):
+    for i in range(10):
+        yield r.table(table).insert({'id': i}).run(conn)
+
+@inlineCallbacks
+def notice_changes(conn, *tables):
+    # Reset the state of the tables on the server
+    if len(tables) > 0:
+        table_list = yield r.table_list().run(conn)
+        yield defer.DeferredList([r.table_drop(t).run(conn) for t in tables if t in table_list])
+    yield defer.DeferredList([r.table_create(t).run(conn) for t in tables])
+
+    readies = [defer.Deferred() for t in tables]
+    cancel = defer.Deferred()
+    feeds = [print_feed(conn, table, ready, cancel) for table, ready in zip(tables, readies)]
+
+    # Wait for the feeds to become ready
+    yield defer.gatherResults(readies)
+    yield defer.gatherResults([table_write(conn, table) for table in tables])
+
+    # Cancel the feeds and wait for them to exit
+    cancel.addErrback(lambda err: None)
+    cancel.cancel()
+    yield defer.DeferredList(feeds)
+
+yield notice_changes(conn, 'a', 'b')
+
+# Output
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 0}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 0}}
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 1}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 1}}
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 2}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 2}}
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 3}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 3}}
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 4}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 4}}
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 5}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 5}}
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 6}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 6}}
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 7}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 7}}
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 8}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 8}}
+Seen on table a: {u'old_val': None, u'new_val': {u'id': 9}}
+Seen on table b: {u'old_val': None, u'new_val': {u'id': 9}}
+```
+
+Here, we listen for changes on multiple tables at once.  We simultaneously write into the tables, and observe our writes appear in the changefeeds.  We then cancel the changefeeds after we've written 10 items into each of the tables.

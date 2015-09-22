@@ -378,6 +378,6 @@ is:
 
 __Note:__ Currently, the Python driver is not thread-safe. Each thread or multiprocessing PID should be given its own connection object.
 
-The RethinkDB Python driver includes support for asynchronous connections using Tornado. Read the [asynchronous connections][ac] documentation for more information.
+The RethinkDB Python driver includes support for asynchronous connections using Tornado and Twisted. Read the [asynchronous connections][ac] documentation for more information.
 
-[ac]: /docs/async-connections/#python-and-tornado
+[ac]: /docs/async-connections/#python-with-tornado-or-twisted

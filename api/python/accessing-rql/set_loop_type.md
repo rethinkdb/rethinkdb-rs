@@ -18,7 +18,15 @@ r.set_loop_type(string)
 
 # Description #
 
-Set an asynchronous event loop model. Currently, the only event loop model RethinkDB supports is `"tornado"`, for use with the [Tornado web framework](http://www.tornadoweb.org). After setting the event loop to `"tornado"`, the [connect](/api/python/connect) and [run](/api/python/run) commands will return Tornado `Future` objects.
+Set an asynchronous event loop model. There are two supported models:
+
+* `"tornado"`: use the [Tornado web framework][tor]. Under this model, the [connect][con] and [run][] commands will return Tornado `Future` objects.
+* `"twisted"`: use the [Twisted networking engine][twi]. Under this model, the [connect][con] and [run][] commands will return Twisted `Deferred` objects.
+
+[tor]: http://www.tornadoweb.org/
+[twi]: http://twistedmatrix.com/
+[con]: /api/python/connect
+[run]: /api/python/run
 
 __Example:__ Read a table's data using Tornado.
 
@@ -35,6 +43,6 @@ def use_cursor(conn):
         print(item)
 ```
 
-For a longer discussion with Tornado examples, see the documentation article on [Asynchronous connections][ac].
+For a longer discussion with both Tornado and Twisted examples, see the documentation article on [Asynchronous connections][ac].
 
-[ac]: /docs/async-connections/
+[ac]: /docs/async-connections/#python-with-tornado-or-twisted

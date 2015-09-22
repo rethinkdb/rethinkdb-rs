@@ -144,4 +144,4 @@ EventMachine.run {
 
 Also see the documentation article on [Asynchronous connections][ac].
 
-[ac]: /docs/async-connections/
+[ac]: /docs/async-connections/#ruby-with-eventmachine
