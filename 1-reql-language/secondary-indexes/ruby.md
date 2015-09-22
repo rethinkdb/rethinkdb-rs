@@ -265,7 +265,7 @@ r.table("users").get_all("Smith", :index => "last_name").run(conn)
 
 You cannot chain multiple `get_all` commands. Use a compound index to efficiently retrieve documents by multiple fields.
 
-Currently, you cannot chain an `order_by` using a secondary index after a `get_all` but only after a `table`. (You can, however, chain an `order_by` using a secondary index after a `between` *if* they use the same index.)
+An `order_by` command that uses a secondary index cannot be chained after `get_all`. You can only chain it after a `table` command. However, you can chain `order_by` after a `between` command provided it uses the same index.
 
 RethinkDB does not support unique secondary indexes even for non-sharded tables.
 
