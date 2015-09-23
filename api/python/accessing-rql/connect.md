@@ -73,3 +73,10 @@ conn = r.connect(host='localhost',
                  auth_key='hunter2',
                  ssl={'ca_certs': '/path/to/ca.crt'})
 ```
+
+__Example:__ Use a `with` statement to open a connection and pass it to a block. Using this style, the connection will be automatically closed when execution reaches the end of the block.
+
+```py
+with r.connect(db='marvel') as conn:
+    r.table('superheroes').run(conn)
+```
