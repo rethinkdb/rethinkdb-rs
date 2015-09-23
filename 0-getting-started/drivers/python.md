@@ -33,9 +33,9 @@ r.table('tv_shows').insert({ 'name': 'Star Trek TNG' }).run()
 
 __Note:__ RethinkDB connection objects are not thread-safe. It's recommended that applications open a separate connection per thread, or establish a connection pool.
 
-The RethinkDB Python driver includes support for asynchronous connections using Tornado. Read the [asynchronous connections][ac] documentation for more information.
+The RethinkDB Python driver includes support for asynchronous connections using both Tornado and Twisted. Read the [asynchronous connections][ac] documentation for more information.
 
-[ac]: /docs/async-connections/#python-and-tornado
+[ac]: /docs/async-connections/#python-with-tornado-or-twisted
 
 # Next steps #
 

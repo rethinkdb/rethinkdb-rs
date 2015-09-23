@@ -373,4 +373,4 @@ is:
 
 __Note:__ The RethinkDB Ruby driver includes support for asynchronous connections using EventMachine. Read the [asynchronous connections][ac] documentation for more information.
 
-[ac]: /docs/async-connections/#ruby-and-eventmachine
+[ac]: /docs/async-connections/#ruby-with-eventmachine
