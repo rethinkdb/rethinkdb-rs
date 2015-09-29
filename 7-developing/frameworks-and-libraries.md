@@ -42,8 +42,8 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 ## ORMs
 
-- [reheat](https://github.com/jmdobry/reheat) by [@jmdobry](https://github.com/jmdobry)  
-  JavaScript ORM for RethinkDB with promises.
+- [js-data-rethinkdb](https://github.com/js-data/js-data-rethinkdb) by [@jmdobry](https://github.com/jmdobry)  
+  A RethinkDB adapter for [js-data](https://github.com/js-data/js-data), a database-agnostic ORM for Node.js and the browser.
 
 - [Thinky][] by [@neumino](https://github.com/neumino)  
   JavaScript ORM for RethinkDB.
