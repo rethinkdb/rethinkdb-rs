@@ -10,6 +10,10 @@ language: Ruby
 
 RethinkDB supports a native binary object type, letting you use ReQL to store binary objects directly in the database. The ReQL driver will transparently translate between the ReQL type and the Ruby [String](http://www.ruby-doc.org/core/String.html) class.
 
+{% infobox %}
+__Note:__ The binary object type is meant for data that cannot be reliably stored as UTF-8 strings, such as uploaded files. If you're working with data that *can* be stored as strings, it's usually easier to stick to the string data type.
+{% endinfobox %}
+
 For these examples, we'll assume that the RethinkDB connection is available in global scope as `conn`.
 
 # Storing uploaded files in the database

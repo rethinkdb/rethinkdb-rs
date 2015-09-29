@@ -10,6 +10,10 @@ language: Python
 
 RethinkDB supports a native binary object type, letting you use ReQL to store binary objects directly in the database. The ReQL driver will transparently translate between the ReQL type and [bytes](https://docs.python.org/3/library/stdtypes.html#binaryseq) types (in Python 3) or [str](https://docs.python.org/2/library/stdtypes.html#typesseq) types (in Python 2).
 
+{% infobox %}
+__Note:__ The binary object type is meant for data that cannot be reliably stored as UTF-8 strings, such as uploaded files. If you're working with data that *can* be stored as strings, it's usually easier to stick to the string data type.
+{% endinfobox %}
+
 For these examples, we'll assume that the RethinkDB connection is available in global scope as `conn`.
 
 # Storing uploaded files in the database
