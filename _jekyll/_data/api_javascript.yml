@@ -26,6 +26,8 @@
           permalink: next
         - name: each
           permalink: each
+        - name: eachAsync
+          permalink: each_async
         - name: toArray
           permalink: to_array
         - name: close
