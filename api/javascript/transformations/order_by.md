@@ -7,6 +7,8 @@ alias:
     - api/javascript/desc/
 command: orderBy
 io:
+    -   - table
+        - table_slice
     -   - sequence
         - stream
     -   - array
@@ -20,7 +22,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.orderBy([key | function...], {index: index_name}) &rarr; selection<stream>
+table.orderBy([key | function...], {index: index_name}) &rarr; table_slice
 selection.orderBy(key | function[, ...]) &rarr; selection<array>
 sequence.orderBy(key | function[, ...]) &rarr; array
 {% endapibody %}

@@ -15,7 +15,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.order_by([key | function], :index => index_name) &rarr; selection<stream>
+table.order_by([key | function], :index => index_name) &rarr; table_slice
 selection.order_by(key | function[, ...]) &rarr; selection<array>
 sequence.order_by(key | function[, ...]) &rarr; array
 {% endapibody %}

@@ -8,7 +8,7 @@ alias:
     - api/javascript/maxval/
 io:
     -   - table
-        - selection
+        - table_slice
 related_commands:
     get: get/
     getAll: get_all/
@@ -17,8 +17,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.between(lowerKey, upperKey[, {index: 'id', leftBound: 'closed', rightBound: 'open'}])
-    &rarr; selection
+table.between(lowerKey, upperKey[, options]) &rarr; table_slice
+table_slice.between(lowerKey, upperKey[, options]) &rarr; table_slice
 {% endapibody %}
 
 # Description #
@@ -69,12 +69,20 @@ __Example:__ Between can be used on secondary indexes too. Just pass an optional
 r.table('dc').between('dark_knight', 'man_of_steel', {index: 'code_name'}).run(conn, callback);
 ```
 
-__Example:__ Get all users whose full name is between "John Smith" and "Wade Welles"
+__Example:__ Get all users whose full name is between "John Smith" and "Wade Welles."
 
 ```js
 r.table("users").between(["Smith", "John"], ["Welles", "Wade"],
-{index: "full_name"}).run(conn, callback);
+  {index: "full_name"}).run(conn, callback);
 ```
+
+__Example:__ Get the top 10 ranked teams in order.
+
+```js
+r.table("teams").orderBy({index: "rank"}).between(1, 11).run(conn, callback);
+```
+
+__Note:__ When `between` is chained after [orderBy](/api/javascript/order_by), both commands must use the same index; `between` will default to the index `orderBy` is using, so in this example `"rank"` is automatically being used by `between`. Trying to specify another index will result in a `ReqlRuntimeError`.
 
 __Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams ranked in the top 10.
 
@@ -82,10 +90,10 @@ __Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams 
 r.table("teams").between(1, 11, {index: "rank"}).changes().run(conn, callback);
 ```
 
-__Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/javascript/during) command, not `between`.
+{% infobox %}
+The `between` command works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/javascript/during) command, not `between`.
 
 Secondary indexes can be used in extremely powerful ways with `between` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 
-__Note:__ RethinkDB uses byte-wise ordering for `between` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
-
-__Note:__ If you chain `between` after [orderBy](/api/javascript/order_by), the `between` command must use the index specified in `orderBy`, and will default to that index. Trying to specify another index will result in a `ReqlRuntimeError`.
+RethinkDB uses byte-wise ordering for `between` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
+{% endinfobox %}
