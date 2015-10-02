@@ -25,5 +25,5 @@ List all database names in the system. The result is a list of strings.
 __Example:__ List all databases.
 
 ```js
-r.dbList().run(conn, callback)
+r.dbList().run(conn)
 ```

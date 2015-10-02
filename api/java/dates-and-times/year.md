@@ -26,5 +26,5 @@ __Example:__ Retrieve all the users born in 1986.
 ```js
 r.table("users").filter(function(user) {
     return user("birthdate").year().eq(1986)
-}).run(conn, callback)
+}).run(conn)
 ```

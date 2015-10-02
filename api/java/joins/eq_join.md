@@ -59,7 +59,7 @@ The games table contains these documents:
 Join these tables using `gameId` on the player table and `id` on the games table:
 
 ```js
-r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
+r.table('players').eqJoin('gameId', r.table('games')).run(conn)
 ```
 
 This will return a result set such as the following:
@@ -81,7 +81,7 @@ This will return a result set such as the following:
 What you likely want is the result of using `zip` with that. For clarity, we'll use `without` to drop the `id` field from the games table (it conflicts with the `id` field for the players and it's redundant anyway), and we'll order it by the games.
 
 ```js
-r.table('players').eqJoin('gameId', r.table('games')).without({right: "id"}).zip().orderBy('gameId').run(conn, callback)
+r.table('players').eqJoin('gameId', r.table('games')).without({right: "id"}).zip().orderBy('gameId').run(conn)
 
 [
     { "field": "Little Delving", "gameId": 1, "id": 5, "player": "Earnest" },
@@ -98,7 +98,7 @@ For more information, see [Table joins in RethinkDB](/docs/table-joins/).
 **Example:** Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
 
 ```js
-r.table('arenas').eqJoin('cityId', r.table('arenas'), {index: 'cityId'}).run(conn, callback)
+r.table('arenas').eqJoin('cityId', r.table('arenas'), {index: 'cityId'}).run(conn)
 ```
 
 **Example:** Use a nested key as the join field. Suppose the documents in the players table were structured like this:

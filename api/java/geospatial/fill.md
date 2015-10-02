@@ -36,9 +36,9 @@ r.table('geo').insert({
         [-121.886420,37.329898],
         [-121.886420,37.779388]
     )
-}).run(conn, callback);
+}).run(conn);
 
 r.table('geo').get(201).update({
     rectangle: r.row('rectangle').fill()
-}, {nonAtomic: true}).run(conn, callback);
+}, {nonAtomic: true}).run(conn);
 ```

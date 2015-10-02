@@ -35,7 +35,7 @@ Sum two or more numbers, or concatenate two or more strings or arrays. (Note tha
 __Example:__ It's as easy as 2 + 2 = 4.
 
 ```js
-> r.expr(2).add(2).run(conn, callback)
+> r.expr(2).add(2).run(conn)
 // result passed to callback
 4
 ```
@@ -43,7 +43,7 @@ __Example:__ It's as easy as 2 + 2 = 4.
 __Example:__ Concatenate strings.
 
 ```js
-> r.expr("foo").add("bar", "baz").run(conn, callback)
+> r.expr("foo").add("bar", "baz").run(conn)
 // result passed to callback
 "foobarbaz"
 ```
@@ -52,7 +52,7 @@ __Example:__ Concatenate strings.
 __Example:__ Concatenate arrays.
 
 ```js
-> r.expr(["foo", "bar"]).add(["buzz"]).run(conn, callback)
+> r.expr(["foo", "bar"]).add(["buzz"]).run(conn)
 // result passed to callback
 [ "foo", "bar", "buzz" ]
 ```
@@ -61,14 +61,14 @@ __Example:__ Concatenate arrays.
 __Example:__ Create a date one year from now.
 
 ```js
-r.now().add(365*24*60*60).run(conn, callback)
+r.now().add(365*24*60*60).run(conn)
 ```
 
 __Example:__ Use [args](/api/javascript/args) with `add` to sum multiple values.
 
 ```js
 > vals = [10, 20, 30];
-> r.add(r.args(vals)).run(conn, callback);
+> r.add(r.args(vals)).run(conn);
 // result passed to callback
 60
 ```
@@ -77,7 +77,7 @@ __Example:__ Concatenate an array of strings with `args`.
 
 ```js
 > vals = ['foo', 'bar', 'buzz'];
-> r.add(r.args(vals)).run(conn, callback);
+> r.add(r.args(vals)).run(conn);
 // result passed to callback
 "foobarbuzz"
 ```

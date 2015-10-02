@@ -29,7 +29,7 @@ __Example:__ After having updated multiple heroes with soft durability, we now w
 until these changes are persisted.
 
 ```js
-r.table('marvel').sync().run(conn, callback)
+r.table('marvel').sync().run(conn)
 ```
 
 

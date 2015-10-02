@@ -56,7 +56,7 @@ The [data type](/docs/data-types/) of a primary key is usually a string (like a 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```js
-> r.db('heroes').tableCreate('dc_universe').run(conn, callback);
+> r.db('heroes').tableCreate('dc_universe').run(conn);
 // Result passed to callback
 {
     "config_changes": [
@@ -88,13 +88,13 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 __Example:__ Create a table named 'dc_universe' using the field 'name' as primary key.
 
 ```js
-r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn, callback);
+r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn);
 ```
 
 __Example:__ Create a table set up for two shards and three replicas per shard. This requires three available servers.
 
 ```js
-r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn, callback);
+r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn);
 ```
 
 Read [Sharding and replication](/docs/sharding-and-replication/) for a complete discussion of the subject, including advanced topics.

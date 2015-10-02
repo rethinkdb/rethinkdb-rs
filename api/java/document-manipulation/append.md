@@ -25,7 +25,7 @@ Append a value to an array.
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 
 ```js
-r.table('marvel').get('IronMan')('equipment').append('newBoots').run(conn, callback)
+r.table('marvel').get('IronMan')('equipment').append('newBoots').run(conn)
 ```
 
 

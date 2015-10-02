@@ -26,6 +26,6 @@ List all the secondary indexes of this table.
 __Example:__ List the available secondary indexes for this table.
 
 ```js
-r.table('marvel').indexList().run(conn, callback)
+r.table('marvel').indexList().run(conn)
 ```
 

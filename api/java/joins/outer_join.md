@@ -35,7 +35,7 @@ __Example:__ Return a list of all Marvel heroes, paired with any DC heroes who c
 ```js
 r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
     return marvelRow('strength').lt(dcRow('strength'))
-}).run(conn, callback)
+}).run(conn)
 ```
 
 (Compare this to an [innerJoin](/api/javascript/inner_join) with the same inputs and predicate, which would return a list only of the matchups in which the DC hero has the higher strength.)

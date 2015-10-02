@@ -60,7 +60,7 @@ r.table("posts").insert({
     id: 1,
     title: "Lorem ipsum",
     content: "Dolor sit amet"
-}).run(conn, callback)
+}).run(conn)
 ```
 
 The result will be:
@@ -84,7 +84,7 @@ primary key is `id`.
 r.table("posts").insert({
     title: "Lorem ipsum",
     content: "Dolor sit amet"
-}).run(conn, callback)
+}).run(conn)
 ```
 
 RethinkDB will generate a primary key and return it in `generated_keys`.
@@ -106,7 +106,7 @@ RethinkDB will generate a primary key and return it in `generated_keys`.
 Retrieve the document you just inserted with:
 
 ```js
-r.table("posts").get("dd782b64-70a7-43e4-b65e-dd14ae61d947").run(conn, callback)
+r.table("posts").get("dd782b64-70a7-43e4-b65e-dd14ae61d947").run(conn)
 ```
 
 And you will get back:
@@ -126,7 +126,7 @@ __Example:__ Insert multiple documents into the table `users`.
 r.table("users").insert([
     {id: "william", email: "william@rethinkdb.com"},
     {id: "lara", email: "lara@rethinkdb.com"}
-]).run(conn, callback)
+]).run(conn)
 ```
 
 
@@ -136,14 +136,14 @@ __Example:__ Insert a document into the table `users`, replacing the document if
 r.table("users").insert(
     {id: "william", email: "william@rethinkdb.com"},
     {conflict: "replace"}
-).run(conn, callback)
+).run(conn)
 ```
 
 
 __Example:__ Copy the documents from `posts` to `postsBackup`.
 
 ```js
-r.table("postsBackup").insert( r.table("posts") ).run(conn, callback)
+r.table("postsBackup").insert( r.table("posts") ).run(conn)
 ```
 
 
@@ -153,7 +153,7 @@ __Example:__ Get back a copy of the inserted document (with its generated primar
 r.table("posts").insert(
     {title: "Lorem ipsum", content: "Dolor sit amet"},
     {returnChanges: true}
-).run(conn, callback)
+).run(conn)
 ```
 
 The result will be

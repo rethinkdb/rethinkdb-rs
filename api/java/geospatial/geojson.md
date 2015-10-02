@@ -36,5 +36,5 @@ r.table('geo').insert({
     id: 'sfo',
     name: 'San Francisco',
     location: r.geojson(geoJson)
-}).run(conn, callback);
+}).run(conn);
 ```

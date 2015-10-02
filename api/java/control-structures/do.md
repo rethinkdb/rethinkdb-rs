@@ -34,7 +34,7 @@ r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do(
     function (player) {
         return player('gross_score').sub(player('course_handicap'));
     }
-).run(conn, callback);
+).run(conn);
 ```
 
 __Example:__ Return the best scoring player in a two-player golf match.
@@ -45,7 +45,7 @@ r.do(r.table('players').get(id1), r.table('players').get(id2),
         return r.branch(player1('gross_score').lt(player2('gross_score')),
             player1, player2);
     }
-).run(conn, callback);
+).run(conn);
 ```
 
 Note that `branch`, the ReQL conditional command, must be used instead of `if`. See the `branch` [documentation](/api/javascript/branch) for more.
@@ -65,5 +65,5 @@ r.table('players').insert(newData).do(
             r.table('log').insert({time: r.now(), response: doc, result: 'ok'}),
             r.table('log').insert({time: r.now(), response: doc, result: 'error'}))
     }
-).run(conn, callback);
+).run(conn);
 ```

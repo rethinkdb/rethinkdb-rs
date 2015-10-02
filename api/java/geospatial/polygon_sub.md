@@ -36,5 +36,5 @@ var innerPolygon = r.polygon(
     [-122.0,37.6],
     [-122.0,37.4]
 );
-outerPolygon.polygonSub(innerPolygon).run(conn, callback);
+outerPolygon.polygonSub(innerPolygon).run(conn);
 ```

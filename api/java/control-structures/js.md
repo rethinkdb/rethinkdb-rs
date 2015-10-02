@@ -27,7 +27,7 @@ Whenever possible, you should use native ReQL commands rather than `r.js` for be
 __Example:__ Concatenate two strings using JavaScript.
 
 ```js
-r.js("'str1' + 'str2'").run(conn, callback)
+r.js("'str1' + 'str2'").run(conn)
 ```
 
 __Example:__ Select all documents where the 'magazines' field is greater than 5 by running JavaScript on the server.
@@ -35,13 +35,13 @@ __Example:__ Select all documents where the 'magazines' field is greater than 5 
 ```js
 r.table('marvel').filter(
     r.js('(function (row) { return row.magazines.length > 5; })')
-).run(conn, callback)
+).run(conn)
 ```
 
 
 __Example:__ You may also specify a timeout in seconds (defaults to 5).
 
 ```js
-r.js('while(true) {}', {timeout:1.3}).run(conn, callback)
+r.js('while(true) {}', {timeout:1.3}).run(conn)
 ```
 

@@ -28,5 +28,5 @@ r.table('geo').insert({
     id: 1,
     name: 'San Francisco',
     location: r.point(-122.423246,37.779388)
-}).run(conn, callback);
+}).run(conn);
 ```

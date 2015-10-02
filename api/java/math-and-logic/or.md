@@ -27,7 +27,7 @@ __Example:__ Return whether either `a` or `b` evaluate to true.
 
 ```js
 var a = true, b = false;
-r.expr(a).or(b).run(conn, callback);
+r.expr(a).or(b).run(conn);
 // result passed to callback
 true
 ```
@@ -36,7 +36,7 @@ __Example:__ Return whether any of `x`, `y` or `z` evaluate to true.
 
 ```js
 var x = false, y = false, z = false;
-r.or(x, y, z).run(conn, callback);
+r.or(x, y, z).run(conn);
 // result passed to callback
 false
 ```
@@ -47,5 +47,5 @@ __Note:__ When using `or` inside a `filter` predicate to test the values of fiel
 r.table('posts').filter(
     r.row('category').default('foo').eq('article').
     or(r.row('genre').default('foo').eq('mystery'))
-).run(conn, callback);
+).run(conn);
 ```

@@ -33,5 +33,5 @@ __Example:__ Define a line.
 r.table('geo').insert({
     id: 101,
     route: r.line([-122.423246,37.779388], [-121.886420,37.329898])
-}).run(conn, callback);
+}).run(conn);
 ```

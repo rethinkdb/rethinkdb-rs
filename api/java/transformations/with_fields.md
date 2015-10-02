@@ -39,7 +39,7 @@ Existing table structure:
 Command and output:
 
 ```js
-> r.table('users').withFields('id', 'user', 'posts').run(conn, callback)
+> r.table('users').withFields('id', 'user', 'posts').run(conn)
 // Result passed to callback
 [
     { 'id': 1, 'user': 'bob', 'posts': [ 1, 4, 5 ] },
@@ -50,5 +50,5 @@ Command and output:
 __Example:__ Use the [nested field syntax](/docs/nested-fields/) to get a list of users with cell phone numbers in their contacts.
 
 ```js
-r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn, callback)
+r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn)
 ```

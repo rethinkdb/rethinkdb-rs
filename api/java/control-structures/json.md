@@ -21,5 +21,5 @@ Parse a JSON string on the server.
 __Example:__ Send an array to the server'
 
 ```js
-r.json("[1,2,3]").run(conn, callback)
+r.json("[1,2,3]").run(conn)
 ```

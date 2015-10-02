@@ -41,19 +41,19 @@ using the same index. This applies to both secondary indexes and the primary key
 __Example:__ Order all the posts using the index `date`.   
 
 ```js
-r.table('posts').orderBy({index: 'date'}).run(conn, callback)
+r.table('posts').orderBy({index: 'date'}).run(conn)
 ```
 
 The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
-r.table('posts').indexCreate('date').run(conn, callback)
+r.table('posts').indexCreate('date').run(conn)
 ```
 
 You can also select a descending ordering:
 
 ```js
-r.table('posts').orderBy({index: r.desc('date')}).run(conn, callback)
+r.table('posts').orderBy({index: r.desc('date')}).run(conn)
 ```
 
 __Example:__ Order a sequence without an index.
@@ -81,13 +81,13 @@ __Example:__ You can efficiently order using multiple fields by using a
 Order by date and title.
 
 ```js
-r.table('posts').orderBy({index: 'dateAndTitle'}).run(conn, callback)
+r.table('posts').orderBy({index: 'dateAndTitle'}).run(conn)
 ```
 
 The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
-r.table('posts').indexCreate('dateAndTitle', [r.row('date'), r.row('title')]).run(conn, callback)
+r.table('posts').indexCreate('dateAndTitle', [r.row('date'), r.row('title')]).run(conn)
 ```
 
 _Note_: You cannot specify multiple orders in a compound index. See [issue #2306](https://github.com/rethinkdb/rethinkdb/issues/2306)
@@ -105,19 +105,19 @@ precedence. The following query orders posts by date, and if multiple
 posts were published on the same date, they will be ordered by title.
 
 ```js
-r.table('post').orderBy('title', {index: 'date'}).run(conn, callback)
+r.table('post').orderBy('title', {index: 'date'}).run(conn)
 ```
 
 __Example:__ Use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to sort on fields from subdocuments. (You can also create indexes on nested fields using this syntax with `indexCreate`.)
 
 ```js
-r.table('user').orderBy(r.row('group')('id')).run(conn, callback)
+r.table('user').orderBy(r.row('group')('id')).run(conn)
 ```
 
 __Example:__ You can efficiently order data on arbitrary expressions using indexes.
 
 ```js
-r.table('posts').orderBy({index: 'votes'}).run(conn, callback)
+r.table('posts').orderBy({index: 'votes'}).run(conn)
 ```
 
 The index must have been previously created with [indexCreate](/api/javascript/index_create/).
@@ -125,7 +125,7 @@ The index must have been previously created with [indexCreate](/api/javascript/i
 ```js
 r.table('posts').indexCreate('votes', function(post) {
     return post('upvotes').sub(post('downvotes'))
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ If you have a sequence with fewer documents than the `arrayLimit`, you can order it with an arbitrary function directly.
@@ -148,6 +148,6 @@ __Example:__ Ordering after a `between` command can be done as long as the same 
 
 ```js
 r.table('posts').between(r.time(2013, 1, 1, '+00:00'), r.time(2013, 1, 1, '+00:00'), {index: 'date'})
-    .orderBy({index: 'date'}).run(conn, callback);
+    .orderBy({index: 'date'}).run(conn);
 ```
 

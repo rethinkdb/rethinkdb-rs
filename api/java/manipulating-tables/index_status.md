@@ -57,13 +57,13 @@ The `function` field is a binary object containing an opaque representation of t
 __Example:__ Get the status of all the indexes on `test`:
 
 ```js
-r.table('test').indexStatus().run(conn, callback)
+r.table('test').indexStatus().run(conn)
 ```
 
 __Example:__ Get the status of the `timestamp` index:
 
 ```js
-r.table('test').indexStatus('timestamp').run(conn, callback)
+r.table('test').indexStatus('timestamp').run(conn)
 ```
 
 __Example:__ Save the binary representation of the index:

@@ -37,13 +37,13 @@ If `count` is called on a [binary](/api/javascript/binary) object, it will retur
 __Example:__ Count the number of users.
 
 ```js
-r.table('users').count().run(conn, callback)
+r.table('users').count().run(conn)
 ```
 
 __Example:__ Count the number of 18 year old users.
 
 ```js
-r.table('users')('age').count(18).run(conn, callback)
+r.table('users')('age').count(18).run(conn)
 ```
 
 __Example:__ Count the number of users over 18.
@@ -51,11 +51,11 @@ __Example:__ Count the number of users over 18.
 ```js
 r.table('users')('age').count(function(age) { 
     return age.gt(18)
-}).run(conn, callback)
+}).run(conn)
 ```
 
 ```js
 r.table('users').count(function(user) {
     return user('age').gt(18)
-}).run(conn, callback)
+}).run(conn)
 ```

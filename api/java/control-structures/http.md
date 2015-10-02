@@ -24,7 +24,7 @@ Retrieve data from the specified URL over HTTP.  The return type depends on the 
 __Example:__ Perform an HTTP `GET` and store the result in a table.
 
 ```js
-r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn, callback)
+r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn)
 ```
 
 See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
@@ -64,7 +64,7 @@ __Example:__ Perform multiple requests with different parameters.
 ```js
 r.expr([1, 2, 3]).map(function(i) {
     return r.http('http://httpbin.org/get', { params: { user: i } });
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Perform a `PUT` request for each item in a table.
@@ -72,7 +72,7 @@ __Example:__ Perform a `PUT` request for each item in a table.
 ```js
 r.table('data').map(function(row) {
     return r.http('http://httpbin.org/put', { method: 'PUT', data: row });
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Perform a `POST` request with accompanying data.
@@ -82,7 +82,7 @@ Using form-encoded data:
 ```js
 r.http('http://httpbin.org/post',
        { method: 'POST', data: { player: 'Bob', game: 'tic tac toe' } })
-.run(conn, callback)
+.run(conn)
 ```
 
 Using JSON data:
@@ -92,7 +92,7 @@ r.http('http://httpbin.org/post',
        { method: 'POST',
          data: r.expr(value).coerceTo('string'),
          header: { 'Content-Type': 'application/json' } })
-.run(conn, callback)
+.run(conn)
 ```
 
 ## Pagination
@@ -112,7 +112,7 @@ __Example:__ Perform a GitHub search and collect up to 3 pages of results.
 ```js
 r.http("https://api.github.com/search/code?q=addClass+user:mozilla",
        { page: 'link-next', pageLimit: 3 }
-).run(conn, callback)
+).run(conn)
 ```
 
 As a function, `page` takes one parameter, an object of the format:
@@ -154,7 +154,7 @@ __Example:__ Perform depagination with a custom `page` function.
 r.http('example.com/pages',
        { page: function(info) { return info('body')('meta')('next').default(null); },
          pageLimit: 5 })
-.run(conn, callback)
+.run(conn)
 ```
 
 # Learn more

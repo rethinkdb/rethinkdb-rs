@@ -37,7 +37,7 @@ __Example:__ Equip Thor for battle.
 r.table('marvel').get('thor').merge(
     r.table('equipment').get('hammer'),
     r.table('equipment').get('pimento_sandwich')
-).run(conn, callback)
+).run(conn)
 ```
 
 __Example:__ Equip every hero for battle, using a subquery function to retrieve their weapons.
@@ -45,7 +45,7 @@ __Example:__ Equip every hero for battle, using a subquery function to retrieve 
 ```js
 r.table('marvel').merge(function (hero) {
     return { weapons: r.table('weapons').get(hero('weaponId')) };
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Use `merge` to join each blog post with its comments.
@@ -58,14 +58,14 @@ r.table('posts').merge(function (post) {
         comments: r.table('comments').getAll(post('id'),
             {index: 'postId'}).coerceTo('array')
     }
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Merge can be used recursively to modify object within objects.
 
 ```js
 r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
-    {weapons : {spectacular_graviton_beam : {dmg : 10}}}).run(conn, callback)
+    {weapons : {spectacular_graviton_beam : {dmg : 10}}}).run(conn)
 ```
 
 
@@ -73,7 +73,7 @@ __Example:__ To replace a nested object with another object you can use the lite
 
 ```js
 r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
-    {weapons : r.literal({repulsor_rays : {dmg : 3, cooldown : 0}})}).run(conn, callback)
+    {weapons : r.literal({repulsor_rays : {dmg : 3, cooldown : 0}})}).run(conn)
 ```
 
 
@@ -81,6 +81,6 @@ __Example:__ Literal can be used to remove keys from an object as well.
 
 ```js
 r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
-    {weapons : {spectacular_graviton_beam : r.literal()}}).run(conn, callback)
+    {weapons : {spectacular_graviton_beam : r.literal()}}).run(conn)
 ```
 

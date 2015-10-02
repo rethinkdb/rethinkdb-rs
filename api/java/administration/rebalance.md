@@ -44,7 +44,7 @@ See the [status](/api/javascript/status) command for an explanation of the objec
 __Example:__ Rebalance a table.
 
 ```js
-> r.table('superheroes').rebalance().run(conn, callback);
+> r.table('superheroes').rebalance().run(conn);
 // Result passed to callback
 {
   "rebalanced": 1,

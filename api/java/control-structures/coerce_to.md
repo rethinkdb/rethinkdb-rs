@@ -48,14 +48,14 @@ __Example:__ Coerce a stream to an array to store its output in a field. (A stre
 ```js
 r.table('posts').map(function (post) {
     post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Coerce an array of key-value pairs into an object.
 
 
 ```js
-r.expr([['name', 'Ironman'], ['victories', 2000]]).coerceTo('object').run(conn, callback)
+r.expr([['name', 'Ironman'], ['victories', 2000]]).coerceTo('object').run(conn)
 ```
 
 __Note:__ To coerce a list of key-value pairs like `['name', 'Ironman', 'victories', 2000]` to an object, use the [object](/api/javascript/object) command.
@@ -63,5 +63,5 @@ __Note:__ To coerce a list of key-value pairs like `['name', 'Ironman', 'victori
 __Example:__ Coerce a number to a string.
 
 ```js
-r.expr(1).coerceTo('string').run(conn, callback)
+r.expr(1).coerceTo('string').run(conn)
 ```

@@ -36,7 +36,7 @@ r.table("posts").map( function(post) {
         title: post("title"),
         author: post("author").default("Anonymous")
     }
-}).run(conn, callback)
+}).run(conn)
 ```
 
 We can rewrite the previous query with `r.branch` too.
@@ -54,7 +54,7 @@ r.table("posts").map( function(post) {
             author: "Anonymous" 
         }
     )
-}).run(conn, callback)
+}).run(conn)
 ```
 
 
@@ -65,7 +65,7 @@ we want to retrieve all our users who are not grown-ups or whose age is unknown
 ```js
 r.table("users").filter( function(user) {
     return user("age").lt(18).default(true)
-}).run(conn, callback)
+}).run(conn)
 ```
 
 One more way to write the previous query is to set the age to be `-1` when the
@@ -74,7 +74,7 @@ field is missing.
 ```js
 r.table("users").filter( function(user) {
     return user("age").default(-1).lt(18)
-}).run(conn, callback)
+}).run(conn)
 ```
 
 Another way to do the same query is to use [hasFields](/api/javascript/has_fields/).
@@ -82,7 +82,7 @@ Another way to do the same query is to use [hasFields](/api/javascript/has_field
 ```js
 r.table("users").filter( function(user) {
     return user.hasFields("age").not().or(user("age").lt(18))
-}).run(conn, callback)
+}).run(conn)
 ```
 
 The body of every [filter](/api/javascript/filter/) is wrapped in an implicit `.default(false)`. You can overwrite
@@ -92,6 +92,6 @@ written like this.
 ```js
 r.table("users").filter( function(user) {
     return user("age").lt(18)
-}, {default: true} ).run(conn, callback)
+}, {default: true} ).run(conn)
 ```
 

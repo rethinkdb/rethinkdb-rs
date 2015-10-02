@@ -29,7 +29,7 @@ __Example:__ 'zips up' the sequence by merging the left and right fields produce
 
 ```
 r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc'))
-    .zip().run(conn, callback)
+    .zip().run(conn)
 ```
 
 

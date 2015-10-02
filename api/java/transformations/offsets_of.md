@@ -22,7 +22,7 @@ Get the indexes of an element in a sequence. If the argument is a predicate, get
 __Example:__ Find the position of the letter 'c'.
 
 ```js
-r.expr(['a','b','c']).offsetsOf('c').run(conn, callback)
+r.expr(['a','b','c']).offsetsOf('c').run(conn)
 ```
 
 __Example:__ Find the popularity ranking of invisible heroes.
@@ -30,5 +30,5 @@ __Example:__ Find the popularity ranking of invisible heroes.
 ```js
 r.table('marvel').union(r.table('dc')).orderBy('popularity').offsetsOf(
     r.row('superpowers').contains('invisibility')
-).run(conn, callback)
+).run(conn)
 ```

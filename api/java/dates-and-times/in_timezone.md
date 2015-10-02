@@ -25,7 +25,7 @@ Return a new time object with a different timezone. While the time stays the sam
 __Example:__ Hour of the day in San Francisco (UTC/GMT -8, without daylight saving time).
 
 ```js
-r.now().inTimezone('-08:00').hours().run(conn, callback)
+r.now().inTimezone('-08:00').hours().run(conn)
 ```
 
 

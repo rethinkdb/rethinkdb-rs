@@ -41,7 +41,7 @@ __Example:__ Get all users whose name starts with "A". Because `null` evaluates 
 ```js
 r.table('users').filter(function(doc){
     return doc('name').match("^A")
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Get all users whose name ends with "n".
@@ -49,14 +49,14 @@ __Example:__ Get all users whose name ends with "n".
 ```js
 r.table('users').filter(function(doc){
     return doc('name').match("n$")
-}).run(conn, callback)
+}).run(conn)
 ```
 __Example:__ Get all users whose name has "li" in it
 
 ```js
 r.table('users').filter(function(doc){
     return doc('name').match("li")
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Get all users whose name is "John" with a case-insensitive search.
@@ -64,7 +64,7 @@ __Example:__ Get all users whose name is "John" with a case-insensitive search.
 ```js
 r.table('users').filter(function(doc){
     return doc('name').match("(?i)^john$")
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Get all users whose name is composed of only characters between "a" and "z".
@@ -72,7 +72,7 @@ __Example:__ Get all users whose name is composed of only characters between "a"
 ```js
 r.table('users').filter(function(doc){
     return doc('name').match("(?i)^[a-z]+$")
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Get all users where the zipcode is a string of 5 digits.
@@ -80,14 +80,14 @@ __Example:__ Get all users where the zipcode is a string of 5 digits.
 ```js
 r.table('users').filter(function(doc){
     return doc('zipcode').match("\\d{5}")
-}).run(conn, callback)
+}).run(conn)
 ```
 
 
 __Example:__ Retrieve the domain of a basic email
 
 ```js
-r.expr("name@domain.com").match(".*@(.*)").run(conn, callback)
+r.expr("name@domain.com").match(".*@(.*)").run(conn)
 ```
 
 Result:
@@ -110,7 +110,7 @@ Result:
 You can then retrieve only the domain with the [\(\)](/api/javascript/get_field) selector and [nth](/api/javascript/nth).
 
 ```js
-r.expr("name@domain.com").match(".*@(.*)")("groups").nth(0)("str").run(conn, callback)
+r.expr("name@domain.com").match(".*@(.*)")("groups").nth(0)("str").run(conn)
 ```
 
 Returns `'domain.com'`
@@ -119,5 +119,5 @@ Returns `'domain.com'`
 __Example:__ Fail to parse out the domain and returns `null`.
 
 ```js
-r.expr("name[at]domain.com").match(".*@(.*)").run(conn, callback)
+r.expr("name[at]domain.com").match(".*@(.*)").run(conn)
 ```

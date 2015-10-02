@@ -13,7 +13,7 @@ io:
 # Command syntax #
 
 {% apibody %}
-query.run(conn[, options], callback)
+query.run(conn[, options])
 query.run(conn[, options]) &rarr; promise
 {% endapibody %}
 
@@ -161,5 +161,5 @@ __Example:__ Change the batching parameters for this query.
 r.table('marvel').run(conn, {
     maxBatchRows: 16,
     maxBatchBytes: 2048
-}, callback);
+});
 ```

@@ -28,7 +28,7 @@ __Example:__ Retrieve Iron Man's equipment list without boots.
 ```js
 r.table('marvel').get('IronMan')('equipment')
   .difference(['Boots'])
-  .run(conn, callback)
+  .run(conn)
 ```
 
 __Example:__ Remove Iron Man's boots from his equipment.
@@ -38,7 +38,7 @@ r.table('marvel').get('IronMan')
   .update({
     equipment: r.row('equipment').difference(['Boots'])
   })
-  .run(conn, callback)
+  .run(conn)
 ```
 
 

@@ -27,18 +27,18 @@ Compare values, testing if the left-hand value is greater than or equal to the r
 __Example:__ Test if a player has scored 10 points or more.
 
 ```js
-r.table('players').get(1)('score').ge(10).run(conn, callback);
+r.table('players').get(1)('score').ge(10).run(conn);
 ```
 
 __Example:__ Test if variables are ordered from lowest to highest.
 
 ```js
 var a = 10, b = 20, c = 15;
-r.ge(a, b, c).run(conn, callback);
+r.ge(a, b, c).run(conn);
 ```
 
 This is the equivalent of the following:
 
 ```js
-r.ge(a, b).and(r.ge(b, c)).run(conn, callback);
+r.ge(a, b).and(r.ge(b, c)).run(conn);
 ```

@@ -75,20 +75,20 @@ As these queries are performed in a second client, the first
 client would receive and print the following objects:
 
 ```js
-> r.table('games').insert({id: 1}).run(conn, callback);
+> r.table('games').insert({id: 1}).run(conn);
 {old_val: null, new_val: {id: 1}}
 
-> r.table('games').get(1).update({player1: 'Bob'}).run(conn, callback);
+> r.table('games').get(1).update({player1: 'Bob'}).run(conn);
 {old_val: {id: 1}, new_val: {id: 1, player1: 'Bob'}}
 
-> r.table('games').get(1).replace({id: 1, player1: 'Bob', player2: 'Alice'}).run(conn, callback);
+> r.table('games').get(1).replace({id: 1, player1: 'Bob', player2: 'Alice'}).run(conn);
 {old_val: {id: 1, player1: 'Bob'},
  new_val: {id: 1, player1: 'Bob', player2: 'Alice'}}
 
-> r.table('games').get(1).delete().run(conn, callback)
+> r.table('games').get(1).delete().run(conn)
 {old_val: {id: 1, player1: 'Bob', player2: 'Alice'}, new_val: null}
 
-> r.tableDrop('games').run(conn, callback);
+> r.tableDrop('games').run(conn);
 ReqlRuntimeError: Changefeed aborted (table unavailable)
 ```
 
@@ -97,25 +97,25 @@ __Example:__ Return all the changes that increase a player's score.
 ```js
 r.table('test').changes().filter(
   r.row('new_val')('score').gt(r.row('old_val')('score'))
-).run(conn, callback)
+).run(conn)
 ```
 
 __Example:__ Return all the changes to a specific player's score that increase it past 10.
 
 ```js
-r.table('test').get(1).filter(r.row('score').gt(10)).changes().run(conn, callback)
+r.table('test').get(1).filter(r.row('score').gt(10)).changes().run(conn)
 ```
 
 __Example:__ Return all the inserts on a table.
 
 ```js
-r.table('test').changes().filter(r.row('old_val').eq(null)).run(conn, callback)
+r.table('test').changes().filter(r.row('old_val').eq(null)).run(conn)
 ```
 
 __Example:__ Return all the changes to game 1, with state notifications.
 
 ```js
-r.table('games').get(1).changes({includeStates: true}).run(conn, callback);
+r.table('games').get(1).changes({includeStates: true}).run(conn);
 // Result returned on changefeed
 {state: 'initializing'}
 {new_val: {id: 1, score: 12, arena: 'Hobbiton Field'}}
@@ -133,5 +133,5 @@ r.table('games').get(1).changes({includeStates: true}).run(conn, callback);
 __Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
 
 ```js
-r.table('games').orderBy({index: r.desc('score')}).limit(10).run(conn, callback);
+r.table('games').orderBy({index: r.desc('score')}).limit(10).run(conn);
 ```

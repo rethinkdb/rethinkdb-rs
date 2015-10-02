@@ -27,7 +27,7 @@ __Example:__ Retrieve posts that were submitted before noon.
 ```js
 r.table("posts").filter(
     r.row("date").timeOfDay().le(12*60*60)
-).run(conn, callback)
+).run(conn)
 ```
 
 

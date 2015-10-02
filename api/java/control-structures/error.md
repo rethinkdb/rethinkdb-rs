@@ -25,7 +25,7 @@ r.table('marvel').get('IronMan').do(function(ironman) {
     return r.branch(ironman('victories').lt(ironman('battles')),
         r.error('impossible code path'),
         ironman)
-}).run(conn, callback)
+}).run(conn)
 ```
 
 

@@ -31,21 +31,21 @@ Note: The last argument given will always be the 'open' side of the range, but w
 __Example:__ Generate a random number in the range `[0,1)`
 
 ```js
-r.random().run(conn, callback)
+r.random().run(conn)
 ```
 
 
 __Example:__ Generate a random integer in the range `[0,100)`
 
 ```js
-r.random(100).run(conn, callback)
-r.random(0, 100).run(conn, callback)
+r.random(100).run(conn)
+r.random(0, 100).run(conn)
 ```
 
 
 __Example:__ Generate a random number in the range `(-2.24,1.59]`
 
 ```js
-r.random(1.59, -2.24, {float: true}).run(conn, callback)
+r.random(1.59, -2.24, {float: true}).run(conn)
 ```
 

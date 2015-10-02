@@ -28,7 +28,7 @@ __Example:__ Get all the keys from a table row.
 ```js
 // row: { id: 1, mail: "fred@example.com", name: "fred" }
 
-r.table('users').get(1).keys().run(conn, callback);
+r.table('users').get(1).keys().run(conn);
 // Result passed to callback
 [ "id", "mail", "name" ]
 ```

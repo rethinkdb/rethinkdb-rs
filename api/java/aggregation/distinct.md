@@ -36,19 +36,19 @@ __Example:__ Which unique villains have been vanquished by Marvel heroes?
 ```js
 r.table('marvel').concatMap(function(hero) {
     return hero('villainList')
-}).distinct().run(conn, callback)
+}).distinct().run(conn)
 ```
 
 __Example:__ Topics in a table of messages have a secondary index on them, and more than one message can have the same topic. What are the unique topics in the table?
 
 ```js
-r.table('messages').distinct({index: 'topics'}).run(conn, callback)
+r.table('messages').distinct({index: 'topics'}).run(conn)
 ```
 
 The above structure is functionally identical to:
 
 ```js
-r.table('messages')('topics').distinct().run(conn, callback)
+r.table('messages')('topics').distinct().run(conn)
 ```
 
 However, the first form (passing the index as an argument to `distinct`) is faster, and won't run into array limit issues since it's returning a stream.

@@ -25,11 +25,11 @@ Test if two or more values are equal.
 __Example:__ See if a user's `role` field is set to `administrator`. 
 
 ```js
-r.table('users').get(1)('role').eq('administrator').run(conn, callback);
+r.table('users').get(1)('role').eq('administrator').run(conn);
 ```
 
 __Example:__ See if three variables contain equal values.
 
 ```js
-r.eq(a, b, c).run(conn, callback);
+r.eq(a, b, c).run(conn);
 ```

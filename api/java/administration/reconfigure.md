@@ -54,7 +54,7 @@ Read [Sharding and replication](/docs/sharding-and-replication/) for a complete 
 __Example:__ Reconfigure a table.
 
 ```js
-> r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
+> r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn);
 // Result passed to callback
 {
   "reconfigured": 1,
@@ -109,7 +109,7 @@ __Example:__ Reconfigure a table.
 __Example:__ Reconfigure a table, specifying replicas by server tags.
 
 ```js
-> r.table('superheroes').reconfigure({shards: 2, replicas: {wooster: 1, wayne: 1}, primaryReplicaTag: 'wooster'}).run(conn, callback);
+> r.table('superheroes').reconfigure({shards: 2, replicas: {wooster: 1, wayne: 1}, primaryReplicaTag: 'wooster'}).run(conn);
 // Result passed to callback
 {
   "reconfigured": 1,
@@ -196,5 +196,5 @@ __Example:__ Perform an emergency repair on a table.
 ```js
 r.table('superheroes').reconfigure(
   {emergencyRepair: "unsafe_rollback"}
-).run(conn, callback);
+).run(conn);
 ```

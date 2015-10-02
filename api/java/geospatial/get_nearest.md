@@ -35,5 +35,5 @@ __Example:__ Return a list of enemy hideouts within 5000 meters of the secret ba
 var secretBase = r.point(-122.422876,37.777128);
 r.table('hideouts').getNearest(secretBase,
     {index: 'location', maxDist: 5000}
-).run(conn, callback)
+).run(conn)
 ```

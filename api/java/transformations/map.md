@@ -34,7 +34,7 @@ __Example:__ Return the first five squares.
 ```js
 r.expr([1, 2, 3, 4, 5]).map(function (val) {
     return val.mul(val);
-}).run(conn, callback);
+}).run(conn);
 // Result passed to callback
 [1, 4, 9, 16, 25]
 ```
@@ -47,7 +47,7 @@ var sequence2 = [10, 20, 30, 40];
 var sequence3 = [1, 2, 3, 4];
 r.map(sequence1, sequence2, sequence3, function (val1, val2, val3) {
     return val1.add(val2).add(val3);
-}).run(conn, callback);
+}).run(conn);
 // Result passed to callback
 [111, 222, 333, 444]
 ```
@@ -59,7 +59,7 @@ This example renames the field `id` to `userId` when retrieving documents from t
 ```js
 r.table('users').map(function (doc) {
     return doc.merge({userId: doc('id')}).without('id');
-}).run(conn, callback);
+}).run(conn);
 ```
 
 Note that in this case, [row](/api/javascript/row) may be used as an alternative to writing an anonymous function, as it returns the same value as the function parameter receives:
@@ -67,7 +67,7 @@ Note that in this case, [row](/api/javascript/row) may be used as an alternative
 ```js
 r.table('users').map(
     r.row.merge({userId: r.row('id')}).without('id');
-}).run(conn, callback);
+}).run(conn);
 ```
 
 
@@ -76,5 +76,5 @@ __Example:__ Assign every superhero an archenemy.
 ```js
 r.table('heroes').map(r.table('villains'), function (hero, villain) {
     return hero.merge({villain: villain});
-}).run(conn, callback);
+}).run(conn);
 ```

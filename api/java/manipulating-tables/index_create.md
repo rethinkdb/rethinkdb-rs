@@ -39,13 +39,13 @@ If successful, `createIndex` will return an object of the form `{"created": 1}`.
 __Example:__ Create a simple index based on the field `postId`.
 
 ```js
-r.table('comments').indexCreate('postId').run(conn, callback)
+r.table('comments').indexCreate('postId').run(conn)
 ```
 
 __Example:__ Create a geospatial index based on the field `location`.
 
 ```js
-r.table('places').indexCreate('location', {geo: true}).run(conn, callback)
+r.table('places').indexCreate('location', {geo: true}).run(conn)
 ```
 
 A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([getIntersecting](/api/javascript/get_intersecting/) and [getNearest](/api/javascript/get_nearest/)) as well as index-specific terms ([indexStatus](/api/javascript/index_status), [indexWait](/api/javascript/index_wait), [indexDrop](/api/javascript/index_drop) and [indexList](/api/javascript/index_list)). Using terms that rely on non-geometric ordering such as [getAll](/api/javascript/get_all/), [orderBy](/api/javascript/order_by/) and [between](/api/javascript/between/) will result in an error.
@@ -53,26 +53,26 @@ A geospatial index field should contain only geometry objects. It will work with
 __Example:__ Create a simple index based on the nested field `author > name`.
 
 ```js
-r.table('comments').indexCreate('authorName', r.row("author")("name")).run(conn, callback)
+r.table('comments').indexCreate('authorName', r.row("author")("name")).run(conn)
 ```
 
 
 __Example:__ Create a compound index based on the fields `postId` and `date`.
 
 ```js
-r.table('comments').indexCreate('postAndDate', [r.row("postId"), r.row("date")]).run(conn, callback)
+r.table('comments').indexCreate('postAndDate', [r.row("postId"), r.row("date")]).run(conn)
 ```
 
 __Example:__ Create a multi index based on the field `authors`.
 
 ```js
-r.table('posts').indexCreate('authors', {multi: true}).run(conn, callback)
+r.table('posts').indexCreate('authors', {multi: true}).run(conn)
 ```
 
 __Example:__ Create a geospatial multi index based on the field `towers`.
 
 ```js
-r.table('networks').indexCreate('towers', {multi: true, geo: true}).run(conn, callback)
+r.table('networks').indexCreate('towers', {multi: true, geo: true}).run(conn)
 ```
 
 __Example:__ Create an index based on an arbitrary expression.
@@ -84,14 +84,14 @@ r.table('posts').indexCreate('authors', function(doc) {
         doc("updatedAt"),
         doc("createdAt")
     )
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Create a new secondary index based on an existing one.
 
 ```js
 r.table('posts').indexStatus('authors').nth(0)('function').run(conn, function (func) {
-    r.table('newPosts').indexCreate('authors', func).run(conn, callback);
+    r.table('newPosts').indexCreate('authors', func).run(conn);
 });
 ```
 

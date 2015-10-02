@@ -49,7 +49,7 @@ r.table("posts").map(function(doc) {
     return 1;
 }).reduce(function(left, right) {
     return left.add(right);
-}).default(0).run(conn, callback);
+}).default(0).run(conn);
 ```
 
 A shorter way to execute this query is to use [count](/api/javascript/count).
@@ -64,7 +64,7 @@ r.table("posts").map(function(doc) {
     return doc("comments").count();
 }).reduce(function(left, right) {
     return left.add(right);
-}).default(0).run(conn, callback);
+}).default(0).run(conn);
 ```
 
 
@@ -82,7 +82,7 @@ r.table("posts").map(function(doc) {
         left,
         right
     );
-}).default(0).run(conn, callback);
+}).default(0).run(conn);
 ```
 
 A shorter way to execute this query is to use [max](/api/javascript/max).

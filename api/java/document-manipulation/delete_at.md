@@ -31,7 +31,7 @@ By using a negative `index` you can delete from the end of the array. `-1` is th
 __Example:__ Delete the second element of an array.
 
 ```js
-> r(['a','b','c','d','e','f']).deleteAt(1).run(conn, callback)
+> r(['a','b','c','d','e','f']).deleteAt(1).run(conn)
 // result passed to callback
 ['a', 'c', 'd', 'e', 'f']
 ```
@@ -39,7 +39,7 @@ __Example:__ Delete the second element of an array.
 __Example:__ Delete the second and third elements of an array.
 
 ```js
-> r(['a','b','c','d','e','f']).deleteAt(1,3).run(conn, callback)
+> r(['a','b','c','d','e','f']).deleteAt(1,3).run(conn)
 // result passed to callback
 ['a', 'd', 'e', 'f']
 ```
@@ -47,7 +47,7 @@ __Example:__ Delete the second and third elements of an array.
 __Example:__ Delete the next-to-last element of an array.
 
 ```js
-> r(['a','b','c','d','e','f']).deleteAt(-2).run(conn, callback)
+> r(['a','b','c','d','e','f']).deleteAt(-2).run(conn)
 // result passed to callback
 ['a', 'b', 'c', 'd', 'f']
 ```
@@ -73,5 +73,5 @@ The second comment can be deleted by using `update` and `deleteAt` together.
 ```js
 r.table('posts').get('4cf47834-b6f9-438f-9dec-74087e84eb63').update({
     comments: r.row('comments').deleteAt(1)
-}).run(conn, callback)
+}).run(conn)
 ```

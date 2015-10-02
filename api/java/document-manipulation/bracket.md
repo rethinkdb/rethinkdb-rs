@@ -32,7 +32,7 @@ Get a single field from an object. If called on a sequence, gets that field from
 __Example:__ What was Iron Man's first appearance in a comic?
 
 ```js
-r.table('marvel').get('IronMan')('firstAppearance').run(conn, callback)
+r.table('marvel').get('IronMan')('firstAppearance').run(conn)
 ```
 
 The `()` command also accepts integer arguments as array offsets, like the [nth](/api/javascript/nth) command.

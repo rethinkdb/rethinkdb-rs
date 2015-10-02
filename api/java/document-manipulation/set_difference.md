@@ -27,7 +27,7 @@ distinct values).
 __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed list.
 
 ```js
-r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_reactor']).run(conn, callback)
+r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_reactor']).run(conn)
 ```
 
 

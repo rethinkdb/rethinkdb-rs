@@ -49,7 +49,7 @@ fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
 __Example:__ Get the size of an existing avatar image.
 
 ```js
-r.table('users').get(100)('avatar').count().run(conn, callback);
+r.table('users').get(100)('avatar').count().run(conn);
 // result returned to callback
 14156
 ```

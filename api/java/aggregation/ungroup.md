@@ -48,7 +48,7 @@ We can use this query:
 ```js
 r.table('games')
    .group('player').max('points')('points')
-   .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
+   .ungroup().orderBy(r.desc('reduction')).run(conn)
 ```
 
 Result: 
@@ -69,7 +69,7 @@ Result:
 __Example:__ Select one random player and all their games.
 
 ```js
-r.table('games').group('player').ungroup().sample(1).run(conn, callback)
+r.table('games').group('player').ungroup().sample(1).run(conn)
 ```
 
 Result:
@@ -119,8 +119,8 @@ Result:
 __Example:__ Types!
 
 ```js
-r.table('games').group('player').typeOf().run(conn, callback) // Returns "GROUPED_STREAM"
-r.table('games').group('player').ungroup().typeOf().run(conn, callback) // Returns "ARRAY"
-r.table('games').group('player').avg('points').run(conn, callback) // Returns "GROUPED_DATA"
-r.table('games').group('player').avg('points').ungroup().run(conn, callback) // Returns "ARRAY"
+r.table('games').group('player').typeOf().run(conn) // Returns "GROUPED_STREAM"
+r.table('games').group('player').ungroup().typeOf().run(conn) // Returns "ARRAY"
+r.table('games').group('player').avg('points').run(conn) // Returns "GROUPED_DATA"
+r.table('games').group('player').avg('points').ungroup().run(conn) // Returns "ARRAY"
 ```

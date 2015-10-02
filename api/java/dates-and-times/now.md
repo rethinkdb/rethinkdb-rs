@@ -28,6 +28,6 @@ __Example:__ Add a new user with the time at which he subscribed.
 r.table("users").insert({
     name: "John",
     subscription_date: r.now()
-}).run(conn, callback)
+}).run(conn)
 ```
 

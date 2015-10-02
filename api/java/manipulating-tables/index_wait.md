@@ -40,11 +40,11 @@ See the [indexStatus](/api/javascript/index_status) documentation for a descript
 __Example:__ Wait for all indexes on the table `test` to be ready:
 
 ```js
-r.table('test').indexWait().run(conn, callback)
+r.table('test').indexWait().run(conn)
 ```
 
 __Example:__ Wait for the index `timestamp` to be ready:
 
 ```js
-r.table('test').indexWait('timestamp').run(conn, callback)
+r.table('test').indexWait('timestamp').run(conn)
 ```

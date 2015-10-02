@@ -31,5 +31,5 @@ object in the sequence, skipping objects that lack it.
 __Example:__ What was Iron Man's first appearance in a comic?
 
 ```js
-r.table('marvel').get('IronMan').getField('firstAppearance').run(conn, callback)
+r.table('marvel').get('IronMan').getField('firstAppearance').run(conn)
 ```

@@ -25,5 +25,5 @@ Change a value in an array at a given index. Returns the modified array.
 __Example:__ Bruce Banner hulks out.
 
 ```js
-r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
+r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn)
 ```

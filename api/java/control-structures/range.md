@@ -29,7 +29,7 @@ Any specified arguments must be integers, or a `ReqlRuntimeError` will be thrown
 __Example:__ Return a four-element range of `[0, 1, 2, 3]`.
 
 ```js
-> r.range(4).run(conn, callback)
+> r.range(4).run(conn)
 // result returned to callback
 [0, 1, 2, 3]
 ```
@@ -37,7 +37,7 @@ __Example:__ Return a four-element range of `[0, 1, 2, 3]`.
 You can also use the [limit](/api/javascript/limit) command with the no-argument variant to achieve the same result in this case:
 
 ```js
-> r.range().limit(4).run(conn, callback)
+> r.range().limit(4).run(conn)
 // result returned to callback
 [0, 1, 2, 3]
 ```
@@ -45,7 +45,7 @@ You can also use the [limit](/api/javascript/limit) command with the no-argument
 __Example:__ Return a range from -5 through 5.
 
 ```js
-> r.range(-5, 6).run(conn, callback)
+> r.range(-5, 6).run(conn)
 // result returned to callback
 [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 ```

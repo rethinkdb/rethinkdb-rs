@@ -28,7 +28,7 @@ __Example:__ Get all of the values from a table row.
 ```js
 // row: { id: 1, mail: "fred@example.com", name: "fred" }
 
-r.table('users').get(1).values().run(conn, callback);
+r.table('users').get(1).values().run(conn);
 // Result passed to callback
 [ 1, "fred@example.com", "fred" ]
 ```

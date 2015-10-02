@@ -24,7 +24,7 @@ Return the day of week of a time object as a number between 1 and 7 (following I
 __Example:__ Return today's day of week.
 
 ```js
-r.now().dayOfWeek().run(conn, callback)
+r.now().dayOfWeek().run(conn)
 ```
 
 __Example:__ Retrieve all the users who were born on a Tuesday.

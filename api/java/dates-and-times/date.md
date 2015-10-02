@@ -27,7 +27,7 @@ __Example:__ Retrieve all the users whose birthday is today
 ```js
 r.table("users").filter(function(user) {
     return user("birthdate").date().eq(r.now().date())
-}).run(conn, callback)
+}).run(conn)
 ```
 
 

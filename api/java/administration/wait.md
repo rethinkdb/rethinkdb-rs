@@ -35,7 +35,7 @@ If `wait` is called with no table or database specified (the `r.wait()` form), i
 __Example:__ Wait on a table to be ready.
 
 ```js
-> r.table('superheroes').wait().run(conn, callback);
+> r.table('superheroes').wait().run(conn);
 // Result passed to callback
 { "ready": 1 }
 ```

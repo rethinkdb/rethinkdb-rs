@@ -27,7 +27,7 @@ be strings.  `r.object(A, B, C, D)` is equivalent to
 __Example:__ Create a simple object.
 
 ```js
-r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
+r.object('id', 5, 'data', ['foo', 'bar']).run(conn)
 ```
 
 Result:

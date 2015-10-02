@@ -83,7 +83,7 @@ r.table("posts").get(1).replace({
     title: "Lorem ipsum",
     content: "Aleas jacta est",
     status: "draft"
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Remove the field `status` from all posts.
@@ -91,7 +91,7 @@ __Example:__ Remove the field `status` from all posts.
 ```js
 r.table("posts").replace(function(post) {
     return post.without("status")
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Remove all the fields that are not `id`, `title` or `content`.
@@ -99,7 +99,7 @@ __Example:__ Remove all the fields that are not `id`, `title` or `content`.
 ```js
 r.table("posts").replace(function(post) {
     return post.pluck("id", "title", "content")
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Replace the document with the primary key `1` using soft durability.
@@ -112,7 +112,7 @@ r.table("posts").get(1).replace({
     status: "draft"
 }, {
     durability: "soft"
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Replace the document with the primary key `1` and return the values of the document before
@@ -126,7 +126,7 @@ r.table("posts").get(1).replace({
     status: "published"
 }, {
     returnChanges: true
-}).run(conn, callback)
+}).run(conn)
 ```
 
 The result will have two fields `old_val` and `new_val`.

@@ -25,5 +25,5 @@ __Example:__ Now that our heroes have defeated their villains, we can safely rem
 ```js
 r.table('marvel').forEach(function(hero) {
     return r.table('villains').get(hero('villainDefeated')).delete()
-}).run(conn, callback)
+}).run(conn)
 ```

@@ -29,7 +29,7 @@ End the sequence after the given number of elements.
 __Example:__ Only so many can fit in our Pantheon of heroes.
 
 ```js
-r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
+r.table('marvel').orderBy('belovedness').limit(10).run(conn)
 ```
 
 

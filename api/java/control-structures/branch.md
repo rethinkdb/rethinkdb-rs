@@ -42,7 +42,7 @@ __Example:__ Test the value of x.
 
 ```js
 var x = 10;
-r.branch(r.expr(x).gt(5), 'big', 'small').run(conn, callback);
+r.branch(r.expr(x).gt(5), 'big', 'small').run(conn);
 // Result passed to callback
 "big"
 ```
@@ -58,7 +58,7 @@ r.table('marvel').map(
         r.row('name').add(' is a hero'),
         r.row('name').add(' is very nice')
     )
-).run(conn, callback);
+).run(conn);
 ```
 
 If the documents in the table `marvel` are:

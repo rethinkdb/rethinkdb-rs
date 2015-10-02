@@ -26,6 +26,6 @@ The `db` command is optional. If it is not present in a query, the query will ru
 __Example:__ Explicitly specify a database for a query.
 
 ```js
-r.db('heroes').table('marvel').run(conn, callback)
+r.db('heroes').table('marvel').run(conn)
 ```
 

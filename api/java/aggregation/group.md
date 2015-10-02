@@ -48,7 +48,7 @@ Suppose that the table `games` has the following data:
 Grouping games by player can be done with:
 
 ```js
-> r.table('games').group('player').run(conn, callback)
+> r.table('games').group('player').run(conn)
 
 // Result passed to callback
 [
@@ -76,7 +76,7 @@ sub-streams, producing grouped data.
 __Example:__ What is each player's best game?
 
 ```js
-> r.table('games').group('player').max('points').run(conn, callback)
+> r.table('games').group('player').max('points').run(conn)
 
 // Result passed to callback
 [
@@ -97,7 +97,7 @@ producing more grouped data.
 __Example:__ What is the maximum number of points scored by each player?
 
 ```js
-> r.table('games').group('player').max('points')('points').run(conn, callback)
+> r.table('games').group('player').max('points')('points').run(conn)
 
 // Result passed to callback
 [
@@ -118,7 +118,7 @@ __Example:__ What is the maximum number of points scored by each
 player for each game type?
 
 ```js
-> r.table('games').group('player', 'type').max('points')('points').run(conn, callback)
+> r.table('games').group('player', 'type').max('points')('points').run(conn)
 
 // Result passed to callback
 [
@@ -147,7 +147,7 @@ player for each game type?
 > r.table('games')
     .group(function(game) {
         return game.pluck('player', 'type')
-    }).max('points')('points').run(conn, callback)
+    }).max('points')('points').run(conn)
 
 // Result passed to callback
 [
@@ -173,7 +173,7 @@ __Example:__ How many matches have been played this year by month?
 ```js
 > r.table('matches').group(
       [r.row('date').year(), r.row('date').month()]
-  ).count().run(conn, callback)
+  ).count().run(conn)
 
 // Result passed to callback
 [
@@ -202,7 +202,7 @@ __Example:__ What is the maximum number of points scored by game type?
 
 
 ```js
-> r.table('games').group({index:'type'}).max('points')('points').run(conn, callback)
+> r.table('games').group({index:'type'}).max('points')('points').run(conn)
 
 // Result passed to callback
 [
@@ -232,7 +232,7 @@ Suppose that the table `games2` has the following data:
 Using the `multi` option we can group data by match A, B or C.
 
 ```js
-r.table('games2').group(r.row('matches').keys(), {multi: true}).run(conn, callback);
+r.table('games2').group(r.row('matches').keys(), {multi: true}).run(conn);
 // Result passed to callback
 [
     {
@@ -263,7 +263,7 @@ r.table('games2').group(r.row('matches').keys(), {multi: true}).ungroup().map(
             }
         )};
     }
-).run(conn, callback);
+).run(conn);
 // Result passed to callback
 [
     { match: "a", total: 36 },
@@ -284,7 +284,7 @@ grouped data into an array of objects representing the groups.
 __Example:__ Ungrouping grouped data.
 
 ```js
-> r.table('games').group('player').max('points')('points').ungroup().run(conn, callback)
+> r.table('games').group('player').max('points')('points').ungroup().run(conn)
 
 // Result passed to callback
 [
@@ -308,7 +308,7 @@ player, with the highest scorers first?
 ```js
 > r.table('games')
    .group('player').max('points')('points')
-   .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
+   .ungroup().orderBy(r.desc('reduction')).run(conn)
 
 // Result passed to callback
 [
@@ -336,7 +336,7 @@ argument to `run`:
 __Example:__ Get back the raw `GROUPED_DATA` pseudotype.
 
 ```js
-> r.table('games').group('player').avg('points').run(conn, {groupFormat:'raw'}, callback)
+> r.table('games').group('player').avg('points').run(conn, {groupFormat:'raw'})
 
 // Result passed to callback
 {
@@ -384,17 +384,17 @@ query.  Below are efficient and inefficient examples.
 __Example:__ Efficient operation.
 
 ```js
-// r.table('games').group('player').typeOf().run(conn, callback)
+// r.table('games').group('player').typeOf().run(conn)
 // Returns "GROUPED_STREAM"
-r.table('games').group('player').min('points').run(conn, callback) // EFFICIENT
+r.table('games').group('player').min('points').run(conn) // EFFICIENT
 ```
 
 __Example:__ Inefficient operation.
 
 ```js
-// r.table('games').group('player').orderBy('score').typeOf().run(conn, callback)
+// r.table('games').group('player').orderBy('score').typeOf().run(conn)
 // Returns "GROUPED_DATA"
-r.table('games').group('player').orderBy('score').nth(0).run(conn, callback) // INEFFICIENT
+r.table('games').group('player').orderBy('score').nth(0).run(conn) // INEFFICIENT
 ```
 
 What does it mean to be inefficient here?  When operating on grouped
@@ -415,7 +415,7 @@ player in free games?
 ```js
 > r.table('games').filter( r.row('type').eq('free'))
     .group('player').max('points')('points')
-    .run(conn, callback)
+    .run(conn)
 
 // Result passed to callback
 [
@@ -436,7 +436,7 @@ __Example:__ What is each player's highest even and odd score?
 r.table('games')
     .group('name', function(game) {
         return game('points').mod(2)
-    }).max('points')('points').run(conn, callback)
+    }).max('points')('points').run(conn)
 
 // Result passed to callback
 [

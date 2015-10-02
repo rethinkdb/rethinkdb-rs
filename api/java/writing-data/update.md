@@ -55,19 +55,19 @@ Update returns an object that contains the following attributes:
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
 ```js
-r.table("posts").get(1).update({status: "published"}).run(conn, callback)
+r.table("posts").get(1).update({status: "published"}).run(conn)
 ```
 
 __Example:__ Update the status of all posts to `published`.
 
 ```js
-r.table("posts").update({status: "published"}).run(conn, callback)
+r.table("posts").update({status: "published"}).run(conn)
 ```
 
 __Example:__ Update the status of all the posts written by William.
 
 ```js
-r.table("posts").filter({author: "William"}).update({status: "published"}).run(conn, callback)
+r.table("posts").filter({author: "William"}).update({status: "published"}).run(conn)
 ```
 
 
@@ -77,7 +77,7 @@ This query will throw an error if the field `views` doesn't exist.
 ```js
 r.table("posts").get(1).update({
     views: r.row("views").add(1)
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Increment the field `view` of the post with `id` of `1`.
@@ -86,7 +86,7 @@ If the field `views` does not exist, it will be set to `0`.
 ```js
 r.table("posts").get(1).update({
     views: r.row("views").add(1).default(0)
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Perform a conditional update.  
@@ -99,7 +99,7 @@ r.table("posts").get(1).update(function(post) {
         {type: "hot"},
         {type: "normal"}
     )
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Update the field `numComments` with the result of a sub-query. Because this update is not atomic, you must pass the `nonAtomic` flag.
@@ -109,7 +109,7 @@ r.table("posts").get(1).update({
     numComments: r.table("comments").filter({idPost: 1}).count()
 }, {
     nonAtomic: true
-}).run(conn, callback)
+}).run(conn)
 ```
 
 If you forget to specify the `nonAtomic` flag, you will get a `ReqlRuntimeError`:
@@ -125,13 +125,13 @@ r.table("posts").get(1).update({
     num_comments: r.js("Math.floor(Math.random()*100)")
 }, {
     nonAtomic: true
-}).run(conn, callback)
+}).run(conn)
 ```
 
 __Example:__ Update the status of the post with `id` of `1` using soft durability.
 
 ```js
-r.table("posts").get(1).update({status: "published"}, {durability: "soft"}).run(conn, callback)
+r.table("posts").get(1).update({status: "published"}, {durability: "soft"}).run(conn)
 ```
 
 __Example:__ Increment the field `views` and return the values of the document before and after the update operation.
@@ -141,7 +141,7 @@ r.table("posts").get(1).update({
     views: r.row("views").add(1)
 }, {
     returnChanges: true
-}).run(conn, callback)
+}).run(conn)
 ```
 
 The result will now include a `changes` field:
@@ -223,7 +223,7 @@ __Example:__ Update Bob Smith's cell phone number.
 ```js
 r.table("users").get(10001).update(
     {contact: {phone: {cell: "408-555-4242"}}}
-).run(conn, callback)
+).run(conn)
 ```
 
 __Example:__ Add another note to Bob Smith's record.
@@ -236,7 +236,7 @@ var newNote = {
 };
 r.table("users").get(10001).update(
     {notes: r.row("notes").append(newNote)}
-).run(conn, callback)
+).run(conn)
 ```
 
 __Example:__ Send a note to every user with an ICQ number.
@@ -251,7 +251,7 @@ r.table("users").filter(
     r.row.hasFields({contact: {im: "icq"}})
 ).update(
     {notes: r.row("notes").append(icqNote)}
-).run(conn, callback)
+).run(conn)
 ```
 
 __Example:__ Replace all of Bob's IM records. Normally, `update` will merge nested documents together; to replace the entire `"im"` document, use the [literal][] command.
@@ -261,5 +261,5 @@ __Example:__ Replace all of Bob's IM records. Normally, `update` will merge nest
 ```js
 r.table('users').get(10001).update(
     {contact: {im: r.literal({aim: "themoosemeister"})}}
-).run(conn, callback)
+).run(conn)
 ```

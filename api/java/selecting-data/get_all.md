@@ -26,19 +26,19 @@ Get all documents where the given value matches the value of the requested index
 __Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/javascript/get/) when using a secondary index.
 
 ```js
-r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn, callback)
+r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn)
 ```
 
 __Example:__ Without an index argument, we default to the primary index. While `get` will either return the document or `null` when no document with such a primary key value exists, this will return either a one or zero length stream.
 
 ```js
-r.table('dc').getAll('superman').run(conn, callback)
+r.table('dc').getAll('superman').run(conn)
 ```
 
 __Example:__ You can get multiple documents in a single call to `get_all`.
 
 ```js
-r.table('dc').getAll('superman', 'ant man').run(conn, callback)
+r.table('dc').getAll('superman', 'ant man').run(conn)
 ```
 
 __Example:__ You can use [args](/api/javascript/args/) with `getAll` to retrieve multiple documents whose keys are in a list. This uses `getAll` to get a list of female superheroes, coerces that to an array, and then gets a list of villains who have those superheroes as enemies.
@@ -49,7 +49,7 @@ r.do(
     function(heroines) {
         return r.table('villains').getAll(r.args(heroines));
     }
-).run(conn, callback)
+).run(conn)
 ```
 
 Secondary indexes can be used in extremely powerful ways with `getAll` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.

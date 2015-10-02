@@ -26,7 +26,7 @@ __Example:__ Return the users born on the 24th of any month.
 ```js
 r.table("users").filter(
     r.row("birthdate").day().eq(24)
-).run(conn, callback)
+).run(conn)
 ```
 
 
