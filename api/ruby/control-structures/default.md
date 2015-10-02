@@ -8,19 +8,15 @@ command: default
 # Command syntax #
 
 {% apibody %}
-value.default(default_value) &rarr; any
-sequence.default(default_value) &rarr; any
+value.default(default_value | function) &rarr; any
+sequence.default(default_value | function) &rarr; any
 {% endapibody %}
 
 # Description #
 
-Handle non-existence errors. Tries to evaluate and return its first argument. If an
-error related to the absence of a value is thrown in the process, or if its first
-argument returns `nil`, returns its second argument. (Alternatively, the second argument
-may be a function which will be called with either the text of the non-existence error
-or `nil`.)
+Provide a default value in case of non-existence errors. The `default` command evaluates its first argument (the value it's chained to). If that argument returns `nil` or a non-existence error is thrown in evaluation, then `default` returns its second argument. The second argument is usually a default value, but it can be a function that returns a value.
 
-__Example:__ Suppose we want to retrieve the titles and authors of the table `posts`.
+__Example:__ Retrieve the titles and authors of the table `posts`.
 In the case where the author field is missing or `nil`, we want to retrieve the string
 `Anonymous`.
 
@@ -51,10 +47,8 @@ r.table("posts").map{ |post|
 }.run(conn)
 ```
 
-
-__Example:__ The `default` command can be useful to filter documents too. Suppose
-we want to retrieve all our users who are not grown-ups or whose age is unknown
-(i.e the field `age` is missing or equals `nil`). We can do it with this query:
+__Example:__ The `default` command can also be used to filter documents. Retrieve all our users who are not grown-ups or whose age is unknown
+(i.e., the field `age` is missing or equals `nil`).
 
 ```rb
 r.table("users").filter{ |user|
@@ -71,7 +65,7 @@ r.table("users").filter{ |user|
 }.run(conn)
 ```
 
-One last way to do the same query is to use [has_fields](/api/ruby/has_fields/).
+This can be accomplished with [has_fields](/api/ruby/has_fields/) rather than `default`.
 
 ```rb
 r.table("users").filter{ |user|
@@ -79,12 +73,23 @@ r.table("users").filter{ |user|
 }.run(conn)
 ```
 
-The body of every [filter](/api/ruby/filter/) is wrapped in an implicit `.default(false)`. You can overwrite
-the value `false` by passing an option in filter, so the previous query can also be
-written like this.
+The body of every [filter](/api/ruby/filter/) is wrapped in an implicit `.default(false)`. You can overwrite the value `false` with the `default` option.
 
 ```rb
 r.table('users').filter(:default => true) {|user|
     (user[:age] < 18)
 }.run(conn)
 ```
+
+__Example:__ The function form of `default` receives the error message as its argument.
+
+```rb
+r.table("posts").map{ |post|
+    {
+        :title => post["title"],
+        :author => post["author"].default{ |err| err }
+    }
+}.run(conn)
+```
+
+This particular example simply returns the error message, so it isn't very useful. But it would be possible to change the default value based on the specific error message thrown.
