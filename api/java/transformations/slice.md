@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/slice/
+permalink: api/java/slice/
 command: slice
 related_commands:
     orderBy: order_by/
@@ -29,7 +29,7 @@ If `endIndex` is past the end of the sequence, all elements from `startIndex` to
 
 A negative `endIndex` is allowed with arrays; in that case, the returned range counts backward from the array's end. That is, the range of `(2,-1)` returns the second element through the next-to-last element of the range. A negative `endIndex` is not allowed with a stream. (An `endIndex` of &minus;1 *is* allowed with a stream if `rightBound` is closed; this behaves as if no `endIndex` was specified.)
 
-If `slice` is used with a [binary](/api/javascript/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
+If `slice` is used with a [binary](/api/java/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
 
 **Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 

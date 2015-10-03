@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/round/
+permalink: api/java/round/
 command: round
 related_commands:
     ceil: ceil/
@@ -18,8 +18,8 @@ number.round() &rarr; number
 
 Rounds the given value to the nearest whole integer. For example, values of 1.0 up to but not including 1.5 will return 1.0, similar to [floor][]; values of 1.5 up to 2.0 will return 2.0, similar to [ceil][].
 
-[floor]: /api/javascript/floor/
-[ceil]:  /api/javascript/ceil/
+[floor]: /api/java/floor/
+[ceil]:  /api/java/ceil/
 
 __Example:__ Round 12.345 to the nearest integer.
 

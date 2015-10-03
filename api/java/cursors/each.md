@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/each/
+permalink: api/java/each/
 command: each
 related_commands:
     next: next/

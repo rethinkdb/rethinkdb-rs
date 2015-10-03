@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/index_drop/
+permalink: api/java/index_drop/
 command: indexDrop
 related_commands:
     indexCreate: index_create/

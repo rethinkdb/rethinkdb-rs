@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/index_list/
+permalink: api/java/index_list/
 command: indexList
 related_commands:
     indexCreate: index_create/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/db_drop/
+permalink: api/java/db_drop/
 command: dbDrop
 related_commands:
     dbCreate: db_create/
@@ -24,7 +24,7 @@ If successful, the command returns an object with two fields:
 * `dbs_dropped`: always `1`.
 * `tables_dropped`: the number of tables in the dropped database.
 * `config_changes`: a list containing one two-field object, `old_val` and `new_val`:
-    * `old_val`: the database's original [config](/api/javascript/config) value.
+    * `old_val`: the database's original [config](/api/java/config) value.
     * `new_val`: always `null`.
 
 If the given database does not exist, the command throws `ReqlRuntimeError`.

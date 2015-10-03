@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/get_intersecting/
+permalink: api/java/get_intersecting/
 command: getIntersecting
 related_commands:
     getNearest: get_nearest/
@@ -17,7 +17,7 @@ table.getIntersecting(geometry, {index: 'indexname'}) &rarr; selection<stream>
 
 Get all documents where the given geometry object intersects the geometry object of the requested geospatial index.
 
-The `index` argument is mandatory. This command returns the same results as `table.filter(r.row('index').intersects(geometry))`. The total number of results is limited to the array size limit which defaults to 100,000, but can be changed with the `arrayLimit` option to [run](/api/javascript/run).
+The `index` argument is mandatory. This command returns the same results as `table.filter(r.row('index').intersects(geometry))`. The total number of results is limited to the array size limit which defaults to 100,000, but can be changed with the `arrayLimit` option to [run](/api/java/run).
 
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 

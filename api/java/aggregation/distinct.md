@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/distinct/
+permalink: api/java/distinct/
 command: distinct
 related_commands:
     map: map/

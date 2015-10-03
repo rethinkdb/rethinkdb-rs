@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/close-cursor/
+permalink: api/java/close-cursor/
 command: close
 related_commands:
     next: next/

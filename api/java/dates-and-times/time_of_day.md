@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/time_of_day/
+permalink: api/java/time_of_day/
 command: timeOfDay
 related_commands:
     now: now/

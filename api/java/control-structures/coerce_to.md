@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/coerce_to/
+permalink: api/java/coerce_to/
 command: coerceTo
 related_commands:
     object: object/
@@ -45,7 +45,7 @@ __Example:__ Coerce an array of key-value pairs into an object.
 r.expr([['name', 'Ironman'], ['victories', 2000]]).coerceTo('object').run(conn)
 ```
 
-__Note:__ To coerce a list of key-value pairs like `['name', 'Ironman', 'victories', 2000]` to an object, use the [object](/api/javascript/object) command.
+__Note:__ To coerce a list of key-value pairs like `['name', 'Ironman', 'victories', 2000]` to an object, use the [object](/api/java/object) command.
 
 __Example:__ Coerce a number to a string.
 

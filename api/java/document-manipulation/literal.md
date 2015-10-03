@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/literal/
+permalink: api/java/literal/
 command: literal
 related_commands:
     merge: merge/

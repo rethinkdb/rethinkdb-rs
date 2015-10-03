@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/splice_at/
+permalink: api/java/splice_at/
 command: spliceAt
 related_commands:
     insertAt: insert_at/

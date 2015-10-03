@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/avg/
+permalink: api/java/avg/
 command: avg
 related_commands:
     map: map/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/get_all/
+permalink: api/java/get_all/
 command: getAll
 related_commands:
     get: get/
@@ -20,7 +20,7 @@ table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
 
 Get all documents where the given value matches the value of the requested index.
 
-__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/javascript/get/) when using a secondary index.
+__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/java/get/) when using a secondary index.
 
 ```js
 r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn)
@@ -38,7 +38,7 @@ __Example:__ You can get multiple documents in a single call to `get_all`.
 r.table('dc').getAll('superman', 'ant man').run(conn)
 ```
 
-__Example:__ You can use [args](/api/javascript/args/) with `getAll` to retrieve multiple documents whose keys are in a list. This uses `getAll` to get a list of female superheroes, coerces that to an array, and then gets a list of villains who have those superheroes as enemies.
+__Example:__ You can use [args](/api/java/args/) with `getAll` to retrieve multiple documents whose keys are in a list. This uses `getAll` to get a list of female superheroes, coerces that to an array, and then gets a list of villains who have those superheroes as enemies.
 
 ```js
 r.do(

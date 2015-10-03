@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/difference/
+permalink: api/java/difference/
 command: difference
 related_commands:
     setInsert: set_insert/

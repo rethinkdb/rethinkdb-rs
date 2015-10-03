@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/match/
+permalink: api/java/match/
 command: match
 io:
     -   - string
@@ -35,7 +35,7 @@ You can enable case-insensitive matching by prefixing the regular expression wit
 The `match` command does not support backreferences.
 
 __Example:__ Get all users whose name starts with "A". Because `null` evaluates to `false` in
-[filter](/api/javascript/filter/), you can just use the result of `match` for the predicate.
+[filter](/api/java/filter/), you can just use the result of `match` for the predicate.
 
 
 ```js
@@ -107,7 +107,7 @@ Result:
 }
 ```
 
-You can then retrieve only the domain with the [\(\)](/api/javascript/get_field) selector and [nth](/api/javascript/nth).
+You can then retrieve only the domain with the [\(\)](/api/java/get_field) selector and [nth](/api/java/nth).
 
 ```js
 r.expr("name@domain.com").match(".*@(.*)")("groups").nth(0)("str").run(conn)

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/day_of_week/
+permalink: api/java/day_of_week/
 command: dayOfWeek
 related_commands:
     now: now/

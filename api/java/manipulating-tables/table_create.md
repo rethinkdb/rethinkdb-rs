@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/table_create/
+permalink: api/java/table_create/
 command: tableCreate
 related_commands:
     tableList: table_list/
@@ -26,14 +26,14 @@ If successful, the command returns an object with two fields:
 * `tables_created`: always `1`.
 * `config_changes`: a list containing one two-field object, `old_val` and `new_val`:
     * `old_val`: always `null`.
-    * `new_val`: the table's new [config](/api/javascript/config) value.
+    * `new_val`: the table's new [config](/api/java/config) value.
 
 If a table with the same name already exists, the command throws `ReqlRuntimeError`.
 
 {% infobox %}
 __Note:__ Only alphanumeric characters and underscores are valid for the table name.
 
-Invoking `tableCreate` without specifying a database using [db](/api/javascript/db/) creates a table in the database specified in [connect](/api/javascript/connect/), or `test` if no database was specified.
+Invoking `tableCreate` without specifying a database using [db](/api/java/db/) creates a table in the database specified in [connect](/api/java/connect/), or `test` if no database was specified.
 {% endinfobox %}
 
 When creating a table you can specify the following options:

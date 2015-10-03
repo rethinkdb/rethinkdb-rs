@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/to_iso8601/
+permalink: api/java/to_iso8601/
 command: toISO8601
 related_commands:
     now: now/

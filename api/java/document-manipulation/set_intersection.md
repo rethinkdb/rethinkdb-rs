@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/set_intersection/
+permalink: api/java/set_intersection/
 command: setIntersection
 related_commands:
     difference: difference/

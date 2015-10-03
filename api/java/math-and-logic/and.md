@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/and/
+permalink: api/java/and/
 command: and
 related_commands:
     or: or/

@@ -3,7 +3,7 @@ layout: api
 title: "ReQL command reference"
 active: api
 no_footer: true
-permalink: api/javascript/
+permalink: api/java/
 alias: api/
 language: Java
 ---
@@ -693,7 +693,7 @@ table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
 
 Get all documents where the given value matches the value of the requested index.
 
-__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/javascript/get/) when using a secondary index.
+__Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/java/get/) when using a secondary index.
 
 ```js
 r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn)
@@ -910,7 +910,7 @@ the ordering, wrap the attribute with either `r.asc` or `r.desc`
 (defaults to ascending).
 
 Sorting without an index requires the server to hold the sequence in
-memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/javascript/run)). Sorting with an index can
+memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/java/run)). Sorting with an index can
 be done on arbitrarily large tables, or after a `between` command
 using the same index.
 
@@ -920,7 +920,7 @@ __Example:__ Order all the posts using the index `date`.
 r.table('posts').orderBy({index: 'date'}).run(conn)
 ```
 
-The index must have been previously created with [indexCreate](/api/javascript/index_create/).
+The index must have been previously created with [indexCreate](/api/java/index_create/).
 
 ```js
 r.table('posts').indexCreate('date').run(conn)
@@ -1622,7 +1622,7 @@ singleSelection.values() &rarr; array
 object.values() &rarr; array
 {% endapibody %}
 
-Return an array containing all of an object's values. `values()` guarantees the values will come out in the same order as [keys](/api/javascript/keys).
+Return an array containing all of an object's values. `values()` guarantees the values will come out in the same order as [keys](/api/java/keys).
 
 __Example:__ Get all of the values from a table row.
 
@@ -2887,7 +2887,7 @@ sequence.includes(geometry) &rarr; sequence
 geometry.includes(geometry) &rarr; bool
 {% endapibody %}
 
-Tests whether a geometry object is completely contained within another. When applied to a sequence of geometry objects, `includes` acts as a [filter](/api/javascript/filter), returning a sequence of objects from the sequence that include the argument.
+Tests whether a geometry object is completely contained within another. When applied to a sequence of geometry objects, `includes` acts as a [filter](/api/java/filter), returning a sequence of objects from the sequence that include the argument.
 
 __Example:__ Is `point2` included within a 2000-meter circle around `point1`?
 
@@ -2910,7 +2910,7 @@ r.intersects(sequence, geometry) &rarr; sequence
 r.intersects(geometry, geometry) &rarr; bool
 {% endapibody %}
 
-Tests whether two geometry objects intersect with one another. When applied to a sequence of geometry objects, `intersects` acts as a [filter](/api/javascript/filter), returning a sequence of objects from the sequence that intersect with the argument.
+Tests whether two geometry objects intersect with one another. When applied to a sequence of geometry objects, `intersects` acts as a [filter](/api/java/filter), returning a sequence of objects from the sequence that intersect with the argument.
 
 __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 
@@ -2934,7 +2934,7 @@ r.line(point1, point2, ...) &rarr; line
 Construct a geometry object of type Line. The line can be specified in one of two ways:
 
 * Two or more two-item arrays, specifying longitude and latitude numbers of the line's vertices;
-* Two or more [Point](/api/javascript/point) objects specifying the line's vertices.
+* Two or more [Point](/api/java/point) objects specifying the line's vertices.
 
 __Example:__ Define a line.
 
@@ -2977,7 +2977,7 @@ r.polygon(point1, point2, point3, ...) &rarr; polygon
 Construct a geometry object of type Polygon. The Polygon can be specified in one of two ways:
 
 * Three or more two-item arrays, specifying longitude and latitude numbers of the polygon's vertices;
-* Three or more [Point](/api/javascript/point) objects specifying the polygon's vertices.
+* Three or more [Point](/api/java/point) objects specifying the polygon's vertices.
 
 __Example:__ Define a polygon.
 

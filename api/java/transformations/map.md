@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/map/
+permalink: api/java/map/
 command: map
 related_commands:
     concatMap: concat_map/
@@ -22,7 +22,7 @@ r.map(array1[, array2, ...], function) &rarr; array
 
 Transform each element of one or more sequences by applying a mapping function to them. If `map` is run with two or more sequences, it will iterate for as many items as there are in the shortest sequence.
 
-Note that `map` can only be applied to sequences, not single values. If you wish to apply a function to a single value/selection (including an array), use the [do](/api/javascript/do) command.
+Note that `map` can only be applied to sequences, not single values. If you wish to apply a function to a single value/selection (including an array), use the [do](/api/java/do) command.
 
 __Example:__ Return the first five squares.
 
@@ -47,7 +47,7 @@ r.map(sequence1, sequence2, sequence3, function (val1, val2, val3) {
 [111, 222, 333, 444]
 ```
 
-__Example:__ Rename a field when retrieving documents using `map` and [merge](/api/javascript/merge/).
+__Example:__ Rename a field when retrieving documents using `map` and [merge](/api/java/merge/).
 
 This example renames the field `id` to `userId` when retrieving documents from the table `users`.
 
@@ -57,7 +57,7 @@ r.table('users').map(function (doc) {
 }).run(conn);
 ```
 
-Note that in this case, [row](/api/javascript/row) may be used as an alternative to writing an anonymous function, as it returns the same value as the function parameter receives:
+Note that in this case, [row](/api/java/row) may be used as an alternative to writing an anonymous function, as it returns the same value as the function parameter receives:
 
 ```js
 r.table('users').map(

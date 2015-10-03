@@ -1,11 +1,11 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/between/
+permalink: api/java/between/
 command: between
 alias:
-    - api/javascript/minval/
-    - api/javascript/maxval/
+    - api/java/minval/
+    - api/java/maxval/
 related_commands:
     get: get/
     getAll: get_all/
@@ -79,10 +79,10 @@ __Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams 
 r.table("teams").between(1, 11, {index: "rank"}).changes().run(conn);
 ```
 
-__Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/javascript/during) command, not `between`.
+__Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/java/during) command, not `between`.
 
 Secondary indexes can be used in extremely powerful ways with `between` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 
 __Note:__ RethinkDB uses byte-wise ordering for `between` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
 
-__Note:__ If you chain `between` after [orderBy](/api/javascript/order_by), the `between` command must use the index specified in `orderBy`, and will default to that index. Trying to specify another index will result in a `ReqlRuntimeError`.
+__Note:__ If you chain `between` after [orderBy](/api/java/order_by), the `between` command must use the index specified in `orderBy`, and will default to that index. Trying to specify another index will result in a `ReqlRuntimeError`.

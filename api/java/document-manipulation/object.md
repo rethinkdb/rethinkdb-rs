@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/object/
+permalink: api/java/object/
 command: object
 related_commands:
     coerceTo: coerce_to/

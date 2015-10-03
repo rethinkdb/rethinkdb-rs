@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/default/
+permalink: api/java/default/
 command: default
 io:
     -   - value
@@ -77,7 +77,7 @@ r.table("users").filter( function(user) {
 }).run(conn)
 ```
 
-Another way to do the same query is to use [hasFields](/api/javascript/has_fields/).
+Another way to do the same query is to use [hasFields](/api/java/has_fields/).
 
 ```js
 r.table("users").filter( function(user) {
@@ -85,7 +85,7 @@ r.table("users").filter( function(user) {
 }).run(conn)
 ```
 
-The body of every [filter](/api/javascript/filter/) is wrapped in an implicit `.default(false)`. You can overwrite
+The body of every [filter](/api/java/filter/) is wrapped in an implicit `.default(false)`. You can overwrite
 the value `false` by passing an option in filter, so the previous query can also be
 written like this.
 

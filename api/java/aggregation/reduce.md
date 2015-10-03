@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/reduce/
+permalink: api/java/reduce/
 command: reduce
 related_commands:
     group: group/
@@ -49,7 +49,7 @@ r.table("posts").map(function(doc) {
 }).default(0).run(conn);
 ```
 
-A shorter way to execute this query is to use [count](/api/javascript/count).
+A shorter way to execute this query is to use [count](/api/java/count).
 
 
 __Example:__ Suppose that each `post` has a field `comments` that is an array of
@@ -82,4 +82,4 @@ r.table("posts").map(function(doc) {
 }).default(0).run(conn);
 ```
 
-A shorter way to execute this query is to use [max](/api/javascript/max).
+A shorter way to execute this query is to use [max](/api/java/max).

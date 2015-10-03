@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/with_fields/
+permalink: api/java/with_fields/
 command: withFields
 related_commands:
     pluck: pluck/
@@ -17,7 +17,7 @@ array.withFields([selector1, selector2...]) &rarr; array
 
 # Description #
 
-Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to [hasFields](/api/javascript/has_fields/) followed by [pluck](/api/javascript/pluck/) on a sequence.
+Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to [hasFields](/api/java/has_fields/) followed by [pluck](/api/java/pluck/) on a sequence.
 
 __Example:__ Get a list of users and their posts, excluding any users who have not made any posts.
 

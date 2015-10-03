@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/db_create/
+permalink: api/java/db_create/
 command: dbCreate
 related_commands:
     dbDrop: db_drop/
@@ -25,7 +25,7 @@ If successful, the command returns an object with two fields:
 * `dbs_created`: always `1`.
 * `config_changes`: a list containing one object with two fields, `old_val` and `new_val`:
     * `old_val`: always `null`.
-    * `new_val`: the database's new [config](/api/javascript/config) value.
+    * `new_val`: the database's new [config](/api/java/config) value.
 
 If a database with the same name already exists, the command throws `ReqlRuntimeError`.
 

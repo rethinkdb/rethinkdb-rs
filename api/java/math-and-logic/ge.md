@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/ge/
+permalink: api/java/ge/
 command: ge
 related_commands:
     eq: eq/

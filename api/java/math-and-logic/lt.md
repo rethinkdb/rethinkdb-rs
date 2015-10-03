@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/lt/
+permalink: api/java/lt/
 command: lt
 related_commands:
     eq: eq/

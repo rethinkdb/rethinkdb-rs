@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/error/
+permalink: api/java/error/
 command: error
 io:
     -   - r

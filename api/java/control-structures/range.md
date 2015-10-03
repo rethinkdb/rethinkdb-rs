@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/range/
+permalink: api/java/range/
 command: range
 io:
     -   - r
@@ -34,7 +34,7 @@ __Example:__ Return a four-element range of `[0, 1, 2, 3]`.
 [0, 1, 2, 3]
 ```
 
-You can also use the [limit](/api/javascript/limit) command with the no-argument variant to achieve the same result in this case:
+You can also use the [limit](/api/java/limit) command with the no-argument variant to achieve the same result in this case:
 
 ```js
 > r.range().limit(4).run(conn)

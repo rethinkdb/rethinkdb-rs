@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/mod/
+permalink: api/java/mod/
 command: mod
 related_commands:
     add: add/

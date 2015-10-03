@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/status/
+permalink: api/java/status/
 command: status
 io:
     -   - table

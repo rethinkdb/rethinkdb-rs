@@ -1,9 +1,9 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/offsets_of/
+permalink: api/java/offsets_of/
 command: offsetsOf
-alias: api/javascript/indexes_of/
+alias: api/java/indexes_of/
 io:
     -   - sequence
         - array

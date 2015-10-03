@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/during/
+permalink: api/java/during/
 command: during
 related_commands:
     now: now/

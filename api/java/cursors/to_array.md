@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/to_array/
+permalink: api/java/to_array/
 command: toArray
 related_commands:
     next: next/
@@ -23,7 +23,7 @@ array.toArray() &rarr; promise
 Retrieve all results and pass them as an array to the given callback.
 
 _Note:_ Because a feed is a cursor that never terminates, calling `toArray` on a feed
-will throw an error. See the [changes](/api/javascript/changes) command for more
+will throw an error. See the [changes](/api/java/changes) command for more
 information on feeds.
 
 __Example:__ For small result sets it may be more convenient to process them at once as

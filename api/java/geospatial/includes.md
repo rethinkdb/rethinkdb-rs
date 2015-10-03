@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/includes/
+permalink: api/java/includes/
 command: includes
 related_commands:
     intersects: intersects/
@@ -15,7 +15,7 @@ geometry.includes(geometry) &rarr; bool
 
 # Description #
 
-Tests whether a geometry object is completely contained within another. When applied to a sequence of geometry objects, `includes` acts as a [filter](/api/javascript/filter), returning a sequence of objects from the sequence that include the argument.
+Tests whether a geometry object is completely contained within another. When applied to a sequence of geometry objects, `includes` acts as a [filter](/api/java/filter), returning a sequence of objects from the sequence that include the argument.
 
 
 __Example:__ Is `point2` included within a 2000-meter circle around `point1`?

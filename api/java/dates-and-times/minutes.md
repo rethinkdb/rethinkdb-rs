@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/minutes/
+permalink: api/java/minutes/
 command: minutes
 related_commands:
     now: now/

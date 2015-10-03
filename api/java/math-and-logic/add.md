@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/add/
+permalink: api/java/add/
 command: add
 related_commands:
     sub: sub/
@@ -53,7 +53,7 @@ __Example:__ Create a date one year from now.
 r.now().add(365*24*60*60).run(conn)
 ```
 
-__Example:__ Use [args](/api/javascript/args) with `add` to sum multiple values.
+__Example:__ Use [args](/api/java/args) with `add` to sum multiple values.
 
 ```js
 > vals = [10, 20, 30];

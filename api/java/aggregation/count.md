@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/count/
+permalink: api/java/count/
 command: count
 related_commands:
     map: map/
@@ -27,7 +27,7 @@ counts the number of times that value occurs in the sequence.  If
 called with a predicate function, counts the number of elements in the
 sequence where that function returns `true`.
 
-If `count` is called on a [binary](/api/javascript/binary) object, it will return the size of the object in bytes.
+If `count` is called on a [binary](/api/java/binary) object, it will return the size of the object in bytes.
 
 __Example:__ Count the number of users.
 

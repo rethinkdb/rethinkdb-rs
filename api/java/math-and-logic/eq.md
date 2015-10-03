@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/eq/
+permalink: api/java/eq/
 command: eq
 related_commands:
     and: and/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/branch/
+permalink: api/java/branch/
 command: branch
 related_commands:
     do: do/

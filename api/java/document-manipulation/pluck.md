@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/pluck/
+permalink: api/java/pluck/
 command: pluck
 related_commands:
     without: without/

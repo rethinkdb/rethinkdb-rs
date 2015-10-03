@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/ne/
+permalink: api/java/ne/
 command: ne
 related_commands:
     and: and/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/circle/
+permalink: api/java/circle/
 command: circle
 related_commands:
     line: line/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/distance/
+permalink: api/java/distance/
 command: distance
 related_commands:
     polygon: polygon/

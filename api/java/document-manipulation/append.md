@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/append/
+permalink: api/java/append/
 command: append
 related_commands:
     prepend: prepend/

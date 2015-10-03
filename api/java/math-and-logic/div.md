@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/div/
+permalink: api/java/div/
 command: div
 related_commands:
     add: add/

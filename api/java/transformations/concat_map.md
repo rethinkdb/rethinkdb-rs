@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/concat_map/
+permalink: api/java/concat_map/
 command: concatMap
 related_commands:
     map: map/
@@ -18,7 +18,7 @@ array.concatMap(function) &rarr; array
 
 Concatenate one or more elements into a single sequence using a mapping function.
 
-`concatMap` works in a similar fashion to [map](/api/javascript/map/), applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
+`concatMap` works in a similar fashion to [map](/api/java/map/), applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
 
 ```js
 r.expr([1, 2, 3]).map(function(x) { return [x, x.mul(2)] }).run(conn)
@@ -52,7 +52,7 @@ r.table('marvel').concatMap(function(hero) {
 }).run(conn)
 ```
 
-__Example:__ Simulate an [eqJoin](/api/javascript/eq_join/) using `concatMap`. (This is how ReQL joins are implemented internally.)
+__Example:__ Simulate an [eqJoin](/api/java/eq_join/) using `concatMap`. (This is how ReQL joins are implemented internally.)
 
 ```js
 r.table("posts").concatMap(function(post) {

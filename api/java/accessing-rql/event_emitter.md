@@ -1,15 +1,15 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/event_emitter/
+permalink: api/java/event_emitter/
 alias:
-    - api/javascript/add_listener/
-    - api/javascript/on/
-    - api/javascript/once/
-    - api/javascript/remove_listener/
-    - api/javascript/remove_all_listeners/
-    - api/javascript/listeners/
-    - api/javascript/emit/
+    - api/java/add_listener/
+    - api/java/on/
+    - api/java/once/
+    - api/java/remove_listener/
+    - api/java/remove_all_listeners/
+    - api/java/listeners/
+    - api/java/emit/
 command: "EventEmitter (connection)"
 py: false
 rb: false

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/sum/
+permalink: api/java/sum/
 command: sum
 related_commands:
     map: map/

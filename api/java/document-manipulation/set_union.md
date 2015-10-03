@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/set_union/
+permalink: api/java/set_union/
 command: setUnion
 related_commands:
     difference: difference/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/nth/
+permalink: api/java/nth/
 command: nth
 related_commands:
     skip: skip/

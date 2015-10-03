@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/mul/
+permalink: api/java/mul/
 command: mul
 related_commands:
     add: add/

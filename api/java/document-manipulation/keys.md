@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/keys/
+permalink: api/java/keys/
 command: keys
 related_commands:
     values: values/

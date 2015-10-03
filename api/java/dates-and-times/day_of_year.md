@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/day_of_year/
+permalink: api/java/day_of_year/
 command: dayOfYear
 related_commands:
     now: now/

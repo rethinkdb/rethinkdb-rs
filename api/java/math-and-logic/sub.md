@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/sub/
+permalink: api/java/sub/
 command: sub
 related_commands:
     add: add/

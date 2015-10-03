@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/gt/
+permalink: api/java/gt/
 command: gt
 related_commands:
     eq: eq

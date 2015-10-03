@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/hours/
+permalink: api/java/hours/
 command: hours
 related_commands:
     now: now/

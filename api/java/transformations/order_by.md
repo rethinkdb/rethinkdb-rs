@@ -1,10 +1,10 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/order_by/
+permalink: api/java/order_by/
 alias:
-    - api/javascript/asc/
-    - api/javascript/desc/
+    - api/java/asc/
+    - api/java/desc/
 command: orderBy
 related_commands:
     skip: skip/
@@ -29,8 +29,8 @@ the ordering, wrap the attribute with either `r.asc` or `r.desc`
 __Note:__ RethinkDB uses byte-wise ordering for `orderBy` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint. For more information on RethinkDB's sorting order, read the section in [ReQL data types](/docs/data-types/#sorting-order).
 
 Sorting without an index requires the server to hold the sequence in
-memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/javascript/run)). Sorting with an index can
-be done on arbitrarily large tables, or after a [between](/api/javascript/between/) command
+memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/java/run)). Sorting with an index can
+be done on arbitrarily large tables, or after a [between](/api/java/between/) command
 using the same index. This applies to both secondary indexes and the primary key (e.g., `{index: 'id'}`).
 
 __Example:__ Order all the posts using the index `date`.   
@@ -39,7 +39,7 @@ __Example:__ Order all the posts using the index `date`.
 r.table('posts').orderBy({index: 'date'}).run(conn)
 ```
 
-The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
+The index must either be the primary key or have been previously created with [indexCreate](/api/java/index_create/).
 
 ```js
 r.table('posts').indexCreate('date').run(conn)
@@ -64,7 +64,7 @@ r.table('posts').get(1)('comments').orderBy(r.desc('date'))
 ```
 
 If you're doing ad-hoc analysis and know your table won't have more then 100,000
-elements (or you've changed the setting of the `array_limit` option for [run](/api/javascript/run)) you can run `orderBy` without an index:
+elements (or you've changed the setting of the `array_limit` option for [run](/api/java/run)) you can run `orderBy` without an index:
 
 ```js
 r.table('small_table').orderBy('date')
@@ -79,7 +79,7 @@ Order by date and title.
 r.table('posts').orderBy({index: 'dateAndTitle'}).run(conn)
 ```
 
-The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
+The index must either be the primary key or have been previously created with [indexCreate](/api/java/index_create/).
 
 ```js
 r.table('posts').indexCreate('dateAndTitle', [r.row('date'), r.row('title')]).run(conn)
@@ -115,7 +115,7 @@ __Example:__ You can efficiently order data on arbitrary expressions using index
 r.table('posts').orderBy({index: 'votes'}).run(conn)
 ```
 
-The index must have been previously created with [indexCreate](/api/javascript/index_create/).
+The index must have been previously created with [indexCreate](/api/java/index_create/).
 
 ```js
 r.table('posts').indexCreate('votes', function(post) {

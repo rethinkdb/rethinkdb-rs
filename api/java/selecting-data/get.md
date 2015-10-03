@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/get/
+permalink: api/java/get/
 command: get
 related_commands:
     getAll: get_all/

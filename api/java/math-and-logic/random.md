@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/random/
+permalink: api/java/random/
 command: random
 related_commands:
     'sample': sample/

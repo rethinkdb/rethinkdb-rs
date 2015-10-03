@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/is_empty/
+permalink: api/java/is_empty/
 command: isEmpty
 related_commands:
     offsetsOf: offsets_of/

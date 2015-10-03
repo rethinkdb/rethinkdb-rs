@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/group/
+permalink: api/java/group/
 command: group
 related_commands:
     ungroup: ungroup/
@@ -249,7 +249,7 @@ r.table('games2').group(r.row('matches').keys(), {multi: true}).run(conn);
 
 (The full result set is abbreviated in the figure; `<id 1>, <id 2>` and `<id 3>` would be the entire documents matching those keys.)
 
-__Example:__ Use [map](/api/javascript/map) and [sum](/api/javascript/sum) to get the total points scored for each match.
+__Example:__ Use [map](/api/java/map) and [sum](/api/java/sum) to get the total points scored for each match.
 
 ```js
 r.table('games2').group(r.row('matches').keys(), {multi: true}).ungroup().map(
@@ -275,7 +275,7 @@ The inner `sum` adds the scores by match within each document; the outer `sum` a
 
 If you want to operate on all the groups rather than operating on each
 group (e.g. if you want to order the groups by their reduction), you
-can use [ungroup](/api/javascript/ungroup/) to turn a grouped stream or
+can use [ungroup](/api/java/ungroup/) to turn a grouped stream or
 grouped data into an array of objects representing the groups.
 
 __Example:__ Ungrouping grouped data.
@@ -361,7 +361,7 @@ Not passing the `group_format` flag would return:
 ```
 
 
-You might also want to use the [ungroup](/api/javascript/ungroup/)
+You might also want to use the [ungroup](/api/java/ungroup/)
 command (see above), which will turn the grouped data into an array of
 objects on the server.
 
@@ -371,7 +371,7 @@ objects on the server.
 If you run a query that returns a grouped stream, it will be
 automatically converted to grouped data before being sent back to you
 (there is currently no efficient way to stream groups from RethinkDB).
-This grouped data is subject to the array size limit, by default 100,000 elements (see [run](/api/javascript/run) for details on how to use the `arrayLimit` option to change this).
+This grouped data is subject to the array size limit, by default 100,000 elements (see [run](/api/java/run) for details on how to use the `arrayLimit` option to change this).
 
 In general, operations on grouped streams will be efficiently
 distributed, and operations on grouped data won't be.  You can figure
@@ -399,7 +399,7 @@ data rather than a grouped stream, *all* of the data has to be
 available on the node processing the query.  This means that the
 operation will only use one server's resources, and will require
 memory proportional to the size of the grouped data it's operating
-on.  (In the case of the [orderBy](/api/javascript/order_by/) in the inefficient example, that
+on.  (In the case of the [orderBy](/api/java/order_by/) in the inefficient example, that
 means memory proportional **to the size of the table**.)  The array
 limit is also enforced for grouped data, so the `orderBy` example
 would fail for tables with more than 100,000 rows without changing the `arrayLimit` option to `run`.

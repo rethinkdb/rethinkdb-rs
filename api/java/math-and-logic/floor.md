@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/floor/
+permalink: api/java/floor/
 command: floor
 related_commands:
     ceil: ceil/

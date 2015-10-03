@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/in_timezone/
+permalink: api/java/in_timezone/
 command: inTimezone
 related_commands:
     timezone: timezone/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/contains/
+permalink: api/java/contains/
 command: contains
 related_commands:
     map: map/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/zip/
+permalink: api/java/zip/
 command: zip
 related_commands:
     eqJoin: eq_join/

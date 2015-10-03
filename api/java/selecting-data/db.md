@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/db/
+permalink: api/java/db/
 command: db
 related_commands:
     table: table/
@@ -18,7 +18,7 @@ r.db(dbName) &rarr; db
 
 Reference a database.
 
-The `db` command is optional. If it is not present in a query, the query will run against the default database for the connection, specified in the `db` argument to [connect](/api/javascript/connect).
+The `db` command is optional. If it is not present in a query, the query will run against the default database for the connection, specified in the `db` argument to [connect](/api/java/connect).
 
 __Example:__ Explicitly specify a database for a query.
 

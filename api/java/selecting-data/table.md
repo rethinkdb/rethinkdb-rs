@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/table/
+permalink: api/java/table/
 command: table
 related_commands:
     filter: filter/
@@ -19,7 +19,7 @@ db.table(name[, {readMode: 'single', identifierFormat: 'name'}]) &rarr; table
 
 # Description #
 
-Return all documents in a table. Other commands may be chained after `table` to return a subset of documents (such as [get](/api/javascript/get/) and [filter](/api/javascript/filter/)) or perform further processing.
+Return all documents in a table. Other commands may be chained after `table` to return a subset of documents (such as [get](/api/java/get/) and [filter](/api/java/filter/)) or perform further processing.
 
 __Example:__ Return all documents in the table 'marvel' of the default database.
 

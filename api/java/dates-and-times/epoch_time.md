@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/epoch_time/
+permalink: api/java/epoch_time/
 command: epochTime
 related_commands:
     now: now/

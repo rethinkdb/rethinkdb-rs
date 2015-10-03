@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/use/
+permalink: api/java/use/
 command: use
 related_commands:
     connect: connect/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/get_field/
+permalink: api/java/get_field/
 command: getField
 related_commands:
     '() (bracket)': bracket/

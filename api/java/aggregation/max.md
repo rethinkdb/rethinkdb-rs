@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/max/
+permalink: api/java/max/
 command: max
 related_commands:
     map: map/
@@ -30,7 +30,7 @@ Finds the maximum element of a sequence. The `max` command can be called with:
 
 For more information on RethinkDB's sorting order, read the section in [ReQL data types](/docs/data-types/#sorting-order).
 
-Calling `max` on an empty sequence will throw a non-existence error; this can be handled using the [default](/api/javascript/default/) command.
+Calling `max` on an empty sequence will throw a non-existence error; this can be handled using the [default](/api/java/default/) command.
 
 __Example:__ Return the maximum value in the list `[3, 5, 7]`.
 

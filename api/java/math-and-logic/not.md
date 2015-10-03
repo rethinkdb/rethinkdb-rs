@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/not/
+permalink: api/java/not/
 command: not
 related_commands:
     eq: eq

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/has_fields/
+permalink: api/java/has_fields/
 command: hasFields
 related_commands:
     '() (getField)': get_field/
@@ -28,7 +28,7 @@ __Example:__ Return the players who have won games.
 r.table('players').hasFields('games_won').run(conn)
 ```
 
-__Example:__ Return the players who have *not* won games. To do this, use `hasFields` with [not](/api/javascript/not), wrapped with [filter](/api/javascript/filter).
+__Example:__ Return the players who have *not* won games. To do this, use `hasFields` with [not](/api/java/not), wrapped with [filter](/api/java/filter).
 
 ```js
 r.table('players').filter(
@@ -64,7 +64,7 @@ Return players who have the "championships" field.
 r.table('players').hasFields({'games_won': {'championships': true}}).run(conn)
 ```
 
-Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See [pluck](/api/javascript/pluck) for more details on this.)
+Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See [pluck](/api/java/pluck) for more details on this.)
 
 ```js
 r.table('players').hasFields({'games_won': 'championships'}

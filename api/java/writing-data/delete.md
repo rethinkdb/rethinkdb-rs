@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/delete/
+permalink: api/java/delete/
 command: delete
 related_commands:
     insert: insert/
@@ -29,7 +29,7 @@ Delete one or more documents from a table.
 The optional arguments are:
 
 - `durability`: possible values are `hard` and `soft`. This option will override the
-table or query's durability setting (set in [run](/api/javascript/run/)).  
+table or query's durability setting (set in [run](/api/java/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
 - `returnChanges`:

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/limit/
+permalink: api/java/limit/
 command: limit
 related_commands:
     skip: skip/

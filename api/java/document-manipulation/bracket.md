@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/bracket/
+permalink: api/java/bracket/
 command: () (bracket)
 related_commands:
     row: row/
@@ -28,7 +28,7 @@ __Example:__ What was Iron Man's first appearance in a comic?
 r.table('marvel').get('IronMan')('firstAppearance').run(conn)
 ```
 
-The `()` command also accepts integer arguments as array offsets, like the [nth](/api/javascript/nth) command.
+The `()` command also accepts integer arguments as array offsets, like the [nth](/api/java/nth) command.
 
 __Example:__ Get the fourth element in a sequence. (The first element is position `0`, so the fourth element is position `3`.)
 

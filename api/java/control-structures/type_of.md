@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/type_of/
+permalink: api/java/type_of/
 command: typeOf
 io:
     -   - any

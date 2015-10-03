@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/table_list/
+permalink: api/java/table_list/
 command: tableList
 related_commands:
     tableCreate: table_create/

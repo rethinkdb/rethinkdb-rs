@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/sample/
+permalink: api/java/sample/
 command: sample
 io:
     -   - sequence

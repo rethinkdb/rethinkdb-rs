@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/insert/
+permalink: api/java/insert/
 command: insert
 related_commands:
     update: update/
@@ -24,15 +24,15 @@ documents.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/javascript/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
+- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/java/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
 - `returnChanges`:
     - `true`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
     - `false`: do not return a `changes` array (the default).
     - `"always"`: behave as `true`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `true` pre-2.0.)
 - `conflict`: Determine handling of inserting documents with the same primary key as existing entries. Possible values are `"error"`, `"replace"` or `"update"`.
     - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
-    - `"replace"`: [Replace](/api/javascript/replace/) the old document in its entirety with the new one.
-    - `"update"`: [Update](/api/javascript/update/) fields of the old document with fields from the new one.
+    - `"replace"`: [Replace](/api/java/replace/) the old document in its entirety with the new one.
+    - `"update"`: [Update](/api/java/update/) fields of the old document with fields from the new one.
 
 Insert returns an object that contains the following attributes:
 

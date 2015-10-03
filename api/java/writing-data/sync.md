@@ -1,7 +1,7 @@
 ---
 layout: api-command 
 language: Java
-permalink: api/javascript/sync/
+permalink: api/java/sync/
 command: sync
 related_commands:
     noreplyWait: noreply_wait/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/update/
+permalink: api/java/update/
 command: update
 related_commands:
     insert: insert/
@@ -27,7 +27,7 @@ Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/javascript/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving it, but before the write has been committed to disk.
+- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/java/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving it, but before the write has been committed to disk.
 - `returnChanges`:
     - `true`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
     - `false`: do not return a `changes` array (the default).
@@ -249,7 +249,7 @@ r.table("users").filter(
 
 __Example:__ Replace all of Bob's IM records. Normally, `update` will merge nested documents together; to replace the entire `"im"` document, use the [literal][] command.
 
-[literal]: /api/javascript/literal/
+[literal]: /api/java/literal/
 
 ```js
 r.table('users').get(10001).update(

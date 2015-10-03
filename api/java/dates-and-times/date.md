@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/date/
+permalink: api/java/date/
 command: date
 related_commands:
     now: now/

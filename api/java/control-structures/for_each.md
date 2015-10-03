@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/for_each/
+permalink: api/java/for_each/
 command: forEach
 related_commands:
     map: map/

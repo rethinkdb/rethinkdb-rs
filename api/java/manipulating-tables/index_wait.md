@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/index_wait/
+permalink: api/java/index_wait/
 command: indexWait
 related_commands:
     indexStatus: index_status/
@@ -32,7 +32,7 @@ The result is an array containing one object for each table index:
 }
 ```
 
-See the [indexStatus](/api/javascript/index_status) documentation for a description of the field values.
+See the [indexStatus](/api/java/index_status) documentation for a description of the field values.
 
 __Example:__ Wait for all indexes on the table `test` to be ready:
 

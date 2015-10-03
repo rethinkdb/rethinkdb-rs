@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/get_nearest/
+permalink: api/java/get_nearest/
 command: getNearest
 related_commands:
     getIntersecting: get_intersecting/

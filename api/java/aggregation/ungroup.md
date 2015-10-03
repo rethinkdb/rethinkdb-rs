@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/ungroup/
+permalink: api/java/ungroup/
 command: ungroup
 related_commands:
     group: group/

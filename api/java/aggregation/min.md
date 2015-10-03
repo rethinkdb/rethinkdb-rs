@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java 
-permalink: api/javascript/min/
+permalink: api/java/min/
 command: min
 related_commands:
     map: map/
@@ -30,7 +30,7 @@ Finds the minimum element of a sequence. The `min` command can be called with:
 
 For more information on RethinkDB's sorting order, read the section in [ReQL data types](/docs/data-types/#sorting-order).
 
-Calling `min` on an empty sequence will throw a non-existence error; this can be handled using the [default](/api/javascript/default/) command.
+Calling `min` on an empty sequence will throw a non-existence error; this can be handled using the [default](/api/java/default/) command.
 
 __Example:__ Return the minimum value in the list `[3, 5, 7]`.
 

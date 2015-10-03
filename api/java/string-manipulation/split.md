@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/split/
+permalink: api/java/split/
 command: split
 related_commands:
     upcase: upcase/

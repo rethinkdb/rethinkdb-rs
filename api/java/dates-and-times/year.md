@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/year/
+permalink: api/java/year/
 command: year
 related_commands:
     now: now/

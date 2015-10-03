@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/change_at/
+permalink: api/java/change_at/
 command: changeAt
 related_commands:
     insertAt: insert_at/

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/polygon_sub/
+permalink: api/java/polygon_sub/
 command: polygonSub
 related_commands:
     polygon: polygon/

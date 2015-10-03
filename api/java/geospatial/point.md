@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/point/
+permalink: api/java/point/
 command: point
 related_commands:
     line: line/

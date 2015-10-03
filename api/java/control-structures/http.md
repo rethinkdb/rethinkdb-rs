@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/http/
+permalink: api/java/http/
 command: http
 io:
     -   - r

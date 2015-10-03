@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/replace/
+permalink: api/java/replace/
 command: replace
 related_commands:
     insert: insert/
@@ -37,7 +37,7 @@ are performed atomically, this allows atomic inserts and deletes as well.
 The optional arguments are:
 
 - `durability`: possible values are `hard` and `soft`. This option will override
-  the table or query's durability setting (set in [run](/api/javascript/run/)).
+  the table or query's durability setting (set in [run](/api/java/run/)).
   In soft durability mode RethinkDB will acknowledge the write immediately after
   receiving it, but before the write has been committed to disk.
 - `returnChanges`:

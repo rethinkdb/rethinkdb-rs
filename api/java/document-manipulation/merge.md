@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/merge/
+permalink: api/java/merge/
 command: merge
 related_commands:
     pluck: pluck/
@@ -20,7 +20,7 @@ array.merge([object | function, object | function, ...]) &rarr; array
 
 # Description #
 
-Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list. `merge` also accepts a subquery function that returns an object, which will be used similarly to a [map](/api/javascript/map/) function.
+Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list. `merge` also accepts a subquery function that returns an object, which will be used similarly to a [map](/api/java/map/) function.
 
 __Example:__ Equip Thor for battle.
 

@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/uuid/
+permalink: api/java/uuid/
 command: uuid
 io:
     -   - r

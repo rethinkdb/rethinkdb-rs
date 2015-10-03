@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/intersects/
+permalink: api/java/intersects/
 command: intersects
 related_commands:
     includes: includes/
@@ -18,7 +18,7 @@ r.intersects(geometry, geometry) &rarr; bool
 
 # Description #
 
-Tests whether two geometry objects intersect with one another. When applied to a sequence of geometry objects, `intersects` acts as a [filter](/api/javascript/filter), returning a sequence of objects from the sequence that intersect with the argument.
+Tests whether two geometry objects intersect with one another. When applied to a sequence of geometry objects, `intersects` acts as a [filter](/api/java/filter), returning a sequence of objects from the sequence that intersect with the argument.
 
 
 __Example:__ Is `point2` within a 2000-meter circle around `point1`?

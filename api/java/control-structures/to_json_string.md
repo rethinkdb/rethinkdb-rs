@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/to_json_string/
+permalink: api/java/to_json_string/
 command: 'toJsonString, toJSON'
 related_commands:
     json: json/

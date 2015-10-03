@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/index_rename/
+permalink: api/java/index_rename/
 command: indexRename
 related_commands:
     indexCreate: index_create/

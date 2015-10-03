@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/row/
+permalink: api/java/row/
 command: row
 rb: false
 io:

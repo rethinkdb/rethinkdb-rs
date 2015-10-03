@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/geojson/
+permalink: api/java/geojson/
 command: geojson
 related_commands:
     toGeojson: to_geojson/

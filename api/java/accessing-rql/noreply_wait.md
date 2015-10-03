@@ -1,7 +1,7 @@
 ---
 layout: api-command 
 language: Java
-permalink: api/javascript/noreply_wait/
+permalink: api/java/noreply_wait/
 command: noreplyWait
 related_commands:
     run: run/

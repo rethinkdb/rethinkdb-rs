@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/reconnect/
+permalink: api/java/reconnect/
 command: reconnect
 related_commands:
     connect: connect/
@@ -22,7 +22,7 @@ Close and reopen a connection.
 
 Closing a connection normally waits until all outstanding requests have finished and then frees any open resources associated with the connection. By passing `false` to the `noreply_wait` optional argument, the connection will be closed immediately, possibly aborting any outstanding noreply writes.
 
-A noreply query is executed by passing the `noreply` option to the [run](/api/javascript/run/) command, indicating that `run()` should not wait for the query to complete before returning. You may also explicitly wait for a noreply query to complete by using the [noreplyWait](/api/javascript/noreply_wait) command.
+A noreply query is executed by passing the `noreply` option to the [run](/api/java/run/) command, indicating that `run()` should not wait for the query to complete before returning. You may also explicitly wait for a noreply query to complete by using the [noreplyWait](/api/java/noreply_wait) command.
 
 If no callback is provided, a promise will be returned.
 

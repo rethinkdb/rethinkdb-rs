@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/downcase/
+permalink: api/java/downcase/
 command: downcase
 related_commands:
     upcase: upcase/

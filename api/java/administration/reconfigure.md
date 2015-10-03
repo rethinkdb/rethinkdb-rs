@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/reconfigure/
+permalink: api/java/reconfigure/
 command: reconfigure
 io:
     -   - table
@@ -35,15 +35,15 @@ The return value of `reconfigure` is an object with three fields:
 
 * `reconfigured`: the number of tables reconfigured. This will be `0` if `dryRun` is `true`.
 * `config_changes`: a list of new and old table configuration values. Each element of the list will be an object with two fields:
-    * `old_val`: The table's [config](/api/javascript/config) value before `reconfigure` was executed. 
+    * `old_val`: The table's [config](/api/java/config) value before `reconfigure` was executed. 
     * `new_val`: The table's `config` value after `reconfigure` was executed.
 * `status_changes`: a list of new and old table status values. Each element of the list will be an object with two fields:
-    * `old_val`: The table's [status](/api/javascript/status) value before `reconfigure` was executed.
+    * `old_val`: The table's [status](/api/java/status) value before `reconfigure` was executed.
     * `new_val`: The table's `status` value after `reconfigure` was executed.
 
-For `config_changes` and `status_changes`, see the [config](/api/javascript/config) and [status](/api/javascript/status) commands for an explanation of the objects returned in the `old_val` and `new_val` fields.
+For `config_changes` and `status_changes`, see the [config](/api/java/config) and [status](/api/java/status) commands for an explanation of the objects returned in the `old_val` and `new_val` fields.
 
-A table will lose availability temporarily after `reconfigure` is called; use the [tableStatus](/api/javascript/table_status) command to determine when the table is available again.
+A table will lose availability temporarily after `reconfigure` is called; use the [tableStatus](/api/java/table_status) command to determine when the table is available again.
 
 **Note:** Whenever you call `reconfigure`, the write durability will be set to `hard` and the write acknowledgments will be set to `majority`; these can be changed by using the `config` command on the table.
 

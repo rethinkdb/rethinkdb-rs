@@ -1,15 +1,15 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/event_emitter-cursor/
+permalink: api/java/event_emitter-cursor/
 alias:
-    - api/javascript/add_listener-cursor/
-    - api/javascript/on-cursor/
-    - api/javascript/once-cursor/
-    - api/javascript/remove_listener-cursor/
-    - api/javascript/remove_all_listeners-cursor/
-    - api/javascript/listeners-cursor/
-    - api/javascript/emit-cursor/
+    - api/java/add_listener-cursor/
+    - api/java/on-cursor/
+    - api/java/once-cursor/
+    - api/java/remove_listener-cursor/
+    - api/java/remove_all_listeners-cursor/
+    - api/java/listeners-cursor/
+    - api/java/emit-cursor/
 command: "EventEmitter (cursor)"
 py: false
 rb: false

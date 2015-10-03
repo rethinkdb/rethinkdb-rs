@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/expr/
+permalink: api/java/expr/
 command: expr
 io:
     -   - r
@@ -18,7 +18,7 @@ r.expr(value) &rarr; value
 
 Construct a ReQL JSON object from a native object.
 
-If the native object is a Node.js `Buffer`, then `expr` will return a binary object. See [binary](/api/javascript/binary) for more information.
+If the native object is a Node.js `Buffer`, then `expr` will return a binary object. See [binary](/api/java/binary) for more information.
 
 __Example:__ Objects wrapped with expr can then be manipulated by ReQL API functions.
 

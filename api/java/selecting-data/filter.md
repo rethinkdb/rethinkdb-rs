@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/filter/
+permalink: api/java/filter/
 command: filter
 related_commands:
     get: get/
@@ -28,7 +28,7 @@ By default, `filter` will silently skip documents with missing fields: if the pr
 * If `default` is set to `false` (the default), documents with missing fields will be skipped.
 
 {% infobox %}
-__Note:__ `filter` does not use secondary indexes. For retrieving documents via secondary indexes, consider [getAll](/api/javascript/get_all/), [between](/api/javascript/between/) and [eqJoin](/api/javascript/eq_join/).
+__Note:__ `filter` does not use secondary indexes. For retrieving documents via secondary indexes, consider [getAll](/api/java/get_all/), [between](/api/java/between/) and [eqJoin](/api/java/eq_join/).
 {% endinfobox %}
 
 ## Basic predicates ##
@@ -42,7 +42,7 @@ r.table('users').filter({age: 30}).run(conn);
 
 The predicate `{age: 30}` selects documents in the `users` table with an `age` field whose value is `30`. Documents with an `age` field set to any other value *or* with no `age` field present are skipped.
 
-While the `{field: value}` style of predicate is useful for exact matches, a more general way to write a predicate is to use the [row](/api/javascript/row) command with a comparison operator such as [eq](/api/javascript/eq) or [gt](/api/javascript/gt), or to use an anonymous function that returns `true` or `false`.
+While the `{field: value}` style of predicate is useful for exact matches, a more general way to write a predicate is to use the [row](/api/java/row) command with a comparison operator such as [eq](/api/java/eq) or [gt](/api/java/gt), or to use an anonymous function that returns `true` or `false`.
 
 ```js
 r.table('users').filter(r.row("age").eq(30)).run(conn);

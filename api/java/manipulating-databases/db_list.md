@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/db_list/
+permalink: api/java/db_list/
 command: dbList
 related_commands:
     dbCreate: db_create/

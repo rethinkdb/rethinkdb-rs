@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/union/
+permalink: api/java/union/
 command: union
 io:
     -   - sequence

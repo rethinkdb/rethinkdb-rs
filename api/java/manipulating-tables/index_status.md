@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: Java
-permalink: api/javascript/index_status/
+permalink: api/java/index_status/
 command: indexStatus
 related_commands:
     indexWait: index_wait/
@@ -47,9 +47,9 @@ or this one:
 }
 ```
 
-The `multi` field will be `true` or `false` depending on whether this index was created as a multi index; the `geo` field will be `true` or `false` depending on whether this index was created as a geospatial index. See [indexCreate](/api/javascript/index_create/) for details. The `outdated` field will be true if the index is outdated in the current version of RethinkDB and needs to be rebuilt.
+The `multi` field will be `true` or `false` depending on whether this index was created as a multi index; the `geo` field will be `true` or `false` depending on whether this index was created as a geospatial index. See [indexCreate](/api/java/index_create/) for details. The `outdated` field will be true if the index is outdated in the current version of RethinkDB and needs to be rebuilt.
 
-The `function` field is a binary object containing an opaque representation of the secondary index (including the `multi` argument if specified). It can be passed as the second argument to [indexCreate](/api/javascript/index_create/) to create a new index with the same function; see `indexCreate` for more information.
+The `function` field is a binary object containing an opaque representation of the secondary index (including the `multi` argument if specified). It can be passed as the second argument to [indexCreate](/api/java/index_create/) to create a new index with the same function; see `indexCreate` for more information.
 
 __Example:__ Get the status of all the indexes on `test`:
 
