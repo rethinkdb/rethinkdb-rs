@@ -3,17 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/add/
 command: add
-io:
-    -   - number
-        - number
-    -   - string
-        - string
-    -   - array
-        - array
-    -   - time
-        - time
-    -   - time
-        - number
 related_commands:
     sub: sub/
     mul: mul/

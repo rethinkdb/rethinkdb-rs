@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/branch/
 command: branch
-io:
-    -   - r
-        - any
 related_commands:
     do: do/
 ---

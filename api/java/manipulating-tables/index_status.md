@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/index_status/
 command: indexStatus
-io:
-    -   - table
-        - array
 related_commands:
     indexWait: index_wait/
 

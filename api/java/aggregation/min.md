@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript 
 permalink: api/javascript/min/
 command: min
-io:
-    -   - sequence
-        - value
 related_commands:
     map: map/
     reduce: reduce/

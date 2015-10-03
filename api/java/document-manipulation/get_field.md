@@ -3,13 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/get_field/
 command: getField
-io:
-    -   - sequence
-        - sequence
-    -   - singleSelection
-        - value
-    -   - object
-        - value
 related_commands:
     '() (bracket)': bracket/
     nth: nth/

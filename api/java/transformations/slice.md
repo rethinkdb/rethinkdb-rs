@@ -3,13 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/slice/
 command: slice
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
-    -   - binary
-        - binary
 related_commands:
     orderBy: order_by/
     skip: skip/

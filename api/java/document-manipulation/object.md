@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/object/
 command: object
-io:
-    -   - r
-        - object
 related_commands:
     coerceTo: coerce_to/
     merge: merge/

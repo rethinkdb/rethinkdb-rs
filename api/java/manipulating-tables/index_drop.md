@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/index_drop/
 command: indexDrop
-io:
-    -   - table
-        - object
 related_commands:
     indexCreate: index_create/
     indexList: index_list/

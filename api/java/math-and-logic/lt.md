@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/lt/
 command: lt
-io:
-    -   - value
-        - bool
 related_commands:
     eq: eq/
     ne: ne/

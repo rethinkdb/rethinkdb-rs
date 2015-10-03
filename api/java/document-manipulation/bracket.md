@@ -3,13 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/bracket/
 command: () (bracket)
-io:
-    -   - sequence
-        - sequence
-    -   - singleSelection
-        - value
-    -   - object
-        - value
 related_commands:
     row: row/
     nth: nth/

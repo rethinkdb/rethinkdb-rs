@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/table_create/
 command: tableCreate
-io:
-    -   - db
-        - table
 related_commands:
     tableList: table_list/
     tableDrop: table_drop/

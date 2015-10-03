@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/reduce/
 command: reduce
-io:
-    -   - sequence
-        - value
 related_commands:
     group: group/
     map: map/

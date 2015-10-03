@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/ceil/
 command: ceil
-io:
-    -   - number
-        - number
 related_commands:
     floor: floor/
     round: round/

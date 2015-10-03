@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/now/
 command:  now
-io:
-    -   - r
-        - time
 related_commands:
     time: time/
     epochTime: epoch_time/

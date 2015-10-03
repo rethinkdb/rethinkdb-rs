@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/mod/
 command: mod
-io:
-    -   - number
-        - number
 related_commands:
     add: add/
     sub: sub/

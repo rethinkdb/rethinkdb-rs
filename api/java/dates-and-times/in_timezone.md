@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/in_timezone/
 command: inTimezone
-io:
-    -   - time
-        - time
 related_commands:
     timezone: timezone/
     now: now/

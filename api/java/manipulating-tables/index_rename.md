@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/index_rename/
 command: indexRename
-io:
-    -   - table
-        - object
 related_commands:
     indexCreate: index_create/
     indexStatus: index_status/

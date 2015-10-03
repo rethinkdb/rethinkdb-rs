@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/nth/
 command: nth
-io:
-    -   - sequence
-        - object
 related_commands:
     skip: skip/
     limit: limit/

@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/db/
 command: db
-io:
-    -   - r
-        - db
 related_commands:
     table: table/
     dbList: db_list/

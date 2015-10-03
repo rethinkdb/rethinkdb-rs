@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/max/
 command: max
-io:
-    -   - sequence
-        - value
 related_commands:
     map: map/
     reduce: reduce/

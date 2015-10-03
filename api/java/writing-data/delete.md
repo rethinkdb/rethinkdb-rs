@@ -3,13 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/delete/
 command: delete
-io:
-    -   - table
-        - object
-    -   - selection
-        - object
-    -   - singleSelection
-        - object
 related_commands:
     insert: insert/
     update: update/

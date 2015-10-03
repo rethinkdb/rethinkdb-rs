@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/insert_at/
 command: insertAt
-io:
-    -   - array
-        - array
 related_commands:
     spliceAt: splice_at/
     deleteAt: delete_at/

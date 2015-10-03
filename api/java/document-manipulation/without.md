@@ -3,15 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/without/
 command: without
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
-    -   - object
-        - object
-    -   - singleSelection
-        - object
 related_commands:
     pluck: pluck/
     map: map/

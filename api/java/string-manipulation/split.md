@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/split/
 command: split
-io:
-    -   - string
-        - array
 related_commands:
     upcase: upcase/
     downcase: downcase/

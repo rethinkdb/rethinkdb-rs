@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/index_create/
 command: indexCreate
-io:
-    -   - table
-        - object
 related_commands:
     indexWait: index_wait/
     indexStatus: index_status/

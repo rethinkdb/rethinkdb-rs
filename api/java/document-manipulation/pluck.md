@@ -3,15 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/pluck/
 command: pluck
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
-    -   - object
-        - object
-    -   - singleSelection
-        - object
 related_commands:
     without: without/
     map: map/

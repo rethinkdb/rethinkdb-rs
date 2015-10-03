@@ -13,9 +13,6 @@ alias:
 command: "EventEmitter (connection)"
 py: false
 rb: false
-io:
-    -   - connection
-        - undefined
 related_commands:
     connect: connect/
     reconnect: reconnect/

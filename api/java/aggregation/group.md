@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/group/
 command: group
-io:
-    -   - sequence
-        - grouped_stream
 related_commands:
     ungroup: ungroup/
     map: map/

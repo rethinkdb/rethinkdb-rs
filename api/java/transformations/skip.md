@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/skip/
 command: skip
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
 related_commands:
     limit: limit/
     slice: slice/

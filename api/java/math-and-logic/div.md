@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/div/
 command: div
-io:
-    -   - number
-        - number
 related_commands:
     add: add/
     sub: sub/

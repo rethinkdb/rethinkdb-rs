@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/avg/
 command: avg
-io:
-    -   - sequence
-        - number
 related_commands:
     map: map/
     reduce: reduce/

@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/intersects/
 command: intersects
-io:
-    -   - geometry
-        - bool
-    -   - sequence
-        - sequence
 related_commands:
     includes: includes/
     getIntersecting: get_intersecting/

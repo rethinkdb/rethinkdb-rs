@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/to_json_string/
 command: 'toJsonString, toJSON'
-io:
-    -   - value
-        - string
 related_commands:
     json: json/
 ---

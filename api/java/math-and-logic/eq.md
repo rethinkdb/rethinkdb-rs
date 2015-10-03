@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/eq/
 command: eq
-io:
-    -   - value
-        - bool
 related_commands:
     and: and/
     or: or/

@@ -3,19 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/coerce_to/
 command: coerceTo
-io:
-    -   - sequence
-        - array
-    -   - value
-        - string
-    -   - array
-        - object
-    -   - object
-        - array
-    -   - binary
-        - string
-    -   - string
-        - binary
 related_commands:
     object: object/
 ---

@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/next/
 command: next
-io:
-    -   - cursor
-        - undefined
 related_commands:
     each: each/
     toArray: to_array/

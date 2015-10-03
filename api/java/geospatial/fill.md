@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/fill/
 command: fill
-io:
-    -   - line
-        - polygon
 related_commands:
     polygon: polygon/
     line: line/

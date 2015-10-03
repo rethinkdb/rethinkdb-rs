@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/for_each/
 command: forEach
-io:
-    -   - sequence
-        - object
 related_commands:
     map: map/
 ---

@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/reconnect/
 command: reconnect
-io:
-    -   - connection
-        - undefined
 related_commands:
     connect: connect/
     use: use/

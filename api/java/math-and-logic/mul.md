@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/mul/
 command: mul
-io:
-    -   - number
-        - number
-    -   - array
-        - array
 related_commands:
     add: add/
     sub: sub/

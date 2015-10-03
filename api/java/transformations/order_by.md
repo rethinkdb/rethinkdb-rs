@@ -6,11 +6,6 @@ alias:
     - api/javascript/asc/
     - api/javascript/desc/
 command: orderBy
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
 related_commands:
     skip: skip/
     limit: limit/

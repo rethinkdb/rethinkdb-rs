@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/outer_join/
 command: outerJoin
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
 related_commands:
     innerJoin: inner_join/
     eqJoin: eq_join/

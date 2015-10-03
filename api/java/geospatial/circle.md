@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/circle/
 command: circle
-io:
-    -   - r
-        - geometry
 related_commands:
     line: line/
     polygon: polygon/

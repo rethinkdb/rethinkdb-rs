@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/contains/
 command: contains
-io:
-    -   - sequence
-        - bool
 related_commands:
     map: map/
     concat_map: concat_map/

@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/hours/
 command: hours
-io:
-    -   - time
-        - number
 related_commands:
     now: now/
     time: time/

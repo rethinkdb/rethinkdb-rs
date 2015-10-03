@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/day_of_week/
 command: dayOfWeek
-io:
-    -   - time
-        - number
 related_commands:
     now: now/
     time: time/

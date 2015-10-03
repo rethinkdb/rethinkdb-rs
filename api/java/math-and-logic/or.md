@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/or/
 command: or
-io:
-    -   - bool
-        - bool
 related_commands:
     and: and/
     eq: eq/

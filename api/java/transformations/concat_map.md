@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/concat_map/
 command: concatMap
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
 related_commands:
     map: map/
 ---

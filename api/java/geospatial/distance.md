@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/distance/
 command: distance
-io:
-    -   - geometry
-        - number
 related_commands:
     polygon: polygon/
     line: line/

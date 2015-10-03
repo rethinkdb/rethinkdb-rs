@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/downcase/
 command: downcase
-io:
-    -   - string
-        - string
 related_commands:
     upcase: upcase/
     match: match/

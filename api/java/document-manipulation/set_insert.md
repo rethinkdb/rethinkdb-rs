@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/set_insert/
 command: setInsert
-io:
-    -   - array
-        - array
 related_commands:
     difference: difference/
     setUnion: set_union/

@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/to_array/
 command: toArray
-io:
-    -   - cursor
-        - undefined
 related_commands:
     next: next/
     each: each/

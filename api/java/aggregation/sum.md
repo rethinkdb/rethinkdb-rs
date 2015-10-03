@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/sum/
 command: sum
-io:
-    -   - sequence
-        - number
 related_commands:
     map: map/
     reduce: reduce/

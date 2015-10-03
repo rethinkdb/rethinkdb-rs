@@ -6,9 +6,6 @@ command: between
 alias:
     - api/javascript/minval/
     - api/javascript/maxval/
-io:
-    -   - table
-        - selection
 related_commands:
     get: get/
     getAll: get_all/

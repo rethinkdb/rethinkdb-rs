@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/get/
 command: get
-io:
-    -   - table
-        - singleSelection
 related_commands:
     getAll: get_all/
     between: between/

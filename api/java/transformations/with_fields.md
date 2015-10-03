@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/with_fields/
 command: withFields
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
 related_commands:
     pluck: pluck/
     hasFields: has_fields/

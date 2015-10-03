@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/difference/
 command: difference
-io:
-    -   - array
-        - array
 related_commands:
     setInsert: set_insert/
     setUnion: set_union/

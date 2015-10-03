@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/to_geojson/
 command: toGeojson
-io:
-    -   - geometry
-        - object
 related_commands:
     geojson: geojson/
 ---

@@ -3,13 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/filter/
 command: filter
-io:
-    -   - sequence
-        - selection
-    -   - stream
-        - stream
-    -   - array
-        - array
 related_commands:
     get: get/
     getAll: get_all/

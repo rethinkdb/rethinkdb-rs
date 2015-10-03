@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/zip/
 command: zip
-io:
-    -   - stream
-        - stream
-    -   - array
-        - array
 related_commands:
     eqJoin: eq_join/
     innerJoin: inner_join/

@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/get_intersecting/
 command: getIntersecting
-io:
-    -   - table
-        - stream
 related_commands:
     getNearest: get_nearest/
 ---

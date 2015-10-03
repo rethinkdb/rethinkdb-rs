@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/sync/
 command: sync
-io:
-  - - table
-    - object
 related_commands:
     noreplyWait: noreply_wait/
 ---

@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/count/
 command: count
-io:
-    -   - sequence
-        - number
-    -   - binary
-        - number
 related_commands:
     map: map/
     reduce: reduce/

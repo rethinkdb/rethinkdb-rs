@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/db_drop/
 command: dbDrop
-io:
-    -   - r
-        - object
 related_commands:
     dbCreate: db_create/
     dbList: db_list/

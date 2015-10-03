@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/limit/
 command: limit
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
 related_commands:
     skip: skip/
     slice: slice/

@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/polygon/
 command: polygon
-io:
-    -   - r
-        - polygon
 related_commands:
     point: point/
     line: line/

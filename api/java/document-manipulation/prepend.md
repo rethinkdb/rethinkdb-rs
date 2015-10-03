@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/prepend/
 command: prepend
-io:
-    -   - array
-        - array
 related_commands:
     append: append/
     insertAt: insert_at/

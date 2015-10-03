@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/distinct/
 command: distinct
-io:
-    -   - sequence
-        - array
-    -   - table
-        - stream
 related_commands:
     map: map/
     concat_map: concat_map/

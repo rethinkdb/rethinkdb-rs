@@ -3,13 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/insert/
 command: insert
-io:
-    -   - table
-        - object
-    -   - selection
-        - object
-    -   - singleSelection
-        - object
 related_commands:
     update: update/
     replace: replace/

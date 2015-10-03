@@ -3,15 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/has_fields/
 command: hasFields
-io:
-    -   - sequence
-        - stream
-    -   - array
-        - array
-    -   - singleSelection
-        - boolean
-    -   - object
-        - boolean
 related_commands:
     '() (getField)': get_field/
     withFields: with_fields/

@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/close-cursor/
 command: close
-io:
-    -   - cursor
-        - undefined
 related_commands:
     next: next/
     toArray: to_array/

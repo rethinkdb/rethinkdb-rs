@@ -3,9 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/literal/
 command: literal
-io:
-    -   - r
-        - special
 related_commands:
     merge: merge/
     filter: filter/

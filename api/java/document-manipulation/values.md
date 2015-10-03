@@ -3,11 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/values/
 command: values
-io:
-    -   - singleSelection
-        - array
-    -   - object
-        - array
 related_commands:
     keys: keys/
 ---
