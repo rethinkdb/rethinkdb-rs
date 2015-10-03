@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/get/
 command: get
 related_commands:

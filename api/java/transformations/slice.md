@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/slice/
 command: slice
 related_commands:

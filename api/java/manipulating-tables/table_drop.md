@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/table_drop/
 command: tableDrop
 related_commands:

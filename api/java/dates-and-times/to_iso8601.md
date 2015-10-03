@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/to_iso8601/
 command: toISO8601
 related_commands:

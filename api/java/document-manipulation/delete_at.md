@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/delete_at/
 command: deleteAt
 related_commands:

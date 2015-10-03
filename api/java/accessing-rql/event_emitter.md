@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/event_emitter/
 alias:
     - api/javascript/add_listener/

@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/polygon_sub/
 command: polygonSub
 related_commands:

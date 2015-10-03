@@ -1,6 +1,6 @@
 ---
 layout: api-command 
-language: JavaScript
+language: Java
 permalink: api/javascript/noreply_wait/
 command: noreplyWait
 related_commands:

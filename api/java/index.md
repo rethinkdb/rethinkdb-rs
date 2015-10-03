@@ -5,7 +5,7 @@ active: api
 no_footer: true
 permalink: api/javascript/
 alias: api/
-language: JavaScript
+language: Java
 ---
 
 {% apisection Accessing ReQL %}

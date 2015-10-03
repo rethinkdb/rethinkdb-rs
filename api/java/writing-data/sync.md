@@ -1,6 +1,6 @@
 ---
 layout: api-command 
-language: JavaScript
+language: Java
 permalink: api/javascript/sync/
 command: sync
 related_commands:

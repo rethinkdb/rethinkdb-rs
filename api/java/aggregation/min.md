@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript 
+language: Java 
 permalink: api/javascript/min/
 command: min
 related_commands:

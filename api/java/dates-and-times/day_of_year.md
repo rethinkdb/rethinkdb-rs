@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/day_of_year/
 command: dayOfYear
 related_commands:

@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/offsets_of/
 command: offsetsOf
 alias: api/javascript/indexes_of/

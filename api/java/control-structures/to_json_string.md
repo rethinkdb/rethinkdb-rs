@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/to_json_string/
 command: 'toJsonString, toJSON'
 related_commands:

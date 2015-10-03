@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/time_of_day/
 command: timeOfDay
 related_commands:

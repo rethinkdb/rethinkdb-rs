@@ -1,6 +1,6 @@
 ---
 layout: api-command
-language: JavaScript
+language: Java
 permalink: api/javascript/to_epoch_time/
 command: toEpochTime
 related_commands:
