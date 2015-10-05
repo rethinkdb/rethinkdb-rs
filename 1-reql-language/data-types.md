@@ -48,6 +48,8 @@ RethinkDB stores six basic single-value data types: *numbers, strings, binary ob
 
 * **Selections** represent subsets of tables, for example, the return values of `filter` or `get`. There are two kinds of selections, **Selection&lt;Object&gt;** and  **Selection&lt;Stream&gt;**, which behave like objects or streams respectively. The difference between selections and objects/streams are that selections are writable&mdash;their return values can be passed as inputs to ReQL commands that modify the database. For instance, the `get` command will return a Selection&lt;Object&gt; that could then be passed to an `update` or `delete` command.
 
+    Some commands ([orderBy] and [between]) return a data type similar to a selection called a **table\_slice**. In most cases a table\_slice behaves identically to a selection, but `between` can only be called on a table or a table_slice, not any other kind of selection.
+    
 * **Tables** are RethinkDB database tables. They behave like selections&mdash;they're writable, as you can insert and delete documents in them. ReQL methods that use an [index](/docs/secondary-indexes), like `getAll`, are only available on tables.
 
 In the ReQL API documentation you'll often come across the term **Sequence.** Sequences aren't their own data type&mdash;instead, that's a collective word for all the list data types: arrays, streams, selections, and tables. You may also see **Any** used for commands that work with any data type.

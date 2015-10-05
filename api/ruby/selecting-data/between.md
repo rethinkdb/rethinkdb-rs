@@ -15,9 +15,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.between(lower_key, upper_key
-    [, :index => 'id', :left_bound => 'closed', :right_bound => 'open'])
-        &rarr; selection
+table.between(lower_key, upper_key[, options]) &rarr; table_slice
+table_slice.between(lower_key, upper_key[, options]) &rarr; table_slice
 {% endapibody %}
 
 # Description #
@@ -65,7 +64,8 @@ r.table('marvel').between(10, r.maxval, :left_bound => 'open').run(conn)
 __Example:__ Between can be used on secondary indexes too. Just pass an optional index argument giving the secondary index to query.
 
 ```rb
-r.table('dc').between('dark_knight', 'man_of_steel', :index => 'code_name').run(conn)
+r.table('dc').between('dark_knight', 'man_of_steel',
+    :index => 'code_name').run(conn)
 ```
 
 __Example:__ Get all users whose full name is between "John Smith" and "Wade Welles."
@@ -75,17 +75,24 @@ r.table("users").between(["Smith", "John"], ["Welles", "Wade"],
     :index => "full_name").run(conn)
 ```
 
+__Example:__ Get the top 10 ranked teams in order.
 
-__Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams ranked in the top 10.
+```rb
+r.table("teams").order_by(:index => "rank").between(1, 11).run(conn)
+```
+
+__Note:__ When `between` is chained after [order_by](/api/ruby/order_by), both commands must use the same index; `between` will default to the index `order_by` is using, so in this example `"rank"` is automatically being used by `between`. Trying to specify another index will result in a `ReqlRuntimeError`.
+
+__Example:__ Subscribe to a [changefeed](/docs/changefeeds/ruby) of teams ranked in the top 10.
 
 ```rb
 changes = r.table("teams").between(1, 11, :index => "rank").changes().run(conn)
 ```
 
-__Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/ruby/during) command, not `between`.
+{% infobox %}
+The `between` command works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/ruby/during) command, not `between`.
 
 Secondary indexes can be used in extremely powerful ways with `between` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 
-__Note:__ RethinkDB uses byte-wise ordering for `between` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
-
-__Note:__ If you chain `between` after [order_by](/api/ruby/order_by), the `between` command must use the index specified in `order_by`, and will default to that index. Trying to specify another index will result in a `ReqlRuntimeError`.
+RethinkDB uses byte-wise ordering for `between` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
+{% endinfobox %}

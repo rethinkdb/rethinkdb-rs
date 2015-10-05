@@ -705,9 +705,8 @@ r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn, callback
 ## [between](between/) ##
 
 {% apibody %}
-table.between(lowerKey, upperKey
-    [, {index:'id', left_bound:'closed', right_bound:'open'}])
-        &rarr; selection
+table.between(lowerKey, upperKey[, options]) &rarr; table_slice
+table_slice.between(lowerKey, upperKey[, options]) &rarr; table_slice
 {% endapibody %}
 
 Get all documents between two keys. Accepts three optional arguments: `index`,
@@ -900,7 +899,7 @@ r.table('marvel').concatMap(function(hero) {
 ## [orderBy](order_by/) ##
 
 {% apibody %}
-table.orderBy([key | function...], {index: index_name}) &rarr; selection<stream>
+table.orderBy([key | function...], {index: index_name}) &rarr; table_slice
 selection.orderBy(key | function[, ...]) &rarr; selection<array>
 sequence.orderBy(key | function[, ...]) &rarr; array
 {% endapibody %}
