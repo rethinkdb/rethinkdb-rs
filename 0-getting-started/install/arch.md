@@ -56,7 +56,7 @@ $ cp -r /var/abs/community/rethinkdb/ ~
 
 Edit `PKGBUILD` to customize the build at this point.
 
-Install the dependencies, build and install the package (the `-s` flag causes `makepkg` to attempt to 
+Install the dependencies, build and install the package (the `-s` flag causes `makepkg` to attempt to
 install explicit build dependencies):
 
 ```bash
@@ -93,7 +93,7 @@ RethinkDB's `configure` script assumes the `python` executable will be Python 2 
 ```bash
 #!/bin/bash
 script=$(readlink -f -- "$1")
-case "$script" in (/home/user/rethinkdb)
+case "$script" in (/home/user/rethinkdb/*)
     exec python2 "$@"
     ;;
 esac
