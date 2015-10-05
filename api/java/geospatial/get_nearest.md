@@ -28,7 +28,7 @@ The return value will be an array of two-item objects with the keys `dist` and `
 
 __Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
 
-```js
+```java
 var secretBase = r.point(-122.422876,37.777128);
 r.table('hideouts').getNearest(secretBase,
     {index: 'location', maxDist: 5000}

@@ -23,7 +23,7 @@ Tests whether two geometry objects intersect with one another. When applied to a
 
 __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 
-```js
+```java
 var point1 = r.point(-117.220406,32.719464);
 var point2 = r.point(-117.206201,32.725186);
 r.circle(point1, 2000).intersects(point2).run(conn);
@@ -33,7 +33,7 @@ true
 
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 
-```js
+```java
 var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 r.table('parks')('area').intersects(circle1).run(conn);
 ```

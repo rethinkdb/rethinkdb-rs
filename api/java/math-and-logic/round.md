@@ -23,7 +23,7 @@ Rounds the given value to the nearest whole integer. For example, values of 1.0 
 
 __Example:__ Round 12.345 to the nearest integer.
 
-```js
+```java
 r.round(12.345).run(conn);
 // Result passed to callback
 12.0
@@ -33,7 +33,7 @@ The `round` command can also be chained after an expression.
 
 __Example:__ Round -12.345 to the nearest integer.
 
-```js
+```java
 r.expr(-12.345).round().run(conn);
 // Result passed to callback
 -12.0
@@ -41,6 +41,6 @@ r.expr(-12.345).round().run(conn);
 
 __Example:__ Return Iron Man's weight, rounded to the nearest integer.
 
-```js
+```java
 r.table('superheroes').get('ironman')('weight').round().run(conn);
 ```

@@ -30,7 +30,7 @@ __Example:__ Suppose we want to retrieve the titles and authors of the table `po
 In the case where the author field is missing or `null`, we want to retrieve the string
 `Anonymous`.
 
-```js
+```java
 r.table("posts").map( function(post) {
     return {
         title: post("title"),
@@ -41,7 +41,7 @@ r.table("posts").map( function(post) {
 
 We can rewrite the previous query with `r.branch` too.
 
-```js
+```java
 r.table("posts").map( function(post) {
     return r.branch(
         post.hasFields("author"),
@@ -62,7 +62,7 @@ __Example:__ The `default` command can be useful to filter documents too. Suppos
 we want to retrieve all our users who are not grown-ups or whose age is unknown
 (i.e the field `age` is missing or equals `null`). We can do it with this query:
 
-```js
+```java
 r.table("users").filter( function(user) {
     return user("age").lt(18).default(true)
 }).run(conn)
@@ -71,7 +71,7 @@ r.table("users").filter( function(user) {
 One more way to write the previous query is to set the age to be `-1` when the
 field is missing.
 
-```js
+```java
 r.table("users").filter( function(user) {
     return user("age").default(-1).lt(18)
 }).run(conn)
@@ -79,7 +79,7 @@ r.table("users").filter( function(user) {
 
 Another way to do the same query is to use [hasFields](/api/java/has_fields/).
 
-```js
+```java
 r.table("users").filter( function(user) {
     return user.hasFields("age").not().or(user("age").lt(18))
 }).run(conn)
@@ -89,7 +89,7 @@ The body of every [filter](/api/java/filter/) is wrapped in an implicit `.defaul
 the value `false` by passing an option in filter, so the previous query can also be
 written like this.
 
-```js
+```java
 r.table("users").filter( function(user) {
     return user("age").lt(18)
 }, {default: true} ).run(conn)

@@ -21,13 +21,13 @@ Uppercases a string.
 
 __Example:__
 
-```js
+```java
 r.expr("Sentence about LaTeX.").upcase().run(conn)
 ```
 
 Result:
 
-```js
+```java
 "SENTENCE ABOUT LATEX."
 ```
 

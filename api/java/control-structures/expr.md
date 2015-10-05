@@ -22,14 +22,14 @@ If the native object is a Node.js `Buffer`, then `expr` will return a binary obj
 
 __Example:__ Objects wrapped with expr can then be manipulated by ReQL API functions.
 
-```js
+```java
 r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn)
 ```
 
 
 __Example:__ In JavaScript, you can also do this with just r.
 
-```js
+```java
 r({a: 'b'}).merge({b: [1,2,3]}).run(conn)
 ```
 

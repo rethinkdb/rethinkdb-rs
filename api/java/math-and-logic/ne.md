@@ -21,12 +21,12 @@ Test if two or more values are not equal.
 
 __Example:__ See if a user's `role` field is not set to `administrator`. 
 
-```js
+```java
 r.table('users').get(1)('role').ne('administrator').run(conn);
 ```
 
 __Example:__ See if three variables do not contain equal values.
 
-```js
+```java
 r.ne(a, b, c).run(conn);
 ```

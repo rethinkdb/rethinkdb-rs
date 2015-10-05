@@ -52,34 +52,34 @@ deletes some of those documents first, they will be counted as skipped.
 
 __Example:__ Delete a single document from the table `comments`.
 
-```js
+```java
 r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn)
 ```
 
 
 __Example:__ Delete all documents from the table `comments`.
 
-```js
+```java
 r.table("comments").delete().run(conn)
 ```
 
 
 __Example:__ Delete all comments where the field `idPost` is `3`.
 
-```js
+```java
 r.table("comments").filter({idPost: 3}).delete().run(conn)
 ```
 
 
 __Example:__ Delete a single document from the table `comments` and return its value.
 
-```js
+```java
 r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete({returnChanges: true}).run(conn)
 ```
 
 The result look like:
 
-```js
+```java
 {
     deleted: 1,
     errors: 0,
@@ -105,6 +105,6 @@ The result look like:
 __Example:__ Delete all documents from the table `comments` without waiting for the
 operation to be flushed to disk.
 
-```js
+```java
 r.table("comments").delete({durability: "soft"}).run(conn)
 ```

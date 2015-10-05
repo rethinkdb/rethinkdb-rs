@@ -31,25 +31,25 @@ If `count` is called on a [binary](/api/java/binary) object, it will return the 
 
 __Example:__ Count the number of users.
 
-```js
+```java
 r.table('users').count().run(conn)
 ```
 
 __Example:__ Count the number of 18 year old users.
 
-```js
+```java
 r.table('users')('age').count(18).run(conn)
 ```
 
 __Example:__ Count the number of users over 18.
 
-```js
+```java
 r.table('users')('age').count(function(age) { 
     return age.gt(18)
 }).run(conn)
 ```
 
-```js
+```java
 r.table('users').count(function(user) {
     return user('age').gt(18)
 }).run(conn)

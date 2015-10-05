@@ -22,25 +22,25 @@ Get all documents where the given value matches the value of the requested index
 
 __Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/java/get/) when using a secondary index.
 
-```js
+```java
 r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn)
 ```
 
 __Example:__ Without an index argument, we default to the primary index. While `get` will either return the document or `null` when no document with such a primary key value exists, this will return either a one or zero length stream.
 
-```js
+```java
 r.table('dc').getAll('superman').run(conn)
 ```
 
 __Example:__ You can get multiple documents in a single call to `get_all`.
 
-```js
+```java
 r.table('dc').getAll('superman', 'ant man').run(conn)
 ```
 
 __Example:__ You can use [args](/api/java/args/) with `getAll` to retrieve multiple documents whose keys are in a list. This uses `getAll` to get a list of female superheroes, coerces that to an array, and then gets a list of villains who have those superheroes as enemies.
 
-```js
+```java
 r.do(
     r.table('heroes').getAll('f', {index: 'gender'})('id').coerceTo('array'),
     function(heroines) {

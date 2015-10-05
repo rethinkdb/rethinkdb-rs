@@ -25,7 +25,7 @@ returns `false`).
 
 __Example:__ Let's process all the elements!
 
-```js
+```java
 cursor.each(function(err, row) {
     if (err) throw err;
     processRow(row);
@@ -34,7 +34,7 @@ cursor.each(function(err, row) {
 
 __Example:__ If we need to know when the iteration is complete, `each` also accepts a second `onFinished` callback.
 
-```js
+```java
 cursor.each(function(err, row) {
         if (err) throw err;
         processRow(row);
@@ -48,7 +48,7 @@ cursor.each(function(err, row) {
 __Example:__ Iteration can be stopped prematurely by returning `false` from the callback.
 For instance, if you want to stop the iteration as soon as `row` is negative:
 
-```js
+```java
 cursor.each(function(err, row) {
     if (err) throw err;
 

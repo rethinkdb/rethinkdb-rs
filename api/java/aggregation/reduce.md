@@ -41,7 +41,7 @@ If the sequence has only one element, the first element will be returned.
 
 __Example:__ Return the number of documents in the table `posts`.
 
-```js
+```java
 r.table("posts").map(function(doc) {
     return 1;
 }).reduce(function(left, right) {
@@ -56,7 +56,7 @@ __Example:__ Suppose that each `post` has a field `comments` that is an array of
 comments.  
 Return the number of comments for all posts.
 
-```js
+```java
 r.table("posts").map(function(doc) {
     return doc("comments").count();
 }).reduce(function(left, right) {
@@ -70,7 +70,7 @@ __Example:__ Suppose that each `post` has a field `comments` that is an array of
 comments.  
 Return the maximum number comments per post.
 
-```js
+```java
 r.table("posts").map(function(doc) {
     return doc("comments").count();
 }).reduce(function(left, right) {

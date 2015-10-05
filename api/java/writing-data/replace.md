@@ -70,7 +70,7 @@ Replace returns an object that contains the following attributes:
 
 __Example:__ Replace the document with the primary key `1`.
 
-```js
+```java
 r.table("posts").get(1).replace({
     id: 1,
     title: "Lorem ipsum",
@@ -81,7 +81,7 @@ r.table("posts").get(1).replace({
 
 __Example:__ Remove the field `status` from all posts.
 
-```js
+```java
 r.table("posts").replace(function(post) {
     return post.without("status")
 }).run(conn)
@@ -89,7 +89,7 @@ r.table("posts").replace(function(post) {
 
 __Example:__ Remove all the fields that are not `id`, `title` or `content`.
 
-```js
+```java
 r.table("posts").replace(function(post) {
     return post.pluck("id", "title", "content")
 }).run(conn)
@@ -97,7 +97,7 @@ r.table("posts").replace(function(post) {
 
 __Example:__ Replace the document with the primary key `1` using soft durability.
 
-```js
+```java
 r.table("posts").get(1).replace({
     id: 1,
     title: "Lorem ipsum",
@@ -111,7 +111,7 @@ r.table("posts").get(1).replace({
 __Example:__ Replace the document with the primary key `1` and return the values of the document before
 and after the replace operation.
 
-```js
+```java
 r.table("posts").get(1).replace({
     id: 1,
     title: "Lorem ipsum",
@@ -124,7 +124,7 @@ r.table("posts").get(1).replace({
 
 The result will have two fields `old_val` and `new_val`.
 
-```js
+```java
 {
     deleted: 0,
     errors: 0,

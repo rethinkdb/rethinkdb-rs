@@ -32,61 +32,61 @@ single-character strings.
 
 __Example:__ Split on whitespace.
 
-```js
+```java
 r.expr("foo  bar bax").split().run(conn)
 ```
 
 Result:
 
-```js
+```java
 ["foo", "bar", "bax"]
 ```
 
 __Example:__ Split the entries in a CSV file.
 
-```js
+```java
 r.expr("12,37,,22,").split(",").run(conn)
 ```
 
 Result:
 
-```js
+```java
 ["12", "37", "", "22", ""]
 ```
 
 __Example:__ Split a string into characters.
 
-```js
+```java
 r.expr("mlucy").split("").run(conn)
 ```
 
 Result:
 
-```js
+```java
 ["m", "l", "u", "c", "y"]
 ```
 
 __Example:__ Split the entries in a CSV file, but only at most 3
 times.
 
-```js
+```java
 r.expr("12,37,,22,").split(",", 3).run(conn)
 ```
 
 Result:
 
-```js
+```java
 ["12", "37", "", "22,"]
 ```
 
 __Example:__ Split on whitespace at most once (i.e. get the first word).
 
-```js
+```java
 r.expr("foo  bar bax").split(null, 1).run(conn)
 ```
 
 Result:
 
-```js
+```java
 ["foo", "bar bax"]
 ```

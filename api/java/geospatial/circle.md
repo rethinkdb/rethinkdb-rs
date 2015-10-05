@@ -33,7 +33,7 @@ Optional arguments available with `circle` are:
 
 __Example:__ Define a circle.
 
-```js
+```java
 r.table('geo').insert({
     id: 300,
     name: 'Hayes Valley',

@@ -28,13 +28,13 @@ If no callback is provided, a promise will be returned.
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
-```js
+```java
 conn.reconnect({noreplyWait: false}, function(error, connection) { ... })
 ```
 
 Alternatively, you can use promises.
 
-```js
+```java
 conn.reconnect({noreplyWait: false}).then(function(conn) {
     // the outstanding queries were canceled and conn is now available again
 }).error(function(errror) {

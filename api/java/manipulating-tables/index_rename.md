@@ -27,6 +27,6 @@ An error will be raised if the old index name does not exist, if the new index n
 
 __Example:__ Rename an index on the comments table.
 
-```js
+```java
 r.table('comments').indexRename('postId', 'messageId').run(conn)
 ```

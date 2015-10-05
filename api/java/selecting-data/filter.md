@@ -36,7 +36,7 @@ __Note:__ `filter` does not use secondary indexes. For retrieving documents via 
 __Example:__ Get all users who are 30 years old.
 
 
-```js
+```java
 r.table('users').filter({age: 30}).run(conn);
 ```
 
@@ -44,13 +44,13 @@ The predicate `{age: 30}` selects documents in the `users` table with an `age` f
 
 While the `{field: value}` style of predicate is useful for exact matches, a more general way to write a predicate is to use the [row](/api/java/row) command with a comparison operator such as [eq](/api/java/eq) or [gt](/api/java/gt), or to use an anonymous function that returns `true` or `false`.
 
-```js
+```java
 r.table('users').filter(r.row("age").eq(30)).run(conn);
 ```
 
 In this case, the predicate `r.row("age").eq(30)` returns `true` if the field `age` is equal to 30. You can write this predicate as an anonymous function instead:
 
-```js
+```java
 r.table('users').filter(function (user) {
     return user("age").eq(30);
 }).run(conn);
@@ -62,14 +62,14 @@ Also, predicates must evaluate document fields. They cannot evaluate [secondary 
 
 __Example:__ Get all users who are more than 18 years old.
 
-```js
+```java
 r.table("users").filter(r.row("age").gt(18)).run(conn)
 ```
 
 
 __Example:__ Get all users who are less than 18 years old and more than 13 years old.
 
-```js
+```java
 r.table("users").filter(
     r.row("age").lt(18).and(r.row("age").gt(13))
 ).run(conn);
@@ -78,7 +78,7 @@ r.table("users").filter(
 
 __Example:__ Get all users who are more than 18 years old or have their parental consent.
 
-```js
+```java
 r.table("users").filter(
     r.row("age").ge(18).or(r.row("hasParentalConsent"))
 ).run(conn);
@@ -89,7 +89,7 @@ r.table("users").filter(
 __Example:__ Retrieve all users who subscribed between January 1st, 2012
 (included) and January 1st, 2013 (excluded).
 
-```js
+```java
 r.table("users").filter(function (user) {
     return user("subscriptionDate").during(
         r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z'));
@@ -98,7 +98,7 @@ r.table("users").filter(function (user) {
 
 __Example:__ Retrieve all users who have a gmail account (whose field `email` ends with `@gmail.com`).
 
-```js
+```java
 r.table("users").filter(function (user) {
     return user("email").match("@gmail.com$");
 }).run(conn);
@@ -108,7 +108,7 @@ __Example:__ Filter based on the presence of a value in an array.
 
 Given this schema for the `users` table:
 
-```js
+```java
 {
     name: String
     placesVisited: [String]
@@ -117,7 +117,7 @@ Given this schema for the `users` table:
 
 Retrieve all users whose field `placesVisited` contains `France`.
 
-```js
+```java
 r.table("users").filter(function(user) {
     return user("placesVisited").contains("France")
 }).run( conn)
@@ -127,7 +127,7 @@ __Example:__ Filter based on nested fields.
 
 Given this schema for the `users` table:
 
-```js
+```java
 {
     id: String
     name: {
@@ -142,7 +142,7 @@ Retrieve all users named "William Adama" (first name "William", last name
 "Adama"), with any middle name.
 
 
-```js
+```java
 r.table("users").filter({
     name: {
         first: "William",
@@ -156,7 +156,7 @@ If you want an exact match for a field that is an object, you will have to use `
 Retrieve all users named "William Adama" (first name "William", last name
 "Adama"), and who do not have a middle name.
 
-```js
+```java
 r.table("users").filter(r.literal({
     name: {
         first: "William",
@@ -167,7 +167,7 @@ r.table("users").filter(r.literal({
 
 You may rewrite these with anonymous functions.
 
-```js
+```java
 r.table("users").filter(function(user) {
     return user("name")("first").eq("William")
         .and(user("name")("last").eq("Adama"));
@@ -187,7 +187,7 @@ By default, documents missing fields tested by the `filter` predicate are skippe
 
 __Example:__ Get all users less than 18 years old or whose `age` field is missing.
 
-```js
+```java
 r.table("users").filter(
     r.row("age").lt(18), {default: true}
 ).run(conn);
@@ -196,7 +196,7 @@ r.table("users").filter(
 __Example:__ Get all users more than 18 years old. Throw an error if a
 document is missing the field `age`.
 
-```js
+```java
 r.table("users").filter(
     r.row("age").gt(18), {default: r.error()}
 ).run(conn);
@@ -204,7 +204,7 @@ r.table("users").filter(
 
 __Example:__ Get all users who have given their phone number (all the documents whose field `phoneNumber` exists and is not `null`).
 
-```js
+```java
 r.table('users').filter(function (user) {
     return user.hasFields('phoneNumber');
 }).run(conn);
@@ -212,7 +212,7 @@ r.table('users').filter(function (user) {
 
 __Example:__ Get all users with an "editor" role or an "admin" privilege.
 
-```js
+```java
 r.table('users').filter(function (user) {
     return (user('role').eq('editor').default(false).
         or(user('privilege').eq('admin').default(false)));

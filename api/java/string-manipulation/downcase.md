@@ -21,13 +21,13 @@ Lowercases a string.
 
 __Example:__
 
-```js
+```java
 r.expr("Sentence about LaTeX.").downcase().run(conn)
 ```
 
 Result:
 
-```js
+```java
 "sentence about latex."
 ```
 

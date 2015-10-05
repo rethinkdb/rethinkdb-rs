@@ -25,7 +25,7 @@ r.branch(test1, val1, test2, val2, elseval)
 
 is the equivalent of the JavaScript statement
 
-```js
+```java
 if (test1) {
     return val1;
 } else if (test2) {
@@ -37,7 +37,7 @@ if (test1) {
 
 __Example:__ Test the value of x.
 
-```js
+```java
 var x = 10;
 r.branch(r.expr(x).gt(5), 'big', 'small').run(conn);
 // Result passed to callback
@@ -46,7 +46,7 @@ r.branch(r.expr(x).gt(5), 'big', 'small').run(conn);
 
 __Example:__ Categorize heroes by victory counts.
 
-```js
+```java
 r.table('marvel').map(
     r.branch(
         r.row('victories').gt(100),
@@ -60,7 +60,7 @@ r.table('marvel').map(
 
 If the documents in the table `marvel` are:
 
-```js
+```java
 [
     { name: "Iron Man", victories: 214 },
     { name: "Jubilee", victories: 49 },
@@ -70,7 +70,7 @@ If the documents in the table `marvel` are:
 
 The results will be:
 
-```js
+```java
 [
     "Iron Man is a superhero",
     "Jubilee is a hero",

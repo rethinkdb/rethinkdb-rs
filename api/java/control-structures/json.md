@@ -20,6 +20,6 @@ Parse a JSON string on the server.
 
 __Example:__ Send an array to the server'
 
-```js
+```java
 r.json("[1,2,3]").run(conn)
 ```

@@ -26,7 +26,7 @@ Note that `innerJoin` is slower and much less efficient than using [eqJoin](/api
 
 __Example:__ Return a list of all matchups between Marvel and DC heroes in which the DC hero could beat the Marvel hero in a fight.
 
-```js
+```java
 r.table('marvel').innerJoin(r.table('dc'), function(marvelRow, dcRow) {
     return marvelRow('strength').lt(dcRow('strength'))
 }).zip().run(conn)

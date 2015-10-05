@@ -21,7 +21,7 @@ Return a new time object only based on the day, month and year (ie. the same day
 
 __Example:__ Retrieve all the users whose birthday is today
 
-```js
+```java
 r.table("users").filter(function(user) {
     return user("birthdate").date().eq(r.now().date())
 }).run(conn)

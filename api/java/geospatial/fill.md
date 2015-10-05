@@ -24,7 +24,7 @@ If the last point does not specify the same coordinates as the first point, `pol
 
 __Example:__ Create a line object and then convert it to a polygon.
 
-```js
+```java
 r.table('geo').insert({
     id: 201,
     rectangle: r.line(

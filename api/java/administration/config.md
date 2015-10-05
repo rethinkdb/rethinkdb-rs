@@ -24,7 +24,7 @@ The `config` command is a shorthand way to access the `table_config` or `db_conf
 
 __Example:__ Get the configuration for the `users` table.
 
-```js
+```java
 > r.table('users').config().run(conn);
 // Result passed to callback
 {
@@ -52,6 +52,6 @@ __Example:__ Get the configuration for the `users` table.
 
 __Example:__ Change the write acknowledgement requirement of the `users` table.
 
-```js
+```java
 > r.table('users').config().update({write_acks: 'single'}).run(conn);
 ```

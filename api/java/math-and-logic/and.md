@@ -22,7 +22,7 @@ Compute the logical "and" of two or more values. The `and` command can be used a
 
 __Example:__ Return whether both `a` and `b` evaluate to true.
 
-```js
+```java
 var a = true, b = false;
 r.expr(a).and(b).run(conn);
 // result passed to callback
@@ -31,7 +31,7 @@ false
 
 __Example:__ Return whether all of `x`, `y` and `z` evaluate to true.
 
-```js
+```java
 var x = true, y = true, z = true;
 r.and(x, y, z).run(conn);
 // result passed to callback

@@ -23,19 +23,19 @@ Compare values, testing if the left-hand value is less than or equal to the righ
 
 __Example:__ Test if a player has scored 10 points or less.
 
-```js
+```java
 r.table('players').get(1)('score').le(10).run(conn);
 ```
 
 __Example:__ Test if variables are ordered from highest to lowest.
 
-```js
+```java
 var a = 20, b = 10, c = 15;
 r.le(a, b, c).run(conn);
 ```
 
 This is the equivalent of the following:
 
-```js
+```java
 r.le(a, b).and(r.le(b, c)).run(conn);
 ```

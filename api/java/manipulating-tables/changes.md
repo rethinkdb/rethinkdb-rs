@@ -44,7 +44,7 @@ If the table becomes unavailable, the changefeed will be disconnected, and a run
 
 Changefeed notifications take the form of a two-field object:
 
-```js
+```java
 {
     "old_val": <document before change>,
     "new_val": <document after change>
@@ -65,7 +65,7 @@ __Example:__ Subscribe to the changes on a table.
 
 Start monitoring the changefeed in one client:
 
-```js
+```java
 r.table('games').changes().run(conn, function(err, cursor) {
   cursor.each(console.log);
 });
@@ -74,7 +74,7 @@ r.table('games').changes().run(conn, function(err, cursor) {
 As these queries are performed in a second client, the first
 client would receive and print the following objects:
 
-```js
+```java
 > r.table('games').insert({id: 1}).run(conn);
 {old_val: null, new_val: {id: 1}}
 
@@ -94,7 +94,7 @@ ReqlRuntimeError: Changefeed aborted (table unavailable)
 
 __Example:__ Return all the changes that increase a player's score.
 
-```js
+```java
 r.table('test').changes().filter(
   r.row('new_val')('score').gt(r.row('old_val')('score'))
 ).run(conn)
@@ -102,19 +102,19 @@ r.table('test').changes().filter(
 
 __Example:__ Return all the changes to a specific player's score that increase it past 10.
 
-```js
+```java
 r.table('test').get(1).filter(r.row('score').gt(10)).changes().run(conn)
 ```
 
 __Example:__ Return all the inserts on a table.
 
-```js
+```java
 r.table('test').changes().filter(r.row('old_val').eq(null)).run(conn)
 ```
 
 __Example:__ Return all the changes to game 1, with state notifications.
 
-```js
+```java
 r.table('games').get(1).changes({includeStates: true}).run(conn);
 // Result returned on changefeed
 {state: 'initializing'}
@@ -132,6 +132,6 @@ r.table('games').get(1).changes({includeStates: true}).run(conn);
 
 __Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
 
-```js
+```java
 r.table('games').orderBy({index: r.desc('score')}).limit(10).run(conn);
 ```

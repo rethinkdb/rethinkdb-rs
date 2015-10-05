@@ -28,7 +28,7 @@ While `distinct` can be called on a table without an index, the only effect will
 
 __Example:__ Which unique villains have been vanquished by Marvel heroes?
 
-```js
+```java
 r.table('marvel').concatMap(function(hero) {
     return hero('villainList')
 }).distinct().run(conn)
@@ -36,13 +36,13 @@ r.table('marvel').concatMap(function(hero) {
 
 __Example:__ Topics in a table of messages have a secondary index on them, and more than one message can have the same topic. What are the unique topics in the table?
 
-```js
+```java
 r.table('messages').distinct({index: 'topics'}).run(conn)
 ```
 
 The above structure is functionally identical to:
 
-```js
+```java
 r.table('messages')('topics').distinct().run(conn)
 ```
 

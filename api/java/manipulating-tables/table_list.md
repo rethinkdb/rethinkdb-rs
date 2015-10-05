@@ -20,7 +20,7 @@ List all table names in a database. The result is a list of strings.
 
 __Example:__ List all tables of the 'test' database.
 
-```js
+```java
 r.db('test').tableList().run(conn)
 ```
 

@@ -20,6 +20,6 @@ The top-level ReQL namespace.
 
 __Example:__ Set up your top-level namespace.
 
-```js
+```java
 var r = require('rethinkdb');
 ```

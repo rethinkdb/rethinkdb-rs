@@ -23,7 +23,7 @@ Retrieve data from the specified URL over HTTP.  The return type depends on the 
 
 __Example:__ Perform an HTTP `GET` and store the result in a table.
 
-```js
+```java
 r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn)
 ```
 
@@ -61,7 +61,7 @@ See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on 
 
 __Example:__ Perform multiple requests with different parameters.
 
-```js
+```java
 r.expr([1, 2, 3]).map(function(i) {
     return r.http('http://httpbin.org/get', { params: { user: i } });
 }).run(conn)
@@ -69,7 +69,7 @@ r.expr([1, 2, 3]).map(function(i) {
 
 __Example:__ Perform a `PUT` request for each item in a table.
 
-```js
+```java
 r.table('data').map(function(row) {
     return r.http('http://httpbin.org/put', { method: 'PUT', data: row });
 }).run(conn)
@@ -79,7 +79,7 @@ __Example:__ Perform a `POST` request with accompanying data.
 
 Using form-encoded data:
 
-```js
+```java
 r.http('http://httpbin.org/post',
        { method: 'POST', data: { player: 'Bob', game: 'tic tac toe' } })
 .run(conn)
@@ -87,7 +87,7 @@ r.http('http://httpbin.org/post',
 
 Using JSON data:
 
-```js
+```java
 r.http('http://httpbin.org/post',
        { method: 'POST',
          data: r.expr(value).coerceTo('string'),
@@ -109,7 +109,7 @@ At the moment, the only built-in strategy is `'link-next'`, which is equivalent 
 
 __Example:__ Perform a GitHub search and collect up to 3 pages of results.
 
-```js
+```java
 r.http("https://api.github.com/search/code?q=addClass+user:mozilla",
        { page: 'link-next', pageLimit: 3 }
 ).run(conn)
@@ -117,7 +117,7 @@ r.http("https://api.github.com/search/code?q=addClass+user:mozilla",
 
 As a function, `page` takes one parameter, an object of the format:
 
-```js
+```java
 {
     params: object // the URL parameters used in the last request
     header: object // the HTTP headers of the last response as key/value pairs
@@ -127,7 +127,7 @@ As a function, `page` takes one parameter, an object of the format:
 
 The `header` field will be a parsed version of the header with fields lowercased, like so:
 
-```js
+```java
 {
     'content-length': '1024',
     'content-type': 'application/json',
@@ -141,7 +141,7 @@ The `header` field will be a parsed version of the header with fields lowercased
 
 The `page` function may return a string corresponding to the next URL to request, `null` indicating that there is no more to get, or an object of the format:
 
-```js
+```java
 {
     url: string // the next URL to request, or null for no more pages
     params: object // new URL parameters to use, will be merged with the previous request's params
@@ -150,7 +150,7 @@ The `page` function may return a string corresponding to the next URL to request
 
 __Example:__ Perform depagination with a custom `page` function.
 
-```js
+```java
 r.http('example.com/pages',
        { page: function(info) { return info('body')('meta')('next').default(null); },
          pageLimit: 5 })

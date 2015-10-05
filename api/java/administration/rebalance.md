@@ -43,7 +43,7 @@ See the [status](/api/java/status) command for an explanation of the objects ret
 
 __Example:__ Rebalance a table.
 
-```js
+```java
 > r.table('superheroes').rebalance().run(conn);
 // Result passed to callback
 {

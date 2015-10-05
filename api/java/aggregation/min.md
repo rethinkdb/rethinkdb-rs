@@ -34,25 +34,25 @@ Calling `min` on an empty sequence will throw a non-existence error; this can be
 
 __Example:__ Return the minimum value in the list `[3, 5, 7]`.
 
-```js
+```java
 r.expr([3, 5, 7]).min().run(conn);
 ```
 
 __Example:__ Return the user who has scored the fewest points.
 
-```js
+```java
 r.table('users').min('points').run(conn);
 ```
 
 __Example:__ The same as above, but using a secondary index on the `points` field.
 
-```js
+```java
 r.table('users').min({index: 'points'}).run(conn);
 ```
 
 __Example:__ Return the user who has scored the fewest points, adding in bonus points from a separate field using a function.
 
-```js
+```java
 r.table('users').min(function(user) {
     return user('points').add(user('bonusPoints'));
 }).run(conn);
@@ -60,12 +60,12 @@ r.table('users').min(function(user) {
 
 __Example:__ Return the smallest number of points any user has ever scored. This returns the value of that `points` field, not a document.
 
-```js
+```java
 r.table('users').min('points')('points').run(conn);
 ```
 
 __Example:__ Return the user who has scored the fewest points, but add a default `null` return value to prevent an error if no user has ever scored points.
 
-```js
+```java
 r.table('users').min('points').default(null).run(conn);
 ```

@@ -20,7 +20,7 @@ Return a UUID (universally unique identifier), a string that can be used as a un
 
 __Example:__ Generate a UUID.
 
-```js
+```java
 > r.uuid().run(conn)
 // result returned to callback
 "27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"

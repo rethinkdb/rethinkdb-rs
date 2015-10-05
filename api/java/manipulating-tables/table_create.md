@@ -52,7 +52,7 @@ The [data type](/docs/data-types/) of a primary key is usually a string (like a 
 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
-```js
+```java
 > r.db('heroes').tableCreate('dc_universe').run(conn);
 // Result passed to callback
 {
@@ -84,13 +84,13 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 
 __Example:__ Create a table named 'dc_universe' using the field 'name' as primary key.
 
-```js
+```java
 r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn);
 ```
 
 __Example:__ Create a table set up for two shards and three replicas per shard. This requires three available servers.
 
-```js
+```java
 r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn);
 ```
 

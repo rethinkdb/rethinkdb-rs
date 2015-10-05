@@ -23,19 +23,19 @@ Compare values, testing if the left-hand value is greater than or equal to the r
 
 __Example:__ Test if a player has scored 10 points or more.
 
-```js
+```java
 r.table('players').get(1)('score').ge(10).run(conn);
 ```
 
 __Example:__ Test if variables are ordered from lowest to highest.
 
-```js
+```java
 var a = 10, b = 20, c = 15;
 r.ge(a, b, c).run(conn);
 ```
 
 This is the equivalent of the following:
 
-```js
+```java
 r.ge(a, b).and(r.ge(b, c)).run(conn);
 ```

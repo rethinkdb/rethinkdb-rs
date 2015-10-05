@@ -22,7 +22,7 @@ Return whether a time is between two other times. By default, this is inclusive 
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 (inclusive) and December 10th, 2013 (exclusive).
 
-```js
+```java
 r.table("posts").filter(
     r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
 ).run(conn)
@@ -32,7 +32,7 @@ r.table("posts").filter(
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 (exclusive) and December 10th, 2013 (inclusive).
 
-```js
+```java
 r.table("posts").filter(
   r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"), {leftBound: "open", rightBound: "closed"})
 ).run(conn)

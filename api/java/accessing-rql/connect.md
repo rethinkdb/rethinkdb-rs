@@ -47,7 +47,7 @@ The authentication key can be set from the RethinkDB command line tool. Once set
 
 __Example:__ Open a connection using the default host and port, specifying the default database.
 
-```js
+```java
 r.connect({
     db: 'marvel'
 }, function(err, conn) {
@@ -57,13 +57,13 @@ r.connect({
 
 If no callback is provided, a promise will be returned.
 
-```js
+```java
 var promise = r.connect({db: 'marvel'});
 ```
 
 __Example:__ Open a new connection to the database.
 
-```js
+```java
 r.connect({
     host: 'localhost',
     port: 28015,
@@ -76,7 +76,7 @@ r.connect({
 
 Alternatively, you can use promises.
 
-```js
+```java
 var p = r.connect({
     host: 'localhost',
     port: 28015,
@@ -92,7 +92,7 @@ p.then(function(conn) {
 
 __Example:__ Open a new connection to the database using an SSL proxy.
 
-```js
+```java
 var fs = require('fs');
 fs.readFile('/path/to/cert', function (err, caCert) {
     if (!err) {

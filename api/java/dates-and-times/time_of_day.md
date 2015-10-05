@@ -21,7 +21,7 @@ Return the number of seconds elapsed since the beginning of the day stored in th
 
 __Example:__ Retrieve posts that were submitted before noon.
 
-```js
+```java
 r.table("posts").filter(
     r.row("date").timeOfDay().le(12*60*60)
 ).run(conn)

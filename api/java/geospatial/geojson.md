@@ -24,7 +24,7 @@ Only longitude/latitude coordinates are supported. GeoJSON objects that use Cart
 
 __Example:__ Convert a GeoJSON object to a ReQL geometry object.
 
-```js
+```java
 var geoJson = {
     'type': 'Point',
     'coordinates': [ -122.423246, 37.779388 ]

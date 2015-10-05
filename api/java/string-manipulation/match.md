@@ -38,7 +38,7 @@ __Example:__ Get all users whose name starts with "A". Because `null` evaluates 
 [filter](/api/java/filter/), you can just use the result of `match` for the predicate.
 
 
-```js
+```java
 r.table('users').filter(function(doc){
     return doc('name').match("^A")
 }).run(conn)
@@ -46,14 +46,14 @@ r.table('users').filter(function(doc){
 
 __Example:__ Get all users whose name ends with "n".
 
-```js
+```java
 r.table('users').filter(function(doc){
     return doc('name').match("n$")
 }).run(conn)
 ```
 __Example:__ Get all users whose name has "li" in it
 
-```js
+```java
 r.table('users').filter(function(doc){
     return doc('name').match("li")
 }).run(conn)
@@ -61,7 +61,7 @@ r.table('users').filter(function(doc){
 
 __Example:__ Get all users whose name is "John" with a case-insensitive search.
 
-```js
+```java
 r.table('users').filter(function(doc){
     return doc('name').match("(?i)^john$")
 }).run(conn)
@@ -69,7 +69,7 @@ r.table('users').filter(function(doc){
 
 __Example:__ Get all users whose name is composed of only characters between "a" and "z".
 
-```js
+```java
 r.table('users').filter(function(doc){
     return doc('name').match("(?i)^[a-z]+$")
 }).run(conn)
@@ -77,7 +77,7 @@ r.table('users').filter(function(doc){
 
 __Example:__ Get all users where the zipcode is a string of 5 digits.
 
-```js
+```java
 r.table('users').filter(function(doc){
     return doc('zipcode').match("\\d{5}")
 }).run(conn)
@@ -86,13 +86,13 @@ r.table('users').filter(function(doc){
 
 __Example:__ Retrieve the domain of a basic email
 
-```js
+```java
 r.expr("name@domain.com").match(".*@(.*)").run(conn)
 ```
 
 Result:
 
-```js
+```java
 {
     start: 0,
     end: 20,
@@ -109,7 +109,7 @@ Result:
 
 You can then retrieve only the domain with the [\(\)](/api/java/get_field) selector and [nth](/api/java/nth).
 
-```js
+```java
 r.expr("name@domain.com").match(".*@(.*)")("groups").nth(0)("str").run(conn)
 ```
 
@@ -118,6 +118,6 @@ Returns `'domain.com'`
 
 __Example:__ Fail to parse out the domain and returns `null`.
 
-```js
+```java
 r.expr("name[at]domain.com").match(".*@(.*)").run(conn)
 ```

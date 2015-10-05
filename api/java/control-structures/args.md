@@ -24,7 +24,7 @@ This is analogous to using **apply** in JavaScript.
 
 __Example:__ Get Alice and Bob from the table `people`.
 
-```js
+```java
 r.table('people').getAll('Alice', 'Bob').run(conn)
 // or
 r.table('people').getAll(r.args(['Alice', 'Bob'])).run(conn)
@@ -32,14 +32,14 @@ r.table('people').getAll(r.args(['Alice', 'Bob'])).run(conn)
 
 __Example:__ Get all of Alice's children from the table `people`.
 
-```js
+```java
 // r.table('people').get('Alice') returns {id: 'Alice', children: ['Bob', 'Carol']}
 r.table('people').getAll(r.args(r.table('people').get('Alice')('children'))).run(conn)
 ```
 
 __Note:__ When using `r.args` with a command that takes optional arguments, you must not include the optional arguments inside the `args` array.
 
-```js
+```java
 // Wrong!
 r.table('posts').indexCreate(r.args(['tags', {multi: true}]))
 // Right

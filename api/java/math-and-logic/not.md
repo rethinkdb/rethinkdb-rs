@@ -22,7 +22,7 @@ Compute the logical inverse (not) of an expression.
 
 __Example:__ Not true is false.
 
-```js
+```java
 r(true).not().run(conn)
 r.not(true).run(conn)
 ```
@@ -31,7 +31,7 @@ These evaluate to `false`.
 
 __Example:__ Return all the users that do not have a "flag" field.
 
-```js
+```java
 r.table('users').filter(function(user) {
     return user.hasFields('flag').not()
 }).run(conn)
@@ -39,7 +39,7 @@ r.table('users').filter(function(user) {
 
 __Example:__ As above, but prefix-style.
 
-```js
+```java
 r.table('users').filter(function(user) {
     return r.not(user.hasFields('flag'))
 }).run(conn)

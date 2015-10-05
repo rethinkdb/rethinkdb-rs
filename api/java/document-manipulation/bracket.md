@@ -24,7 +24,7 @@ Get a single field from an object. If called on a sequence, gets that field from
 
 __Example:__ What was Iron Man's first appearance in a comic?
 
-```js
+```java
 r.table('marvel').get('IronMan')('firstAppearance').run(conn)
 ```
 
@@ -32,7 +32,7 @@ The `()` command also accepts integer arguments as array offsets, like the [nth]
 
 __Example:__ Get the fourth element in a sequence. (The first element is position `0`, so the fourth element is position `3`.)
 
-```js
+```java
 r.expr([10, 20, 30, 40, 50])(3)
 
 40

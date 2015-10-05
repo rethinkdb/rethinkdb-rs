@@ -48,7 +48,7 @@ Insert returns an object that contains the following attributes:
 
 __Example:__ Insert a document into the table `posts`.
 
-```js
+```java
 r.table("posts").insert({
     id: 1,
     title: "Lorem ipsum",
@@ -58,7 +58,7 @@ r.table("posts").insert({
 
 The result will be:
 
-```js
+```java
 {
     deleted: 0,
     errors: 0,
@@ -73,7 +73,7 @@ The result will be:
 __Example:__ Insert a document without a defined primary key into the table `posts` where the
 primary key is `id`.
 
-```js
+```java
 r.table("posts").insert({
     title: "Lorem ipsum",
     content: "Dolor sit amet"
@@ -82,7 +82,7 @@ r.table("posts").insert({
 
 RethinkDB will generate a primary key and return it in `generated_keys`.
 
-```js
+```java
 {
     deleted: 0,
     errors: 0,
@@ -98,13 +98,13 @@ RethinkDB will generate a primary key and return it in `generated_keys`.
 
 Retrieve the document you just inserted with:
 
-```js
+```java
 r.table("posts").get("dd782b64-70a7-43e4-b65e-dd14ae61d947").run(conn)
 ```
 
 And you will get back:
 
-```js
+```java
 {
     id: "dd782b64-70a7-43e4-b65e-dd14ae61d947",
     title: "Lorem ipsum",
@@ -115,7 +115,7 @@ And you will get back:
 
 __Example:__ Insert multiple documents into the table `users`.
 
-```js
+```java
 r.table("users").insert([
     {id: "william", email: "william@rethinkdb.com"},
     {id: "lara", email: "lara@rethinkdb.com"}
@@ -125,7 +125,7 @@ r.table("users").insert([
 
 __Example:__ Insert a document into the table `users`, replacing the document if it already exists.  
 
-```js
+```java
 r.table("users").insert(
     {id: "william", email: "william@rethinkdb.com"},
     {conflict: "replace"}
@@ -135,14 +135,14 @@ r.table("users").insert(
 
 __Example:__ Copy the documents from `posts` to `postsBackup`.
 
-```js
+```java
 r.table("postsBackup").insert( r.table("posts") ).run(conn)
 ```
 
 
 __Example:__ Get back a copy of the inserted document (with its generated primary key).
 
-```js
+```java
 r.table("posts").insert(
     {title: "Lorem ipsum", content: "Dolor sit amet"},
     {returnChanges: true}
@@ -151,7 +151,7 @@ r.table("posts").insert(
 
 The result will be
 
-```js
+```java
 {
     deleted: 0,
     errors: 0,

@@ -33,30 +33,30 @@ If `slice` is used with a [binary](/api/java/binary) object, the indexes refer t
 
 **Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
-```js
+```java
 r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn)
 ```
 
 **Example:** Return all but the top three players who have a red flag.
 
-```js
+```java
 r.table('players').filter({flag: 'red'}).orderBy(r.desc('score')).slice(3).run(conn)
 ```
 
 **Example:** Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
 
-```js
+```java
 r.table('users').orderBy('ticket').slice(x, y, {right_bound: 'closed'}).run(conn)
 ```
 
 **Example:** Return the elements of an array from the second through two from the end (that is, not including the last two).
 
-```js
+```java
 r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn)
 ```
 
 Result:
 
-```js
+```java
 [2,3]
 ```

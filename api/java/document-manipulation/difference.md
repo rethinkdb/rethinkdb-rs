@@ -22,7 +22,7 @@ Remove the elements of one array from another array.
 
 __Example:__ Retrieve Iron Man's equipment list without boots.
 
-```js
+```java
 r.table('marvel').get('IronMan')('equipment')
   .difference(['Boots'])
   .run(conn)
@@ -30,7 +30,7 @@ r.table('marvel').get('IronMan')('equipment')
 
 __Example:__ Remove Iron Man's boots from his equipment.
 
-```js
+```java
 r.table('marvel').get('IronMan')
   .update({
     equipment: r.row('equipment').difference(['Boots'])

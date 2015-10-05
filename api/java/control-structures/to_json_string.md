@@ -19,7 +19,7 @@ Convert a ReQL value or object to a JSON string. You may use either `toJsonStrin
 
 __Example:__ Get a ReQL document as a JSON string.
 
-```js
+```java
 > r.table('hero').get(1).toJSON()
 // result returned to callback
 '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'

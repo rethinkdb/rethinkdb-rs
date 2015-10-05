@@ -34,7 +34,7 @@ player, with the highest scorers first?
 
 Suppose that the table `games` has the following data:
 
-```js
+```java
 [
     {id: 2, player: "Bob", points: 15, type: "ranked"},
     {id: 5, player: "Alice", points: 7, type: "free"},
@@ -45,7 +45,7 @@ Suppose that the table `games` has the following data:
 
 We can use this query:
 
-```js
+```java
 r.table('games')
    .group('player').max('points')('points')
    .ungroup().orderBy(r.desc('reduction')).run(conn)
@@ -53,7 +53,7 @@ r.table('games')
 
 Result: 
 
-```js
+```java
 [
     {
         group: "Bob",
@@ -68,13 +68,13 @@ Result:
 
 __Example:__ Select one random player and all their games.
 
-```js
+```java
 r.table('games').group('player').ungroup().sample(1).run(conn)
 ```
 
 Result:
 
-```js
+```java
 [
     {
         group: "Bob",
@@ -91,13 +91,13 @@ Result:
 Note that if you didn't call `ungroup`, you would instead select one
 random game from each player:
 
-```js
+```java
 r.table('games').group('player').sample(1).run(conn)
 ```
 
 Result:
 
-```js
+```java
 [
     {
         group: "Alice",
@@ -118,7 +118,7 @@ Result:
 
 __Example:__ Types!
 
-```js
+```java
 r.table('games').group('player').typeOf().run(conn) // Returns "GROUPED_STREAM"
 r.table('games').group('player').ungroup().typeOf().run(conn) // Returns "ARRAY"
 r.table('games').group('player').avg('points').run(conn) // Returns "GROUPED_DATA"

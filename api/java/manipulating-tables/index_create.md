@@ -35,13 +35,13 @@ If successful, `createIndex` will return an object of the form `{"created": 1}`.
 
 __Example:__ Create a simple index based on the field `postId`.
 
-```js
+```java
 r.table('comments').indexCreate('postId').run(conn)
 ```
 
 __Example:__ Create a geospatial index based on the field `location`.
 
-```js
+```java
 r.table('places').indexCreate('location', {geo: true}).run(conn)
 ```
 
@@ -49,32 +49,32 @@ A geospatial index field should contain only geometry objects. It will work with
 
 __Example:__ Create a simple index based on the nested field `author > name`.
 
-```js
+```java
 r.table('comments').indexCreate('authorName', r.row("author")("name")).run(conn)
 ```
 
 
 __Example:__ Create a compound index based on the fields `postId` and `date`.
 
-```js
+```java
 r.table('comments').indexCreate('postAndDate', [r.row("postId"), r.row("date")]).run(conn)
 ```
 
 __Example:__ Create a multi index based on the field `authors`.
 
-```js
+```java
 r.table('posts').indexCreate('authors', {multi: true}).run(conn)
 ```
 
 __Example:__ Create a geospatial multi index based on the field `towers`.
 
-```js
+```java
 r.table('networks').indexCreate('towers', {multi: true, geo: true}).run(conn)
 ```
 
 __Example:__ Create an index based on an arbitrary expression.
 
-```js
+```java
 r.table('posts').indexCreate('authors', function(doc) {
     return r.branch(
         doc.hasFields("updatedAt"),
@@ -86,7 +86,7 @@ r.table('posts').indexCreate('authors', function(doc) {
 
 __Example:__ Create a new secondary index based on an existing one.
 
-```js
+```java
 r.table('posts').indexStatus('authors').nth(0)('function').run(conn, function (func) {
     r.table('newPosts').indexCreate('authors', func).run(conn);
 });
@@ -94,7 +94,7 @@ r.table('posts').indexStatus('authors').nth(0)('function').run(conn, function (f
 
 __Example:__ Rebuild an outdated secondary index on a table.
 
-```js
+```java
 r.table('posts').indexStatus('oldIndex').nth(0).do(function(oldIndex) {
   return r.table('posts').indexCreate('newIndex', oldIndex("function")).do(function() {
     return r.table('posts').indexWait('newIndex').do(function() {

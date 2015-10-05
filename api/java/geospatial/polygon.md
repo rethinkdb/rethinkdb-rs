@@ -29,7 +29,7 @@ If the last point does not specify the same coordinates as the first point, `pol
 
 __Example:__ Define a polygon.
 
-```js
+```java
 r.table('geo').insert({
     id: 101,
     rectangle: r.polygon(

@@ -21,7 +21,7 @@ Return a time object representing the current time in UTC. The command now() is 
 
 __Example:__ Add a new user with the time at which he subscribed.
 
-```js
+```java
 r.table("users").insert({
     name: "John",
     subscription_date: r.now()

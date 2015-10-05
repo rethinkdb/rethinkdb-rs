@@ -32,7 +32,7 @@ Convert a value of one type into another.
 
 __Example:__ Coerce a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 
-```js
+```java
 r.table('posts').map(function (post) {
     post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
 }).run(conn)
@@ -41,7 +41,7 @@ r.table('posts').map(function (post) {
 __Example:__ Coerce an array of key-value pairs into an object.
 
 
-```js
+```java
 r.expr([['name', 'Ironman'], ['victories', 2000]]).coerceTo('object').run(conn)
 ```
 
@@ -49,6 +49,6 @@ __Note:__ To coerce a list of key-value pairs like `['name', 'Ironman', 'victori
 
 __Example:__ Coerce a number to a string.
 
-```js
+```java
 r.expr(1).coerceTo('string').run(conn)
 ```

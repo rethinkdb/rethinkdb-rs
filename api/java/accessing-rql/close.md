@@ -11,8 +11,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-conn.close([{noreplyWait: true}, ]callback)
-conn.close([{noreplyWait: true}]) &rarr; promise
+conn.close().optarg("noreplyWait", true)
 {% endapibody %}
 
 # Description #
@@ -23,37 +22,14 @@ Closing a connection normally waits until all outstanding requests have finished
 
 A noreply query is executed by passing the `noreply` option to the [run](/api/java/run/) command, indicating that `run()` should not wait for the query to complete before returning. You may also explicitly wait for a noreply query to complete by using the [noreplyWait](/api/java/noreply_wait) command.
 
-If no callback is provided, a promise will be returned.
-
 __Example:__ Close an open connection, waiting for noreply writes to finish.
 
-```js
+```java
 conn.close(function(err) { if (err) throw err; })
-```
-
-Alternatively, you can use promises.
-
-```js
-p = conn.close();
-p.then(function() {
-    // `conn` is now closed
-}).error(function(err) {
-    // process the error
-})
 ```
 
 __Example:__ Close an open connection immediately.
 
-```js
+```java
 conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
-```
-
-Alternatively, you can use promises.
-
-```js
-conn.close({noreplyWait: false}).then(function() {
-    // conn is now closed
-}).error(function(err) { 
-    // process the error
-})
 ```

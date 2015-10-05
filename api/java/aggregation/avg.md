@@ -33,20 +33,20 @@ can handle this case with `default`.
 
 __Example:__ What's the average of 3, 5, and 7?
 
-```js
+```java
 r.expr([3, 5, 7]).avg().run(conn)
 ```
 
 __Example:__ What's the average number of points scored in a game?
 
-```js
+```java
 r.table('games').avg('points').run(conn)
 ```
 
 __Example:__ What's the average number of points scored in a game,
 counting bonus points?
 
-```js
+```java
 r.table('games').avg(function(game) {
     return game('points').add(game('bonus_points'))
 }).run(conn)
@@ -56,6 +56,6 @@ __Example:__ What's the average number of points scored in a game?
 (But return `null` instead of raising an error if there are no games where
 points have been scored.)
 
-```js
+```java
 r.table('games').avg('points').default(null).run(conn)
 ```

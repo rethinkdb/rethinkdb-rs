@@ -20,25 +20,25 @@ Concatenate one or more elements into a single sequence using a mapping function
 
 `concatMap` works in a similar fashion to [map](/api/java/map/), applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
 
-```js
+```java
 r.expr([1, 2, 3]).map(function(x) { return [x, x.mul(2)] }).run(conn)
 ```
 
 Result:
 
-```js
+```java
 [[1, 2], [2, 4], [3, 6]]
 ```
 
 Whereas `concatMap` with the same mapping function would merge those sequences into one:
 
-```js
+```java
 r.expr([1, 2, 3]).concatMap(function(x) { return [x, x.mul(2)] }).run(conn)
 ```
 
 Result:
 
-```js
+```java
 [1, 2, 2, 4, 3, 6]
 ```
 
@@ -46,7 +46,7 @@ The return value, array or stream, will be the same type as the input.
 
 __Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The field "defeatedMonsters" is an array of one or more monster names.
 
-```js
+```java
 r.table('marvel').concatMap(function(hero) {
     return hero('defeatedMonsters')
 }).run(conn)
@@ -54,7 +54,7 @@ r.table('marvel').concatMap(function(hero) {
 
 __Example:__ Simulate an [eqJoin](/api/java/eq_join/) using `concatMap`. (This is how ReQL joins are implemented internally.)
 
-```js
+```java
 r.table("posts").concatMap(function(post) {
 	r.table("comments").getAll(
 		post("id"),

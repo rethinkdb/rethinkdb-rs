@@ -23,6 +23,6 @@ associated with the open request.
 
 __Example:__ Close a cursor.
 
-```js
+```java
 cursor.close()
 ```

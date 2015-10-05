@@ -22,7 +22,7 @@ List all the secondary indexes of this table.
 
 __Example:__ List the available secondary indexes for this table.
 
-```js
+```java
 r.table('marvel').indexList().run(conn)
 ```
 

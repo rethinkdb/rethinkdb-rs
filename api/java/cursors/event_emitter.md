@@ -44,7 +44,7 @@ Cursors and feeds implement the same interface as Node's [EventEmitter][ee].
 
 __Example:__ Broadcast all messages with [socket.io](http://socket.io).
 
-```js
+```java
 r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
     if (err) {
         // Handle error
@@ -62,7 +62,7 @@ r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
 
 This query can be rewritten with the `each` command:
 
-```js
+```java
 r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
     if (err) {
         // Handle error
@@ -81,7 +81,7 @@ r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
 
 __Example:__ Broadcast all the messages inserted.
 
-```js
+```java
 r.table("messages").changes().filter({old_val: null}).run(conn, function(err, feed) {
     if (err) {
         // Handle error

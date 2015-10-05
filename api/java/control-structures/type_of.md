@@ -20,7 +20,7 @@ Gets the type of a value.
 
 __Example:__ Get the type of a string.
 
-```js
+```java
 r.expr("foo").typeOf().run(conn)
 ```
 
