@@ -40,3 +40,20 @@ r.table('geo').insert({
     )
 }).run(conn)
 ```
+
+__Example:__ Define a polygon using an array of vertices.
+
+You can use the [args](/api/ruby/args) command to pass an array of Point objects (or latitude-longitude pairs) to `polygon`.
+
+```rb
+vertices = [
+    [-122.423246,37.779388],
+    [-122.423246,37.329898],
+    [-121.886420,37.329898],
+    [-121.886420,37.779388]
+]
+r.table('geo').insert({
+    :id => 102,
+    :rectangle => r.polygon(r.args(vertices))
+}).run(conn)
+```

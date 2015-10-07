@@ -29,6 +29,21 @@ __Example:__ Define a line.
 ```py
 r.table('geo').insert({
     'id': 101,
-    'route': r.line([-122.423246,37.779388], [-121.886420,37.329898])
+    'route': r.line([-122.423246, 37.779388], [-121.886420, 37.329898])
+}).run(conn)
+```
+
+__Example:__ Define a line using an array of points.
+
+You can use the [args](/api/python/args) command to pass an array of Point objects (or latitude-longitude pairs) to `line`.
+
+```py
+var route = [
+    [-122.423246, 37.779388],
+    [-121.886420, 37.329898]
+]
+r.table('geo').insert({
+    'id': 102,
+    'route': r.line(r.args(route))
 }).run(conn)
 ```

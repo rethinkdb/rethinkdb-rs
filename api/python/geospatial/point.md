@@ -24,6 +24,6 @@ __Example:__ Define a point.
 r.table('geo').insert({
     'id': 1,
     'name': 'San Francisco',
-    'location': r.point(-122.423246,37.779388)
+    'location': r.point(-122.423246, 37.779388)
 }).run(conn)
 ```
