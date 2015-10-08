@@ -1,4 +1,4 @@
-`---
+---
 layout: api-command
 language: Ruby
 permalink: api/ruby/replace/
