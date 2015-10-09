@@ -45,12 +45,10 @@ been committed to disk.
 - `maxBatchSeconds`: maximum number of seconds to wait before batching a result set (default: 0.5). This is a float (not an integer) and may be specified to the microsecond.
 - `firstBatchScaledownFactor`: factor to scale the other parameters down by on the first batch (default: 4). For example, with this set to 8 and `maxBatchRows` set to 80, on the first batch `maxBatchRows` will be adjusted to 10 (80 / 8). This allows the first batch to return faster.
 
-__Example:__ Run a query on the connection `conn` and print out every
-row in the result.
-
-```py
-for doc in r.table('marvel').run(conn):
-    print doc
+```java
+for (Map<String, Object> doc : r.table("marvel").run<Cursor<Map<String, Object>>(conn)) {
+    System.out.println(doc);
+}
 ```
 
 __Example:__ If you are OK with potentially out of date data from all

@@ -23,6 +23,6 @@ __Example:__ Change the default database so that we don't need to
 specify the database when referencing a table.
 
 ```java
-conn.use('marvel')
-r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
+conn.use('marvel');
+r.table('heroes').run(conn); // refers to r.db('marvel').table('heroes')
 ```
