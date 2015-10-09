@@ -24,6 +24,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [box-rethinkdb](https://github.com/mies/box-rethinkdb)  
   Wercker box for RethinkDB, by [@mies](https://github.com/mies).
 
+- [rethinkdb-coreos-cluster](https://github.com/pires/rethinkdb-coreos-cluster)  
+  RethinkDB clustering with CoreOS, etcd2 and Docker, by [@pires](https://github.com/pires).
+
 # Docker images
 
 {% infobox %}
