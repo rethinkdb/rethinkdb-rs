@@ -50,7 +50,7 @@ The smallest recommended instance type is `m1.small`. However, `t1.micro` works 
 
 ![Shard with the web interface](/assets/images/docs/aws/ami_setup.png)
 
-[rmp]: https://aws.amazon.com/marketplace/pp/B00E9EZ5DK
+[rmp]: https://aws.amazon.com/marketplace/pp/B013R60Q8Y
 [ys]: https://aws.amazon.com/marketplace/library
 
 {% infobox %}
