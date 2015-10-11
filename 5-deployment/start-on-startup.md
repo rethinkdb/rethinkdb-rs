@@ -220,7 +220,7 @@ sudo pico /etc/rethinkdb.conf
 To start RethinkDB, use `launchctl`:
 
 ```bash
-launchctl load /Library/LaunchDaemons/com.rethinkdb.server.plist
+sudo launchctl load /Library/LaunchDaemons/com.rethinkdb.server.plist
 ```
 
 RethinkDB will automatically load on startup. To disable this behavior, change the `RunAtLoad` key to `<false/>` in the `plist` file.
