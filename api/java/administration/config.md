@@ -3,11 +3,6 @@ layout: api-command
 language: Java
 permalink: api/java/config/
 command: config
-io:
-    -   - table
-        - singleSelection
-    -   - database
-        - singleSelection
 ---
 # Command syntax #
 
@@ -26,7 +21,7 @@ __Example:__ Get the configuration for the `users` table.
 
 ```java
 > r.table('users').config().run(conn);
-// Result passed to callback
+
 {
     "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
     "name": "users",
@@ -53,5 +48,5 @@ __Example:__ Get the configuration for the `users` table.
 __Example:__ Change the write acknowledgement requirement of the `users` table.
 
 ```java
-> r.table('users').config().update({write_acks: 'single'}).run(conn);
+> r.table('users').config().update('write_acks', 'single').run(conn);
 ```

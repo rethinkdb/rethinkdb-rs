@@ -3,11 +3,6 @@ layout: api-command
 language: Java
 permalink: api/java/rebalance/
 command: rebalance
-io:
-    -   - table
-        - object
-    -   - database
-        - object
 ---
 # Command syntax #
 
@@ -45,7 +40,7 @@ __Example:__ Rebalance a table.
 
 ```java
 > r.table('superheroes').rebalance().run(conn);
-// Result passed to callback
+
 {
   "rebalanced": 1,
   "status_changes": [

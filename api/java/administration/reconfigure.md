@@ -3,23 +3,17 @@ layout: api-command
 language: Java
 permalink: api/java/reconfigure/
 command: reconfigure
-io:
-    -   - table
-        - object
-    -   - database
-        - object
 ---
 # Command syntax #
 
 {% apibody %}
-table.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false, nonvotingReplicaTags: null}]) &rarr; object
-database.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false, nonvotingReplicaTags: null}]) &rarr; object
-table.reconfigure(emergencyRepair: <option>, dryRun: false) &rarr; object
+table.reconfigure() &rarr; object
+database.reconfigure() &rarr; object
 {% endapibody %}
 
 # Description #
 
-Reconfigure a table's sharding and replication.
+Reconfigure a table's sharding and replication. Pass the following options using [optArg](/api/java/optarg/):
 
 * `shards`: the number of shards, an integer from 1-32. Required.
 * `replicas`: either an integer or a mapping object. Required.
@@ -54,8 +48,8 @@ Read [Sharding and replication](/docs/sharding-and-replication/) for a complete 
 __Example:__ Reconfigure a table.
 
 ```java
-> r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn);
-// Result passed to callback
+r.table("superheroes").reconfigure().optArg("shards", 2).optArg("replicas", 1).run(conn)
+
 {
   "reconfigured": 1,
   "config_changes": [
@@ -109,8 +103,8 @@ __Example:__ Reconfigure a table.
 __Example:__ Reconfigure a table, specifying replicas by server tags.
 
 ```java
-> r.table('superheroes').reconfigure({shards: 2, replicas: {wooster: 1, wayne: 1}, primaryReplicaTag: 'wooster'}).run(conn);
-// Result passed to callback
+r.table("superheroes").reconfigure().optArg("shards", 2).optArg("replicas", r.hashMap("wooster", 1).with("wayne", 1)).optArg("primaryReplicaTag", "wooster").run(conn)
+
 {
   "reconfigured": 1,
   "config_changes": [
@@ -194,7 +188,5 @@ __Note:__ `emergencyRepair` may only be used on individual tables, not on databa
 __Example:__ Perform an emergency repair on a table.
 
 ```java
-r.table('superheroes').reconfigure(
-  {emergencyRepair: "unsafe_rollback"}
-).run(conn);
+r.table('superheroes').reconfigure().optArg("emergencyRepair", "unsafe_rollback").run(conn);
 ```
