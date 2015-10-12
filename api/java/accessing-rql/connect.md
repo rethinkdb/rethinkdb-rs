@@ -41,9 +41,9 @@ __Example:__ Open a new connection, specifying parameters.
 
 ```java
 conn = r.connection()
-        .hostname('localhost')
+        .hostname("localhost")
         .port(28015)
-        .dbname('marvel')
-        .authKey('hunter2')
+        .dbname("marvel")
+        .authKey("hunter2")
         .connect();
 ```

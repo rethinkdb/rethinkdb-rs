@@ -31,5 +31,5 @@ conn.close();
 __Example:__ Close an open connection immediately.
 
 ```java
-conn.close().optArg("noreplyWait", false);
+conn.close().optArg("noreply_wait", false);
 ```

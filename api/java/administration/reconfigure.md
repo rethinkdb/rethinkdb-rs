@@ -19,11 +19,11 @@ Reconfigure a table's sharding and replication. Pass the following options using
 * `replicas`: either an integer or a mapping object. Required.
     * If `replicas` is an integer, it specifies the number of replicas per shard. Specifying more replicas than there are servers will return an error.
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`. For more information about server tags, read [Administration tools](/docs/administration-tools/).
-* `primaryReplicaTag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
-* `dryRun`: if `true` the generated configuration will not be applied to the table, only returned.
-* `nonvotingReplicaTags`: replicas with these server tags will be added to the `nonvoting_replicas` list of the resulting configuration. (See [failover](/docs/failover) for details about non-voting replicas.)
+* `primary_replica_tag`: the primary server specified by its server tag. Required if `replicas` is an object; the tag must be in the object. This must *not* be specified if `replicas` is an integer.
+* `dry_run`: if `true` the generated configuration will not be applied to the table, only returned.
+* `nonvoting_replica_tags`: replicas with these server tags will be added to the `nonvoting_replicas` list of the resulting configuration. (See [failover](/docs/failover) for details about non-voting replicas.)
 
-* `emergencyRepair`: Used for the Emergency Repair mode. See the separate section below.
+* `emergency_repair`: Used for the Emergency Repair mode. See the separate section below.
 
 The return value of `reconfigure` is an object with three fields:
 
@@ -164,22 +164,22 @@ RethinkDB supports automatic failover when more than half of the voting replicas
 * Bring enough of the missing servers back online to allow automatic failover
 * Use emergency repair mode to reconfigure the table
 
-The `emergencyRepair` argument is effectively a different command; when it is specified, no other arguments to `reconfigure` are allowed except for `dryRun`. When it's executed, each shard of the table is examined and classified into one of three categories:
+The `emergency_repair` argument is effectively a different command; when it is specified, no other arguments to `reconfigure` are allowed except for `dry_run`. When it's executed, each shard of the table is examined and classified into one of three categories:
 
 * **Healthy:** more than half of the shard's voting replicas are still available.
 * **Repairable:** the shard is not healthy, but has at least one replica, whether voting or non-voting, available.
 * **Beyond repair:** the shard has no replicas available.
 
-For each repairable shard, `emergencyRepair` will convert all unavailable voting replicas into non-voting replicas. If all the voting replicas were removed, an arbitrarily-chosen available non-voting replica will be converted into a voting replica. After this operation, all of the shard's available replicas will be voting replicas.
+For each repairable shard, `emergency_repair` will convert all unavailable voting replicas into non-voting replicas. If all the voting replicas were removed, an arbitrarily-chosen available non-voting replica will be converted into a voting replica. After this operation, all of the shard's available replicas will be voting replicas.
 
-Specify `emergencyRepair` with one of two string options:
+Specify `emergency_repair` with one of two string options:
 
 * `unsafe_rollback`: shards that are beyond repair will be left alone.
 * `unsafe_rollback_or_erase`: a shard that is beyond repair will be destroyed and recreated on an available server that holds another shard for that table.
 
-The return value of `reconfigure` in emergency repair mode is the same as before. Examine the `config_changes` field to see the old and new configuration settings for the table. As in the normal mode, if you specify `emergencyRepair` with `dryRun: true`, the table will not actually be reconfigured.
+The return value of `reconfigure` in emergency repair mode is the same as before. Examine the `config_changes` field to see the old and new configuration settings for the table. As in the normal mode, if you specify `emergency_repair` with `dry_run: true`, the table will not actually be reconfigured.
 
-__Note:__ `emergencyRepair` may only be used on individual tables, not on databases. It cannot be used after the `db` command.
+__Note:__ `emergency_repair` may only be used on individual tables, not on databases. It cannot be used after the `db` command.
 
 {% infobox alert %}
 **The emergency repair mode is extremely dangerous.** It bypasses normal safeguards that prevent data loss and invalidates the [consistency guarantees](/docs/consistency/) that RethinkDB normally provides, and can easily lose data in either mode&mdash;in `unsafe_rollback_or_erase` mode it could lose *all* of a shard's data.
@@ -188,5 +188,5 @@ __Note:__ `emergencyRepair` may only be used on individual tables, not on databa
 __Example:__ Perform an emergency repair on a table.
 
 ```java
-r.table('superheroes').reconfigure().optArg("emergencyRepair", "unsafe_rollback").run(conn);
+r.table("superheroes").reconfigure().optArg("emergency_repair", "unsafe_rollback").run(conn);
 ```
