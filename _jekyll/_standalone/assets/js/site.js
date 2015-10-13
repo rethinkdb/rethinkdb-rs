@@ -2,7 +2,7 @@
   var rewrite_links, video_modals;
 
   $(function() {
-    var $_sidebar, blog_sidebar_sticky;
+    var $_sidebar, blog_sidebar_github, blog_sidebar_sticky;
     $('.menu-trigger a').click(function(event) {
       event.preventDefault();
       return $('body').toggleClass('pmr-open');
@@ -12,9 +12,22 @@
       blog_sidebar_sticky = new Waypoint.Sticky({
         element: $('.blog-sidebar ul')
       });
+      blog_sidebar_github = new Waypoint({
+        element: $('.blog-sidebar ul'),
+        handler: function() {
+          return setTimeout(function() {
+            return $('.github-star .popup', $_sidebar).removeClass('hidden');
+          }, 2000);
+        }
+      });
     }
     $('.docs-nav h1, .mobile-doc-links h1').click(function(event) {
-      return $(this).toggleClass('expand').next('ul').slideToggle('fast');
+      $(this).toggleClass('expand').next('ul').slideToggle('fast', function() {
+        if (typeof Waypoint !== "undefined" && Waypoint !== null) {
+          return Waypoint.refreshAll();
+        }
+      });
+      event.preventDefault();
     });
     rewrite_links();
     return video_modals();
@@ -102,6 +115,9 @@
     for (i = 0, len = links_on_page.length; i < len; i++) {
       link = links_on_page[i];
       href = $(link).attr('href');
+      if (href == null) {
+        continue;
+      }
       if (href.substr(-1) === '#') {
         href = href.substr(0, href.length - 1);
       }

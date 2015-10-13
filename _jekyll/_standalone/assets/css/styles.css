@@ -324,7 +324,7 @@ html {
  * Copyright 2013–2014 thoughtbot, inc.
  * MIT License */
 @media screen and (max-width: 44rem) {
-  .three-quarter, .site-footer .footer-links, .blog .posts, .blog .post-container, .documentation .docs-article, .half, .intro .intro-content, .intro .intro-illustration, .intro .feature-content-two, .intro img, .feature .intro-content, .feature .intro-illustration, .feature .feature-content-two, .feature img, .landing .events, .landing .videos, body.about .intro .infobox, body.about .jobs li, section.used-by .testimonials .testimonial, .third, .landing .examples .example img, body.about .intro .intro-img, .documentation .docs-article .toc, .documentation .docs-landing .primary-docs li, .quarter, .site-footer .get-started, .site-footer .footer-links li, .blog .blog-sidebar, .docs-sidebar-left {
+  .three-quarter, .site-footer p.github-footer, .site-footer .footer-links, .blog .posts, .blog .post-container, .documentation .docs-article, .half, .intro .intro-content, .intro .intro-illustration, .intro .feature-content-two, .intro img, .feature .intro-content, .feature .intro-illustration, .feature .feature-content-two, .feature img, .landing .events, .landing .videos, body.about .intro .infobox, body.about .jobs li, section.used-by .testimonials .testimonial, .third, .landing .examples .example img, body.about .intro .intro-img, .documentation .docs-article .toc, .documentation .docs-landing .primary-docs li, .quarter, .site-footer .get-started, .site-footer .footer-links li, .blog .blog-sidebar, .docs-sidebar-left {
     width: 100%; }
 
   .sixth {
@@ -339,22 +339,22 @@ html {
     .sixth:nth-child(3n+1) {
       clear: left; } }
 @media screen and (min-width: 44rem) {
-  .three-quarter, .site-footer .footer-links, .blog .posts, .blog .post-container, .documentation .docs-article {
+  .three-quarter, .site-footer p.github-footer, .site-footer .footer-links, .blog .posts, .blog .post-container, .documentation .docs-article {
     float: left;
     display: block;
     margin-right: 2.35765%;
     width: 74.41059%;
     margin-right: 0; }
-    .three-quarter:last-child, .site-footer .footer-links:last-child, .blog .posts:last-child, .blog .post-container:last-child, .documentation .docs-article:last-child {
+    .three-quarter:last-child, .site-footer p.github-footer:last-child, .site-footer .footer-links:last-child, .blog .posts:last-child, .blog .post-container:last-child, .documentation .docs-article:last-child {
       margin-right: 0; }
 
-  .two-third, .landing .examples .example .example-text, body.about .intro .intro-text {
+  .two-third, .landing .examples .example .example-text, body.about .intro .intro-text, .community-wrapper .intro article.getting-help {
     float: left;
     display: block;
     margin-right: 2.35765%;
     width: 65.88078%;
     margin-right: 0; }
-    .two-third:last-child, .landing .examples .example .example-text:last-child, body.about .intro .intro-text:last-child {
+    .two-third:last-child, .landing .examples .example .example-text:last-child, body.about .intro .intro-text:last-child, .community-wrapper .intro article.getting-help:last-child {
       margin-right: 0; }
 
   .half, .intro .intro-content, .intro .intro-illustration, .intro .feature-content-two, .intro img, .feature .intro-content, .feature .intro-illustration, .feature .feature-content-two, .feature img, .landing .events, .landing .videos, body.about .intro .infobox, body.about .jobs li, section.used-by .testimonials .testimonial {
@@ -693,7 +693,7 @@ select[multiple=multiple] {
   textarea:hover,
   input[type="color"]:hover, input[type="date"]:hover, input[type="datetime"]:hover, input[type="datetime-local"]:hover, input[type="email"]:hover, input[type="month"]:hover, input[type="number"]:hover, input[type="password"]:hover, input[type="search"]:hover, input[type="tel"]:hover, input[type="text"]:hover, input[type="time"]:hover, input[type="url"]:hover, input[type="week"]:hover, textarea:hover,
   select[multiple=multiple]:hover {
-    border-color: #d4d4d4; }
+    border-color: #d5d5d5; }
   textarea:focus,
   input[type="color"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="email"]:focus, input[type="month"]:focus, input[type="number"]:focus, input[type="password"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="text"]:focus, input[type="time"]:focus, input[type="url"]:focus, input[type="week"]:focus, textarea:focus,
   select[multiple=multiple]:focus {
@@ -1206,6 +1206,19 @@ body.pml-open-wide {
       text-align: center; }
   .site-footer hr {
     border-color: #1a3741; }
+  .site-footer p.github-footer {
+    font-size: 24px;
+    line-height: 34.56px;
+    font-size: 2.4rem;
+    line-height: 3.456rem;
+    padding-top: 2.5rem;
+    padding-left: 7rem; }
+    .site-footer p.github-footer a {
+      padding: 0.2rem;
+      border-bottom: thin dashed #285765; }
+    .site-footer p.github-footer i {
+      margin-right: 1.4rem;
+      margin-top: 0.3rem; }
   .site-footer .footer-links {
     margin-top: 4rem; }
     .site-footer .footer-links header {
@@ -1343,6 +1356,38 @@ body.pml-open-wide {
 
 .icon-twitter-landing {
   background-image: url("/assets/images/icons/icon-twitter-landing.png"); }
+
+/* ---
+   Icons: footer for GitHub
+   --- */
+.icon-github-footer {
+  background-image: url("/assets/images/icons/icon-github.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background-size: 30px 30px;
+  position: relative;
+  text-indent: -9999px;
+  vertical-align: top;
+  opacity: 0.55; }
+
+/* ---
+   Icons: GitHub popup
+   --- */
+.icon-github-popup {
+  background-image: url("/assets/images/icons/icon-github-black.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  background-size: 20px 20px;
+  position: relative;
+  text-indent: -9999px;
+  vertical-align: top;
+  opacity: 0.55; }
 
 .video-modal, .landing .video-modal, .talks .video-modal {
   background: rgba(2, 29, 38, 0.8);
@@ -1537,6 +1582,25 @@ body.pml-open-wide {
   .documentation .docs-article .infobox.infobox-alert,
   .blog .post .post-body .infobox.infobox-alert {
     background: #f9f3db; }
+  .infobox.infobox-with-arrow:after,
+  .documentation .infobox.infobox-with-arrow:after,
+  .documentation .docs-article .infobox.infobox-with-arrow:after,
+  .blog .post .post-body .infobox.infobox-with-arrow:after {
+    content: '';
+    border-style: solid;
+    border-color: #e6f1f4 transparent;
+    border-width: 0 10px 10px 10px;
+    display: block;
+    width: 0;
+    position: absolute;
+    top: -10px;
+    left: 10%;
+    margin: 0 0 -10px; }
+  .infobox.infobox-with-arrow.infobox-alert:after,
+  .documentation .infobox.infobox-with-arrow.infobox-alert:after,
+  .documentation .docs-article .infobox.infobox-with-arrow.infobox-alert:after,
+  .blog .post .post-body .infobox.infobox-with-arrow.infobox-alert:after {
+    border-color: #f9f3db transparent; }
   .infobox p, .infobox li,
   .documentation .infobox p,
   .documentation .infobox li,
@@ -1612,7 +1676,7 @@ body.landing .landing a {
   color: #214753; }
 body.landing hr.section-divider {
   height: 0;
-  border-bottom: thin solid #c1c6c8;
+  border-bottom: thin solid #c1c7c8;
   clear: both;
   position: relative;
   opacity: 0.5; }
@@ -1623,9 +1687,9 @@ body.landing hr.section-divider {
     top: -1.17rem;
     width: 1.8rem;
     height: 1.8rem;
-    border: 0.2rem solid #c1c6c8;
+    border: 0.2rem solid #c1c7c8;
     outline: 1.1rem solid #FBFBF9;
-    background: #c1c6c8;
+    background: #c1c7c8;
     margin: 0.3rem;
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
@@ -1682,7 +1746,7 @@ body.landing hr.section-divider {
       line-height: 2.592rem;
       margin: 0 2rem;
       padding: 1.33333rem inherit;
-      width: 22rem;
+      width: 22.5rem;
       display: -moz-inline-box; }
       .landing .hero .hero-install a span {
         font-size: 15px;
@@ -1747,7 +1811,7 @@ body.landing hr.section-divider {
     margin-bottom: 0;
     padding-top: 0.4rem;
     display: inline-block;
-    margin-right: 4rem; }
+    margin-right: 2.5rem; }
     .landing .hero-notes p a {
       color: #c6dedc; }
     .landing .hero-notes p .headline-latest-release {
@@ -2362,6 +2426,16 @@ body.landing hr.section-divider {
     .blog .post .post-hero.above img {
       padding-top: 0;
       padding-bottom: 3rem; }
+  .blog .post a.framed-image img {
+    border: thin solid #eee; }
+    .blog .post a.framed-image img:hover {
+      border: thin solid #ccc; }
+  .blog .post div.caption {
+    margin-top: 0.5rem;
+    text-align: center; }
+    .blog .post div.caption p {
+      color: grey;
+      font-style: italic; }
   .blog .post .post-body {
     color: #647276;
     padding-top: 2rem; }
@@ -2446,7 +2520,7 @@ body.landing hr.section-divider {
   .blog-sidebar ul.stuck {
     position: fixed;
     top: 0;
-    z-index: -1; }
+    z-index: 5; }
 .blog-sidebar p {
   margin: 0;
   padding: 0; }
@@ -2468,7 +2542,7 @@ body.landing hr.section-divider {
   margin-bottom: 3rem; }
   .blog-sidebar li.read-more {
     margin-top: 0;
-    margin-bottom: 3rem; }
+    margin-bottom: 1.5rem; }
 .blog-sidebar .subscribe-mailing-list input {
   display: inline-block;
   width: 19.5rem;
@@ -2477,6 +2551,24 @@ body.landing hr.section-divider {
 .blog-sidebar .subscribe-mailing-list button {
   display: inline-block;
   margin-top: -0.2rem; }
+.blog-sidebar li.github-star {
+  position: relative; }
+  .blog-sidebar li.github-star .popup {
+    -webkit-transition: left 0.2s ease-out;
+    -moz-transition: left 0.2s ease-out;
+    transition: left 0.2s ease-out;
+    position: absolute;
+    visibility: visible;
+    margin: 0;
+    left: 0%;
+    width: 85%;
+    overflow: visible; }
+    .blog-sidebar li.github-star .popup.hidden {
+      visibility: hidden;
+      left: 8rem; }
+    .blog-sidebar li.github-star .popup i {
+      margin-top: 0.1rem;
+      margin-right: 0.8rem; }
 
 body.about .site-nav {
   margin-bottom: 0; }
@@ -2723,7 +2815,7 @@ section.used-by .testimonials {
   margin: 0;
   padding: 2rem 2.5rem;
   float: right;
-  width: 33%; }
+  width: 31%; }
   .community-wrapper .intro .infobox.s4s p {
     font-size: 18px;
     line-height: 25.92px;
@@ -2734,6 +2826,11 @@ section.used-by .testimonials {
       float: none;
       width: 100%;
       margin: 1.5rem 2.5rem; } }
+.community-wrapper .intro article.getting-help {
+  padding-right: 1em; }
+  .community-wrapper .intro article.getting-help .more-ways-to-reach-us {
+    list-style-type: disc;
+    margin-left: 2em; }
 
 .community-wrapper .events {
   background: #f1f5f5;
@@ -2873,6 +2970,31 @@ section.document {
 @media screen and (min-width: 44rem) {
   .docs-sidebar-left {
     display: block; } }
+.docs-sidebar-left hr.docs-nav-separator {
+  border-bottom: thin solid #dae3e5;
+  margin: 0;
+  padding-bottom: 2rem; }
+.docs-sidebar-left p.back-to-top {
+  padding-top: 1rem; }
+  .docs-sidebar-left p.back-to-top.stuck {
+    position: fixed;
+    top: 0; }
+  .docs-sidebar-left p.back-to-top a {
+    font-size: 16px;
+    line-height: 23.04px;
+    font-size: 1.6rem;
+    line-height: 2.304rem;
+    font-family: "freight-sans-pro-n6", "freight-sans-pro", "FreightSansBold";
+    font-weight: 600;
+    color: #37768a; }
+    .docs-sidebar-left p.back-to-top a i {
+      font-style: normal;
+      position: relative;
+      top: -0.3rem;
+      font-size: 0.7rem;
+      margin-right: 0.4rem; }
+    .docs-sidebar-left p.back-to-top a:hover {
+      color: #214753; }
 
 .docs-nav h1, .docs-nav .nav-header {
   font-size: 16px;
@@ -2995,30 +3117,6 @@ nav.lang-selector {
     .api-docs.documentation .api-command > p:last-child a {
       color: #2d8194;
       border-bottom: thin solid #cfcfcf; }
-.api-docs.documentation .api-nav {
-  border-bottom: thin solid #dae3e5;
-  padding-bottom: 2rem; }
-.api-docs.documentation p.back-to-top {
-  padding-top: 1rem; }
-  .api-docs.documentation p.back-to-top.stuck {
-    position: fixed;
-    top: 0; }
-  .api-docs.documentation p.back-to-top a {
-    font-size: 16px;
-    line-height: 23.04px;
-    font-size: 1.6rem;
-    line-height: 2.304rem;
-    font-family: "freight-sans-pro-n6", "freight-sans-pro", "FreightSansBold";
-    font-weight: 600;
-    color: #37768a; }
-    .api-docs.documentation p.back-to-top a i {
-      font-style: normal;
-      position: relative;
-      top: -0.3rem;
-      font-size: 0.7rem;
-      margin-right: 0.4rem; }
-    .api-docs.documentation p.back-to-top a:hover {
-      color: #214753; }
 
 /* ---
    Documentation: API docs -- individual command styles
@@ -3392,3 +3490,9 @@ nav.lang-selector {
         color: #a6b0b3; }
         .docs ul.search-results li.search-result p span.snippet em, .docs .documentation .docs-article ul.search-results li.search-result p span.snippet em {
           color: #a6b0b3; }
+
+div.http404 {
+  margin-top: 0;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px; }
