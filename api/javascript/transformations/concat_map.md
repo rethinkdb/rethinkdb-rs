@@ -61,7 +61,7 @@ __Example:__ Simulate an [eqJoin](/api/javascript/eq_join/) using `concatMap`. (
 
 ```js
 r.table("posts").concatMap(function(post) {
-	r.table("comments").getAll(
+	return r.table("comments").getAll(
 		post("id"),
 		{ index:"postId" }
 	).map(function(comment) {
