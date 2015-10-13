@@ -400,6 +400,7 @@ These will be numeric values, corresponding to the types in `ql2.proto`.
 * `4` `WAIT_COMPLETE`: This `ResponseType` indicates all queries run in `noreply` mode have finished executing. `r` will be empty. 
 * `16` `CLIENT_ERROR`: The server failed to run the query due to a bad client request. The error message will be in the first element of `r`.
 * `17` `COMPILE_ERROR`: The server failed to run the query due to an ReQL compilation error. The error message will be in the first element of `r`.
+* `18` `RUNTIME_ERROR`: The query compiled correctly, but failed at runtime. The error message will be in the first element of `r`.
 
 ## Response notes ##
 
