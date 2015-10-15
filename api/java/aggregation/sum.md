@@ -33,20 +33,20 @@ Returns `0` when called on an empty sequence.
 __Example:__ What's 3 + 5 + 7?
 
 ```java
-r.expr([3, 5, 7]).sum().run(conn)
+r.expr(r.array(3, 5, 7)).sum().run(conn);
 ```
 
 __Example:__ How many points have been scored across all games?
 
 ```java
-r.table('games').sum('points').run(conn)
+r.table("games").sum("points").run(conn);
 ```
 
 __Example:__ How many points have been scored across all games,
 counting bonus points?
 
 ```java
-r.table('games').sum(function(game) {
-    return game('points').add(game('bonus_points'))
-}).run(conn)
+r.table("games").sum(
+    game -> game.g("points").add(game.g("bonus_points"))
+).run(conn);
 ```

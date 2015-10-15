@@ -72,15 +72,23 @@ r.table('games').group('player').ungroup().sample(1).run(conn)
 Result:
 
 ```py
+```java
+r.table("games").group("player").max("points").g("points").ungroup()
+ .orderBy(r.desc("reduction")).run(conn);
+```
+
+```json
 [
     {
         "group": "Bob",
-        "reduction": [
-            {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
-            {"id": 11, "player": "Bob", "points": 10, "type": "free"}
-        ]
+        "reduction": 15
+    },
+    {
+        "group": "Alice",
+        "reduction": 7
     }
 ]
+```
 ```
 
 Note that if you didn't call `ungroup`, you would instead select one

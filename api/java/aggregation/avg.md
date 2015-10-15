@@ -34,22 +34,22 @@ can handle this case with `default`.
 __Example:__ What's the average of 3, 5, and 7?
 
 ```java
-r.expr([3, 5, 7]).avg().run(conn)
+r.expr(r.array(3, 5, 7)).avg().run(conn);
 ```
 
 __Example:__ What's the average number of points scored in a game?
 
 ```java
-r.table('games').avg('points').run(conn)
+r.table("games").avg("points").run(conn);
 ```
 
 __Example:__ What's the average number of points scored in a game,
 counting bonus points?
 
 ```java
-r.table('games').avg(function(game) {
-    return game('points').add(game('bonus_points'))
-}).run(conn)
+r.table("games").avg(
+    game -> game.g("points").add(game.g("bonus_points"))
+).run(conn);
 ```
 
 __Example:__ What's the average number of points scored in a game?
@@ -57,5 +57,5 @@ __Example:__ What's the average number of points scored in a game?
 points have been scored.)
 
 ```java
-r.table('games').avg('points').default(null).run(conn)
+r.table("games").avg("points").default_(null).run(conn);
 ```

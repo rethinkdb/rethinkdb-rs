@@ -13,7 +13,7 @@ related_commands:
 
 {% apibody %}
 sequence.distinct() &rarr; array
-table.distinct([{index: <indexname>}]) &rarr; stream
+table.distinct() &rarr; stream
 {% endapibody %}
 
 # Description #
@@ -29,21 +29,21 @@ While `distinct` can be called on a table without an index, the only effect will
 __Example:__ Which unique villains have been vanquished by Marvel heroes?
 
 ```java
-r.table('marvel').concatMap(function(hero) {
-    return hero('villainList')
-}).distinct().run(conn)
+r.table("marvel").concatMap(
+    hero -> hero.g("villain_list")
+).distinct().run(conn);
 ```
 
 __Example:__ Topics in a table of messages have a secondary index on them, and more than one message can have the same topic. What are the unique topics in the table?
 
 ```java
-r.table('messages').distinct({index: 'topics'}).run(conn)
+r.table("messages").distinct().optArg("index", "topics").run(conn);
 ```
 
 The above structure is functionally identical to:
 
 ```java
-r.table('messages')('topics').distinct().run(conn)
+r.table("messages").g("topics").distinct().run(conn);
 ```
 
 However, the first form (passing the index as an argument to `distinct`) is faster, and won't run into array limit issues since it's returning a stream.

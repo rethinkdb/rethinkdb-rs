@@ -36,18 +36,17 @@ from left to right. Read the [map-reduce in RethinkDB](/docs/map-reduce/) articl
 see an example.
 
 If the sequence is empty, the server will produce a `ReqlRuntimeError` that can be
-caught with `default`.  
+caught with `default_`.  
 If the sequence has only one element, the first element will be returned.
 
 __Example:__ Return the number of documents in the table `posts`.
 
 ```java
-r.table("posts").map(function(doc) {
-    return 1;
-}).reduce(function(left, right) {
-    return left.add(right);
-}).default(0).run(conn);
+r.table("posts").map(doc -> 1).reduce(
+    (left, right) -> left.add(right)
+).default_(0).run(conn);
 ```
+
 
 A shorter way to execute this query is to use [count](/api/java/count).
 
@@ -57,13 +56,10 @@ comments.
 Return the number of comments for all posts.
 
 ```java
-r.table("posts").map(function(doc) {
-    return doc("comments").count();
-}).reduce(function(left, right) {
-    return left.add(right);
-}).default(0).run(conn);
+r.table("posts").map(doc -> doc.g("comments").count()).reduce(
+    (left, right) -> left.add(right)
+).default_(0).run(conn);
 ```
-
 
 
 __Example:__ Suppose that each `post` has a field `comments` that is an array of
@@ -71,15 +67,9 @@ comments.
 Return the maximum number comments per post.
 
 ```java
-r.table("posts").map(function(doc) {
-    return doc("comments").count();
-}).reduce(function(left, right) {
-    return r.branch(
-        left.gt(right),
-        left,
-        right
-    );
-}).default(0).run(conn);
+r.table("posts").map(doc -> doc.g("comments").count()).reduce(
+    (left, right) -> r.branch(left.gt(right), left, right)
+).default_(0).run(conn);
 ```
 
 A shorter way to execute this query is to use [max](/api/java/max).

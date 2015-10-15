@@ -2,18 +2,18 @@
 layout: api-command
 language: Java
 permalink: api/java/get_field/
-command: getField
+command: getField, g
 related_commands:
-    '() (bracket)': bracket/
+    bracket: bracket/
     nth: nth/
 ---
 
 # Command syntax #
 
 {% apibody %}
-sequence.getField(attr) &rarr; sequence
-singleSelection.getField(attr) &rarr; value
-object.getField(attr) &rarr; value
+sequence.g(attr) &rarr; sequence
+singleSelection.g(attr) &rarr; value
+object.g(attr) &rarr; value
 {% endapibody %}
 
 # Description #
@@ -24,5 +24,5 @@ object in the sequence, skipping objects that lack it.
 __Example:__ What was Iron Man's first appearance in a comic?
 
 ```java
-r.table('marvel').get('IronMan').getField('firstAppearance').run(conn)
+r.table("marvel").get("IronMan").g("firstAppearance").run(conn);
 ```

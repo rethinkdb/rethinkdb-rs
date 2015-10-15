@@ -26,42 +26,41 @@ individually.  This is useful if you want to e.g. order the groups by
 the value of their reduction.
 
 The format of the array returned by `ungroup` is the same as the
-default native format of grouped data in the javascript driver and
-data explorer.
+default native format of grouped data in the JavaScript driver and
+Data Explorer.
 
 __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
 Suppose that the table `games` has the following data:
 
-```java
+```json
 [
-    {id: 2, player: "Bob", points: 15, type: "ranked"},
-    {id: 5, player: "Alice", points: 7, type: "free"},
-    {id: 11, player: "Bob", points: 10, type: "free"},
-    {id: 12, player: "Alice", points: 2, type: "free"}
+    {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
+    {"id": 5, "player": "Alice", "points": 7, "type": "free"},
+    {"id": 11, "player": "Bob", "points": 10, "type": "free"},
+    {"id": 12, "player": "Alice", "points": 2, "type": "free"}
 ]
 ```
 
 We can use this query:
 
 ```java
-r.table('games')
-   .group('player').max('points')('points')
-   .ungroup().orderBy(r.desc('reduction')).run(conn)
+r.table("games").group("player").max("points").g("points").ungroup()
+ .orderBy(r.desc("reduction")).run(conn);
 ```
 
-Result: 
+The result:
 
-```java
+```json
 [
     {
-        group: "Bob",
-        reduction: 15
+        "group": "Bob",
+        "reduction": 15
     },
     {
-        group: "Alice",
-        reduction: 7
+        "group": "Alice",
+        "reduction": 7
     }
 ]
 ```
@@ -69,46 +68,52 @@ Result:
 __Example:__ Select one random player and all their games.
 
 ```java
-r.table('games').group('player').ungroup().sample(1).run(conn)
+r.table("games").group("player").ungroup().sample(1).run(conn);
 ```
 
 Result:
 
+```json
 ```java
+r.table("games").group("player").max("points").g("points").ungroup()
+ .orderBy(r.desc("reduction")).run(conn);
+```
+
+```json
 [
     {
-        group: "Bob",
-        reduction: [
-            {id: 2, player: "Bob", points: 15, type: "ranked"},
-            {id: 11, player: "Bob", points: 10, type: "free"},
-
-        ]
+        "group": "Bob",
+        "reduction": 15
+    },
+    {
+        "group": "Alice",
+        "reduction": 7
     }
-
 ]
+```
 ```
 
 Note that if you didn't call `ungroup`, you would instead select one
 random game from each player:
 
 ```java
-r.table('games').group('player').sample(1).run(conn)
+r.table("games").group("player").sample(1).run(conn);
 ```
 
-Result:
+Result: (Note this is a JSON representation of a `List<GroupedResult>`; see the [group](/api/java/group) documentation for more details.)
 
-```java
+```json
 [
     {
-        group: "Alice",
-        reduction: [
-            {id: 5, player: "Alice", points: 7, type: "free"}
+        "group": "Alice",
+        "values": [
+            {"id": 5, "player": "Alice", "points": 7, "type": "free"}
         ]
     },
     {
-        group: "Bob",
-        reduction: [
-            {id: 11, player: "Bob", points: 10, type: "free"}
+        "group": "Bob",
+        "values": [
+            {"id": 11, "player": "Bob", "points": 10, "type": "free"}
         ]
     }
 }

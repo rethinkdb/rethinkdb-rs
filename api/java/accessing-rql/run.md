@@ -58,7 +58,7 @@ for individual tables will supercede this global setting for all
 tables in the query.
 
 ```java
-r.table("marvel").run(conn).optArg("use_outdated", true)
+r.table("marvel").run(conn).optArg("use_outdated", true);
 ```
 
 
@@ -67,7 +67,7 @@ can set `noreply` to true in the options. In this case `run` will
 return immediately.
 
 ```java
-r.table("marvel").run(conn).optArg("noreply", true)
+r.table("marvel").run(conn).optArg("noreply", true);
 ```
 
 
@@ -78,7 +78,7 @@ written to disk (overriding the table's default settings), you can set
 ```java
 r.table("marvel").insert(r.hashMap("superhero", "Iron Man")
     .with("superpower", "Arc Reactor"))
-    .run(conn).optArg("noreply", true).optArg("durability", "soft")
+    .run(conn).optArg("noreply", true).optArg("durability", "soft");
 ```
 
 
@@ -88,8 +88,8 @@ native date object, you can pass a `time_format` flag to prevent it
 with two fields (`epoch_time` and `$reql_type$`) instead of a native date
 object.
 
-```py
-r.now().run(conn).optArg("time_format", "raw")
+```java
+r.now().run(conn).optArg("time_format", "raw");
 ```
 
 __Example:__ Specify the database to use for the query.
@@ -101,12 +101,12 @@ for doc in r.table('marvel').run(conn, db='heroes'):
 
 This is equivalent to using the `db` command to specify the database:
 
-```py
-r.db("heroes").table("marvel").run(conn)
+```java
+r.db("heroes").table("marvel").run(conn);
 ```
 
 __Example:__ Change the batching parameters for this query.
 
-```py
-r.table("marvel").run(conn).optArg("max_batch_rows", 16).optArg("max_batch_bytes", 2048)
+```java
+r.table("marvel").run(conn).optArg("max_batch_rows", 16).optArg("max_batch_bytes", 2048);
 ```
