@@ -3,9 +3,6 @@ layout: api-command
 language: Java
 permalink: api/java/binary/
 command: binary
-io:
-    -   - r
-        - binary
 ---
 
 # Command syntax #
@@ -18,9 +15,9 @@ r.binary(data) &rarr; binary
 
 Encapsulate binary data within a query.
 
-The type of data `binary` accepts depends on the client language. In JavaScript, it expects a [Node.js](http://nodejs.org) `Buffer`. Using a `Buffer` object within a query implies the use of `binary` and the ReQL driver will automatically perform the coercion.
+The type of data `binary` accepts depends on the client language. In Java, it expects a parameter of `byte[]` type (or ReQL queries that return binary data).
 
-Binary objects returned to the client in JavaScript will also be Node.js `Buffer` objects. This can be changed with the `binaryFormat` option provided to [run](/api/java/run) to return "raw" objects.
+Binary objects returned to the client in JavaScript will also be `byte[]` types. This can be changed with the `binary_format` [optArg](/api/java/optarg) provided to [run](/api/java/run) to return "raw" objects.
 
 Only a limited subset of ReQL commands may be chained after `binary`:
 
@@ -33,24 +30,19 @@ Only a limited subset of ReQL commands may be chained after `binary`:
 __Example:__ Save an avatar image to a existing user record.
 
 ```java
-var fs = require('fs');
-fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
-    if (err) {
-        // Handle error
-    }
-    else {
-        r.table('users').get(100).update({
-            avatar: avatarImage
-        })
-    }
-});
+import java.nio.file.*;
+
+Path path = Paths.get("./defaultAvatar.png");
+byte[] avatarImage = Files.readAllBytes(path);
+r.table("users").get(100).update(r.hashMap("avatar", avatarImage));
 ```
 
 __Example:__ Get the size of an existing avatar image.
 
 ```java
-r.table('users').get(100)('avatar').count().run(conn);
-// result returned to callback
+r.table("users").get(100)("avatar").count().run(conn);
+
+// Returns result:
 14156
 ```
 

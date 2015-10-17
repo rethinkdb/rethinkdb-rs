@@ -3,9 +3,8 @@ layout: api-command
 language: Java
 permalink: api/java/args/
 command: args
-io:
-    -   - r
-        - special
+related_commands:
+    array: array/
 ---
 
 # Command syntax #
@@ -25,23 +24,15 @@ This is analogous to using **apply** in JavaScript.
 __Example:__ Get Alice and Bob from the table `people`.
 
 ```java
-r.table('people').getAll('Alice', 'Bob').run(conn)
+r.table("people").getAll("Alice", "Bob").run(conn);
 // or
-r.table('people').getAll(r.args(['Alice', 'Bob'])).run(conn)
+r.table("people").getAll(r.args(r.array("Alice", "Bob"))).run(conn);
 ```
 
 __Example:__ Get all of Alice's children from the table `people`.
 
 ```java
-// r.table('people').get('Alice') returns {id: 'Alice', children: ['Bob', 'Carol']}
-r.table('people').getAll(r.args(r.table('people').get('Alice')('children'))).run(conn)
-```
-
-__Note:__ When using `r.args` with a command that takes optional arguments, you must not include the optional arguments inside the `args` array.
-
-```java
-// Wrong!
-r.table('posts').indexCreate(r.args(['tags', {multi: true}]))
-// Right
-r.table('posts').indexCreate(r.args(['tags']), {multi: true})
+// r.table("people").get("Alice") returns (in JSON)
+// { "id": "Alice", "children": ["Bob, "Carol"] }
+r.table("people").getAll(r.args(r.table("people").get("Alice").g("children"))).run(conn);
 ```
