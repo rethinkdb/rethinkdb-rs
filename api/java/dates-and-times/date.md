@@ -19,12 +19,12 @@ time.date() &rarr; time
 
 Return a new time object only based on the day, month and year (ie. the same day at 00:00).
 
-__Example:__ Retrieve all the users whose birthday is today
+__Example:__ Retrieve all the users whose birthday is today.
 
 ```java
-r.table("users").filter(function(user) {
-    return user("birthdate").date().eq(r.now().date())
-}).run(conn)
+r.table("users").filter(
+    user -> user.g("birthdate").date().eq(r.now().date())
+).run(conn);
 ```
 
 
