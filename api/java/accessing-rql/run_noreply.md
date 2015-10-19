@@ -1,11 +1,11 @@
 ---
 layout: api-command
 language: Java
-permalink: api/java/run/
-command: run
+permalink: api/java/run_noreply/
+command: runNoReply
 related_commands:
     connect: connect/
-    runNoReply: run_noreply/
+    run: run/
 io:
     -   - any
         - null
@@ -14,15 +14,14 @@ io:
 # Command syntax #
 
 {% apibody %}
-query.run(conn)
+query.runNoReply(conn)
 {% endapibody %}
 
 <img src="/assets/images/docs/api_illustrations/run.png" class="api_command_illustration" />
 
 # Description #
 
-Run a query on a connection, returning either a single JSON result or
-a cursor, depending on the query.
+Run a query on a connection and immediately return, without waiting for any result data to be returned by the server.
 
 You can pass the following options using [optArg](/api/java/optarg/):
 
@@ -45,14 +44,10 @@ been committed to disk.
 - `max_batch_seconds`: maximum number of seconds to wait before batching a result set (default: 0.5). This is a float (not an integer) and may be specified to the microsecond.
 - `first_batch_scaledown_factor`: factor to scale the other parameters down by on the first batch (default: 4). For example, with this set to 8 and `max_batch_rows` set to 80, on the first batch `max_batch_rows` will be adjusted to 10 (80 / 8). This allows the first batch to return faster.
 
-__Example:__ If you are OK with potentially out of date data from all
-the tables involved in this query and want potentially faster reads,
-pass a flag allowing out of date data in an options object. Settings
-for individual tables will supercede this global setting for all
-tables in the query.
+__Example:__ Send a write and return immediately.
 
 ```java
-r.table("marvel").run(conn).optArg("use_outdated", true);
+r.table("marvel").insert(document).runNoReply(conn);
 ```
 
 __Example:__ If you want to specify whether to wait for a write to be
@@ -62,39 +57,8 @@ written to disk (overriding the table's default settings), you can set
 ```java
 r.table("marvel").insert(r.hashMap("superhero", "Iron Man")
     .with("superpower", "Arc Reactor"))
-    .run(conn).optArg("durability", "soft");
+    .runNoReply(conn).optArg("durability", "soft");
 ```
 
-__Example:__ If you do not want a time object to be converted to a
-native date object, you can pass a `time_format` flag to prevent it
-(valid flags are "raw" and "native"). This query returns an object
-with two fields (`epoch_time` and `$reql_type$`) instead of a native date
-object.
+For more examples, read the API documentation for [run](/api/java/run); the available optArgs are the same, and any query can be executed with `runNoReply` rather than `run` (although `runNoReply` is usually not appropriate for read queries).
 
-```java
-r.now().run(conn).optArg("time_format", "raw");
-```
-
-__Example:__ Specify the database to use for the query.
-
-```java
-for (Map<String, Object> doc : r.table("marvel").run<Cursor<Map<String, Object>>(conn).optArg("db", "heroes") {
-    System.out.println(doc);
-}
-```
-
-This is equivalent to using the `db` command to specify the database:
-
-```java
-r.db("heroes").table("marvel").run(conn);
-```
-
-__Example:__ Change the batching parameters for this query.
-
-```java
-r.table("marvel").run(conn).optArg("max_batch_rows", 16).optArg("max_batch_bytes", 2048);
-```
-
-{% infobox %}
-If you want to send a write and forget about it&mdash;that is, not wait for a reply&mdash;use the [runNoReply](/api/java/run_noreply) command. (Unlike other official RethinkDB drivers, Java does not support a `noreply` option to `run` but instead implements a separate term.)
-{% endinfobox %}
