@@ -21,11 +21,11 @@ Throw a runtime error. If called with no arguments inside the second argument to
 __Example:__ Iron Man can't possibly have lost a battle:
 
 ```java
-r.table('marvel').get('IronMan').do(function(ironman) {
-    return r.branch(ironman('victories').lt(ironman('battles')),
-        r.error('impossible code path'),
-        ironman)
-}).run(conn)
+r.table("marvel").get("IronMan").do_(
+    ironman -> r.branch(
+        ironman.g("victories").lt(ironman.g("battles")),
+        r.error("impossible code path"),
+        ironman
+    )
+).run(conn);
 ```
-
-

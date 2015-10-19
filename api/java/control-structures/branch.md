@@ -23,7 +23,7 @@ The `branch` command takes 2n+1 arguments: pairs of conditional expressions and 
 r.branch(test1, val1, test2, val2, elseval)
 ```
 
-is the equivalent of the JavaScript statement
+is the equivalent of the Java statement
 
 ```java
 if (test1) {
@@ -38,39 +38,39 @@ if (test1) {
 __Example:__ Test the value of x.
 
 ```java
-var x = 10;
-r.branch(r.expr(x).gt(5), 'big', 'small').run(conn);
-// Result passed to callback
+int x = 10;
+r.branch(r.expr(x).gt(5), "big", "small").run(conn);
+
+// Result
 "big"
 ```
 
 __Example:__ Categorize heroes by victory counts.
 
 ```java
-r.table('marvel').map(
-    r.branch(
-        r.row('victories').gt(100),
-        r.row('name').add(' is a superhero'),
-        r.row('victories').gt(10),
-        r.row('name').add(' is a hero'),
-        r.row('name').add(' is very nice')
-    )
-).run(conn);
+r.table("marvel").map(hero -> r.branch(
+    hero.g("victories").gt(100),
+    hero.g("name").add(" is a superhero"),
+    hero.g("victories").gt(10),
+    hero.g("name").add(" is a hero"),
+    hero.g("name").add(" is very nice")
+)).run(conn);
+
 ```
 
 If the documents in the table `marvel` are:
 
-```java
+```json
 [
-    { name: "Iron Man", victories: 214 },
-    { name: "Jubilee", victories: 49 },
-    { name: "Slava", victories: 5 }
+    { "name": "Iron Man", "victories": 214 },
+    { "name": "Jubilee", "victories": 49 },
+    { "name": "Slava", "victories": 5 }
 ]
 ```
 
 The results will be:
 
-```java
+```json
 [
     "Iron Man is a superhero",
     "Jubilee is a hero",

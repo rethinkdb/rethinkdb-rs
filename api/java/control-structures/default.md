@@ -31,67 +31,60 @@ In the case where the author field is missing or `null`, we want to retrieve the
 `Anonymous`.
 
 ```java
-r.table("posts").map( function(post) {
-    return {
-        title: post("title"),
-        author: post("author").default("Anonymous")
-    }
-}).run(conn)
+r.table("posts").map(post ->
+    r.hashMap("title", post.g("title"))
+     .with("author", post.g("author").default_("Anonymous"))
+).run(conn);
 ```
 
 We can rewrite the previous query with `r.branch` too.
 
 ```java
-r.table("posts").map( function(post) {
-    return r.branch(
+r.table("posts").map(post ->
+    r.branch(
         post.hasFields("author"),
-        {
-            title: post("title"),
-            author: post("author")
-        },
-        {
-            title: post("title"),
-            author: "Anonymous" 
-        }
+        r.hashMap("title", post.g("title"))
+         .with("author", post.g("author")),
+        r.hashMap("title", post.g("title"))
+         .with("author", "Anonymous")
     )
-}).run(conn)
+).run(conn);
 ```
 
 
-__Example:__ The `default` command can be useful to filter documents too. Suppose
-we want to retrieve all our users who are not grown-ups or whose age is unknown
-(i.e the field `age` is missing or equals `null`). We can do it with this query:
+__Example:__ The `default` command can also be used to filter documents. Suppose we want to retrieve all our users who are not grown-ups or whose age is unknown (i.e., the field `age` is missing or equals `null`). We can do it with this query:
 
 ```java
-r.table("users").filter( function(user) {
-    return user("age").lt(18).default(true)
-}).run(conn)
+r.table("users").filter(
+    user -> user.g("age").lt(18).default_(true)
+).run(conn);
 ```
 
 One more way to write the previous query is to set the age to be `-1` when the
 field is missing.
 
 ```java
-r.table("users").filter( function(user) {
-    return user("age").default(-1).lt(18)
-}).run(conn)
+r.table("users").filter(
+    user -> user.g("age").default_(-1).lt(18)
+).run(conn);
 ```
 
 Another way to do the same query is to use [hasFields](/api/java/has_fields/).
 
 ```java
-r.table("users").filter( function(user) {
-    return user.hasFields("age").not().or(user("age").lt(18))
-}).run(conn)
+r.table("users").filter(
+    user -> user.hasFields("age").not().or(user.g("age").lt(18))
+).run(conn);
 ```
 
-The body of every [filter](/api/java/filter/) is wrapped in an implicit `.default(false)`. You can overwrite
-the value `false` by passing an option in filter, so the previous query can also be
+The body of every [filter](/api/java/filter/) is wrapped in an implicit `.default_(false)`. You can overwrite
+the value `false` with the `default` [optArg](/api/java/optarg) to `filter`, so the previous query can also be
 written like this.
 
 ```java
-r.table("users").filter( function(user) {
-    return user("age").lt(18)
-}, {default: true} ).run(conn)
+r.table("users").filter(
+    user -> user.g("age").lt(18).default_(true)
+).optArg("default", true).run(conn);
+
 ```
 

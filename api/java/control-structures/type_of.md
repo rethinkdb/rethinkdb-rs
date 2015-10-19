@@ -21,6 +21,6 @@ Gets the type of a value.
 __Example:__ Get the type of a string.
 
 ```java
-r.expr("foo").typeOf().run(conn)
+r.expr("foo").typeOf().run(conn);
 ```
 

@@ -20,7 +20,7 @@ Loop over a sequence, evaluating the given write query for each element.
 __Example:__ Now that our heroes have defeated their villains, we can safely remove them from the villain table.
 
 ```java
-r.table('marvel').forEach(function(hero) {
-    return r.table('villains').get(hero('villainDefeated')).delete()
-}).run(conn)
+r.table("marvel").forEach(
+    hero -> r.table("villains").get(hero.g("villainDefeated")).delete()
+).run(conn);
 ```

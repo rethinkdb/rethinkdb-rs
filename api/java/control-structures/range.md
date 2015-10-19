@@ -29,23 +29,27 @@ Any specified arguments must be integers, or a `ReqlRuntimeError` will be thrown
 __Example:__ Return a four-element range of `[0, 1, 2, 3]`.
 
 ```java
-> r.range(4).run(conn)
-// result returned to callback
+r.range(4).run(conn);
+```
+
+Result (shown as JSON):
+
+```json
 [0, 1, 2, 3]
 ```
 
 You can also use the [limit](/api/java/limit) command with the no-argument variant to achieve the same result in this case:
 
 ```java
-> r.range().limit(4).run(conn)
-// result returned to callback
-[0, 1, 2, 3]
+r.range().limit(4).run(conn);
 ```
 
 __Example:__ Return a range from -5 through 5.
 
 ```java
-> r.range(-5, 6).run(conn)
-// result returned to callback
+r.range(-5, 6).run(conn);
+```
+
+```json
 [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 ```

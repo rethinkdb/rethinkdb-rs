@@ -22,5 +22,5 @@ Get information about a ReQL value.
 __Example:__ Get information about a table such as primary key, or cache size.
 
 ```java
-r.table('marvel').info().run(conn)
+r.table("marvel").info().run(conn);
 ```
