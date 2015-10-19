@@ -48,6 +48,8 @@ See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on 
         * `audio/*`, `video/*`, `image/*`, `application/octet-stream`: as `binary`
         * anything else: as `text`
 
+[jsonp]: https://en.wikipedia.org/wiki/JSONP
+
 ## Request Options
 
 * `method`: HTTP method to use for the request. One of `GET`, `POST`, `PUT`, `PATCH`, `DELETE` or `HEAD`. Default: `GET`.
