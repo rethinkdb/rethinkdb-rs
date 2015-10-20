@@ -41,7 +41,7 @@ __Example:__ Test the value of x.
 int x = 10;
 r.branch(r.expr(x).gt(5), "big", "small").run(conn);
 
-// Result
+// Result:
 "big"
 ```
 

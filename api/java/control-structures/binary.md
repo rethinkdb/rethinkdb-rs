@@ -42,7 +42,7 @@ __Example:__ Get the size of an existing avatar image.
 ```java
 r.table("users").get(100)("avatar").count().run(conn);
 
-// Returns result:
+// Result:
 14156
 ```
 
