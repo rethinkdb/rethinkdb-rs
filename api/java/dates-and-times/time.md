@@ -35,5 +35,7 @@ A few restrictions exist on the arguments:
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986 UTC.
 
 ```java
-r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')}).run(conn)
+r.table("user").get("John").update(
+    r.hashMap("birthdate", r.time(1986, 11, 3, 'Z'))
+).run(conn);
 ```

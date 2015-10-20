@@ -21,7 +21,7 @@ Return the year of a time object.
 __Example:__ Retrieve all the users born in 1986.
 
 ```java
-r.table("users").filter(function(user) {
-    return user("birthdate").year().eq(1986)
-}).run(conn)
+r.table("users").filter(
+    user -> user.g("birthdate").year().eq(1986)
+}).run(conn);
 ```

@@ -12,29 +12,30 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-time.during(startTime, endTime[, {leftBound: "closed", rightBound: "open"}]) &rarr; bool
+time.during(startTime, endTime) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Return whether a time is between two other times. By default, this is inclusive of the start time and exclusive of the end time. Set `leftBound` and `rightBound` to explicitly include (`closed`) or exclude (`open`) that endpoint of the range.
+Return whether a time is between two other times. By default, this is inclusive of the start time and exclusive of the end time. Use the [optArgs](/api/java/optarg) `left_bound` and `right_bound` to explicitly include (`closed`) or exclude (`open`) that endpoint of the range.
 
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 (inclusive) and December 10th, 2013 (exclusive).
 
 ```java
 r.table("posts").filter(
-    r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
-).run(conn)
+    row -> row.g("date").during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
+).run(conn);
 ```
-
 
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 (exclusive) and December 10th, 2013 (inclusive).
 
 ```java
 r.table("posts").filter(
-  r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"), {leftBound: "open", rightBound: "closed"})
-).run(conn)
+    row -> row.g("date")
+        .during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
+        .optArg("left_bound", "open").optArg("right_bound", "closed")
+).run(conn);
 ```
 

@@ -23,9 +23,6 @@ __Example:__ Retrieve posts that were submitted before noon.
 
 ```java
 r.table("posts").filter(
-    r.row("date").timeOfDay().le(12*60*60)
-).run(conn)
+    post -> post.g("date").timeOfDay().le(12*60*60)
+).run(conn);
 ```
-
-
-

@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.epochTime(epochTime) &rarr; time
+r.epochTime(number) &rarr; time
 {% endapibody %}
 
 # Description #
@@ -23,5 +23,7 @@ will be rounded to three decimal places (millisecond-precision).
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 
 ```java
-r.table("user").get("John").update({birthdate: r.epochTime(531360000)}).run(conn)
+r.table("user").get("John").update(
+    r.hashMap(birthdate, r.epochTime(531360000))
+).run(conn);
 ```

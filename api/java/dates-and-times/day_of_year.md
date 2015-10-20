@@ -22,8 +22,8 @@ __Example:__ Retrieve all the users who were born the first day of a year.
 
 ```java
 r.table("users").filter(
-    r.row("birthdate").dayOfYear().eq(1)
-)
+    row -> row.g("birthdate").dayOfYear().eq(1)
+).run(conn);
 ```
 
 
