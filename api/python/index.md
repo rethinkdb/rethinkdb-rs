@@ -2098,7 +2098,7 @@ r.table("user").get("John").update({"birthdate": r.time(1986, 11, 3, 'Z')}).run(
 ## [epoch_time](epoch_time/) ##
 
 {% apibody %}
-r.epoch_time(epoch_time) &rarr; time
+r.epoch_time(number) &rarr; time
 {% endapibody %}
 
 Create a time object based on seconds since epoch. The first argument is a double and
@@ -2114,11 +2114,12 @@ r.table("user").get("John").update({"birthdate": r.epoch_time(531360000)}).run(c
 ## [iso8601](iso8601/) ##
 
 {% apibody %}
-r.iso8601(iso8601Date[, default_timezone='']) &rarr; time
+r.iso8601(string[, default_timezone='']) &rarr; time
 {% endapibody %}
 
-Create a time object based on an ISO 8601 date-time string (e.g. '2013-01-01T01:01:01+00:00'). We support all valid ISO 8601 formats except for week dates. If you pass an ISO 8601 date-time without a time zone, you must specify the time zone with the `default_timezone` argument. Read more about the ISO 8601 format at [Wikipedia](http://en.wikipedia.org/wiki/ISO_8601).
+Create a time object based on an ISO 8601 date-time string (e.g. '2013-01-01T01:01:01+00:00'). RethinkDB supports all valid ISO 8601 formats except for week dates. Read more about the ISO 8601 format at [Wikipedia](http://en.wikipedia.org/wiki/ISO_8601).
 
+If you pass an ISO 8601 string without a time zone, you must specify the time zone with the `default_timezone` argument.
 
 __Example:__ Update the time of John's birth.
 
