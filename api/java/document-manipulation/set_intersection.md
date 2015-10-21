@@ -24,6 +24,7 @@ distinct values).
 __Example:__ Check which pieces of equipment Iron Man has from a fixed list.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').setIntersection(['newBoots', 'arc_reactor']).run(conn)
+r.table("marvel").get("IronMan").g("equipment")
+ .setIntersection(r.array("newBoots", "arc_reactor")).run(conn);
 ```
 

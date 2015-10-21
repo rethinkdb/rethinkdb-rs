@@ -25,18 +25,18 @@ Merge two or more objects together to construct a new object with properties fro
 __Example:__ Equip Thor for battle.
 
 ```java
-r.table('marvel').get('thor').merge(
-    r.table('equipment').get('hammer'),
-    r.table('equipment').get('pimento_sandwich')
-).run(conn)
+r.table("marvel").get("thor")
+ .merge(r.table("equipment").get("hammer"),
+        r.table("equipment").get("pimento_sandwich"))
+ .run(conn);
 ```
 
 __Example:__ Equip every hero for battle, using a subquery function to retrieve their weapons.
 
 ```java
-r.table('marvel').merge(function (hero) {
-    return { weapons: r.table('weapons').get(hero('weaponId')) };
-}).run(conn)
+r.table("marvel").merge(
+    hero -> r.hashMap("weapons", r.table("weapons").get(hero.g("weapon_id")))
+).run(conn);
 ```
 
 __Example:__ Use `merge` to join each blog post with its comments.
@@ -44,34 +44,40 @@ __Example:__ Use `merge` to join each blog post with its comments.
 Note that the sequence being merged&mdash;in this example, the comments&mdash;must be coerced from a selection to an array. Without `coerceTo` the operation will throw an error ("Expected type DATUM but found SELECTION").
 
 ```java
-r.table('posts').merge(function (post) {
-    return {
-        comments: r.table('comments').getAll(post('id'),
-            {index: 'postId'}).coerceTo('array')
-    }
-}).run(conn)
+r.table("posts").merge(
+    post -> r.hashMap("comments", r.table("comments").getAll(post.g("id"))
+                      .optArg("index", "post_id").coerceTo("array"))
+).run(conn);
 ```
 
 __Example:__ Merge can be used recursively to modify object within objects.
 
 ```java
-r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
-    {weapons : {spectacular_graviton_beam : {dmg : 10}}}).run(conn)
+r.expr(r.hashMap("weapons", r.hashMap("spectacular graviton beam",
+    r.hashMap("dmg", 10).with("cooldown", 20))))
+ .merge(r.hashMap("weapons", r.hashMap("spectacular graviton beam",
+    r.hashMap("dmg", 10))))
+ .run(conn);
 ```
 
 
-__Example:__ To replace a nested object with another object you can use the literal keyword.
+__Example:__ To replace a nested object with another object you can use the [literal](/api/java/literal) term.
 
 ```java
-r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
-    {weapons : r.literal({repulsor_rays : {dmg : 3, cooldown : 0}})}).run(conn)
+r.expr(r.hashMap("weapons", r.hashMap("spectacular graviton beam",
+    r.hashMap("dmg", 10).with("cooldown", 20))))
+ .merge(r.hashMap("weapons", r.literal(r.hashMap("repulsor rays",
+    r.hashMap("dmg", 3).with("cooldown", 0)))))
+ .run(conn);
 ```
 
 
-__Example:__ Literal can be used to remove keys from an object as well.
+__Example:__ `literal` can be used to remove keys from an object as well.
 
 ```java
-r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
-    {weapons : {spectacular_graviton_beam : r.literal()}}).run(conn)
+r.expr(r.hashMap("weapons", r.hashMap("spectacular graviton beam",
+    r.hashMap("dmg", 10).with("cooldown", 20))))
+ .merge(r.hashMap("weapons", r.hashMap("spectacular graviton beam",
+    r.literal())))
+ .run(conn);
 ```
-

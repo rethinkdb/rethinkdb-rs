@@ -22,6 +22,7 @@ Insert several values in to an array at a given index. Returns the modified arra
 __Example:__ Hulk and Thor decide to join the avengers.
 
 ```java
-r.expr(["Iron Man", "Spider-Man"]).spliceAt(1, ["Hulk", "Thor"]).run(conn)
+r.expr(r.array("Iron Man", "Spider-Man"))
+ .spliceAt(1, r.array("Hulk", "Thor")).run(conn);
 ```
 

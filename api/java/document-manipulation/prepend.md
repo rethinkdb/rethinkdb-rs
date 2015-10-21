@@ -23,7 +23,7 @@ Prepend a value to an array.
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').prepend('newBoots').run(conn)
+r.table("marvel").get("IronMan").g("equipment").prepend("newBoots").run(conn);
 ```
 
 

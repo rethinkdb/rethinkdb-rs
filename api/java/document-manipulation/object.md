@@ -24,11 +24,8 @@ be strings.  `r.object(A, B, C, D)` is equivalent to
 __Example:__ Create a simple object.
 
 ```java
-r.object('id', 5, 'data', ['foo', 'bar']).run(conn)
-```
+r.object("id", 5, "data", r.array("foo", "bar")).run(conn);
 
-Result:
-
-```java
-{data: ["foo", "bar"], id: 5}
+// Result:
+{ "data": ["foo", "bar"], "id": 5}
 ```

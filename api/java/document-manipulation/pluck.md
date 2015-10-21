@@ -28,28 +28,38 @@ __Example:__ We just need information about IronMan's reactor and not the rest o
 document.
 
 ```java
-r.table('marvel').get('IronMan').pluck('reactorState', 'reactorPower').run(conn)
+r.table("marvel").get("IronMan").pluck("reactorState", "reactorPower").run(conn);
 ```
 
 
 __Example:__ For the hero beauty contest we only care about certain qualities.
 
 ```java
-r.table('marvel').pluck('beauty', 'muscleTone', 'charm').run(conn)
+r.table("marvel").pluck("beauty", "muscleTone", "charm").run(conn);
 ```
 
 
 __Example:__ Pluck can also be used on nested objects.
 
 ```java
-r.table('marvel').pluck({'abilities' : {'damage' : true, 'mana_cost' : true}, 'weapons' : true}).run(conn)
+// JSON equivalent:
+//   { "abilities": { "damage": true, "mana_cost": true }, "weapons": true }
+r.table("marvel").pluck(
+    r.hashMap("abilities",
+        r.hashMap("damage", true).with("mana_cost", true))
+    .with("weapons", true)
+).run(conn);
 ```
 
 
-__Example:__ The nested syntax can quickly become overly verbose so there's a shorthand for it.
+__Example:__ The nested syntax can quickly become overly verbose, so there's a shorthand for it.
 
 ```java
-r.table('marvel').pluck({'abilities' : ['damage', 'mana_cost']}, 'weapons').run(conn)
+// JSON equivalent:
+//   { "abilities": [ "damage", "mana cost" ] }, "weapons"
+r.table("marvel")
+ .pluck(r.hashMap("abilities", r.array("damage", "mana_cost")), "weapons")
+ .run(conn);
 ```
 
 For more information read the [nested field documentation](/docs/nested-fields/).

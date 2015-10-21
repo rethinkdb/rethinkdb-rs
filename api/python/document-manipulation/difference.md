@@ -30,7 +30,7 @@ r.table('marvel').get('IronMan')['equipment'].difference(['Boots']).run(conn)
 __Example:__ Remove Iron Man's boots from his equipment.
 
 ```py
-r.table('marvel').get('IronMan')[:equipment].update(lambda doc:
+r.table('marvel').get('IronMan')['equipment'].update(lambda doc:
     {'equipment': doc['equipment'].difference(['Boots'])}
 ).run(conn)
 ```

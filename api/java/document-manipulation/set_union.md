@@ -23,6 +23,7 @@ Add a several values to an array and return it as a set (an array with distinct 
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots and an arc reactor.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').setUnion(['newBoots', 'arc_reactor']).run(conn)
+r.table("marvel").get("IronMan").g("equipment")
+ .setUnion(r.array("newBoots", "arc_reactor")).run(conn);
 ```
 

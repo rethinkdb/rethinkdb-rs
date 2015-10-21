@@ -20,10 +20,12 @@ Return an array containing all of an object's values. `values()` guarantees the 
 
 __Example:__ Get all of the values from a table row.
 
-```java
-// row: { id: 1, mail: "fred@example.com", name: "fred" }
 
-r.table('users').get(1).values().run(conn);
-// Result passed to callback
+```java
+// row: { "id": 1, "mail": "fred@example.com", "name": "fred" }
+
+r.table("users").get(1).values().run(conn);
+
+// Result:
 [ 1, "fred@example.com", "fred" ]
 ```

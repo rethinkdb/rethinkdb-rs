@@ -21,7 +21,7 @@ __Example:__ Replace one nested document with another rather than merging the fi
 
 Assume your users table has this structure:
 
-```java
+```json
 [
     {
         "id": 1,
@@ -38,9 +38,11 @@ Assume your users table has this structure:
 Using `update` to modify the `data` field will normally merge the nested documents:
 
 ```java
-r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn)
+r.table("users").get(1)
+ .update(r.hashMap(data, r.hashMap(age, 19).with(job, "Engineer")))
+ .run(conn);
 
-// Result passed to callback
+// Result:
 {
     "id": 1,
     "name": "Alice",
@@ -55,9 +57,11 @@ r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn)
 That will preserve `city` and other existing fields. But to replace the entire `data` document with a new object, use `literal`:
 
 ```java
-r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn)
+r.table("users").get(1)
+ .update(r.hashMap(data, r.literal(r.hashMap(age, 19).with(job, "Engineer"))))
+ .run(conn);
 
-// Result passed to callback
+// Result:
 {
     "id": 1,
     "name": "Alice",
@@ -71,9 +75,9 @@ r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }
 __Example:__ Use `literal` to remove a field from a document.
 
 ```java
-r.table('users').get(1).merge({ data: r.literal() }).run(conn)
+r.table("users").get(1).merge(r.hashMap(data, r.literal())).run(conn);
 
-// Result passed to callback
+// Result:
 {
     "id": 1,
     "name": "Alice"

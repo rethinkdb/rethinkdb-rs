@@ -23,19 +23,17 @@ Remove the elements of one array from another array.
 __Example:__ Retrieve Iron Man's equipment list without boots.
 
 ```java
-r.table('marvel').get('IronMan')('equipment')
-  .difference(['Boots'])
-  .run(conn)
+r.table("marvel").get("IronMan").g("equipment").difference(r.array("Boots"))
+ .run(conn);
 ```
 
 __Example:__ Remove Iron Man's boots from his equipment.
 
 ```java
-r.table('marvel').get('IronMan')
-  .update({
-    equipment: r.row('equipment').difference(['Boots'])
-  })
-  .run(conn)
+r.table("marvel").get("IronMan").g("equipment").update(
+    doc -> r.hashMap("equipment",
+                     doc.g("equipment").difference(r.array("Boots")))
+).run(conn);
 ```
 
 

@@ -21,9 +21,10 @@ Return an array containing all of an object's keys. Note that the keys will be s
 __Example:__ Get all the keys from a table row.
 
 ```java
-// row: { id: 1, mail: "fred@example.com", name: "fred" }
+// row: { "id": 1, "mail": "fred@example.com", "name": "fred" }
 
-r.table('users').get(1).keys().run(conn);
-// Result passed to callback
+r.table("users").get(1).keys().run(conn);
+
+// Result:
 [ "id", "mail", "name" ]
 ```

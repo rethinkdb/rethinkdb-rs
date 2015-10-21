@@ -24,7 +24,8 @@ distinct values).
 __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed list.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_reactor']).run(conn)
+r.table("marvel").get("IronMan").g("equipment")
+ .setDifference(r.array("newBoots", "arc_reactor")).run(conn);
 ```
 
 

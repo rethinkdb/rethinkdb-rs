@@ -28,39 +28,42 @@ By using a negative `index` you can delete from the end of the array. `-1` is th
 __Example:__ Delete the second element of an array.
 
 ```java
-> r(['a','b','c','d','e','f']).deleteAt(1).run(conn)
-// result passed to callback
-['a', 'c', 'd', 'e', 'f']
+r.expr(r.array("a", "b", "c", "d", "e", "f")).deleteAt(1).run(conn);
+
+// Result:
+["a", "c", "d", "e", "f"]
 ```
 
 __Example:__ Delete the second and third elements of an array.
 
 ```java
-> r(['a','b','c','d','e','f']).deleteAt(1,3).run(conn)
-// result passed to callback
-['a', 'd', 'e', 'f']
+r.expr(r.array("a", "b", "c", "d", "e", "f")).deleteAt(1, 3).run(conn);
+
+// Result:
+["a", "d", "e", "f"]
 ```
 
 __Example:__ Delete the next-to-last element of an array.
 
 ```java
-> r(['a','b','c','d','e','f']).deleteAt(-2).run(conn)
-// result passed to callback
-['a', 'b', 'c', 'd', 'f']
+r.expr(r.array("a", "b", "c", "d", "e", "f")).deleteAt(-2).run(conn);
+
+// Result:
+["a", "b", "c", "d", "f"]
 ```
 
 __Example:__ Delete a comment on a post.
 
 Given a post document such as:
 
-```java
+```json
 {
-    id: '4cf47834-b6f9-438f-9dec-74087e84eb63',
-    title: 'Post title',
-    author: 'Bob',
-    comments: [
-        { author: 'Agatha', text: 'Comment 1' },
-        { author: 'Fred', text: 'Comment 2' }
+    "id": "4cf47834-b6f9-438f-9dec-74087e84eb63",
+    "title": "Post title",
+    "author": "Bob",
+    "comments": [
+        { "author": "Agatha", "text": "Comment 1" },
+        { "author": "Fred", "text": "Comment 2" }
     ]
 }
 ```
@@ -68,7 +71,7 @@ Given a post document such as:
 The second comment can be deleted by using `update` and `deleteAt` together.
 
 ```java
-r.table('posts').get('4cf47834-b6f9-438f-9dec-74087e84eb63').update({
-    comments: r.row('comments').deleteAt(1)
-}).run(conn)
+r.table("posts").get("4cf47834-b6f9-438f-9dec-74087e84eb63").update(
+    row -> r.hashMap("comments", row.g("comments").deleteAt(1)
+).run(conn);
 ```

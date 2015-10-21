@@ -23,7 +23,7 @@ Add a value to an array and return it as a set (an array with distinct values).
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').setInsert('newBoots').run(conn)
+r.table("marvel").get("IronMan").g("equipment").setInsert("newBoots").run(conn);
 ```
 
 

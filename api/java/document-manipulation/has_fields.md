@@ -25,22 +25,22 @@ When applied to a single object, `hasFields` returns `true` if the object has th
 __Example:__ Return the players who have won games.
 
 ```java
-r.table('players').hasFields('games_won').run(conn)
+r.table("players").hasFields("games_won").run(conn);
 ```
 
 __Example:__ Return the players who have *not* won games. To do this, use `hasFields` with [not](/api/java/not), wrapped with [filter](/api/java/filter).
 
 ```java
-r.table('players').filter(
-    r.row.hasFields('games_won').not()
-).run(conn)
+r.table("players").filter(
+    row -> row.hasFields("games_won").not()
+).run(conn);
 ```
 
 __Example:__ Test if a specific player has won any games.
 
 ```java
-r.table('players').get('b5ec9714-837e-400c-aa74-dbd35c9a7c4c'
-    ).hasFields('games_won').run(conn)
+r.table("players").get("b5ec9714-837e-400c-aa74-dbd35c9a7c4c")
+ .hasFields("games_won").run(conn);
 ```
 
 **Nested Fields**
@@ -49,11 +49,11 @@ r.table('players').get('b5ec9714-837e-400c-aa74-dbd35c9a7c4c'
 
 __Example:__ In the `players` table, the `games_won` field contains one or more fields for kinds of games won:
 
-```java
+```json
 {
-    games_won: {
-        playoffs: 2,
-        championships: 1
+    "games_won": {
+        "playoffs": 2,
+        "championships": 1
     }
 }
 ```
@@ -61,12 +61,13 @@ __Example:__ In the `players` table, the `games_won` field contains one or more 
 Return players who have the "championships" field.
 
 ```java
-r.table('players').hasFields({'games_won': {'championships': true}}).run(conn)
+r.table("players")
+ .hasFields(r.hashMap("games_won", r.hashMap("championships", true)))
+ .run(conn);
 ```
 
 Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See [pluck](/api/java/pluck) for more details on this.)
 
 ```java
-r.table('players').hasFields({'games_won': 'championships'}
-    ).run(conn)
+r.table("players").hasFields(r.hashMap("games_won", "championships")).run(conn);
 ```
