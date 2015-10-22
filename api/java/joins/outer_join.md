@@ -28,9 +28,9 @@ Note that `outerJoin` is slower and much less efficient than using [concatMap](/
 __Example:__ Return a list of all Marvel heroes, paired with any DC heroes who could beat them in a fight.
 
 ```java
-r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
-    return marvelRow('strength').lt(dcRow('strength'))
-}).run(conn)
+r.table("marvel").outerJoin(r.table("dc"),
+    (marvel_row, dc_row) -> marvel_row.g("strength").lt(dc_row.g("strength"))
+).zip().run(conn);
 ```
 
 (Compare this to an [innerJoin](/api/java/inner_join) with the same inputs and predicate, which would return a list only of the matchups in which the DC hero has the higher strength.)

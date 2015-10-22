@@ -27,9 +27,9 @@ Note that `innerJoin` is slower and much less efficient than using [eqJoin](/api
 __Example:__ Return a list of all matchups between Marvel and DC heroes in which the DC hero could beat the Marvel hero in a fight.
 
 ```java
-r.table('marvel').innerJoin(r.table('dc'), function(marvelRow, dcRow) {
-    return marvelRow('strength').lt(dcRow('strength'))
-}).zip().run(conn)
+r.table("marvel").innerJoin(r.table("dc"),
+    (marvel_row, dc_row) -> marvel_row.g("strength").lt(dc_row.g("strength"))
+).zip().run(conn);
 ```
 
 (Compare this to an [outerJoin](/api/java/outer_join) with the same inputs and predicate, which would return a list of *all* Marvel heroes along with any DC heroes with a higher strength.)

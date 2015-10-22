@@ -23,8 +23,7 @@ Used to 'zip' up the result of a join by merging the 'right' fields into 'left' 
 __Example:__ 'zips up' the sequence by merging the left and right fields produced by a join.
 
 ```
-r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc'))
-    .zip().run(conn)
+r.table("marvel").eqJoin("main_dc_collaborator", r.table("dc")).zip().run(conn);
 ```
 
 
