@@ -21,9 +21,9 @@ Construct a geometry object of type Point. The point is specified by two floatin
 __Example:__ Define a point.
 
 ```java
-r.table('geo').insert({
-    id: 1,
-    name: 'San Francisco',
-    location: r.point(-122.423246,37.779388)
-}).run(conn);
+r.table("geo").insert(
+    r.hashMap("id", 1)
+     .with("name", "San Francisco")
+     .with("location", r.point(-122.423246, 37.779388))
+).run(conn);
 ```

@@ -25,17 +25,16 @@ If the last point does not specify the same coordinates as the first point, `pol
 __Example:__ Create a line object and then convert it to a polygon.
 
 ```java
-r.table('geo').insert({
-    id: 201,
-    rectangle: r.line(
-        [-122.423246,37.779388],
-        [-122.423246,37.329898],
-        [-121.886420,37.329898],
-        [-121.886420,37.779388]
-    )
-}).run(conn);
+r.table("geo").insert(
+    r.hashMap("id", 201)
+     .with("rectangle", r.line(
+        r.array(-122.423246,37.779388),
+        r.array(-122.423246,37.329898),
+        r.array(-121.886420,37.329898),
+        r.array(-121.886420,37.779388)))
+).run(conn);
 
-r.table('geo').get(201).update({
-    rectangle: r.row('rectangle').fill()
-}, {nonAtomic: true}).run(conn);
+r.table("geo").get(201).update(
+    r.hashMap("rectangle", row -> row.g("rectangle").fill())
+).optArg("non_atomic", true).run(conn);
 ```

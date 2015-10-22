@@ -10,14 +10,14 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.getNearest(point, {index: 'indexname'[, maxResults: 100, maxDist: 100000, unit: 'm', geoSystem: 'WGS84']}) &rarr; array
+table.getNearest(point).optArg("index", index) &rarr; array
 {% endapibody %}
 
 # Description #
 
 Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
 
-The `index` argument is mandatory. Optional arguments are:
+The `index` [optArg](/api/java/optarg) is mandatory. Optional arguments are:
 
 * `maxResults`: the maximum number of results to return (default 100).
 * `unit`: Unit for the distance. Possible values are `m` (meter, the default), `km` (kilometer), `mi` (international mile), `nm` (nautical mile), `ft` (international foot).
@@ -29,8 +29,13 @@ The return value will be an array of two-item objects with the keys `dist` and `
 __Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
 
 ```java
-var secretBase = r.point(-122.422876,37.777128);
-r.table('hideouts').getNearest(secretBase,
-    {index: 'location', maxDist: 5000}
-).run(conn)
+import com.rethinkdb.gen.ast.Point;
+
+Point secretBase = r.point(-122.422876,37.777128);
+
+r.table("hideouts")
+ .getNearest(secretBase)
+ .optArg("index", "location")
+ .optArg("max_dist", 5000)
+ .run(conn);
 ```

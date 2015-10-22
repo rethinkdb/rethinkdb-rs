@@ -27,8 +27,9 @@ Longitude (&minus;180 to 180) and latitude (&minus;90 to 90) of vertices are plo
 __Example:__ Define a line.
 
 ```java
-r.table('geo').insert({
-    id: 101,
-    route: r.line([-122.423246,37.779388], [-121.886420,37.329898])
-}).run(conn);
+r.table("geo").insert(
+    r.hashMap("id", 101)
+     .with("route", r.line(r.array(-122.423246, 37.779388),
+                           r.array(-121.88642, 37.329898)))
+).run(conn);
 ```

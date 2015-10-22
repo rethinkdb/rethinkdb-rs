@@ -25,13 +25,19 @@ Only longitude/latitude coordinates are supported. GeoJSON objects that use Cart
 __Example:__ Convert a GeoJSON object to a ReQL geometry object.
 
 ```java
-var geoJson = {
-    'type': 'Point',
-    'coordinates': [ -122.423246, 37.779388 ]
-};
-r.table('geo').insert({
-    id: 'sfo',
-    name: 'San Francisco',
-    location: r.geojson(geoJson)
-}).run(conn);
+import com.rethinkdb.model.Geojson;
+
+// GeoJSON object:
+//      {
+//          "type": "Point",
+//          "coordinates": [ -122.423246, 37.779388 ]
+//      }
+Geojson geo = r.hashMap("type, "Point")
+               .with("coordinates", r.array(-122.423246, 37.779388));
+
+r.table("geo").insert(
+    r.hashMap("id", "sfo")
+     .with("name", "San Francisco")
+     .with("location", r.geojson(geo))
+).run(conn);
 ```

@@ -30,13 +30,13 @@ If the last point does not specify the same coordinates as the first point, `pol
 __Example:__ Define a polygon.
 
 ```java
-r.table('geo').insert({
-    id: 101,
-    rectangle: r.polygon(
-        [-122.423246,37.779388],
-        [-122.423246,37.329898],
-        [-121.886420,37.329898],
-        [-121.886420,37.779388]
+r.table("geo").insert(
+    r.hashMap("id", 101)
+     .with("rectangle", r.polygon(
+        r.array(-122.423246, 37.779388),
+        r.array(-122.423246, 37.329898),
+        r.array(-121.88642, 37.329898),
+        r.array(-121.88642, 37.779388))
     )
-}).run(conn);
+).run(conn);
 ```

@@ -18,19 +18,25 @@ geometry.includes(geometry) &rarr; bool
 Tests whether a geometry object is completely contained within another. When applied to a sequence of geometry objects, `includes` acts as a [filter](/api/java/filter), returning a sequence of objects from the sequence that include the argument.
 
 
-__Example:__ Is `point2` included within a 2000-meter circle around `point1`?
+__Example:__ Is a point included within a 2000-meter circle?
 
 ```java
-var point1 = r.point(-117.220406,32.719464);
-var point2 = r.point(-117.206201,32.725186);
+Object point1 = r.point(-117.220406,32.719464);
+Object point2 = r.point(-117.206201,32.725186);
+
 r.circle(point1, 2000).includes(point2).run(conn);
-// result returned to callback 
+
+// Result:
 true
 ```
 
-__Example:__ Which of the locations in a list of parks include `circle1`?
+__Example:__ Which of the locations in a list of parks include a given circle?
 
 ```java
-var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
-r.table('parks')('area').includes(circle1).run(conn);
+import com.rethinkdb.gen.ast.Circle;
+
+Circle circle1 = r.circle(r.array(-117.220406, 32.719464), 10)
+                  .optArg("unit", "mi");
+
+r.table("parks").g("area").includes(circle1).run(conn);
 ```

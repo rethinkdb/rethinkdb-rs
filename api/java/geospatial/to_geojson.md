@@ -21,10 +21,11 @@ Convert a ReQL geometry object to a [GeoJSON][] object.
 __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 
 ```java
-r.table('geo').get('sfo')('location').toGeojson().run(conn);
-// result passed to callback
+r.table("geo").get("sfo")("location").toGeojson().run(conn);
+
+// Result:
 {
-    'type': 'Point',
-    'coordinates': [ -122.423246, 37.779388 ]
+    "type": "Point",
+    "coordinates": [ -122.423246, 37.779388 ]
 }
 ```

@@ -21,17 +21,19 @@ Use `polygon2` to "punch out" a hole in `polygon1`. `polygon2` must be completel
 __Example:__ Define a polygon with a hole punched in it.
 
 ```java
-var outerPolygon = r.polygon(
+import com.rethinkdb.gen.ast.Polygon;
+
+Polygon outerPolygon = r.polygon(
     [-122.4,37.7],
     [-122.4,37.3],
     [-121.8,37.3],
     [-121.8,37.7]
 );
-var innerPolygon = r.polygon(
+Polygon innerPolygon = r.polygon(
     [-122.3,37.4],
     [-122.3,37.6],
     [-122.0,37.6],
     [-122.0,37.4]
 );
-outerPolygon.polygonSub(innerPolygon).run(conn);
+outerPolygon.polygonSub(inner_polygon).run(conn);
 ```

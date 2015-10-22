@@ -20,20 +20,24 @@ r.intersects(geometry, geometry) &rarr; bool
 
 Tests whether two geometry objects intersect with one another. When applied to a sequence of geometry objects, `intersects` acts as a [filter](/api/java/filter), returning a sequence of objects from the sequence that intersect with the argument.
 
-
 __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 
 ```java
-var point1 = r.point(-117.220406,32.719464);
-var point2 = r.point(-117.206201,32.725186);
+import com.rethinkdb.gen.ast.Point;
+
+Point point1 = r.point(-117.220406,32.719464);
+Point point2 = r.point(-117.206201,32.725186);
+
 r.circle(point1, 2000).intersects(point2).run(conn);
-// result returned to callback 
+
+// Result:
 true
 ```
 
-__Example:__ Which of the locations in a list of parks intersect `circle1`?
+__Example:__ Which of the locations in a list of parks intersect a given circle?
 
 ```java
-var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
-r.table('parks')('area').intersects(circle1).run(conn);
+r.table("parks").g("area")
+ .intersects(r.circle(r.array(-117.220406, 32.719464), 10).optArg("unit", "mi"))
+ .run(conn);
 ```
