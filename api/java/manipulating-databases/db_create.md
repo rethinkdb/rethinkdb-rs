@@ -34,8 +34,12 @@ Note: Only alphanumeric characters and underscores are valid for the database na
 __Example:__ Create a database named 'superheroes'.
 
 ```java
-> r.dbCreate('superheroes').run(conn);
-// Result passed to callback
+r.dbCreate("superheroes").run(conn);
+```
+
+Return:
+
+```json
 {
     "config_changes": [
         {

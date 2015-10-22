@@ -32,8 +32,12 @@ If the given database does not exist, the command throws `ReqlRuntimeError`.
 __Example:__ Drop a database named 'superheroes'.
 
 ```java
-> r.dbDrop('superheroes').run(conn);
-// Result passed to callback
+r.dbDrop("superheroes").run(conn);
+```
+
+Return:
+
+```json
 {
     "config_changes": [
         {

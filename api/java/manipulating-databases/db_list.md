@@ -22,5 +22,5 @@ List all database names in the system. The result is a list of strings.
 __Example:__ List all databases.
 
 ```java
-r.dbList().run(conn)
+r.dbList().run(conn);
 ```
