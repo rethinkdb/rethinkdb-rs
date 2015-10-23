@@ -19,31 +19,31 @@ table.indexStatus([, index...]) &rarr; array
 Get the status of the specified indexes on this table, or the status
 of all indexes on this table if no indexes are specified.
 
-The result is an array where for each index, there will be an object like this one:
+The result is an array where for each index, there will be an object like this one (shown as JSON):
 
-```java
+```json
 {
-    index: <indexName>,
-    ready: true,
-    function: <binary>,
-    multi: <bool>,
-    geo: <bool>,
-    outdated: <bool>
+    "index": <indexName>,
+    "ready": true,
+    "function": <binary>,
+    "multi": <bool>,
+    "geo": <bool>,
+    "outdated": <bool>
 }
 ```
 
 or this one:
 
-```java
+```json
 {
-    index: <indexName>,
-    ready: false,
-    blocks_processed: <int>,
-    blocks_total: <int>,
-    function: <binary>,
-    multi: <bool>,
-    geo: <bool>,
-    outdated: <bool>
+    "index": <indexName>,
+    "ready": false,
+    "blocks_processed": <int>,
+    "blocks_total": <int>,
+    "function": <binary>,
+    "multi": <bool>,
+    "geo": <bool>,
+    "outdated": <bool>
 }
 ```
 
@@ -54,20 +54,19 @@ The `function` field is a binary object containing an opaque representation of t
 __Example:__ Get the status of all the indexes on `test`:
 
 ```java
-r.table('test').indexStatus().run(conn)
+r.table("test").indexStatus().run(conn);
 ```
 
 __Example:__ Get the status of the `timestamp` index:
 
 ```java
-r.table('test').indexStatus('timestamp').run(conn)
+r.table("test").indexStatus("timestamp").run(conn);
 ```
 
 __Example:__ Save the binary representation of the index:
 
 ```java
-var func;
-r.table('test').indexStatus('timestamp').run(conn, function (err, res) {
-    func = res[0].function;
-});
+byte[] func = r.table("test").indexStatus("timestamp").nth(0).g("function")
+    .run(conn);
+
 ```

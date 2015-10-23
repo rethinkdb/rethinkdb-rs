@@ -22,7 +22,7 @@ Delete a previously created secondary index of this table.
 __Example:__ Drop a secondary index named 'code_name'.
 
 ```java
-r.table('dc').indexDrop('code_name').run(conn)
+r.table("dc").indexDrop("code_name").run(conn);
 ```
 
 

@@ -22,16 +22,18 @@ If successful, the command returns an object with two fields:
 
 * `tables_dropped`: always `1`.
 * `config_changes`: a list containing one two-field object, `old_val` and `new_val`:
-    * `old_val`: the dropped table's [config](/api/java/config) value.
+    * `old_val`: the dropped table"s [config](/api/java/config) value.
     * `new_val`: always `null`.
 
 If the given table does not exist in the database, the command throws `ReqlRuntimeError`.
 
-__Example:__ Drop a table named 'dc_universe'.
+__Example:__ Drop a table named "dc_universe".
 
 ```java
-> r.db('test').tableDrop('dc_universe').run(conn);
-// Result passed to callback
+r.db("test").tableDrop("dc_universe").run(conn);
+Result:
+
+```json
 {
     "config_changes": [
         {

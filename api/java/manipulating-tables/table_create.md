@@ -11,8 +11,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-db.tableCreate(tableName[, options]) &rarr; object
-r.tableCreate(tableName[, options]) &rarr; object
+db.tableCreate(tableName) &rarr; object
+r.tableCreate(tableName) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -36,7 +36,7 @@ __Note:__ Only alphanumeric characters and underscores are valid for the table n
 Invoking `tableCreate` without specifying a database using [db](/api/java/db/) creates a table in the database specified in [connect](/api/java/connect/), or `test` if no database was specified.
 {% endinfobox %}
 
-When creating a table you can specify the following options:
+When creating a table you can specify the following options using [optArg](/api/java/optarg):
 
 * `primaryKey`: the name of the primary key. The default primary key is `id`.
 * `durability`: if set to `soft`, writes will be acknowledged by the server immediately and flushed to disk in the background. The default is `hard`: acknowledgment of writes happens after data has been written to disk.
@@ -53,8 +53,12 @@ The [data type](/docs/data-types/) of a primary key is usually a string (like a 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```java
-> r.db('heroes').tableCreate('dc_universe').run(conn);
-// Result passed to callback
+r.db("heroes").tableCreate("dc_universe").run(conn);
+```
+
+Result:
+
+```json
 {
     "config_changes": [
         {
@@ -85,13 +89,13 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 __Example:__ Create a table named 'dc_universe' using the field 'name' as primary key.
 
 ```java
-r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn);
+r.db("test").tableCreate("dc_universe").optArg("primary_key", "name").run(conn);
 ```
 
 __Example:__ Create a table set up for two shards and three replicas per shard. This requires three available servers.
 
 ```java
-r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn);
+r.db("test").tableCreate("dc_universe").optArg("shards", 2).optArg("replicas", 3).run(conn);
 ```
 
 Read [Sharding and replication](/docs/sharding-and-replication/) for a complete discussion of the subject, including advanced topics.

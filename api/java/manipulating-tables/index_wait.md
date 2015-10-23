@@ -21,14 +21,14 @@ indexes on this table to be ready if no indexes are specified.
 
 The result is an array containing one object for each table index:
 
-```java
+```json
 {
-    index: <indexName>,
-    ready: true,
-    function: <binary>,
-    multi: <bool>,
-    geo: <bool>,
-    outdated: <bool>
+    "index": <indexName>,
+    "ready": true,
+    "function": <binary>,
+    "multi": <bool>,
+    "geo": <bool>,
+    "outdated": <bool>
 }
 ```
 
@@ -37,11 +37,11 @@ See the [indexStatus](/api/java/index_status) documentation for a description of
 __Example:__ Wait for all indexes on the table `test` to be ready:
 
 ```java
-r.table('test').indexWait().run(conn)
+r.table("test").indexWait().run(conn);
 ```
 
 __Example:__ Wait for the index `timestamp` to be ready:
 
 ```java
-r.table('test').indexWait('timestamp').run(conn)
+r.table("test").indexWait("timestamp").run(conn);
 ```

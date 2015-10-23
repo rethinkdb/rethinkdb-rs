@@ -23,6 +23,6 @@ List all the secondary indexes of this table.
 __Example:__ List the available secondary indexes for this table.
 
 ```java
-r.table('marvel').indexList().run(conn)
+r.table('marvel').indexList().run(conn);
 ```
 
