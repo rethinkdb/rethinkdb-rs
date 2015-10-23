@@ -59,7 +59,7 @@ __Example:__ In the `players` table, the `games_won` field contains one or more 
 Return players who have the "championships" field.
 
 ```py
-r.table('players').has_fields({'games_won': {'championships': true}}).run(conn)
+r.table('players').has_fields({'games_won': {'championships': True}}).run(conn)
 ```
 
 Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See [pluck](/api/python/pluck) for more details on this.)
