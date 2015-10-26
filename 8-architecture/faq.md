@@ -208,6 +208,10 @@ We provide official drivers for Ruby, Python, and JavaScript/Node.js. [Community
 
 [csd]: /docs/install-drivers/
 
+## How scalable are changefeeds? ##
+
+The changefeeds architecture is designed to enable each client to open multiple realtime feeds. Since modern web and mobile applications often have tens of thousands of concurrent clients, RethinkDB's feeds are designed to be extremely scalable. You should be able to open thousands of concurrent active feeds on a single RethinkDB node, and scale to tens or hundreds of thousands of feeds across a RethinkDB cluster.
+
 ## What are the system requirements? ##
 
 The RethinkDB server is written in C++ and runs on 32-bit and 64-bit Linux systems, as well as OS X 10.7 and above. Client drivers can run on any platform where their languages are supported.
