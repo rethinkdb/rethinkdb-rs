@@ -23,17 +23,23 @@ Compute the logical "and" of two or more values. The `and` command can be used a
 __Example:__ Return whether both `a` and `b` evaluate to true.
 
 ```java
-var a = true, b = false;
+boolean a = true;
+boolean b = false;
 r.expr(a).and(b).run(conn);
-// result passed to callback
+
+// Result:
 false
 ```
 
 __Example:__ Return whether all of `x`, `y` and `z` evaluate to true.
 
 ```java
-var x = true, y = true, z = true;
+boolean x = true;
+boolean y = true;
+boolean z = true;
+
 r.and(x, y, z).run(conn);
-// result passed to callback
+
+// Result:
 true
 ```

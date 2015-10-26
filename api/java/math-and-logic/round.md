@@ -25,7 +25,8 @@ __Example:__ Round 12.345 to the nearest integer.
 
 ```java
 r.round(12.345).run(conn);
-// Result passed to callback
+
+// Result:
 12.0
 ```
 
@@ -35,12 +36,13 @@ __Example:__ Round -12.345 to the nearest integer.
 
 ```java
 r.expr(-12.345).round().run(conn);
-// Result passed to callback
+
+// Result:
 -12.0
 ```
 
 __Example:__ Return Iron Man's weight, rounded to the nearest integer.
 
 ```java
-r.table('superheroes').get('ironman')('weight').round().run(conn);
+r.table("superheroes").get("ironman")("weight").round().run(conn);
 ```

@@ -21,6 +21,6 @@ Find the remainder when dividing two numbers.
 __Example:__ It's as easy as 2 % 2 = 0.
 
 ```java
-r.expr(2).mod(2).run(conn)
+r.expr(2).mod(2).run(conn);
 ```
 

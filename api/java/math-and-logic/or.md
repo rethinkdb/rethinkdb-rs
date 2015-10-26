@@ -23,26 +23,31 @@ Compute the logical "or" of two or more values. The `or` command can be used as 
 __Example:__ Return whether either `a` or `b` evaluate to true.
 
 ```java
-var a = true, b = false;
+boolean a = true;
+boolean b = false;
 r.expr(a).or(b).run(conn);
-// result passed to callback
+
+// Result:
 true
 ```
 
 __Example:__ Return whether any of `x`, `y` or `z` evaluate to true.
 
 ```java
-var x = false, y = false, z = false;
+boolean x = false;
+boolean y = false;
+boolean z = false;
 r.or(x, y, z).run(conn);
-// result passed to callback
+
+// Result:
 false
 ```
 
 __Note:__ When using `or` inside a `filter` predicate to test the values of fields that may not exist on the documents being tested, you should use the `default` command with those fields so they explicitly return `false`.
 
 ```java
-r.table('posts').filter(
-    r.row('category').default('foo').eq('article').
-    or(r.row('genre').default('foo').eq('mystery'))
+r.table("posts").filter(row ->
+    row("category").default("foo").eq("article").
+    or(row("genre").default("foo").eq("mystery"))
 ).run(conn);
 ```

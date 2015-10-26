@@ -24,16 +24,18 @@ Sum two or more numbers, or concatenate two or more strings or arrays. (Note tha
 __Example:__ It's as easy as 2 + 2 = 4.
 
 ```java
-> r.expr(2).add(2).run(conn)
-// result passed to callback
+r.expr(2).add(2).run(conn);
+
+// Result:
 4
 ```
 
 __Example:__ Concatenate strings.
 
 ```java
-> r.expr("foo").add("bar", "baz").run(conn)
-// result passed to callback
+r.expr("foo").add("bar", "baz").run(conn);
+
+// Result:
 "foobarbaz"
 ```
 
@@ -41,8 +43,9 @@ __Example:__ Concatenate strings.
 __Example:__ Concatenate arrays.
 
 ```java
-> r.expr(["foo", "bar"]).add(["buzz"]).run(conn)
-// result passed to callback
+r.expr(["foo", "bar"]).add(["buzz"]).run(conn);
+
+// Result:
 [ "foo", "bar", "buzz" ]
 ```
 
@@ -50,23 +53,25 @@ __Example:__ Concatenate arrays.
 __Example:__ Create a date one year from now.
 
 ```java
-r.now().add(365*24*60*60).run(conn)
+r.now().add(365*24*60*60).run(conn);
 ```
 
 __Example:__ Use [args](/api/java/args) with `add` to sum multiple values.
 
 ```java
-> vals = [10, 20, 30];
-> r.add(r.args(vals)).run(conn);
-// result passed to callback
+int[] vals = { 10, 20, 30 };
+r.add(r.args(vals)).run(conn);
+
+// Result:
 60
 ```
 
 __Example:__ Concatenate an array of strings with `args`.
 
 ```java
-> vals = ['foo', 'bar', 'buzz'];
-> r.add(r.args(vals)).run(conn);
-// result passed to callback
+String[] vals = { "foo", "bar", "buzz" };
+r.add(r.args(vals)).run(conn);
+
+// Result:
 "foobarbuzz"
 ```

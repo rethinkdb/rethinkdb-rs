@@ -23,8 +23,8 @@ Compute the logical inverse (not) of an expression.
 __Example:__ Not true is false.
 
 ```java
-r(true).not().run(conn)
-r.not(true).run(conn)
+r(true).not().run(conn);
+r.not(true).run(conn);
 ```
 
 These evaluate to `false`.
@@ -32,15 +32,11 @@ These evaluate to `false`.
 __Example:__ Return all the users that do not have a "flag" field.
 
 ```java
-r.table('users').filter(function(user) {
-    return user.hasFields('flag').not()
-}).run(conn)
+r.table("users").filter(user -> user.hasFields("flag").not()).run(conn);
 ```
 
 __Example:__ As above, but prefix-style.
 
 ```java
-r.table('users').filter(function(user) {
-    return r.not(user.hasFields('flag'))
-}).run(conn)
+r.table("users").filter(user -> r.not(user.hasFields("flag")).run(conn);
 ```

@@ -24,13 +24,15 @@ Compare values, testing if the left-hand value is less than or equal to the righ
 __Example:__ Test if a player has scored 10 points or less.
 
 ```java
-r.table('players').get(1)('score').le(10).run(conn);
+r.table("players").get(1)("score").le(10).run(conn);
 ```
 
 __Example:__ Test if variables are ordered from highest to lowest.
 
 ```java
-var a = 20, b = 10, c = 15;
+int a = 20;
+int b = 10;
+int c = 15;
 r.le(a, b, c).run(conn);
 ```
 

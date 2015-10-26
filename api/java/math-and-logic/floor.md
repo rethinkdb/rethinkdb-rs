@@ -22,7 +22,8 @@ __Example:__ Return the floor of 12.345.
 
 ```java
 r.floor(12.345).run(conn);
-// Result passed to callback
+
+// Result:
 12.0
 ```
 
@@ -32,12 +33,13 @@ __Example:__ Return the floor of -12.345.
 
 ```java
 r.expr(-12.345).floor().run(conn);
-// Result passed to callback
+
+// Result:
 -13.0
 ```
 
 __Example:__ Return Iron Man's weight, rounded down with `floor`.
 
 ```java
-r.table('superheroes').get('ironman')('weight').floor().run(conn);
+r.table("superheroes").get("ironman")("weight").floor().run(conn);
 ```

@@ -22,7 +22,8 @@ __Example:__ Return the ceiling of 12.345.
 
 ```java
 r.ceil(12.345).run(conn);
-// Result passed to callback
+
+// Result:
 13.0
 ```
 
@@ -32,12 +33,13 @@ __Example:__ Return the ceiling of -12.345.
 
 ```java
 r.expr(-12.345).ceil().run(conn);
-// Result passed to callback
+
+// Result:
 -12.0
 ```
 
 __Example:__ Return Iron Man's weight, rounded up with `ceil`.
 
 ```java
-r.table('superheroes').get('ironman')('weight').ceil().run(conn);
+r.table("superheroes").get("ironman")("weight").ceil().run(conn);
 ```
