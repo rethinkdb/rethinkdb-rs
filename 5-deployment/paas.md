@@ -36,7 +36,7 @@ Read Compose's [overview][over] of RethinkDB support and their [How to Connect t
 
 ## Launching an instance ##
 
-The smallest recommended instance type is `m1.small`. However, `t1.micro` works for simple tests. Follow these instructions to set up an AMI:
+The smallest recommended instance type is `t2.small`. However, `t2.micro` works for simple tests. Follow these instructions to set up an AMI:
 
 1. On the [RethinkDB marketplace page][rmp], click the __Continue__ button.
 2. Select the __1-Click Launch__ tab, select the size of the instance you wish to configure, and click on the __Launch with 1-Click__ button on the right.
