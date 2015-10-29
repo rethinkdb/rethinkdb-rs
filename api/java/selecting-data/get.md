@@ -23,19 +23,19 @@ If no document exists with that primary key, `get` will return `null`.
 __Example:__ Find a document by UUID.
 
 ```java
-r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn);
+r.table("posts").get("a9849eef-7176-4411-935b-79a6e3c56a74").run(conn);
 ```
 
 __Example:__ Find a document and merge another document with it.
 
 ```java
-r.table('heroes').get(3).merge(
-    { powers: ['invisibility', 'speed'] }
+r.table("heroes").get(3).merge(
+    r.hashMap("powers", r.array("invisibility", "speed"))
 ).run(conn);
 ```
 
-___Example:__ Subscribe to a document's [changefeed](/docs/changefeeds/javascript).
+___Example:__ Subscribe to a document's [changefeed](/docs/changefeeds/).
 
 ```java
-r.table('heroes').get(3).changes().run(conn);
+r.table("heroes").get(3).changes().run(conn);
 ```

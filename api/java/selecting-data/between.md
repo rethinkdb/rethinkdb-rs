@@ -14,13 +14,12 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.between(lowerKey, upperKey[, {index: 'id', leftBound: 'closed', rightBound: 'open'}])
-    &rarr; selection
+table.between(lowerKey, upperKey) &rarr; selection
 {% endapibody %}
 
 # Description #
 
-Get all documents between two keys. Accepts three optional arguments: `index`, `leftBound`, and `rightBound`. If `index` is set to the name of a secondary index, `between` will return all documents where that index's value is in the specified range (it uses the primary key by default). `leftBound` or `rightBound` may be set to `open` or `closed` to indicate whether or not to include that endpoint of the range (by default, `leftBound` is closed and `rightBound` is open).
+Get all documents between two keys. Accepts three [optArgs](/api/java/optarg): `index`, `left_bound`, and `right_bound`. If `index` is set to the name of a secondary index, `between` will return all documents where that index's value is in the specified range (it uses the primary key by default). `left_bound` or `right_bound` may be set to `open` or `closed` to indicate whether or not to include that endpoint of the range (by default, `left_bound` is closed and `right_bound` is open).
 
 You may also use the special constants `r.minval` and `r.maxval` for boundaries, which represent "less than any index key" and "more than any index key" respectively. For instance, if you use `r.minval` as the lower key, then `between` will return all documents whose primary keys (or indexes) are less than the specified upper key.
 
@@ -39,44 +38,37 @@ This range includes all compound keys:
 __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open interval).
 
 ```java
-r.table('marvel').between(10, 20).run(conn);
+r.table("marvel").between(10, 20).run(conn);
 ```
 
 __Example:__ Find all users with primary key >= 10 and <= 20 (an interval closed on both sides).
 
-```java
-r.table('marvel').between(10, 20, {rightBound: 'closed'}).run(conn);
+```py
+r.table("marvel").between(10, 20).optArg("right_bound", "closed").run(conn);
 ```
 
 __Example:__ Find all users with primary key < 20.
 
-```java
-r.table('marvel').between(r.minval, 20).run(conn);
+```py
+r.table("marvel").between(r.minval(), 20).run(conn);
 ```
 
 __Example:__ Find all users with primary key > 10.
 
-```java
-r.table('marvel').between(10, r.maxval, {leftBound: 'open'}).run(conn);
+```py
+r.table("marvel").between(10, r.maxval()).optArg("left_bound", "open").run(conn);
 ```
 
 __Example:__ Between can be used on secondary indexes too. Just pass an optional index argument giving the secondary index to query.
 
-```java
-r.table('dc').between('dark_knight', 'man_of_steel', {index: 'code_name'}).run(conn);
+```py
+r.table("dc").between("dark_knight", "man_of_steel").optArg("index", "code_name").run(conn);
 ```
 
-__Example:__ Get all users whose full name is between "John Smith" and "Wade Welles"
+__Example:__ Get all users whose full name is between "John Smith" and "Wade Welles."
 
-```java
-r.table("users").between(["Smith", "John"], ["Welles", "Wade"],
-{index: "full_name"}).run(conn);
-```
-
-__Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams ranked in the top 10.
-
-```java
-r.table("teams").between(1, 11, {index: "rank"}).changes().run(conn);
+```py
+r.table("users").between(r.array("Smith", "John"), r.array("Welles", "Wade")).optArg("index", "full_name").run(conn);
 ```
 
 __Note:__ Between works with secondary indexes on date fields, but will not work with unindexed date fields. To test whether a date value is between two other dates, use the [during](/api/java/during) command, not `between`.
