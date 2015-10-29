@@ -17,17 +17,17 @@ string.downcase() &rarr; string
 
 # Description #
 
-Lowercases a string.
+Lowercase a string.
 
 __Example:__
 
 ```java
-r.expr("Sentence about LaTeX.").downcase().run(conn)
+r.expr("Sentence about LaTeX.").downcase().run(conn);
 ```
 
 Result:
 
-```java
+```
 "sentence about latex."
 ```
 

@@ -18,7 +18,7 @@ string.match(regexp) &rarr; null/object
 
 # Description #
 
-Matches against a regular expression. If there is a match, returns an object with the fields:
+Match a string against a regular expression. If there is a match, returns an object with the fields:
 
 - `str`: The matched string
 - `start`: The matched string's start
@@ -26,6 +26,8 @@ Matches against a regular expression. If there is a match, returns an object wit
 - `groups`: The capture groups defined with parentheses
 
 If no match is found, returns `null`.
+
+<!-- break -->
 
 Accepts RE2 syntax
 ([https://code.google.com/p/re2/wiki/Syntax](https://code.google.com/p/re2/wiki/Syntax)).
@@ -35,89 +37,65 @@ You can enable case-insensitive matching by prefixing the regular expression wit
 The `match` command does not support backreferences.
 
 __Example:__ Get all users whose name starts with "A". Because `null` evaluates to `false` in
-[filter](/api/java/filter/), you can just use the result of `match` for the predicate.
+[filter](/api/java/filter/), you can use the result of `match` for the predicate.
 
 
 ```java
-r.table('users').filter(function(doc){
-    return doc('name').match("^A")
-}).run(conn)
+r.table("users").filter(doc -> doc.g("name").match("^A")).run(conn);
 ```
 
-__Example:__ Get all users whose name ends with "n".
+__Example:__ Get all users whose name ends with "n."
 
 ```java
-r.table('users').filter(function(doc){
-    return doc('name').match("n$")
-}).run(conn)
+r.table("users").filter(doc -> doc.g("name").match("n$")).run(conn);
 ```
-__Example:__ Get all users whose name has "li" in it
+__Example:__ Get all users whose name contains "li."
 
 ```java
-r.table('users').filter(function(doc){
-    return doc('name').match("li")
-}).run(conn)
+r.table("users").filter(doc -> doc.g("name").match("li")).run(conn);
 ```
 
-__Example:__ Get all users whose name is "John" with a case-insensitive search.
+__Example:__ Get all users whose name is "John," performing a case-insensitive search.
 
 ```java
-r.table('users').filter(function(doc){
-    return doc('name').match("(?i)^john$")
-}).run(conn)
+r.table("users").filter(doc -> doc.g("name").match("(?i)^john$")).run(conn);
 ```
 
-__Example:__ Get all users whose name is composed of only characters between "a" and "z".
+__Example:__ Retrieve the domain of a basic email.
 
 ```java
-r.table('users').filter(function(doc){
-    return doc('name').match("(?i)^[a-z]+$")
-}).run(conn)
-```
-
-__Example:__ Get all users where the zipcode is a string of 5 digits.
-
-```java
-r.table('users').filter(function(doc){
-    return doc('zipcode').match("\\d{5}")
-}).run(conn)
-```
-
-
-__Example:__ Retrieve the domain of a basic email
-
-```java
-r.expr("name@domain.com").match(".*@(.*)").run(conn)
+r.expr("name@domain.com").match(".*@(.*)").run(conn);
 ```
 
 Result:
 
-```java
+```json
 {
-    start: 0,
-    end: 20,
-    str: "name@domain.com",
-    groups: [
+    "start": 0,
+    "end": 20,
+    "str": "name@domain.com",
+    "groups": [
         {
-            end: 17,
-            start: 7,
-            str: "domain.com"
+            "end": 17,
+            "start": 7,
+            "str": "domain.com"
         }
     ]
 }
 ```
 
-You can then retrieve only the domain with the [\(\)](/api/java/get_field) selector and [nth](/api/java/nth).
+You can then retrieve only the domain with [g()](/api/java/get_field) and [nth](/api/java/nth).
 
 ```java
-r.expr("name@domain.com").match(".*@(.*)")("groups").nth(0)("str").run(conn)
+r.expr("name@domain.com").match(".*@(.*)").g("groups").nth(0)
+ .g("str").run(conn);
 ```
 
-Returns `'domain.com'`
+Returns `domain.com`.
 
 
-__Example:__ Fail to parse out the domain and returns `null`.
+__Example:__ A failure to parse out the domain name will return `null`.
 
 ```java
-r.expr("name[at]domain.com").match(".*@(.*)").run(conn)
+r.expr("name[at]domain.com").match(".*@(.*)").run(conn);
 ```

@@ -22,12 +22,12 @@ Uppercases a string.
 __Example:__
 
 ```java
-r.expr("Sentence about LaTeX.").upcase().run(conn)
+r.expr("Sentence about LaTeX.").upcase().run(conn);
 ```
 
 Result:
 
-```java
+```
 "SENTENCE ABOUT LATEX."
 ```
 
