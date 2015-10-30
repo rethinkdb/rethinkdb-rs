@@ -27,23 +27,23 @@ Note that `map` can only be applied to sequences, not single values. If you wish
 __Example:__ Return the first five squares.
 
 ```java
-r.expr([1, 2, 3, 4, 5]).map(function (val) {
-    return val.mul(val);
-}).run(conn);
-// Result passed to callback
+r.expr(r.array(1, 2, 3, 4, 5)).map(val -> r.mul(val, val)).run(conn);
+
+// Result:
 [1, 4, 9, 16, 25]
 ```
 
 __Example:__ Sum the elements of three sequences.
 
 ```java
-var sequence1 = [100, 200, 300, 400];
-var sequence2 = [10, 20, 30, 40];
-var sequence3 = [1, 2, 3, 4];
-r.map(sequence1, sequence2, sequence3, function (val1, val2, val3) {
-    return val1.add(val2).add(val3);
-}).run(conn);
-// Result passed to callback
+int[] sequence1 = { 100, 200, 300, 400 };
+int[] sequence2 = { 10, 20, 30, 40 };
+int[] sequence3 = { 1, 2, 3, 4 };
+r.map(sequence1, sequence2, sequence3,
+    (val1, val2, val3) -> r.add(val1, val2).add(val3)
+).run(conn);
+
+// Result:
 [111, 222, 333, 444]
 ```
 
@@ -52,24 +52,15 @@ __Example:__ Rename a field when retrieving documents using `map` and [merge](/a
 This example renames the field `id` to `userId` when retrieving documents from the table `users`.
 
 ```java
-r.table('users').map(function (doc) {
-    return doc.merge({userId: doc('id')}).without('id');
-}).run(conn);
-```
-
-Note that in this case, [row](/api/java/row) may be used as an alternative to writing an anonymous function, as it returns the same value as the function parameter receives:
-
-```java
-r.table('users').map(
-    r.row.merge({userId: r.row('id')}).without('id');
-}).run(conn);
-```
-
+r.table("users").map(
+    doc -> doc.merge(r.hashMap("user_id", doc.g("id"))).without("id")
+).run(conn);
+``` 
 
 __Example:__ Assign every superhero an archenemy.
 
 ```java
-r.table('heroes').map(r.table('villains'), function (hero, villain) {
-    return hero.merge({villain: villain});
-}).run(conn);
+r.table("heroes").map(r.table("villains"),
+    (hero, villain) -> hero.merge(r.hashMap("villain", villain))
+).run(conn);
 ```

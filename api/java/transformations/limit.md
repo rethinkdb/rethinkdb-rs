@@ -24,7 +24,7 @@ End the sequence after the given number of elements.
 __Example:__ Only so many can fit in our Pantheon of heroes.
 
 ```java
-r.table('marvel').orderBy('belovedness').limit(10).run(conn)
+r.table("marvel").orderBy("belovedness").limit(10).run(conn);
 ```
 
 

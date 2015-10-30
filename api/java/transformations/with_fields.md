@@ -23,27 +23,30 @@ __Example:__ Get a list of users and their posts, excluding any users who have n
 
 Existing table structure:
 
-```java
+```json
 [
-    { 'id': 1, 'user': 'bob', 'email': 'bob@foo.com', 'posts': [ 1, 4, 5 ] },
-    { 'id': 2, 'user': 'george', 'email': 'george@foo.com' },
-    { 'id': 3, 'user': 'jane', 'email': 'jane@foo.com', 'posts': [ 2, 3, 6 ] }
+    { "id": 1, "user": "bob", "email": "bob@foo.com", "posts": [ 1, 4, 5 ] },
+    { "id": 2, "user": "george", "email": "george@foo.com" },
+    { "id": 3, "user": "jane", "email": "jane@foo.com", "posts": [ 2, 3, 6 ] }
 ]
 ```
 
 Command and output:
 
 ```java
-> r.table('users').withFields('id', 'user', 'posts').run(conn)
+r.table("users").withFields("id", "user", "posts").run(conn);
+
 // Result passed to callback
 [
-    { 'id': 1, 'user': 'bob', 'posts': [ 1, 4, 5 ] },
-    { 'id': 3, 'user': 'jane', 'posts': [ 2, 3, 6 ] }
+    { "id": 1, "user": "bob", "posts": [ 1, 4, 5 ] },
+    { "id": 3, "user": "jane", "posts": [ 2, 3, 6 ] }
 ]
 ```
 
 __Example:__ Use the [nested field syntax](/docs/nested-fields/) to get a list of users with cell phone numbers in their contacts.
 
 ```java
-r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn)
+r.table("users").withFields("id", "user",
+    r.hashMap("contact", r.hashMap("phone", "work"))
+).run(conn);
 ```

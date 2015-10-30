@@ -29,5 +29,5 @@ If the sequence has less than the requested number of elements (i.e., calling `s
 __Example:__ Select 3 random heroes.
 
 ```java
-r.table('marvel').sample(3).run(conn)
+r.table("marvel").sample(3).run(conn);
 ```

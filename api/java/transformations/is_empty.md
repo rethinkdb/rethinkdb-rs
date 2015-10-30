@@ -23,5 +23,5 @@ Test if a sequence is empty.
 __Example:__ Are there any documents in the marvel table?
 
 ```java
-r.table('marvel').isEmpty().run(conn)
+r.table("marvel").isEmpty().run(conn);
 ```
