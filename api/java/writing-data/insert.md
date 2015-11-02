@@ -12,20 +12,17 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(object | [object1, object2, ...][, {durability: "hard", returnChanges: false, conflict: "error"}]) &rarr; object
+table.insert(object | [object1, object2, ...]) &rarr; object
 {% endapibody %}
 
 # Description #
 
 <img src="/assets/images/docs/api_illustrations/insert_javascript.png" class="api_command_illustration" />
 
-Insert documents into a table. Accepts a single document or an array of
-documents.
-
-The optional arguments are:
+You can pass the following options using [optArg](/api/java/optarg/):
 
 - `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/java/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
-- `returnChanges`:
+- `return_changes`:
     - `true`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
     - `false`: do not return a `changes` array (the default).
     - `"always"`: behave as `true`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `true` pre-2.0.)
@@ -49,23 +46,23 @@ Insert returns an object that contains the following attributes:
 __Example:__ Insert a document into the table `posts`.
 
 ```java
-r.table("posts").insert({
-    id: 1,
-    title: "Lorem ipsum",
-    content: "Dolor sit amet"
-}).run(conn)
+r.table("posts").insert(
+    r.hashMap("id", 1)
+     .with("title", "Lorem ipsum")
+     .with("content", "Dolor sit amet")
+).run(conn);
 ```
 
 The result will be:
 
-```java
+```json
 {
-    deleted: 0,
-    errors: 0,
-    inserted: 1,
-    replaced: 0,
-    skipped: 0,
-    unchanged: 0
+    "deleted": 0,
+    "errors": 0,
+    "inserted": 1,
+    "replaced": 0,
+    "skipped": 0,
+    "unchanged": 0
 }
 ```
 
@@ -74,41 +71,41 @@ __Example:__ Insert a document without a defined primary key into the table `pos
 primary key is `id`.
 
 ```java
-r.table("posts").insert({
-    title: "Lorem ipsum",
-    content: "Dolor sit amet"
-}).run(conn)
+r.table("posts").insert(
+    r.hashMap("title", "Lorem ipsum")
+     .with("content", "Dolor sit amet")
+).run(conn);
 ```
 
 RethinkDB will generate a primary key and return it in `generated_keys`.
 
-```java
+```json
 {
-    deleted: 0,
-    errors: 0,
-    generated_keys: [
+    "deleted": 0,
+    "errors": 0,
+    "generated_keys": [
         "dd782b64-70a7-43e4-b65e-dd14ae61d947"
     ],
-    inserted: 1,
-    replaced: 0,
-    skipped: 0,
-    unchanged: 0
+    "inserted": 1,
+    "replaced": 0,
+    "skipped": 0,
+    "unchanged": 0
 }
 ```
 
 Retrieve the document you just inserted with:
 
 ```java
-r.table("posts").get("dd782b64-70a7-43e4-b65e-dd14ae61d947").run(conn)
+r.table("posts").get("dd782b64-70a7-43e4-b65e-dd14ae61d947").run(conn);
 ```
 
 And you will get back:
 
-```java
+```json
 {
-    id: "dd782b64-70a7-43e4-b65e-dd14ae61d947",
-    title: "Lorem ipsum",
-    content: "Dolor sit amet",
+    "id": "dd782b64-70a7-43e4-b65e-dd14ae61d947",
+    "title": "Lorem ipsum",
+    "content": "Dolor sit amet",
 }
 ```
 
@@ -116,10 +113,10 @@ And you will get back:
 __Example:__ Insert multiple documents into the table `users`.
 
 ```java
-r.table("users").insert([
-    {id: "william", email: "william@rethinkdb.com"},
-    {id: "lara", email: "lara@rethinkdb.com"}
-]).run(conn)
+r.table("users").insert(r.array(
+    r.hashMap("id", "william").with("email", "william@rethinkdb.com"),
+    r.hashMap("id", "lara").with("email", "lara@rethinkdb.com")
+)).run(conn);
 ```
 
 
@@ -127,16 +124,15 @@ __Example:__ Insert a document into the table `users`, replacing the document if
 
 ```java
 r.table("users").insert(
-    {id: "william", email: "william@rethinkdb.com"},
-    {conflict: "replace"}
-).run(conn)
+    r.hashMap("id", "william").with("email", "william@rethinkdb.com")
+).optArg("conflict", "replace").run(conn);
 ```
 
 
 __Example:__ Copy the documents from `posts` to `postsBackup`.
 
 ```java
-r.table("postsBackup").insert( r.table("posts") ).run(conn)
+r.table("postsBackup").insert(r.table("posts")).run(conn);
 ```
 
 
@@ -144,31 +140,31 @@ __Example:__ Get back a copy of the inserted document (with its generated primar
 
 ```java
 r.table("posts").insert(
-    {title: "Lorem ipsum", content: "Dolor sit amet"},
-    {returnChanges: true}
-).run(conn)
+    r.hashMap("title", "Lorem ipsum")
+     .with("content", "Dolor sit amet")
+).optArg("return_changes", true).run(conn);
 ```
 
 The result will be
 
-```java
+```json
 {
-    deleted: 0,
-    errors: 0,
-    generated_keys: [
+    "deleted": 0,
+    "errors": 0,
+    "generated_keys": [
         "dd782b64-70a7-43e4-b65e-dd14ae61d947"
     ],
-    inserted: 1,
-    replaced: 0,
-    skipped: 0,
-    unchanged: 0,
-    changes: [
+    "inserted": 1,
+    "replaced": 0,
+    "skipped": 0,
+    "unchanged": 0,
+    "changes": [
         {
-            old_val: null,
-            new_val: {
-                id: "dd782b64-70a7-43e4-b65e-dd14ae61d947",
-                title: "Lorem ipsum",
-                content: "Dolor sit amet"
+            "old_val": null,
+            "new_val": {
+                "id": "dd782b64-70a7-43e4-b65e-dd14ae61d947",
+                "title": "Lorem ipsum",
+                "content": "Dolor sit amet"
             }
         }
     ]

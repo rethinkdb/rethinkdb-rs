@@ -15,18 +15,15 @@ table.sync() &rarr; object
 
 # Description #
 
-`sync` ensures that writes on a given table are written to permanent storage. Queries
-that specify soft durability (`{durability: 'soft'}`) do not give such guarantees, so
-`sync` can be used to ensure the state of these queries. A call to `sync` does not return
-until all previous writes to the table are persisted.
+Ensure that writes on a given table are written to permanent storage. Queries that specify soft durability do not wait for writes to be committed to disk; a call to `sync` on a table will not return until all previous writes to the table are completed, guaranteeing the data's persistence.
 
-If successful, the operation returns an object: `{synced: 1}`.
+If successful, the operation returns an object: `{"synced": 1}`.
 
 __Example:__ After having updated multiple heroes with soft durability, we now want to wait
 until these changes are persisted.
 
 ```java
-r.table('marvel').sync().run(conn)
+r.table("marvel").sync().run(conn);
 ```
 
 

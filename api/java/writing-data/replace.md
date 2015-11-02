@@ -12,12 +12,9 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.replace(object | function[, {durability: "hard", returnChanges: false, nonAtomic: false}])
-    &rarr; object
-selection.replace(object | function[, {durability: "hard", returnChanges: false, nonAtomic: false}])
-    &rarr; object
-singleSelection.replace(object | function[, {durability: "hard", returnChanges: false, nonAtomic: false}])
-    &rarr; object
+table.replace(object | function) &rarr; object
+selection.replace(object | function) &rarr; object
+singleSelection.replace(object | function) &rarr; object
 {% endapibody %}
 
 <img src="/assets/images/docs/api_illustrations/replace.png" class="api_command_illustration" />
@@ -34,13 +31,13 @@ the document will be inserted; if an existing document is replaced with
 `null`, the document will be deleted. Since `update` and `replace` operations
 are performed atomically, this allows atomic inserts and deletes as well.
 
-The optional arguments are:
+You can pass the following options using [optArg](/api/java/optarg/):
 
 - `durability`: possible values are `hard` and `soft`. This option will override
   the table or query's durability setting (set in [run](/api/java/run/)).
   In soft durability mode RethinkDB will acknowledge the write immediately after
   receiving it, but before the write has been committed to disk.
-- `returnChanges`:
+- `return_changes`:
     - `true`: return a `changes` array consisting of `old_val`/`new_val` objects
       describing the changes made, only including the documents actually
       updated.
@@ -48,7 +45,7 @@ The optional arguments are:
     - `"always"`: behave as `true`, but include all documents the command tried
       to update whether or not the update was successful. (This was the behavior
       of `true` pre-2.0.)
-- `nonAtomic`: if set to `true`, executes the replacement and distributes the
+- `non_atomic`: if set to `true`, executes the replacement and distributes the
   result to replicas in a non-atomic fashion. This flag is required to perform
   non-deterministic updates, such as those that require reading data from
   another table.
@@ -71,41 +68,36 @@ Replace returns an object that contains the following attributes:
 __Example:__ Replace the document with the primary key `1`.
 
 ```java
-r.table("posts").get(1).replace({
-    id: 1,
-    title: "Lorem ipsum",
-    content: "Aleas jacta est",
-    status: "draft"
-}).run(conn)
+r.table("posts").get(1).replace(
+    r.hashMap("id", 1).with("title", "Lorem ipsum")
+     .with("content", "Aleas jacta est")
+     .with("status", "draft")
+).run(conn);
 ```
 
 __Example:__ Remove the field `status` from all posts.
 
 ```java
-r.table("posts").replace(function(post) {
-    return post.without("status")
-}).run(conn)
+r.table("posts").replace(post -> post.without("status")).run(conn);
 ```
 
 __Example:__ Remove all the fields that are not `id`, `title` or `content`.
 
 ```java
-r.table("posts").replace(function(post) {
-    return post.pluck("id", "title", "content")
-}).run(conn)
+r.table("posts").replace(
+    post -> post.pluck("id", "title", "content")
+).run(conn);
 ```
 
 __Example:__ Replace the document with the primary key `1` using soft durability.
 
 ```java
-r.table("posts").get(1).replace({
-    id: 1,
-    title: "Lorem ipsum",
-    content: "Aleas jacta est",
-    status: "draft"
-}, {
-    durability: "soft"
-}).run(conn)
+r.table("posts").get(1).replace(
+    r.hashMap("id", 1)
+     .with("title", "Lorem ipsum")
+     .with("content", "Aleas jacta est")
+     .with("status", "draft")
+).optArg("durability", "soft").run(conn);
 ```
 
 __Example:__ Replace the document with the primary key `1` and return the values of the document before
@@ -113,41 +105,39 @@ and after the replace operation.
 
 ```java
 r.table("posts").get(1).replace({
-    id: 1,
-    title: "Lorem ipsum",
-    content: "Aleas jacta est",
-    status: "published"
-}, {
-    returnChanges: true
-}).run(conn)
+    "id": 1,
+    "title": "Lorem ipsum",
+    "content": "Aleas jacta est",
+    "status": "published"
+}, return_changes=True).run(conn)
 ```
 
-The result will have two fields `old_val` and `new_val`.
+The result will have a `changes` field:
 
-```java
+```json
 {
-    deleted: 0,
-    errors: 0,
-    inserted: 0,
-    changes: [
+    "deleted": 0,
+    "errors":  0,
+    "inserted": 0,
+    "changes": [
         {
-            new_val: {
-                id:1,
-                title: "Lorem ipsum"
-                content: "Aleas jacta est",
-                status: "published",
+            "new_val": {
+                "id":1,
+                "title": "Lorem ipsum"
+                "content": "Aleas jacta est",
+                "status": "published",
             },
-            old_val: {
-                id:1,
-                title: "Lorem ipsum"
-                content: "TODO",
-                status: "draft",
-                author: "William",
+            "old_val": {
+                "id":1,
+                "title": "Lorem ipsum"
+                "content": "TODO",
+                "status": "draft",
+                "author": "William",
             }
         }
-    ],
-    replaced: 1,
-    skipped: 0,
-    unchanged: 0
+    ],   
+    "replaced": 1,
+    "skipped": 0,
+    "unchanged": 0
 }
 ```

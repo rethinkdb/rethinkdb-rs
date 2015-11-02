@@ -12,11 +12,11 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.delete([{durability: "hard", returnChanges: false}])
+table.delete()
     &rarr; object
-selection.delete([{durability: "hard", returnChanges: false}])
+selection.delete()
     &rarr; object
-singleSelection.delete([{durability: "hard", returnChanges: false}])
+singleSelection.delete()
     &rarr; object
 {% endapibody %}
 
@@ -26,19 +26,19 @@ singleSelection.delete([{durability: "hard", returnChanges: false}])
 
 Delete one or more documents from a table.
 
-The optional arguments are:
+You can pass the following options using [optArg](/api/java/optarg/):
 
 - `durability`: possible values are `hard` and `soft`. This option will override the
 table or query's durability setting (set in [run](/api/java/run/)).  
 In soft durability mode RethinkDB will acknowledge the write immediately after
 receiving it, but before the write has been committed to disk.
-- `returnChanges`:
+- `return_changes`:
     - `true`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
     - `false`: do not return a `changes` array (the default).
     - `"always"`: behave as `true`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `true` pre-2.0.)
 
 
-Delete returns an object that contains the following attributes:
+`delete` returns an object that contains the following attributes:
 
 - `deleted`: the number of documents that were deleted.
 - `skipped`: the number of documents that were skipped.  
@@ -53,51 +53,51 @@ deletes some of those documents first, they will be counted as skipped.
 __Example:__ Delete a single document from the table `comments`.
 
 ```java
-r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn)
+r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn);
 ```
 
 
 __Example:__ Delete all documents from the table `comments`.
 
 ```java
-r.table("comments").delete().run(conn)
+r.table("comments").delete().run(conn);
 ```
 
 
 __Example:__ Delete all comments where the field `idPost` is `3`.
 
 ```java
-r.table("comments").filter({idPost: 3}).delete().run(conn)
+r.table("comments").filter(r.hashMap("idPost", 3)).delete().run(conn);
 ```
 
 
 __Example:__ Delete a single document from the table `comments` and return its value.
 
 ```java
-r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete({returnChanges: true}).run(conn)
+r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete(r.hashMap("return_changes", true)).run(conn);
 ```
 
-The result look like:
+The result looks like:
 
-```java
+```json
 {
-    deleted: 1,
-    errors: 0,
-    inserted: 0,
-    changes: [
+    "deleted": 1,
+    "errors": 0,
+    "inserted": 0,
+    "changes": [
         {
-            new_val: null,
-            old_val: {
-                id: "7eab9e63-73f1-4f33-8ce4-95cbea626f59",
-                author: "William",
-                comment: "Great post",
-                idPost: 3
+            "new_val": null,
+            "old_val": {
+                "id": "7eab9e63-73f1-4f33-8ce4-95cbea626f59",
+                "author": "William",
+                "comment": "Great post",
+                "idPost": 3
             }
         }
     ],
-    replaced: 0,
-    skipped: 0,
-    unchanged: 0
+    "replaced": 0,
+    "skipped": 0,
+    "unchanged": 0
 }
 ```
 
@@ -106,5 +106,5 @@ __Example:__ Delete all documents from the table `comments` without waiting for 
 operation to be flushed to disk.
 
 ```java
-r.table("comments").delete({durability: "soft"}).run(conn)
+r.table("comments").delete(r.hashMap("durability", "soft")).run(conn);
 ```
