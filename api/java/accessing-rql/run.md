@@ -24,21 +24,31 @@ query.run(conn)
 Run a query on a connection, returning either a single JSON result or
 a cursor, depending on the query.
 
-You can pass the following options using [optArg](/api/java/optarg/):
+You can pass the following options using [optArg](/api/java/optarg/). Note that unlike other Java ReQL commands, you must create an OptArg object and pass it as an optional second argument to `run`:
+
+```java
+import com.rethinkdb.model.OptArgs;
+
+r.table("table").run(conn, OptArgs.of("use_outdated", true));
+
+// for two or more optArgs, use "with"
+r.table("table").run(conn,
+    OptArgs.of("use_outdated", true).with("db", "database"));
+```
 
 - `use_outdated`: whether or not outdated reads are OK (default: `false`).
-- `time_format`: what format to return times in (default: `'native'`).
-  Set this to `'raw'` if you want times returned as JSON objects for exporting.
+- `time_format`: what format to return times in (default: `native`).
+  Set this to `raw` if you want times returned as JSON objects for exporting.
 - `profile`: whether or not to return a profile of the query's
   execution (default: `false`).
-- `durability`: possible values are `'hard'` and `'soft'`. In soft durability mode RethinkDB
+- `durability`: possible values are `hard` and `soft`. In soft durability mode RethinkDB
 will acknowledge the write immediately after receiving it, but before the write has
 been committed to disk.
-- `group_format`: what format to return `grouped_data` and `grouped_streams` in (default: `'native'`).
-  Set this to `'raw'` if you want the raw pseudotype.
+- `group_format`: what format to return `grouped_data` and `grouped_streams` in (default: `native`).
+  Set this to `raw` if you want the raw pseudotype.
 - `db`: the database to run this query against as a string. The default is the database specified in the `db` [connection](/api/java/connect/) method (which defaults to `test`). The database may also be specified with the [db](/api/java/db/) command.
 - `array_limit`: the maximum numbers of array elements that can be returned by a query (default: 100,000). This affects all ReQL commands that return arrays. Note that it has no effect on the size of arrays being _written_ to the database; those always have an upper limit of 100,000 elements.
-- `binary_format`: what format to return binary data in (default: `'native'`). Set this to `'raw'` if you want the raw pseudotype.
+- `binary_format`: what format to return binary data in (default: `native`). Set this to `raw` if you want the raw pseudotype.
 - `min_batch_rows`: minimum number of rows to wait for before batching a result set (default: 8). This is an integer.
 - `max_batch_rows`: maximum number of rows to wait for before batching a result set (default: unlimited). This is an integer.
 - `max_batch_bytes`: maximum number of bytes to wait for before batching a result set (default: 1MB). This is an integer.
@@ -52,33 +62,36 @@ for individual tables will supercede this global setting for all
 tables in the query.
 
 ```java
-r.table("marvel").run(conn).optArg("use_outdated", true);
+import com.rethinkdb.model.OptArgs;
+
+r.table("marvel").run(conn, OptArgs.of("use_outdated", true));
 ```
 
 __Example:__ If you want to specify whether to wait for a write to be
 written to disk (overriding the table's default settings), you can set
-`durability` to `'hard'` or `'soft'` in the options.
+`durability` to `hard` or `soft` in the options.
 
 ```java
 r.table("marvel").insert(r.hashMap("superhero", "Iron Man")
     .with("superpower", "Arc Reactor"))
-    .run(conn).optArg("durability", "soft");
+    .run(conn, OptArgs.of("durability", "soft"));
 ```
 
 __Example:__ If you do not want a time object to be converted to a
 native date object, you can pass a `time_format` flag to prevent it
 (valid flags are "raw" and "native"). This query returns an object
-with two fields (`epoch_time` and `$reql_type$`) instead of a native date
-object.
+with two fields (`epoch_time` and `$reql_type$`) instead of a [Java 8 ZonedDateTime][dt] object.
+
+[dt]: https://docs.oracle.com/javase/8/docs/api/java/time/ZonedDateTime.html
 
 ```java
-r.now().run(conn).optArg("time_format", "raw");
+r.now().run(conn, OptArgs.of("time_format", "raw"));
 ```
 
 __Example:__ Specify the database to use for the query.
 
 ```java
-for (Map<String, Object> doc : r.table("marvel").run<Cursor<Map<String, Object>>(conn).optArg("db", "heroes") {
+for (Map<String, Object> doc : r.table("marvel").run<Cursor<Map<String, Object>>(conn, OptArgs.of("db", "heroes")) {
     System.out.println(doc);
 }
 ```
@@ -92,7 +105,7 @@ r.db("heroes").table("marvel").run(conn);
 __Example:__ Change the batching parameters for this query.
 
 ```java
-r.table("marvel").run(conn).optArg("max_batch_rows", 16).optArg("max_batch_bytes", 2048);
+r.table("marvel").run(conn, OptArgs.of("max_batch_rows", 16).with("max_batch_bytes", 2048));
 ```
 
 {% infobox %}
