@@ -21,23 +21,17 @@ sequence.reduce(function) &rarr; value
 
 # Description #
 
-Produce a single value from a sequence through repeated application of a reduction
-function.  
-The reduction function can be called on:
+Produce a single value from a sequence through repeated application of a reduction function.
+
+The reduction function may be called on:
 
 - two elements of the sequence
 - one element of the sequence and one result of a previous reduction
 - two results of previous reductions
 
-The reduction function can be called on the results of two previous reductions because the
-`reduce` command is distributed and parallelized across shards and CPU cores. A common
-mistaken when using the `reduce` command is to suppose that the reduction is executed
-from left to right. Read the [map-reduce in RethinkDB](/docs/map-reduce/) article to
-see an example.
+The reduction function can be called on the results of two previous reductions because the `reduce` command is distributed and parallelized across shards and CPU cores. A common mistaken when using the `reduce` command is to suppose that the reduction is executed from left to right. Read the [map-reduce in RethinkDB](/docs/map-reduce/) article to see an example.
 
-If the sequence is empty, the server will produce a `ReqlRuntimeError` that can be
-caught with `default_`.  
-If the sequence has only one element, the first element will be returned.
+If the sequence is empty, the server will produce a `ReqlRuntimeError` that can be caught with `default_`. If the sequence has only one element, the first element will be returned.
 
 __Example:__ Return the number of documents in the table `posts`.
 

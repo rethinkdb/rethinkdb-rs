@@ -21,7 +21,9 @@ sequence.min([field | function]) &rarr; element
 
 # Description #
 
-Finds the minimum element of a sequence. The `min` command can be called with:
+Finds the minimum element of a sequence.
+
+The `min` command can be called with:
 
 * a **field name**, to return the element of the sequence with the smallest value in that field;
 * a **function**, to apply the function to every element within the sequence and return the element which returns the smallest value from the function, ignoring any elements where the function produces a non-existence error;

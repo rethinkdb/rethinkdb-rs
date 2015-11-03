@@ -27,7 +27,7 @@ Reconfigure a table's sharding and replication. Pass the following options using
 
 The return value of `reconfigure` is an object with three fields:
 
-* `reconfigured`: the number of tables reconfigured. This will be `0` if `dryRun` is `true`.
+* `reconfigured`: the number of tables reconfigured. This will be `0` if `dry_run` is `true`.
 * `config_changes`: a list of new and old table configuration values. Each element of the list will be an object with two fields:
     * `old_val`: The table's [config](/api/java/config) value before `reconfigure` was executed. 
     * `new_val`: The table's `config` value after `reconfigure` was executed.
@@ -48,8 +48,12 @@ Read [Sharding and replication](/docs/sharding-and-replication/) for a complete 
 __Example:__ Reconfigure a table.
 
 ```java
-r.table("superheroes").reconfigure().optArg("shards", 2).optArg("replicas", 1).run(conn)
+r.table("superheroes").reconfigure().optArg("shards", 2).optArg("replicas", 1).run(conn);
+```
 
+Result:
+
+```json
 {
   "reconfigured": 1,
   "config_changes": [

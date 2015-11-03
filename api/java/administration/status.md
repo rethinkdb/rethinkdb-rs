@@ -30,8 +30,12 @@ The return value is an object providing information about the table's shards, re
 __Example:__ Get a table's status.
 
 ```java
-> r.table("superheroes").status().run(conn);
+r.table("superheroes").status().run(conn);
+```
 
+Result:
+
+```json
 {
   "db": "database",
   "id": "5cb35225-81b2-4cec-9eef-bfad15481265",

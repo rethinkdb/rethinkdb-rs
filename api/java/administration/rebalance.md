@@ -40,7 +40,11 @@ __Example:__ Rebalance a table.
 
 ```java
 > r.table("superheroes").rebalance().run(conn);
+```
 
+Result:
+
+```json
 {
   "rebalanced": 1,
   "status_changes": [

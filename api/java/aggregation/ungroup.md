@@ -124,8 +124,8 @@ Result: (Note this is a JSON representation of a `List<GroupedResult>`; see the 
 __Example:__ Types!
 
 ```java
-r.table('games').group('player').typeOf().run(conn) // Returns "GROUPED_STREAM"
-r.table('games').group('player').ungroup().typeOf().run(conn) // Returns "ARRAY"
-r.table('games').group('player').avg('points').run(conn) // Returns "GROUPED_DATA"
-r.table('games').group('player').avg('points').ungroup().run(conn) // Returns "ARRAY"
+r.table('games').group('player').typeOf().run(conn); // Returns "GROUPED_STREAM"
+r.table('games').group('player').ungroup().typeOf().run(conn); // Returns "ARRAY"
+r.table('games').group('player').avg('points').run(conn); // Returns "GROUPED_DATA"
+r.table('games').group('player').avg('points').ungroup().run(conn); // Returns "ARRAY"
 ```

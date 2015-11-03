@@ -21,7 +21,9 @@ sequence.max([field | function]) &rarr; element
 
 # Description #
 
-Finds the maximum element of a sequence. The `max` command can be called with:
+Finds the maximum element of a sequence.
+
+The `max` command can be called with:
 
 * a **field name**, to return the element of the sequence with the largest value in that field;
 * a **function**, to apply the function to every element within the sequence and return the element which returns the largest value from the function, ignoring any elements where the function produces a non-existence error;
