@@ -9,7 +9,6 @@ language: Java
 ---
 
 {% apisection Accessing ReQL %}
-All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
 
@@ -22,34 +21,29 @@ The top-level ReQL namespace.
 __Example:__ Set up your top-level namespace.
 
 ```java
-var r = require('rethinkdb');
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.gen.exc.ReqlError;
+import com.rethinkdb.gen.exc.ReqlQueryLogicError;
+import com.rethinkdb.model.MapObject;
+import com.rethinkdb.net.Connection;
+
+public static final RethinkDB r = RethinkDB.r;
 ```
 
-## [connect](connect/) ##
+[Read more about this command &rarr;](r/)
+
+## [connection](connect/) ##
 
 {% apibody %}
-r.connect(options)
-r.connect(host)
-r.connect(options) &rarr; promise
-r.connect(host) &rarr; promise
+r.connection() &rarr; builder
 {% endapibody %}
 
-Create a new connection to the database server.
+Create a new connection to the database server. `connection` returns a builder object with the following methods:
 
 __Example:__ Open a connection using the default host and port, specifying the default database.
 
 ```java
-r.connect({
-    db: 'marvel'
-}, function(err, conn) {
-    // ...
-});
-```
-
-If no callback is provided, a promise will be returned.
-
-```java
-var promise = r.connect({db: 'marvel'});
+conn = r.connection().connect();
 ```
 
 [Read more about this command &rarr;](connect/)
@@ -57,18 +51,15 @@ var promise = r.connect({db: 'marvel'});
 ## [close](close/) ##
 
 {% apibody %}
-conn.close([{noreplyWait: true}, ]callback)
-conn.close([{noreplyWait: true}]) &rarr; promise
+conn.close([boolean])
 {% endapibody %}
 
 Close an open connection.
 
-If no callback is provided, a promise will be returned.
-
 __Example:__ Close an open connection, waiting for noreply writes to finish.
 
 ```java
-conn.close(function(err) { if (err) throw err; })
+conn.close();
 ```
 
 [Read more about this command &rarr;](close/)
@@ -76,18 +67,15 @@ conn.close(function(err) { if (err) throw err; })
 ## [reconnect](reconnect/) ##
 
 {% apibody %}
-conn.reconnect([{noreplyWait: true}, ]callback)
-conn.reconnect([{noreplyWait: true}]) &rarr; promise
+conn.reconnect([boolean, timeout])
 {% endapibody %}
 
 Close and reopen a connection.
 
-If no callback is provided, a promise will be returned.
-
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
 ```java
-conn.reconnect({noreplyWait: false}, function(error, connection) { ... })
+conn.reconnect(false);
 ```
 
 [Read more about this command &rarr;](reconnect/)
@@ -104,66 +92,126 @@ __Example:__ Change the default database so that we don't need to
 specify the database when referencing a table.
 
 ```java
-conn.use('marvel')
-r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
+conn.use("marvel");
+r.table("heroes").run(conn);  // refers to r.db("marvel").table("heroes")
 ```
+
+[Read more about this command &rarr;](use/)
 
 ## [run](run/) ##
 
 {% apibody %}
-query.run(conn[, options])
-query.run(conn[, options]) &rarr; promise
+query.run(conn)
 {% endapibody %}
 
-Run a query on a connection. 
+Run a query on a connection, returning either a single JSON result or
+a cursor, depending on the query.
 
-The callback will get either an error, a single JSON result, or a
-cursor, depending on the query.
-
-__Example:__ Run a query on the connection `conn` and log each row in
-the result to the console.
+__Example:__ If you are OK with potentially out of date data from all
+the tables involved in this query and want potentially faster reads,
+pass a flag allowing out of date data in an options object. Settings
+for individual tables will supercede this global setting for all
+tables in the query.
 
 ```java
-r.table('marvel').run(conn, function(err, cursor) { cursor.each(console.log); })
+import com.rethinkdb.model.OptArgs;
+
+r.table("marvel").run(conn, OptArgs.of("use_outdated", true));
 ```
 
 [Read more about this command &rarr;](run/)
 
+## [runNoReply](run_noreply/) ##
+
+{% apibody %}
+query.runNoReply(conn)
+{% endapibody %}
+
+Run a query on a connection and immediately return, without waiting for any result data to be returned by the server.
+
+__Example:__ Send a write and return immediately.
+
+```java
+r.table("marvel").insert(document).runNoReply(conn);
+```
+
+[Read more about this command &rarr;](run_noreply/)
+
+## [changes](changes/) ##
+
+{% apibody %}
+stream.changes() &rarr; stream
+singleSelection.changes() &rarr; stream
+{% endapibody %}
+
+Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
+
+__Example:__ Subscribe to the changes on a table.
+
+Start monitoring the changefeed in one client:
+
+```java
+r.table('games').changes().run(conn, function(err, cursor) {
+  cursor.each(console.log);
+});
+```
+
+As these queries are performed in a second client, the first
+client would receive and print the following objects:
+
+```java
+> r.table('games').insert({id: 1}).run(conn);
+{old_val: null, new_val: {id: 1}}
+
+> r.table('games').get(1).update({player1: 'Bob'}).run(conn);
+{old_val: {id: 1}, new_val: {id: 1, player1: 'Bob'}}
+
+> r.table('games').get(1).replace({id: 1, player1: 'Bob', player2: 'Alice'}).run(conn);
+{old_val: {id: 1, player1: 'Bob'},
+ new_val: {id: 1, player1: 'Bob', player2: 'Alice'}}
+
+> r.table('games').get(1).delete().run(conn)
+{old_val: {id: 1, player1: 'Bob', player2: 'Alice'}, new_val: null}
+
+> r.tableDrop('games').run(conn);
+ReqlRuntimeError: Changefeed aborted (table unavailable)
+```
+
+[Read more about this command &rarr;](changes/)
+
 ## [noreplyWait](noreply_wait/) ##
 
 {% apibody %}
-conn.noreplyWait(callback)
-conn.noreplyWait() &rarr; promise
+conn.noreplyWait()
 {% endapibody %}
 
-`noreplyWait` ensures that previous queries with the `noreply` flag have been processed
-by the server. Note that this guarantee only applies to queries run on the given connection.
+Ensure that previous queries executed with [runNoReply](/api/java/run_noreply) have been processed by the server. Note that this guarantee only apples to queries run on the same connection.
 
-__Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
-wait until the server has processed them.
+__Example:__ We have previously executed queries with `runNoReply`. Now wait until the server has processed them.
 
 ```java
-conn.noreplyWait(function(err) { ... })
+conn.noreplyWait();
 ```
 
-## [EventEmitter (connection)](event_emitter/) ##
+[Read more about this command &rarr;](noreply_wait/)
+
+## [optArg](optarg/) ##
 
 {% apibody %}
-connection.addListener(event, listener)
-connection.on(event, listener)
-connection.once(event, listener)
-connection.removeListener(event, listener)
-connection.removeAllListeners([event])
-connection.setMaxListeners(n)
-connection.listeners(event)
-connection.emit(event, [arg1], [arg2], [...])
+term.optArg(option, value)
 {% endapibody %}
 
-Connections implement the same interface as Node's [EventEmitter][ee]. This allows you to listen for changes in connection state.
+Specify an optional argument to a Java ReQL term.
 
-[ee]: http://nodejs.org/api/events.html#events_class_events_eventemitter
+__Example:__ Pass the `right_bound` optional argument to [between](/api/java/between/).
 
-[Read more about this command &rarr;](event_emitter/)
+```java
+r.table("marvel").between(10, 20).optArg("right_bound", "closed").run(conn);
+```
+
+To pass more than one optional argument, chain `optArg` once for each argument.
+
+[Read more about this command &rarr;](optarg/)
 
 {% endapisection %}
 
@@ -189,8 +237,9 @@ cursor.next(function(err, row) {
 });
 ```
 
-[Read more about this command &rarr;](next/)
+__Note:__ The canonical way to retrieve all the results is to use [each](../each/) or [toArray](../to_array/). The `next` command should be used only when you may not retrieve all the elements of a cursor or want to delay some operations.
 
+[Read more about this command &rarr;](next/)
 
 ## [each](each/) ##
 
@@ -200,7 +249,9 @@ array.each(callback[, onFinishedCallback])
 feed.each(callback)
 {% endapibody %}
 
-Lazily iterate over the result set one element at a time.
+Lazily iterate over the result set one element at a time. The second callback is optional
+and is called when the iteration stops (when there are no more rows or when the callback
+returns `false`).
 
 __Example:__ Let's process all the elements!
 
@@ -234,15 +285,34 @@ cursor.toArray(function(err, results) {
 });
 ```
 
-[Read more about this command &rarr;](to_array/)
+The equivalent query with the `each` command would be:
 
+```java
+var results = []
+cursor.each(function(err, row) {
+    if (err) throw err;
+    results.push(row);
+}, function(err, results) {
+    if (err) throw err;
+    processResults(results);
+});
+```
+
+An equivalent query using promises.
+
+```java
+cursor.toArray().then(function(results) {
+    processResults(results);
+}).error(console.log);
+```
+
+[Read more about this command &rarr;](to_array/)
 
 ## [close](close-cursor/) ##
 
 {% apibody %}
 cursor.close()
 {% endapibody %}
-
 
 Close a cursor. Closing a cursor cancels the corresponding query and frees the memory
 associated with the open request.
@@ -253,23 +323,7 @@ __Example:__ Close a cursor.
 cursor.close()
 ```
 
-
-## [EventEmitter (cursor)](event_emitter-cursor/) ##
-
-{% apibody %}
-cursor.addListener(event, listener)
-cursor.on(event, listener)
-cursor.once(event, listener)
-cursor.removeListener(event, listener)
-cursor.removeAllListeners([event])
-cursor.setMaxListeners(n)
-cursor.listeners(event)
-cursor.emit(event, [arg1], [arg2], [...])
-{% endapibody %}
-
-Cursors and feeds implement the same interface as Node's [EventEmitter][ee].
-
-[Read more about this command &rarr;](event_emitter-cursor/)
+[Read more about this command &rarr;](close-cursor/)
 
 {% endapisection %}
 
@@ -284,17 +338,30 @@ r.dbCreate(dbName) &rarr; object
 Create a database. A RethinkDB database is a collection of tables, similar to
 relational databases.
 
-If successful, the operation returns an object: `{created: 1}`. If a database with the
-same name already exists the operation throws `ReqlRuntimeError`.
-
-Note: that you can only use alphanumeric characters and underscores for the database name.
-
 __Example:__ Create a database named 'superheroes'.
 
 ```java
-r.dbCreate('superheroes').run(conn)
+r.dbCreate("superheroes").run(conn);
 ```
 
+Return:
+
+```json
+{
+    "config_changes": [
+        {
+            "new_val": {
+                "id": "e4689cfc-e903-4532-a0e6-2d6797a43f07",
+                "name": "superheroes"
+            },
+            "old_val": null
+        }
+    ],
+    "dbs_created": 1
+}
+```
+
+[Read more about this command &rarr;](db_create/)
 
 ## [dbDrop](db_drop/) ##
 
@@ -304,15 +371,31 @@ r.dbDrop(dbName) &rarr; object
 
 Drop a database. The database, all its tables, and corresponding data will be deleted.
 
-If successful, the operation returns the object `{dropped: 1}`. If the specified database
-doesn't exist a `ReqlRuntimeError` is thrown.
-
 __Example:__ Drop a database named 'superheroes'.
 
 ```java
-r.dbDrop('superheroes').run(conn)
+r.dbDrop("superheroes").run(conn);
 ```
 
+Return:
+
+```json
+{
+    "config_changes": [
+        {
+            "old_val": {
+                "id": "e4689cfc-e903-4532-a0e6-2d6797a43f07",
+                "name": "superheroes"
+            },
+            "new_val": null
+        }
+    ],
+    "tables_dropped": 3,
+    "dbs_dropped": 1
+}
+```
+
+[Read more about this command &rarr;](db_drop/)
 
 ## [dbList](db_list/) ##
 
@@ -325,20 +408,20 @@ List all database names in the system. The result is a list of strings.
 __Example:__ List all databases.
 
 ```java
-r.dbList().run(conn)
+r.dbList().run(conn);
 ```
+
+[Read more about this command &rarr;](db_list/)
 
 {% endapisection %}
 
-
-
-
 {% apisection Manipulating tables %}
+
 ## [tableCreate](table_create/) ##
 
 {% apibody %}
-db.tableCreate(tableName[, options]) &rarr; object
-r.tableCreate(tableName[, options]) &rarr; object
+db.tableCreate(tableName) &rarr; object
+r.tableCreate(tableName) &rarr; object
 {% endapibody %}
 
 Create a table. A RethinkDB table is a collection of JSON documents.
@@ -346,7 +429,37 @@ Create a table. A RethinkDB table is a collection of JSON documents.
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```java
-r.db('heroes').tableCreate('dc_universe').run(conn)
+r.db("heroes").tableCreate("dc_universe").run(conn);
+```
+
+Result:
+
+```json
+{
+    "config_changes": [
+        {
+            "new_val": {
+                "db": "test",
+                "durability":  "hard",
+                "id": "20ea60d4-3b76-4817-8828-98a236df0297",
+                "name": "dc_universe",
+                "primary_key": "id",
+                "shards": [
+                    {
+                        "primary_replica": "rethinkdb_srv1",
+                        "replicas": [
+                            "rethinkdb_srv1",
+                            "rethinkdb_srv2"
+                        ]
+                    }
+                ],
+                "write_acks": "majority"
+            },
+            "old_val": null
+        }
+    ],
+    "tables_created": 1
+}
 ```
 
 [Read more about this command &rarr;](table_create/)
@@ -357,12 +470,40 @@ r.db('heroes').tableCreate('dc_universe').run(conn)
 db.tableDrop(tableName) &rarr; object
 {% endapibody %}
 
-Drop a table. The table and all its data will be deleted.
+Drop a table from a database. The table and all its data will be deleted.
 
-__Example:__ Drop a table named 'dc_universe'.
+__Example:__ Drop a table named "dc_universe".
 
 ```java
-r.db('test').tableDrop('dc_universe').run(conn)
+r.db("test").tableDrop("dc_universe").run(conn);
+Result:
+
+```json
+{
+    "config_changes": [
+        {
+            "old_val": {
+                "db": "test",
+                "durability":  "hard",
+                "id": "20ea60d4-3b76-4817-8828-98a236df0297",
+                "name": "dc_universe",
+                "primary_key": "id",
+                "shards": [
+                    {
+                        "primary_replica": "rethinkdb_srv1",
+                        "replicas": [
+                            "rethinkdb_srv1",
+                            "rethinkdb_srv2"
+                        ]
+                    }
+                ],
+                "write_acks": "majority"
+            },
+            "new_val": null
+        }
+    ],
+    "tables_dropped": 1
+}
 ```
 
 [Read more about this command &rarr;](table_drop/)
@@ -378,21 +519,23 @@ List all table names in a database. The result is a list of strings.
 __Example:__ List all tables of the 'test' database.
 
 ```java
-r.db('test').tableList().run(conn)
+r.db("test").tableList().run(conn);
 ```
+
+[Read more about this command &rarr;](table_list/)
 
 ## [indexCreate](index_create/) ##
 
 {% apibody %}
-table.indexCreate(indexName[, indexFunction][, {multi: false, geo: false}]) &rarr; object
+table.indexCreate(indexName[, indexFunction]) &rarr; object
 {% endapibody %}
 
-Create a new secondary index on a table.
+Create a new secondary index on a table. Secondary indexes improve the speed of many read queries at the slight cost of increased storage space and decreased write performance. For more information about secondary indexes, read the article "[Using secondary indexes in RethinkDB](/docs/secondary-indexes/)."
 
 __Example:__ Create a simple index based on the field `postId`.
 
 ```java
-r.table('comments').indexCreate('postId').run(conn)
+r.table("comments").indexCreate("postId").run(conn);
 ```
 
 [Read more about this command &rarr;](index_create/)
@@ -408,8 +551,10 @@ Delete a previously created secondary index of this table.
 __Example:__ Drop a secondary index named 'code_name'.
 
 ```java
-r.table('dc').indexDrop('code_name').run(conn)
+r.table("dc").indexDrop("code_name").run(conn);
 ```
+
+[Read more about this command &rarr;](index_drop/)
 
 ## [indexList](index_list/) ##
 
@@ -422,23 +567,26 @@ List all the secondary indexes of this table.
 __Example:__ List the available secondary indexes for this table.
 
 ```java
-r.table('marvel').indexList().run(conn)
+r.table('marvel').indexList().run(conn);
 ```
+
+[Read more about this command &rarr;](index_list/)
 
 ## [indexRename](index_rename/) ##
 
 {% apibody %}
-table.indexRename(oldIndexName, newIndexName[, {overwrite: false}]) &rarr; object
+table.indexRename(oldIndexName, newIndexName) &rarr; object
 {% endapibody %}
 
-Rename an existing secondary index on a table. If the optional argument `overwrite` is specified as `true`, a previously existing index with the new name will be deleted and the index will be renamed. If `overwrite` is `false` (the default) an error will be raised if the new index name already exists.
+Rename an existing secondary index on a table. If the [optArg](/api/java/optarg) `overwrite` is specified as `true`, a previously existing index with the new name will be deleted and the index will be renamed. If `overwrite` is `false` (the default) an error will be raised if the new index name already exists.
 
 __Example:__ Rename an index on the comments table.
 
 ```java
-r.table('comments').indexRename('postId', 'messageId').run(conn)
+r.table("comments").indexRename("postId", "messageId").run(conn);
 ```
 
+[Read more about this command &rarr;](index_rename/)
 
 ## [indexStatus](index_status/) ##
 
@@ -452,14 +600,10 @@ of all indexes on this table if no indexes are specified.
 __Example:__ Get the status of all the indexes on `test`:
 
 ```java
-r.table('test').indexStatus().run(conn)
+r.table("test").indexStatus().run(conn);
 ```
 
-__Example:__ Get the status of the `timestamp` index:
-
-```java
-r.table('test').indexStatus('timestamp').run(conn)
-```
+[Read more about this command &rarr;](index_status/)
 
 ## [indexWait](index_wait/) ##
 
@@ -473,117 +617,86 @@ indexes on this table to be ready if no indexes are specified.
 __Example:__ Wait for all indexes on the table `test` to be ready:
 
 ```java
-r.table('test').indexWait().run(conn)
+r.table("test").indexWait().run(conn);
 ```
 
-__Example:__ Wait for the index `timestamp` to be ready:
-
-```java
-r.table('test').indexWait('timestamp').run(conn)
-```
-
-## [changes](changes/) ##
-
-{% apibody %}
-stream.changes({squash: false, includeStates: false}) &rarr; stream
-singleSelection.changes({squash: false, includeStates: false}) &rarr; stream
-{% endapibody %}
-
-Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
-
-__Example:__ Subscribe to the changes on a table.
-
-```java
-r.table('games').changes().run(conn, function(err, cursor) {
-  cursor.each(console.log)
-})
-```
-
-[Read more about this command &rarr;](changes/)
+[Read more about this command &rarr;](index_wait/)
 
 {% endapisection %}
-
 
 {% apisection Writing data %}
 
 ## [insert](insert/) ##
 
 {% apibody %}
-table.insert(object | [object1, object2, ...][, {durability: "hard", returnChanges: false, conflict: "error"}]) &rarr; object
+table.insert(object | [object1, object2, ...]) &rarr; object
 {% endapibody %}
 
-Insert JSON documents into a table. Accepts a single JSON document or an array of
-documents.
+You can pass the following options using [optArg](/api/java/optarg/):
 
 __Example:__ Insert a document into the table `posts`.
 
 ```java
-r.table("posts").insert({
-    id: 1,
-    title: "Lorem ipsum",
-    content: "Dolor sit amet"
-}).run(conn)
+r.table("posts").insert(
+    r.hashMap("id", 1)
+     .with("title", "Lorem ipsum")
+     .with("content", "Dolor sit amet")
+).run(conn);
 ```
 
+The result will be:
+
+```json
+{
+    "deleted": 0,
+    "errors": 0,
+    "inserted": 1,
+    "replaced": 0,
+    "skipped": 0,
+    "unchanged": 0
+}
+```
 
 [Read more about this command &rarr;](insert/)
 
 ## [update](update/) ##
 
 {% apibody %}
-table.update(object | function
-    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
-        &rarr; object
-selection.update(object | function
-    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
-        &rarr; object
-singleSelection.update(object | function
-    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
-        &rarr; object
+table.update(object | function) &rarr; object
+selection.update(object | function) &rarr; object
+singleSelection.update(object | function) &rarr; object
 {% endapibody %}
 
-Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
-combination of the two. You can pass options like `returnChanges` that will return the old
-and new values of the row you have modified.
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a combination of the two.
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
 ```java
-r.table("posts").get(1).update({status: "published"}).run(conn)
+r.table("posts").get(1).update(r.hashMap("status", "published")).run(conn);
 ```
 
-
 [Read more about this command &rarr;](update/)
-
 
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(object | function
-    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
-        &rarr; object
-selection.replace(object | function
-    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
-        &rarr; object
-singleSelection.replace(object | function
-    [, {durability: "hard", returnChanges: false, nonAtomic: false}])
-        &rarr; object
-
+table.replace(object | function) &rarr; object
+selection.replace(object | function) &rarr; object
+singleSelection.replace(object | function) &rarr; object
 {% endapibody %}
 
-Replace documents in a table. Accepts a JSON document or a ReQL expression, and replaces
-the original document with the new one. The new document must have the same primary key
-as the original document.
+Replace documents in a table. Accepts a JSON document or a ReQL expression,
+and replaces the original document with the new one. The new document must
+have the same primary key as the original document.
 
 __Example:__ Replace the document with the primary key `1`.
 
 ```java
-r.table("posts").get(1).replace({
-    id: 1,
-    title: "Lorem ipsum",
-    content: "Aleas jacta est",
-    status: "draft"
-}).run(conn)
+r.table("posts").get(1).replace(
+    r.hashMap("id", 1).with("title", "Lorem ipsum")
+     .with("content", "Aleas jacta est")
+     .with("status", "draft")
+).run(conn);
 ```
 
 [Read more about this command &rarr;](replace/)
@@ -591,11 +704,11 @@ r.table("posts").get(1).replace({
 ## [delete](delete/) ##
 
 {% apibody %}
-table.delete([{durability: "hard", returnChanges: false}])
+table.delete()
     &rarr; object
-selection.delete([{durability: "hard", returnChanges: false}])
+selection.delete()
     &rarr; object
-singleSelection.delete([{durability: "hard", returnChanges: false}])
+singleSelection.delete()
     &rarr; object
 {% endapibody %}
 
@@ -604,7 +717,7 @@ Delete one or more documents from a table.
 __Example:__ Delete a single document from the table `comments`.
 
 ```java
-r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn)
+r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn);
 ```
 
 [Read more about this command &rarr;](delete/)
@@ -612,25 +725,21 @@ r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(con
 ## [sync](sync/) ##
 
 {% apibody %}
-table.sync()
-    &rarr; object
+table.sync() &rarr; object
 {% endapibody %}
 
-`sync` ensures that writes on a given table are written to permanent storage. Queries
-that specify soft durability (`{durability: 'soft'}`) do not give such guarantees, so
-`sync` can be used to ensure the state of these queries. A call to `sync` does not return
-until all previous writes to the table are persisted.
-
+Ensure that writes on a given table are written to permanent storage. Queries that specify soft durability do not wait for writes to be committed to disk; a call to `sync` on a table will not return until all previous writes to the table are completed, guaranteeing the data's persistence.
 
 __Example:__ After having updated multiple heroes with soft durability, we now want to wait
 until these changes are persisted.
 
 ```java
-r.table('marvel').sync().run(conn)
+r.table("marvel").sync().run(conn);
 ```
 
-{% endapisection %}
+[Read more about this command &rarr;](sync/)
 
+{% endapisection %}
 
 {% apisection Selecting data %}
 
@@ -645,7 +754,7 @@ Reference a database.
 __Example:__ Explicitly specify a database for a query.
 
 ```java
-r.db('heroes').table('marvel').run(conn)
+r.db("heroes").table("marvel").run(conn);
 ```
 
 [Read more about this command &rarr;](db/)
@@ -653,16 +762,15 @@ r.db('heroes').table('marvel').run(conn)
 ## [table](table/) ##
 
 {% apibody %}
-db.table(name[, {readMode: 'single', identifierFormat: 'name'}]) &rarr; table
+db.table(name) &rarr; table
 {% endapibody %}
 
-Select all documents in a table. This command can be chained with other commands to do
-further processing on the data.
+Return all documents in a table. Other commands may be chained after `table` to return a subset of documents (such as [get](/api/java/get/) and [filter](/api/java/filter/)) or perform further processing.
 
 __Example:__ Return all documents in the table 'marvel' of the default database.
 
 ```java
-r.table('marvel').run(conn)
+r.table("marvel").run(conn);
 ```
 
 [Read more about this command &rarr;](table/)
@@ -675,12 +783,10 @@ table.get(key) &rarr; singleRowSelection
 
 Get a document by primary key.
 
-If no document exists with that primary key, `get` will return `null`.
-
 __Example:__ Find a document by UUID.
 
 ```java
-r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn)
+r.table("posts").get("a9849eef-7176-4411-935b-79a6e3c56a74").run(conn);
 ```
 
 [Read more about this command &rarr;](get/)
@@ -688,7 +794,7 @@ r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn)
 ## [getAll](get_all/) ##
 
 {% apibody %}
-table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
+table.getAll(key[, key2...]) &rarr; selection
 {% endapibody %}
 
 Get all documents where the given value matches the value of the requested index.
@@ -696,31 +802,23 @@ Get all documents where the given value matches the value of the requested index
 __Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/java/get/) when using a secondary index.
 
 ```java
-r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn)
+r.table("marvel").getAll("man_of_steel").optArg("index", "code_name").run(conn);
 ```
 
 [Read more about this command &rarr;](get_all/)
 
-
 ## [between](between/) ##
 
 {% apibody %}
-table.between(lowerKey, upperKey
-    [, {index:'id', left_bound:'closed', right_bound:'open'}])
-        &rarr; selection
+table.between(lowerKey, upperKey) &rarr; selection
 {% endapibody %}
 
-Get all documents between two keys. Accepts three optional arguments: `index`,
-`left_bound`, and `right_bound`. If `index` is set to the name of a secondary index,
-`between` will return all documents where that index's value is in the specified range
-(it uses the primary key by default). `left_bound` or `right_bound` may be set to `open`
-or `closed` to indicate whether or not to include that endpoint of the range (by default,
-`left_bound` is closed and `right_bound` is open).
+Get all documents between two keys. Accepts three [optArgs](/api/java/optarg): `index`, `left_bound`, and `right_bound`. If `index` is set to the name of a secondary index, `between` will return all documents where that index's value is in the specified range (it uses the primary key by default). `left_bound` or `right_bound` may be set to `open` or `closed` to indicate whether or not to include that endpoint of the range (by default, `left_bound` is closed and `right_bound` is open).
 
 __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open interval).
 
 ```java
-r.table('marvel').between(10, 20).run(conn)
+r.table("marvel").between(10, 20).run(conn);
 ```
 
 [Read more about this command &rarr;](between/)
@@ -728,36 +826,38 @@ r.table('marvel').between(10, 20).run(conn)
 ## [filter](filter/) ##
 
 {% apibody %}
-selection.filter(predicate_function[, {default: false}]) &rarr; selection
-stream.filter(predicate_function[, {default: false}]) &rarr; stream
-array.filter(predicate_function[, {default: false}]) &rarr; array
+selection.filter(predicate_function) &rarr; selection
+stream.filter(predicate_function) &rarr; stream
+array.filter(predicate_function) &rarr; array
 {% endapibody %}
 
-Get all the documents for which the given predicate is true.
+Return all the elements in a sequence for which the given predicate is true. The return value of `filter` will be the same as the input (sequence, stream, or array). Documents can be filtered in a variety of ways&mdash;ranges, nested values, boolean conditions, and the results of anonymous functions.
 
-`filter` can be called on a sequence, selection, or a field containing an array of
-elements. The return type is the same as the type on which the function was called on.
-
-The body of every filter is wrapped in an implicit `.default(false)`, which means that
-if a non-existence errors is thrown (when you try to access a field that does not exist
-in a document), RethinkDB will just ignore the document.
-The `default` value can be changed by passing an object with a `default` field.
-Setting this optional argument to `r.error()` will cause any non-existence errors to
-return a `ReqlRuntimeError`.
-
-__Example:__ Get all the users that are 30 years old.
+__Example:__ Get all users who are 30 years old.
 
 ```java
-r.table('users').filter({age: 30}).run(conn)
+r.table("users").filter(r.hashMap(age, 30)).run(conn);
 ```
+
+The predicate `r.hashMap(age, 30)` selects documents in the `users` table with an `age` field whose value is `30`. Documents with an `age` field set to any other value *or* with no `age` field present are skipped.
+
+While the `r.hashMap(field, value)` style of predicate is useful for exact matches, a more general way to write a predicate is to use an anonymous function that returns `true` or `false`.
+
+```java
+r.table("users").filter(row -> row.g("age").eq(30)).run(conn);
+```
+
+In this case, the function returns `true` if the field `age` is equal to 30.
+
+Predicates to `filter` are evaluated on the server, and must use ReQL expressions. You cannot use standard Java comparison operators such as `==`, `<`/`>` and `||`/`&&`.
+
+Also, predicates must evaluate document fields. They cannot evaluate [secondary indexes](/docs/secondary-indexes/).
 
 [Read more about this command &rarr;](filter/)
 
 {% endapisection %}
 
-
 {% apisection Joins %}
-These commands allow the combination of multiple sequences into a single sequence
 
 ## [innerJoin](inner_join/) ##
 
@@ -766,15 +866,17 @@ sequence.innerJoin(otherSequence, predicate_function) &rarr; stream
 array.innerJoin(otherSequence, predicate_function) &rarr; array
 {% endapibody %}
 
-Returns an inner join of two sequences.
+Returns an inner join of two sequences. The returned sequence represents an intersection of the left-hand sequence and the right-hand sequence: each row of the left-hand sequence will be compared with each row of the right-hand sequence to find all pairs of rows which satisfy the predicate. Each matched pair of rows of both sequences are combined into a result row. In most cases, you will want to follow the join with [zip](/api/java/zip) to combine the left and right results.
 
 __Example:__ Return a list of all matchups between Marvel and DC heroes in which the DC hero could beat the Marvel hero in a fight.
 
 ```java
-r.table('marvel').innerJoin(r.table('dc'), function(marvelRow, dcRow) {
-    return marvelRow('strength').lt(dcRow('strength'))
-}).zip().run(conn)
+r.table("marvel").innerJoin(r.table("dc"),
+    (marvel_row, dc_row) -> marvel_row.g("strength").lt(dc_row.g("strength"))
+).zip().run(conn);
 ```
+
+(Compare this to an [outerJoin](/api/java/outer_join) with the same inputs and predicate, which would return a list of *all* Marvel heroes along with any DC heroes with a higher strength.)
 
 [Read more about this command &rarr;](inner_join/)
 
@@ -785,35 +887,34 @@ sequence.outerJoin(otherSequence, predicate_function) &rarr; stream
 array.outerJoin(otherSequence, predicate_function) &rarr; array
 {% endapibody %}
 
-Returns a left outer join of two sequences.
+Returns a left outer join of two sequences. The returned sequence represents a union of the left-hand sequence and the right-hand sequence: all documents in the left-hand sequence will be returned, each matched with a document in the right-hand sequence if one satisfies the predicate condition. In most cases, you will want to follow the join with [zip](/api/java/zip) to combine the left and right results.
 
 __Example:__ Return a list of all Marvel heroes, paired with any DC heroes who could beat them in a fight.
 
 ```java
-r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
-    return marvelRow('strength').lt(dcRow('strength'))
-}).run(conn)
+r.table("marvel").outerJoin(r.table("dc"),
+    (marvel_row, dc_row) -> marvel_row.g("strength").lt(dc_row.g("strength"))
+).zip().run(conn);
 ```
+
+(Compare this to an [innerJoin](/api/java/inner_join) with the same inputs and predicate, which would return a list only of the matchups in which the DC hero has the higher strength.)
 
 [Read more about this command &rarr;](outer_join/)
 
 ## [eqJoin](eq_join/) ##
 
 {% apibody %}
-sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
-sequence.eqJoin(predicate_function, rightTable[, {index:'id'}]) &rarr; sequence
+sequence.eqJoin(leftField, rightTable) &rarr; sequence
+sequence.eqJoin(predicate_function, rightTable) &rarr; sequence
 {% endapibody %}
+
+src="/assets/images/docs/api_illustrations/table-joins.png" />
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
-**Example:** Match players with the games they've played against one another.
 
-```java
-r.table('players').eqJoin('gameId', r.table('games')).run(conn)
-```
 
 [Read more about this command &rarr;](eq_join/)
-
 
 ## [zip](zip/) ##
 
@@ -827,16 +928,14 @@ Used to 'zip' up the result of a join by merging the 'right' fields into 'left' 
 __Example:__ 'zips up' the sequence by merging the left and right fields produced by a join.
 
 ```
-r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc'))
-    .zip().run(conn)
+r.table("marvel").eqJoin("main_dc_collaborator", r.table("dc")).zip().run(conn);
 ```
 
-
+[Read more about this command &rarr;](zip/)
 
 {% endapisection %}
 
 {% apisection Transformations %}
-These commands are used to transform data in a sequence.
 
 ## [map](map/) ##
 
@@ -852,10 +951,9 @@ Transform each element of one or more sequences by applying a mapping function t
 __Example:__ Return the first five squares.
 
 ```java
-r.expr([1, 2, 3, 4, 5]).map(function (val) {
-    return val.mul(val);
-}).run(conn);
-// Result passed to callback
+r.expr(r.array(1, 2, 3, 4, 5)).map(val -> r.mul(val, val)).run(conn);
+
+// Result:
 [1, 4, 9, 16, 25]
 ```
 
@@ -868,12 +966,30 @@ sequence.withFields([selector1, selector2...]) &rarr; stream
 array.withFields([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
-Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to `hasFields` followed by `pluck` on a sequence.
+Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to [hasFields](/api/java/has_fields/) followed by [pluck](/api/java/pluck/) on a sequence.
 
 __Example:__ Get a list of users and their posts, excluding any users who have not made any posts.
 
+Existing table structure:
+
+```json
+[
+    { "id": 1, "user": "bob", "email": "bob@foo.com", "posts": [ 1, 4, 5 ] },
+    { "id": 2, "user": "george", "email": "george@foo.com" },
+    { "id": 3, "user": "jane", "email": "jane@foo.com", "posts": [ 2, 3, 6 ] }
+]
+```
+
+Command and output:
+
 ```java
-r.table('users').withFields('id', 'username', 'posts').run(conn)
+r.table("users").withFields("id", "user", "posts").run(conn);
+
+// Result passed to callback
+[
+    { "id": 1, "user": "bob", "posts": [ 1, 4, 5 ] },
+    { "id": 3, "user": "jane", "posts": [ 2, 3, 6 ] }
+]
 ```
 
 [Read more about this command &rarr;](with_fields/)
@@ -890,9 +1006,7 @@ Concatenate one or more elements into a single sequence using a mapping function
 __Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The field "defeatedMonsters" is an array of one or more monster names.
 
 ```java
-r.table('marvel').concatMap(function(hero) {
-    return hero('defeatedMonsters')
-}).run(conn)
+r.table("marvel").concatMap(hero -> hero.g("defeatedMonsters")).run(conn);
 ```
 
 [Read more about this command &rarr;](concat_map/)
@@ -900,7 +1014,7 @@ r.table('marvel').concatMap(function(hero) {
 ## [orderBy](order_by/) ##
 
 {% apibody %}
-table.orderBy([key | function...], {index: index_name}) &rarr; selection<stream>
+table.orderBy([key | function]).optArg("index", index) &rarr; selection<stream>
 selection.orderBy(key | function[, ...]) &rarr; selection<array>
 sequence.orderBy(key | function[, ...]) &rarr; array
 {% endapibody %}
@@ -909,29 +1023,23 @@ Sort the sequence by document values of the given key(s). To specify
 the ordering, wrap the attribute with either `r.asc` or `r.desc`
 (defaults to ascending).
 
-Sorting without an index requires the server to hold the sequence in
-memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/java/run)). Sorting with an index can
-be done on arbitrarily large tables, or after a `between` command
-using the same index.
-
-__Example:__ Order all the posts using the index `date`.   
+__Example:__ Order all the posts using the index `date`.
 
 ```java
-r.table('posts').orderBy({index: 'date'}).run(conn)
+r.table("posts").orderBy().optArg("index", "date").run(conn);
 ```
 
-The index must have been previously created with [indexCreate](/api/java/index_create/).
+The index must either be the primary key or have been previously created with [indexCreate](/api/java/index_create/).
 
 ```java
-r.table('posts').indexCreate('date').run(conn)
+r.table("posts").indexCreate("date").run(conn);
 ```
 
 You can also select a descending ordering:
 
 ```java
-r.table('posts').orderBy({index: r.desc('date')}).run(conn)
+r.table("posts").orderBy().optArg("index", r.desc("date")).run(conn);
 ```
-
 
 [Read more about this command &rarr;](order_by/)
 
@@ -944,12 +1052,13 @@ array.skip(n) &rarr; array
 
 Skip a number of elements from the head of the sequence.
 
-__Example:__ Here in conjunction with `orderBy` we choose to ignore the most successful heroes.
+__Example:__ Here in conjunction with [orderBy](/api/java/order_by/) we choose to ignore the most successful heroes.
 
 ```java
-r.table('marvel').orderBy('successMetric').skip(10).run(conn)
+r.table("marvel").orderBy("successMetric").skip(10).run(conn);
 ```
 
+[Read more about this command &rarr;](skip/)
 
 ## [limit](limit/) ##
 
@@ -958,31 +1067,30 @@ sequence.limit(n) &rarr; stream
 array.limit(n) &rarr; array
 {% endapibody %}
 
-
 End the sequence after the given number of elements.
 
 __Example:__ Only so many can fit in our Pantheon of heroes.
 
 ```java
-r.table('marvel').orderBy('belovedness').limit(10).run(conn)
+r.table("marvel").orderBy("belovedness").limit(10).run(conn);
 ```
+
+[Read more about this command &rarr;](limit/)
 
 ## [slice](slice/) ##
 
 {% apibody %}
-selection.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
-stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
-array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
-binary.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; binary
+selection.slice(startIndex[, endIndex]) &rarr; selection
+stream.slice(startIndex[, endIndex]) &rarr; stream
+array.slice(startIndex[, endIndex]) &rarr; array
+binary.slice(startIndex[, endIndex]) &rarr; binary
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
 
-**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
-```java
-r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn)
-```
+
+[Read more about this command &rarr;](slice/)
 
 ## [nth](nth/) ##
 
@@ -996,9 +1104,10 @@ Get the *nth* element of a sequence, counting from zero. If the argument is nega
 __Example:__ Select the second element in the array.
 
 ```java
-r.expr([1,2,3]).nth(1).run(conn)
+r.expr([1,2,3]).nth(1).run(conn);
 ```
 
+[Read more about this command &rarr;](nth/)
 
 ## [offsetsOf](offsets_of/) ##
 
@@ -1011,11 +1120,10 @@ Get the indexes of an element in a sequence. If the argument is a predicate, get
 __Example:__ Find the position of the letter 'c'.
 
 ```java
-r.expr(['a','b','c']).offsetsOf('c').run(conn)
+r.expr(r.array("a", "b", "c")).offsetsOf("c").run(conn);
 ```
 
 [Read more about this command &rarr;](offsets_of/)
-
 
 ## [isEmpty](is_empty/) ##
 
@@ -1028,8 +1136,10 @@ Test if a sequence is empty.
 __Example:__ Are there any documents in the marvel table?
 
 ```java
-r.table('marvel').isEmpty().run(conn)
+r.table("marvel").isEmpty().run(conn);
 ```
+
+[Read more about this command &rarr;](is_empty/)
 
 ## [union](union/) ##
 
@@ -1043,9 +1153,10 @@ Merge two or more sequences. (Note that ordering is not guaranteed by `union`.)
 __Example:__ Construct a stream of all heroes.
 
 ```java
-r.table('marvel').union(r.table('dc')).run(conn);
+r.table("marvel").union(r.table("dc")).run(conn);
 ```
 
+[Read more about this command &rarr;](union/)
 
 ## [sample](sample/) ##
 
@@ -1060,35 +1171,68 @@ Select a given number of elements from a sequence with uniform random distributi
 __Example:__ Select 3 random heroes.
 
 ```java
-r.table('marvel').sample(3).run(conn)
+r.table("marvel").sample(3).run(conn);
 ```
 
+[Read more about this command &rarr;](sample/)
 
 {% endapisection %}
 
-
 {% apisection Aggregation %}
-These commands are used to compute smaller values from large sequences.
-
 
 ## [group](group/) ##
 
 {% apibody %}
-sequence.group(field | function..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
+sequence.group([field | function...,]) &rarr; grouped_stream
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the
-fields or functions provided.  Commands chained after `group` will be
-called on each of these grouped sub-streams, producing grouped data.
+fields or functions provided.
 
-__Example:__ What is each player's best game?
+__Example:__ Group games by player.
 
-```java
-r.table('games').group('player').max('points').run(conn)
+Suppose that the table `games` has the following data:
+
+```json
+[
+    {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
+    {"id": 5, "player": "Alice", "points": 7, "type": "free"},
+    {"id": 11, "player": "Bob", "points": 10, "type": "free"},
+    {"id": 12, "player": "Alice", "points": 2, "type": "free"}
+]
 ```
 
-[Read more about this command &rarr;](group/)
+Grouping games by player can be done with:
 
+```java
+r.table("games").group("player").run(conn);
+```
+
+To show the returned data, we'll use JSON representation again, with `group` and `values` as the fields corresponding to the elements in each `GroupedResult`.
+
+```json
+[
+    {
+        "group": "Alice",
+        "values": [
+            {"id": 5, "player": "Alice", "points": 7, "type": "free"},
+            {"id": 12, "player": "Alice", "points": 2, "type": "free"}
+        ]
+    },
+    {
+        "group": "Bob",
+        "values": [
+            {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
+            {"id": 11, "player": "Bob", "points": 10, "type": "free"}
+        ]
+    }
+]
+```
+
+Commands chained after `group` will be called on each of these grouped
+sub-streams, producing grouped data.
+
+[Read more about this command &rarr;](group/)
 
 ## [ungroup](ungroup/) ##
 
@@ -1106,16 +1250,40 @@ the value of their reduction.
 __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
+Suppose that the table `games` has the following data:
+
+```json
+[
+    {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
+    {"id": 5, "player": "Alice", "points": 7, "type": "free"},
+    {"id": 11, "player": "Bob", "points": 10, "type": "free"},
+    {"id": 12, "player": "Alice", "points": 2, "type": "free"}
+]
+```
+
+We can use this query:
+
 ```java
-r.table('games')
-    .group('player').max('points')['points']
-    .ungroup().orderBy(r.desc('reduction')).run(conn)
+r.table("games").group("player").max("points").g("points").ungroup()
+ .orderBy(r.desc("reduction")).run(conn);
+```
+
+The result:
+
+```json
+[
+    {
+        "group": "Bob",
+        "reduction": 15
+    },
+    {
+        "group": "Alice",
+        "reduction": 7
+    }
+]
 ```
 
 [Read more about this command &rarr;](ungroup/)
-
-
-
 
 ## [reduce](reduce/) ##
 
@@ -1123,18 +1291,17 @@ r.table('games')
 sequence.reduce(function) &rarr; value
 {% endapibody %}
 
-Produce a single value from a sequence through repeated application of a reduction
-function.
+Produce a single value from a sequence through repeated application of a reduction function.
 
-__Example:__ Return the number of documents in the table `posts.
+__Example:__ Return the number of documents in the table `posts`.
 
 ```java
-r.table("posts").map(function(doc) {
-    return 1
-}).reduce(function(left, right) {
-    return left.add(right)
-}).run(conn);
+r.table("posts").map(doc -> 1).reduce(
+    (left, right) -> left.add(right)
+).default_(0).run(conn);
 ```
+
+A shorter way to execute this query is to use [count](/api/java/count).
 
 [Read more about this command &rarr;](reduce/)
 
@@ -1145,19 +1312,18 @@ sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
 {% endapibody %}
 
-Count the number of elements in the sequence. With a single argument, count the number
-of elements equal to it. If the argument is a function, it is equivalent to calling
-filter before count.
+Counts the number of elements in a sequence.  If called with a value,
+counts the number of times that value occurs in the sequence.  If
+called with a predicate function, counts the number of elements in the
+sequence where that function returns `true`.
 
-__Example:__ Just how many super heroes are there?
+__Example:__ Count the number of users.
 
 ```java
-r.table('marvel').count().add(r.table('dc').count()).run(conn)
+r.table("users").count().run(conn);
 ```
 
 [Read more about this command &rarr;](count/)
-
-
 
 ## [sum](sum/) ##
 
@@ -1175,11 +1341,10 @@ results, skipping elements of the sequence where that function returns
 __Example:__ What's 3 + 5 + 7?
 
 ```java
-r.expr([3, 5, 7]).sum().run(conn)
+r.expr(r.array(3, 5, 7)).sum().run(conn);
 ```
 
 [Read more about this command &rarr;](sum/)
-
 
 ## [avg](avg/) ##
 
@@ -1194,21 +1359,18 @@ function, calls that function on every element of the sequence and
 averages the results, skipping elements of the sequence where that
 function returns `null` or a non-existence error.
 
-
 __Example:__ What's the average of 3, 5, and 7?
 
 ```java
-r.expr([3, 5, 7]).avg().run(conn)
+r.expr(r.array(3, 5, 7)).avg().run(conn);
 ```
 
 [Read more about this command &rarr;](avg/)
 
-
 ## [min](min/) ##
 
 {% apibody %}
-sequence.min(field | function) &rarr; element
-sequence.min({index: <indexname>}) &rarr; element
+sequence.min([field | function]) &rarr; element
 {% endapibody %}
 
 Finds the minimum element of a sequence.
@@ -1216,19 +1378,15 @@ Finds the minimum element of a sequence.
 __Example:__ Return the minimum value in the list `[3, 5, 7]`.
 
 ```java
-r.expr([3, 5, 7]).min().run(conn);
+r.expr(r.array(3, 5, 7)).min().run(conn);
 ```
 
-
 [Read more about this command &rarr;](min/)
-
-
 
 ## [max](max/) ##
 
 {% apibody %}
-sequence.max(field | function) &rarr; element
-sequence.max({index: <indexname>}) &rarr; element
+sequence.max([field | function]) &rarr; element
 {% endapibody %}
 
 Finds the maximum element of a sequence.
@@ -1236,32 +1394,29 @@ Finds the maximum element of a sequence.
 __Example:__ Return the maximum value in the list `[3, 5, 7]`.
 
 ```java
-r.expr([3, 5, 7]).max().run(conn);
+r.expr(r.array(3, 5, 7)).max().run(conn);
 ```
 
 [Read more about this command &rarr;](max/)
-
-
 
 ## [distinct](distinct/) ##
 
 {% apibody %}
 sequence.distinct() &rarr; array
-table.distinct([{index: <indexname>}]) &rarr; stream
+table.distinct() &rarr; stream
 {% endapibody %}
 
-Remove duplicate elements from the sequence.
+Removes duplicates from elements in a sequence.
 
-__Example:__ Which unique villains have been vanquished by marvel heroes?
+__Example:__ Which unique villains have been vanquished by Marvel heroes?
 
 ```java
-r.table('marvel').concatMap(function(hero) {
-    return hero('villainList')
-}).distinct().run(conn)
+r.table("marvel").concatMap(
+    hero -> hero.g("villain_list")
+).distinct().run(conn);
 ```
 
 [Read more about this command &rarr;](distinct/)
-
 
 ## [contains](contains/) ##
 
@@ -1269,41 +1424,24 @@ r.table('marvel').concatMap(function(hero) {
 sequence.contains([value | predicate_function, ...]) &rarr; bool
 {% endapibody %}
 
-Returns whether or not a sequence contains all the specified values, or if functions are
-provided instead, returns whether or not a sequence contains values matching all the
-specified functions.
+When called with values, returns `true` if a sequence contains all the
+specified values.  When called with predicate functions, returns `true`
+if for each predicate there exists at least one element of the stream
+where that predicate returns `true`.
 
 __Example:__ Has Iron Man ever fought Superman?
 
 ```java
-r.table('marvel').get('ironman')('opponents').contains('superman').run(conn)
+r.table("marvel").get("ironman")("opponents").contains("superman").run(conn);
 ```
 
 [Read more about this command &rarr;](contains/)
 
-
-
 {% endapisection %}
-
 
 {% apisection Document manipulation %}
 
-## [row](row/) ##
-
-{% apibody %}
-r.row &rarr; value
-{% endapibody %}
-
-Returns the currently visited document.
-
-__Example:__ Get all users whose age is greater than 5.
-
-```java
-r.table('users').filter(r.row('age').gt(5)).run(conn)
-```
-
-[Read more about this command &rarr;](row/)
-
+<!-- NO FILE MATCH: row -->
 
 ## [pluck](pluck/) ##
 
@@ -1321,7 +1459,7 @@ __Example:__ We just need information about IronMan's reactor and not the rest o
 document.
 
 ```java
-r.table('marvel').get('IronMan').pluck('reactorState', 'reactorPower').run(conn)
+r.table("marvel").get("IronMan").pluck("reactorState", "reactorPower").run(conn);
 ```
 
 [Read more about this command &rarr;](pluck/)
@@ -1342,7 +1480,7 @@ __Example:__ Since we don't need it for this computation we'll save bandwidth an
 out the list of IronMan's romantic conquests.
 
 ```java
-r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn)
+r.table("marvel").get("IronMan").without("personalVictoriesList").run(conn);
 ```
 
 [Read more about this command &rarr;](without/)
@@ -1356,19 +1494,18 @@ sequence.merge([object | function, object | function, ...]) &rarr; stream
 array.merge([object | function, object | function, ...]) &rarr; array
 {% endapibody %}
 
-Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list.
+Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list. `merge` also accepts a subquery function that returns an object, which will be used similarly to a [map](/api/java/map/) function.
 
 __Example:__ Equip Thor for battle.
 
 ```java
-r.table('marvel').get('thor').merge(
-    r.table('equipment').get('hammer'),
-    r.table('equipment').get('pimento_sandwich')
-).run(conn)
+r.table("marvel").get("thor")
+ .merge(r.table("equipment").get("hammer"),
+        r.table("equipment").get("pimento_sandwich"))
+ .run(conn);
 ```
 
 [Read more about this command &rarr;](merge/)
-
 
 ## [append](append/) ##
 
@@ -1381,9 +1518,10 @@ Append a value to an array.
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').append('newBoots').run(conn)
+r.table("marvel").get("IronMan").g("equipment").append("newBoots").run(conn);
 ```
 
+[Read more about this command &rarr;](append/)
 
 ## [prepend](prepend/) ##
 
@@ -1396,9 +1534,10 @@ Prepend a value to an array.
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').prepend('newBoots').run(conn)
+r.table("marvel").get("IronMan").g("equipment").prepend("newBoots").run(conn);
 ```
 
+[Read more about this command &rarr;](prepend/)
 
 ## [difference](difference/) ##
 
@@ -1411,9 +1550,11 @@ Remove the elements of one array from another array.
 __Example:__ Retrieve Iron Man's equipment list without boots.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').difference(['Boots']).run(conn)
+r.table("marvel").get("IronMan").g("equipment").difference(r.array("Boots"))
+ .run(conn);
 ```
 
+[Read more about this command &rarr;](difference/)
 
 ## [setInsert](set_insert/) ##
 
@@ -1426,9 +1567,10 @@ Add a value to an array and return it as a set (an array with distinct values).
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').setInsert('newBoots').run(conn)
+r.table("marvel").get("IronMan").g("equipment").setInsert("newBoots").run(conn);
 ```
 
+[Read more about this command &rarr;](set_insert/)
 
 ## [setUnion](set_union/) ##
 
@@ -1441,9 +1583,11 @@ Add a several values to an array and return it as a set (an array with distinct 
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots and an arc reactor.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').setUnion(['newBoots', 'arc_reactor']).run(conn)
+r.table("marvel").get("IronMan").g("equipment")
+ .setUnion(r.array("newBoots", "arc_reactor")).run(conn);
 ```
 
+[Read more about this command &rarr;](set_union/)
 
 ## [setIntersection](set_intersection/) ##
 
@@ -1457,9 +1601,11 @@ distinct values).
 __Example:__ Check which pieces of equipment Iron Man has from a fixed list.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').setIntersection(['newBoots', 'arc_reactor']).run(conn)
+r.table("marvel").get("IronMan").g("equipment")
+ .setIntersection(r.array("newBoots", "arc_reactor")).run(conn);
 ```
 
+[Read more about this command &rarr;](set_intersection/)
 
 ## [setDifference](set_difference/) ##
 
@@ -1473,34 +1619,41 @@ distinct values).
 __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed list.
 
 ```java
-r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_reactor']).run(conn)
+r.table("marvel").get("IronMan").g("equipment")
+ .setDifference(r.array("newBoots", "arc_reactor")).run(conn);
 ```
 
-## [() (bracket)](bracket/) ##
+[Read more about this command &rarr;](set_difference/)
+
+## [bracket](bracket/) ##
 
 {% apibody %}
-sequence(attr) &rarr; sequence
-singleSelection(attr) &rarr; value
-object(attr) &rarr; value
-array(index) &rarr; value
+sequence.bracket(attr) &rarr; sequence
+singleSelection.bracket(attr) &rarr; value
+object.bracket(attr) &rarr; value
+array.bracket(index) &rarr; value
 {% endapibody %}
 
-Get a single field from an object or a single element from a sequence.
+Get a single field from an object. If called on a sequence, gets that field from every object in the sequence, skipping objects that lack it.
 
 __Example:__ What was Iron Man's first appearance in a comic?
 
 ```java
-r.table('marvel').get('IronMan')('firstAppearance').run(conn)
+r.table("marvel").get("IronMan").bracket("firstAppearance").run(conn);
+// more idiomatically:
+r.table("marvel").get("IronMan").g("firstAppearance").run(conn);
 ```
+
+The `()` command also accepts integer arguments as array offsets, like the [nth](/api/java/nth) command.
 
 [Read more about this command &rarr;](bracket/)
 
-## [getField](get_field/) ##
+## [getField, g](get_field/) ##
 
 {% apibody %}
-sequence.getField(attr) &rarr; sequence
-singleSelection.getField(attr) &rarr; value
-object.getField(attr) &rarr; value
+sequence.g(attr) &rarr; sequence
+singleSelection.g(attr) &rarr; value
+object.g(attr) &rarr; value
 {% endapibody %}
 
 Get a single field from an object. If called on a sequence, gets that field from every
@@ -1509,9 +1662,10 @@ object in the sequence, skipping objects that lack it.
 __Example:__ What was Iron Man's first appearance in a comic?
 
 ```java
-r.table('marvel').get('IronMan').getField('firstAppearance').run(conn)
+r.table("marvel").get("IronMan").g("firstAppearance").run(conn);
 ```
 
+[Read more about this command &rarr;](get_field/)
 
 ## [hasFields](has_fields/) ##
 
@@ -1526,11 +1680,10 @@ Test if an object has one or more fields. An object has a field if it has that k
 __Example:__ Return the players who have won games.
 
 ```java
-r.table('players').hasFields('games_won').run(conn)
+r.table("players").hasFields("games_won").run(conn);
 ```
 
 [Read more about this command &rarr;](has_fields/)
-
 
 ## [insertAt](insert_at/) ##
 
@@ -1543,9 +1696,10 @@ Insert a value in to an array at a given index. Returns the modified array.
 __Example:__ Hulk decides to join the avengers.
 
 ```java
-r.expr(["Iron Man", "Spider-Man"]).insertAt(1, "Hulk").run(conn)
+r.expr(r.array("Iron Man", "Spider-Man")).insertAt(1, "Hulk").run(conn);
 ```
 
+[Read more about this command &rarr;](insert_at/)
 
 ## [spliceAt](splice_at/) ##
 
@@ -1558,9 +1712,11 @@ Insert several values in to an array at a given index. Returns the modified arra
 __Example:__ Hulk and Thor decide to join the avengers.
 
 ```java
-r.expr(["Iron Man", "Spider-Man"]).spliceAt(1, ["Hulk", "Thor"]).run(conn)
+r.expr(r.array("Iron Man", "Spider-Man"))
+ .spliceAt(1, r.array("Hulk", "Thor")).run(conn);
 ```
 
+[Read more about this command &rarr;](splice_at/)
 
 ## [deleteAt](delete_at/) ##
 
@@ -1568,14 +1724,15 @@ r.expr(["Iron Man", "Spider-Man"]).spliceAt(1, ["Hulk", "Thor"]).run(conn)
 array.deleteAt(index [,endIndex]) &rarr; array
 {% endapibody %}
 
-Remove one or more elements from an array at a given index. Returns the modified array.
+Remove one or more elements from an array at a given index. Returns the modified array. (Note: `deleteAt` operates on arrays, not documents; to delete documents, see the [delete](/api/java/delete) command.)
 
 __Example:__ Delete the second element of an array.
 
 ```java
-> r(['a','b','c','d','e','f']).deleteAt(1).run(conn)
-// result passed to callback
-['a', 'c', 'd', 'e', 'f']
+r.expr(r.array("a", "b", "c", "d", "e", "f")).deleteAt(1).run(conn);
+
+// Result:
+["a", "c", "d", "e", "f"]
 ```
 
 [Read more about this command &rarr;](delete_at/)
@@ -1591,8 +1748,11 @@ Change a value in an array at a given index. Returns the modified array.
 __Example:__ Bruce Banner hulks out.
 
 ```java
-r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn)
+r.expr(r.array("Iron Man", "Bruce", "Spider-Man")).changeAt(1, "Hulk")
+ .run(conn);
 ```
+
+[Read more about this command &rarr;](change_at/)
 
 ## [keys](keys/) ##
 
@@ -1606,16 +1766,17 @@ Return an array containing all of an object's keys. Note that the keys will be s
 __Example:__ Get all the keys from a table row.
 
 ```java
-// row: { id: 1, mail: "fred@example.com", name: "fred" }
+// row: { "id": 1, "mail": "fred@example.com", "name": "fred" }
 
-r.table('users').get(1).keys().run(conn);
-// Result passed to callback
+r.table("users").get(1).keys().run(conn);
+
+// Result:
 [ "id", "mail", "name" ]
 ```
 
-## [values](values/) ##
+[Read more about this command &rarr;](keys/)
 
-# Command syntax #
+## [values](values/) ##
 
 {% apibody %}
 singleSelection.values() &rarr; array
@@ -1627,12 +1788,15 @@ Return an array containing all of an object's values. `values()` guarantees the 
 __Example:__ Get all of the values from a table row.
 
 ```java
-// row: { id: 1, mail: "fred@example.com", name: "fred" }
+// row: { "id": 1, "mail": "fred@example.com", "name": "fred" }
 
-r.table('users').get(1).values().run(conn);
-// Result passed to callback
+r.table("users").get(1).values().run(conn);
+
+// Result:
 [ 1, "fred@example.com", "fred" ]
 ```
+
+[Read more about this command &rarr;](values/)
 
 ## [literal](literal/) ##
 
@@ -1640,10 +1804,61 @@ r.table('users').get(1).values().run(conn);
 r.literal(object) &rarr; special
 {% endapibody %}
 
-Replace an object in a field instead of merging it with an existing object in a `merge` or `update` operation.
+Replace an object in a field instead of merging it with an existing object in a `merge` or `update` operation. Using `literal` with no arguments in a `merge` or `update` operation will remove the corresponding field.
+
+__Example:__ Replace one nested document with another rather than merging the fields.
+
+Assume your users table has this structure:
+
+```json
+[
+    {
+        "id": 1,
+        "name": "Alice",
+        "data": {
+            "age": 18,
+            "city": "Dallas"
+        }
+    }
+    ...
+]
+```
+
+Using `update` to modify the `data` field will normally merge the nested documents:
 
 ```java
-r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn)
+r.table("users").get(1)
+ .update(r.hashMap(data, r.hashMap(age, 19).with(job, "Engineer")))
+ .run(conn);
+
+// Result:
+{
+    "id": 1,
+    "name": "Alice",
+    "data": {
+        "age": 19,
+        "city": "Dallas",
+        "job": "Engineer"
+    }
+}
+```
+
+That will preserve `city` and other existing fields. But to replace the entire `data` document with a new object, use `literal`:
+
+```java
+r.table("users").get(1)
+ .update(r.hashMap(data, r.literal(r.hashMap(age, 19).with(job, "Engineer"))))
+ .run(conn);
+
+// Result:
+{
+    "id": 1,
+    "name": "Alice",
+    "data": {
+        "age": 19,
+        "job": "Engineer"
+    }
+}
 ```
 
 [Read more about this command &rarr;](literal/)
@@ -1661,14 +1876,17 @@ be strings.  `r.object(A, B, C, D)` is equivalent to
 __Example:__ Create a simple object.
 
 ```java
-r.object('id', 5, 'data', ['foo', 'bar']).run(conn)
+r.object("id", 5, "data", r.array("foo", "bar")).run(conn);
+
+// Result:
+{ "data": ["foo", "bar"], "id": 5}
 ```
+
+[Read more about this command &rarr;](object/)
 
 {% endapisection %}
 
-
 {% apisection String manipulation %}
-These commands provide string operators.
 
 ## [match](match/) ##
 
@@ -1676,7 +1894,7 @@ These commands provide string operators.
 string.match(regexp) &rarr; null/object
 {% endapibody %}
 
-Matches against a regular expression. If there is a match, returns an object with the fields:
+Match a string against a regular expression. If there is a match, returns an object with the fields:
 
 - `str`: The matched string
 - `start`: The matched string's start
@@ -1685,15 +1903,12 @@ Matches against a regular expression. If there is a match, returns an object wit
 
 If no match is found, returns `null`.
 
-__Example:__ Get all users whose name starts with "A". 
+__Example:__ Get all users whose name starts with "A". Because `null` evaluates to `false` in
+[filter](/api/java/filter/), you can use the result of `match` for the predicate.
 
 ```java
-r.table('users').filter(function(doc){
-    return doc('name').match("^A")
-}).run(conn)
+r.table("users").filter(doc -> doc.g("name").match("^A")).run(conn);
 ```
-
-
 
 [Read more about this command &rarr;](match/)
 
@@ -1703,21 +1918,18 @@ r.table('users').filter(function(doc){
 string.split([separator, [max_splits]]) &rarr; array
 {% endapibody %}
 
-Splits a string into substrings.  Splits on whitespace when called
-with no arguments.  When called with a separator, splits on that
-separator.  When called with a separator and a maximum number of
-splits, splits on that separator at most `max_splits` times.  (Can be
-called with `null` as the separator if you want to split on whitespace
-while still specifying `max_splits`.)
-
-Mimics the behavior of Python's `string.split` in edge cases, except
-for splitting on the empty string, which instead produces an array of
-single-character strings.
+Split a string into substrings. With no arguments, will split on whitespace; when called with a string as the first argument, will split using that string as a separator. A maximum number of splits can also be specified. (To specify `max_splits` while still splitting on whitespace, use `null` as the separator argument.)
 
 __Example:__ Split on whitespace.
 
 ```java
-r.expr("foo  bar bax").split().run(conn)
+r.expr("foo  bar bax").split().run(conn);
+```
+
+Result:
+
+```json
+["foo", "bar", "bax"]
 ```
 
 [Read more about this command &rarr;](split/)
@@ -1728,14 +1940,23 @@ r.expr("foo  bar bax").split().run(conn)
 string.upcase() &rarr; string
 {% endapibody %}
 
-
 Uppercases a string.
 
 __Example:__
 
 ```java
-r.expr("Sentence about LaTeX.").upcase().run(conn)
+r.expr("Sentence about LaTeX.").upcase().run(conn);
 ```
+
+Result:
+
+```
+"SENTENCE ABOUT LATEX."
+```
+
+__Note:__ `upcase` and `downcase` only affect ASCII characters.
+
+[Read more about this command &rarr;](upcase/)
 
 ## [downcase](downcase/) ##
 
@@ -1743,16 +1964,25 @@ r.expr("Sentence about LaTeX.").upcase().run(conn)
 string.downcase() &rarr; string
 {% endapibody %}
 
-Lowercases a string.
+Lowercase a string.
 
 __Example:__
 
 ```java
-r.expr("Sentence about LaTeX.").downcase().run(conn)
+r.expr("Sentence about LaTeX.").downcase().run(conn);
 ```
 
-{% endapisection %}
+Result:
 
+```
+"sentence about latex."
+```
+
+__Note:__ `upcase` and `downcase` only affect ASCII characters.
+
+[Read more about this command &rarr;](downcase/)
+
+{% endapisection %}
 
 {% apisection Math and logic %}
 
@@ -1763,14 +1993,16 @@ value.add(value[, value, ...]) &rarr; value
 time.add(number[, number, ...]) &rarr; time
 {% endapibody %}
 
-Sum two or more numbers, or concatenate two or more strings or arrays.
+Sum two or more numbers, or concatenate two or more strings or arrays. (Note that ReQL will not perform type coercion. You cannot, for example, `add` a string and a number together.) The `add` command can be called in either prefix or infix form; both forms are equivalent.
 
 __Example:__ It's as easy as 2 + 2 = 4.
 
 ```java
-r.expr(2).add(2).run(conn)
-```
+r.expr(2).add(2).run(conn);
 
+// Result:
+4
+```
 
 [Read more about this command &rarr;](add/)
 
@@ -1787,11 +2019,10 @@ Subtract two numbers.
 __Example:__ It's as easy as 2 - 2 = 0.
 
 ```java
-r.expr(2).sub(2).run(conn)
+r.expr(2).sub(2).run(conn);
 ```
 
 [Read more about this command &rarr;](sub/)
-
 
 ## [mul](mul/) ##
 
@@ -1805,11 +2036,10 @@ Multiply two numbers, or make a periodic array.
 __Example:__ It's as easy as 2 * 2 = 4.
 
 ```java
-r.expr(2).mul(2).run(conn)
+r.expr(2).mul(2).run(conn);
 ```
 
 [Read more about this command &rarr;](mul/)
-
 
 ## [div](div/) ##
 
@@ -1822,10 +2052,10 @@ Divide two numbers.
 __Example:__ It's as easy as 2 / 2 = 1.
 
 ```java
-r.expr(2).div(2).run(conn)
+r.expr(2).div(2).run(conn);
 ```
 
-
+[Read more about this command &rarr;](div/)
 
 ## [mod](mod/) ##
 
@@ -1833,13 +2063,15 @@ r.expr(2).div(2).run(conn)
 number.mod(number) &rarr; number
 {% endapibody %}
 
-Find the remainder when dividing two numbers.
+
 
 __Example:__ It's as easy as 2 % 2 = 0.
 
 ```java
-r.expr(2).mod(2).run(conn)
+r.expr(2).mod(2).run(conn);
 ```
+
+[Read more about this command &rarr;](mod/)
 
 ## [and](and/) ##
 
@@ -1848,16 +2080,20 @@ bool.and(bool[, bool, ...]) &rarr; bool
 r.and(bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
-Compute the logical "and" of two or more values.
+Compute the logical "and" of two or more values. The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true,false)`).
 
 __Example:__ Return whether both `a` and `b` evaluate to true.
 
 ```java
-var a = true, b = false;
+boolean a = true;
+boolean b = false;
 r.expr(a).and(b).run(conn);
-// result passed to callback
+
+// Result:
 false
 ```
+
+[Read more about this command &rarr;](and/)
 
 ## [or](or/) ##
 
@@ -1866,17 +2102,20 @@ bool.or(bool[, bool, ...]) &rarr; bool
 r.or(bool[, bool, ...]) &rarr; bool
 {% endapibody %}
 
-
-Compute the logical "or" of two or more values.
+Compute the logical "or" of two or more values. The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true,false)`).
 
 __Example:__ Return whether either `a` or `b` evaluate to true.
 
 ```java
-var a = true, b = false;
+boolean a = true;
+boolean b = false;
 r.expr(a).or(b).run(conn);
-// result passed to callback
+
+// Result:
 true
 ```
+
+[Read more about this command &rarr;](or/)
 
 ## [eq](eq/) ##
 
@@ -1886,12 +2125,13 @@ value.eq(value[, value, ...]) &rarr; bool
 
 Test if two or more values are equal.
 
-__Example:__ See if a user's `role` field is set to `administrator`. 
+__Example:__ See if a user's `role` field is set to `administrator`.
 
 ```java
-r.table('users').get(1)('role').eq('administrator').run(conn);
+r.table("users").get(1)("role").eq("administrator").run(conn);
 ```
 
+[Read more about this command &rarr;](eq/)
 
 ## [ne](ne/) ##
 
@@ -1901,12 +2141,13 @@ value.ne(value[, value, ...]) &rarr; bool
 
 Test if two or more values are not equal.
 
-__Example:__ See if a user's `role` field is not set to `administrator`. 
+__Example:__ See if a user's `role` field is not set to `administrator`.
 
-```rb
-r.table('users').get(1)('role').ne('administrator').run(conn);
+```java
+r.table("users").get(1)("role").ne("administrator").run(conn);
 ```
 
+[Read more about this command &rarr;](ne/)
 
 ## [gt](gt/) ##
 
@@ -1919,8 +2160,10 @@ Compare values, testing if the left-hand value is greater than the right-hand.
 __Example:__ Test if a player has scored more than 10 points.
 
 ```java
-r.table('players').get(1)('score').gt(10).run(conn);
+r.table("players").get(1)("score").gt(10).run(conn);
 ```
+
+[Read more about this command &rarr;](gt/)
 
 ## [ge](ge/) ##
 
@@ -1933,8 +2176,10 @@ Compare values, testing if the left-hand value is greater than or equal to the r
 __Example:__ Test if a player has scored 10 points or more.
 
 ```java
-r.table('players').get(1)('score').ge(10).run(conn);
+r.table("players").get(1)("score").ge(10).run(conn);
 ```
+
+[Read more about this command &rarr;](ge/)
 
 ## [lt](lt/) ##
 
@@ -1947,8 +2192,10 @@ Compare values, testing if the left-hand value is less than the right-hand.
 __Example:__ Test if a player has scored less than 10 points.
 
 ```java
-r.table('players').get(1)['score'].lt(10).run(conn);
+r.table("players").get(1)("score").lt(10).run(conn);
 ```
+
+[Read more about this command &rarr;](lt/)
 
 ## [le](le/) ##
 
@@ -1961,8 +2208,10 @@ Compare values, testing if the left-hand value is less than or equal to the righ
 __Example:__ Test if a player has scored 10 points or less.
 
 ```java
-r.table('players').get(1)('score').le(10).run(conn);
+r.table("players").get(1)("score").le(10).run(conn);
 ```
+
+[Read more about this command &rarr;](le/)
 
 ## [not](not/) ##
 
@@ -1973,14 +2222,16 @@ not(bool) &rarr; bool
 
 Compute the logical inverse (not) of an expression.
 
-`not` can be called either via method chaining, immediately after an expression that evaluates as a boolean value, or by passing the expression as a parameter to `not`.
+`not` can be called either via method chaining, immediately after an expression that evaluates as a boolean value, or by passing the expression as a parameter to `not`. All values that are not `false` or `null` will be converted to `true`.
 
 __Example:__ Not true is false.
 
 ```java
-r(true).not().run(conn)
-r.not(true).run(conn)
+r(true).not().run(conn);
+r.not(true).run(conn);
 ```
+
+These evaluate to `false`.
 
 [Read more about this command &rarr;](not/)
 
@@ -1988,16 +2239,16 @@ r.not(true).run(conn)
 
 {% apibody %}
 r.random() &rarr; number
-r.random(number[, number], {float: true}) &rarr; number
+r.random(number[, number]) &rarr; number
 r.random(integer[, integer]) &rarr; integer
 {% endapibody %}
 
-Generate a random number between given (or implied) bounds. `random` takes zero, one or two arguments.
+Generate a random number between given (or implied) bounds. `random` takes zero, one or two arguments, and can also take an [optArg](/api/java/optarg) of `float`.
 
 __Example:__ Generate a random number in the range `[0,1)`
 
 ```java
-r.random().run(conn)
+r.random().run(conn);
 ```
 
 [Read more about this command &rarr;](random/)
@@ -2009,15 +2260,20 @@ r.round(number) &rarr; number
 number.round() &rarr; number
 {% endapibody %}
 
-Rounds the given value to the nearest whole integer.
+Rounds the given value to the nearest whole integer. For example, values of 1.0 up to but not including 1.5 will return 1.0, similar to [floor][]; values of 1.5 up to 2.0 will return 2.0, similar to [ceil][].
 
 __Example:__ Round 12.345 to the nearest integer.
 
 ```java
-> r.round(12.345).run(conn);
+r.round(12.345).run(conn);
 
+// Result:
 12.0
 ```
+
+The `round` command can also be chained after an expression.
+
+[Read more about this command &rarr;](round/)
 
 ## [ceil](ceil/) ##
 
@@ -2031,10 +2287,15 @@ Rounds the given value up, returning the smallest integer value greater than or 
 __Example:__ Return the ceiling of 12.345.
 
 ```java
-> r.ceil(12.345).run(conn);
+r.ceil(12.345).run(conn);
 
+// Result:
 13.0
 ```
+
+The `ceil` command can also be chained after an expression.
+
+[Read more about this command &rarr;](ceil/)
 
 ## [floor](floor/) ##
 
@@ -2048,13 +2309,17 @@ Rounds the given value down, returning the largest integer value less than or eq
 __Example:__ Return the floor of 12.345.
 
 ```java
-> r.floor(12.345).run(conn);
+r.floor(12.345).run(conn);
 
+// Result:
 12.0
 ```
 
-{% endapisection %}
+The `floor` command can also be chained after an expression.
 
+[Read more about this command &rarr;](floor/)
+
+{% endapisection %}
 
 {% apisection Dates and times %}
 
@@ -2069,11 +2334,13 @@ Return a time object representing the current time in UTC. The command now() is 
 __Example:__ Add a new user with the time at which he subscribed.
 
 ```java
-r.table("users").insert({
-    name: "John",
-    subscription_date: r.now()
-}).run(conn)
+r.table("users").insert(
+    r.hashMap("name", "John")
+     .with("subscription_date", r.now())
+).run(conn);
 ```
+
+[Read more about this command &rarr;](now/)
 
 ## [time](time/) ##
 
@@ -2084,30 +2351,20 @@ r.time(year, month, day[, hour, minute, second], timezone)
 
 Create a time object for a specific time.
 
-A few restrictions exist on the arguments:
-
-- `year` is an integer between 1400 and 9,999.
-- `month` is an integer between 1 and 12.
-- `day` is an integer between 1 and 31.
-- `hour` is an integer.
-- `minutes` is an integer.
-- `seconds` is a double. Its value will be rounded to three decimal places
-(millisecond-precision).
-- `timezone` can be `'Z'` (for UTC) or a string with the format `±[hh]:[mm]`.
-
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986 UTC.
 
 ```java
-r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')})
-    .run(conn)
+r.table("user").get("John").update(
+    r.hashMap("birthdate", r.time(1986, 11, 3, 'Z'))
+).run(conn);
 ```
 
-
+[Read more about this command &rarr;](time/)
 
 ## [epochTime](epoch_time/) ##
 
 {% apibody %}
-r.epochTime(epochTime) &rarr; time
+r.epochTime(number) &rarr; time
 {% endapibody %}
 
 Create a time object based on seconds since epoch. The first argument is a double and
@@ -2116,25 +2373,30 @@ will be rounded to three decimal places (millisecond-precision).
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 
 ```java
-r.table("user").get("John").update({birthdate: r.epochTime(531360000)})
-    .run(conn)
+r.table("user").get("John").update(
+    r.hashMap(birthdate, r.epochTime(531360000))
+).run(conn);
 ```
 
+[Read more about this command &rarr;](epoch_time/)
 
 ## [ISO8601](iso8601/) ##
 
 {% apibody %}
-r.ISO8601(iso8601Date[, {defaultTimezone:''}]) &rarr; time
+r.ISO8601(string) &rarr; time
 {% endapibody %}
 
-Create a time object based on an ISO 8601 date-time string (e.g. '2013-01-01T01:01:01+00:00'). We support all valid ISO 8601 formats except for week dates. If you pass an ISO 8601 date-time without a time zone, you must specify the time zone with the `defaultTimezone` argument. Read more about the ISO 8601 format at [Wikipedia](http://en.wikipedia.org/wiki/ISO_8601).
+Create a time object based on an ISO 8601 date-time string (e.g. '2013-01-01T01:01:01+00:00'). RethinkDB supports all valid ISO 8601 formats except for week dates. Read more about the ISO 8601 format at [Wikipedia](http://en.wikipedia.org/wiki/ISO_8601).
 
 __Example:__ Update the time of John's birth.
 
 ```java
-r.table("user").get("John").update({birth: r.ISO8601('1986-11-03T08:30:00-07:00')}).run(conn)
+r.table("user").get("John").update(
+    r.hashMap("birth", r.iso8601("1986-11-03T08:30:00-07:00"))
+).run(conn);
 ```
 
+[Read more about this command &rarr;](iso8601/)
 
 ## [inTimezone](in_timezone/) ##
 
@@ -2147,10 +2409,10 @@ Return a new time object with a different timezone. While the time stays the sam
 __Example:__ Hour of the day in San Francisco (UTC/GMT -8, without daylight saving time).
 
 ```java
-r.now().inTimezone('-08:00').hours().run(conn)
+r.now().inTimezone("-08:00").hours().run(conn);
 ```
 
-
+[Read more about this command &rarr;](in_timezone/)
 
 ## [timezone](timezone/) ##
 
@@ -2163,31 +2425,31 @@ Return the timezone of the time object.
 __Example:__ Return all the users in the "-07:00" timezone.
 
 ```java
-r.table("users").filter( function(user) {
-    return user("subscriptionDate").timezone().eq("-07:00")
-})
+r.table("users").filter(
+    user -> user.g("subscriptionDate").timezone().eq("-07:00")
+).run(conn);
 ```
 
+[Read more about this command &rarr;](timezone/)
 
 ## [during](during/) ##
 
 {% apibody %}
-time.during(startTime, endTime[, options]) &rarr; bool
+time.during(startTime, endTime) &rarr; bool
 {% endapibody %}
 
-Return if a time is between two other times (by default, inclusive for the start, exclusive for the end).
+Return whether a time is between two other times. By default, this is inclusive of the start time and exclusive of the end time. Use the [optArgs](/api/java/optarg) `left_bound` and `right_bound` to explicitly include (`closed`) or exclude (`open`) that endpoint of the range.
 
-__Example:__ Retrieve all the posts that were posted between December 1st, 2013 (inclusive) and December 10th, 2013 (exclusive).
+__Example:__ Retrieve all the posts that were posted between December 1st, 2013
+(inclusive) and December 10th, 2013 (exclusive).
 
 ```java
 r.table("posts").filter(
-    r.row('date').during(r.time(2013, 12, 1), r.time(2013, 12, 10))
-).run(conn)
+    row -> row.g("date").during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
+).run(conn);
 ```
 
 [Read more about this command &rarr;](during/)
-
-
 
 ## [date](date/) ##
 
@@ -2197,15 +2459,15 @@ time.date() &rarr; time
 
 Return a new time object only based on the day, month and year (ie. the same day at 00:00).
 
-__Example:__ Retrieve all the users whose birthday is today
+__Example:__ Retrieve all the users whose birthday is today.
 
 ```java
-r.table("users").filter(function(user) {
-    return user("birthdate").date().eq(r.now().date())
-}).run(conn)
+r.table("users").filter(
+    user -> user.g("birthdate").date().eq(r.now().date())
+).run(conn);
 ```
 
-
+[Read more about this command &rarr;](date/)
 
 ## [timeOfDay](time_of_day/) ##
 
@@ -2219,10 +2481,11 @@ __Example:__ Retrieve posts that were submitted before noon.
 
 ```java
 r.table("posts").filter(
-    r.row("date").timeOfDay().le(12*60*60)
-).run(conn)
+    post -> post.g("date").timeOfDay().le(12*60*60)
+).run(conn);
 ```
 
+[Read more about this command &rarr;](time_of_day/)
 
 ## [year](year/) ##
 
@@ -2235,11 +2498,12 @@ Return the year of a time object.
 __Example:__ Retrieve all the users born in 1986.
 
 ```java
-r.table("users").filter(function(user) {
-    return user("birthdate").year().eq(1986)
-}).run(conn)
+r.table("users").filter(
+    user -> user.g("birthdate").year().eq(1986)
+}).run(conn);
 ```
 
+[Read more about this command &rarr;](year/)
 
 ## [month](month/) ##
 
@@ -2247,18 +2511,15 @@ r.table("users").filter(function(user) {
 time.month() &rarr; number
 {% endapibody %}
 
-Return the month of a time object as a number between 1 and 12. For your convenience, the terms r.january, r.february etc. are defined and map to the appropriate integer.
+Return the month of a time object as a number between 1 and 12. For your convenience, the terms `r.january`, `r.february`, etc. are defined and map to the appropriate integer.
 
 __Example:__ Retrieve all the users who were born in November.
 
 ```java
-r.table("users").filter(
-    r.row("birthdate").month().eq(11)
-)
+r.table("users").filter(row -> row.g("birthdate").month().eq(11)).run(conn);
 ```
 
 [Read more about this command &rarr;](month/)
-
 
 ## [day](day/) ##
 
@@ -2272,11 +2533,11 @@ __Example:__ Return the users born on the 24th of any month.
 
 ```java
 r.table("users").filter(
-    r.row("birthdate").day().eq(24)
-).run(conn)
+    row -> row.g("birthdate").day().eq(24)
+).run(conn);
 ```
 
-
+[Read more about this command &rarr;](day/)
 
 ## [dayOfWeek](day_of_week/) ##
 
@@ -2284,17 +2545,15 @@ r.table("users").filter(
 time.dayOfWeek() &rarr; number
 {% endapibody %}
 
-Return the day of week of a time object as a number between 1 and 7 (following ISO 8601 standard). For your convenience, the terms r.monday, r.tuesday etc. are defined and map to the appropriate integer.
+Return the day of week of a time object as a number between 1 and 7 (following ISO 8601 standard). For your convenience, the terms r.monday, r.tuesday, etc. are defined and map to the appropriate integer.
 
 __Example:__ Return today's day of week.
 
 ```java
-r.now().dayOfWeek().run(conn)
+r.now().dayOfWeek().run(conn);
 ```
 
 [Read more about this command &rarr;](day_of_week/)
-
-
 
 ## [dayOfYear](day_of_year/) ##
 
@@ -2308,10 +2567,11 @@ __Example:__ Retrieve all the users who were born the first day of a year.
 
 ```java
 r.table("users").filter(
-    r.row("birthdate").dayOfYear().eq(1)
-)
+    row -> row.g("birthdate").dayOfYear().eq(1)
+).run(conn);
 ```
 
+[Read more about this command &rarr;](day_of_year/)
 
 ## [hours](hours/) ##
 
@@ -2324,11 +2584,10 @@ Return the hour in a time object as a number between 0 and 23.
 __Example:__ Return all the posts submitted after midnight and before 4am.
 
 ```java
-r.table("posts").filter(function(post) {
-    return post("date").hours().lt(4)
-})
+r.table("posts").filter(post -> post.g("date").hours().lt(4)).run(conn);
 ```
 
+[Read more about this command &rarr;](hours/)
 
 ## [minutes](minutes/) ##
 
@@ -2341,12 +2600,10 @@ Return the minute in a time object as a number between 0 and 59.
 __Example:__ Return all the posts submitted during the first 10 minutes of every hour.
 
 ```java
-r.table("posts").filter(function(post) {
-    return post("date").minutes().lt(10)
-})
+r.table("posts").filter(post -> post.g("date").minutes().lt(10)).run(conn);
 ```
 
-
+[Read more about this command &rarr;](minutes/)
 
 ## [seconds](seconds/) ##
 
@@ -2359,10 +2616,10 @@ Return the seconds in a time object as a number between 0 and 59.999 (double pre
 __Example:__ Return the post submitted during the first 30 seconds of every minute.
 
 ```java
-r.table("posts").filter(function(post) {
-    return post("date").seconds().lt(30)
-})
+r.table("posts").filter(post -> post.g("date").seconds().lt(30)).run(conn);
 ```
+
+[Read more about this command &rarr;](seconds/)
 
 ## [toISO8601](to_iso8601/) ##
 
@@ -2375,11 +2632,13 @@ Convert a time object to a string in ISO 8601 format.
 __Example:__ Return the current ISO 8601 time.
 
 ```java
-r.now().toISO8601().run(conn)
-// Result passed to callback
+r.now().toISO8601().run(conn);
+
+// Result:
 "2015-04-20T18:37:52.690+00:00"
 ```
 
+[Read more about this command &rarr;](to_iso8601/)
 
 ## [toEpochTime](to_epoch_time/) ##
 
@@ -2392,13 +2651,12 @@ Convert a time object to its epoch time.
 __Example:__ Return the current time in seconds since the Unix Epoch with millisecond-precision.
 
 ```java
-r.now().toEpochTime()
+r.now().toEpochTime().run(conn);
 ```
 
-
+[Read more about this command &rarr;](to_epoch_time/)
 
 {% endapisection %}
-
 
 {% apisection Control structures %}
 
@@ -2410,17 +2668,17 @@ r.args(array) &rarr; special
 
 `r.args` is a special term that's used to splice an array of arguments
 into another term.  This is useful when you want to call a variadic
-term such as `getAll` with a set of arguments produced at runtime.
-
-This is analogous to using **apply** in JavaScript.
+term such as [getAll](/api/java/get_all/) with a set of arguments produced at runtime.
 
 __Example:__ Get Alice and Bob from the table `people`.
 
 ```java
-r.table('people').getAll('Alice', 'Bob').run(conn)
+r.table("people").getAll("Alice", "Bob").run(conn);
 // or
-r.table('people').getAll(r.args(['Alice', 'Bob'])).run(conn)
+r.table("people").getAll(r.args(r.array("Alice", "Bob"))).run(conn);
 ```
+
+[Read more about this command &rarr;](args/)
 
 ## [binary](binary/) ##
 
@@ -2433,39 +2691,31 @@ Encapsulate binary data within a query.
 __Example:__ Save an avatar image to a existing user record.
 
 ```java
-var fs = require('fs');
-fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
-    if (err) {
-        // Handle error
-    }
-    else {
-        r.table('users').get(100).update({
-            avatar: avatarImage
-        })
-    }
-});
+import java.nio.file.*;
+
+Path path = Paths.get("./defaultAvatar.png");
+byte[] avatarImage = Files.readAllBytes(path);
+r.table("users").get(100).update(r.hashMap("avatar", avatarImage));
 ```
 
 [Read more about this command &rarr;](binary/)
 
-## [do](do/) ##
+## [do_](do/) ##
 
 {% apibody %}
-any.do(function) &rarr; any
-r.do([args]*, function) &rarr; any
-any.do(expr) &rarr; any
-r.do([args]*, expr) &rarr; any
+any.do_(function) &rarr; any
+r.do_([args]*, function) &rarr; any
+any.do_(expr) &rarr; any
+r.do_([args]*, expr) &rarr; any
 {% endapibody %}
 
 Call an anonymous function using return values from other ReQL commands or queries as arguments.
 
- __Example:__ Compute a golfer's net score for a game.
+__Example:__ Compute a golfer's net score for a game.
 
 ```java
-r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do(
-    function (player) {
-        return player('gross_score').sub(player('course_handicap'));
-    }
+r.table("players").get("86be93eb-a112-48f5-a829-15b2cb49de1d").do_(
+    player -> player.g("gross_score").sub(player.g("course_handicap"))
 ).run(conn);
 ```
 
@@ -2479,14 +2729,13 @@ r.branch(test, true_action[, test2, else_action, ...], false_action) &rarr; any
 
 Perform a branching conditional equivalent to `if-then-else`.
 
-The `branch` command takes 2n+1 arguments: pairs of conditional expressions and commands to be executed if the conditionals return any value but `false` or `null` (i.e., "truthy" values), with a final "else" command to be evaluated if all of the conditionals are `false` or `null`.
-
 __Example:__ Test the value of x.
 
 ```java
-var x = 10;
-r.branch(r.expr(x).gt(5), 'big', 'small').run(conn);
-// Result passed to callback
+int x = 10;
+r.branch(r.expr(x).gt(5), "big", "small").run(conn);
+
+// Result:
 "big"
 ```
 
@@ -2503,10 +2752,12 @@ Loop over a sequence, evaluating the given write query for each element.
 __Example:__ Now that our heroes have defeated their villains, we can safely remove them from the villain table.
 
 ```java
-r.table('marvel').forEach(function(hero) {
-    return r.table('villains').get(hero('villainDefeated')).delete()
-}).run(conn)
+r.table("marvel").forEach(
+    hero -> r.table("villains").get(hero.g("villainDefeated")).delete()
+).run(conn);
 ```
+
+[Read more about this command &rarr;](for_each/)
 
 ## [range](range/) ##
 
@@ -2515,16 +2766,27 @@ r.range() &rarr; stream
 r.range([startValue, ]endValue) &rarr; stream
 {% endapibody %}
 
-Generate a stream of sequential integers in a specified range.
+Generate a stream of sequential integers in a specified range. `range` takes 0, 1 or 2 arguments:
 
 __Example:__ Return a four-element range of `[0, 1, 2, 3]`.
 
 ```java
-> r.range(4).run(conn)
+r.range(4).run(conn);
+```
 
+Result (shown as JSON):
+
+```json
 [0, 1, 2, 3]
 ```
 
+You can also use the [limit](/api/java/limit) command with the no-argument variant to achieve the same result in this case:
+
+```java
+r.range().limit(4).run(conn);
+```
+
+[Read more about this command &rarr;](range/)
 
 ## [error](error/) ##
 
@@ -2537,12 +2799,16 @@ Throw a runtime error. If called with no arguments inside the second argument to
 __Example:__ Iron Man can't possibly have lost a battle:
 
 ```java
-r.table('marvel').get('IronMan').do(function(ironman) {
-    return r.branch(ironman('victories').lt(ironman('battles')),
-        r.error('impossible code path'),
-        ironman)
-}).run(conn)
+r.table("marvel").get("IronMan").do_(
+    ironman -> r.branch(
+        ironman.g("victories").lt(ironman.g("battles")),
+        r.error("impossible code path"),
+        ironman
+    )
+).run(conn);
 ```
+
+[Read more about this command &rarr;](error/)
 
 ## [default](default/) ##
 
@@ -2557,19 +2823,29 @@ argument returns `null`, returns its second argument. (Alternatively, the second
 may be a function which will be called with either the text of the non-existence error
 or `null`.)
 
-
 __Example:__ Suppose we want to retrieve the titles and authors of the table `posts`.
 In the case where the author field is missing or `null`, we want to retrieve the string
 `Anonymous`.
 
+```java
+r.table("posts").map(post ->
+    r.hashMap("title", post.g("title"))
+     .with("author", post.g("author").default_("Anonymous"))
+).run(conn);
+```
+
+We can rewrite the previous query with `r.branch` too.
 
 ```java
-r.table("posts").map( function(post) {
-    return {
-        title: post("title"),
-        author: post("author").default("Anonymous")
-    }
-}).run(conn)
+r.table("posts").map(post ->
+    r.branch(
+        post.hasFields("author"),
+        r.hashMap("title", post.g("title"))
+         .with("author", post.g("author")),
+        r.hashMap("title", post.g("title"))
+         .with("author", "Anonymous")
+    )
+).run(conn);
 ```
 
 [Read more about this command &rarr;](default/)
@@ -2582,10 +2858,16 @@ r.expr(value) &rarr; value
 
 Construct a ReQL JSON object from a native object.
 
-__Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
+__Example:__ Objects wrapped with expr can then be manipulated by ReQL API functions.
 
 ```java
-r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn)
+import com.rethinkdb.model.MapObject;
+
+// Create object { "a": "b" }
+MapObject newData = new MapObject().with("a", "b");
+
+// merge with { "b": [1, 2, 3] }
+r.expr(newData).merge(r.hashMap("b", r.array(1, 2, 3))).run(conn);
 ```
 
 [Read more about this command &rarr;](expr/)
@@ -2593,15 +2875,15 @@ r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn)
 ## [js](js/) ##
 
 {% apibody %}
-r.js(jsString[, {timeout: <number>}]) &rarr; value
+r.js(jsString) &rarr; value
 {% endapibody %}
 
-Create a javascript expression.
+Create a JavaScript expression.
 
 __Example:__ Concatenate two strings using JavaScript.
 
 ```java
-r.js("'str1' + 'str2'").run(conn)
+r.js("'str1' + 'str2'").run(conn);
 ```
 
 [Read more about this command &rarr;](js/)
@@ -2609,24 +2891,26 @@ r.js("'str1' + 'str2'").run(conn)
 ## [coerceTo](coerce_to/) ##
 
 {% apibody %}
-sequence.coerceTo('array') &rarr; array
-value.coerceTo('string') &rarr; string
-string.coerceTo('number') &rarr; number
-array.coerceTo('object') &rarr; object
-sequence.coerceTo('object') &rarr; object
-object.coerceTo('array') &rarr; array
-binary.coerceTo('string') &rarr; string
-string.coerceTo('binary') &rarr; binary
+sequence.coerceTo("array") &rarr; array
+value.coerceTo("string") &rarr; string
+string.coerceTo("number") &rarr; number
+array.coerceTo("object") &rarr; object
+sequence.coerceTo("object") &rarr; object
+object.coerceTo("array") &rarr; array
+binary.coerceTo("string") &rarr; string
+string.coerceTo("binary") &rarr; binary
 {% endapibody %}
 
 Convert a value of one type into another.
 
-__Example:__ Coerce a stream to an array.
+__Example:__ Coerce a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 
 ```java
-r.table('posts').map(function (post) {
-    post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
-}).run(conn)
+r.table("posts").map(post -> post.merge(
+    r.hashMap("comments",
+              r.table("comments").getAll(post.g("id")).optArg("index", "post_id")
+              .coerceTo("array"))
+)).run(conn);
 ```
 
 [Read more about this command &rarr;](coerce_to/)
@@ -2642,8 +2926,10 @@ Gets the type of a value.
 __Example:__ Get the type of a string.
 
 ```java
-r.expr("foo").typeOf().run(conn)
+r.expr("foo").typeOf().run(conn);
 ```
+
+[Read more about this command &rarr;](type_of/)
 
 ## [info](info/) ##
 
@@ -2657,8 +2943,10 @@ Get information about a ReQL value.
 __Example:__ Get information about a table such as primary key, or cache size.
 
 ```java
-r.table('marvel').info().run(conn)
+r.table("marvel").info().run(conn);
 ```
+
+[Read more about this command &rarr;](info/)
 
 ## [json](json/) ##
 
@@ -2671,8 +2959,10 @@ Parse a JSON string on the server.
 __Example:__ Send an array to the server.
 
 ```java
-r.json("[1,2,3]").run(conn)
+r.json("[1,2,3]").run(conn);
 ```
+
+[Read more about this command &rarr;](json/)
 
 ## [toJsonString, toJSON](to_json_string/) ##
 
@@ -2686,24 +2976,67 @@ Convert a ReQL value or object to a JSON string. You may use either `toJsonStrin
 __Example:__ Get a ReQL document as a JSON string.
 
 ```java
-> r.table('hero').get(1).toJSON()
-// result returned to callback
+r.table("hero").get(1).toJSON().run(conn)
+```
+
+Returned data:
+
+```json
 '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
 ```
+
+[Read more about this command &rarr;](to_json_string/)
 
 ## [http](http/) ##
 
 {% apibody %}
-r.http(url [, options]) &rarr; value
+r.http(url[, options]) &rarr; value
+r.http(url[, options]) &rarr; stream
 {% endapibody %}
 
 Retrieve data from the specified URL over HTTP.  The return type depends on the `resultFormat` option, which checks the `Content-Type` of the response by default.
 
-__Example:__ Perform a simple HTTP `GET` request, and store the result in a table.
+__Example:__ Perform an HTTP `GET` and store the result in a table.
 
 ```java
-r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn)
+r.table("posts").insert(r.http("http://httpbin.org/get")).run(conn);
 ```
+
+See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
+
+# Options #
+
+These options are specified with the [optArg](/api/java/optarg) command.
+
+## General Options ##
+
+* `timeout`: timeout period in seconds to wait before aborting the connect (default `30`).
+* `reattempts`: number of retry attempts to make after failed connections (default `5`).
+* `redirects`: number of redirect and location headers to follow (default `1`).
+* `verify`: if `true`, verify the server's SSL certificate (default `true`).
+* `resultFormat`: string specifying the format to return results in. One of the following:
+    * `text`: always return a string.
+    * `json`: parse the result as JSON, raising an error on failure.
+    * `jsonp`: parse the result as [Padded JSON][jsonp].
+    * `binary`: return a binary object.
+    * `auto`: parse the result based on its `Content-Type` (the default):
+        * `application/json`: as `json`
+        * `application/json-p`, `text/json-p`, `text/javascript`: as `jsonp`
+        * `audio/*`, `video/*`, `image/*`, `application/octet-stream`: as `binary`
+        * anything else: as `text`
+
+[jsonp]: https://en.wikipedia.org/wiki/JSONP
+
+## Request Options
+
+* `method`: HTTP method to use for the request. One of `GET`, `POST`, `PUT`, `PATCH`, `DELETE` or `HEAD`. Default: `GET`.
+* `auth`: object giving authentication, with the following fields:
+    * `type`: `basic` (default) or `digest`
+    * `user`: username
+    * `pass`: password in plain text
+* `params`: hashMap or object specifying URL parameters to append to the URL as encoded key/value pairs. `{ "query": "banana", "limit": 2 }` will be appended as `?query=banana&limit=2`. Default: no parameters.
+* `header`: Extra header lines to include. The value may be an array of strings or an object. Default: `Accept-Encoding: deflate;q=1, gzip;q=0.5` and `User-Agent: RethinkDB/<VERSION>`.
+* `data`: Data to send to the server on a `POST`, `PUT`, `PATCH`, or `DELETE` request. For `POST` requests, data may be either an object (which will be written to the body as form-encoded key/value pairs) or a string; for all other requests, data will be serialized as JSON and placed in the request body, sent as `Content-Type: application/json`. Default: no data will be sent.
 
 [Read more about this command &rarr;](http/)
 
@@ -2718,10 +3051,13 @@ Return a UUID (universally unique identifier), a string that can be used as a un
 __Example:__ Generate a UUID.
 
 ```java
-> r.uuid().run(conn)
-// result returned to callback
+r.uuid().run(conn);
+
+// Result:
 "27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
 ```
+
+[Read more about this command &rarr;](uuid/)
 
 {% endapisection %}
 
@@ -2730,8 +3066,8 @@ __Example:__ Generate a UUID.
 ## [circle](circle/) ##
 
 {% apibody %}
-r.circle([longitude, latitude], radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
-r.circle(point, radius[, {numVertices: 32, geoSystem: 'WGS84', unit: 'm', fill: true}]) &rarr; geometry
+r.circle(r.array(longitude, latitude), radius) &rarr; geometry
+r.circle(point, radius) &rarr; geometry
 {% endapibody %}
 
 Construct a circular line or polygon. A circle in RethinkDB is a polygon or line *approximating* a circle of a given radius around a given center, consisting of a specified number of vertices (default 32).
@@ -2739,11 +3075,11 @@ Construct a circular line or polygon. A circle in RethinkDB is a polygon or line
 __Example:__ Define a circle.
 
 ```java
-r.table('geo').insert({
-    id: 300,
-    name: 'Hayes Valley',
-    neighborhood: r.circle([-122.423246,37.779388], 1000)
-}).run(conn);
+r.table("geo").insert(
+    r.hashMap("id", 300)
+     .with("name", "Hayes Valley")
+     .with("neighborhood", r.circle(r.array(-122.423246, 37.779388), 1000))
+).run(conn);
 ```
 
 [Read more about this command &rarr;](circle/)
@@ -2751,8 +3087,8 @@ r.table('geo').insert({
 ## [distance](distance/) ##
 
 {% apibody %}
-geometry.distance(geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
-r.distance(geometry, geometry[, {geoSystem: 'WGS84', unit: 'm'}]) &rarr; number
+geometry.distance(geometry) &rarr; number
+r.distance(geometry, geometry) &rarr; number
 {% endapibody %}
 
 Compute the distance between a point and another geometry object. At least one of the geometry objects specified must be a point.
@@ -2760,10 +3096,12 @@ Compute the distance between a point and another geometry object. At least one o
 __Example:__ Compute the distance between two points on the Earth in kilometers.
 
 ```java
-var point1 = r.point(-122.423246,37.779388);
-var point2 = r.point(-117.220406,32.719464);
-r.distance(point1, point2, {unit: 'km'}).run(conn);
-// result returned to callback 
+r.distance(
+    r.point(-122.423246,37.779388),
+    r.point(-117.220406,32.719464)
+).optArg("unit", "km").run(conn);
+
+// Result:
 734.1252496021841
 ```
 
@@ -2780,19 +3118,18 @@ Convert a Line object into a Polygon object. If the last point does not specify 
 __Example:__ Create a line object and then convert it to a polygon.
 
 ```java
-r.table('geo').insert({
-    id: 201,
-    rectangle: r.line(
-        [-122.423246,37.779388],
-        [-122.423246,37.329898],
-        [-121.886420,37.329898],
-        [-121.886420,37.779388]
-    )
-}).run(conn);
+r.table("geo").insert(
+    r.hashMap("id", 201)
+     .with("rectangle", r.line(
+        r.array(-122.423246,37.779388),
+        r.array(-122.423246,37.329898),
+        r.array(-121.886420,37.329898),
+        r.array(-121.886420,37.779388)))
+).run(conn);
 
-r.table('geo').get(201).update({
-    rectangle: r.row('rectangle').fill()
-}, {nonAtomic: true}).run(conn);
+r.table("geo").get(201).update(
+    r.hashMap("rectangle", row -> row.g("rectangle").fill())
+).optArg("non_atomic", true).run(conn);
 ```
 
 [Read more about this command &rarr;](fill/)
@@ -2805,20 +3142,24 @@ r.geojson(geojson) &rarr; geometry
 
 Convert a [GeoJSON][] object to a ReQL geometry object.
 
-[GeoJSON]: http://geojson.org
-
 __Example:__ Convert a GeoJSON object to a ReQL geometry object.
 
 ```java
-var geoJson = {
-    'type': 'Point',
-    'coordinates': [ -122.423246, 37.779388 ]
-};
-r.table('geo').insert({
-    id: 'sfo',
-    name: 'San Francisco',
-    location: r.geojson(geoJson)
-}).run(conn);
+import com.rethinkdb.model.Geojson;
+
+// GeoJSON object:
+//      {
+//          "type": "Point",
+//          "coordinates": [ -122.423246, 37.779388 ]
+//      }
+Geojson geo = r.hashMap("type, "Point")
+               .with("coordinates", r.array(-122.423246, 37.779388));
+
+r.table("geo").insert(
+    r.hashMap("id", "sfo")
+     .with("name", "San Francisco")
+     .with("location", r.geojson(geo))
+).run(conn);
 ```
 
 [Read more about this command &rarr;](geojson/)
@@ -2834,11 +3175,12 @@ Convert a ReQL geometry object to a [GeoJSON][] object.
 __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 
 ```java
-r.table('geo').get('sfo')('location').toGeojson.run(conn);
-// result passed to callback
+r.table("geo").get("sfo")("location").toGeojson().run(conn);
+
+// Result:
 {
-    'type': 'Point',
-    'coordinates': [ -122.423246, 37.779388 ]
+    "type": "Point",
+    "coordinates": [ -122.423246, 37.779388 ]
 }
 ```
 
@@ -2847,7 +3189,7 @@ r.table('geo').get('sfo')('location').toGeojson.run(conn);
 ## [getIntersecting](get_intersecting/) ##
 
 {% apibody %}
-table.getIntersecting(geometry, {index: 'indexname'}) &rarr; selection<stream>
+table.getIntersecting(geometry).optArg("index", index) &rarr; selection<stream>
 {% endapibody %}
 
 Get all documents where the given geometry object intersects the geometry object of the requested geospatial index.
@@ -2855,8 +3197,12 @@ Get all documents where the given geometry object intersects the geometry object
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 
 ```java
-var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
-r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn);
+import com.rethinkdb.gen.ast.Circle;
+
+Circle circle1 = r.circle(r.array(-117.220406, 32.719464), 10)
+                  .optArg("unit", "mi");
+
+r.table("parks").getIntersecting(circle1).optArg("index", "area").run(conn);
 ```
 
 [Read more about this command &rarr;](get_intersecting/)
@@ -2864,7 +3210,7 @@ r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn);
 ## [getNearest](get_nearest/) ##
 
 {% apibody %}
-table.getNearest(point, {index: 'indexname'[, maxResults: 100, maxDist: 100000, unit: 'm', geoSystem: 'WGS84']}) &rarr; selection<array>
+table.getNearest(point).optArg("index", index) &rarr; array
 {% endapibody %}
 
 Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
@@ -2872,10 +3218,15 @@ Get all documents where the specified geospatial index is within a certain dista
 __Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
 
 ```java
-var secretBase = r.point(-122.422876,37.777128);
-r.table('hideouts').getNearest(secretBase,
-    {index: 'location', maxDist: 5000}
-).run(conn)
+import com.rethinkdb.gen.ast.Point;
+
+Point secretBase = r.point(-122.422876,37.777128);
+
+r.table("hideouts")
+ .getNearest(secretBase)
+ .optArg("index", "location")
+ .optArg("max_dist", 5000)
+ .run(conn);
 ```
 
 [Read more about this command &rarr;](get_nearest/)
@@ -2889,13 +3240,15 @@ geometry.includes(geometry) &rarr; bool
 
 Tests whether a geometry object is completely contained within another. When applied to a sequence of geometry objects, `includes` acts as a [filter](/api/java/filter), returning a sequence of objects from the sequence that include the argument.
 
-__Example:__ Is `point2` included within a 2000-meter circle around `point1`?
+__Example:__ Is a point included within a 2000-meter circle?
 
 ```java
-var point1 = r.point(-117.220406,32.719464);
-var point2 = r.point(-117.206201,32.725186);
+Object point1 = r.point(-117.220406,32.719464);
+Object point2 = r.point(-117.206201,32.725186);
+
 r.circle(point1, 2000).includes(point2).run(conn);
-// result returned to callback 
+
+// Result:
 true
 ```
 
@@ -2915,10 +3268,14 @@ Tests whether two geometry objects intersect with one another. When applied to a
 __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 
 ```java
-var point1 = r.point(-117.220406,32.719464);
-var point2 = r.point(-117.206201,32.725186);
+import com.rethinkdb.gen.ast.Point;
+
+Point point1 = r.point(-117.220406,32.719464);
+Point point2 = r.point(-117.206201,32.725186);
+
 r.circle(point1, 2000).intersects(point2).run(conn);
-// result returned to callback 
+
+// Result:
 true
 ```
 
@@ -2927,22 +3284,20 @@ true
 ## [line](line/) ##
 
 {% apibody %}
-r.line([lon1, lat1], [lon2, lat1], ...) &rarr; line
+r.line([lon1, lat1], [lon2, lat2], ...) &rarr; line
 r.line(point1, point2, ...) &rarr; line
 {% endapibody %}
 
 Construct a geometry object of type Line. The line can be specified in one of two ways:
 
-* Two or more two-item arrays, specifying longitude and latitude numbers of the line's vertices;
-* Two or more [Point](/api/java/point) objects specifying the line's vertices.
-
 __Example:__ Define a line.
 
 ```java
-r.table('geo').insert({
-    id: 101,
-    route: r.line([-122.423246,37.779388], [-121.886420,37.329898])
-}).run(conn);
+r.table("geo").insert(
+    r.hashMap("id", 101)
+     .with("route", r.line(r.array(-122.423246, 37.779388),
+                           r.array(-121.88642, 37.329898)))
+).run(conn);
 ```
 
 [Read more about this command &rarr;](line/)
@@ -2953,16 +3308,16 @@ r.table('geo').insert({
 r.point(longitude, latitude) &rarr; point
 {% endapibody %}
 
-Construct a geometry object of type Point. The point is specified by two floating point numbers, the longitude (&minus;180 to 180) and the latitude (&minus;90 to 90) of the point on a perfect sphere.
+Construct a geometry object of type Point. The point is specified by two floating point numbers, the longitude (&minus;180 to 180) and latitude (&minus;90 to 90) of the point on a perfect sphere. See [Geospatial support](/docs/geo-support/) for more information on ReQL's coordinate system.
 
 __Example:__ Define a point.
 
 ```java
-r.table('geo').insert({
-    id: 1,
-    name: 'San Francisco',
-    location: r.point(-122.423246,37.779388)
-}).run(conn);
+r.table("geo").insert(
+    r.hashMap("id", 1)
+     .with("name", "San Francisco")
+     .with("location", r.point(-122.423246, 37.779388))
+).run(conn);
 ```
 
 [Read more about this command &rarr;](point/)
@@ -2976,21 +3331,18 @@ r.polygon(point1, point2, point3, ...) &rarr; polygon
 
 Construct a geometry object of type Polygon. The Polygon can be specified in one of two ways:
 
-* Three or more two-item arrays, specifying longitude and latitude numbers of the polygon's vertices;
-* Three or more [Point](/api/java/point) objects specifying the polygon's vertices.
-
 __Example:__ Define a polygon.
 
 ```java
-r.table('geo').insert({
-    id: 101,
-    rectangle: r.polygon(
-        [-122.423246,37.779388],
-        [-122.423246,37.329898],
-        [-121.886420,37.329898],
-        [-121.886420,37.779388]
+r.table("geo").insert(
+    r.hashMap("id", 101)
+     .with("rectangle", r.polygon(
+        r.array(-122.423246, 37.779388),
+        r.array(-122.423246, 37.329898),
+        r.array(-121.88642, 37.329898),
+        r.array(-121.88642, 37.779388))
     )
-}).run(conn);
+).run(conn);
 ```
 
 [Read more about this command &rarr;](polygon/)
@@ -3003,23 +3355,24 @@ polygon1.polygonSub(polygon2) &rarr; polygon
 
 Use `polygon2` to "punch out" a hole in `polygon1`. `polygon2` must be completely contained within `polygon1` and must have no holes itself (it must not be the output of `polygonSub` itself).
 
-
 __Example:__ Define a polygon with a hole punched in it.
 
 ```java
-var outerPolygon = r.polygon(
+import com.rethinkdb.gen.ast.Polygon;
+
+Polygon outerPolygon = r.polygon(
     [-122.4,37.7],
     [-122.4,37.3],
     [-121.8,37.3],
     [-121.8,37.7]
 );
-var innerPolygon = r.polygon(
+Polygon innerPolygon = r.polygon(
     [-122.3,37.4],
     [-122.3,37.6],
     [-122.0,37.6],
     [-122.0,37.4]
 );
-outerPolygon.polygonSub(innerpolygon).run(conn);
+outerPolygon.polygonSub(inner_polygon).run(conn);
 ```
 
 [Read more about this command &rarr;](polygon_sub/)
@@ -3040,7 +3393,33 @@ Query (read and/or update) the configurations for individual tables or databases
 __Example:__ Get the configuration for the `users` table.
 
 ```java
-> r.table('users').config().run(conn);
+> r.table("users").config().run(conn);
+```
+
+Result:
+
+```json
+{
+    "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
+    "name": "users",
+    "db": "superstuff",
+    "primary_key": "id",
+    "shards": [
+        {
+            "primary_replica": "a",
+            "replicas": ["a", "b"],
+            "nonvoting_replicas": []
+        },
+        {
+            "primary_replica": "d",
+            "replicas": ["c", "d"],
+            "nonvoting_replicas": []
+        }
+    ],
+    "indexes": [],
+    "write_acks": "majority",
+    "durability": "hard"
+}
 ```
 
 [Read more about this command &rarr;](config/)
@@ -3057,7 +3436,82 @@ Rebalances the shards of a table. When called on a database, all the tables in t
 __Example:__ Rebalance a table.
 
 ```java
-> r.table('superheroes').rebalance().run(conn);
+> r.table("superheroes").rebalance().run(conn);
+```
+
+Result:
+
+```json
+{
+  "rebalanced": 1,
+  "status_changes": [
+    {
+      "old_val": {
+        "db": "database",
+        "id": "5cb35225-81b2-4cec-9eef-bfad15481265",
+        "name": "superheroes",
+        "shards": [
+          {
+            "primary_replica": "jeeves",
+            "replicas": [
+              {
+                "server": "jeeves",
+                "state": "ready"
+              }
+            ]
+          },
+          {
+            "primary_replica": "jeeves",
+            "replicas": [
+              {
+                "server": "jeeves",
+                "state": "ready"
+              }
+            ]
+          }
+        ],
+        "status": {
+          "all_replicas_ready": true,
+          "ready_for_outdated_reads": true,
+          "ready_for_reads": true,
+          "ready_for_writes": true
+        }
+      },
+      "new_val": {
+        "db": "database",
+        "id": "5cb35225-81b2-4cec-9eef-bfad15481265",
+        "name": "superheroes",
+        "shards": [
+          {
+            "primary_replica": "jeeves",
+            "replicas": [
+              {
+                "server": "jeeves",
+                "state": "transitioning"
+              }
+            ]
+          },
+          {
+            "primary_replica": "jeeves",
+            "replicas": [
+              {
+                "server": "jeeves",
+                "state": "transitioning"
+              }
+            ]
+          }
+        ],
+        "status": {
+          "all_replicas_ready": false,
+          "ready_for_outdated_reads": false,
+          "ready_for_reads": false,
+          "ready_for_writes": false
+        }
+      }
+
+    }
+  ]
+}
 ```
 
 [Read more about this command &rarr;](rebalance/)
@@ -3065,16 +3519,69 @@ __Example:__ Rebalance a table.
 ## [reconfigure](reconfigure/) ##
 
 {% apibody %}
-table.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false}]) &rarr; object
-database.reconfigure({shards: <s>, replicas: <r>[, primaryReplicaTag: <t>, dryRun: false}]) &rarr; object
+table.reconfigure() &rarr; object
+database.reconfigure() &rarr; object
 {% endapibody %}
 
-Reconfigure a table's sharding and replication.
+Reconfigure a table's sharding and replication. Pass the following options using [optArg](/api/java/optarg/):
 
 __Example:__ Reconfigure a table.
 
 ```java
-> r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn);
+r.table("superheroes").reconfigure().optArg("shards", 2).optArg("replicas", 1).run(conn);
+```
+
+Result:
+
+```json
+{
+  "reconfigured": 1,
+  "config_changes": [
+    {
+      "new_val": {
+        "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        "name": "superheroes",
+        "db": "superstuff",
+        "primary_key": "id",
+        "shards": [
+          {
+            "primary_replica": "jeeves",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          },
+          {
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+          }
+        ],
+        "indexes": [],
+        "write_acks": "majority",
+        "durability": "hard"
+      },
+      "old_val": {
+        "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
+        "name": "superheroes",
+        "db": "superstuff",
+        "primary_key": "id",
+        "shards": [
+            "primary_replica": "alfred",
+            "replicas": ["jeeves", "alfred"],
+            "nonvoting_replicas": []
+        ],
+        "indexes": [],
+        "write_acks": "majority",
+        "durability": "hard"
+      }
+    }
+  ],
+  "status_changes": [
+    {
+      "new_val": (status object),
+      "old_val": (status object)
+    }
+  ]
+}
 ```
 
 [Read more about this command &rarr;](reconfigure/)
@@ -3090,7 +3597,43 @@ Return the status of a table.
 __Example:__ Get a table's status.
 
 ```java
-> r.table('superheroes').status().run(conn);
+r.table("superheroes").status().run(conn);
+```
+
+Result:
+
+```json
+{
+  "db": "database",
+  "id": "5cb35225-81b2-4cec-9eef-bfad15481265",
+  "name": "superheroes",
+  "shards": [
+    {
+      "primary_replicas": ["jeeves"],
+      "replicas": [
+        {
+          "server": "jeeves",
+          "state": "ready"
+        }
+      ]
+    },
+    {
+      "primary_replicas": ["jeeves"],
+      "replicas": [
+        {
+          "server": "jeeves",
+          "state": "ready"
+        }
+      ]
+    }
+  ],
+  "status": {
+    "all_replicas_ready": true,
+    "ready_for_outdated_reads": true,
+    "ready_for_reads": true,
+    "ready_for_writes": true
+  }
+}
 ```
 
 [Read more about this command &rarr;](status/)
@@ -3098,17 +3641,23 @@ __Example:__ Get a table's status.
 ## [wait](wait/) ##
 
 {% apibody %}
-table.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
-database.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
-r.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
+table.wait() &rarr; object
+database.wait() &rarr; object
+r.wait() &rarr; object
 {% endapibody %}
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.
 
-__Example:__ Wait for a table to be ready.
+__Example:__ Wait on a table to be ready.
 
 ```java
-> r.table('superheroes').wait().run(conn);
+r.table("superheroes").wait().run(conn);
+```
+
+Result:
+
+```json
+{ "ready": 1 }
 ```
 
 [Read more about this command &rarr;](wait/)
