@@ -27,7 +27,7 @@ sequence.group([field | function...,]) &rarr; grouped_stream
 Takes a stream and partitions it into multiple groups based on the
 fields or functions provided.
 
-Two options are available via [optArg](/api/java/optarg): `index` can be the name of an index to group on (in place of a field. The `multi` flag, a boolean (default `false`), allows single documents to be assigned to multiple groups, similar to the behavior of [multi-indexes](/docs/secondary-indexes/java). When `multi` is `true` and the grouping value is an array, documents will be placed in each group that corresponds to the elements of the array. If the array is empty the row will be ignored.
+Two options are available via [optArg](/api/java/optarg): `index` can be the name of an index to group on (in place of a field. The `multi` flag, a boolean (default `false`), allows single documents to be assigned to multiple groups, similar to the behavior of [multi-indexes](/docs/secondary-indexes/). When `multi` is `true` and the grouping value is an array, documents will be placed in each group that corresponds to the elements of the array. If the array is empty the row will be ignored.
 
 The data returned by `group` will be a `List<GroupedResult>`:
 
