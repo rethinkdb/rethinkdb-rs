@@ -20,6 +20,8 @@
         {% assign lang = 'py' %}
     {% when 'Ruby' %}
         {% assign lang = 'rb' %}
+    {% when 'Java' %}
+        {% assign lang = 'java' %}
 {% endcase %}
 
 {% comment %}<!-- Generate links for this page in other languages -->{% endcomment %}
@@ -31,6 +33,9 @@
 {% endcapture %}
 {% capture rb_link %}
     {% apiurltag ruby %}{{ page.permalink }}{% endapiurltag %}
+{% endcapture %}
+{% capture java_link %}
+    {% apiurltag java %}{{ page.permalink }}{% endapiurltag %}
 {% endcapture %}
 <nav class="lang-selector">
     <p class="caption">Language: </p>
@@ -49,6 +54,11 @@
             {% unless page.rb == false %}href="{{ rb_link }}"{% endunless %}>
             <i class="ruby"></i>
             <span {% if page.rb == false %}class="disabled"{% endif %}>Ruby</span>
+        </a><span class="divider">|</span><!--
+        --><a class="lang java {% if lang == 'java' %} active{% endif %}"
+            {% unless page.java == false %}href="{{ java_link }}"{% endunless %}>
+            <i class="java"></i>
+            <span {% if page.java == false %}class="disabled"{% endif %}>Java</span>
         </a>
     </section>
 </nav>
