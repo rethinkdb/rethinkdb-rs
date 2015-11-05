@@ -4,6 +4,7 @@ language: Python
 permalink: api/python/row/
 command: row
 rb: false
+java: ralse
 ---
 
 # Command syntax #

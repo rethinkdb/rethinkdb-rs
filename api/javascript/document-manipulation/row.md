@@ -4,6 +4,7 @@ language: JavaScript
 permalink: api/javascript/row/
 command: row
 rb: false
+java: false
 io:
     -   - r
         - value

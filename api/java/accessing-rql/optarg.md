@@ -3,6 +3,9 @@ layout: api-command
 language: Java
 permalink: api/java/optarg/
 command: optArg
+rb: false
+py: false
+js: false
 ---
 
 # Command syntax #

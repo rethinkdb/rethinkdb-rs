@@ -1432,7 +1432,7 @@ where that predicate returns `true`.
 __Example:__ Has Iron Man ever fought Superman?
 
 ```java
-r.table("marvel").get("ironman")("opponents").contains("superman").run(conn);
+r.table("marvel").get("ironman").g("opponents").contains("superman").run(conn);
 ```
 
 [Read more about this command &rarr;](contains/)
@@ -2660,6 +2660,59 @@ r.now().toEpochTime().run(conn);
 
 {% apisection Control structures %}
 
+## [array](array/) ##
+
+{% apibody %}
+r.array(value[, value...]) &rarr; array
+{% endapibody %}
+
+Take one or more values as arguments and return an array.
+
+__Example:__ Create an array.
+
+```java
+r.array(10, 20, 30).run(conn);
+```
+
+This is a ReQL equivalent to:
+
+```java
+int[] myArray = { 10, 20, 30 };
+```
+
+[Read more about this command &rarr;](array/)
+
+## [hashMap](hashmap/) ##
+
+{% apibody %}
+r.hashMap(key, value)[.with(key, value) ...] &rarr; object
+{% endapibody %}
+
+Take a key/value pair, with extra key/value pairs optionally specified by chaining one or more `with(key, value)` terms after `hashMap`, and return an object.
+
+__Example:__ Create a hashmap.
+
+```java
+r.hashMap("user", "fred")
+ .with("email", "fred@example.com")
+ .with("id", 101)
+ .with("admin", true)
+ .run(conn);
+```
+
+This creates the object (in JSON):
+
+```json
+{
+    "admin": true,
+    "email": "fred@example.com",
+    "id": 101,
+    "user": "fred"
+}
+```
+
+[Read more about this command &rarr;](hashmap/)
+
 ## [args](args/) ##
 
 {% apibody %}
@@ -2817,11 +2870,7 @@ value.default(default_value) &rarr; any
 sequence.default(default_value) &rarr; any
 {% endapibody %}
 
-Handle non-existence errors. Tries to evaluate and return its first argument. If an
-error related to the absence of a value is thrown in the process, or if its first
-argument returns `null`, returns its second argument. (Alternatively, the second argument
-may be a function which will be called with either the text of the non-existence error
-or `null`.)
+Provide a default value in case of non-existence errors. The `default` command evaluates its first argument (the value it's chained to). If that argument returns `null` or a non-existence error is thrown in evaluation, then `default` returns its second argument. The second argument is usually a default value, but it can be a function that returns a value.
 
 __Example:__ Suppose we want to retrieve the titles and authors of the table `posts`.
 In the case where the author field is missing or `null`, we want to retrieve the string
@@ -3393,7 +3442,7 @@ Query (read and/or update) the configurations for individual tables or databases
 __Example:__ Get the configuration for the `users` table.
 
 ```java
-> r.table("users").config().run(conn);
+r.table("users").config().run(conn);
 ```
 
 Result:
@@ -3663,3 +3712,4 @@ Result:
 [Read more about this command &rarr;](wait/)
 
 {% endapisection %}
+

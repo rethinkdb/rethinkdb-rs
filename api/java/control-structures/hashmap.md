@@ -3,6 +3,9 @@ layout: api-command
 language: Java
 permalink: api/java/hashmap/
 command: hashMap
+py: false
+js: false
+rb: false
 related_commands:
     array: array/
 ---
@@ -37,6 +40,8 @@ This creates the object (in JSON):
     "user": "fred"
 }
 ```
+
+__Example:__ Create a hashmap using MapObject.
 
 The RethinkDB Java driver provides a `MapObject` class that extends `HashMap` by adding a chainable `with(key, value)` method for convenience. To create the object above as a `MapObject`:
 

@@ -292,6 +292,10 @@
 - section:
     name: Control structures
     commands:
+        - name: array
+          permalink: array
+        - name: hashMap
+          permalink: hashmap
         - name: args
           permalink: args
         - name: binary

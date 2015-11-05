@@ -3,6 +3,9 @@ layout: api-command
 language: Java
 permalink: api/java/array/
 command: array
+js: false
+py: false
+rb: false
 related_commands:
     hashMap: hashmap/
 ---

@@ -17,7 +17,7 @@ Encapsulate binary data within a query.
 
 The type of data `binary` accepts depends on the client language. In Java, it expects a parameter of `byte[]` type (or ReQL queries that return binary data).
 
-Binary objects returned to the client in JavaScript will also be `byte[]` types. This can be changed with the `binary_format` [optArg](/api/java/optarg) provided to [run](/api/java/run) to return "raw" objects.
+Binary objects returned to the client in Java will also be `byte[]` types. This can be changed with the `binary_format` [optArg](/api/java/optarg) provided to [run](/api/java/run) to return "raw" objects.
 
 Only a limited subset of ReQL commands may be chained after `binary`:
 
