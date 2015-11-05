@@ -107,7 +107,7 @@ Result:
 __Example:__ Reconfigure a table, specifying replicas by server tags.
 
 ```java
-r.table("superheroes").reconfigure().optArg("shards", 2).optArg("replicas", r.hashMap("wooster", 1).with("wayne", 1)).optArg("primaryReplicaTag", "wooster").run(conn)
+r.table("superheroes").reconfigure().optArg("shards", 2).optArg("replicas", r.hashMap("wooster", 1).with("wayne", 1)).optArg("primary_replica_tag", "wooster").run(conn)
 
 {
   "reconfigured": 1,

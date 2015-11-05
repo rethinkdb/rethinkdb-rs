@@ -27,7 +27,7 @@ Values and predicates may be mixed freely in the argument list.
 __Example:__ Has Iron Man ever fought Superman?
 
 ```java
-r.table("marvel").get("ironman")("opponents").contains("superman").run(conn);
+r.table("marvel").get("ironman").g("opponents").contains("superman").run(conn);
 ```
 
 
