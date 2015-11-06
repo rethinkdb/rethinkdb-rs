@@ -46,7 +46,7 @@ __Example:__ Coerce a stream to an array to store its output in a field. (A stre
 
 ```js
 r.table('posts').map(function (post) {
-    post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
+    return post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
 }).run(conn, callback)
 ```
 

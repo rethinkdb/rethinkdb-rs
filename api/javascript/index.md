@@ -1106,7 +1106,7 @@ player, with the highest scorers first?
 
 ```js
 r.table('games')
-    .group('player').max('points')['points']
+    .group('player').max('points')('points')
     .ungroup().orderBy(r.desc('reduction')).run(conn)
 ```
 
@@ -1920,7 +1920,7 @@ Compare values, testing if the left-hand value is less than the right-hand.
 __Example:__ Test if a player has scored less than 10 points.
 
 ```js
-r.table('players').get(1)['score'].lt(10).run(conn, callback);
+r.table('players').get(1)('score').lt(10).run(conn, callback);
 ```
 
 ## [le](le/) ##
@@ -2595,7 +2595,7 @@ __Example:__ Coerce a stream to an array.
 
 ```js
 r.table('posts').map(function (post) {
-    post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
+    return post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
 }).run(conn, callback)
 ```
 
@@ -2804,7 +2804,7 @@ Convert a ReQL geometry object to a [GeoJSON][] object.
 __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 
 ```js
-r.table('geo').get('sfo')('location').toGeojson.run(conn, callback);
+r.table('geo').get('sfo')('location').toGeojson().run(conn, callback);
 // result passed to callback
 {
     'type': 'Point',
