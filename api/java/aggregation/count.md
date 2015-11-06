@@ -38,7 +38,7 @@ r.table("users").count().run(conn);
 __Example:__ Count the number of 18 year old users.
 
 ```java
-r.table("users")("age").count(18).run(conn);
+r.table("users").g("age").count(18).run(conn);
 ```
 
 __Example:__ Count the number of users over 18.

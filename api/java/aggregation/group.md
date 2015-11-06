@@ -111,7 +111,7 @@ producing more grouped data.
 __Example:__ What is the maximum number of points scored by each player?
 
 ```java
-r.table("games").group("player").max("points")("points").run(conn);
+r.table("games").group("player").max("points").g("points").run(conn);
 ```
 
 ```json
@@ -359,8 +359,8 @@ r.table("games").group("player").max("points").g("points").ungroup()
 When grouped data are returned to the client, they are transformed
 into a client-specific native type.  (Something similar is done with
 [times](/docs/dates-and-times/).)  In Java, grouped data are
-transformed into an `Array`.  If you instead want to receive the raw
-pseudotype from the server, you can specify `groupFormat: 'raw'` as an optional
+transformed into an `List`.  If you instead want to receive the raw
+pseudotype from the server, you can specify `group_format: "raw"` as an optional
 argument to `run`:
 
 __Example:__ Get back the raw `GROUPED_DATA` pseudotype.
@@ -389,7 +389,7 @@ objects on the server.
 If you run a query that returns a grouped stream, it will be
 automatically converted to grouped data before being sent back to you
 (there is currently no efficient way to stream groups from RethinkDB).
-This grouped data is subject to the array size limit, by default 100,000 elements (see [run](/api/java/run) for details on how to use the `array_limit` optArg to change this).
+This grouped data is subject to the array size limit, by default 100,000 elements (see [run](/api/java/run) for details on how to use the `array_limit` argument to change this).
 
 In general, operations on grouped streams will be efficiently
 distributed, and operations on grouped data won't be.  You can figure
