@@ -25,7 +25,7 @@ echo "deb http://download.rethinkdb.com/apt trusty main" | sudo tee /etc/apt/sou
 
 ## Install RethinkDB ##
 ```bash
-wget -qO- http://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
+wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
 sudo apt-get update
 sudo apt-get install rethinkdb
 ```

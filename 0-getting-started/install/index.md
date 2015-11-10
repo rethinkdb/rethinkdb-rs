@@ -121,4 +121,4 @@ more platforms.
 
 # Older versions #
 
-Binaries for previous versions of RethinkDB are available in the [download archive](http://download.rethinkdb.com).
+Binaries for previous versions of RethinkDB are available in the [download archive](https://download.rethinkdb.com).

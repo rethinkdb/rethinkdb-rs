@@ -27,7 +27,7 @@ sudo zypper in make gcc gcc-c++ protobuf-devel ncurses-devel \
 Download and extract the archive:
 
 ```bash
-wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+wget https://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
 tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
