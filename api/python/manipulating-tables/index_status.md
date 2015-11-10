@@ -36,15 +36,14 @@ or this one:
 {
     "index": <index_name>,
     "ready": False,
-    "blocks_processed": <int>,
-    "blocks_total": <int>,
+    "progress": <float>,
     "function": <binary>,
     "multi": <bool>,
     "outdated": <bool>
 }
 ```
 
-The `multi` field will be `true` or `false` depending on whether this index was created as a multi index (see [index_create](/api/python/index_create/) for details). The `outdated` field will be true if the index is outdated in the current version of RethinkDB and needs to be rebuilt.
+The `multi` field will be `true` or `false` depending on whether this index was created as a multi index (see [index_create](/api/python/index_create/) for details). The `outdated` field will be true if the index is outdated in the current version of RethinkDB and needs to be rebuilt. The `progress` field is a float between `0` and `1`, indicating how far along the server is in constructing indexes after the most recent change to the table that would affect them. (`0` indicates no such indexes have been constructed; `1` indicates all of them have.)
 
 The `function` field is a binary object containing an opaque representation of the secondary index (including the `multi` argument if specified). It can be passed as the second argument to [index_create](/api/python/index_create/) to create a new index with the same function; see `index_create` for more information.
 
