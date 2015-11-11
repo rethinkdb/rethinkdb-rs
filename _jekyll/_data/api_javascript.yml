@@ -17,6 +17,8 @@
           permalink: changes
         - name: noreplyWait
           permalink: noreply_wait
+        - name: server
+          permalink: server
         - name: EventEmitter (connection)
           permalink: event_emitter
 - section:

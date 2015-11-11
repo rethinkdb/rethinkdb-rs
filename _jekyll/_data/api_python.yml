@@ -19,6 +19,8 @@
           permalink: changes
         - name: noreply_wait
           permalink: noreply_wait
+        - name: server
+          permalink: server
         - name: set_loop_type
           permalink: set_loop_type
 - section:
