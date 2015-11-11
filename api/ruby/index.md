@@ -166,6 +166,22 @@ wait until the server has processed them.
 conn.noreply_wait
 ```
 
+## [server](server/) ##
+
+{% apibody %}
+conn.server
+{% endapibody %}
+
+Return the server name and server UUID being used by a connection.
+
+__Example:__ Return the server name and UUID.
+
+```rb
+> conn.server
+
+{ :id => "404bef53-4b2c-433f-9184-bc3f7bda4a15", :name => "amadeus" }
+```
+
 {% endapisection %}
 
 {% apisection Cursors %}
@@ -458,8 +474,8 @@ r.table('test').index_wait('timestamp').run(conn)
 ## [changes](changes/) ##
 
 {% apibody %}
-stream.changes({:squash => false, :include_states => false}) &rarr; stream
-singleSelection.changes({:squash => false, :include_states => false}) &rarr; stream
+stream.changes([options]) &rarr; stream
+singleSelection.changes([options]) &rarr; stream
 {% endapibody %}
 
 Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
@@ -1553,12 +1569,35 @@ singleSelection.keys() &rarr; array
 object.keys() &rarr; array
 {% endapibody %}
 
-Return an array containing all of the object's keys.
+Return an array containing all of an object's keys. Note that the keys will be sorted as described in [ReQL data types](/docs/data-types/#sorting-order) (for strings, lexicographically).
 
-__Example:__ Get all the keys of a row.
+__Example:__ Get all the keys from a table row.
 
 ```rb
-r.table('marvel').get('ironman').keys.run(conn)
+# row: { :id => 1, :mail => "fred@example.com", :name => "fred" }
+
+r.table('users').get(1).keys().run(conn)
+
+> [ "id", "mail", "name" ]
+```
+
+## [values](values/) ##
+
+{% apibody %}
+singleSelection.values() &rarr; array
+object.values() &rarr; array
+{% endapibody %}
+
+Return an array containing all of an object's values. `values()` guarantees the values will come out in the same order as [keys](/api/ruby/keys).
+
+__Example:__ Get all of the values from a table row.
+
+```rb
+# row: { :id => 1, :mail => "fred@example.com", :name => "fred" }
+
+r.table('users').get(1).values().run(conn)
+
+> [ 1, "fred@example.com", "fred" ]
 ```
 
 ## [literal](literal/) ##
@@ -1781,11 +1820,12 @@ __Example:__ It's as easy as 2 % 2 = 0.
 
 {% apibody %}
 bool & bool &rarr; bool
-bool.and(bool[, bool, ...]) &rarr; bool
-r.and(bool, bool[, bool, ...]) &rarr; bool
+bool.and([bool, bool, ...]) &rarr; bool
+r.and([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
-Compute the logical "and" of two or more values.
+Compute the logical "and" of one or more values.
+
 __Example:__ Return whether both `a` and `b` evaluate to true.
 
 ```rb
@@ -1801,11 +1841,11 @@ false
 
 {% apibody %}
 bool | bool &rarr; bool
-bool.or(bool[, bool, ...]) &rarr; bool
-r.or(bool, bool[, bool, ...]) &rarr; bool
+bool.or([bool, bool, ...]) &rarr; bool
+r.or([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
-Compute the logical "or" of two or more values.
+Compute the logical "or" of one or more values.
 
 __Example:__ Return whether either `a` or `b` evaluate to true.
 
@@ -2419,26 +2459,23 @@ r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do { |player|
 ## [branch](branch/) ##
 
 {% apibody %}
-r.branch(test, true_branch, false_branch) &rarr; any
+r.branch(test, true_action[, test2, else_action, ...], false_action) &rarr; any
 {% endapibody %}
 
-If the `test` expression returns `false` or `nil`, the `false_branch` will be evaluated.
-Otherwise, the `true_branch` will be evaluated.
+Perform a branching conditional equivalent to `if-then-else`.
 
-The `branch` command is effectively an `if` renamed due to language constraints.
-The type of the result is determined by the type of the branch that gets executed.
+The `branch` command takes 2n+1 arguments: pairs of conditional expressions and commands to be executed if the conditionals return any value but `false` or `nil` (i.e., "truthy" values), with a final "else" command to be evaluated if all of the conditionals are `false` or `nil`.
 
-__Example:__ Return heroes and superheroes.
+__Example:__ Test the value of x.
 
 ```rb
-r.table('marvel').map{ |hero|
-    r.branch(
-        hero['victories'] > 100,
-        hero['name'].add(' is a superhero'),
-        hero['name'].add(' is a hero')
-    )
-}.run(conn)
+x = 10
+r.branch((x > 5), 'big', 'small').run(conn)
+
+> "big"
 ```
+
+[Read more about this command &rarr;](branch/)
 
 ## [for_each](for_each/) ##
 
@@ -2555,7 +2592,10 @@ sequence.coerce_to('array') &rarr; array
 value.coerce_to('string') &rarr; string
 string.coerce_to('number') &rarr; number
 array.coerce_to('object') &rarr; object
+sequence.coerce_to('object') &rarr; object
 object.coerce_to('array') &rarr; array
+binary.coerce_to('string') &rarr; string
+string.coerce_to('binary') &rarr; binary
 {% endapibody %}
 
 Convert a value of one type into another.
@@ -2649,10 +2689,10 @@ r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn)
 ## [uuid](uuid/) ##
 
 {% apibody %}
-r.uuid() &rarr; string
+r.uuid([string]) &rarr; string
 {% endapibody %}
 
-Return a UUID (universally unique identifier), a string that can be used as a unique ID.
+Return a UUID (universally unique identifier), a string that can be used as a unique ID. If a string is passed to `uuid` as an argument, the UUID will be deterministic, derived from the string's SHA-1 hash.
 
 __Example:__ Generate a UUID.
 
@@ -2661,6 +2701,8 @@ __Example:__ Generate a UUID.
 
 "27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
 ```
+
+[Read more about this command &rarr;](uuid/)
 
 {% endapisection %}
 

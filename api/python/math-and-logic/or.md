@@ -11,13 +11,15 @@ related_commands:
 
 {% apibody %}
 bool | bool &rarr; bool
-bool.or_(bool[, bool, ...]) &rarr; bool
-r.or_(bool, bool[, bool, ...]) &rarr; bool
+bool.or_([bool, bool, ...]) &rarr; bool
+r.or_([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Compute the logical "or" of two or more values. The `or_` command can be used as an infix operator after its first argument (`r.expr(True).or_(False)`) or given all of its arguments as parameters (`r.or_(True, False)`). The standard Python or operator, `|`, may also be used with ReQL.
+Compute the logical "or" of one or more values. The `or_` command can be used as an infix operator after its first argument (`r.expr(True).or_(False)`) or given all of its arguments as parameters (`r.or_(True, False)`). The standard Python or operator, `|`, may also be used with ReQL.
+
+Calling `or_` with zero arguments will return `False`.
 
 __Example:__ Return whether either `a` or `b` evaluate to true.
 

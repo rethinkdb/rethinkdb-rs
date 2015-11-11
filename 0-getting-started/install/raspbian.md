@@ -34,7 +34,7 @@ Make also sure that you have at least 1GB available on your SD card.
 Download and extract the archive:
 
 ```bash
-wget http://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+wget https://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
 tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 

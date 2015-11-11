@@ -19,6 +19,8 @@
           permalink: changes
         - name: noreply_wait
           permalink: noreply_wait
+        - name: server
+          permalink: server
         - name: em_run
           permalink: em_run
 - section:
@@ -190,6 +192,8 @@
           permalink: change_at
         - name: keys
           permalink: keys
+        - name: values
+          permalink: values
         - name: literal
           permalink: literal
         - name: object

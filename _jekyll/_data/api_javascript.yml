@@ -17,6 +17,8 @@
           permalink: changes
         - name: noreplyWait
           permalink: noreply_wait
+        - name: server
+          permalink: server
         - name: EventEmitter (connection)
           permalink: event_emitter
 - section:
@@ -26,6 +28,8 @@
           permalink: next
         - name: each
           permalink: each
+        - name: eachAsync
+          permalink: each_async
         - name: toArray
           permalink: to_array
         - name: close
@@ -192,6 +196,8 @@
           permalink: change_at
         - name: keys
           permalink: keys
+        - name: values
+          permalink: values
         - name: literal
           permalink: literal
         - name: object

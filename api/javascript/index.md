@@ -146,6 +146,27 @@ wait until the server has processed them.
 conn.noreplyWait(function(err) { ... })
 ```
 
+## [server](server/) ##
+
+{% apibody %}
+conn.server(callback)
+conn.server() &rarr; promise
+{% endapibody %}
+
+Return the server name and server UUID being used by a connection.
+
+__Example:__ Return the server name and UUID.
+
+```js
+conn.server(callback);
+
+// Result passed to callback
+{ "id": "404bef53-4b2c-433f-9184-bc3f7bda4a15", "name": "amadeus" }
+```
+
+If no callback is provided, a promise will be returned.
+
+
 ## [EventEmitter (connection)](event_emitter/) ##
 
 {% apibody %}
@@ -211,6 +232,31 @@ cursor.each(function(err, row) {
 ```
 
 [Read more about this command &rarr;](each/)
+
+
+## [eachAsync](each_async/) ##
+
+{% apibody %}
+cursor.eachAsync(function) &rarr; promise
+array.eachAsync(function) &rarr; promise
+feed.eachAsync(function) &rarr; promise
+{% endapibody %}
+
+Lazily iterate over a result set one element at a time in an identical fashion to [each](/api/javascript/each/), returning a Promise that will be resolved once all rows are returned.
+
+__Example:__ Process all the elements in a stream.
+
+```js
+cursor.eachAsync(function(row) {
+    // if a Promise is returned, it will be processed before the cursor
+    // continues iteration.
+    return asyncRowHandler(row);
+}).then(function () {
+    console.log("done processing"); 
+});
+```
+
+[Read more about this command &rarr;](each_async/)
 
 ## [toArray](to_array/) ##
 
@@ -484,8 +530,8 @@ r.table('test').indexWait('timestamp').run(conn, callback)
 ## [changes](changes/) ##
 
 {% apibody %}
-stream.changes({squash: false, includeStates: false}) &rarr; stream
-singleSelection.changes({squash: false, includeStates: false}) &rarr; stream
+stream.changes([options]) &rarr; stream
+singleSelection.changes([options]) &rarr; stream
 {% endapibody %}
 
 Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
@@ -1599,12 +1645,37 @@ singleSelection.keys() &rarr; array
 object.keys() &rarr; array
 {% endapibody %}
 
-Return an array containing all of the object's keys.
+Return an array containing all of an object's keys. Note that the keys will be sorted as described in [ReQL data types](/docs/data-types/#sorting-order) (for strings, lexicographically).
 
-__Example:__ Get all the keys of a row.
+__Example:__ Get all the keys from a table row.
 
 ```js
-r.table('marvel').get('ironman').keys().run(conn, callback)
+// row: { id: 1, mail: "fred@example.com", name: "fred" }
+
+r.table('users').get(1).keys().run(conn, callback);
+// Result passed to callback
+[ "id", "mail", "name" ]
+```
+
+## [values](values/) ##
+
+# Command syntax #
+
+{% apibody %}
+singleSelection.values() &rarr; array
+object.values() &rarr; array
+{% endapibody %}
+
+Return an array containing all of an object's values. `values()` guarantees the values will come out in the same order as [keys](/api/javascript/keys).
+
+__Example:__ Get all of the values from a table row.
+
+```js
+// row: { id: 1, mail: "fred@example.com", name: "fred" }
+
+r.table('users').get(1).values().run(conn, callback);
+// Result passed to callback
+[ 1, "fred@example.com", "fred" ]
 ```
 
 ## [literal](literal/) ##
@@ -1817,11 +1888,11 @@ r.expr(2).mod(2).run(conn, callback)
 ## [and](and/) ##
 
 {% apibody %}
-bool.and(bool[, bool, ...]) &rarr; bool
-r.and(bool[, bool, ...]) &rarr; bool
+bool.and([bool, bool, ...]) &rarr; bool
+r.and([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
-Compute the logical "and" of two or more values.
+Compute the logical "and" of one or more values.
 
 __Example:__ Return whether both `a` and `b` evaluate to true.
 
@@ -1835,12 +1906,11 @@ false
 ## [or](or/) ##
 
 {% apibody %}
-bool.or(bool[, bool, ...]) &rarr; bool
-r.or(bool[, bool, ...]) &rarr; bool
+bool.or([bool, bool, ...]) &rarr; bool
+r.or([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
-
-Compute the logical "or" of two or more values.
+Compute the logical "or" of one or more values.
 
 __Example:__ Return whether either `a` or `b` evaluate to true.
 
@@ -2449,26 +2519,23 @@ r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do(
 ## [branch](branch/) ##
 
 {% apibody %}
-r.branch(test, true_branch, false_branch) &rarr; any
+r.branch(test, true_action[, test2, else_action, ...], false_action) &rarr; any
 {% endapibody %}
 
-If the `test` expression returns `false` or `null`, the `false_branch` will be evaluated.
-Otherwise, the `true_branch` will be evaluated.
+Perform a branching conditional equivalent to `if-then-else`.
 
-The `branch` command is effectively an `if` renamed due to language constraints.
-The type of the result is determined by the type of the branch that gets executed.
+The `branch` command takes 2n+1 arguments: pairs of conditional expressions and commands to be executed if the conditionals return any value but `false` or `null` (i.e., "truthy" values), with a final "else" command to be evaluated if all of the conditionals are `false` or `null`.
 
-__Example:__ Return heroes and superheroes.
+__Example:__ Test the value of x.
 
 ```js
-r.table('marvel').map(
-    r.branch(
-        r.row('victories').gt(100),
-        r.row('name').add(' is a superhero'),
-        r.row('name').add(' is a hero')
-    )
-).run(conn, callback)
+var x = 10;
+r.branch(r.expr(x).gt(5), 'big', 'small').run(conn, callback);
+// Result passed to callback
+"big"
 ```
+
+[Read more about this command &rarr;](branch/)
 
 ## [forEach](for_each/) ##
 
@@ -2585,8 +2652,10 @@ sequence.coerceTo('array') &rarr; array
 value.coerceTo('string') &rarr; string
 string.coerceTo('number') &rarr; number
 array.coerceTo('object') &rarr; object
+sequence.coerceTo('object') &rarr; object
 object.coerceTo('array') &rarr; array
 binary.coerceTo('string') &rarr; string
+string.coerceTo('binary') &rarr; binary
 {% endapibody %}
 
 Convert a value of one type into another.
@@ -2680,10 +2749,10 @@ r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn, callback)
 ## [uuid](uuid/) ##
 
 {% apibody %}
-r.uuid() &rarr; string
+r.uuid([string]) &rarr; string
 {% endapibody %}
 
-Return a UUID (universally unique identifier), a string that can be used as a unique ID.
+Return a UUID (universally unique identifier), a string that can be used as a unique ID. If a string is passed to `uuid` as an argument, the UUID will be deterministic, derived from the string's SHA-1 hash.
 
 __Example:__ Generate a UUID.
 
@@ -2692,6 +2761,8 @@ __Example:__ Generate a UUID.
 // result returned to callback
 "27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
 ```
+
+[Read more about this command &rarr;](uuid/)
 
 {% endapisection %}
 
