@@ -9,7 +9,7 @@ permalink: docs/install/ubuntu/
 
 # With binaries #
 
-We provide binaries for both 32-bit and 64-bit Ubuntu Lucid and above (>= 10.04).
+We provide binaries for both 32-bit and 64-bit Ubuntu Precise and above (>= 12.04).
 
 To install the server, you have to add the [RethinkDB
 repository](http://download.rethinkdb.com/apt) to your list of
