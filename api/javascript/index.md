@@ -1888,11 +1888,11 @@ r.expr(2).mod(2).run(conn, callback)
 ## [and](and/) ##
 
 {% apibody %}
-bool.and(bool[, bool, ...]) &rarr; bool
-r.and(bool[, bool, ...]) &rarr; bool
+bool.and([bool, bool, ...]) &rarr; bool
+r.and([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
-Compute the logical "and" of two or more values.
+Compute the logical "and" of one or more values.
 
 __Example:__ Return whether both `a` and `b` evaluate to true.
 
@@ -1906,12 +1906,11 @@ false
 ## [or](or/) ##
 
 {% apibody %}
-bool.or(bool[, bool, ...]) &rarr; bool
-r.or(bool[, bool, ...]) &rarr; bool
+bool.or([bool, bool, ...]) &rarr; bool
+r.or([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
-
-Compute the logical "or" of two or more values.
+Compute the logical "or" of one or more values.
 
 __Example:__ Return whether either `a` or `b` evaluate to true.
 
