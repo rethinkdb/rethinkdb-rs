@@ -29,3 +29,13 @@ r.expr([1, 2]).union([3, 4], [5, 6], [7, 8, 9]).run(conn)
 
 [1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
+
+__Example:__ Create a [changefeed][cf] from the first example.
+
+```rb
+r.table('marvel').union(r.table('dc')).changes.run(conn)
+```
+
+Now, when any heroes are added, modified or deleted from either table, a change notification will be sent out.
+
+[cf]: /docs/changefeeds/ruby

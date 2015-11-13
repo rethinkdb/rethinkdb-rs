@@ -802,3 +802,26 @@ query = query.filter(request.filter) if request.filter
 query = query.order_by('date')
 query = query.run(conn)
 ```
+
+## Joining multiple changefeeds into one ##
+
+You might want to produce a "union" changefeed to watch multiple tables or queries on just one feed. Since the `union` command works with `changes`, ReQL makes this fairly straightforward. To monitor two tables at once:
+
+```rb
+r.table('table1').union(r.table('table2')).changes().run(conn)
+```
+
+You might want to "tag" the tables to make it clear which changes belong to which table.
+
+```rb
+r.table("table1").merge({:table => "table1"}).union(
+    r.table("table2").merge({:table => "table2"}).changes().run(conn)
+```
+
+Also, you can use `changes` with each query rather than after the whole.
+
+```rb
+r.table("table1").filter({:flag => "blue"}).changes().union(
+    r.table("table2").filter({:flag => "red"}).changes()
+).run(conn)
+```
