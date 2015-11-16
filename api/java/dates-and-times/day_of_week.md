@@ -28,7 +28,7 @@ __Example:__ Retrieve all the users who were born on a Tuesday.
 
 ```java
 r.table("users").filter(
-    row -> row.g("birthdate").dayOfWeek().eq(r.tuesday)
+    row -> row.g("birthdate").dayOfWeek().eq(r.tuesday())
 ).run(conn);
 ```
 

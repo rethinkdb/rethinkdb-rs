@@ -6,7 +6,7 @@ command: time
 related_commands:
     now: now/
     epochTime: epoch_time/
-    ISO8601: iso8601/
+    iso8601: iso8601/
 ---
 
 # Command syntax #

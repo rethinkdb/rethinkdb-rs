@@ -17,7 +17,9 @@ time.date() &rarr; time
 
 # Description #
 
-Return a new time object only based on the day, month and year (ie. the same day at 00:00).
+Return a new [OffsetDateTime][odt] object only based on the day, month and year (ie. the same day at 00:00).
+
+[odt]: https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html
 
 __Example:__ Retrieve all the users whose birthday is today.
 

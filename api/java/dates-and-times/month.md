@@ -30,7 +30,7 @@ __Example:__ Retrieve all the users who were born in September.
 
 ```java
 r.table("users").filter(
-    row -> row.g("birthdate").month().eq(r.september)
+    row -> row.g("birthdate").month().eq(r.september())
 ).run(conn);
 ```
 
