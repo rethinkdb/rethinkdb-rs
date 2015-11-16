@@ -334,7 +334,15 @@ Once the [run](/api/python/run) command is processed, the serialized query needs
 
 The query types are defined in `ql2.proto`. When a query is first sent to the server, it will be sent with a `QueryType` of `START` (`1`). The options (sometimes referred to as "global optargs") are options passed to the `run` command itself; see the [run documentation](/api/python/run) for a complete list. (Commands sent to the server are snake_case, not camelCase.)
 
-Other `QueryType` values will be discussed in "Receiving responses."
+The full list of `QueryType` values is as follows:
+
+* `1` `START`: Start a new query.
+* `2` `CONTINUE`: Continue a query that returned `SUCCESS_PARTIAL` (see [Receive responses](#receive-responses)).
+* `3` `STOP`: Stop a query that is still executing.
+* `4` `NOREPLY_WAIT`: Wait for noreply operations to finish. The server will return a `WAIT_COMPLETE` response.
+* `5` `SERVER_INFO`: Ask for server information. The server will return a `SERVER_INFO` response.
+
+`CONTINUE` and `STOP` should be sent on the same connection with the same token generated for that query's `START` message.
 
 ## Sending queries ##
 
@@ -398,6 +406,7 @@ These will be numeric values, corresponding to the types in `ql2.proto`.
 * `2` `SUCCESS_SEQUENCE`: Either the whole query has been returned in `r`, or the last section of a multi-response query has been returned.
 * `3` `SUCCESS_PARTIAL`: The query has returned a stream, which may or may not be complete. To retrieve more results for the query, send a `CONTINUE` message (see below).
 * `4` `WAIT_COMPLETE`: This `ResponseType` indicates all queries run in `noreply` mode have finished executing. `r` will be empty. 
+* `5` `SERVER_INFO`: The response to a `SERVER_INFO` request. The data will be in the first (and only) element of `r`.
 * `16` `CLIENT_ERROR`: The server failed to run the query due to a bad client request. The error message will be in the first element of `r`.
 * `17` `COMPILE_ERROR`: The server failed to run the query due to an ReQL compilation error. The error message will be in the first element of `r`.
 * `18` `RUNTIME_ERROR`: The query compiled correctly, but failed at runtime. The error message will be in the first element of `r`.
