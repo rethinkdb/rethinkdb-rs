@@ -134,5 +134,7 @@ r.table('games').get(1).changes({:include_initial => true, :include_states => tr
 __Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
 
 ```rb
-r.table('games').order_by({:index => r.desc('score')}).limit(10).run(conn)
+r.table('games').order_by(
+    {:index => r.desc('score')}
+).limit(10).changes().run(conn)
 ```

@@ -135,5 +135,7 @@ r.table('games').get(1).changes({includeInitial: true, includeStates: true}).run
 __Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
 
 ```js
-r.table('games').orderBy({index: r.desc('score')}).limit(10).run(conn, callback);
+r.table('games').orderBy(
+    { index: r.desc('score') }
+).limit(10).changes().run(conn, callback);
 ```
