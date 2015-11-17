@@ -23,11 +23,11 @@ Take a key/value pair, with extra key/value pairs optionally specified by chaini
 __Example:__ Create a hashmap.
 
 ```java
-r.hashMap("user", "fred")
- .with("email", "fred@example.com")
- .with("id", 101)
- .with("admin", true)
- .run(conn);
+r.expr(r.hashMap("user", "fred")
+    .with("email", "fred@example.com")
+    .with("id", 101)
+    .with("admin", true)
+).run(conn);
 ```
 
 This creates the object (in JSON):

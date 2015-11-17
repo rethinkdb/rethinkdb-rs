@@ -111,7 +111,7 @@ r.http("http://httpbin.org/post").optArg("method", "POST")
     * `0`: no requests will be made, an empty stream will be returned
     * `n`: `n` requests will be made
 
-At the moment, the only built-in strategy is `'link-next'`, which is equivalent to `info -> info.g("header").g("link").g("rel='next'").default_(null)`.
+At the moment, the only built-in strategy is `link-next`, which is equivalent to `info -> info.g("header").g("link").g("rel='next'").default_(null)`.
 
 __Example:__ Perform a GitHub search and collect up to 3 pages of results.
 
@@ -123,7 +123,7 @@ r.http("https://api.github.com/search/code?q=addClass+user:mozilla")
 
 As a function, `page` takes one parameter, an object of the format:
 
-```jason
+```js
 {
     "params": object,  // the URL parameters used in the last request
     "header": object,  // the headers of the last response as key/value pairs
@@ -147,7 +147,7 @@ The `header` field will be a parsed version of the header with fields lowercased
 
 The `page` function may return a string corresponding to the next URL to request, `null` indicating that there is no more to get, or an object of the format:
 
-```json
+```js
 {
     "url": string,    // the next URL to request, or null for no more pages
     "params": object  // new URL parameters to use, will be merged with the
