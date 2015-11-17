@@ -28,7 +28,7 @@ In the case where the author field is missing or `null`, we want to retrieve the
 ```java
 r.table("posts").map(post ->
     r.hashMap("title", post.g("title"))
-     .with("author", post.g("author").default_("Anonymous"))
+        .with("author", post.g("author").default_("Anonymous"))
 ).run(conn);
 ```
 
@@ -39,9 +39,9 @@ r.table("posts").map(post ->
     r.branch(
         post.hasFields("author"),
         r.hashMap("title", post.g("title"))
-         .with("author", post.g("author")),
+            .with("author", post.g("author")),
         r.hashMap("title", post.g("title"))
-         .with("author", "Anonymous")
+            .with("author", "Anonymous")
     )
 ).run(conn);
 ```

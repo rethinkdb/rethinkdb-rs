@@ -18,16 +18,18 @@ r.array(value[, value...]) &rarr; array
 
 # Description #
 
-Take one or more values as arguments and return an array.
+Take one or more values as arguments and return an array. (Technically, return a [List][] object.)
+
+[List]: https://docs.oracle.com/javase/8/docs/api/java/util/List.html
 
 __Example:__ Create an array.
 
 ```java
-r.array(10, 20, 30).run(conn);
+r.expr(r.array(10, 20, 30)).run(conn);
 ```
 
 This is a ReQL equivalent to:
 
 ```java
-int[] myArray = { 10, 20, 30 };
+List<Integer> myArray = Arrays.asList(10, 20, 30);
 ```
