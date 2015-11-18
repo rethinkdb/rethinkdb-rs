@@ -5,14 +5,17 @@ docs_active: full-text-search
 permalink: docs/elasticsearch/
 ---
 
-__Q__: What's the best way to perform [full-text searches][fts] with RethinkDB?
+{% infobox alert %}
+**The Elasticsearch River plugin is not compatible with RethinkDB 2.2 and higher.** We'll be revisiting this article to update it with the new official Java driver and the [RethinkDB Logstash input plugin][lsp] soon.
 
+[lsp]: https://github.com/rethinkdb/logstash-input-rethinkdb
+{% endinfobox %}
+
+__Q__: What's the best way to perform [full-text searches][fts] with RethinkDB?  
 __A__: Use the [Elasticsearch River for RethinkDB][err].
 
 [fts]: http://en.wikipedia.org/wiki/Full_text_search
 [err]: https://github.com/rethinkdb/elasticsearch-river-rethinkdb
-
-{% infobox %}
 
 **Before you start**
 
@@ -22,8 +25,6 @@ __A__: Use the [Elasticsearch River for RethinkDB][err].
 [rdb]: /docs/install
 [e13]: http://www.elasticsearch.org/overview/elkdownloads/
 [j8]: http://www.oracle.com/technetwork/java/javase/downloads/index.html
-
-{% endinfobox %}
 
 # What Elasticsearch does
 
