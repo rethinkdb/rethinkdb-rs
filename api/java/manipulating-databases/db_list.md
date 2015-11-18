@@ -17,7 +17,7 @@ r.dbList() &rarr; array
 
 # Description #
 
-List all database names in the system. The result is a list of strings.
+List all database names in the cluster. The result is a list of strings.
 
 __Example:__ List all databases.
 
