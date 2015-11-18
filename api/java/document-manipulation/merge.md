@@ -20,7 +20,7 @@ array.merge([object | function, object | function, ...]) &rarr; array
 
 # Description #
 
-Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list. `merge` also accepts a subquery function that returns an object, which will be used similarly to a [map](/api/java/map/) function.
+Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list. `merge` also accepts a function that returns an object, which will be used similarly to a [map](/api/java/map/) function.
 
 __Example:__ Equip Thor for battle.
 
@@ -31,7 +31,7 @@ r.table("marvel").get("thor")
  .run(conn);
 ```
 
-__Example:__ Equip every hero for battle, using a subquery function to retrieve their weapons.
+__Example:__ Equip every hero for battle, using a function to retrieve their weapons.
 
 ```java
 r.table("marvel").merge(
@@ -50,7 +50,7 @@ r.table("posts").merge(
 ).run(conn);
 ```
 
-__Example:__ Merge can be used recursively to modify object within objects.
+__Example:__ Merge can be used recursively to modify sub-objects within objects.
 
 ```java
 r.expr(r.hashMap("weapons", r.hashMap("spectacular graviton beam",

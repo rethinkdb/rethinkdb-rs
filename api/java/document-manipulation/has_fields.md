@@ -4,7 +4,7 @@ language: Java
 permalink: api/java/has_fields/
 command: hasFields
 related_commands:
-    '() (getField)': get_field/
+    getField: get_field/
     withFields: with_fields/
 ---
 

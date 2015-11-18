@@ -18,7 +18,7 @@ array.setUnion(array) &rarr; array
 
 # Description #
 
-Add a several values to an array and return it as a set (an array with distinct values).
+Perform a set intersection of two arrays, returning an array with all unique items from both.
 
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots and an arc reactor.
 

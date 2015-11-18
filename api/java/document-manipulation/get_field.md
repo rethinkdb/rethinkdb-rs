@@ -21,6 +21,8 @@ object.g(attr) &rarr; value
 Get a single field from an object. If called on a sequence, gets that field from every
 object in the sequence, skipping objects that lack it.
 
+You may use either `getField` or its shorthand, `g`.
+
 __Example:__ What was Iron Man's first appearance in a comic?
 
 ```java

@@ -20,7 +20,7 @@ object.without([selector1, selector2...]) &rarr; object
 # Description #
 
 The opposite of pluck; takes an object or a sequence of objects, and returns them with
-the specified paths removed.
+the specified fields or paths removed.
 
 __Example:__ Since we don't need it for this computation we'll save bandwidth and leave
 out the list of IronMan's romantic conquests.
