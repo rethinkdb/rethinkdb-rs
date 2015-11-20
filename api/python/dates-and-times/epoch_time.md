@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.epoch_time(epoch_time) &rarr; time
+r.epoch_time(number) &rarr; time
 {% endapibody %}
 
 # Description #

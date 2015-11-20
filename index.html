@@ -1,76 +1,48 @@
 ---
 layout: documentation
 title: RethinkDB Documentation
-active: docs
-alias: docs/pragmatic-faq/
+doc_index: true
 ---
-<table class="docs-grid docs-index">
-    <tbody>
-        <tr>
-            <td>
-                <div class="docs-grid-block quickstart">
-                    <h1><a href="/docs/quickstart/">Quickstart</a></h1>
-                    <p>
-                        Learn how to start RethinkDB, create tables,
-                        insert documents, and query your data in
-                        under thirty seconds.
-                    </p>
-                    <a href="/docs/quickstart/">Start using RethinkDB &raquo;</a>
-                </div>
-            </td>
-            <td>
-                <div class="docs-grid-block install">
-                    <h1><a href="/docs/install/">Install RethinkDB</a></h1>
-                    <p>
-                        You can install the server on most Linux distributions and
-                        OS X. The client drivers are available in
-                        Python, Ruby, JavaScript, and many other languages.
-                    </p>
-                    <a href="/install/">Install the server and drivers &raquo;</a>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="docs-grid-block api">
-                    <h1><a href="/api/">API reference</a></h1>
-                    <p>
-                        Ready to do real work? Browse the detailed
-                        command reference for the Python, Ruby, and
-                        JavaScript client drivers.
-                    </p>
-                    <a href="/api/">Explore the commands &raquo;</a>
-                </div>
-            </td>
-            <td>
-                <div class="docs-grid-block examples">
-                    <h1><a href="/docs/examples/">Example applications</a></h1>
-                    <p>
-                        Read through the annotated source code for
-                        example applications written on top of
-                        RethinkDB. Todo lists, chat servers, data
-                        analysis &mdash; it's all there!
-                    </p>
-                    <a href="/docs/examples/">Learn RethinkDB by example &raquo;</a>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="docs-grid-block cookbook">
-                    <h1><a href="/docs/cookbook/">Cookbook</a></h1>
-                    <p>
-                        Wondering how to write a specific query or solve a
-                        specific problem in RethinkDB?  See dozens of examples
-                        of commonly written queries in Python, Ruby, and
-                        JavaScript.
-                    </p>
-                    <a href="/docs/cookbook/">Find the right recipe &raquo;</a>
-                </div>
-            </td>
-            <td>
-                <img src="/assets/images/docs/api_illustrations/docs.png" class="api_command_illustration" />
-            </td>
-        </tr>
-    </tbody>
-</table>
+<section class="docs-landing">
+    <section class="docs-intro">
+        <h2>What is RethinkDB?</h2>
+        <p>
+            RethinkDB makes building and scaling realtime apps dramatically easier.
+            Get started by installing the server, and jump into our getting started
+            guide to start building your first app in minutes.
+        </p>
+        <ul class="primary-docs">
+            <li class="quickstart">
+                <a href="/docs/quickstart/">
+                    <p>Quickstart</p>
+                </a>
+            </li>
+            <li class="install">
+                <a href="/docs/install/">
+                    <p>Install RethinkDB</p>
+                </a>
+            </li>
+            <li class="api">
+                <a href="/api/">
+                    <p>API reference</p>
+                </a>
+            </li>
+         </ul>
+    </section>
+    <section class="intro-video">
+        <h1>RethinkDB in two minutes</h1>
+        {% video qKPKsBNw604 %}<img src="/assets/images/videos/what-is-rethinkdb.png">{% endvideo %}
+    </section>
+    <section class="featured-articles">
+        <h1>Featured articles</h1>
+        <ul class="article-list">
+            {% for article in site.data.docs['docs-featured'] %}
+                <li>
+                    <h1><a href="{{ article.permalink }}">{{ article.title }}</a></h1>
+                    <p>{{ article.description }}</p>
+                </li>
+            {% endfor %}
+
+        </ul>
+    </section>
+</section>

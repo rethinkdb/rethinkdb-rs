@@ -17,9 +17,7 @@ table.get_nearest(point, {:index => 'indexname'[, :max_results => 100, :max_dist
 
 Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
 
-The `index` argument is mandatory. This command returns the same results as `table.filter { |row| row['index'].intersects(geometry) }`. The total number of results is limited to the array size limit which defaults to 100,000, but can be changed with the `array_limit` option to [run](/api/ruby/run).
-
-Optional arguments are:
+The `index` argument is mandatory. Optional arguments are:
 
 * `max_results`: the maximum number of results to return (default 100).
 * `unit`: Unit for the distance. Possible values are `m` (meter, the default), `km` (kilometer), `mi` (international mile), `nm` (nautical mile), `ft` (international foot).

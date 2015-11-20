@@ -16,7 +16,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.reduce(reduction_function) &rarr; value
+sequence.reduce(function) &rarr; value
 {% endapibody %}
 
 # Description #
@@ -35,7 +35,7 @@ mistaken when using the `reduce` command is to suppose that the reduction is exe
 from left to right. Read the [map-reduce in RethinkDB](/docs/map-reduce/) article to
 see an example.
 
-If the sequence is empty, the server will produce a `RqlRuntimeError` that can be
+If the sequence is empty, the server will produce a `ReqlRuntimeError` that can be
 caught with `default`.  
 If the sequence has only one element, the first element will be returned.
 

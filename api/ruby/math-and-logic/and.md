@@ -11,13 +11,15 @@ related_commands:
 
 {% apibody %}
 bool & bool &rarr; bool
-bool.and(bool) &rarr; bool
-r.and(bool, bool) &rarr; bool
+bool.and([bool, bool, ...]) &rarr; bool
+r.and([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Compute the logical "and" of two or more values. The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true, false)`). The standard Ruby or operator, `|`, may also be used with ReQL.
+Compute the logical "and" of one or more values. The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true, false)`). The standard Ruby or operator, `|`, may also be used with ReQL.
+
+Calling `and` with zero arguments will return `true`.
 
 __Example:__ Return whether both `a` and `b` evaluate to true.
 

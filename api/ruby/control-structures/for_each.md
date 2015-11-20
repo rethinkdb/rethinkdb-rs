@@ -8,7 +8,7 @@ command: for_each
 # Command syntax #
 
 {% apibody %}
-sequence.for_each(write_query) &rarr; object
+sequence.for_each(write_function) &rarr; object
 {% endapibody %}
 
 # Description #

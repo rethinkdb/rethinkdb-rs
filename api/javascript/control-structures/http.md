@@ -32,102 +32,34 @@ See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on 
 # Options #
 
 ## General Options ##
-* `timeout`: Number of seconds to wait before timing out and aborting the operation. Default: 30.
 
-* `reattempts`: An integer giving the number of attempts to make in cast of connection errors or potentially-temporary HTTP errors. Default: 5.
+* `timeout`: timeout period in seconds to wait before aborting the connect (default `30`).
+* `reattempts`: number of retry attempts to make after failed connections (default `5`).
+* `redirects`: number of redirect and location headers to follow (default `1`).
+* `verify`: if `true`, verify the server's SSL certificate (default `true`).
+* `resultFormat`: string specifying the format to return results in. One of the following:
+    * `text`: always return a string.
+    * `json`: parse the result as JSON, raising an error on failure.
+    * `jsonp`: parse the result as [Padded JSON][jsonp].
+    * `binary`: return a binary object.
+    * `auto`: parse the result based on its `Content-Type` (the default):
+        * `application/json`: as `json`
+        * `application/json-p`, `text/json-p`, `text/javascript`: as `jsonp`
+        * `audio/*`, `video/*`, `image/*`, `application/octet-stream`: as `binary`
+        * anything else: as `text`
 
-* `redirects`: An integer giving the number of redirects and location headers to follow. Default: 1.
-
-* `verify`: Verify the server's SSL certificate, specified as a boolean. Default: true.
-
-* `resultFormat`: The format the result should be returned in. The values can be `'text'` (always return as a string), `'json'` (parse the result as JSON, raising an error if the parsing fails), `'jsonp'` (parse the result as [padded JSON](http://www.json-p.org/)), `'binary'` (return a binary object), or `'auto'` . The default is `'auto'`.
-
-    When `resultFormat` is `auto`, the response body will be parsed according to the `Content-Type` of the response:
-    * `application/json`: parse as `'json'`
-    * `application/json-p`, `text/json-p`, `text/javascript`: parse as `'jsonp'`
-    * `audio/*`, `video/*`, `image/*`, `application/octet-stream`: return a binary object
-    * Anything else: parse as `'text'`
+[jsonp]: https://en.wikipedia.org/wiki/JSONP
 
 ## Request Options
+
 * `method`: HTTP method to use for the request. One of `GET`, `POST`, `PUT`, `PATCH`, `DELETE` or `HEAD`. Default: `GET`.
-
-* `auth`: Authentication information in the form of an object with key/value pairs indicating the authentication type (in the `type` key) and any required information. Types currently supported are `basic` and `digest` for HTTP Basic and HTTP Digest authentication respectively. If `type` is omitted, `basic` is assumed. Example:
-
-	```js
-	r.http('http://httpbin.org/basic-auth/fred/mxyzptlk',
-           { auth: { type: 'basic', user: 'fred', pass: 'mxyzptlk' } }
-	).run(conn, callback)
-	```
-
-* `params`: URL parameters to append to the URL as encoded key/value pairs, specified as an object. For example, `{ query: 'banana', limit: 2 }` will be appended as `?query=banana&limit=2`. Default: none.
-
-* `header`: Extra header lines to include. The value may be an array of strings or an object. Default: none.
-
-    Unless specified otherwise, `r.http` will by default use the headers `Accept-Encoding: deflate;q=1, gzip;q=0.5` and `User-Agent: RethinkDB/VERSION`.
-
-* `data`: Data to send to the server on a `POST`, `PUT`, `PATCH`, or `DELETE` request.
-
-    For `PUT`, `PATCH` and `DELETE` requests, the value will be serialized to JSON and placed in the request body, and the `Content-Type` will be set to `application/json`.
-
-	For `POST` requests, data may be either an object or a string. Objects will be written to the body as form-encoded key/value pairs (values must be numbers, strings, or `null`). Strings will be put directly into the body.  If `data` is not a string or an object, an error will be thrown.
-
-    If `data` is not specified, no data will be sent.
-
-## Pagination
-
-`r.http` supports depagination, which will request multiple pages in a row and aggregate the results into a stream.  The use of this feature is controlled by the optional arguments `page` and `pageLimit`.  Either none or both of these arguments must be provided.
-
-* `page`: This option may specify either a built-in pagination strategy (as a string), or a function to provide the next URL and/or `params` to request.
-
-    At the moment, the only supported built-in is `'link-next'`, which is equivalent to `function(info) { return info('header')('link')('rel="next"').default(null); }`.
-
-    __Example:__ Perform a GitHub search and collect up to 3 pages of results.
-
-    ```js
-    r.http("https://api.github.com/search/code?q=addClass+user:mozilla",
-           { page: 'link-next', pageLimit: 3 }
-    ).run(conn, callback)
-    ```
-
-    As a function, `page` takes one parameter, an object of the format:
-
-    ```js
-    {
-        params: object // the URL parameters used in the last request
-        header: object // the HTTP headers of the last response as key/value pairs
-        body: value // the body of the last response in the format specified by `resultFormat`
-    }
-    ```
-
-    The `header` field will be a parsed version of the header with fields lowercased, like so:
-
-    ```js
-    {
-        'content-length': '1024',
-        'content-type': 'application/json',
-        'date': 'Thu, 1 Jan 1970 00:00:00 GMT',
-        'link': {
-            'rel="last"': 'http://example.com/?page=34',
-            'rel="next"': 'http://example.com/?page=2'
-        }
-    }
-    ```
-
-    The `page` function may return a string corresponding to the next URL to request, `null` indicating that there is no more to get, or an object of the format:
-
-    ```js
-    {
-        url: string // the next URL to request, or null for no more pages
-        params: object // new URL parameters to use, will be merged with the previous request's params
-    }
-    ```
-
-* `pageLimit`: An integer specifying the maximum number of requests to issue using the `page` functionality.  This is to prevent overuse of API quotas, and must be specified with `page`.
-    * `-1`: no limit
-    * `0`: no requests will be made, an empty stream will be returned
-    * `n`: `n` requests will be made
-
-# Examples
+* `auth`: object giving authentication, with the following fields:
+    * `type`: `basic` (default) or `digest`
+    * `user`: username
+    * `pass`: password in plain text
+* `params`: object specifying URL parameters to append to the URL as encoded key/value pairs. `{ query: 'banana', limit: 2 }` will be appended as `?query=banana&limit=2`. Default: no parameters.
+* `header`: Extra header lines to include. The value may be an array of strings or an object. Default: `Accept-Encoding: deflate;q=1, gzip;q=0.5` and `User-Agent: RethinkDB/<VERSION>`.
+* `data`: Data to send to the server on a `POST`, `PUT`, `PATCH`, or `DELETE` request. For `POST` requests, data may be either an object (which will be written to the body as form-encoded key/value pairs) or a string; for all other requests, data will be serialized as JSON and placed in the request body, sent as `Content-Type: application/json`. Default: no data will be sent.
 
 __Example:__ Perform multiple requests with different parameters.
 
@@ -163,6 +95,59 @@ r.http('http://httpbin.org/post',
          data: r.expr(value).coerceTo('string'),
          header: { 'Content-Type': 'application/json' } })
 .run(conn, callback)
+```
+
+## Pagination
+
+`r.http` supports depagination, which will request multiple pages in a row and aggregate the results into a stream.  The use of this feature is controlled by the optional arguments `page` and `pageLimit`.  Either none or both of these arguments must be provided.
+
+* `page`: This option may specify either a built-in pagination strategy (see below), or a function to provide the next URL and/or `params` to request.
+* `pageLimit`: An integer specifying the maximum number of requests to issue using the `page` functionality.  This is to prevent overuse of API quotas, and must be specified with `page`.
+    * `-1`: no limit
+    * `0`: no requests will be made, an empty stream will be returned
+    * `n`: `n` requests will be made
+
+At the moment, the only built-in strategy is `'link-next'`, which is equivalent to `function(info) { return info('header')('link')('rel="next"').default(null); }`.
+
+__Example:__ Perform a GitHub search and collect up to 3 pages of results.
+
+```js
+r.http("https://api.github.com/search/code?q=addClass+user:mozilla",
+       { page: 'link-next', pageLimit: 3 }
+).run(conn, callback)
+```
+
+As a function, `page` takes one parameter, an object of the format:
+
+```js
+{
+    params: object // the URL parameters used in the last request
+    header: object // the HTTP headers of the last response as key/value pairs
+    body: value // the body of the last response in the format specified by `resultFormat`
+}
+```
+
+The `header` field will be a parsed version of the header with fields lowercased, like so:
+
+```js
+{
+    'content-length': '1024',
+    'content-type': 'application/json',
+    'date': 'Thu, 1 Jan 1970 00:00:00 GMT',
+    'link': {
+        'rel="last"': 'http://example.com/?page=34',
+        'rel="next"': 'http://example.com/?page=2'
+    }
+}
+```
+
+The `page` function may return a string corresponding to the next URL to request, `null` indicating that there is no more to get, or an object of the format:
+
+```js
+{
+    url: string // the next URL to request, or null for no more pages
+    params: object // new URL parameters to use, will be merged with the previous request's params
+}
 ```
 
 __Example:__ Perform depagination with a custom `page` function.

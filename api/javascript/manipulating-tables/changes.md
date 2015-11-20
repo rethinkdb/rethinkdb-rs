@@ -6,31 +6,66 @@ command: changes
 related_commands:
     table: table/
 io:
-    -   - table
+    -   - stream
+        - stream
+    -   - singleSelection
         - stream
 ---
 
 # Command syntax #
 
 {% apibody %}
-table.changes() &rarr; stream
+stream.changes([options]) &rarr; stream
+singleSelection.changes([options]) &rarr; stream
 {% endapibody %}
 
 # Description #
 
-Return an infinite stream of objects representing changes to a table. Whenever an `insert`, `delete`, `update` or `replace` is performed on the table, an object of the form `{'old_val': ..., 'new_val': ...}` will be appended to the stream. For an `insert`, `old_val` will be `null`, and for a `delete`, `new_val` will be `null`.
+Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
 
-The server will buffer up to 100,000 elements. If the buffer limit is hit, early changes will be discarded, and the client will receive an object of the form `{error: "Changefeed cache over array size limit, skipped X elements."}` where `X` is the number of elements skipped.
+There are four optional arguments to `changes`.
+
+* `squash`: Controls how change notifications are batched. Acceptable values are `true`, `false` and a numeric value:
+    * `true`: When multiple changes to the same document occur before a batch of notifications is sent, the changes are "squashed" into one change. The client receives a notification that will bring it fully up to date with the server.
+    * `false`: All changes will be sent to the client verbatim. This is the default.
+    * `n`: A numeric value (floating point). Similar to `true`, but the server will wait `n` seconds to respond in order to squash as many changes together as possible, reducing network traffic. The first batch will always be returned immediately.
+* `changefeedQueueSize`: the number of changes the server will buffer between client reads before it starts dropping changes and generates an error (default: 100,000).
+* `includeInitial`: if `true`, the changefeed stream will begin with the current contents of the table or selection being monitored. These initial results will have `new_val` fields, but no `old_val` fields. The initial results may be intermixed with actual changes, as long as an initial result for the changed document has already been given.
+* `includeStates`: if `true`, the changefeed stream will include special status documents consisting of the field `state` and a string indicating a change in the feed's state. These documents can occur at any point in the feed between the notification documents described below. If `includeStates` is `false` (the default), the status documents will not be sent.
+
+There are currently two states:
+
+* `{state: 'initializing'}` indicates the following documents represent initial values on the feed rather than changes. This will be the first document of a feed that returns initial values.
+* `{state: 'ready'}` indicates the following documents represent changes. This will be the first document of a feed that does *not* return initial values; otherwise, it will indicate the initial values have all been sent.
+
+{% infobox %}
+Starting with RethinkDB 2.2, state documents will *only* be sent if the `includeStates` option is `true`, even on point changefeeds. Initial values will only be sent if `includeInitial` is `true`. If `includeStates` is `true` and `includeInitial` is false, the first document on the feed will be `{state: 'ready'}`.
+{% endinfobox %}
 
 If the table becomes unavailable, the changefeed will be disconnected, and a runtime exception will be thrown by the driver.
 
-Commands that operate on streams (such as `filter` or `map`) can usually be chained after `changes`.  However, since the stream produced by `changes` has no ending, commands that need to consume the entire stream before returning (such as `reduce` or `count`) cannot.
+Changefeed notifications take the form of a two-field object:
 
-It's a good idea to open changefeeds on their own connection. If you don't, other queries run on the same connection will experience unpredictable latency spikes while the connection blocks on more changes.
+```js
+{
+    "old_val": <document before change>,
+    "new_val": <document after change>
+}
+```
+
+When a document is deleted, `new_val` will be `null`; when a document is inserted, `old_val` will be `null`.
+
+{% infobox %}
+Certain document transformation commands can be chained before changefeeds. For more information, read the [discussion of changefeeds](/docs/changefeeds/javascript/) in the "Query language" documentation.
+{% endinfobox %}
+
+The server will buffer up to `changefeedQueueSize` elements (default 100,000). If the buffer limit is hit, early changes will be discarded, and the client will receive an object of the form `{error: "Changefeed cache over array size limit, skipped X elements."}` where `X` is the number of elements skipped.
+
+Commands that operate on streams (such as [filter](/api/javascript/filter/) or [map](/api/javascript/map/)) can usually be chained after `changes`.  However, since the stream produced by `changes` has no ending, commands that need to consume the entire stream before returning (such as [reduce](/api/javascript/reduce/) or [count](/api/javascript/count/)) cannot.
 
 __Example:__ Subscribe to the changes on a table.
 
-Start monitoring the change feed in one client:
+Start monitoring the changefeed in one client:
 
 ```js
 r.table('games').changes().run(conn, function(err, cursor) {
@@ -56,7 +91,7 @@ client would receive and print the following objects:
 {old_val: {id: 1, player1: 'Bob', player2: 'Alice'}, new_val: null}
 
 > r.tableDrop('games').run(conn, callback);
-RqlRuntimeError: Changefeed aborted (table unavailable)
+ReqlRuntimeError: Changefeed aborted (table unavailable)
 ```
 
 __Example:__ Return all the changes that increase a player's score.
@@ -67,17 +102,40 @@ r.table('test').changes().filter(
 ).run(conn, callback)
 ```
 
-__Example:__ Return all the changes to Bob's score.
+__Example:__ Return all the changes to a specific player's score that increase it past 10.
 
 ```js
-// Note that this will have to look at and discard all the changes to
-// rows besides Bob's.  This is currently no way to filter with an index
-// on change feeds.
-r.table('test').changes().filter(r.row('new_val')('name').eq('Bob')).run(conn, callback)
+r.table('test').get(1).filter(r.row('score').gt(10)).changes().run(conn, callback)
 ```
 
 __Example:__ Return all the inserts on a table.
 
 ```js
 r.table('test').changes().filter(r.row('old_val').eq(null)).run(conn, callback)
+```
+
+__Example:__ Return all the changes to game 1, with state notifications and initial values.
+
+```js
+r.table('games').get(1).changes({includeInitial: true, includeStates: true}).run(conn, callback);
+// Result returned on changefeed
+{state: 'initializing'}
+{new_val: {id: 1, score: 12, arena: 'Hobbiton Field'}}
+{state: 'ready'}
+{
+	old_val: {id: 1, score: 12, arena: 'Hobbiton Field'},
+	new_val: {id: 1, score: 14, arena: 'Hobbiton Field'}
+}
+{
+	old_val: {id: 1, score: 14, arena: 'Hobbiton Field'},
+	new_val: {id: 1, score: 17, arena: 'Hobbiton Field', winner: 'Frodo'}
+}
+```
+
+__Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
+
+```js
+r.table('games').orderBy(
+    { index: r.desc('score') }
+).limit(10).changes().run(conn, callback);
 ```

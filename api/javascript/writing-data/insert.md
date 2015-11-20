@@ -19,7 +19,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, {durability: "hard", returnChanges: false, conflict: "error"}]) &rarr; object
+table.insert(object | [object1, object2, ...][, {durability: "hard", returnChanges: false, conflict: "error"}]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -32,7 +32,10 @@ documents.
 The optional arguments are:
 
 - `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/javascript/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
-- `returnChanges`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
+- `returnChanges`:
+    - `true`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
+    - `false`: do not return a `changes` array (the default).
+    - `"always"`: behave as `true`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `true` pre-2.0.)
 - `conflict`: Determine handling of inserting documents with the same primary key as existing entries. Possible values are `"error"`, `"replace"` or `"update"`.
     - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
     - `"replace"`: [Replace](/api/javascript/replace/) the old document in its entirety with the new one.

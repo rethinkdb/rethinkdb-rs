@@ -28,6 +28,12 @@ __Example:__ Return the players who have won games.
 r.table('players').has_fields(:games_won).run(conn)
 ```
 
+__Example:__ Return the players who have *not* won games. To do this, use `has_fields` with [not](/api/ruby/not), wrapped with [filter](/api/ruby/filter).
+
+```rb
+r.table('players').filter { |row| row.has_fields(:games_won).not }.run(conn)
+```
+
 __Example:__ Test if a specific player has won any games.
 
 ```rb

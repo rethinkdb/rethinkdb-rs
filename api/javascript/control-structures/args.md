@@ -18,7 +18,7 @@ r.args(array) &rarr; special
 
 `r.args` is a special term that's used to splice an array of arguments
 into another term.  This is useful when you want to call a variadic
-term such as `getAll` with a set of arguments produced at runtime.
+term such as [getAll](/api/javascript/get_all/) with a set of arguments produced at runtime.
 
 This is analogous to using **apply** in JavaScript.
 
@@ -35,4 +35,13 @@ __Example:__ Get all of Alice's children from the table `people`.
 ```js
 // r.table('people').get('Alice') returns {id: 'Alice', children: ['Bob', 'Carol']}
 r.table('people').getAll(r.args(r.table('people').get('Alice')('children'))).run(conn, callback)
+```
+
+__Note:__ When using `r.args` with a command that takes optional arguments, you must not include the optional arguments inside the `args` array.
+
+```js
+// Wrong!
+r.table('posts').indexCreate(r.args(['tags', {multi: true}]))
+// Right
+r.table('posts').indexCreate(r.args(['tags']), {multi: true})
 ```

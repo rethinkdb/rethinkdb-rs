@@ -15,15 +15,15 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-stream.concatMap(mappingFunction) &rarr; stream
-array.concatMap(mappingFunction) &rarr; array
+stream.concatMap(function) &rarr; stream
+array.concatMap(function) &rarr; array
 {% endapibody %}
 
 # Description #
 
 Concatenate one or more elements into a single sequence using a mapping function.
 
-`concatMap` works in a similar fashion to `map`, applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
+`concatMap` works in a similar fashion to [map](/api/javascript/map/), applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
 
 ```js
 r.expr([1, 2, 3]).map(function(x) { return [x, x.mul(2)] }).run(conn, callback)
@@ -61,7 +61,7 @@ __Example:__ Simulate an [eqJoin](/api/javascript/eq_join/) using `concatMap`. (
 
 ```js
 r.table("posts").concatMap(function(post) {
-	r.table("comments").getAll(
+	return r.table("comments").getAll(
 		post("id"),
 		{ index:"postId" }
 	).map(function(comment) {

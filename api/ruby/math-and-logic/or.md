@@ -11,13 +11,15 @@ related_commands:
 
 {% apibody %}
 bool | bool &rarr; bool
-bool.or(bool) &rarr; bool
-r.or(bool, bool) &rarr; bool
+bool.or([bool, bool, ...]) &rarr; bool
+r.or([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Compute the logical "or" of two or more values. The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true, false)`). The standard Ruby or operator, `|`, may also be used with ReQL.
+Compute the logical "or" of one or more values. The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true, false)`). The standard Ruby or operator, `|`, may also be used with ReQL.
+
+Calling `or` with zero arguments will return `false`.
 
 __Example:__ Return whether either `a` or `b` evaluate to true.
 

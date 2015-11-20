@@ -14,8 +14,11 @@ related_commands:
 
 {% apibody %}
 number - number &rarr; number
-time - time &rarr; number
 time - number &rarr; time
+time - time &rarr; number
+number.sub(number[, number, ...]) &rarr; number
+time.sub(number[, number, ...]) &rarr; time
+time.sub(time) &rarr; number
 {% endapibody %}
 
 # Description #
@@ -36,7 +39,7 @@ r.now() - 365*24*60*60
 ```
 
 
-__Example:__ Retrieve how many seconds elapsed between today and date
+__Example:__ Retrieve how many seconds elapsed between today and `date`.
 
 ```rb
 r.now() - date

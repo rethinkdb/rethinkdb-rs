@@ -6,7 +6,7 @@ import yaml
 import json
 import codecs
 
-IGNORED_FILES = "index.md"
+IGNORED_FILES = ["index.md", "accessing-rql/event_emitter.md"]
 
 def read_index(script_path, result):
     """
@@ -30,18 +30,20 @@ def read_index(script_path, result):
     parsing_example = False
     just_opened_api = False
 
-    for line in index_file:
-        # If we just opened an api section, we are going to ignore everything until we hit a new method
-        if open_apisection.match(line) != None:
-            just_opened_api = True
+    for line in list(index_file) + [None]:
+        if line is not None:
+            # If we just opened an api section, we are going to ignore everything until we hit a new method
+            if open_apisection.match(line) != None:
+                just_opened_api = True
 
-        # Ignore the "read more about this command" lines
-        if ignore_pattern.match(line) != None:
-           continue 
+            # Ignore the "read more about this command" lines
+            if ignore_pattern.match(line) != None:
+                continue
 
-        title = title_pattern.match(line)
-        if title != None:
-            # We just found a new title, let's save the previous one (if defined)
+            title = title_pattern.match(line)
+
+        if line is None or title != None:
+            # We just found a new title or are at the end, let's save the previous one (if defined)
             if current_method != None:
                 # The key used is the url of the detailed page about the method
 
@@ -57,6 +59,9 @@ def read_index(script_path, result):
                     "name": current_method,
                     "example": markdown.markdown(current_example)
                 }
+
+            if line is None:
+                break
 
             current_method = title.group(1)
             current_url = title.group(2)
@@ -87,15 +92,6 @@ def read_index(script_path, result):
                             current_example = line
                         else:
                             current_description += line
-
-    # Save last method
-    result["api/javascript/"+current_url+"/"] = {
-        "description": markdown.markdown(current_description),
-        "url":  current_url,
-        "body": current_body,
-        "name": current_method,
-        "example": markdown.markdown(current_example)
-    }
 
     index_file.close()
 
@@ -132,18 +128,12 @@ def add_io_field(file_name, result):
     details_file.close()
 
 def browse_files(base, result):
-    subdirlist = []
-    for item in os.listdir(base):
-        if item[0] != '.' and item not in IGNORED_FILES:
-            full_path = os.path.join(base, item)
-            if os.path.isfile(full_path):
-                add_io_field(full_path, result)
-            else:
-                #print os.path.join(base, item)
-                subdirlist.append(full_path)
-
-    for subdir in subdirlist:
-        browse_files(subdir, result)
+    for path, dirs, files in os.walk(base):
+        rel = path[len(base)+1:]
+        for item in files:
+            print os.path.join(rel, item)
+            if os.path.join(rel, item) not in IGNORED_FILES:
+                add_io_field(os.path.join(path, item), result)
 
 if __name__ == "__main__":
     script_path = os.path.dirname(os.path.realpath(__file__))

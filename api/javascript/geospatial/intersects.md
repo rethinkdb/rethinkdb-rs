@@ -17,6 +17,8 @@ related_commands:
 {% apibody %}
 sequence.intersects(geometry) &rarr; sequence
 geometry.intersects(geometry) &rarr; bool
+r.intersects(sequence, geometry) &rarr; sequence
+r.intersects(geometry, geometry) &rarr; bool
 {% endapibody %}
 
 # Description #

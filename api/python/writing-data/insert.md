@@ -13,7 +13,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, durability="hard", return_changes=False, conflict="error"])
+table.insert(object | [object1, object2, ...][, durability="hard", return_changes=False, conflict="error"])
     &rarr; object
 {% endapibody %}
 
@@ -26,8 +26,11 @@ documents.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/python/run/)). In soft durability mode Rethink_dB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
-- `return_changes`: if set to `True`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
+- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/python/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
+- `return_changes`:
+    - `True`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
+    - `False`: do not return a `changes` array (the default).
+    - `"always"`: behave as `True`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `True` pre-2.0.)
 - `conflict`: Determine handling of inserting documents with the same primary key as existing entries. Possible values are `"error"`, `"replace"` or `"update"`.
     - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
     - `"replace"`: [Replace](/api/python/replace/) the old document in its entirety with the new one.
@@ -128,7 +131,7 @@ already exists.
 ```py
 r.table("users").insert(
     {"id": "william", "email": "william@rethinkdb.com"},
-    conflict="error"
+    conflict="replace"
 ).run(conn)
 ```
 

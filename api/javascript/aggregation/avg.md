@@ -19,7 +19,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.avg([fieldOrFunction]) &rarr; number
+sequence.avg([field | function]) &rarr; number
 {% endapibody %}
 
 # Description #
@@ -56,7 +56,7 @@ r.table('games').avg(function(game) {
 ```
 
 __Example:__ What's the average number of points scored in a game?
-(But return `null` instead of erroring of there are no games where
+(But return `null` instead of raising an error if there are no games where
 points have been scored.)
 
 ```js

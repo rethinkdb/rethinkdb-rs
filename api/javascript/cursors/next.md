@@ -3,8 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/next/
 command: next
-rb: false
-py: false
 io:
     -   - cursor
         - undefined
@@ -27,9 +25,9 @@ array.next() &rarr; promise
 
 Get the next element in the cursor.
 
-Calling `next` the first time on a cursor provides the first element of the cursor.
+Calling `next` the first time on a cursor provides the first element of the cursor. If the data set is exhausted (e.g., you have retrieved all the documents in a table), a `ReqlDriverError` error will be passed to the callback when `next` is called.
 
-__Example:__ Let's grab the next element!
+__Example:__ Retrieve the next element.
 
 ```js
 cursor.next(function(err, row) {
@@ -38,11 +36,7 @@ cursor.next(function(err, row) {
 });
 ```
 
-__Note:__ The canonical way to retrieve all the results is to use [each](../each/)
-or [toArray](../to_array/). The `next` command should be used only when you may not
-retrieve all the elements of a cursor or want to delay some operations.
-
-
+__Note:__ The canonical way to retrieve all the results is to use [each](../each/) or [toArray](../to_array/). The `next` command should be used only when you may not retrieve all the elements of a cursor or want to delay some operations.
 
 __Example:__ You can retrieve all the elements of a cursor with the `next`
 command using recursion.
@@ -53,7 +47,7 @@ query.run( conn, function(err, cursor) {
 
     var fetchNext = function(err, result) {
         if (err) {
-            if (((err.name === "RqlDriverError") && err.message === "No more rows in the cursor.")) {
+            if (((err.name === "ReqlDriverError") && err.message === "No more rows in the cursor.")) {
                 console.log("No more data to process")
                 // If you use one connection per query, the connection should be closed here.
                 // conn.close()
@@ -81,7 +75,7 @@ query.run( conn, function(err, cursor) {
 
     var fetchNext = function(err, result) {
         if (err) {
-            if (((err.name === "RqlDriverError") && err.message === "No more rows in the cursor.")) {
+            if (((err.name === "ReqlDriverError") && err.message === "No more rows in the cursor.")) {
                 console.log("No more data to process")
                 // If you use one connection per query, the connection should be closed here.
                 // conn.close()
@@ -111,7 +105,7 @@ command using recursion and promises.
 ```js
 query.run(conn).then(function(cursor) {
     var errorHandler = function(err) {
-        if (((err.name === "RqlDriverError") && err.message === "No more rows in the cursor.")) {
+        if (((err.name === "ReqlDriverError") && err.message === "No more rows in the cursor.")) {
             console.log("No more data to process")
             // If you use one connection per query, the connection should be closed here.
             // conn.close()

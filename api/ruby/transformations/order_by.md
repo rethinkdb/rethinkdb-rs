@@ -2,6 +2,9 @@
 layout: api-command
 language: Ruby
 permalink: api/ruby/order_by/
+alias:
+    - api/ruby/asc/
+    - api/ruby/desc/
 command: order_by
 related_commands:
     skip: skip/
@@ -12,9 +15,9 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.order_by([key1...], :index => index_name) -> selection<stream>
-selection.order_by(key1, [key2...]) -> selection<array>
-sequence.order_by(key1, [key2...]) -> array
+table.order_by([key | function], :index => index_name) &rarr; table_slice
+selection.order_by(key | function[, ...]) &rarr; selection<array>
+sequence.order_by(key | function[, ...]) &rarr; array
 {% endapibody %}
 
 # Description #
@@ -23,10 +26,12 @@ Sort the sequence by document values of the given key(s). To specify
 the ordering, wrap the attribute with either `r.asc` or `r.desc`
 (defaults to ascending).
 
+__Note:__ RethinkDB uses byte-wise ordering for `orderBy` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint. For more information on RethinkDB's sorting order, read the section in [ReQL data types](/docs/data-types/#sorting-order).
+
 Sorting without an index requires the server to hold the sequence in
 memory, and is limited to 100,000 documents (or the setting of the `array_limit` option for [run](/api/ruby/run)). Sorting with an index can
-be done on arbitrarily large tables, or after a `between` command
-using the same index.
+be done on arbitrarily large tables, or after a [between](/api/ruby/between/) command
+using the same index. This applies to both secondary indexes and the primary key (e.g., `:index => 'id'`).
 
 __Example:__ Order all the posts using the index `date`.   
 
@@ -34,7 +39,7 @@ __Example:__ Order all the posts using the index `date`.
 r.table('posts').order_by(:index => 'date').run(conn)
 ```
 
-The index must have been previously created with [index_create](/api/ruby/index_create/).
+The index must either be the primary key or have been previously created with [index_create](/api/ruby/index_create/).
 
 ```rb
 r.table('posts').index_create('date').run(conn)
@@ -75,7 +80,7 @@ Order by date and title.
 r.table('posts').order_by(:index => 'date_and_title').run(conn)
 ```
 
-The index must have been previously created with [index_create](/api/ruby/index_create/).
+The index must either be the primary key or have been previously created with [index_create](/api/ruby/index_create/).
 
 ```rb
 r.table('posts').index_create('date_and_title') {|post| [post["date"], post["title"]]}.run(conn)

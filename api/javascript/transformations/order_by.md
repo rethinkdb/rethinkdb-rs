@@ -2,8 +2,13 @@
 layout: api-command
 language: JavaScript
 permalink: api/javascript/order_by/
+alias:
+    - api/javascript/asc/
+    - api/javascript/desc/
 command: orderBy
 io:
+    -   - table
+        - table_slice
     -   - sequence
         - stream
     -   - array
@@ -17,9 +22,9 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.orderBy([key1...], {index: index_name}) &rarr; selection<stream>
-selection.orderBy(key1, [key2...]) &rarr; selection<array>
-sequence.orderBy(key1, [key2...]) &rarr; array
+table.orderBy([key | function...], {index: index_name}) &rarr; table_slice
+selection.orderBy(key | function[, ...]) &rarr; selection<array>
+sequence.orderBy(key | function[, ...]) &rarr; array
 {% endapibody %}
 
 # Description #
@@ -28,10 +33,12 @@ Sort the sequence by document values of the given key(s). To specify
 the ordering, wrap the attribute with either `r.asc` or `r.desc`
 (defaults to ascending).
 
+__Note:__ RethinkDB uses byte-wise ordering for `orderBy` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint. For more information on RethinkDB's sorting order, read the section in [ReQL data types](/docs/data-types/#sorting-order).
+
 Sorting without an index requires the server to hold the sequence in
 memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/javascript/run)). Sorting with an index can
-be done on arbitrarily large tables, or after a `between` command
-using the same index.
+be done on arbitrarily large tables, or after a [between](/api/javascript/between/) command
+using the same index. This applies to both secondary indexes and the primary key (e.g., `{index: 'id'}`).
 
 __Example:__ Order all the posts using the index `date`.   
 
@@ -39,7 +46,7 @@ __Example:__ Order all the posts using the index `date`.
 r.table('posts').orderBy({index: 'date'}).run(conn, callback)
 ```
 
-The index must have been previously created with [indexCreate](/api/javascript/index_create/).
+The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
 r.table('posts').indexCreate('date').run(conn, callback)
@@ -79,7 +86,7 @@ Order by date and title.
 r.table('posts').orderBy({index: 'dateAndTitle'}).run(conn, callback)
 ```
 
-The index must have been previously created with [indexCreate](/api/javascript/index_create/).
+The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
 
 ```js
 r.table('posts').indexCreate('dateAndTitle', [r.row('date'), r.row('title')]).run(conn, callback)

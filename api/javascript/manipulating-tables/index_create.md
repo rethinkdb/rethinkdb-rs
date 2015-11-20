@@ -17,7 +17,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.indexCreate(indexName[, indexFunction][, {multi: false, geo:false}]) &rarr; object
+table.indexCreate(indexName[, indexFunction][, {multi: false, geo: false}]) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -34,6 +34,8 @@ RethinkDB supports different types of secondary indexes:
 
 The `indexFunction` can be an anonymous function or a binary representation obtained from the `function` field of [indexStatus](/api/javascript/index_status).
 
+If successful, `createIndex` will return an object of the form `{"created": 1}`. If an index by that name already exists on the table, a `ReqlRuntimeError` will be thrown.
+
 __Example:__ Create a simple index based on the field `postId`.
 
 ```js
@@ -46,7 +48,7 @@ __Example:__ Create a geospatial index based on the field `location`.
 r.table('places').indexCreate('location', {geo: true}).run(conn, callback)
 ```
 
-A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([getIntersecting](/api/javascript/get_intersecting/) and [getNearest](/api/javascript/get_nearest/)) as well as index-specific terms ([indexStatus](/api/javascript/index_status), [indexWait](/api/javascript/index_wait), [indexDrop](/api/javascript/index_drop) and [indexList](/api/javascript/index_list)). Using terms that rely on non-geometric ordering such as [getAll](/api/javascript/get_all/), [orderBy](/api/javascript/order_by/) and [between](/api/javascript/order_by/) will result in an error.
+A geospatial index field should contain only geometry objects. It will work with geometry ReQL terms ([getIntersecting](/api/javascript/get_intersecting/) and [getNearest](/api/javascript/get_nearest/)) as well as index-specific terms ([indexStatus](/api/javascript/index_status), [indexWait](/api/javascript/index_wait), [indexDrop](/api/javascript/index_drop) and [indexList](/api/javascript/index_list)). Using terms that rely on non-geometric ordering such as [getAll](/api/javascript/get_all/), [orderBy](/api/javascript/order_by/) and [between](/api/javascript/between/) will result in an error.
 
 __Example:__ Create a simple index based on the nested field `author > name`.
 
@@ -61,20 +63,16 @@ __Example:__ Create a compound index based on the fields `postId` and `date`.
 r.table('comments').indexCreate('postAndDate', [r.row("postId"), r.row("date")]).run(conn, callback)
 ```
 
-__Example:__ Create a compound index with a geospatial index.
-
-```js
-r.table('places').indexCreate('locationName',
-    [r.row('location'), r.row('name')], {geo: true}
-).run(conn, callback)
-```
-
-Note that the geospatial index must be the *first* field in a compound index, or the index may not be created properly.
-
 __Example:__ Create a multi index based on the field `authors`.
 
 ```js
 r.table('posts').indexCreate('authors', {multi: true}).run(conn, callback)
+```
+
+__Example:__ Create a geospatial multi index based on the field `towers`.
+
+```js
+r.table('networks').indexCreate('towers', {multi: true, geo: true}).run(conn, callback)
 ```
 
 __Example:__ Create an index based on an arbitrary expression.

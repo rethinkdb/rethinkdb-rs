@@ -33,11 +33,12 @@ parents = {
     'cursor': 'rethinkdb.net.Cursor.',
     'db': 'rethinkdb.ast.DB.',
     'table': 'rethinkdb.ast.Table.',
+    'set_loop_type': 'rethinkdb.'
 }
 
 # The real python names for names used in the docs
 tags = {
-    '[] (get_field)': [(query, '__getitem__')],
+    '[] (bracket)': [(query, '__getitem__')],
     'nth, []': [(query, 'nth')],
     'slice, []': [(query, 'slice')],
     '+': [(query, '__add__'), ('rethinkdb.', 'add')],
@@ -57,7 +58,11 @@ tags = {
     'r': [('', 'rethinkdb')],
     'repl': [('rethinkdb.net.Connection.', 'repl')],
     'count': lambda parent: not parent == 'rethinkdb.' and [(query, 'count')] or [],
-    'rethinkdb': [('', 'rethinkdb')]
+    'rethinkdb': [('', 'rethinkdb')],
+    'to_json_string, to_json': [(query, 'to_json_string'), (query, 'to_json')],
+    'for': [],
+    'list': [],
+    'set_loop_type': [('rethinkdb.', 'set_loop_type')]
 }
 
 # Write the header of the docs.py file
@@ -148,6 +153,20 @@ def add_doc(file_name, result_file):
     end_body_pattern = re.compile("{%\s*endapibody\s*%}\s*")
     parsing_body = False
 
+    # Used to skip info boxes
+    start_infobox_pattern = re.compile("{%\s*infobox( alert|)\s*%}\s*")
+    end_infobox_pattern = re.compile("{%\s*endinfobox\s*%}\s*")
+    parsing_infobox = False
+    
+    # Used to convert relative Markdown links to absolute
+    link_match_pattern = re.compile(r'\[(.*?)\]\(/')
+    link_replace_pattern = r'[\1](http://rethinkdb.com/'
+
+    # Used to remove reference-style links (we just keep their titles)
+    ref_match_pattern = re.compile(r'\[(.*?)\]\[[^\]]*\]')
+    ref_replace_pattern = r'\1'
+    ref_link_match_pattern = re.compile(r'^\[.*?\]:.+$')
+    
     # Tracking the yaml header, we need it for the command name
     is_yaml = False
     yaml_header_py = ""
@@ -181,6 +200,12 @@ def add_doc(file_name, result_file):
                 parsing_body = True
             elif end_body_pattern.match(line) != None:
                 parsing_body = False
+            elif start_infobox_pattern.match(line) != None:
+                parsing_infobox = True
+            elif end_infobox_pattern.match(line) != None:
+                parsing_infobox = False
+            elif parsing_infobox:
+                continue
             elif parsing_body == False:
                 if example_code_start_pattern.match(line) != None:
                     parsing_example_code = True
@@ -189,7 +214,11 @@ def add_doc(file_name, result_file):
                 else:
                     if parsing_example_code == True:
                         text += "    " + line
-                    else:
+                    elif ref_link_match_pattern.match(line) == None:
+                        line = re.sub(link_match_pattern,
+                            link_replace_pattern, line)
+                        line = re.sub(ref_match_pattern,
+                            ref_replace_pattern, line)
                         text += line
             else:
                 text += line.replace('&rarr;', '->')

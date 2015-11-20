@@ -35,3 +35,9 @@ r.table('heroes').get(3).merge(
     { :powers => ['invisibility', 'speed'] }
 ).run(conn)
 ```
+
+___Example:__ Subscribe to a document's [changefeed](/docs/changefeeds/ruby).
+
+```rb
+changes = r.table('heroes').get(3).changes().run(conn)
+```

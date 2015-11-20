@@ -1,0 +1,198 @@
+- section:
+    name: Getting started
+    docs:
+      - name: Thirty-second quickstart
+        permalink: quickstart
+        url: /docs/quickstart/
+      - name: Install the server
+        permalink: install
+        url: /docs/install/
+      - name: Install client drivers
+        permalink: install-drivers
+        url: /docs/install-drivers/
+      - name: Start a RethinkDB server
+        permalink: start-a-server
+        url: /docs/start-a-server/
+- section:
+    name: The ReQL query language
+    docs:
+      - name: Ten-minute guide
+        permalink: guide
+        url: /docs/guide/
+      - name: Introduction to ReQL
+        permalink: introduction-to-reql
+        url: /docs/introduction-to-reql/
+      - name: Using secondary indexes
+        permalink: secondary-indexes
+        url: /docs/secondary-indexes/
+      - name: Accessing nested fields
+        permalink: nested-fields
+        url: /docs/nested-fields/
+      - name: Table joins in RethinkDB
+        permalink: table-joins
+        url: /docs/table-joins/
+      - name: Map-reduce in RethinkDB
+        permalink: map-reduce
+        url: /docs/map-reduce/
+      - name: Changefeeds
+        permalink: changefeeds
+        url: /docs/changefeeds/
+      - name: Asynchronous connections
+        permalink: async-connections
+        url: /docs/async-connections/
+      - name: Accessing HTTP APIs
+        permalink: external-api-access
+        url: /docs/external-api-access/
+      - name: ReQL error types
+        permalink: error-types
+        url: /docs/error-types/
+      - name: API command reference
+        permalink: api
+        url: /api/
+- section:
+    name: The RethinkDB data model
+    docs:
+      - name: ReQL data types
+        permalink: data-types
+        url: /docs/data-types/
+      - name: Dates and times
+        permalink: dates-and-times
+        url: /docs/dates-and-times/
+      - name: Binary objects
+        permalink: storing-binary
+        url: /docs/storing-binary/
+      - name: Geospatial queries
+        permalink: geo-support
+        url: /docs/geo-support/
+      - name: Modeling relationships
+        permalink: data-modeling
+        url: /docs/data-modeling/
+- section:
+    name: ReQL in practice
+    docs:
+      - name: Optimizing query performance
+        permalink: optimization
+        url: /docs/optimization/
+      - name: Data exploration
+        permalink: reql-data-exploration
+        url: /docs/reql-data-exploration/
+      - name: SQL to ReQL cheat sheet
+        permalink: sql-to-reql
+        url: /docs/sql-to-reql/
+      - name: Cookbook
+        permalink: cookbook
+        url: /docs/cookbook/
+      - name: Example projects
+        permalink: examples
+        url: /docs/examples/
+- section:
+    name: Administration
+    docs:
+      - name: Administration tools
+        permalink: administration-tools
+        url: /docs/administration-tools/
+      - name: Scaling, sharding and replication
+        permalink: sharding-and-replication
+        url: /docs/sharding-and-replication/
+      - name: Failover
+        permalink: failover
+        url: /docs/failover/
+      - name: Backing up your data
+        permalink: backup
+        url: /docs/backup/
+      - name: System tables
+        permalink: system-tables/
+        url: /docs/system-tables/
+      - name: Current issues
+        permalink: system-issues
+        url: /docs/system-issues/
+        nested: true
+      - name: Statistics
+        permalink: system-stats
+        url: /docs/system-stats/
+        nested: true
+      - name: Jobs
+        permalink: system-jobs
+        url: /docs/system-jobs/
+        nested: true
+      - name: Version migration
+        permalink: migration
+        url: /docs/migration/
+      - name: Importing data
+        permalink: importing
+        url: /docs/importing/
+      - name: Third-party admin tools
+        permalink: third-party-admin-tools
+        url: /docs/third-party-admin-tools/
+- section:
+    name: Deployment
+    docs:
+      - name: Start on system startup
+        permalink: start-on-startup
+        url: /docs/start-on-startup/
+      - name: Securing your cluster
+        permalink: security
+        url: /docs/security/
+      - name: Configuration file settings
+        permalink: config-file
+        url: /docs/config-file/
+      - name: Command line options
+        permalink: cli-options
+        url: /docs/cli-options/
+      - name: Deploying with PaaS
+        permalink: paas
+        url: /docs/paas/
+      - name: Third-party deployment tools
+        permalink: deployment-tools
+        url: /docs/deployment-tools/
+- section:
+    name: Troubleshooting
+    docs:
+      - name: Crash recovery
+        permalink: crashes
+        url: /docs/crashes/
+      - name: Troubleshooting FAQ
+        permalink: troubleshooting
+        url: /docs/troubleshooting/
+      - name: Memory requirements
+        permalink: memory-usage
+        url: /docs/memory-usage/
+- section:
+    name: Integration
+    docs:
+      - name: Publish-subscribe
+        permalink: publish-subscribe
+        url: /docs/publish-subscribe/
+      - name: Integrating Elasticsearch
+        permalink: full-text-search
+        url: /docs/elasticsearch/
+      - name: Integrating RabbitMQ
+        permalink: rabbitmq
+        url: /docs/rabbitmq/
+      - name: RethinkDB and Rails
+        permalink: rails
+        url: /docs/rails
+      - name: Third-party libraries
+        permalink: frameworks-and-libraries
+        url: /docs/frameworks-and-libraries/
+      - name: Writing drivers
+        permalink: writing-drivers
+        url: /docs/writing-drivers/
+- section:
+    name: RethinkDB architecture
+    docs:
+      - name: Architecture details
+        permalink: architecture
+        url: /docs/architecture/
+      - name: Consistency guarantees
+        permalink: consistency
+        url: /docs/consistency/
+      - name: Limitations in RethinkDB
+        permalink: limitations
+        url: /docs/limitations/
+      - name: Stability report
+        permalink: stability
+        url: /docs/stability/
+      - name: Frequently Asked Questions
+        permalink: faq
+        url: /docs/faq/

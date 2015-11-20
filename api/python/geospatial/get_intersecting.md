@@ -10,7 +10,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.get_intersecting(geometry, index='indexname') &rarr; selection<array>
+table.get_intersecting(geometry, index='indexname') &rarr; selection<stream>
 {% endapibody %}
 
 # Description #
@@ -22,6 +22,6 @@ The `index` argument is mandatory. This command returns the same results as `tab
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 
 ```py
-circle1 = r.circle([-117.220406,32.719464], 10, unit='mi')
+circle1 = r.circle([-117.220406, 32.719464], 10, unit='mi')
 r.table('parks').get_intersecting(circle1, index='area').run(conn)
 ```

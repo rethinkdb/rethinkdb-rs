@@ -3,6 +3,8 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/is_empty/
 command: isEmpty
+related_commands:
+    offsetsOf: offsets_of/
 io:
     -   - sequence
         - bool

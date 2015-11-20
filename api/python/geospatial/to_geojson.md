@@ -21,7 +21,7 @@ Convert a ReQL geometry object to a [GeoJSON][] object.
 __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 
 ```py
-> r.table(geo).get('sfo')['location'].to_geojson.run(conn)
+> r.table('geo').get('sfo')['location'].to_geojson().run(conn)
 
 {
     'type': 'Point',

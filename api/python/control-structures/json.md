@@ -15,7 +15,7 @@ r.json(json_string) &rarr; value
 
 Parse a JSON string on the server.
 
-__Example:__ Send an array to the server'
+__Example:__ Send an array to the server.
 
 ```py
 r.json("[1,2,3]").run(conn)

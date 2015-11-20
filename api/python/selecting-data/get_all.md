@@ -44,7 +44,7 @@ __Example:__ You can use [args](/api/python/args/) with `get_all` to retrieve mu
 
 ```py
 r.do(
-    r.table('heroes').get_all('f', {'index': 'gender'})['id'].coerce_to('array'), 
+    r.table('heroes').get_all('f', index='gender')['id'].coerce_to('array'), 
     lamdba heroines: r.table('villains').get_all(r.args(heroines))
 ).run(conn)
 ```

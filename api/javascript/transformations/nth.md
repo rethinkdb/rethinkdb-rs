@@ -9,6 +9,7 @@ io:
 related_commands:
     skip: skip/
     limit: limit/
+    '() (bracket)': bracket/
     slice: slice/
 ---
 
@@ -21,16 +22,23 @@ selection.nth(index) &rarr; selection&lt;object&gt;
 
 # Description #
 
-Get the *nth* element of a sequence.
+Get the *nth* element of a sequence, counting from zero. If the argument is negative, count from the last element.
 
 __Example:__ Select the second element in the array.
 
 ```js
 r.expr([1,2,3]).nth(1).run(conn, callback)
+r.expr([1,2,3])(1).run(conn, callback)
 ```
 
-**Example:** Select the bronze medalist from the competitors.
+__Example:__ Select the bronze medalist from the competitors.
 
 ```js
 r.table('players').orderBy({index: r.desc('score')}).nth(3).run(conn, callback)
+```
+
+__Example:__ Select the last place competitor.
+
+```js
+r.table('players').orderBy({index: r.desc('score')}).nth(-1).run(conn, callback)
 ```

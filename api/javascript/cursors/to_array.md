@@ -3,8 +3,6 @@ layout: api-command
 language: JavaScript
 permalink: api/javascript/to_array/
 command: toArray
-py: false
-rb: false
 io:
     -   - cursor
         - undefined

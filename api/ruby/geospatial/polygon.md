@@ -11,8 +11,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.polygon([lon1, lat1], [lon2, lat2], ...) &rarr; polygon
-r.polygon(point1, point2, ...) &rarr; polygon
+r.polygon([lon1, lat1], [lon2, lat2], [lon3, lat3], ...) &rarr; polygon
+r.polygon(point1, point2, point3, ...) &rarr; polygon
 {% endapibody %}
 
 # Description #
@@ -38,5 +38,22 @@ r.table('geo').insert({
         [-121.886420,37.329898],
         [-121.886420,37.779388]
     )
+}).run(conn)
+```
+
+__Example:__ Define a polygon using an array of vertices.
+
+You can use the [args](/api/ruby/args) command to pass an array of Point objects (or latitude-longitude pairs) to `polygon`.
+
+```rb
+vertices = [
+    [-122.423246,37.779388],
+    [-122.423246,37.329898],
+    [-121.886420,37.329898],
+    [-121.886420,37.779388]
+]
+r.table('geo').insert({
+    :id => 102,
+    :rectangle => r.polygon(r.args(vertices))
 }).run(conn)
 ```

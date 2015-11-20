@@ -48,7 +48,7 @@ We can use this query:
 ```js
 r.table('games')
    .group('player').max('points')('points')
-   .ungroup().order_by(r.desc('reduction')).run(conn, callback)
+   .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
 ```
 
 Result: 

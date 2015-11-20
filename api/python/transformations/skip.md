@@ -20,7 +20,7 @@ array.skip(n) &rarr; array
 
 Skip a number of elements from the head of the sequence.
 
-__Example:__ Here in conjunction with `order_by` we choose to ignore the most successful heroes.
+__Example:__ Here in conjunction with [order_by](/api/python/order_by/) we choose to ignore the most successful heroes.
 
 ```py
 r.table('marvel').order_by('successMetric').skip(10).run(conn)

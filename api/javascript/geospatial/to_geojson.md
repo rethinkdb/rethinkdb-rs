@@ -24,7 +24,7 @@ Convert a ReQL geometry object to a [GeoJSON][] object.
 __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 
 ```js
-r.table(geo).get('sfo')('location').toGeojson.run(conn, callback);
+r.table('geo').get('sfo')('location').toGeojson.run(conn, callback);
 // result passed to callback
 {
     'type': 'Point',

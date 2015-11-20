@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.insert(json | [json][, :durability => "hard", :return_changes => false, :conflict => "error"])
+table.insert(object | [object1, object2, ...][, :durability => "hard", :return_changes => false, :conflict => "error"])
     &rarr; object
 {% endapibody %}
 
@@ -25,8 +25,11 @@ documents.
 
 The optional arguments are:
 
-- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/ruby/run/)). In soft durability mode Rethink_dB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
-- `return_changes`: if set to `true`, return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made.
+- `durability`: possible values are `hard` and `soft`. This option will override the table or query's durability setting (set in [run](/api/ruby/run/)). In soft durability mode RethinkDB will acknowledge the write immediately after receiving and caching it, but before the write has been committed to disk.
+- `return_changes`:
+    - `true`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
+    - `false`: do not return a `changes` array (the default).
+    - `"always"`: behave as `true`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `true` pre-2.0.)
 - `conflict`: Determine handling of inserting documents with the same primary key as existing entries. Possible values are `"error"`, `"replace"` or `"update"`.
     - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
     - `"replace"`: [Replace](/api/ruby/replace/) the old document in its entirety with the new one.
@@ -123,12 +126,11 @@ r.table("users").insert([
 
 __Example:__ Insert a document into the table `users`, replacing the document if the document
 already exists.  
-_Note_: If the document exists, the `insert` command will behave like [replace](/api/ruby/replace/), not like [update](/api/ruby/update/) 
 
 ```rb
 r.table("users").insert(
     {:id => "william", :email => "william@rethinkdb.com"},
-    :conflict => "error"
+    :conflict => "replace"
 ).run(conn)
 ```
 

@@ -1,0 +1,52 @@
+---
+layout: default
+active: api
+no_footer: true
+body_class: api
+include_nav: api
+api_index: true
+---
+<section class="api-docs documentation"r>
+    <div class="site-container">
+        <section class="docs-sidebar-left">
+            {% include docs/docs-search.html %}
+            {% include docs/api-navigation.html %}
+            <hr class="docs-nav-separator" />
+            <p class="back-to-top"><a href="#"><i class="up-arrow">&#9650;</i> Back to top</a></p>
+        </section>
+        <section class="api-content docs-article">
+            <h1 class="title">{{page.language}} ReQL command reference</h1>
+            <section class="byline">
+                {% include docs/docs-switcher.html %}
+            </section>
+            <div class="infobox infobox-info">
+                <p>
+                    <strong>Looking for documentation for a community driver?</strong><br/>
+                    <a href="/docs/install-drivers">Find the project page</a>
+                    for your driver for specific ReQL documentation.
+                </p>
+            </div>
+            <section class="api-sections">
+                {{ content }}
+            </section>
+
+            <section class="api-footer">
+                <h2>Improve this doc</h2>
+                <p>Help us improve this document.</p>
+                <ul>
+                    <li class="github"><strong>Help us</strong> improve the docs <a href="https://github.com/rethinkdb/docs/blob/master{{page.path | remove_first: 'docs' }}">by editing</a> this document</li>
+                    <li class="github"><strong>Post an issue</strong> on the docs <a href="https://github.com/rethinkdb/docs/issues">issue tracker</a> on GitHub</li>
+                </ul>
+
+                <h2>Get more help</h2>
+                <p>We always welcome suggestions on how to improve our documentation, or specific ReQL questions.</p>
+                <ul>
+                    <li class="stack-overflow"><strong>Ask a question</strong> on <a href="http://stackoverflow.com/questions/tagged/rethinkdb">Stack Overflow</a></li>
+                    <li class="irc"><strong>Talk to the team</strong> on <a href="irc://freenode.net/#rethinkdb">#rethinkdb@freenode.net</a> &mdash; via <a href="http://webchat.freenode.net/?channels=#rethinkdb">Webchat</a></li>
+                    <li class="github"><strong>Post an issue</strong> on our <a href="https://github.com/rethinkdb/rethinkdb/issues">issue tracker</a> on GitHub</li>
+                    <li class="twitter"><strong>Follow</strong> <a href="http://twitter.com/rethinkdb">@rethinkdb</a> on Twitter</li>
+                </ul>
+            </section>
+        </section>
+    </div>
+</section>

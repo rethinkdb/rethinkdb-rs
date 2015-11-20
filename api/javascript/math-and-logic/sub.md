@@ -20,9 +20,9 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-number.sub(number) &rarr; number
+number.sub(number[, number, ...]) &rarr; number
+time.sub(number[, number, ...]) &rarr; time
 time.sub(time) &rarr; number
-time.sub(number) &rarr; time
 {% endapibody %}
 
 # Description #
@@ -35,17 +35,14 @@ __Example:__ It's as easy as 2 - 2 = 0.
 r.expr(2).sub(2).run(conn, callback)
 ```
 
-
 __Example:__ Create a date one year ago today.
 
 ```js
 r.now().sub(365*24*60*60)
 ```
 
-
-__Example:__ Retrieve how many seconds elapsed between today and date
+__Example:__ Retrieve how many seconds elapsed between today and `date`.
 
 ```js
 r.now().sub(date)
 ```
-

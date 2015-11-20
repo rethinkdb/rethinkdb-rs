@@ -27,6 +27,7 @@ sequence.coerceTo('array') &rarr; array
 value.coerceTo('string') &rarr; string
 string.coerceTo('number') &rarr; number
 array.coerceTo('object') &rarr; object
+sequence.coerceTo('object') &rarr; object
 object.coerceTo('array') &rarr; array
 binary.coerceTo('string') &rarr; string
 string.coerceTo('binary') &rarr; binary
@@ -34,10 +35,10 @@ string.coerceTo('binary') &rarr; binary
 
 # Description #
 
-Convert value of one type into another.
+Convert a value of one type into another.
 
 * a sequence, selection or object can be coerced to an array
-* an array of key-value pairs can be coerced to an object
+* a sequence, selection or an array of key-value pairs can be coerced to an object
 * a string can be coerced to a number
 * any datum (single value) can be coerced to to a string
 * a binary object can be coerced to a string and vice-versa
@@ -46,7 +47,7 @@ __Example:__ Coerce a stream to an array to store its output in a field. (A stre
 
 ```js
 r.table('posts').map(function (post) {
-    post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
+    return post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
 }).run(conn, callback)
 ```
 

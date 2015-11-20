@@ -28,14 +28,14 @@ __Example:__ Create a line object and then convert it to a polygon.
 r.table('geo').insert({
     'id': 201,
     'rectangle': r.line(
-        [-122.423246,37.779388],
-        [-122.423246,37.329898],
-        [-121.886420,37.329898],
-        [-121.886420,37.779388]
+        [-122.423246, 37.779388],
+        [-122.423246, 37.329898],
+        [-121.886420, 37.329898],
+        [-121.886420, 37.779388]
     )
 }).run(conn)
 
 r.table('geo').get(201).update({
-    'rectangle': r.row('rectangle').fill()
-}).run(conn)
+    'rectangle': r.row['rectangle'].fill()
+}, non_atomic=True).run(conn)
 ```

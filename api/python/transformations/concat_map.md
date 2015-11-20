@@ -11,15 +11,15 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-stream.concat_map(mapping_function) &rarr; stream
-array.concat_map(mapping_function) &rarr; array
+stream.concat_map(function) &rarr; stream
+array.concat_map(function) &rarr; array
 {% endapibody %}
 
 # Description #
 
 Concatenate one or more elements into a single sequence using a mapping function.
 
-`concat_map` works in a similar fashion to `map`, applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
+`concat_map` works in a similar fashion to [map](/api/python/map/), applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
 
 ```py
 r.expr([1, 2, 3]).map(lambda x: [x, x.mul(2)]).run(conn)
