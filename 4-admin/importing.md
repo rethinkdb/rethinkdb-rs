@@ -10,7 +10,7 @@ permalink: docs/importing/
 
 The `rethinkdb` utility includes an `import` command to load existing data into RethinkDB databases. It can read JSON files, organized in one of two formats described below, or comma-separated value (CSV) files (including ones with other delimiters such as tab characters).
 
-When the option is available, such as importing from another document-oriented database, you should choose the JSON file format. If you're exporting from a SQL database this might not be possible, but you might be able to write a separate script to transform CSV output into JSON, or use the `mysql2json` script available as part of [mysql2xxxx][m2x].
+When the option is available, you should choose the JSON file format. If you're exporting from a SQL database this might not be possible, but you might be able to write a separate script to transform CSV output into JSON, or use the `mysql2json` script available as part of [mysql2xxxx][m2x].
 
 [m2x]: https://github.com/seamusabshere/mysql2xxxx
 
