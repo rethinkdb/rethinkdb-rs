@@ -8,6 +8,9 @@ switcher: true
 language: Ruby
 ---
 
+<img alt="Nested Fields Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/nested_fields.png" />
+
 A ReQL document is a JSON object: a set of key-value pairs, in which each value might be a single value, a list of values, or *another* set of key-value pairs. When the value of a field contains more fields, we describe these as *nested fields.*
 
 Consider a user table with contact information and a list of notes for each user in this format:
