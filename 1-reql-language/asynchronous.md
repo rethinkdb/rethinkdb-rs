@@ -453,7 +453,7 @@ def print_cfeed_data(connection_future, table):
     connection = yield connection_future
     feed = yield r.table(table).changes().run(connection)
     while (yield feed.fetch_next()):
-        item = yield field.next()
+        item = yield feed.next()
         print(item)
 ```
 
