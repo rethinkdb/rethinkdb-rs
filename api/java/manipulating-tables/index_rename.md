@@ -21,7 +21,7 @@ table.indexRename(oldIndexName, newIndexName) &rarr; object
 
 Rename an existing secondary index on a table. If the [optArg](/api/java/optarg) `overwrite` is specified as `true`, a previously existing index with the new name will be deleted and the index will be renamed. If `overwrite` is `false` (the default) an error will be raised if the new index name already exists.
 
-The return value on success will be an object of the format `{renamed: 1}`, or `{renamed: 0}` if the old and new names are the same.
+The return value on success will be an object of the format `{"renamed": 1}`, or `{"renamed": 0}` if the old and new names are the same.
 
 An error will be raised if the old index name does not exist, if the new index name is already in use and `overwrite` is `false`, or if either the old or new index name are the same as the primary key field name.
 

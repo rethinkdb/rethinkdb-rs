@@ -64,29 +64,55 @@ __Example:__ Subscribe to the changes on a table.
 Start monitoring the changefeed in one client:
 
 ```java
-r.table('games').changes().run(conn, function(err, cursor) {
-  cursor.each(console.log);
-});
+Cursor changeCursor = r.table("games").changes().run(conn);
+for (Map<String,Object> change: changeCursor) {
+    System.out.println(change);
+}
 ```
 
 As these queries are performed in a second client, the first
 client would receive and print the following objects:
 
 ```java
-> r.table('games').insert({id: 1}).run(conn);
-{old_val: null, new_val: {id: 1}}
+r.table("games").insert(r.hashMap("id", 1)).run(conn);
+```
 
-> r.table('games').get(1).update({player1: 'Bob'}).run(conn);
-{old_val: {id: 1}, new_val: {id: 1, player1: 'Bob'}}
+```json
+{"old_val": null, "new_val": {"id": 1}}
+```
 
-> r.table('games').get(1).replace({id: 1, player1: 'Bob', player2: 'Alice'}).run(conn);
-{old_val: {id: 1, player1: 'Bob'},
- new_val: {id: 1, player1: 'Bob', player2: 'Alice'}}
+```java
+r.table("games").get(1).update(r.hashMap("player1", "Bob")).run(conn);
+```
 
-> r.table('games').get(1).delete().run(conn)
-{old_val: {id: 1, player1: 'Bob', player2: 'Alice'}, new_val: null}
+```json
+{"old_val": {"id": 1}, "new_val": {"id": 1, "player1": "Bob"}}
+```
 
-> r.tableDrop('games').run(conn);
+```java
+r.table("games").get(1).replace(
+    r.hashMap("id", 1).with("player1", "Bob").with("player2", "Alice")
+).run(conn);
+```
+
+```json
+{"old_val": {"id": 1, "player1": "Bob"},
+ "new_val": {"id": 1, "player1": "Bob", "player2": "Alice"}}
+```
+
+```java
+r.table("games").get(1).delete().run(conn);
+```
+
+```json
+{"old_val": {"id": 1, "player1": "Bob", "player2": "Alice"}, "new_val": null}
+```
+
+```java
+r.tableDrop("games").run(conn);
+```
+
+```
 ReqlRuntimeError: Changefeed aborted (table unavailable)
 ```
 
@@ -101,14 +127,14 @@ r.table("test").changes().filter(
 __Example:__ Return all the changes to a specific player's score that increase it past 10.
 
 ```java
-r.table("test").get(1).filter(row -> row("score").gt(10)).changes().run(conn);
+r.table("test").get(1).filter(row -> row.g("score").gt(10)).changes().run(conn);
 ```
 
 __Example:__ Return all the inserts on a table.
 
 ```java
 r.table("test").changes().filter(
-    row -> row("old_val").eq((ReqlExpr) null)
+    row -> row.g("old_val").eq(null)
 ).run(conn);
 ```
 
