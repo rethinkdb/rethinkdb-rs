@@ -110,7 +110,7 @@ While there *is* a [circle] command, it approximates a circle by defining either
 To create indexes on fields containing geometry objects, you simply use the standard [index_create](/api/python/index_create/) command, setting the `geo` optional argument to `True`. In Python, this would be:
 
 ```py
-r.table('sites').index_create('locations', {geo: true})
+r.table('sites').index_create('locations', geo=True)
 ```
 
 Just like other ReQL indexes, you can create an index using an anonymous function rather than a simple field name, as well as create multi indexes by using the `multi` flag with `geo`. Read the [index_create](/api/python/index_create) API documentation for more details.
