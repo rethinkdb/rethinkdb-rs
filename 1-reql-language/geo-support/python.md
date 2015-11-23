@@ -107,7 +107,7 @@ While there *is* a [circle] command, it approximates a circle by defining either
 
 # Geospatial indexes #
 
-To create indexes on fields containing geometry objects, you simply use the standard [index_create](/api/python/index_create/) command, setting the `geo` optional argument to `Prue`. In JavaScript, this would be:
+To create indexes on fields containing geometry objects, you simply use the standard [index_create](/api/python/index_create/) command, setting the `geo` optional argument to `True`. In Python, this would be:
 
 ```py
 r.table('sites').index_create('locations', {geo: true})
