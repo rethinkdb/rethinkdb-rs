@@ -12,13 +12,15 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-bool.and(bool[, bool, ...]) &rarr; bool
-r.and(bool[, bool, ...]) &rarr; bool
+bool.and([bool, bool, ...]) &rarr; bool
+r.and([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #
 
-Compute the logical "and" of two or more values. The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true,false)`).
+Compute the logical "and" of one or more values. The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true,false)`).
+
+Calling `and` with zero arguments will return `true`.
 
 __Example:__ Return whether both `a` and `b` evaluate to true.
 

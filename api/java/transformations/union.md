@@ -42,3 +42,13 @@ r.expr(r.array(1, 2)).union(r.array(3, 4), r.array(5, 6), r.array(7, 8, 9)).run(
 // Result:
 [1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
+
+__Example:__ Create a [changefeed][cf] from the first example.
+
+```java
+r.table("marvel").union(r.table("dc")).changes().run(conn);
+```
+
+Now, when any heroes are added, modified or deleted from either table, a change notification will be sent out.
+
+[cf]: /docs/changefeeds/java
