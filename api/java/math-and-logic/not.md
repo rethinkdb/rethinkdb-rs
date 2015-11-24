@@ -12,7 +12,7 @@ related_commands:
 
 {% apibody %}
 bool.not() &rarr; bool
-not(bool) &rarr; bool
+r.not(bool) &rarr; bool
 {% endapibody %}
 
 # Description #

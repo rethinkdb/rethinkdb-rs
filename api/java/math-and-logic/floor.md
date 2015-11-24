@@ -41,5 +41,5 @@ r.expr(-12.345).floor().run(conn);
 __Example:__ Return Iron Man's weight, rounded down with `floor`.
 
 ```java
-r.table("superheroes").get("ironman")("weight").floor().run(conn);
+r.table("superheroes").get("ironman").g("weight").floor().run(conn);
 ```

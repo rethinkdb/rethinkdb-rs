@@ -22,7 +22,7 @@ Test if two or more values are equal.
 __Example:__ See if a user's `role` field is set to `administrator`. 
 
 ```java
-r.table("users").get(1)("role").eq("administrator").run(conn);
+r.table("users").get(1).g("role").eq("administrator").run(conn);
 ```
 
 __Example:__ See if three variables contain equal values.

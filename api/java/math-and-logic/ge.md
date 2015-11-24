@@ -24,7 +24,7 @@ Compare values, testing if the left-hand value is greater than or equal to the r
 __Example:__ Test if a player has scored 10 points or more.
 
 ```java
-r.table("players").get(1)("score").ge(10).run(conn);
+r.table("players").get(1).g("score").ge(10).run(conn);
 ```
 
 __Example:__ Test if variables are ordered from lowest to highest.

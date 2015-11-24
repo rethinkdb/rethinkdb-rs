@@ -16,7 +16,7 @@ number.ceil() &rarr; number
 
 # Description #
 
-Rounds the given value up, returning the smallest integer value greater than or equal to the given value (the value's ceiling).
+Rounds the given value up, returning the smallest integer greater than or equal to the given value (the value's ceiling).
 
 __Example:__ Return the ceiling of 12.345.
 
@@ -41,5 +41,5 @@ r.expr(-12.345).ceil().run(conn);
 __Example:__ Return Iron Man's weight, rounded up with `ceil`.
 
 ```java
-r.table("superheroes").get("ironman")("weight").ceil().run(conn);
+r.table("superheroes").get("ironman").g("weight").ceil().run(conn);
 ```

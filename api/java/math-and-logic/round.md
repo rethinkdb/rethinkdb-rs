@@ -44,5 +44,5 @@ r.expr(-12.345).round().run(conn);
 __Example:__ Return Iron Man's weight, rounded to the nearest integer.
 
 ```java
-r.table("superheroes").get("ironman")("weight").round().run(conn);
+r.table("superheroes").get("ironman").g("weight").round().run(conn);
 ```

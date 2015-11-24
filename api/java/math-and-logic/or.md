@@ -49,7 +49,7 @@ __Note:__ When using `or` inside a `filter` predicate to test the values of fiel
 
 ```java
 r.table("posts").filter(row ->
-    row("category").default("foo").eq("article").
-    or(row("genre").default("foo").eq("mystery"))
+    row.g("category").default("foo").eq("article").
+    or(row.g("genre").default("foo").eq("mystery"))
 ).run(conn);
 ```
