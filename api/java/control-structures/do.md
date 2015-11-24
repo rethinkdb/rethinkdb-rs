@@ -55,12 +55,10 @@ __Example:__ Take different actions based on the result of a ReQL [insert](/api/
 ```java
 import com.rethinkdb.model.MapObject;
 
-MapObject newData = r.expr(
-    r.hashMap("id", 100)
-        .with("name", "Agatha")
-        .with("gross_score", 57)
-        .with("course_handicap", 4)
-).run(conn);
+MapObject newData = r.hashMap("id", 100)
+    .with("name", "Agatha")
+    .with("gross_score", 57)
+    .with("course_handicap", 4);
 
 r.table("players").insert(newData).do_(doc ->
     r.branch(doc.g("inserted").ne(0),

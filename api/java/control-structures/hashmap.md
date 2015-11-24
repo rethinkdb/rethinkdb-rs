@@ -20,14 +20,18 @@ r.hashMap(key, value)[.with(key, value) ...] &rarr; object
 
 Take a key/value pair, with extra key/value pairs optionally specified by chaining one or more `with(key, value)` terms after `hashMap`, and return an object.
 
+`hashMap` is a convenience provided by the RethinkDB Java driver, and is not actually a ReQL term. It returns a `MapObject`, a RethinkDB-provided class that inherits from `Map<Object,Object>`. You can use `hashMap` outside the context of a ReQL query.
+
+
 __Example:__ Create a hashmap.
 
 ```java
-r.expr(r.hashMap("user", "fred")
+import com.rethinkdb.model.MapObject;
+
+MapObject newData = r.hashMap("user", "fred")
     .with("email", "fred@example.com")
     .with("id", 101)
-    .with("admin", true)
-).run(conn);
+    .with("admin", true);
 ```
 
 This creates the object (in JSON):
@@ -39,18 +43,4 @@ This creates the object (in JSON):
     "id": 101,
     "user": "fred"
 }
-```
-
-__Example:__ Create a hashmap using MapObject.
-
-The RethinkDB Java driver provides a `MapObject` class that extends `HashMap` by adding a chainable `with(key, value)` method for convenience. To create the object above as a `MapObject`:
-
-```java
-import com.rethinkdb.model.MapObject;
-
-MapObject newData = new MapObject()
-    .with("user", "fred")
-    .with("email", "fred@example.com")
-    .with("id", 101)
-    .with("admin", true);
 ```

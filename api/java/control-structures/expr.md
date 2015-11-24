@@ -28,7 +28,7 @@ __Example:__ Objects wrapped with expr can then be manipulated by ReQL API funct
 import com.rethinkdb.model.MapObject;
 
 // Create object { "a": "b" }
-MapObject newData = r.expr(r.hashMap("a", "b")).run(conn);
+MapObject newData = r.hashMap("a", "b");
 
 // merge with { "b": [1, 2, 3] }
 r.expr(newData).merge(r.hashMap("b", r.array(1, 2, 3))).run(conn);
