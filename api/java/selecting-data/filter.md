@@ -24,11 +24,11 @@ Return all the elements in a sequence for which the given predicate is true. The
 By default, `filter` will silently skip documents with missing fields: if the predicate tries to access a field that doesn't exist (for instance, the predicate `{age: 30}` applied to a document with no `age` field), that document will not be returned in the result set, and no error will be generated. This behavior can be changed with the `default` [optArg](/api/java/optarg).
 
 * If `default` is set to `true`, documents with missing fields will be returned rather than skipped.
-* If `default` is set to `r.error()`, an `ReqlRuntimeError` will be thrown when a document with a missing field is tested.
+* If `default` is set to `r.error()`, a `ReqlRuntimeError` will be thrown when a document with a missing field is tested.
 * If `default` is set to `false` (the default), documents with missing fields will be skipped.
 
 {% infobox %}
-__Note:__ `filter` does not use secondary indexes. For retrieving documents via secondary indexes, consider [getAll](/api/java/get_all/), [between](/api/java/between/) and [eqJoin](/api/java/eq_join/).
+__Note:__ `filter` does not use [secondary indexes](/docs/secondary-indexes/). For retrieving documents via secondary indexes, consider [getAll](/api/java/get_all/), [between](/api/java/between/) and [eqJoin](/api/java/eq_join/).
 {% endinfobox %}
 
 ## Basic predicates ##
@@ -52,8 +52,6 @@ In this case, the function returns `true` if the field `age` is equal to 30.
 
 Predicates to `filter` are evaluated on the server, and must use ReQL expressions. You cannot use standard Java comparison operators such as `==`, `<`/`>` and `||`/`&&`.
 
-Also, predicates must evaluate document fields. They cannot evaluate [secondary indexes](/docs/secondary-indexes/).
-
 __Example:__ Get all users who are more than 18 years old.
 
 ```java
@@ -65,7 +63,7 @@ __Example:__ Get all users who are less than 18 years old and more than 13 years
 
 ```java
 r.table("users").filter(
-    row -> row("age").lt(18).and(row("age").gt(13))
+    row -> row.g("age").lt(18).and(row.g("age").gt(13))
 ).run(conn);
 ```
 
@@ -74,7 +72,7 @@ __Example:__ Get all users who are more than 18 years old or have their parental
 
 ```java
 r.table("users").filter(
-    row -> row("age").ge(18).or(row("hasParentalConsent"))
+    row -> row.g("age").ge(18).or(row.g("hasParentalConsent"))
 ).run(conn);
 ```
 

@@ -24,7 +24,7 @@ Get the *nth* element of a sequence, counting from zero. If the argument is nega
 __Example:__ Select the second element in the array.
 
 ```java
-r.expr([1,2,3]).nth(1).run(conn);
+r.expr(r.array(1,2,3)).nth(1).run(conn);
 ```
 
 __Example:__ Select the bronze medalist from the competitors.

@@ -29,7 +29,7 @@ You can pass the following options using [optArg](/api/java/optarg/):
     - `true`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
     - `false`: do not return a `changes` array (the default).
     - `"always"`: behave as `true`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `true` pre-2.0.)
-- `nonAtomic`: if set to `true`, executes the update and distributes the result to replicas in a non-atomic fashion. This flag is required to perform non-deterministic updates, such as those that require reading data from another table.
+- `non_atomic`: if set to `true`, executes the update and distributes the result to replicas in a non-atomic fashion. This flag is required to perform non-deterministic updates, such as those that require reading data from another table.
 
 Update returns an object that contains the following attributes:
 
@@ -39,7 +39,7 @@ Update returns an object that contains the following attributes:
 - `errors`: the number of errors encountered while performing the update.
 - `first_error`: If errors were encountered, contains the text of the first error.
 - `deleted` and `inserted`: 0 for an update operation.
-- `changes`: if `returnChanges` is set to `true`, this will be an array of objects, one for each objected affected by the `update` operation. Each object will have two keys: `{new_val: <new value>, old_val: <old value>}`.
+- `changes`: if `return_changes` is set to `true`, this will be an array of objects, one for each objected affected by the `update` operation. Each object will have two keys: `{new_val: <new value>, old_val: <old value>}`.
 
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
@@ -76,7 +76,7 @@ If the field `views` does not exist, it will be set to `0`.
 
 ```java
 r.table("posts").get(1).update(
-    post -> r.hashMap("views", post.g("views").add(1).default(0))
+    post -> r.hashMap("views", post.g("views").add(1).default_(0))
 ).run(conn);
 ```
 
@@ -167,7 +167,7 @@ The result will now include a `changes` field:
 
 The `update` command supports RethinkDB's [nested field][nf] syntax to update subdocuments. Consider a user table with contact information in this format:
 
-[nf]: /docs/nested-fields/javascript
+[nf]: /docs/nested-fields/java
 
 ```json
 {
@@ -220,10 +220,10 @@ __Example:__ Add another note to Bob Smith's record.
 ```java
 import com.rethinkdb.model.MapObject;
 
-MapObject icqNote = new MapObject()
-    .with("date", r.now())
-    .with("from", "Inigo Montoya")
-    .with("subject", "You killed my father");
+MapObject icqNote = r.hashMap("date", r.now())
+                     .with("from", "Admin")
+                     .with("subject", "You killed my father");
+
 r.table("users").get(10001).update(
     row -> r.hashMap("notes", row.g("notes").append(icqNote))
 ).run(conn);
@@ -234,10 +234,10 @@ __Example:__ Send a note to every user with an ICQ number.
 ```java
 import com.rethinkdb.model.MapObject;
 
-MapObject icqNote = new MapObject()
-    .with("date", r.now())
-    .with("from", "Admin")
-    .with("subject", "Welcome to the future");
+MapObject icqNote = r.hashMap("date", r.now())
+                     .with("from", "Admin")
+                     .with("subject", "Welcome to the future");
+
 r.table("users").filter(
     row -> row.hasFields(r.hashMap("contact", r.hashMap("im", "icq")))
 ).update(r.hashMap("notes", row.g("notes").append(icqNote))).run(conn);

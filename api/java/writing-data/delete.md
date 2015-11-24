@@ -74,7 +74,8 @@ r.table("comments").filter(r.hashMap("idPost", 3)).delete().run(conn);
 __Example:__ Delete a single document from the table `comments` and return its value.
 
 ```java
-r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete(r.hashMap("return_changes", true)).run(conn);
+r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59")
+ .delete().optArg("return_changes", true).run(conn);
 ```
 
 The result looks like:
@@ -106,5 +107,5 @@ __Example:__ Delete all documents from the table `comments` without waiting for 
 operation to be flushed to disk.
 
 ```java
-r.table("comments").delete(r.hashMap("durability", "soft")).run(conn);
+r.table("comments").delete().optArg("durability", "soft").run(conn);
 ```

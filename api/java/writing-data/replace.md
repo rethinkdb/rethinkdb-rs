@@ -63,7 +63,7 @@ Replace returns an object that contains the following attributes:
 - `skipped`: 0 for a replace operation.
 - `changes`: if `returnChanges` is set to `true`, this will be an array of
   objects, one for each objected affected by the `replace` operation. Each
-  object will have two keys: `{new_val: <new value>, old_val: <old value>}`.
+  object will have two keys: `{"new_val": <new value>, "old_val": <old value>}`.
 
 __Example:__ Replace the document with the primary key `1`.
 
@@ -104,12 +104,12 @@ __Example:__ Replace the document with the primary key `1` and return the values
 and after the replace operation.
 
 ```java
-r.table("posts").get(1).replace({
-    "id": 1,
-    "title": "Lorem ipsum",
-    "content": "Aleas jacta est",
-    "status": "published"
-}, return_changes=True).run(conn)
+r.table("posts").get(1).replace(
+    r.hashMap("id", 1)
+     .with("title", "Lorem ipsum")
+     .with("content", "Aleas jacta est")
+     .with("status", "published")
+).optArg("return_changes", true).run(conn);
 ```
 
 The result will have a `changes` field:
