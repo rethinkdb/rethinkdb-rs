@@ -33,12 +33,18 @@ alias: docs/guides/drivers/
     
     <section class="platform-category">
         <h2>Current community-supported drivers</h2>
-        <p>These drivers have been updated to use the JSON driver protocol and at least RethinkDB 1.15 ReQL terms (geometry support and basic changefeeds).</p>
+        <p>These drivers have been updated to use the JSON driver protocol and at least RethinkDB 2.0 ReQL.</p>
         <ul class="platform-buttons">
+            <li>
+                <a href="https://github.com/bchavez/RethinkDb.Driver">
+                    <img src="/assets/images/docs/driver-languages/csharp.png" />
+                    <p class="name">C# <span class="driver-author">bchavez</span></p>
+                </a>
+            </li>
             <li>
                 <a href="https://github.com/mfenniak/rethinkdb-net">
                     <img src="/assets/images/docs/driver-languages/csharp.png" />
-                    <p class="name">C# / .NET</p>
+                    <p class="name">C# <span class="driver-author">mfenniak</span></p>
                 </a>
             </li>
             <li>
@@ -125,18 +131,12 @@ alias: docs/guides/drivers/
                     <p class="name">PHP</p>
                 </a>
             </li>
-            <li>
-                <a href="https://github.com/kclay/rethink-scala">
-                    <img src="/assets/images/docs/driver-languages/scala.png" />
-                    <p class="name">Scala</p>
-                </a>
-            </li>
         </ul>
     </section>
 
     <section class="platform-category">
         <h2>Older community-supported drivers</h2>
-        <p>These drivers have not been updated with more recent additions to the RethinkDB driver protocol, and will require work to take advantage of newer features. If you want to work with one of these languages, these may provide a good starting point.</p>
+        <p>These drivers may not support all of RethinkDB 2.0's ReQL or, in some cases, may not work with current versions of RethinkDB at all. However, if you wish to work with one of these languages, they may provide a good starting point.</p>
         <ul class="platform-buttons">
             <li>
                 <a href="https://github.com/unbit/librethinkdb">
@@ -160,6 +160,12 @@ alias: docs/guides/drivers/
                 <a href="https://github.com/dparnell/rethink-db-client">
                     <img src="/assets/images/docs/driver-languages/objc.png" />
                     <p class="name">Objective-C</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/kclay/rethink-scala">
+                    <img src="/assets/images/docs/driver-languages/scala.png" />
+                    <p class="name">Scala</p>
                 </a>
             </li>
         </ul>
@@ -190,6 +196,7 @@ __Thanks to all our amazing driver contributors!__
 
 - [@apa512](https://github.com/apa512) (Clojure): <https://github.com/apa512/clj-rethinkdb>
 - [@atnnn](https://github.com/atnnn) (Haskell): [https://github.com/atnnn](https://github.com/atnnn/haskell-rethinkdb)
+- [@bchavez](https://github.com/bchavez) (C#/.NET): [https://github.com/bchavez/RethinkDb.Driver](https://github.com/bchavez/RethinkDb.Driver)
 - [@billysometimes](https://github.com/billysometimes) (Dart): <https://github.com/billysometimes/rethinkdb>
 - [@brandonhamilton](https://github.com/brandonhamilton) (Delphi): <https://github.com/brandonhamilton/rethinkdb-delphi>
 - [@dancannon](https://github.com/dancannon) (Go): <https://github.com/dancannon/gorethink>
@@ -207,4 +214,4 @@ __Thanks to all our amazing driver contributors!__
 - [@orthecreedence](https://github.com/orthecreedence) (Common Lisp): <https://github.com/orthecreedence/cl-rethinkdb>
 - [@rgv151](https://github.com/rgv151) (Nim): <https://github.com/rgv151/rethinkdb.nim>
 - [@unbit](https://github.com/unbit) (C): <https://github.com/unbit/librethinkdb>
-- The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C# / .NET): <https://github.com/mfenniak/rethinkdb-net>
+- The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C#/.NET): <https://github.com/mfenniak/rethinkdb-net>
