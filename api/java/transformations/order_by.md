@@ -31,7 +31,7 @@ __Note:__ RethinkDB uses byte-wise ordering for `orderBy` and does not support U
 Sorting without an index requires the server to hold the sequence in
 memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` option for [run](/api/java/run)). Sorting with an index can
 be done on arbitrarily large tables, or after a [between](/api/java/between/) command
-using the same index. This applies to both secondary indexes and the primary key (e.g., `{index: 'id'}`).
+using the same index. This applies to both secondary indexes and the primary key (e.g., `{"index": "id"}`).
 
 __Example:__ Order all the posts using the index `date`.   
 
@@ -71,7 +71,7 @@ r.table("small_table").orderBy("date").run(conn);
 ```
 
 __Example:__ You can efficiently order using multiple fields by using a
-[compound index](http://www.rethinkdb.com/docs/secondary-indexes/javascript/).
+[compound index](http://www.rethinkdb.com/docs/secondary-indexes/java/).
 
 Order by date and title.
 
