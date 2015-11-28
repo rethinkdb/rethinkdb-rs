@@ -432,7 +432,7 @@ To retrieve more data for the cursor, the driver should send a query with a `Que
 | Step | Element | Transmitted bytes |  
 |  ------ | ------ | ------ |  
 | 1 | token | `00 00 00 00 00 00 00 01` |  
-| 2 | length | 3 |  
+| 2 | length | `03 00 00 00` |  
 | 3 | query | `[2]` |  
 
 You will receive another response of either type `SUCCESS_PARTIAL`, indicating there is still more data available, or `SUCCESS_SEQUENCE` if you have reached the end of the stream. (This will never be returned for a feed.) Note that these `ResponseType`s can be returned without data (an empty array as the `r` value). A driver can send `CONTINUE` to fetch the next batch of a sequence as soon as the response is received.
