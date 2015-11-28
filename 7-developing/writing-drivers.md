@@ -95,8 +95,8 @@ So, the data we send to the server is as follows:
 | Step | Element |  Transmitted bytes |  
 | --- | --- |  --- |  
 | 1 | query token |  `00 00 00 00 00 00 00 01` |  
-| 2 | length |  `03 00 00 00` |  
-| 3 | query |  `foo` |  
+| 2 | length |  `0c 00 00 00` |  
+| 3 | query |  `[1,"foo",{}]` |  
 
 Once the query is sent, you can read the response object back from the server. The response object takes the following form:
 
