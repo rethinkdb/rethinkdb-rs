@@ -23,7 +23,7 @@ The optional unnamed argument specifies whether to wait for the next available e
 
 * `true`: Wait indefinitely (the default).
 * `false`: Do not wait at all. If data is immediately available, it will be returned; if it is not available, a `Timeout::Error` will be raised. 
-* number: Wait up the specified number of seconds for data to be available before raising `Timeout::Error`.
+* number: Wait up to the specified number of seconds for data to be available before raising `Timeout::Error`.
 
 The behavior of `next` will be identical with `false`, `nil` or the number `0`.
 

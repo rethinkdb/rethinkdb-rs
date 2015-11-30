@@ -5,13 +5,22 @@ docs_active: importing
 permalink: docs/importing/
 ---
 
-The `rethinkdb` utility includes an `import` command to load existing data into RethinkDB databases.
+<img alt="Importing Data Illustration" class="api_command_illustration"
+    src="/assets/images/docs/api_illustrations/importing_data.png" />
+
+The `rethinkdb` utility includes an `import` command to load existing data into RethinkDB databases. It can read JSON files, organized in one of two formats described below, or comma-separated value (CSV) files (including ones with other delimiters such as tab characters).
+
+When the option is available, you should choose the JSON file format. If you're exporting from a SQL database this might not be possible, but you might be able to write a separate script to transform CSV output into JSON, or use the `mysql2json` script available as part of [mysql2xxxx][m2x].
+
+[m2x]: https://github.com/seamusabshere/mysql2xxxx
+
+The full syntax for the `import` command is as follows:
 
     rethinkdb import -f FILE --table DB.TABLE [-c HOST:PORT] [-a AUTH_KEY]
       [--force] [--clients NUM] [--format (csv | json)] [--pkey PRIMARY_KEY]
       [--delimiter CHARACTER] [--custom-header FIELD,FIELD... [--no-header]]
 
-RethinkDB can import from either JSON files or CSV files. To import the file `users.json` into the table `test.users`, for example, you would use:
+To import the file `users.json` into the table `test.users`, you would use:
 
     rethinkdb import -f users.json --table test.users
 

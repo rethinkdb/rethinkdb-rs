@@ -71,6 +71,8 @@ r.table('b').reconfigure(shards=2, replicas={'us_east':2, 'us_west':2,
 
 The Data Explorer in the web administration UI is itself a JavaScript REPL, with syntax highlighting and history. (The article on [ReQL data exploration][rde] goes into some detail on how to use the Data Explorer.) The advantage of scripting languages with ReQL comes into play when writing administration scripts.
 
+[rde]: /docs/reql-data-exploration/
+
 ## Scripting ReQL ##
 
 By using ReQL with a language like Python, it becomes easy to script administrative and configuration tasks with RethinkDB. If you have complex table configurations that might need to be repeated for new tables or tweaked for the whole database, you can store them in a script.

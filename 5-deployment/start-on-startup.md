@@ -59,6 +59,10 @@ Get the sample `.conf` file [here][conf].
 
 # Startup with systemd #
 
+{% infobox %}
+**Running Ubuntu?** Use the [Startup with init.d](#startup-with-initd) instructions above, not the `systemd` instructions.
+{% endinfobox %}
+
 Full support for systemd is planned&mdash;you can track progress on [issue 2014](https://github.com/rethinkdb/rethinkdb/issues/2014). For now, you'll have to create a couple configuration files manually.
 
 ## Basic setup ##
@@ -220,7 +224,7 @@ sudo pico /etc/rethinkdb.conf
 To start RethinkDB, use `launchctl`:
 
 ```bash
-launchctl load /Library/LaunchDaemons/com.rethinkdb.server.plist
+sudo launchctl load /Library/LaunchDaemons/com.rethinkdb.server.plist
 ```
 
 RethinkDB will automatically load on startup. To disable this behavior, change the `RunAtLoad` key to `<false/>` in the `plist` file.
