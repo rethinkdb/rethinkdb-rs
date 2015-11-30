@@ -60,9 +60,9 @@ Like any ReQL command, `changes` integrates with the rest of the query language.
 * [pluck](/api/javascript/pluck)
 * [between](/api/javascript/between)
 * [union](/api/javascript/union)
-* [min](/api/javascript/min) (returns an initial value)
-* [max](/api/javascript/max) (returns an initial value)
-* [orderBy](/api/javascript/order_by).[limit](/api/javascript/limit) (returns an initial value)
+* [min](/api/javascript/min)
+* [max](/api/javascript/max)
+* [orderBy](/api/javascript/order_by).[limit](/api/javascript/limit)
 
 Limitations and caveats on chaining with changefeeds:
 
@@ -93,6 +93,12 @@ r.table('scores').changes().filter(
 # Including state changes #
 
 The `includeStates` optional argument to `changes` allows you to receive extra "status" documents in changefeed streams. These can allow your application to distinguish between initial values returned at the start of a stream and subsequent changes. Read the [changes][] API documentation for a full explanation and example.
+
+# Including initial values #
+
+By specifying `true` to the `includeInitial` optional argument, the changefeed stream will start with the current contents of the table or selection being monitored. The initial results will have `new_val` fields, but no `old_val` fields, so it's easy to distinguish them from change events.
+
+If you specify `true` for both `includeStates` and `includeInitial`, the changefeed stream will start with a `{state: 'initializing'}` status document, followed by initial values. A `{state: 'ready'}` status document will be sent when all the initial values have been sent.
 
 # Handling latency #
 
