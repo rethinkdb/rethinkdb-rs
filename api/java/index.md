@@ -151,29 +151,55 @@ __Example:__ Subscribe to the changes on a table.
 Start monitoring the changefeed in one client:
 
 ```java
-r.table('games').changes().run(conn, function(err, cursor) {
-  cursor.each(console.log);
-});
+Cursor changeCursor = r.table("games").changes().run(conn);
+for (Map<String,Object> change: changeCursor) {
+    System.out.println(change);
+}
 ```
 
 As these queries are performed in a second client, the first
 client would receive and print the following objects:
 
 ```java
-> r.table('games').insert({id: 1}).run(conn);
-{old_val: null, new_val: {id: 1}}
+r.table("games").insert(r.hashMap("id", 1)).run(conn);
+```
 
-> r.table('games').get(1).update({player1: 'Bob'}).run(conn);
-{old_val: {id: 1}, new_val: {id: 1, player1: 'Bob'}}
+```json
+{"old_val": null, "new_val": {"id": 1}}
+```
 
-> r.table('games').get(1).replace({id: 1, player1: 'Bob', player2: 'Alice'}).run(conn);
-{old_val: {id: 1, player1: 'Bob'},
- new_val: {id: 1, player1: 'Bob', player2: 'Alice'}}
+```java
+r.table("games").get(1).update(r.hashMap("player1", "Bob")).run(conn);
+```
 
-> r.table('games').get(1).delete().run(conn)
-{old_val: {id: 1, player1: 'Bob', player2: 'Alice'}, new_val: null}
+```json
+{"old_val": {"id": 1}, "new_val": {"id": 1, "player1": "Bob"}}
+```
 
-> r.tableDrop('games').run(conn);
+```java
+r.table("games").get(1).replace(
+    r.hashMap("id", 1).with("player1", "Bob").with("player2", "Alice")
+).run(conn);
+```
+
+```json
+{"old_val": {"id": 1, "player1": "Bob"},
+ "new_val": {"id": 1, "player1": "Bob", "player2": "Alice"}}
+```
+
+```java
+r.table("games").get(1).delete().run(conn);
+```
+
+```json
+{"old_val": {"id": 1, "player1": "Bob", "player2": "Alice"}, "new_val": null}
+```
+
+```java
+r.tableDrop("games").run(conn);
+```
+
+```
 ReqlRuntimeError: Changefeed aborted (table unavailable)
 ```
 
@@ -220,10 +246,7 @@ To pass more than one optional argument, chain `optArg` once for each argument.
 ## [next](next/) ##
 
 {% apibody %}
-cursor.next(callback)
-array.next(callback)
-cursor.next() &rarr; promise
-array.next() &rarr; promise
+cursor.next()
 {% endapibody %}
 
 Get the next element in the cursor.
@@ -231,80 +254,57 @@ Get the next element in the cursor.
 __Example:__ Retrieve the next element.
 
 ```java
-cursor.next(function(err, row) {
-    if (err) throw err;
-    processRow(row);
-});
+cursor = r.table("superheroes").run<Cursor<Map<String, Object>>(conn);
+doc = cursor.next();
 ```
-
-__Note:__ The canonical way to retrieve all the results is to use [each](../each/) or [toArray](../to_array/). The `next` command should be used only when you may not retrieve all the elements of a cursor or want to delay some operations.
 
 [Read more about this command &rarr;](next/)
 
-## [each](each/) ##
+## [for](each/) ##
 
 {% apibody %}
-cursor.each(callback[, onFinishedCallback])
-array.each(callback[, onFinishedCallback])
-feed.each(callback)
+for (doc : <Cursor>) { ... }
 {% endapibody %}
 
-Lazily iterate over the result set one element at a time. The second callback is optional
-and is called when the iteration stops (when there are no more rows or when the callback
-returns `false`).
+Lazily iterate over a result set one element at a time.
 
 __Example:__ Let's process all the elements!
 
 ```java
-cursor.each(function(err, row) {
-    if (err) throw err;
-    processRow(row);
-});
+cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
+for (Map<String, Object> doc : cursor) {
+    System.out.println(doc);
+}
 ```
 
 [Read more about this command &rarr;](each/)
 
-## [toArray](to_array/) ##
+## [toList](to_array/) ##
 
 {% apibody %}
-cursor.toArray(callback)
-array.toArray(callback)
-cursor.toArray() &rarr; promise
-array.toArray() &rarr; promise
+cursor.toList()
 {% endapibody %}
 
-Retrieve all results and pass them as an array to the given callback.
+Retrieve all results from a cursor as a list.
 
-__Example:__ For small result sets it may be more convenient to process them at once as
-an array.
-
-```java
-cursor.toArray(function(err, results) {
-    if (err) throw err;
-    processResults(results);
-});
-```
-
-The equivalent query with the `each` command would be:
+__Example:__ For small result sets it may be more convenient to process them at once as a list.
 
 ```java
-var results = []
-cursor.each(function(err, row) {
-    if (err) throw err;
-    results.push(row);
-}, function(err, results) {
-    if (err) throw err;
-    processResults(results);
-});
+cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
+List users = cursor.toList();
+processResults(users);
 ```
 
-An equivalent query using promises.
+The equivalent query with a `for` loop would be:
 
 ```java
-cursor.toArray().then(function(results) {
-    processResults(results);
-}).error(console.log);
+cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
+for (Map<String, Object> doc : cursor) {
+    processResults(doc);
+}
 ```
+
+__Note:__ Because a feed is a cursor that never terminates, using `list` with a feed will never return. Use [for](../each/) or [next](../next/) instead. See the [changes](/api/java/changes) command for more information on feeds.
 
 [Read more about this command &rarr;](to_array/)
 
@@ -320,7 +320,7 @@ associated with the open request.
 __Example:__ Close a cursor.
 
 ```java
-cursor.close()
+cursor.close();
 ```
 
 [Read more about this command &rarr;](close-cursor/)
@@ -403,7 +403,7 @@ Return:
 r.dbList() &rarr; array
 {% endapibody %}
 
-List all database names in the system. The result is a list of strings.
+List all database names in the cluster. The result is a list of strings.
 
 __Example:__ List all databases.
 
@@ -851,8 +851,6 @@ In this case, the function returns `true` if the field `age` is equal to 30.
 
 Predicates to `filter` are evaluated on the server, and must use ReQL expressions. You cannot use standard Java comparison operators such as `==`, `<`/`>` and `||`/`&&`.
 
-Also, predicates must evaluate document fields. They cannot evaluate [secondary indexes](/docs/secondary-indexes/).
-
 [Read more about this command &rarr;](filter/)
 
 {% endapisection %}
@@ -1104,7 +1102,7 @@ Get the *nth* element of a sequence, counting from zero. If the argument is nega
 __Example:__ Select the second element in the array.
 
 ```java
-r.expr([1,2,3]).nth(1).run(conn);
+r.expr(r.array(1,2,3)).nth(1).run(conn);
 ```
 
 [Read more about this command &rarr;](nth/)
@@ -1474,7 +1472,7 @@ object.without([selector1, selector2...]) &rarr; object
 {% endapibody %}
 
 The opposite of pluck; takes an object or a sequence of objects, and returns them with
-the specified paths removed.
+the specified fields or paths removed.
 
 __Example:__ Since we don't need it for this computation we'll save bandwidth and leave
 out the list of IronMan's romantic conquests.
@@ -1494,7 +1492,7 @@ sequence.merge([object | function, object | function, ...]) &rarr; stream
 array.merge([object | function, object | function, ...]) &rarr; array
 {% endapibody %}
 
-Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list. `merge` also accepts a subquery function that returns an object, which will be used similarly to a [map](/api/java/map/) function.
+Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list. `merge` also accepts a function that returns an object, which will be used similarly to a [map](/api/java/map/) function.
 
 __Example:__ Equip Thor for battle.
 
@@ -1578,7 +1576,7 @@ r.table("marvel").get("IronMan").g("equipment").setInsert("newBoots").run(conn);
 array.setUnion(array) &rarr; array
 {% endapibody %}
 
-Add a several values to an array and return it as a set (an array with distinct values).
+Perform a set intersection of two arrays, returning an array with all unique items from both.
 
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots and an arc reactor.
 
@@ -1644,7 +1642,7 @@ r.table("marvel").get("IronMan").bracket("firstAppearance").run(conn);
 r.table("marvel").get("IronMan").g("firstAppearance").run(conn);
 ```
 
-The `()` command also accepts integer arguments as array offsets, like the [nth](/api/java/nth) command.
+The `bracket` command also accepts integer arguments as array offsets, like the [nth](/api/java/nth) command.
 
 [Read more about this command &rarr;](bracket/)
 
@@ -1707,9 +1705,9 @@ r.expr(r.array("Iron Man", "Spider-Man")).insertAt(1, "Hulk").run(conn);
 array.spliceAt(index, array) &rarr; array
 {% endapibody %}
 
-Insert several values in to an array at a given index. Returns the modified array.
+Insert several values into an array at the given index. Returns the modified array.
 
-__Example:__ Hulk and Thor decide to join the avengers.
+__Example:__ Hulk and Thor decide to join the Avengers.
 
 ```java
 r.expr(r.array("Iron Man", "Spider-Man"))
@@ -2076,11 +2074,11 @@ r.expr(2).mod(2).run(conn);
 ## [and](and/) ##
 
 {% apibody %}
-bool.and(bool[, bool, ...]) &rarr; bool
-r.and(bool[, bool, ...]) &rarr; bool
+bool.and([bool, bool, ...]) &rarr; bool
+r.and([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
-Compute the logical "and" of two or more values. The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true,false)`).
+Compute the logical "and" of one or more values. The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true,false)`).
 
 __Example:__ Return whether both `a` and `b` evaluate to true.
 
@@ -2098,11 +2096,11 @@ false
 ## [or](or/) ##
 
 {% apibody %}
-bool.or(bool[, bool, ...]) &rarr; bool
-r.or(bool[, bool, ...]) &rarr; bool
+bool.or([bool, bool, ...]) &rarr; bool
+r.or([bool, bool, ...]) &rarr; bool
 {% endapibody %}
 
-Compute the logical "or" of two or more values. The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true,false)`).
+Compute the logical "or" of one or more values. The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true,false)`).
 
 __Example:__ Return whether either `a` or `b` evaluate to true.
 
@@ -2128,7 +2126,7 @@ Test if two or more values are equal.
 __Example:__ See if a user's `role` field is set to `administrator`.
 
 ```java
-r.table("users").get(1)("role").eq("administrator").run(conn);
+r.table("users").get(1).g("role").eq("administrator").run(conn);
 ```
 
 [Read more about this command &rarr;](eq/)
@@ -2144,7 +2142,7 @@ Test if two or more values are not equal.
 __Example:__ See if a user's `role` field is not set to `administrator`.
 
 ```java
-r.table("users").get(1)("role").ne("administrator").run(conn);
+r.table("users").get(1).g("role").ne("administrator").run(conn);
 ```
 
 [Read more about this command &rarr;](ne/)
@@ -2160,7 +2158,7 @@ Compare values, testing if the left-hand value is greater than the right-hand.
 __Example:__ Test if a player has scored more than 10 points.
 
 ```java
-r.table("players").get(1)("score").gt(10).run(conn);
+r.table("players").get(1).g("score").gt(10).run(conn);
 ```
 
 [Read more about this command &rarr;](gt/)
@@ -2176,7 +2174,7 @@ Compare values, testing if the left-hand value is greater than or equal to the r
 __Example:__ Test if a player has scored 10 points or more.
 
 ```java
-r.table("players").get(1)("score").ge(10).run(conn);
+r.table("players").get(1).g("score").ge(10).run(conn);
 ```
 
 [Read more about this command &rarr;](ge/)
@@ -2192,7 +2190,7 @@ Compare values, testing if the left-hand value is less than the right-hand.
 __Example:__ Test if a player has scored less than 10 points.
 
 ```java
-r.table("players").get(1)("score").lt(10).run(conn);
+r.table("players").get(1).g("score").lt(10).run(conn);
 ```
 
 [Read more about this command &rarr;](lt/)
@@ -2208,7 +2206,7 @@ Compare values, testing if the left-hand value is less than or equal to the righ
 __Example:__ Test if a player has scored 10 points or less.
 
 ```java
-r.table("players").get(1)("score").le(10).run(conn);
+r.table("players").get(1).g("score").le(10).run(conn);
 ```
 
 [Read more about this command &rarr;](le/)
@@ -2217,7 +2215,7 @@ r.table("players").get(1)("score").le(10).run(conn);
 
 {% apibody %}
 bool.not() &rarr; bool
-not(bool) &rarr; bool
+r.not(bool) &rarr; bool
 {% endapibody %}
 
 Compute the logical inverse (not) of an expression.
@@ -2282,7 +2280,7 @@ r.ceil(number) &rarr; number
 number.ceil() &rarr; number
 {% endapibody %}
 
-Rounds the given value up, returning the smallest integer value greater than or equal to the given value (the value's ceiling).
+Rounds the given value up, returning the smallest integer greater than or equal to the given value (the value's ceiling).
 
 __Example:__ Return the ceiling of 12.345.
 
@@ -2380,10 +2378,10 @@ r.table("user").get("John").update(
 
 [Read more about this command &rarr;](epoch_time/)
 
-## [ISO8601](iso8601/) ##
+## [iso8601](iso8601/) ##
 
 {% apibody %}
-r.ISO8601(string) &rarr; time
+r.iso8601(string) &rarr; time
 {% endapibody %}
 
 Create a time object based on an ISO 8601 date-time string (e.g. '2013-01-01T01:01:01+00:00'). RethinkDB supports all valid ISO 8601 formats except for week dates. Read more about the ISO 8601 format at [Wikipedia](http://en.wikipedia.org/wiki/ISO_8601).
@@ -2457,7 +2455,7 @@ r.table("posts").filter(
 time.date() &rarr; time
 {% endapibody %}
 
-Return a new time object only based on the day, month and year (ie. the same day at 00:00).
+Return a new [OffsetDateTime][odt] object only based on the day, month and year (ie. the same day at 00:00).
 
 __Example:__ Retrieve all the users whose birthday is today.
 
@@ -2621,10 +2619,10 @@ r.table("posts").filter(post -> post.g("date").seconds().lt(30)).run(conn);
 
 [Read more about this command &rarr;](seconds/)
 
-## [toISO8601](to_iso8601/) ##
+## [toIso8601](to_iso8601/) ##
 
 {% apibody %}
-time.toISO8601() &rarr; string
+time.toIso8601() &rarr; string
 {% endapibody %}
 
 Convert a time object to a string in ISO 8601 format.
@@ -2632,7 +2630,7 @@ Convert a time object to a string in ISO 8601 format.
 __Example:__ Return the current ISO 8601 time.
 
 ```java
-r.now().toISO8601().run(conn);
+r.now().toIso8601().run(conn);
 
 // Result:
 "2015-04-20T18:37:52.690+00:00"
@@ -2666,18 +2664,18 @@ r.now().toEpochTime().run(conn);
 r.array(value[, value...]) &rarr; array
 {% endapibody %}
 
-Take one or more values as arguments and return an array.
+Take one or more values as arguments and return an array. (Technically, return a [List][] object.)
 
 __Example:__ Create an array.
 
 ```java
-r.array(10, 20, 30).run(conn);
+r.expr(r.array(10, 20, 30)).run(conn);
 ```
 
 This is a ReQL equivalent to:
 
 ```java
-int[] myArray = { 10, 20, 30 };
+List<Integer> myArray = Arrays.asList(10, 20, 30);
 ```
 
 [Read more about this command &rarr;](array/)
@@ -2693,11 +2691,12 @@ Take a key/value pair, with extra key/value pairs optionally specified by chaini
 __Example:__ Create a hashmap.
 
 ```java
-r.hashMap("user", "fred")
- .with("email", "fred@example.com")
- .with("id", 101)
- .with("admin", true)
- .run(conn);
+import com.rethinkdb.model.MapObject;
+
+MapObject newData = r.hashMap("user", "fred")
+    .with("email", "fred@example.com")
+    .with("id", 101)
+    .with("admin", true);
 ```
 
 This creates the object (in JSON):
@@ -2879,7 +2878,7 @@ In the case where the author field is missing or `null`, we want to retrieve the
 ```java
 r.table("posts").map(post ->
     r.hashMap("title", post.g("title"))
-     .with("author", post.g("author").default_("Anonymous"))
+        .with("author", post.g("author").default_("Anonymous"))
 ).run(conn);
 ```
 
@@ -2890,9 +2889,9 @@ r.table("posts").map(post ->
     r.branch(
         post.hasFields("author"),
         r.hashMap("title", post.g("title"))
-         .with("author", post.g("author")),
+            .with("author", post.g("author")),
         r.hashMap("title", post.g("title"))
-         .with("author", "Anonymous")
+            .with("author", "Anonymous")
     )
 ).run(conn);
 ```
@@ -2913,7 +2912,7 @@ __Example:__ Objects wrapped with expr can then be manipulated by ReQL API funct
 import com.rethinkdb.model.MapObject;
 
 // Create object { "a": "b" }
-MapObject newData = new MapObject().with("a", "b");
+MapObject newData = r.hashMap("a", "b");
 
 // merge with { "b": [1, 2, 3] }
 r.expr(newData).merge(r.hashMap("b", r.array(1, 2, 3))).run(conn);
@@ -3013,19 +3012,19 @@ r.json("[1,2,3]").run(conn);
 
 [Read more about this command &rarr;](json/)
 
-## [toJsonString, toJSON](to_json_string/) ##
+## [toJsonString, toJson](to_json_string/) ##
 
 {% apibody %}
 value.toJsonString() &rarr; string
-value.toJSON() &rarr; string
+value.toJson() &rarr; string
 {% endapibody %}
 
-Convert a ReQL value or object to a JSON string. You may use either `toJsonString` or `toJSON`.
+Convert a ReQL value or object to a JSON string. You may use either `toJsonString` or `toJson`.
 
 __Example:__ Get a ReQL document as a JSON string.
 
 ```java
-r.table("hero").get(1).toJSON().run(conn)
+r.table("hero").get(1).toJson().run(conn)
 ```
 
 Returned data:
@@ -3092,17 +3091,18 @@ These options are specified with the [optArg](/api/java/optarg) command.
 ## [uuid](uuid/) ##
 
 {% apibody %}
-r.uuid() &rarr; string
+r.uuid([string]) &rarr; string
 {% endapibody %}
 
-Return a UUID (universally unique identifier), a string that can be used as a unique ID.
+Return a UUID (universally unique identifier), a string that can be used as a unique ID. If a string is passed to `uuid` as an argument, the UUID will be deterministic, derived from the string's SHA-1 hash.
 
 __Example:__ Generate a UUID.
 
 ```java
 r.uuid().run(conn);
+```
 
-// Result:
+```
 "27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
 ```
 
@@ -3189,7 +3189,7 @@ r.table("geo").get(201).update(
 r.geojson(geojson) &rarr; geometry
 {% endapibody %}
 
-Convert a [GeoJSON][] object to a ReQL geometry object.
+Convert a [GeoJSON](http://geojson.org) object to a ReQL geometry object.
 
 __Example:__ Convert a GeoJSON object to a ReQL geometry object.
 

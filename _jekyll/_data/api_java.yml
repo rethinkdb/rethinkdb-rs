@@ -26,9 +26,9 @@
     commands:
         - name: next
           permalink: next
-        - name: each
+        - name: for
           permalink: each
-        - name: toArray
+        - name: toList
           permalink: to_array
         - name: close
           permalink: close-cursor
