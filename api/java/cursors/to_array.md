@@ -2,58 +2,45 @@
 layout: api-command
 language: Java
 permalink: api/java/to_array/
-command: toArray
+command: toList
 related_commands:
     next: next/
-    each: each/
+    for: each/
     close (cursor): close-cursor/
 ---
 
 # Command syntax #
 
 {% apibody %}
-cursor.toArray(callback)
-array.toArray(callback)
-cursor.toArray() &rarr; promise
-array.toArray() &rarr; promise
+cursor.toList()
 {% endapibody %}
 
 # Description #
 
-Retrieve all results and pass them as an array to the given callback.
+Retrieve all results from a cursor as a list.
 
-_Note:_ Because a feed is a cursor that never terminates, calling `toArray` on a feed
-will throw an error. See the [changes](/api/java/changes) command for more
-information on feeds.
+RethinkDB cursors can be iterated through via the Java [Iterable][i1] and [Iterator][i2] interfaces; to coerce a cursor into a list, use `toList`.
 
-__Example:__ For small result sets it may be more convenient to process them at once as
-an array.
+[i1]: https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html
+[i2]: https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html
+[for]: /api/java/each
+[toList]: /api/java/to_array
 
-```java
-cursor.toArray(function(err, results) {
-    if (err) throw err;
-    processResults(results);
-});
-```
-
-The equivalent query with the `each` command would be:
+__Example:__ For small result sets it may be more convenient to process them at once as a list.
 
 ```java
-var results = []
-cursor.each(function(err, row) {
-    if (err) throw err;
-    results.push(row);
-}, function(err, results) {
-    if (err) throw err;
-    processResults(results);
-});
+cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
+List users = cursor.toList();
+processResults(users);
 ```
 
-An equivalent query using promises.
+The equivalent query with a `for` loop would be:
 
 ```java
-cursor.toArray().then(function(results) {
-    processResults(results);
-}).error(console.log);
+cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
+for (Map<String, Object> doc : cursor) {
+    processResults(doc);
+}
 ```
 
+__Note:__ Because a feed is a cursor that never terminates, using `list` with a feed will never return. Use [for](../each/) or [next](../next/) instead. See the [changes](/api/java/changes) command for more information on feeds.

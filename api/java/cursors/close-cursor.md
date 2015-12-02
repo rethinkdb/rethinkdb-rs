@@ -24,5 +24,5 @@ associated with the open request.
 __Example:__ Close a cursor.
 
 ```java
-cursor.close()
+cursor.close();
 ```

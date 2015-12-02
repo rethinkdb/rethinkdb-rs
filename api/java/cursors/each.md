@@ -2,64 +2,47 @@
 layout: api-command
 language: Java
 permalink: api/java/each/
-command: each
+command: for
 related_commands:
     next: next/
-    toArray: to_array/
+    toList: to_array/
     close (cursor): close-cursor/
 ---
 
 # Command syntax #
 
 {% apibody %}
-cursor.each(callback[, onFinishedCallback])
-array.each(callback[, onFinishedCallback])
-feed.each(callback)
+for (doc : <Cursor>) { ... }
 {% endapibody %}
 
 # Description #
 
-Lazily iterate over the result set one element at a time. The second callback is optional
-and is called when the iteration stops (when there are no more rows or when the callback
-returns `false`).
+Lazily iterate over a result set one element at a time.
+
+RethinkDB cursors can be iterated through via the Java [Iterable][i1] and [Iterator][i2] interfaces; use standard Java commands like `for` loops to access each item in the sequence.
+
+[i1]: https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html
+[i2]: https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html
+
 
 __Example:__ Let's process all the elements!
 
 ```java
-cursor.each(function(err, row) {
-    if (err) throw err;
-    processRow(row);
-});
+cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
+for (Map<String, Object> doc : cursor) {
+    System.out.println(doc);
+}
 ```
 
-__Example:__ If we need to know when the iteration is complete, `each` also accepts a second `onFinished` callback.
+__Example:__ Stop the iteration prematurely and close the connection manually.
 
 ```java
-cursor.each(function(err, row) {
-        if (err) throw err;
-        processRow(row);
-    }, function() {
-        doneProcessing();
+cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
+for (Map<String, Object> doc : cursor) {
+    ok = processRow(doc);
+    if (ok == false) {
+        cursor.close();
+        break;
     }
-);
+}
 ```
-
-
-__Example:__ Iteration can be stopped prematurely by returning `false` from the callback.
-For instance, if you want to stop the iteration as soon as `row` is negative:
-
-```java
-cursor.each(function(err, row) {
-    if (err) throw err;
-
-    if (row < 0) {
-        cursor.close()
-        return false;
-    }
-    else {
-        processRow(row)
-    }
-});
-```
-
-__Note:__ You need to manually close the cursor if you prematurely stop the iteration.
