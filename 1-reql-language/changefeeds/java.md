@@ -30,7 +30,7 @@ for (Object change : changeCursor) {
 }
 ```
 
-The `changes` command returns a cursor (like the `table` or `filter` commands do). You can iterate through its contents using ReQL. Unlike other cursors, the output of `changes` is infinite: the cursor will block until more elements are available. Every time you make a change to the table or document the `changes` feed is monitoring, a new object will be returned to the cursor. For example, if you insert a user `{id: 1, name: Slava, age: 31}` into the `users` table, RethinkDB will post this document to changefeeds subscribed to `users`:
+The `changes` command returns a cursor (like the `table` or `filter` commands do). You can iterate through its contents using ReQL. Unlike other cursors, the output of `changes` is infinite: the cursor will block until more elements are available. Every time you make a change to the table or document the `changes` feed is monitoring, a new object will be returned to the cursor. For example, if you insert a user `{"id": 1, "name": "Slava", "age": 31}` into the `users` table, RethinkDB will post this document to changefeeds subscribed to `users`:
 
 ```json
 {
@@ -93,13 +93,15 @@ There are some limitations and caveats on chaining with changefeeds.
 
 # Including state changes #
 
-The `includeStates` optional argument to `changes` allows you to receive extra "status" documents in changefeed streams. These can allow your application to distinguish between initial values returned at the start of a stream and subsequent changes. Read the [changes][] API documentation for a full explanation and example.
+The `include_states` optional argument to `changes` allows you to receive extra "status" documents in changefeed streams. These can allow your application to distinguish between initial values returned at the start of a stream and subsequent changes. Read the [changes][] API documentation for a full explanation and example.
 
 # Including initial values #
 
-By specifying `true` to the `includeInitial` optional argument, the changefeed stream will start with the current contents of the table or selection being monitored. The initial results will have `new_val` fields, but no `old_val` fields, so it's easy to distinguish them from change events.
+By specifying `true` to the `include_initial` optional argument, the changefeed stream will start with the current contents of the table or selection being monitored. The initial results will have `new_val` fields, but no `old_val` fields, so it's easy to distinguish them from change events.
 
-If you specify `true` for both `includeStates` and `includeInitial`, the changefeed stream will start with a `{state: 'initializing'}` status document, followed by initial values. A `{state: 'ready'}` status document will be sent when all the initial values have been sent.
+If an initial result for a document has been sent and a change is made to that document that would move it to the unsent part of the result set (for instance, a changefeed monitors the top 100 posters, the first 50 have been sent, and poster 48 has become poster 52), an "uninitial" notification will be sent, with an `old_val` field but no `new_val` field. This is distinct from a delete change event, which would have a `new_val` of `null`. (In the top 100 posters example, that could indicate the poster has been deleted, or has dropped out of the top 100.)
+
+If you specify `true` for both `include_states` and `include_initial`, the changefeed stream will start with a `{"state": "initializing"}` status document, followed by initial values. A `{"state": "ready"}` status document will be sent when all the initial values have been sent.
 
 # Handling latency #
 
@@ -117,7 +119,7 @@ By default, if more than one change occurs between invocations of `changes`, you
 
 Your application would by default receive the object as it existed in the database after the *most recent* change. The previous two updates would be "squashed" into the third.
 
-If you wanted to receive *all* the changes, including the interim states, you could do so by passing `squash: false`. The server will buffer up to 100,000 changes. (This number can be changed with the `changefeedQueueSize` optional argument.)
+If you wanted to receive *all* the changes, including the interim states, you could do so by passing `squash: false`. The server will buffer up to 100,000 changes. (This number can be changed with the `changefeed_queue_size` optional argument.)
 
 A third option is to specify how many seconds to wait between squashes. Passing `squash: 5` to the `changes` command tells RethinkDB to squash changes together every five seconds. Depending on your application's use case, this might reduce the load on the server. A number passed to `squash` may be a float. Note that the requested interval is not guaranteed, but is rather a best effort.
 
