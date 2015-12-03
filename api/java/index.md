@@ -43,7 +43,7 @@ Create a new connection to the database server. `connection` returns a builder o
 __Example:__ Open a connection using the default host and port, specifying the default database.
 
 ```java
-conn = r.connection().connect();
+Connection conn = r.connection().connect();
 ```
 
 [Read more about this command &rarr;](connect/)

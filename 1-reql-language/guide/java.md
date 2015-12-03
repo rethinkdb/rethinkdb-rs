@@ -44,7 +44,7 @@ When you first start RethinkDB, the server opens a port for the client
 drivers (`28015` by default). Let's open a connection:
 
 ```java
-conn = r.connection().hostname("localhost").port(28015).connect();
+Connection conn = r.connection().hostname("localhost").port(28015).connect();
 ```
 
 The variable `conn` is now initialized and we can run queries.

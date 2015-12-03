@@ -34,16 +34,16 @@ The authentication key can be set from the RethinkDB command line tool. Once set
 __Example:__ Open a connection using the default host and port, specifying the default database.
 
 ```java
-conn = r.connection().connect();
+Connection conn = r.connection().connect();
 ```
 
 __Example:__ Open a new connection, specifying parameters.
 
 ```java
-conn = r.connection()
-        .hostname("localhost")
-        .port(28015)
-        .dbname("marvel")
-        .authKey("hunter2")
-        .connect();
+Connection conn = r.connection()
+    .hostname("localhost")
+    .port(28015)
+    .dbname("marvel")
+    .authKey("hunter2")
+    .connect();
 ```
