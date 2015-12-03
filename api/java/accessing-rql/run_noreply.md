@@ -6,9 +6,9 @@ command: runNoReply
 related_commands:
     connect: connect/
     run: run/
-io:
-    -   - any
-        - null
+py: false
+js: false
+rb: false
 ---
 
 # Command syntax #
