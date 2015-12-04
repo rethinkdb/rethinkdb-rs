@@ -8,6 +8,10 @@ switcher: true
 language: Java
 ---
 
+{% infobox alert %}
+**This document has not been fully updated for Java.** The [API documentation](/api/java) for Java is complete, but many ReQL articles still have examples in other languages. We'll be updating each article after the Java driver is officially released.
+{% endinfobox %}
+
 RethinkDB supports a native binary object type, letting you use ReQL to store binary objects directly in the database. The ReQL driver will transparently translate between the ReQL type and [bytes](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html).
 
 For these examples, we'll assume that the RethinkDB connection is available in class scope as `conn`.

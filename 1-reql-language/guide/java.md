@@ -159,16 +159,13 @@ database!
 ## All documents in a table ##
 
 To retrieve all documents from the table `authors`, we can simply run
-the query `r.table('authors')`:
+the query `r.table("authors")`:
 
-```javascript
-r.table('authors').run(connection, function(err, cursor) {
-    if (err) throw err;
-    cursor.toArray(function(err, result) {
-        if (err) throw err;
-        console.log(JSON.stringify(result, null, 2));
-    });
-});
+```java
+cursor = r.table("authors").run<Cursor<Map<String, Object>>(conn);
+for (Map<String, Object> doc : cursor) {
+    System.out.println(doc);
+}
 ```
 
 The result is an array of the three previously inserted documents,
@@ -178,9 +175,9 @@ Since the table might contain a large number of documents, the
 database returns a cursor object. As you iterate through the cursor,
 the server will send documents to the client in batches as they are
 requested. We only have three documents in our example, so we can
-safely retrieve all the documents at once. The `toArray` function
+safely retrieve all the documents at once. The `toList` function
 automatically iterates through the cursor and puts the documents into
-a JavaScript array.
+a Java list.
 
 ## Filter documents based on a condition ##
 
@@ -188,15 +185,11 @@ Let's try to retrieve the document where the `name` attribute is set
 to `William Adama`.  We can use a condition to filter the documents by
 chaining a `filter` command to the end of the query:
 
-```javascript
-r.table('authors').filter(r.row('name').eq("William Adama")).
-    run(connection, function(err, cursor) {
-        if (err) throw err;
-        cursor.toArray(function(err, result) {
-            if (err) throw err;
-            console.log(JSON.stringify(result, null, 2));
-        });
-    });
+```java
+cursor = r.table("authors").filter(row -> row.g("name").eq("William Adama")).run(conn);
+for (Map<String, Object> doc : cursor) {
+    System.out.println(doc);
+}
 ```
 
 This query returns a cursor with one document&mdash;the record for
@@ -204,23 +197,19 @@ William Adama. The `filter` command evaluates the provided condition
 for every row in the table, and returns only the relevant rows. Here's
 the new commands we used to construct the condition above:
 
-- `r.row` refers to the currently visited document.
-- `r.row('name')` refers to the value of the field `name` of the visited
+- `row` refers to the currently visited document.
+- `row("name")` refers to the value of the field `name` of the visited
   document.
 - The `eq` command returns `true` if two values are equal (in this case, the field `name` and the  string `William Adama`).
 
 Let's use `filter` again to retrieve all authors who have more than
 two posts:
 
-```javascript
-r.table('authors').filter(r.row('posts').count().gt(2)).
-    run(connection, function(err, cursor) {
-        if (err) throw err;
-        cursor.toArray(function(err, result) {
-            if (err) throw err;
-            console.log(JSON.stringify(result, null, 2));
-        });
-    });
+```java
+cursor = r.table("authors").filter(row -> row.g("posts").count().gt(2)).run();
+for (Map<String, Object> doc : cursor) {
+    System.out.println(doc);
+}
 ```
 
 In this case, we're using a predicate that returns `true` only if the
@@ -237,12 +226,8 @@ We can also efficiently retrieve documents by their primary key using
 the `get` command. We can use one of the ids generated in the
 previous example:
 
-```javascript
-r.table('authors').get('7644aaf2-9928-4231-aa68-4e65e31bf219').
-    run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(JSON.stringify(result, null, 2));
-    });
+```java
+r.db("test").table("authors").get("7644aaf2-9928-4231-aa68-4e65e31bf219").run();
 ```
 
 Since primary keys are unique, the `get` command returns a single
@@ -266,23 +251,22 @@ exciting new access model -- instead of polling for changes, the
 developer can tell RethinkDB to continuously push updated query
 results to applications in realtime.
 
-To start a feed, open a new terminal and open a new RethinkDB
-connection. Then, run the following query:
+To start a feed, compile and run the following query in a terminal window:
 
-```javascript
-r.table('authors').changes().run(connection, function(err, cursor) {
-    if (err) throw err;
-    cursor.each(function(err, row) {
-        if (err) throw err;
-        console.log(JSON.stringify(row, null, 2));
-    });
-});
+```java
+import com.rethinkdb.RethinkDB;
+import com.rethinkdb.net.Connection;
+
+public static final RethinkDB r = RethinkDB.r;
+
+Connection conn = r.connection().hostname("localhost").port(28015).connect();
+
+cursor = r.table("authors").changes().run(conn);
+for (Map<String, Object> doc : cursor) {
+    System.out.println(doc);
+}
 ```
-
-Now switch back to your first terminal. We'll be updating and deleting
-some documents in the next two sections. As we run these commands, the
-feed will push notifications to your program. The code above will
-print the following messages in the second terminal:
+The code above will start with the following messages:
 
 ```json
 {
@@ -309,22 +293,25 @@ more details on how to use realtime feeds in RethinkDB.
 
 [changefeeds]: /docs/changefeeds
 
+We'll be updating and deleting some documents in the next two sections.
+To do this in realtime, we're going to use JavaScript in the
+[Data Explorer][de]. Open the RethinkDB Administration Console in your
+web browser and click "Data Explorer."
+
+[de]: /docs/reql-data-exploration/
+
 # Update documents #
 
 Let's update all documents in the `authors` table and add a `type`
 field to note that every author so far is fictional:
 
 ```javascript
-r.table('authors').update({type: "fictional"}).
-    run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(JSON.stringify(result, null, 2));
-    });
+r.table('authors').update({type: "fictional"})
 ```
 
 Since we changed three documents, the result should look like this:
 
-```javascript
+```json
 {
     "unchanged": 0,
     "skipped": 0,
@@ -340,19 +327,15 @@ chained the `update` command to the end of the query. We could also
 update a subset of documents by filtering the table first. Let's
 update William Adama's record to note that he has the rank of Admiral:
 
-```javascript
-r.table('authors').
-    filter(r.row("name").eq("William Adama")).
-    update({rank: "Admiral"}).
-    run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(JSON.stringify(result, null, 2));
-    });
+```js
+r.table('authors').filter(
+    r.row("name").eq("William Adama")
+).update({rank: "Admiral"})
 ```
 
 Since we only updated one document, we get back this object:
 
-```javascript
+```json
 {
     "unchanged": 0,
     "skipped": 0,
@@ -369,21 +352,21 @@ archaeologists unearthed a new speech by Jean-Luc Picard that we'd like
 to add to his posts:
 
 ```javascript
-r.table('authors').filter(r.row("name").eq("Jean-Luc Picard")).
-    update({posts: r.row("posts").append({
+r.table('authors').filter(
+    r.row("name").eq("Jean-Luc Picard")
+).update({
+    posts: r.row("posts").append({
         title: "Shakespeare",
-        content: "What a piece of work is man..."})
-    }).run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(JSON.stringify(result, null, 2));
-    });
+        content: "What a piece of work is man..."
+    })
+})
 ```
 
 After processing this query, RethinkDB will add an additional post to
 Jean-Luc Picard's document.
 
 {% infobox %}
-Browse the [API reference](/api/javascript/) for many more array operations available in RethinkDB.
+Browse the [API reference](/api/java/) for many more array operations available in RethinkDB.
 {% endinfobox %}
 
 # Delete documents #
@@ -392,19 +375,13 @@ Suppose we'd like to trim down our database and delete every document
 with less than three posts (sorry Laura and Jean-Luc):
 
 ```javascript
-r.table('authors').
-    filter(r.row('posts').count().lt(3)).
-    delete().
-    run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(JSON.stringify(result, null, 2));
-    });
+r.table('authors').filter(r.row('posts').count().lt(3)).delete()
 ```
 
 Since we have two authors with less than two posts, the result
 is:
 
-```javascript
+```json
 {
     "unchanged": 0,
     "skipped": 0,

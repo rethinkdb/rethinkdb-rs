@@ -9,7 +9,7 @@ language: Java
 ---
 
 {% infobox alert %}
-**This document has not been fully updated for Java.** The [API documentation](/api/java) for Java is complete, but many ReQL articles still have examples in other languages. We'll be updating each article after the Java driver is officially released.
+**This document has not been updated for Java.** The [API documentation](/api/java) for Java is complete, but many ReQL articles still have examples in other languages. We'll be updating each article after the Java driver is officially released.
 {% endinfobox %}
 
 
