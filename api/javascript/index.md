@@ -870,7 +870,7 @@ Used to 'zip' up the result of a join by merging the 'right' fields into 'left' 
 
 __Example:__ 'zips up' the sequence by merging the left and right fields produced by a join.
 
-```
+```js
 r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc'))
     .zip().run(conn, callback)
 ```
@@ -1946,7 +1946,7 @@ Test if two or more values are not equal.
 
 __Example:__ See if a user's `role` field is not set to `administrator`. 
 
-```rb
+```js
 r.table('users').get(1)('role').ne('administrator').run(conn, callback);
 ```
 
