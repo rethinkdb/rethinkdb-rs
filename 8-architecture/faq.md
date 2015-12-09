@@ -204,7 +204,7 @@ RethinkDB different][t3].
 
 ## What languages can I use to work with RethinkDB? ##
 
-We provide official drivers for Ruby, Python, and JavaScript/Node.js. [Community-supported drivers][csd] exist for more than a dozen other languages, including C#/.NET, Go, and PHP.
+We provide official drivers for Ruby, Python, Java, and JavaScript/Node.js. [Community-supported drivers][csd] exist for more than a dozen other languages, including C#/.NET, Go, and PHP.
 
 [csd]: /docs/install-drivers/
 
