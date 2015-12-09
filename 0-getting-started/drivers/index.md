@@ -28,6 +28,12 @@ alias: docs/guides/drivers/
                     <p class="name">Python</p>
                 </a>
             </li>
+            <li>
+                <a href="java/">
+                    <img src="/assets/images/docs/driver-languages/java.png" />
+                    <p class="name">Java</p>
+                </a>
+            </li>
         </ul>
     </section>
     

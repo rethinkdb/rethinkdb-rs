@@ -1,16 +1,39 @@
 ---
 layout: documentation
 title: Installing the Java driver
-title_image: /assets/images/docs/driver-languages/javascript.png
+title_image: /assets/images/docs/driver-languages/java.png
 docs_active: install-drivers
-permalink: docs/install-drivers/kava/
+permalink: docs/install-drivers/java/
 ---
 {% include docs/install-driver-docs-header.md %}
 
 # Installation #
 
-(To come)
+If you're using Maven, add this to your `pom.xml` file:
 
+```xml
+<dependencies>
+  <groupId>com.rethinkdb</groupId>
+  <artifactId>rethinkdb-driver</artifactId>
+  <version>2.2-beta-1</version>
+</dependencies>
+```
+
+For Gradle, modify your `build.gradle` file:
+
+```groovy
+dependencies {
+    compile 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.2-beta-1'
+}
+```
+
+And for Ant, add the following to your `build.xml`:
+
+```xml
+<artifact:dependencies pathId="dependency.classpath">
+  <dependency groupId="com.rethinkdb" artifactId="rethinkdb-driver" version="2.2-beta-1" />
+</artifact:dependencies>
+```
 # Usage #
 
 You can use the drivers from Java like this:

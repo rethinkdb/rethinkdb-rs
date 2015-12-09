@@ -4,7 +4,6 @@ title: "ReQL command reference"
 active: api
 no_footer: true
 permalink: api/java/
-alias: api/
 language: Java
 ---
 
