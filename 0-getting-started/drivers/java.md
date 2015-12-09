@@ -9,6 +9,8 @@ permalink: docs/install-drivers/java/
 
 # Installation #
 
+## Using Maven ##
+
 If you're using Maven, add this to your `pom.xml` file:
 
 ```xml
@@ -19,7 +21,9 @@ If you're using Maven, add this to your `pom.xml` file:
 </dependencies>
 ```
 
-For Gradle, modify your `build.gradle` file:
+## Using Gradle ##
+
+If you're using Gradle, modify your `build.gradle` file:
 
 ```groovy
 dependencies {
@@ -27,13 +31,16 @@ dependencies {
 }
 ```
 
-And for Ant, add the following to your `build.xml`:
+## Using Ant ##
+
+If you're using Ant, add the following to your `build.xml`:
 
 ```xml
 <artifact:dependencies pathId="dependency.classpath">
   <dependency groupId="com.rethinkdb" artifactId="rethinkdb-driver" version="2.2-beta-1" />
 </artifact:dependencies>
 ```
+
 # Usage #
 
 You can use the drivers from Java like this:
