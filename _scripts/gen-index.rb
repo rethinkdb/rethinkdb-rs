@@ -6,7 +6,7 @@ require 'optparse'
 # load individual file and return index fragment
 
 def gen_fragment(input_file)
-    in_header = in_apibody = in_desc = in_example = nil
+    in_header = in_apibody = in_desc = in_example = in_code = nil
     header = apibody = desc = example = last_line = ""
     blanks = 0
     sep_line = "<!-- break -->\n"
@@ -66,7 +66,16 @@ def gen_fragment(input_file)
                 desc += line
             end
         end
-    
+
+        # detect whether we're inside of a code block
+        if line.start_with? "```"
+            if in_code
+                in_code = true
+            else
+                in_code = false
+            end
+        end
+
         # collect first example
         if line.start_with? "__Example:" and in_example == nil
             in_example = true
@@ -74,6 +83,14 @@ def gen_fragment(input_file)
             next
         end
         if in_example
+            # End the example if we reach a heading. However ignore a # at the beginning
+            # of the line if we're inside a code section (some languages have # as a 
+            # comment).
+            if line.start_with? "#" and not in_code
+                in_example = false
+                next
+            end
+
             if line.start_with? "__Example:"
                 in_example = false
             else

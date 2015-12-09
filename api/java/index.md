@@ -245,7 +245,7 @@ To pass more than one optional argument, chain `optArg` once for each argument.
 ## [next](next/) ##
 
 {% apibody %}
-cursor.next()
+cursor.next([wait])
 {% endapibody %}
 
 Get the next element in the cursor.
@@ -3050,40 +3050,6 @@ r.table("posts").insert(r.http("http://httpbin.org/get")).run(conn);
 ```
 
 See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
-
-# Options #
-
-These options are specified with the [optArg](/api/java/optarg) command.
-
-## General Options ##
-
-* `timeout`: timeout period in seconds to wait before aborting the connect (default `30`).
-* `reattempts`: number of retry attempts to make after failed connections (default `5`).
-* `redirects`: number of redirect and location headers to follow (default `1`).
-* `verify`: if `true`, verify the server's SSL certificate (default `true`).
-* `resultFormat`: string specifying the format to return results in. One of the following:
-    * `text`: always return a string.
-    * `json`: parse the result as JSON, raising an error on failure.
-    * `jsonp`: parse the result as [Padded JSON][jsonp].
-    * `binary`: return a binary object.
-    * `auto`: parse the result based on its `Content-Type` (the default):
-        * `application/json`: as `json`
-        * `application/json-p`, `text/json-p`, `text/javascript`: as `jsonp`
-        * `audio/*`, `video/*`, `image/*`, `application/octet-stream`: as `binary`
-        * anything else: as `text`
-
-[jsonp]: https://en.wikipedia.org/wiki/JSONP
-
-## Request Options
-
-* `method`: HTTP method to use for the request. One of `GET`, `POST`, `PUT`, `PATCH`, `DELETE` or `HEAD`. Default: `GET`.
-* `auth`: object giving authentication, with the following fields:
-    * `type`: `basic` (default) or `digest`
-    * `user`: username
-    * `pass`: password in plain text
-* `params`: hashMap or object specifying URL parameters to append to the URL as encoded key/value pairs. `{ "query": "banana", "limit": 2 }` will be appended as `?query=banana&limit=2`. Default: no parameters.
-* `header`: Extra header lines to include. The value may be an array of strings or an object. Default: `Accept-Encoding: deflate;q=1, gzip;q=0.5` and `User-Agent: RethinkDB/<VERSION>`.
-* `data`: Data to send to the server on a `POST`, `PUT`, `PATCH`, or `DELETE` request. For `POST` requests, data may be either an object (which will be written to the body as form-encoded key/value pairs) or a string; for all other requests, data will be serialized as JSON and placed in the request body, sent as `Content-Type: application/json`. Default: no data will be sent.
 
 [Read more about this command &rarr;](http/)
 
