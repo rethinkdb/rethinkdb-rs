@@ -8,10 +8,6 @@ switcher: true
 language: Java
 ---
 
-{% infobox alert %}
-**This document has not been fully updated for Java.** The [API documentation](/api/java) for Java is complete, but many ReQL articles still have examples in other languages. We'll be updating each article after the Java driver is officially released.
-{% endinfobox %}
-
 **Changefeeds** lie at the heart of RethinkDB's real-time functionality.  
 
 {% toctag %}
@@ -27,18 +23,19 @@ Subscribe to a feed by calling [changes][] on a table:
 
 [changes]: /api/java/changes
 
-```js
-r.table('users').changes().run(conn, function(err, cursor) {
-  cursor.each(console.log);
-})
+```java
+Cursor changeCursor = r.table("users").changes().run(conn);
+for (Map<String,Object> change: changeCursor) {
+    System.out.println(change);
+}
 ```
 
 The `changes` command returns a cursor (like the `table` or `filter` commands do). You can iterate through its contents using ReQL. Unlike other cursors, the output of `changes` is infinite: the cursor will block until more elements are available. Every time you make a change to the table or document the `changes` feed is monitoring, a new object will be returned to the cursor. For example, if you insert a user `{id: 1, name: Slava, age: 31}` into the `users` table, RethinkDB will post this document to changefeeds subscribed to `users`:
 
-```js
+```json
 {
-  old_val: null,
-  new_val: {id: 1, name: 'Slava', age: 31}
+  "old_val": null,
+  "new_val": { "id": 1, "name": "Slava", "age": 31 }
 }
 ```
 
@@ -48,8 +45,8 @@ Here `old_val` is the old version of the document, and `new_val` is a new versio
 
 A "point" changefeed returns changes to a single document within a table rather than the table as a whole.
 
-```js
-r.table('users').get(100).changes().run(conn, callback);
+```java
+r.table("users").get(100).changes().run(conn);
 ```
 
 The output format of a point changefeed is identical to a table changefeed, with the exception that the point changefeed stream will start with the initial value of the document: a notification with the `new_val` field, but no `old_val` field.
@@ -64,9 +61,9 @@ Like any ReQL command, `changes` integrates with the rest of the query language.
 * [pluck](/api/java/pluck)
 * [between](/api/java/between)
 * [union](/api/java/union)
-* [min](/api/java/min) (returns an initial value)
-* [max](/api/java/max) (returns an initial value)
-* [orderBy](/api/java/order_by).[limit](/api/java/limit) (returns an initial value)
+* [min](/api/java/min)
+* [max](/api/java/max)
+* [orderBy](/api/java/order_by).[limit](/api/java/limit)
 
 Limitations and caveats on chaining with changefeeds:
 
@@ -80,23 +77,29 @@ You can also chain `changes` before any command that operates on a sequence of d
 
 Suppose you have a chat application with multiple clients posting messages to different chat rooms. You can create feeds that subscribe to messages posted to a specific room:
 
-```js
-r.table('messages').filter(
-  r.row('room_id').eq(ROOM_ID)
-).changes().run(conn, callback)
+```java
+r.table("messages").filter(
+    row -> row.g("room_id").eq(ROOM_ID)
+).changes().run(conn);
 ```
 
 You can also use more complicated expressions. Let's say you have a table `scores` that contains the latest game score for every user of your game. You can create a feed of all games where a user beats their previous score, and get only the new value:
 
-```js
-r.table('scores').changes().filter(
-    r.row('new_val')('score').gt(r.row('old_val')('score'))
-)('new_val').run(conn, callback)
+```java
+r.table("scores").changes().filter(
+    change -> change.g("new_val").g("score").gt(change.g("old_val").g("score"))
+).g("new_val").run(conn);
 ```
 
 # Including state changes #
 
 The `includeStates` optional argument to `changes` allows you to receive extra "status" documents in changefeed streams. These can allow your application to distinguish between initial values returned at the start of a stream and subsequent changes. Read the [changes][] API documentation for a full explanation and example.
+
+# Including initial values #
+
+By specifying `true` to the `includeInitial` optional argument, the changefeed stream will start with the current contents of the table or selection being monitored. The initial results will have `new_val` fields, but no `old_val` fields, so it's easy to distinguish them from change events.
+
+If you specify `true` for both `includeStates` and `includeInitial`, the changefeed stream will start with a `{state: 'initializing'}` status document, followed by initial values. A `{state: 'ready'}` status document will be sent when all the initial values have been sent.
 
 # Handling latency #
 
@@ -124,7 +127,7 @@ Changefeeds perform well as they scale, although they create extra intracluster 
 
 Since changefeeds are unidirectional with no acknowledgement returned from clients, they cannot guarantee delivery. If you need real-time updating with delivery guarantees, consider using a model that distributes to the clients through a message broker such as [RabbitMQ][ps].
 
-[ps]: /docs/rabbitmq/java/
+[ps]: https://www.rabbitmq.com/
 
 # Read more #
 
