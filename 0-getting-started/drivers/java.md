@@ -15,9 +15,11 @@ If you're using Maven, add this to your `pom.xml` file:
 
 ```xml
 <dependencies>
-  <groupId>com.rethinkdb</groupId>
-  <artifactId>rethinkdb-driver</artifactId>
-  <version>2.2-beta-1</version>
+  <dependency>
+    <groupId>com.rethinkdb</groupId>
+    <artifactId>rethinkdb-driver</artifactId>
+    <version>2.2-beta-1</version>
+  </dependency>
 </dependencies>
 ```
 
