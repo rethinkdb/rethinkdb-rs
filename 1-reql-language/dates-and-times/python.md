@@ -100,7 +100,7 @@ Leap-seconds aren't well-supported right now: `2012-06-30T23:59:60` and
 
 # Inserting times #
 
-You can insert times by simply passing a Python `datetime.datetime` object. Note that the Python driver requires `datetime` objects to have time zone information. (The Ruby and JavaScript drivers will default to UTC if the object does not contain time zone information; for third party drivers, check their documentation.)
+You can insert times by simply passing a Python `datetime.datetime` object. Note that the Python driver requires `datetime` objects to have time zone information. (Most drivers will default to UTC if the object does not contain time zone information; for third party drivers, check their documentation.)
 
 ```py
 r.table('events').insert(

@@ -162,7 +162,10 @@ r.table('players').run(conn, function(err, cursor) {
 });
 ```
 
-Smaller result sets can be turned into an array directly. In the examples above, you would use `list(players)` in Python, `players.to_a` in Ruby,  or `players.toArray()` in JavaScript (a ReQL command; see [toArray](/api/javascript/to_array/)).
+Smaller result sets can be turned into an array directly, with native language constructs in Python and Ruby (`list(players)` and `players.to_a` respectively) or ReQL commands in JavaScript and Java (`players.toArray()` and `players.toList()` respectively; see [toArray][] and [toList][] documentation).
+
+[toArray]: /api/javascript/to_array/
+[toList]:  /api/java/to_array/
 
 # Grouped data #
 
