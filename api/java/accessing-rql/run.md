@@ -29,14 +29,17 @@ You can pass the following options using [optArg](/api/java/optarg/). Note that 
 ```java
 import com.rethinkdb.model.OptArgs;
 
-r.table("table").run(conn, OptArgs.of("use_outdated", true));
+r.table("table").run(conn, OptArgs.of("read_mode", "outdated"));
 
 // for two or more optArgs, use "with"
 r.table("table").run(conn,
-    OptArgs.of("use_outdated", true).with("db", "database"));
+    OptArgs.of("read_mode", "outdated").with("db", "database"));
 ```
 
-- `use_outdated`: whether or not outdated reads are OK (default: `false`).
+- `read_mode`: One of three possible values affecting the consistency guarantee for the query (default: `'single'`).
+    - `'single'` (the default) returns values that are in memory (but not necessarily written to disk) on the primary replica.
+    - `'majority'` will only return values that are safely committed on disk on a majority of replicas. This requires sending a message to every replica on each read, so it is the slowest but most consistent.
+    - `'outdated'` will return values that are in memory on an arbitrarily-selected replica. This is the fastest but least consistent.
 - `time_format`: what format to return times in (default: `native`).
   Set this to `raw` if you want times returned as JSON objects for exporting.
 - `profile`: whether or not to return a profile of the query's
@@ -64,7 +67,7 @@ tables in the query.
 ```java
 import com.rethinkdb.model.OptArgs;
 
-r.table("marvel").run(conn, OptArgs.of("use_outdated", true));
+r.table("marvel").run(conn, OptArgs.of("read_mode", "outdated"));
 ```
 
 __Example:__ If you want to specify whether to wait for a write to be
