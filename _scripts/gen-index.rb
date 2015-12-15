@@ -10,6 +10,7 @@ def gen_fragment(input_file)
     header = apibody = desc = example = last_line = ""
     blanks = 0
     sep_line = "<!-- break -->\n"
+    stop_line = "<!-- stop -->\n"
     
     lines = IO.readlines(input_file)
     
@@ -67,15 +68,6 @@ def gen_fragment(input_file)
             end
         end
 
-        # detect whether we're inside of a code block
-        if line.start_with? "```"
-            if in_code
-                in_code = true
-            else
-                in_code = false
-            end
-        end
-
         # collect first example
         if line.start_with? "__Example:" and in_example == nil
             in_example = true
@@ -83,15 +75,7 @@ def gen_fragment(input_file)
             next
         end
         if in_example
-            # End the example if we reach a heading. However ignore a # at the beginning
-            # of the line if we're inside a code section (some languages have # as a 
-            # comment).
-            if line.start_with? "#" and not in_code
-                in_example = false
-                next
-            end
-
-            if line.start_with? "__Example:"
+            if line.start_with? "__Example:" or line == stop_line
                 in_example = false
             else
                 example += line
@@ -123,18 +107,17 @@ end
 def index_header(language)
     langmap = { "java" => "Java", "python" => "Python", "ruby" => "Ruby",
                 "javascript" => "JavaScript" }
-    <<-EOS
+    header = <<-EOS
 ---
 layout: api
 title: "ReQL command reference"
 active: api
 no_footer: true
 permalink: api/#{language}/
-alias: api/
 language: #{langmap[language]}
----
-
 EOS
+    header += "alias: api/\n" if language == "javascript"
+    header += "---\n\n"
 end
 
 # Parse options

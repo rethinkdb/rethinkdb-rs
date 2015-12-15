@@ -29,6 +29,8 @@ r.table("posts").insert(r.http("http://httpbin.org/get")).run(conn);
 
 See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
 
+<!-- stop -->
+
 # Options #
 
 These options are specified with the [optArg](/api/java/optarg) command.
