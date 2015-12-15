@@ -94,7 +94,7 @@ r.now().run(conn, OptArgs.of("time_format", "raw"));
 __Example:__ Specify the database to use for the query.
 
 ```java
-for (Map<String, Object> doc : r.table("marvel").run<Cursor<Map<String, Object>>(conn, OptArgs.of("db", "heroes")) {
+for (Object doc : r.table("marvel").run(conn, OptArgs.of("db", "heroes")) {
     System.out.println(doc);
 }
 ```

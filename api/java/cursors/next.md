@@ -32,15 +32,15 @@ Calling `next` the first time on a cursor provides the first element of the curs
 __Example:__ Retrieve the next element.
 
 ```java
-cursor = r.table("superheroes").run<Cursor<Map<String, Object>>(conn);
-doc = cursor.next();
+Cursor cursor = r.table("superheroes").run(conn);
+Object doc = cursor.next();
 ```
 
 __Example:__ Retrieve the next element on a [changefeed](/docs/changefeeds/java), waiting up to five seconds.
 
 ```java
-cursor = r.table("superheroes").changes().run<Cursor<Map<String, Object>>(conn);
-doc = cursor.next(5);
+Cursor cursor = r.table("superheroes").changes().run(conn);
+Object doc = cursor.next(5);
 ```
 
 __Note:__ RethinkDB cursors can be iterated through via the Java [Iterable][i1] and [Iterator][i2] interfaces. The canonical way to retrieve all the results is to use a [for][] loop or [toList][].

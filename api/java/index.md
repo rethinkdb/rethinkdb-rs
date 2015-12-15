@@ -115,7 +115,7 @@ tables in the query.
 ```java
 import com.rethinkdb.model.OptArgs;
 
-r.table("marvel").run(conn, OptArgs.of("use_outdated", true));
+r.table("marvel").run(conn, OptArgs.of("read_mode", "outdated"));
 ```
 
 [Read more about this command &rarr;](run/)
@@ -151,7 +151,7 @@ Start monitoring the changefeed in one client:
 
 ```java
 Cursor changeCursor = r.table("games").changes().run(conn);
-for (Map<String,Object> change: changeCursor) {
+for (Object change : changeCursor) {
     System.out.println(change);
 }
 ```
@@ -253,8 +253,8 @@ Get the next element in the cursor.
 __Example:__ Retrieve the next element.
 
 ```java
-cursor = r.table("superheroes").run<Cursor<Map<String, Object>>(conn);
-doc = cursor.next();
+Cursor cursor = r.table("superheroes").run(conn);
+Object doc = cursor.next();
 ```
 
 [Read more about this command &rarr;](next/)
@@ -270,8 +270,8 @@ Lazily iterate over a result set one element at a time.
 __Example:__ Let's process all the elements!
 
 ```java
-cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
-for (Map<String, Object> doc : cursor) {
+Cursor cursor = r.table("users").run(conn);
+for (Object doc : cursor) {
     System.out.println(doc);
 }
 ```
@@ -289,7 +289,7 @@ Retrieve all results from a cursor as a list.
 __Example:__ For small result sets it may be more convenient to process them at once as a list.
 
 ```java
-cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
+Cursor cursor = r.table("users").run(conn);
 List users = cursor.toList();
 processResults(users);
 ```
@@ -297,8 +297,8 @@ processResults(users);
 The equivalent query with a `for` loop would be:
 
 ```java
-cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
-for (Map<String, Object> doc : cursor) {
+Cursor cursor = r.table("users").run(conn);
+for (Object doc : cursor) {
     processResults(doc);
 }
 ```

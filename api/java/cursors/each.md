@@ -28,8 +28,8 @@ RethinkDB cursors can be iterated through via the Java [Iterable][i1] and [Itera
 __Example:__ Let's process all the elements!
 
 ```java
-cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
-for (Map<String, Object> doc : cursor) {
+Cursor cursor = r.table("users").run(conn);
+for (Object doc : cursor) {
     System.out.println(doc);
 }
 ```
@@ -37,8 +37,8 @@ for (Map<String, Object> doc : cursor) {
 __Example:__ Stop the iteration prematurely and close the connection manually.
 
 ```java
-cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
-for (Map<String, Object> doc : cursor) {
+Cursor cursor = r.table("users").run(conn);
+for (Object doc: cursor) {
     ok = processRow(doc);
     if (ok == false) {
         cursor.close();

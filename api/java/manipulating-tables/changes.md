@@ -65,7 +65,7 @@ Start monitoring the changefeed in one client:
 
 ```java
 Cursor changeCursor = r.table("games").changes().run(conn);
-for (Map<String,Object> change: changeCursor) {
+for (Object change : changeCursor) {
     System.out.println(change);
 }
 ```

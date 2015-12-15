@@ -29,7 +29,7 @@ RethinkDB cursors can be iterated through via the Java [Iterable][i1] and [Itera
 __Example:__ For small result sets it may be more convenient to process them at once as a list.
 
 ```java
-cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
+Cursor cursor = r.table("users").run(conn);
 List users = cursor.toList();
 processResults(users);
 ```
@@ -37,8 +37,8 @@ processResults(users);
 The equivalent query with a `for` loop would be:
 
 ```java
-cursor = r.table("users").run<Cursor<Map<String, Object>>(conn);
-for (Map<String, Object> doc : cursor) {
+Cursor cursor = r.table("users").run(conn);
+for (Object doc : cursor) {
     processResults(doc);
 }
 ```

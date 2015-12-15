@@ -25,7 +25,7 @@ Subscribe to a feed by calling [changes][] on a table:
 
 ```java
 Cursor changeCursor = r.table("users").changes().run(conn);
-for (Map<String,Object> change: changeCursor) {
+for (Object change : changeCursor) {
     System.out.println(change);
 }
 ```

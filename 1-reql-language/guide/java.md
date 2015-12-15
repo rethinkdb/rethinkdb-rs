@@ -158,8 +158,8 @@ To retrieve all documents from the table `authors`, we can simply run
 the query `r.table("authors")`:
 
 ```java
-cursor = r.table("authors").run<Cursor<Map<String, Object>>(conn);
-for (Map<String, Object> doc : cursor) {
+Cursor cursor = r.table("authors").run(conn);
+for (Object doc : cursor) {
     System.out.println(doc);
 }
 ```
@@ -182,8 +182,8 @@ to `William Adama`.  We can use a condition to filter the documents by
 chaining a `filter` command to the end of the query:
 
 ```java
-cursor = r.table("authors").filter(row -> row.g("name").eq("William Adama")).run(conn);
-for (Map<String, Object> doc : cursor) {
+Cursor cursor = r.table("authors").filter(row -> row.g("name").eq("William Adama")).run(conn);
+for (Object doc : cursor) {
     System.out.println(doc);
 }
 ```
@@ -202,8 +202,8 @@ Let's use `filter` again to retrieve all authors who have more than
 two posts:
 
 ```java
-cursor = r.table("authors").filter(row -> row.g("posts").count().gt(2)).run();
-for (Map<String, Object> doc : cursor) {
+Cursor cursor = r.table("authors").filter(row -> row.g("posts").count().gt(2)).run();
+for (Object doc : cursor) {
     System.out.println(doc);
 }
 ```
@@ -258,7 +258,7 @@ public static final RethinkDB r = RethinkDB.r;
 Connection conn = r.connection().hostname("localhost").port(28015).connect();
 
 cursor = r.table("authors").changes().run(conn);
-for (Map<String, Object> doc : cursor) {
+for (Object doc : cursor) {
     System.out.println(doc);
 }
 ```
