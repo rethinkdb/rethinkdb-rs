@@ -27,7 +27,7 @@ If you're using Gradle, modify your `build.gradle` file:
 
 ```groovy
 dependencies {
-    compile 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.2-beta-1'
+    compile group: 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.2-beta-1'
 }
 ```
 
