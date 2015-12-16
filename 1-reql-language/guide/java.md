@@ -107,7 +107,7 @@ r.table("authors").insert(r.array(
          .with("content", "There are some words I've known since...")
         )
     )
-)).run();
+)).run(conn);
 ```
 
 We should get back an object that looks like this:
@@ -194,7 +194,7 @@ for every row in the table, and returns only the relevant rows. Here's
 the new commands we used to construct the condition above:
 
 - `row` refers to the currently visited document.
-- `row("name")` refers to the value of the field `name` of the visited
+- `row.g("name")` refers to the value of the field `name` of the visited
   document.
 - The `eq` command returns `true` if two values are equal (in this case, the field `name` and the  string `William Adama`).
 
@@ -202,7 +202,7 @@ Let's use `filter` again to retrieve all authors who have more than
 two posts:
 
 ```java
-Cursor cursor = r.table("authors").filter(row -> row.g("posts").count().gt(2)).run();
+Cursor cursor = r.table("authors").filter(row -> row.g("posts").count().gt(2)).run(conn);
 for (Object doc : cursor) {
     System.out.println(doc);
 }
@@ -223,7 +223,7 @@ the `get` command. We can use one of the ids generated in the
 previous example:
 
 ```java
-r.db("test").table("authors").get("7644aaf2-9928-4231-aa68-4e65e31bf219").run();
+r.db("test").table("authors").get("7644aaf2-9928-4231-aa68-4e65e31bf219").run(conn);
 ```
 
 Since primary keys are unique, the `get` command returns a single
@@ -252,12 +252,13 @@ To start a feed, compile and run the following query in a terminal window:
 ```java
 import com.rethinkdb.RethinkDB;
 import com.rethinkdb.net.Connection;
+import com.rethinkdb.net.Cursor;
 
 public static final RethinkDB r = RethinkDB.r;
 
 Connection conn = r.connection().hostname("localhost").port(28015).connect();
 
-cursor = r.table("authors").changes().run(conn);
+Cursor cursor = r.table("authors").changes().run(conn);
 for (Object doc : cursor) {
     System.out.println(doc);
 }
