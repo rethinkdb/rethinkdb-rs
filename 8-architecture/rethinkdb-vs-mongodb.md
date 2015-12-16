@@ -70,7 +70,7 @@ especially excited about RethinkDB.
 
 * ReQL is a data-driven, abstract, polymorphic query language. It's
   easy to learn and extremely flexible.
-* Each host language driver (currently Python, Ruby, and JavaScript)
+* Each host language driver (currently Python, Ruby, Java, and JavaScript)
   implements a custom, tightly integrated domain-specific
   language. It's both pragmatic and fun to use.
 * Unlike most NoSQL systems, RethinkDB supports server-side subqueries

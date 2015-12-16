@@ -41,7 +41,7 @@ module Jekyll
         end
 
         def render(context)
-            '/'+super.gsub(/python|javascript|ruby/, @lang)
+            '/'+super.gsub(/\b(python|javascript|ruby|java)\b/, @lang)
         end
     end
 end

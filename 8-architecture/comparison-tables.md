@@ -99,7 +99,7 @@ libraries](http://docs.mongodb.org/ecosystem/drivers/). MongoDB's [wire
 protocol is TCP based and uses
 BSON](http://docs.mongodb.org/meta-driver/latest/legacy/mongodb-wire-protocol/).
 
-RethinkDB provides official libraries for JavaScript/Node.js, Python, Ruby.
+RethinkDB provides official libraries for JavaScript/Node.js, Python, Java, and Ruby.
 In addition, there are [community supported client drivers](/docs/install-drivers/) for more than half a dozen other languages.
 RethinkDB uses JSON over TCP for client-server communications.
 

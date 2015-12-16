@@ -58,7 +58,7 @@ We use use [kramdown](http://kramdown.gettalong.org/) to parse the Markdown file
 
 Some documentation pages have multiple versions for different languages, client drivers, platforms, etc. All updates need to be reflected in each version of the page.
 
-For example, if you add a recipe to the [Cookbook](http://rethinkdb.com/docs/cookbook/javascript/), you will have to add it to the JavaScript, Python and Ruby versions of the recipe. If you aren't familiar with one of the languages, we'll be more than happy to help you add all the versions.
+For example, if you add a recipe to the [Cookbook](http://rethinkdb.com/docs/cookbook/javascript/), you will have to add it to the JavaScript, Python, Java and Ruby versions of the recipe. If you aren't familiar with one of the languages, we'll be more than happy to help you add all the versions.
 
 ### API docs ###
 
@@ -70,7 +70,7 @@ Each command has a dedicated Markdown file for each language. A [YAML](http://ya
 ---
 # The layout of the document
 layout: api-command
-# The language, valid values are JavaScript, Python, Ruby
+# The language, valid values are JavaScript, Python, Ruby, Java
 language: JavaScript
 # The permalink
 permalink: api/javascript/add_listener/

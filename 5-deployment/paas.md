@@ -65,7 +65,7 @@ The RethinkDB AMI is preconfigured with the following options:
 
 - Ubuntu Server 12.04 LTS
 - RethinkDB server
-- Official RethinkDB client drivers for Python, JavaScript, and Ruby
+- Official RethinkDB client drivers for Python, JavaScript, Java, and Ruby
 - 5 GB of free EBS space for your data
 
 {% infobox %}
