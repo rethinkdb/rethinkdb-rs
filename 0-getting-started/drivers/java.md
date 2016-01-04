@@ -41,6 +41,14 @@ If you're using Ant, add the following to your `build.xml`:
 </artifact:dependencies>
 ```
 
+## Using SBT ##
+
+If you're using SBT, add the following to your `build.sbt`:
+
+```scala
+libraryDependencies += "com.rethinkdb" % "rethinkdb-driver" % "2.2-beta-1"
+```
+
 # Usage #
 
 You can use the drivers from Java like this:
