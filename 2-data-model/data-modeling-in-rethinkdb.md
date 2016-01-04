@@ -113,7 +113,7 @@ In a relational database, we'd use a `JOIN` here; in RethinkDB, we use the `eq_j
 ```python
 # In order for this query to work, we need to have a secondary index
 # on the `author_id` field of the table `posts`.
-r.db("blog").table("authors").getAll("7644aaf2-9928-4231-aa68-4e65e31bf219").eq_join(
+r.db("blog").table("authors").get_all("7644aaf2-9928-4231-aa68-4e65e31bf219").eq_join(
     'id',
     r.db("blog").table("posts"),
     index='author_id'
