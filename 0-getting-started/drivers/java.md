@@ -15,9 +15,11 @@ If you're using Maven, add this to your `pom.xml` file:
 
 ```xml
 <dependencies>
-  <groupId>com.rethinkdb</groupId>
-  <artifactId>rethinkdb-driver</artifactId>
-  <version>2.2-beta-1</version>
+  <dependency>
+    <groupId>com.rethinkdb</groupId>
+    <artifactId>rethinkdb-driver</artifactId>
+    <version>2.2-beta-1</version>
+  </dependency>
 </dependencies>
 ```
 
@@ -63,7 +65,7 @@ import com.rethinkdb.net.Connection;
 
 public static final RethinkDB r = RethinkDB.r;
 
-conn = r.connection().hostname("localhost").port(28015).connect();
+Connection conn = r.connection().hostname("localhost").port(28015).connect();
 
 r.db("test").tableCreate("tv_shows").run(conn);
 r.table("tv_shows").insert(r.hashMap("name", "Star Trek TNG")).run(conn);
