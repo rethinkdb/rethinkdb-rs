@@ -21,7 +21,7 @@ For these examples, we'll assume that the RethinkDB connection is available in c
 It's a common task for web applications to accept file uploads from users; with RethinkDB you can store these files directly in the database.
 
 ```java
-import java.nio.file.*;
+import java.io.file.*;
 
 /**
  * Store a file in the database.
