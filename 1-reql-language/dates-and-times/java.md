@@ -8,12 +8,8 @@ switcher: true
 language: Java
 ---
 
-{% infobox alert %}
-**This document has not been fully updated for Java.** The [API documentation](/api/java) for Java is complete, but many ReQL articles still have examples in other languages. We'll be updating each article after the Java driver is officially released.
-{% endinfobox %}
 
-RethinkDB has native support for millisecond-precision times with time zones.
-Some highlights:
+RethinkDB has native support for millisecond-precision times with time zones. Some highlights:
 
 * **Times are integrated with the official drivers**, which will automatically
   convert to and from your language's native time type.
@@ -31,53 +27,66 @@ Some highlights:
 
 # A quick example #
 
-First, let's create a table and insert some events.  We'll insert the first
-event using a native Date object, and the second with the `epochTime`
-constructor:
+First, let's create a table and insert some events.  We'll insert the first event using a native OffsetDateTime object, and the second with the `epochTime` constructor:
 
-```js
-r.tableCreate('events').run(conn, callback);
+```java
+import java.time.OffsetDateTime;
+import java.util.List;
 
-r.table('events').insert([
-    {id: 0, timestamp: new Date()},
-    {id: 1, timestamp: r.epochTime(1376436769.923)}
-]).run(conn, callback);
+r.tableCreate("events").run(conn);
+
+OffsetDateTime nowDateTime = OffsetDateTime.now();
+
+r.table("events").insert(r.array(
+    r.hashMap("id", 0).with("timestamp", nowDateTime),
+    r.hashMap("id", 1).with("timestamp", r.epochTime(1376436769.923))
+)).run(conn);
 ```
 
 Now, let's get those back:
 
-```js
-> r.table('events');
-// Result passed to callback
-[
-    { "id": 0, "timestamp": Date("2013-08-13T23:32:49.923Z") },
-    { "id": 1, "timestamp": Date("2013-08-13T23:32:49.923Z") }
-]
+```java
+Cursor cursor = r.table("events").run(conn);
+List events = cursor.toList();
+System.out.println(events);
 ```
 
-You'll notice that both times we inserted are returned as native
-JavaScript `Date` objects. (`Date` objects don't store time zone
-information, so both times are UTC, regardless of your server's local time
-zone.)
+Result:
+
+```
+[{id=0, timestamp=2016-01-05T10:41:45.100-08:00}, {id=1, timestamp=2013-08-13T23:32:49.923Z}]
+```
+
+Both times are returned as native Java 8 `OffsetDateTime` objects.
 
 We can now filter based on these times:
 
-```js
-> r.table('events').filter(r.row('timestamp').hours().gt(20)).run(conn, callback);
-// Result passed to callback
-[ { "id": 1, "timestamp": Date("2013-08-13T23:32:49.923Z") } ]
+```java
+cursor = r.table("events").filter(
+    row -> row.g("timestamp").hours().gt(20)
+).run(conn);
+events = cursor.toList();
+System.out.println(events);
+```
+
+```
+[{id=1, timestamp=2013-08-13T23:32:49.923Z}]
 ```
 
 Or create a secondary index on them:
 
-```js
-> r.table('events').indexCreate('timestamp').run(conn, callback);
+```java
+r.table("events").indexCreate("timestamp").run(conn);
 
-> r.table('events').between(r.epochTime(1376436769.913),
-      r.epochTime(1376436769.933), {index: 'timestamp'}
-  ).run(conn, callback);
-// Result passed to callback
-[ { "id": 1, "timestamp": Date("2013-08-13T23:32:49.923Z") } ]
+cursor = r.table("events").between(
+    r.epochTime(1376436769.913), r.epochTime(1376436769.933)
+).optArg("index", "timestamp").run(conn);
+events = cursor.toList();
+System.out.println(events);
+```
+
+```
+[{id=1, timestamp=2013-08-13T23:32:49.923Z}]
 ```
 
 # Technical details #
@@ -86,7 +95,7 @@ Times are stored on the server as seconds since epoch (UTC) with millisecond
 precision plus a time zone.  Currently the only available time zones are
 minute-precision time offsets from UTC, but we may add support for DST-aware
 time zones in the future.  Time zones are strings as specified by ISO
-8601. Note that the JavaScript driver strips time zone information due to limitations with the `Date` object, although you can retrieve time zone data via the raw ReQL time object. (See below.)
+8601.
 
 Times are considered equal when their epoch (UTC) time values are equal, **regardless of what time zone they're in**. This is true for both comparisons and indexed operations. Times are compared in floating point with millisecond precision.
 
@@ -98,34 +107,36 @@ Leap-seconds aren't well-supported right now: `2012-06-30T23:59:60` and
 
 # Inserting times #
 
-You can insert times by simply passing a native `Date` object. 
+You can insert times by simply passing a native `OffsetDateTime` object. 
 
-```js
-> r.table('events').insert({id: 2, timestamp: new Date()}).run(conn, callback);
-// Result passed to callback
-{"unchanged"=>0, "skipped"=>0, "replaced"=>0, "inserted"=>1, "errors"=>0, "deleted"=>0}
+```java
+OffsetDateTime myDateTime = OffsetDateTime.now();
+
+r.table("events").insert(
+    r.hashMap("id", 2).with("timestamp", myDateTime),
+).run(conn);
+```
+
+```
+{unchanged=0, skipped=0, replaced=0, inserted=1, errors=0, deleted=0}
 ```
 
 You can also use `r.now` (which the server interprets as the time the
 query was received in UTC), or construct a time using `r.time`,
 `r.epochTime`, or `r.ISO8601`.
 
-```js
-> r.now().toISO8601().run(conn, callback);
-// Result passed to callback
-"2013-08-09T18:53:15.012+00:00"
+```java
+r.now().toISO8601().run(conn, callback);
+// returns "2013-08-09T18:53:15.012+00:00"
 
-> r.time(2013, r.august, 9, 18, 53, 15.012, '-07:00').toISO8601().run(conn, callback);
-// Result passed to callback
-"2013-08-09T18:53:15.012-07:00"
+r.time(2013, r.august(), 9, 18, 53, 15.012, "-07:00").toIso8601().run(conn);
+// returns "2013-08-09T18:53:15.012-07:00"
 
-> r.epochTime(1376074395.012).toISO8601().run(conn, callback);
-// Result passed to callback
-"2013-08-09T18:53:15.012+00:00"
+r.epochTime(1376074395.012).toIso8601().run(conn);
+// returns "2013-08-09T18:53:15.012+00:00"
 
-> r.ISO8601("2013-08-09T18:53:15.012-07:00").toISO8601().run(conn, callback);
-// Result passed to callback
-"2013-08-09T18:53:15.012-07:00"
+r.iso8601("2013-08-09T18:53:15.012-07:00").toIso8601().run(conn);
+// returns "2013-08-09T18:53:15.012-07:00"
 ```
 
 Times may be used as the primary key for a table.  Two times are considered
@@ -133,18 +144,19 @@ equal if they have the same number of milliseconds since epoch (UTC), regardless
 of time zone.
 
 ```js
-> r.table('t').insert(
-      {id: r.ISO8601("2013-08-09T11:58:00.1111-07:00")}
-  ).run(conn, callback);
-// Result passed to callback
-{"unchanged"=>0, "skipped"=>0, "replaced"=>0, "inserted"=>1, "errors"=>0, "deleted"=>0}
+r.table("t").insert(
+    r.hashMap("id", r.iso8601("2013-08-09T11:58:00.1111-07:00"))
+).run(conn);
 
-> r.table('t').insert(
-      {id: r.ISO8601("2013-08-09T10:58:00.1111-08:00")}
-  ).run(conn, callback);
-// Result passed to callback
-{"unchanged"=>0, "skipped"=>0, "replaced"=>0, "inserted"=>0,
- "first_error"=>"Duplicate primary key `id`: ...", "errors"=>1, "deleted"=>0}
+// returns:
+// {deleted=0, errors=0, inserted=1, replaced=0, skipped=0, unchanged=0}
+
+r.table("t").insert(
+    r.hashMap("id", r.iso8601("2013-08-09T10:58:00.1112-08:00"))
+).run(conn);
+
+// returns: 
+// {deleted=0, errors=1, inserted=0, replaced: 0, skipped=0, unchanged=0, first_error="Duplicate primary key `id`=..."}
 ```
 
 You may also insert a time by inserting a literal pseudotype object.  This is
@@ -157,58 +169,43 @@ __Note:__ Avoid using keys matching the regular expression
 keywords.
 {% endinfobox %}
 
-```js
-> r.expr(
-      {'$reql_type$': 'TIME', epoch_time: 1376075362.662, timezone: '+00:00'}
-  ).run(conn, callback);
-// Result passed to callback
-Date("2013-08-09T19:09:22.662Z")
+```java
+r.expr(
+    r.hashMap("$reql_type$", "TIME")
+     .with("epoch_time", 1376075362.662)
+     .with("timezone", "+00:00")
+).toIso8601().run(conn);
 ```
 
 # Retrieving times #
 
-By default, times are converted into native time objects when they are retrieved
-from the server.  This may be overridden by passing the optarg `timeFormat` to
-`run`.  The only options right now are `native`, the default, and `raw`.  See
-the [API reference](/api) if you are uncertain how to pass an optional argument in JavaScript.
+By default, times are converted into native objects when they are retrieved from the server.  This may be overridden by passing the [optArg](/api/java/optarg) `timeFormat` to `run`.  The only options right now are `native`, the default, and `raw`.
 
-```js
-> r.now().run(conn, callback);
-// Result passed to callback
-Date("2013-08-13T23:32:49.923Z")
+```java
+r.now().run(conn);
+// returns "2016-01-06T00:34:13.623Z"
 
-> r.now().inTimezone('-07:00').run(conn, callback);
-// Result passed to callback: same as above, no TZ info retrieved
-Date("2013-08-13T23:32:49.923Z")
+r.now().inTimezone("-07:00").run(conn);
+// returns "2016-01-05T17:34:13.623Z-07:00"
 
-> r.now().run(conn, {timeFormat: 'raw'}, callback);
-// Result passed to callback
-{
-  "$reql_type$": "TIME",
-  "epoch_time": 1423077622.659,
-  "timezone": "+00:00"
-}
+import com.rethinkdb.model.OptArgs;
+r.now().run(conn, OptArgs.of("time_format", "raw"));
+// returns:
+// {"timezone":"+00:00","$reql_type$":"TIME","epoch_time":1.452040701881E9}
 
-> r.now().inTimezone('-07:00').run(conn, {timeFormat: 'raw'}, callback);
-// Result passed to callback, now with TZ info
-{
-  "$reql_type$": "TIME",
-  "epoch_time": 1423077646.772,
-  "timezone": "-07:00"
-}
+r.now().inTimezone("-07:00").run(conn, OptArgs.of("time_format", "raw"));
+// returns:
+// {"timezone":"-07:00","$reql_type$":"TIME","epoch_time":1.452040701881E9}
 ```
 
-You can also transform a time object on the server using either `toEpochTime`
-or `toISO8601`.
+You can also transform a time object on the server using either `toEpochTime` or `toIso8601`.
 
-```js
-> r.now().toEpochTime().run(conn, callback);
-// Result passed to callback
-1376075986.574
+```java
+r.now().toEpochTime().run(conn);
+// returns 1376075986.574
 
-> r.now().toISO8601().run(conn, callback);
-// Result passed to callback
-"2013-08-09T19:19:46.574+00:00"
+r.now().toISO8601().run(conn);
+// returns "2013-08-09T19:19:46.574+00:00"
 ```
 
 # Working with times #
@@ -220,34 +217,32 @@ to another time, or retrieve a portion of it.
 
 You can add or subtract a duration (in seconds):
 
-```js
-> r.time(2015, 1, 1, 'Z').add(86400).run(conn, callback);
-// Result passed to callback
-Fri Jan 02 2015 00:00:00 GMT+00:00
+```java
+r.time(2015, 1, 1, "Z").add(86400).run(conn);
+// returns "2015-01-02T00:00Z"
 ```
 
 If you subtract two times, you get a duration:
 
-```js
-> r.time(2015, 1, 2, 'Z').sub(r.time(2015, 1, 1, 'Z')).run(conn, callback);
-// Result passed to callback
-86400
+```java
+r.time(2015, 1, 2, "Z").sub(r.time(2015, 1, 1, "Z")).run(conn);
+// returns 86400
 ```
 
 ## Comparing times ##
 
 All of the normal comparison operators are defined on times:
 
-```js
-> r.epochTime(1376081287.982).lt(new Date()).run(conn, callback);
-true
+```java
+r.epochTime(1376081287.982).lt(new Date()).run(conn, callback);
+// true
 ```
 
 Times are only compared with millisecond precision:
 
-```js
-> r.epochTime(1376081287.9821).eq(r.epochTime(1376081287.9822)).run(conn, callback);
-true
+```java
+r.epochTime(1376081287.9821).eq(r.epochTime(1376081287.9822)).run(conn);
+// true
 ```
 
 There's also the [during](/api/java/during) command, which can check whether a time is in a particular range of times.
@@ -258,54 +253,49 @@ If you have a time, you can retrieve a particular portion (like the month, or
 the hours) relative to the current time zone.  (See the full list at the
 [API reference](/api).)
 
-```js
-> r.expr(new Date()).run(conn, callback);
-// Result passed to callback
-"2013-08-13T23:32:49.923Z"
+```java
+OffsetDateTime nowDateTime = OffsetDateTime.now();
 
-> r.expr(new Date()).month().run(conn, callback);
-// Result passed to callback
-8
+r.expr(nowDateTime).run(conn);
+// returns "2013-08-13T23:32:49.923Z"
 
-> r.expr(new Date()).hours().run(conn, callback);
-// Result passed to callback
-23
+r.expr(nowDateTime).month().run(conn);
+// returns 8
 
-> r.expr(new Date()).inTimezone('-06:00').hours().run(conn, callback);
-// Result passed to callback
-17
+r.expr(nowDateTime).hours().run(conn);
+// returns 23
+
+r.expr(nowDateTime).inTimezone("-06:00").hours()run(conn);
+// returns 17
 ```
 
 We use the ISO 8601 definition of a week, which starts with Monday, represented
 as `1`.
 
-```js
-> r.expr(new Date()).dayOfWeek().run(conn, callback);
-5 # Friday
+```java
+r.expr(nowDateTime).dayOfWeek().run(conn);
+// returns 2 for Tuesday
 ```
 
 We define `r.monday...r.sunday` and `r.january...r.december` for convenience:
 
 ```js
-> r.expr(new Date()).dayOfWeek().eq(r.friday).run(conn, callback);
-true
+r.expr(nowDateTime).dayOfWeek().eq(r.tuesday).run(conn);
+// returns true
 ```
 
 We also let you slice the time into the date and the current time of day (a time
 and a duration, respectively):
 
-```js
-> r.now().toEpochTime().run(conn, callback);
-// Result passed to callback
-1376351312.744
+```java
+r.now().toEpochTime().run(conn);
+// returns 1376351312.744
 
-> r.now().date().toEpochTime().run(conn, callback);
-// Result passed to callback
-1376265600
+r.now().date().toEpochTime().run(conn);
+// returns 1376265600
 
-> r.now().timeOfDay().run(conn, callback);
-// Result passed to callback
-85712.744
+r.now().timeOfDay().run(conn);
+// returns 85712.744
 ```
 
 # Putting it all together #
@@ -315,15 +305,15 @@ ReQL.  For example, let's say you have a table of sales your company has made,
 and you want to figure out how much of the gross comes from people who were
 working overtime:
 
-```js
-r.table('sales').filter(function (sale) {
+```java
+r.table("sales").filter(sale ->
     // Weekends are overtime
-    return sale('time').dayOfWeek().eq(r.saturday).or(
-        sale('time').dayOfWeek().eq(r.sunday)).or(
-        // Weekdays outside 9-5 are overtime
-        sale('time').hours().lt(9)).or(
-        sale('time').hours().ge(17));
-}).sum('dollars').run(conn, callback);
+    sale.g("time").dayOfWeek().eq(r.saturday())
+    .or(sale.g("time").dayOfWeek().eq(r.sunday()))
+    // Weekdays outside 9-5 are overtime
+    .or(sale.g("time").hours().lt(9))
+    .or(sale.g("time").hours().ge(17))
+).sum("dollars").run(conn);
 ```
 
 If your timestamps are stored with time zones, this query will work even if you
@@ -337,15 +327,13 @@ Further, because it's ReQL, the query's individual pieces are easily
 composable.  If you decide you want those numbers on a per-month
 basis, you can just throw a `group` in there:
 
-```js
-r.table('sales').filter(function (sale) {
+```java
+r.table("sales").filter(sale ->
     // Weekends are overtime
-    return sale('time').dayOfWeek().eq(r.saturday).or(
-        sale('time').dayOfWeek().eq(r.sunday)).or(
-        // Weekdays outside 9-5 are overtime
-        sale('time').hours().lt(9)).or(
-        sale('time').hours().ge(17));
-}).group(function (sale) {
-    return sale('time').month();
-}).sum('dollars').run(conn, callback);
+    sale.g("time").dayOfWeek().eq(r.saturday())
+    .or(sale.g("time").dayOfWeek().eq(r.sunday()))
+    // Weekdays outside 9-5 are overtime
+    .or(sale.g("time").hours().lt(9))
+    .or(sale.g("time").hours().ge(17))
+).group(sale -> sale.g("time").month()).sum("dollars").run(conn);
 ```
