@@ -137,6 +137,12 @@ alias: docs/guides/drivers/
                     <p class="name">PHP</p>
                 </a>
             </li>
+            <li>
+                <a href="https://github.com/mbq/rethinker">
+                    <img src="/assets/images/docs/driver-languages/r.png" />
+                    <p class="name">R</p>
+                </a>
+            </li>
         </ul>
     </section>
 
@@ -214,6 +220,7 @@ __Thanks to all our amazing driver contributors!__
 - [@jurajmasar](https://github.com/jurajmasar) (C++): <https://github.com/jurajmasar/rethink-db-cpp-driver>
 - [@kclay](https://github.com/kclay) (Scala): <https://github.com/kclay/rethink-scala>
 - [@kureikain](https://github.com/kureikain) (Erlang): <https://github.com/kureikain/relang>
+- [@mbq](https://github.com/mbq) (R): <https://github.com/mbq/rethinker>
 - [@neumino](https://github.com/neumino) (Node.js): <https://github.com/neumino/rethinkdbdash>
 - [@njlg](https://github.com/njlg) (Perl): <https://github.com/njlg/perl-rethinkdb>
 - [@npiv](https://github.com/npiv/) (Java): <https://github.com/npiv/rethink-java-driver>
