@@ -8,10 +8,6 @@ language: Java
 js: [fancybox]
 ---
 
-{% infobox alert %}
-**This document has not been updated for Java.** The [API documentation](/api/java) for Java is complete, but many ReQL articles still have examples in other languages. We'll be updating each article after the Java driver is officially released.
-{% endinfobox %}
-
 Secondary indexes are data structures that improve the speed of many
 read queries at the slight cost of increased storage space and decreased
 write performance.
@@ -35,34 +31,31 @@ Use simple indexes to efficiently retrieve and order documents by the value of a
 
 ## Creation ##
 
-```js
+```java
 // Create a secondary index on the last_name attribute
-r.table("users").indexCreate("last_name").run(conn, callback)
-```
+r.table("users").indexCreate("last_name").run(conn);
 
-```js
 // Wait for the index to be ready to use
-r.table("users").indexWait("last_name").run(conn, callback)
+r.table("users").indexWait("last_name").run(conn);
 ```
 
 ## Querying ##
 
-```js
+```java
 // Get all users whose last name is "Smith"
-r.table("users").getAll("Smith", {index: "last_name"}).run(conn, callback)
+r.table("users").getAll("Smith").optArg("index", "last_name").run(conn);
 
 // Get all users whose last names are "Smith" or "Lewis"
-r.table("users").getAll("Smith", "Lewis", {index: "last_name"}).run(conn, callback)
+r.table("users").getAll("Smith", "Lewis").optArg("index", "last_name").run(conn);
 
 // Get all users whose last names are between "Smith" and "Wade"
-r.table("users").between("Smith", "Wade", {index: "last_name"}).run(conn, callback)
+r.table("users").between("Smith", "Wade").optArg("index", "last_name").run(conn);
 
 // Efficiently order users by last name using an index
-r.table("users").orderBy({index: "last_name"}).run(conn, callback)
+r.table("users").orderBy().optArg("index", "last_name").run(conn);
 
 // For each blog post, return the post and its author using the last_name index
-r.table("posts").eqJoin("author_last_name", r.table("users"), {index: "last_name"}) \
-    .zip().run(conn, callback)
+r.table("posts").eqJoin("author_last_name", r.table("users")).optArg("index", "last_name").zip().run(conn);
 ```
 
 {% infobox %}
@@ -76,41 +69,40 @@ Compound indexes use arrays to efficiently retrieve documents by multiple fields
 
 ## Creation ##
 
-```js
+```java
 // Create a compound secondary index based on the first_name and last_name attributes
-r.table("users").indexCreate(
-    "full_name", [r.row("last_name"), r.row("first_name")]
-).run(conn, callback)
-```
+r.table("users").indexCreate("full_name",
+    row -> r.array(row.g("last_name"), row.g("first_name"))
+).run(conn);
 
-```js
 // Wait for the index to be ready to use
-r.table("users").indexWait("full_name").run(conn, callback)
+r.table("users").indexWait("full_name").run(conn);
 ```
 
 ## Querying ##
 
-```js
+```java
 // Get all users whose full name is John Smith.
-r.table("users").getAll(["Smith", "John"], {index: "full_name"}).run(conn, callback)
+r.table("users").getAll(r.array("Smith", "John"))
+ .optArg("index", "full_name").run(conn);
 
 // Get all users whose full name is between "John Smith" and "Wade Welles"
 r.table("users").between(
-    ["Smith", "John"], ["Welles", "Wade"], {index: "full_name"}
-).run(conn, callback)
+    r.array("Smith", "John"), r.array("Welles", "Wade")
+).optArg("index", "full_name").run(conn);
 
 // Get all users whose last name is Smith.
 r.table("users").between(
-    ["Smith", r.minval], ["Smith", r.maxval], {index: "full_name"}
-).run(conn, callback)
+    r.array("Smith", r.minval()), r.array("Smith", r.maxval())
+).optArg("index", "full_name").run(conn);
 
 // Efficiently order users by first name and last name using an index
-r.table("users").orderBy({index: "full_name"}).run(conn, callback)
+r.table("users").orderBy().optArg("index", "full_name").run(conn);
 
 // For each blog post, return the post and its author using the full_name index
 r.table("posts").eqJoin(
-    "author_full_name", r.table("users"), {index: "full_name"}
-).run(conn, callback)
+    "author_full_name", r.table("users")
+).optArg("index", "full_name").run(conn);
 ```
 
 Internally, compound indexes and simple indexes are the same type of index in RethinkDB; compound indexes are simply a special case of regular index that returns an array rather than a single value.
@@ -126,45 +118,46 @@ The keys in a multi index can be single values, compound values or even arbitrar
 Suppose each post has a field `tags` that maps to an array of tags. The schema of the
 table `posts` would be something like:
 
-```js
+```json
 {
-    title: "...",
-    content: "...",
-    tags: [ <tag1>, <tag2>, ... ]
+    "title": "...",
+    "content": "...",
+    "tags": [ <tag1>, <tag2>, ... ]
 }
 
 ```
 
-```js
+```java
 // Create the multi index based on the field tags
-r.table("posts").indexCreate("tags", {multi: true})
+r.table("posts").indexCreate("tags").optArg("multi", true).run(conn);
 
 // Wait for the index to be ready to use
-r.table("posts").indexWait("tags").run(conn, callback)
+r.table("posts").indexWait("tags").run(conn);
 ```
 
 ## Querying ##
 
-```js
+```java
 // Get all posts with the tag "travel" (where the field tags contains "travel")
-r.table("posts").getAll("travel", {index: "tags"}).run(conn, callback)
+r.table("posts").getAll("travel").optArg("index", "tags").run(conn);
 
 // For each tag, return the tag and the posts that have such tag
-r.table("tags").eqJoin("tag", r.table("posts"), {index: "tags"}).run(conn, callback)
+r.table("tags").eqJoin("tag", r.table("posts"))
+ .optArg("index", "tags").run(conn);
 ```
 
-Note that queries with `getAll` or `between` may return the same document multiple times unless you use the [distinct](/api/javascript/distinct) command.
+Note that queries with `getAll` or `between` may return the same document multiple times unless you use the [distinct](/api/java/distinct) command.
 
 # Indexes on arbitrary ReQL expressions #
 
 You can create an index on an arbitrary expression by passing an anonymous
 function to `indexCreate`.
 
-```js
+```java
 // A different way to do a compound index
-r.table("users").indexCreate("full_name2", function(user) {
-    return r.add(user("last_name"), "_", user("first_name"))
-}).run(conn, callback)
+r.table("users").indexCreate("full_name2",
+    user -> r.add(user.g("last_name"), "_", user.g("first_name"))
+).run(conn);
 ```
 
 The function you give to `indexCreate` must be deterministic. In practice this means that that you cannot use a function that contains a sub-query or the `r.js` command.
@@ -178,48 +171,50 @@ If the function passed to `indexCreate` returns an error for a given document, t
 You can create a multi index on an arbitrary expression in similar fashion,
 by passing the multi option as the last parameter to `indexCreate`.
 
-```js
+```java
 // Create a multi index on a ReQL expression
-r.table("users").indexCreate("activities", r.row("hobbies").add(r.row("sports")),
-    {multi: true}).run(conn, callback)
+r.table("users").indexCreate("activities",
+    row -> row.g("hobbies").add(row.g("sports"))
+).optArg("multi", true).run(conn);
 ```
 
 ## Use a multi index and a mapping function to speed getAll/contains ##
 
-If your program frequently executes a [getAll](/api/javascript/get_all) followed by a [contains](/api/javascript/contains), that operation can be made more efficient by creating a compound multi index using a mapping function on the field that contains the list.
+If your program frequently executes a [getAll](/api/java/get_all) followed by a [contains](/api/java/contains), that operation can be made more efficient by creating a compound multi index using a mapping function on the field that contains the list.
 
-```js
+```java
 // Create the index
-r.table("users").indexCreate("userEquipment", function(user) {
-    return user("equipment").map(function(equipment) {
-        return [ user("id"), equipment ];
-    });
-}, {multi: true}).run(conn, callback);
+r.table("users").indexCreate("user_equipment",
+    user -> user.g("equipment").map(
+        equipment -> r.array(user.g("id"), equipment)
+    )
+).optArg("multi", true).run(conn);
 
 // Query equivalent to:
-// r.table("users").getAll(1).filter(function (user) {
-//     return user("equipment").contains("tent");
-// });
-r.table("users").getAll([1, "tent"], {index: "userEquipment"}).distinct().run(conn, callback);
+// r.table("users").getAll(1).filter(
+//     user -> user.g("equipment").contains("tent")
+// ).run(conn);
+r.table("users").getAll(r.array(1, "tent"))
+ .optArg("index", "user_equipment").distinct().run(conn);
 ```
 
-# Administrative operations #
+// Administrative operations #
 
-```js
+```java
 // list indexes on table "users"
-r.table("users").indexList().run(conn, callback)
+r.table("users").indexList().run(conn);
 
 // drop index "last_name" on table "users"
-r.table("users").indexDrop("last_name").run(conn, callback)
+r.table("users").indexDrop("last_name").run(conn);
 
 // return the status of all indexes
-r.table("users").indexStatus().run(conn, callback)
+r.table("users").indexStatus().run(conn);
 
 // return the status of the index "last_name"
-r.table("users").indexStatus("last_name").run(conn, callback)
+r.table("users").indexStatus("last_name").run(conn);
 
 // return only when the index "last_name" is ready
-r.table("users").indexWait("last_name").run(conn, callback)
+r.table("users").indexWait("last_name").run(conn);
 ```
 
 ## Manipulating indexes with the web UI ##
@@ -242,32 +237,32 @@ The part of a secondary index key that's used for fast lookups depends on the le
 
 Secondary indexes will not store `null` values or objects. Thus, the results of a command such as:
 
-```js
-r.table("users").indexCreate("group").run(conn, callback)
-r.table("users").orderBy({index: "group"}).run(conn, callback)
+```java
+r.table("users").indexCreate("group").run(conn);
+r.table("users").orderBy().optArg("index", "group").run(conn);
 ```
     
 may be different from an equivalent command without an index:
 
-```js
-r.table("users").orderBy("group").run(conn, callback)
+```java
+r.table("users").orderBy("group").run(conn);
 ```
 
 if the field being indexed has non-indexable values. This limitation will be removed in a future version of RethinkDB. See GitHub issue [#1032](https://github.com/rethinkdb/rethinkdb/issues/1032) to track progress on this.
 
 RethinkDB does not currently have an optimizer. As an example, the following query will not automatically use an index:
 
-```js
+```java
 // This query does not use a secondary index! Use getAll instead.
-r.table("users").filter({"last_name": "Smith" }).run(conn, callback)
+r.table("users").filter(r.hashMap("last_name", "Smith")).run(conn);
 ```
 
 You have to explicitly use the `getAll` command to take advantage
 of secondary indexes.
 
-```js
+```java
 // This query uses a secondary index.
-r.table("users").getAll("Smith", {index: "last_name"}).run(conn, callback)
+r.table("users").getAll("Smith").optArg("index", "last_name").run(conn);
 ```
 
 You cannot chain multiple `getAll` commands. Use a compound index to efficiently retrieve documents by multiple fields.
@@ -280,5 +275,5 @@ RethinkDB does not support unique secondary indexes even for non-sharded tables.
 
 Browse the API reference to learn more about secondary index commands:
 
-* Manipulating indexes: [indexCreate](/api/javascript/index_create/), [indexDrop](/api/javascript/index_drop/) and [indexList](/api/javascript/index_list/)
-* Using indexes: [getAll](/api/javascript/get_all/), [between](/api/javascript/between/), [eqJoin](/api/javascript/eq_join/) and [orderBy](/api/javascript/order_by/)
+* Manipulating indexes: [indexCreate](/api/java/index_create/), [indexDrop](/api/java/index_drop/) and [indexList](/api/java/index_list/)
+* Using indexes: [getAll](/api/java/get_all/), [between](/api/java/between/), [eqJoin](/api/java/eq_join/) and [orderBy](/api/java/order_by/)
