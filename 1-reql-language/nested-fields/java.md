@@ -8,48 +8,44 @@ switcher: true
 language: Java
 ---
 
-{% infobox alert %}
-**This document has not been updated for Java.** The [API documentation](/api/java) for Java is complete, but many ReQL articles still have examples in other languages. We'll be updating each article after the Java driver is officially released.
-{% endinfobox %}
-
 <img alt="Nested Fields Illustration" class="api_command_illustration"
     src="/assets/images/docs/api_illustrations/nested_fields.png" />
 
 A ReQL document is a JSON object: a set of key-value pairs, in which each value might be a single value, a list of values, or *another* set of key-value pairs. When the value of a field contains more fields, we describe these as *nested fields.*
 
-Consider a user table with contact information and a list of notes for each user in this format:
+Consider a user table with contact information and a list of notes for each user in this format. (We'll show this in JSON.)
 
-```js
+```json
 {
-	id: 10001,
-	name: "Bob Smith",
-	contact: {
-		phone: {
-			work: "408-555-1212",
-			home: "408-555-1213",
-			cell: "408-555-1214"
+	"id": 10001,
+	"name": "Bob Smith",
+	"contact": {
+		"phone": {
+			"work": "408-555-1212",
+			"home": "408-555-1213",
+			"cell": "408-555-1214"
 		},
-		email: {
-			work: "bob@smith.com",
-			home: "bobsmith@gmail.com",
-			other: "bobbys@moosecall.net"
+		"email": {
+			"work": "bob@smith.com",
+			"home": "bobsmith@gmail.com",
+			"other": "bobbys@moosecall.net"
 		},
-		im: {
-			skype: "Bob Smith",
-			aim: "bobmoose",
-			icq: "nobodyremembersicqnumbers"
+		"im": {
+			"skype": "Bob Smith",
+			"aim": "bobmoose",
+			"icq": "nobodyremembersicqnumbers"
 		}
 	},
-	notes: [
+	"notes": [
 		{
-			date: r.time(2014,1,1,'Z'),
-			from: "John Doe",
-			subject: "My name is even more boring than Bob's"
+			"date": r.time(2014,1,1,'Z'),
+			"from": "John Doe",
+			"subject": "My name is even more boring than Bob's"
 		},
 		{
-			date: r.time(2014,2,2,'Z'),
-			from: "Bob Smith Sr",
-			subject: "Happy Second of February"
+			"date": r.time(2014,2,2,'Z'),
+			"from": "Bob Smith Sr",
+			"subject": "Happy Second of February"
 		}
 	]
 }
@@ -59,21 +55,24 @@ The contact information is *nested,* like paths in a file system.
 
 > contact &rarr; phone &rarr; work &rarr; 408-555-1212
 
-You can get the value of a specific field by using the `()` operator successively to "drill down" in the document nesting:
+You can get the value of a specific field by using `g()` ([getField](/api/java/get_field)) successively to "drill down" in the document nesting:
 
-```js
-> r.table('users').get(10001)('contact')('phone')('work').run(conn, callback)
-// result passed to callback
-"408-555-1212"
+```java
+r.table("users").get(10001).g("contact").g("phone").g("work").run(conn);
+// result: "408-555-1212"
 ```
 
-With most commands that take a field name string or the `() ` syntax above, you can also use a JSON-style nested syntax:
+With most commands, you can also use [hashMap](/api/java/hashMap) to approximate JSON-style nested syntax:
 
-```js
-> r.table('users').get(10001).pluck(
-	{contact: {phone: "work"}}
-).run(conn, callback)
-// result passed to callback
+```java
+r.table("users").get(10001).pluck(
+    r.hashMap("contact", r.hashMap("phone", "work"))
+).run(conn);
+```
+
+Result:
+
+```json
 {
 	"contact": {
 		"phone": {
@@ -83,13 +82,18 @@ With most commands that take a field name string or the `() ` syntax above, you 
 }
 ```
 
-In that example, when you're trying to get at just one value, the JSON style doesn't offer much advantage. But you can use it to retrieve *multiple* values at the same nesting level. For instance, you can get just Bob's work and cell numbers, but not home:
+In that example, when you're trying to get at just one value, the `hashMap` style doesn't offer much advantage. But you can use it to retrieve *multiple* values at the same nesting level. For instance, you can get just Bob's work and cell numbers, but not home:
 
-```js
-> r.table('users').get(10001).pluck(
-	{contact: {phone: ["work", "cell"]}}
-).run(conn, callback)
-// result passed to callback
+```java
+r.table("users").get(10001).pluck(
+    r.hashMap("contact", r.hashMap("phone", r.array("work", "cell")))
+).run(conn);
+
+```
+
+Result:
+
+```json
 {
 	"contact": {
 		"phone": {
@@ -102,11 +106,15 @@ In that example, when you're trying to get at just one value, the JSON style doe
 
 Or, Bob's work phone and Skype handle:
 
-```js
-> r.table('users').get(10001).pluck(
-	{contact: [{phone: 'work', im: 'skype'}]}
-).run(conn, callback)
-// result passed to callback
+```java
+r.table("users").get(10001).pluck(
+    r.hashMap("contact", r.array(
+        r.hashMap("phone", "work").with("im", "skype")
+    ))
+).run(conn);
+```
+
+```json
 {
 	"contact": {
 		"im": {
@@ -122,10 +130,12 @@ Or, Bob's work phone and Skype handle:
 And there's more! You can filter on fields of objects inside a list. Suppose you wanted just the dates and senders of notes to Bob:
 
 ```js
-> r.table('users').get(10001).pluck(
-	{notes: ['date', 'from']}
-).run(conn, callback)
-// result passed to callback
+r.table("users").get(10001).pluck(
+    r.hashMap("notes", r.array("date", "from"))
+).run(conn);
+```
+
+```json
 {
 	"notes": [
 		{
@@ -142,11 +152,15 @@ And there's more! You can filter on fields of objects inside a list. Suppose you
 
 If you ask for a nested field that doesn't exist, you will get an empty object or array (this is *not* the same as a `null` value):
 
-```js
-> r.table('users').get(10001).pluck(
-	{contact: [{phone: 'work', im: 'msn'}]}
-).run(conn, callback)
-// result passed to callback
+```java
+r.table("users").get(10001).pluck(
+    r.hashMap("contact", r.array(
+        r.hashMap("phone", "work").with("im", "msn")
+    ))
+).run(conn);
+```
+
+```json
 {
 	"contact": {
 		"im": { },
@@ -161,24 +175,26 @@ Be aware this behavior holds true when retrieving data from lists, too. If you e
 
 Also, another caveat: the nested field syntax doesn't guarantee identical schemas between documents that it returns. It's possible to describe a path that matches objects that have different schema, as seen in this simple example.
 
-```js
-> r([
-    {
-        a: {
-            b: 1,
-            c: 2
-        }
-    },
-    {
-        a: [
-            {
-                b: 1,
-                c: 2
-            }
-        ]
-    }
-]).pluck({a: {b: true}}).run(conn, callback)
-// result passed to callback
+```java
+r.expr(
+    r.array(
+        r.hashMap("a",
+            r.hashMap("b", 1)
+            .with("c", 2)
+        ),
+        r.hashMap("a",
+            r.array(
+                r.hashMap("b", 1)
+                .with("c", 2)
+            )
+        )
+    )
+).pluck(r.hashMap("a", r.hashMap("b", true))).run(conn);
+```
+
+Result:
+
+```json
 [
     {
         "a": {
