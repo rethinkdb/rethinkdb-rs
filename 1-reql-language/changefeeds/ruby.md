@@ -12,7 +12,7 @@ language: Ruby
 
 {% toctag %}
 
-They allow clients to receive changes on a table, a single document, or even the results from a specific query as they happen. 
+They allow clients to receive changes on a table, a single document, or even the results from a specific query as they happen. Nearly any ReQL query can be turned into a changefeed.
 
 <img alt="Data Modeling Illustration" class="api_command_illustration"
     src="/assets/images/docs/api_illustrations/change-feeds.png" />
@@ -46,9 +46,9 @@ A "point" changefeed returns changes to a single document within a table rather 
 r.table('users').get(100).changes().run(conn)
 ```
 
-The output format of a point changefeed is identical to a table changefeed, with the exception that the point changefeed stream will start with the initial value of the document: a notification with the `new_val` field, but no `old_val` field.
+The output format of a point changefeed is identical to a table changefeed.
 
-# Filtering and aggregation #
+# Changefeeds with filtering and aggregation queries #
 
 Like any ReQL command, `changes` integrates with the rest of the query language. You can call `changes` after most commands that transform or select data:
 
@@ -61,14 +61,6 @@ Like any ReQL command, `changes` integrates with the rest of the query language.
 * [min](/api/ruby/min)
 * [max](/api/ruby/max)
 * [order_by](/api/ruby/order_by).[limit](/api/ruby/limit)
-
-Limitations and caveats on chaining with changefeeds:
-
-* `min`, `max` and `order_by` must be used with indexes.
-* `order_by` requires `limit`; neither command works by itself.
-* `order_by` must be used with a [secondary index](/docs/secondary-indexes/ruby) or the primary index; it cannot be used with an unindexed field.
-* You cannot use changefeeds after [concat_map](/api/ruby/concat_map) or other transformations whose results cannot be pushed to the shards.
-* Transformations are applied before changes are calculated.
 
 You can also chain `changes` before any command that operates on a sequence of documents, as long as that command doesn't consume the entire sequence. (For instance, `count` and `orderBy` cannot come after the `changes` command.)
 
@@ -87,6 +79,14 @@ r.table('scores').changes().filter{ |change|
   change['new_val']['score'] > change['old_val']['score']
 }['new_val'].run(conn)
 ```
+
+Limitations and caveats on chaining with changefeeds:
+
+* `min`, `max` and `order_by` must be used with indexes.
+* `order_by` requires `limit`; neither command works by itself.
+* `order_by` must be used with a [secondary index](/docs/secondary-indexes/ruby) or the primary index; it cannot be used with an unindexed field.
+* You cannot use changefeeds after [concat_map](/api/ruby/concat_map) or other transformations whose results cannot be pushed to the shards.
+* Transformations are applied before changes are calculated.
 
 # Including state changes #
 
@@ -114,7 +114,7 @@ By default, if more than one change occurs between invocations of `changes`, you
 
 Your application would by default receive the object as it existed in the database after the *most recent* change. The previous two updates would be "squashed" into the third.
 
-If you wanted to receive *all* the changes, including the interim states, you could do so by passing `squash: false`. The server will buffer up to 100,000 changes.
+If you wanted to receive *all* the changes, including the interim states, you could do so by passing `squash: false`. The server will buffer up to 100,000 changes. (This number can be changed with the `changefeed_queue_size` optional argument.)
 
 A third option is to specify how many seconds to wait between squashes. Passing `squash: 5` to the `changes` command tells RethinkDB to squash changes together every five seconds. Depending on your application's use case, this might reduce the load on the server. A number passed to `squash` may be a float. Note that the requested interval is not guaranteed, but is rather a best effort.
 
