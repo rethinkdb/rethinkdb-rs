@@ -8,7 +8,6 @@ language: Python
 ---
 
 {% apisection Accessing ReQL %}
-All ReQL queries begin from the top-level module.
 
 ## [r](r/) ##
 
@@ -18,11 +17,13 @@ r &rarr; r
 
 The top-level ReQL namespace.
 
-__Example:__ Set up your top-level namespace.
+__Example:__ Setup your top-level namespace.
 
 ```py
 import rethinkdb as r
 ```
+
+[Read more about this command &rarr;](r/)
 
 ## [connect](connect/) ##
 
@@ -31,15 +32,22 @@ r.connect(host="localhost", port=28015, db="test", auth_key="", timeout=20) &rar
 r.connect(host) &rarr; connection
 {% endapibody %}
 
-Create a new connection to the database server.
+Create a new connection to the database server. The keyword arguments are:
 
-__Example:__ Open a new connection to the database.
+- `host`: host of the RethinkDB instance. The default value is `localhost`.
+- `port`: the driver port, by default `28015`.
+- `db`: the database used if not explicitly specified in a query, by default `test`.
+- `auth_key`: the authentication key, by default the empty string.
+- `timeout`: timeout period in seconds for the connection to be opened (default `20`).
+- `ssl`: a hash of options to support SSL connections (default `None`). Currently, there is only one option available, and if the `ssl` option is specified, this key is required:
+    - `ca_certs`: a path to the SSL CA certificate.
+
+If the connection cannot be established, a `ReqlDriverError` exception will be thrown.
+
+__Example:__ Open a connection using the default host and port, specifying the default database.
 
 ```py
-conn = r.connect(host='localhost',
-                 port=28015,
-                 db='heroes',
-                 auth_key='hunter2')
+conn = r.connect(db='marvel')
 ```
 
 [Read more about this command &rarr;](connect/)
@@ -53,8 +61,6 @@ conn.repl()
 Set the default connection to make REPL use easier. Allows calling
 `.run()` on queries without specifying a connection.
 
-__Note:__ Avoid using `repl` in application code. RethinkDB connection objects are not thread-safe, and calls to `connect` from multiple threads may change the global connection object used by `repl`. Applications should specify connections explicitly.
-
 __Example:__ Set the default connection for the REPL, then call
 `run()` without specifying the connection.
 
@@ -62,6 +68,8 @@ __Example:__ Set the default connection for the REPL, then call
 r.connect(db='marvel').repl()
 r.table('heroes').run()
 ```
+
+[Read more about this command &rarr;](repl/)
 
 ## [close](close/) ##
 
@@ -111,6 +119,8 @@ conn.use('marvel')
 r.table('heroes').run(conn) # refers to r.db('marvel').table('heroes')
 ```
 
+[Read more about this command &rarr;](use/)
+
 ## [run](run/) ##
 
 {% apibody %}
@@ -131,6 +141,46 @@ for doc in r.table('marvel').run(conn):
 
 [Read more about this command &rarr;](run/)
 
+## [changes](changes/) ##
+
+{% apibody %}
+stream.changes([options]) &rarr; stream
+singleSelection.changes([options]) &rarr; stream
+{% endapibody %}
+
+Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
+
+__Example:__ Subscribe to the changes on a table.
+
+Start monitoring the changefeed in one client:
+
+```py
+for change in r.table('games').changes().run(conn):
+  print change
+```
+
+As these queries are performed in a second client, the first client would receive and print the following objects:
+
+```py
+> r.table('games').insert({'id': 1}).run(conn)
+{'old_val': None, 'new_val': {'id': 1}}
+
+> r.table('games').get(1).update({'player1': 'Bob'}).run(conn)
+{'old_val': {'id': 1}, 'new_val': {'id': 1, 'player1': 'Bob'}}
+
+> r.table('games').get(1).replace({'id': 1, 'player1': 'Bob', 'player2': 'Alice'}).run(conn)
+{'old_val': {'id': 1, 'player1': 'Bob'},
+ 'new_val': {'id': 1, 'player1': 'Bob', 'player2': 'Alice'}}
+
+> r.table('games').get(1).delete().run(conn)
+{'old_val': {'id': 1, 'player1': 'Bob', 'player2': 'Alice'}, 'new_val': None}
+
+> r.table_drop('games').run(conn)
+ReqlRuntimeError: Changefeed aborted (table unavailable)
+```
+
+[Read more about this command &rarr;](changes/)
+
 ## [noreply_wait](noreply_wait/) ##
 
 {% apibody %}
@@ -146,6 +196,8 @@ wait until the server has processed them.
 ```py
 conn.noreply_wait()
 ```
+
+[Read more about this command &rarr;](noreply_wait/)
 
 ## [server](server/) ##
 
@@ -163,6 +215,8 @@ __Example:__ Return the server name and UUID.
 { "id": "404bef53-4b2c-433f-9184-bc3f7bda4a15", "name": "amadeus" }
 ```
 
+[Read more about this command &rarr;](server/)
+
 ## [set_loop_type](set_loop_type/) ##
 
 {% apibody %}
@@ -170,9 +224,6 @@ r.set_loop_type(string)
 {% endapibody %}
 
 Set an asynchronous event loop model. There are two supported models:
-
-* `"tornado"`: use the [Tornado web framework](http://www.tornadoweb.org/). Under this model, the [connect](/api/python/connect) and [run](/api/python/run) commands will return Tornado `Future` objects.
-* `"twisted"`: use the [Twisted networking engine](http://twistedmatrix.com/). Under this model, the [connect](/api/python/connect) and [run](/api/python/run) commands will return Twisted `Deferred` objects.
 
 __Example:__ Read a table's data using Tornado.
 
@@ -188,6 +239,10 @@ def use_cursor(conn):
         item = yield cursor.next()
         print(item)
 ```
+
+For a longer discussion with both Tornado and Twisted examples, see the documentation article on [Asynchronous connections][ac].
+
+[ac]: /docs/async-connections/#python-with-tornado-or-twisted
 
 [Read more about this command &rarr;](set_loop_type/)
 
@@ -250,12 +305,11 @@ process_results(users)
 
 [Read more about this command &rarr;](to_array/)
 
-## [close (cursor)](close-cursor/) ##
+## [close](close-cursor/) ##
 
 {% apibody %}
 cursor.close()
 {% endapibody %}
-
 
 Close a cursor. Closing a cursor cancels the corresponding query and frees the memory
 associated with the open request.
@@ -265,6 +319,8 @@ __Example:__ Close a cursor.
 ```py
 cursor.close()
 ```
+
+[Read more about this command &rarr;](close-cursor/)
 
 {% endapisection %}
 
@@ -279,17 +335,26 @@ r.db_create(db_name) &rarr; object
 Create a database. A RethinkDB database is a collection of tables, similar to
 relational databases.
 
-If successful, the operation returns an object: `{"created": 1}`. If a database with the
-same name already exists the operation throws `ReqlRuntimeError`.
-
-Note: that you can only use alphanumeric characters and underscores for the database name.
-
 __Example:__ Create a database named 'superheroes'.
 
 ```py
 r.db_create('superheroes').run(conn)
+
+{
+    "config_changes": [
+        {
+            "new_val": {
+                "id": "e4689cfc-e903-4532-a0e6-2d6797a43f07",
+                "name": "superheroes"
+            },
+            "old_val": None
+        }
+    ],
+    "dbs_created": 1
+}
 ```
 
+[Read more about this command &rarr;](db_create/)
 
 ## [db_drop](db_drop/) ##
 
@@ -299,15 +364,27 @@ r.db_drop(db_name) &rarr; object
 
 Drop a database. The database, all its tables, and corresponding data will be deleted.
 
-If successful, the operation returns the object `{"dropped": 1}`. If the specified database
-doesn't exist a `ReqlRuntimeError` is thrown.
-
 __Example:__ Drop a database named 'superheroes'.
 
 ```py
 r.db_drop('superheroes').run(conn)
+
+{
+    "config_changes": [
+        {
+            "old_val": {
+                "id": "e4689cfc-e903-4532-a0e6-2d6797a43f07",
+                "name": "superheroes"
+            },
+            "new_val": None
+        }
+    ],
+    "tables_dropped": 3,
+    "dbs_dropped": 1
+}
 ```
 
+[Read more about this command &rarr;](db_drop/)
 
 ## [db_list](db_list/) ##
 
@@ -323,12 +400,12 @@ __Example:__ List all databases.
 r.db_list().run(conn)
 ```
 
+[Read more about this command &rarr;](db_list/)
+
 {% endapisection %}
 
-
-
-
 {% apisection Manipulating tables %}
+
 ## [table_create](table_create/) ##
 
 {% apibody %}
@@ -342,6 +419,32 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```py
 r.db('heroes').table_create('dc_universe').run(conn)
+
+{
+    "config_changes": [
+        {
+            "new_val": {
+                "db": "test",
+                "durability":  "hard",
+                "id": "20ea60d4-3b76-4817-8828-98a236df0297",
+                "name": "dc_universe",
+                "primary_key": "id",
+                "shards": [
+                    {
+                        "primary_replica": "rethinkdb_srv1",
+                        "replicas": [
+                            "rethinkdb_srv1",
+                            "rethinkdb_srv2"
+                        ]
+                    }
+                ],
+                "write_acks": "majority"
+            },
+            "old_val": None
+        }
+    ],
+    "tables_created": 1
+}
 ```
 
 [Read more about this command &rarr;](table_create/)
@@ -358,6 +461,32 @@ __Example:__ Drop a table named 'dc_universe'.
 
 ```py
 r.db('test').table_drop('dc_universe').run(conn)
+
+{
+    "config_changes": [
+        {
+            "old_val": {
+                "db": "test",
+                "durability":  "hard",
+                "id": "20ea60d4-3b76-4817-8828-98a236df0297",
+                "name": "dc_universe",
+                "primary_key": "id",
+                "shards": [
+                    {
+                        "primary_replica": "rethinkdb_srv1",
+                        "replicas": [
+                            "rethinkdb_srv1",
+                            "rethinkdb_srv2"
+                        ]
+                    }
+                ],
+                "write_acks": "majority"
+            },
+            "new_val": None
+        }
+    ],
+    "tables_dropped": 1
+}
 ```
 
 [Read more about this command &rarr;](table_drop/)
@@ -377,6 +506,7 @@ r.db('test').table_list().run(conn)
 
 ```
 
+[Read more about this command &rarr;](table_list/)
 
 ## [index_create](index_create/) ##
 
@@ -384,7 +514,7 @@ r.db('test').table_list().run(conn)
 table.index_create(index_name[, index_function][, multi=False, geo=False]) &rarr; object
 {% endapibody %}
 
-Create a new secondary index on a table.
+Create a new secondary index on a table. Secondary indexes improve the speed of many read queries at the slight cost of increased storage space and decreased write performance. For more information about secondary indexes, read the article "[Using secondary indexes in RethinkDB](/docs/secondary-indexes/)."
 
 __Example:__ Create a simple index based on the field `post_id`.
 
@@ -393,7 +523,6 @@ r.table('comments').index_create('post_id').run(conn)
 ```
 
 [Read more about this command &rarr;](index_create/)
-
 
 ## [index_drop](index_drop/) ##
 
@@ -409,6 +538,7 @@ __Example:__ Drop a secondary index named 'code_name'.
 r.table('dc').index_drop('code_name').run(conn)
 ```
 
+[Read more about this command &rarr;](index_drop/)
 
 ## [index_list](index_list/) ##
 
@@ -424,6 +554,8 @@ __Example:__ List the available secondary indexes for this table.
 r.table('marvel').index_list().run(conn)
 ```
 
+[Read more about this command &rarr;](index_list/)
+
 ## [index_rename](index_rename/) ##
 
 {% apibody %}
@@ -437,6 +569,8 @@ __Example:__ Rename an index on the comments table.
 ```py
 r.table('comments').index_rename('post_id', 'message_id').run(conn)
 ```
+
+[Read more about this command &rarr;](index_rename/)
 
 ## [index_status](index_status/) ##
 
@@ -453,11 +587,7 @@ __Example:__ Get the status of all the indexes on `test`:
 r.table('test').index_status().run(conn)
 ```
 
-__Example:__ Get the status of the `timestamp` index:
-
-```py
-r.table('test').index_status('timestamp').run(conn)
-```
+[Read more about this command &rarr;](index_status/)
 
 ## [index_wait](index_wait/) ##
 
@@ -474,32 +604,9 @@ __Example:__ Wait for all indexes on the table `test` to be ready:
 r.table('test').index_wait().run(conn)
 ```
 
-__Example:__ Wait for the index `timestamp` to be ready:
-
-```py
-r.table('test').index_wait('timestamp').run(conn)
-```
-
-## [changes](changes/) ##
-
-{% apibody %}
-stream.changes([options]) &rarr; stream
-singleSelection.changes([options]) &rarr; stream
-{% endapibody %}
-
-Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
-
-__Example:__ Subscribe to the changes on a table.
-
-```py
-for change in r.table('games').changes().run(conn):
-  print change
-```
-
-[Read more about this command &rarr;](changes/)
+[Read more about this command &rarr;](index_wait/)
 
 {% endapisection %}
-
 
 {% apisection Writing data %}
 
@@ -525,23 +632,18 @@ r.table("posts").insert({
 
 [Read more about this command &rarr;](insert/)
 
-
 ## [update](update/) ##
 
 {% apibody %}
-table.update(object | exp
-    [, durability="hard", return_changes=False, non_atomic=False])
-        &rarr; object
-selection.update(object | exp
-    [, durability="hard", return_changes=False, non_atomic=False])
-        &rarr; object
-singleSelection.update(object | exp
-    [, durability="hard", return_changes=False, non_atomic=False])
-        &rarr; object
+table.update(object | function[, durability="hard", return_changes=False, non_atomic=False])
+    &rarr; object
+selection.update(object | function[, durability="hard", return_changes=False, non_atomic=False])
+    &rarr; object
+singleSelection.update(object | function[, durability="hard", return_changes=False, non_atomic=False])
+    &rarr; object
 {% endapibody %}
 
-Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a
-combination of the two.
+Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or a combination of the two.
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
@@ -551,24 +653,20 @@ r.table("posts").get(1).update({"status": "published"}).run(conn)
 
 [Read more about this command &rarr;](update/)
 
-
 ## [replace](replace/) ##
 
 {% apibody %}
-table.replace(object | function
-    [, durability="hard", return_changes=False, non_atomic=False])
-        &rarr; object
-selection.replace(object | function
-    [, durability="hard", return_changes=False, non_atomic=False])
-        &rarr; object
-singleSelection.replace(object | function
-    [, durability="hard", return_changes=False, non_atomic=False])
-        &rarr; object
+table.replace(object | function[, durability="hard", return_changes=False, non_atomic=False])
+    &rarr; object
+selection.replace(object | function[, durability="hard", return_changes=False, non_atomic=False])
+    &rarr; object
+singleSelection.replace(object | function[, durability="hard", return_changes=False, non_atomic=False])
+    &rarr; object
 {% endapibody %}
 
-Replace documents in a table. Accepts a JSON document or a ReQL expression, and replaces
-the original document with the new one. The new document must have the same primary key
-as the original document.
+Replace documents in a table. Accepts a JSON document or a ReQL expression,
+and replaces the original document with the new one. The new document must
+have the same primary key as the original document.
 
 __Example:__ Replace the document with the primary key `1`.
 
@@ -594,7 +692,6 @@ singleSelection.delete([durability="hard", return_changes=False])
     &rarr; object
 {% endapibody %}
 
-
 Delete one or more documents from a table.
 
 __Example:__ Delete a single document from the table `comments`.
@@ -603,21 +700,18 @@ __Example:__ Delete a single document from the table `comments`.
 r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn)
 ```
 
-
 [Read more about this command &rarr;](delete/)
 
 ## [sync](sync/) ##
 
 {% apibody %}
-table.sync()
-    &rarr; object
+table.sync() &rarr; object
 {% endapibody %}
 
 `sync` ensures that writes on a given table are written to permanent storage. Queries
 that specify soft durability (`durability='soft'`) do not give such guarantees, so
 `sync` can be used to ensure the state of these queries. A call to `sync` does not return
 until all previous writes to the table are persisted.
-
 
 __Example:__ After having updated multiple heroes with soft durability, we now want to wait
 until these changes are persisted.
@@ -626,8 +720,9 @@ until these changes are persisted.
 r.table('marvel').sync().run(conn)
 ```
 
-{% endapisection %}
+[Read more about this command &rarr;](sync/)
 
+{% endapisection %}
 
 {% apisection Selecting data %}
 
@@ -653,8 +748,7 @@ r.db('heroes').table('marvel').run(conn)
 db.table(name[, read_mode='single', identifier_format='name']) &rarr; table
 {% endapibody %}
 
-Select all documents in a table. This command can be chained with other commands to do
-further processing on the data.
+Return all documents in a table. Other commands may be chained after `table` to return a subset of documents (such as [get](/api/python/get/) and [filter](/api/python/filter/)) or perform further processing.
 
 __Example:__ Return all documents in the table 'marvel' of the default database.
 
@@ -672,8 +766,6 @@ table.get(key) &rarr; singleRowSelection
 
 Get a document by primary key.
 
-If no document exists with that primary key, `get` will return `None`.
-
 __Example:__ Find a document by UUID.
 
 ```py
@@ -682,7 +774,7 @@ r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn)
 
 [Read more about this command &rarr;](get/)
 
-## [get_all](get_all/)##
+## [get_all](get_all/) ##
 
 {% apibody %}
 table.get_all(key1[, key2...], [, index='id']) &rarr; selection
@@ -698,7 +790,6 @@ r.table('marvel').get_all('man_of_steel', index='code_name').run(conn)
 
 [Read more about this command &rarr;](get_all/)
 
-
 ## [between](between/) ##
 
 {% apibody %}
@@ -706,12 +797,7 @@ table.between(lower_key, upper_key[, options]) &rarr; table_slice
 table_slice.between(lower_key, upper_key[, options]) &rarr; table_slice
 {% endapibody %}
 
-Get all documents between two keys. Accepts three optional arguments: `index`,
-`left_bound`, and `right_bound`. If `index` is set to the name of a secondary index,
-`between` will return all documents where that index's value is in the specified range
-(it uses the primary key by default). `left_bound` or `right_bound` may be set to `open`
-or `closed` to indicate whether or not to include that endpoint of the range (by default,
-`left_bound` is closed and `right_bound` is open).
+Get all documents between two keys. Accepts three optional arguments: `index`, `left_bound`, and `right_bound`. If `index` is set to the name of a secondary index, `between` will return all documents where that index's value is in the specified range (it uses the primary key by default). `left_bound` or `right_bound` may be set to `open` or `closed` to indicate whether or not to include that endpoint of the range (by default, `left_bound` is closed and `right_bound` is open).
 
 __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open interval).
 
@@ -724,38 +810,26 @@ r.table('marvel').between(10, 20).run(conn)
 ## [filter](filter/) ##
 
 {% apibody %}
-selection.filter(predicate_function, default=False) &rarr; selection
-stream.filter(predicate_function, default=False) &rarr; stream
-array.filter(predicate_function, default=False) &rarr; array
+selection.filter(predicate_function[, default=False]) &rarr; selection
+stream.filter(predicate_function[, default=False]) &rarr; stream
+array.filter(predicate_function[, default=False]) &rarr; array
 {% endapibody %}
 
-Get all the documents for which the given predicate is true.
+Return all the elements in a sequence for which the given predicate is true. The return value of `filter` will be the same as the input (sequence, stream, or array). Documents can be filtered in a variety of ways&mdash;ranges, nested values, boolean conditions, and the results of anonymous functions.
 
-`filter` can be called on a sequence, selection, or a field containing an array of
-elements. The return type is the same as the type on which the function was called on.
-
-The body of every filter is wrapped in an implicit `.default(False)`, which means that
-if a non-existence errors is thrown (when you try to access a field that does not exist
-in a document), RethinkDB will just ignore the document.
-The `default` value can be changed by passing the named argument `default`.
-Setting this optional argument to `r.error()` will cause any non-existence errors to
-return a `ReqlRuntimeError`.
-
-
-__Example:__ Get all the users that are 30 years old.
+__Example:__ Get all users who are 30 years old.
 
 ```py
-r.table('users').filter({"age": 30}).run(conn)
+r.table('users').filter({'age': 30}).run(conn)
 ```
+
+The predicate `{'age': 30}` selects documents in the `users` table with an `age` field whose value is `30`. Documents with an `age` field set to any other value *or* with no `age` field present are skipped.
 
 [Read more about this command &rarr;](filter/)
 
-
 {% endapisection %}
 
-
 {% apisection Joins %}
-These commands allow the combination of multiple sequences into a single sequence
 
 ## [inner_join](inner_join/) ##
 
@@ -783,7 +857,7 @@ sequence.outer_join(other_sequence, predicate_function) &rarr; stream
 array.outer_join(other_sequence, predicate_function) &rarr; array
 {% endapibody %}
 
-Returns a left outer join of two sequences.
+Returns a left outer join of two sequences. The returned sequence represents a union of the left-hand sequence and the right-hand sequence: all documents in the left-hand sequence will be returned, each matched with a document in the right-hand sequence if one satisfies the predicate condition. In most cases, you will want to follow the join with [zip](/api/python/zip) to combine the left and right results.
 
 __Example:__ Return a list of all Marvel heroes, paired with any DC heroes who could beat them in a fight.
 
@@ -792,6 +866,9 @@ r.table('marvel').outer_join(r.table('dc'),
   lambda marvel_row, dc_row: marvel_row['strength'] < dc_row['strength']
 ).zip().run(conn)
 ```
+
+(Compare this to an [inner_join](/api/python/inner_join) with the same inputs and predicate, which would return a list only of the matchups in which the DC hero has the higher strength.)
+
 [Read more about this command &rarr;](outer_join/)
 
 ## [eq_join](eq_join/) ##
@@ -803,14 +880,9 @@ sequence.eq_join(predicate_function, right_table[, index='id']) &rarr; sequence
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
-**Example:** Match players with the games they've played against one another.
 
-```py
-r.table('players').eq_join('game_id', r.table('games')).run(conn)
-```
 
 [Read more about this command &rarr;](eq_join/)
-
 
 ## [zip](zip/) ##
 
@@ -827,12 +899,11 @@ __Example:__ 'zips up' the sequence by merging the left and right fields produce
 r.table('marvel').eq_join('main_dc_collaborator', r.table('dc')).zip().run(conn)
 ```
 
-
+[Read more about this command &rarr;](zip/)
 
 {% endapisection %}
 
 {% apisection Transformations %}
-These commands are used to transform data in a sequence.
 
 ## [map](map/) ##
 
@@ -862,16 +933,32 @@ sequence.with_fields([selector1, selector2...]) &rarr; stream
 array.with_fields([selector1, selector2...]) &rarr; array
 {% endapibody %}
 
-Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to `has_fields` followed by `pluck` on a sequence.
+Plucks one or more attributes from a sequence of objects, filtering out any objects in the sequence that do not have the specified fields. Functionally, this is identical to [has_fields](/api/python/has_fields/) followed by [pluck](/api/python/pluck/) on a sequence.
 
 __Example:__ Get a list of users and their posts, excluding any users who have not made any posts.
 
+Existing table structure:
+
+```py
+[
+    { 'id': 1, 'user': 'bob', 'email': 'bob@foo.com', 'posts': [ 1, 4, 5 ] },
+    { 'id': 2, 'user': 'george', 'email': 'george@foo.com' },
+    { 'id': 3, 'user': 'jane', 'email': 'jane@foo.com', 'posts': [ 2, 3, 6 ] }
+]
+```
+
+Command and output:
+
 ```py
 r.table('users').with_fields('id', 'user', 'posts').run(conn)
+
+[
+    { 'id': 1, 'user': 'bob', 'posts': [ 1, 4, 5 ] },
+    { 'id': 3, 'user': 'jane', 'posts': [ 2, 3, 6 ] }
+]
 ```
 
 [Read more about this command &rarr;](with_fields/)
-
 
 ## [concat_map](concat_map/) ##
 
@@ -902,34 +989,13 @@ Sort the sequence by document values of the given key(s). To specify
 the ordering, wrap the attribute with either `r.asc` or `r.desc`
 (defaults to ascending).
 
-Sorting without an index requires the server to hold the sequence in
-memory, and is limited to 100,000 documents (or the setting of the `array_limit` option for [run](/api/python/run)). Sorting with an index can
-be done on arbitrarily large tables, or after a `between` command
-using the same index.
-
-__Example:__ Order all the posts using the index `date`.   
+__Example:__ Order all the posts using the index `date`.
 
 ```py
 r.table('posts').order_by(index='date').run(conn)
 ```
 
-The index must have been previously created with [index_create](/api/javascript/index_create/).
-
-```py
-r.table('posts').index_create('date').run(conn)
-```
-
-You can also select a descending ordering:
-
-```py
-r.table('posts').order_by(index=r.desc('date')).run(conn, callback)
-```
-
-
-
-
 [Read more about this command &rarr;](order_by/)
-
 
 ## [skip](skip/) ##
 
@@ -940,12 +1006,13 @@ array.skip(n) &rarr; array
 
 Skip a number of elements from the head of the sequence.
 
-__Example:__ Here in conjunction with `order_by` we choose to ignore the most successful heroes.
+__Example:__ Here in conjunction with [order_by](/api/python/order_by/) we choose to ignore the most successful heroes.
 
 ```py
 r.table('marvel').order_by('successMetric').skip(10).run(conn)
 ```
 
+[Read more about this command &rarr;](skip/)
 
 ## [limit](limit/) ##
 
@@ -953,7 +1020,6 @@ r.table('marvel').order_by('successMetric').skip(10).run(conn)
 sequence.limit(n) &rarr; stream
 array.limit(n) &rarr; array
 {% endapibody %}
-
 
 End the sequence after the given number of elements.
 
@@ -963,21 +1029,32 @@ __Example:__ Only so many can fit in our Pantheon of heroes.
 r.table('marvel').order_by('belovedness').limit(10).run(conn)
 ```
 
-## [slice](slice/) ##
+[Read more about this command &rarr;](limit/)
+
+## [slice, []](slice/) ##
 
 {% apibody %}
 selection.slice(start_index[, end_index, left_bound='closed', right_bound='open']) &rarr; selection
 stream.slice(start_index[, end_index, left_bound='closed', right_bound='open']) &rarr; stream
 array.slice(start_index[, end_index, left_bound='closed', right_bound='open']) &rarr; array
+binary.slice(start_index[, end_index, left_bound='closed', right_bound='open']) &rarr; binary
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
 
-**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
+__Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```py
 r.table('players').order_by(index='age').slice(3,6).run(conn)
 ```
+
+Or, using Python's slice operator:
+
+```py
+r.table('players').filter({'class': 'amateur'})[10:20].run(conn)
+```
+
+[Read more about this command &rarr;](slice/)
 
 ## [nth](nth/) ##
 
@@ -992,8 +1069,10 @@ __Example:__ Select the second element in the array.
 
 ```py
 r.expr([1,2,3]).nth(1).run(conn)
+r.expr([1,2,3])[1].run(conn)
 ```
 
+[Read more about this command &rarr;](nth/)
 
 ## [offsets_of](offsets_of/) ##
 
@@ -1011,7 +1090,6 @@ r.expr(['a','b','c']).offsets_of('c').run(conn)
 
 [Read more about this command &rarr;](offsets_of/)
 
-
 ## [is_empty](is_empty/) ##
 
 {% apibody %}
@@ -1025,6 +1103,8 @@ __Example:__ Are there any documents in the marvel table?
 ```py
 r.table('marvel').is_empty().run(conn)
 ```
+
+[Read more about this command &rarr;](is_empty/)
 
 ## [union](union/) ##
 
@@ -1041,6 +1121,7 @@ __Example:__ Construct a stream of all heroes.
 r.table('marvel').union(r.table('dc')).run(conn)
 ```
 
+[Read more about this command &rarr;](union/)
 
 ## [sample](sample/) ##
 
@@ -1058,13 +1139,11 @@ __Example:__ Select 3 random heroes.
 r.table('marvel').sample(3).run(conn)
 ```
 
+[Read more about this command &rarr;](sample/)
 
 {% endapisection %}
 
-
 {% apisection Aggregation %}
-These commands are used to compute smaller values from large sequences.
-
 
 ## [group](group/) ##
 
@@ -1073,13 +1152,23 @@ sequence.group(field | function..., [index=<indexname>, multi=False]) &rarr; gro
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the
-fields or functions provided.  Commands chained after `group` will be
-called on each of these grouped sub-streams, producing grouped data.
+fields or functions provided.
 
-__Example:__ What is each player's best game?
+__Example:__ Group games by player.
 
 ```py
-r.table('games').group('player').max('points').run(conn)
+> r.table('games').group('player').run(conn)
+
+{
+    "Alice": [
+        {"id": 5, "player": "Alice", "points": 7, "type": "free"},
+        {"id": 12, "player": "Alice", "points": 2, "type": "free"}
+    ],
+    "Bob": [
+        {"id": 2, "player": "Bob", "points": 15, "type": "ranked"},
+        {"id": 11, "player": "Bob", "points": 10, "type": "free"}
+    ]
+}
 ```
 
 [Read more about this command &rarr;](group/)
@@ -1097,22 +1186,16 @@ will operate on this array, rather than operating on each group
 individually.  This is useful if you want to e.g. order the groups by
 the value of their reduction.
 
-The format of the array returned by `ungroup` is the same as the
-default native format of grouped data in the javascript driver and
-data explorer.
-
 __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
 ```py
 r.table('games')
-    .group('player').max('points')['points']
-    .ungroup().order_by(r.desc('reduction')).run(conn)
+   .group('player').max('points')['points']
+   .ungroup().order_by(r.desc('reduction')).run(conn)
 ```
 
 [Read more about this command &rarr;](ungroup/)
-
-
 
 ## [reduce](reduce/) ##
 
@@ -1120,21 +1203,19 @@ r.table('games')
 sequence.reduce(function) &rarr; value
 {% endapibody %}
 
-Produce a single value from a sequence through repeated application of a reduction
-function.
+Produce a single value from a sequence through repeated application of a reduction function.
 
-__Example:__ Return the number of documents in the table `posts.
+__Example:__ Return the number of documents in the table `posts`.
 
 ```py
-r.table("posts").map(lambda doc:
-    1
-).reduce(lambda left, right:
-    left+right
-).run(conn);
+r.table("posts").map(lambda doc: 1)
+    .reduce(lambda left, right: left+right)
+    .default(0).run(conn)
 ```
 
-[Read more about this command &rarr;](reduce/)
+A shorter way to execute this query is to use [count](/api/python/count).
 
+[Read more about this command &rarr;](reduce/)
 
 ## [count](count/) ##
 
@@ -1143,18 +1224,18 @@ sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
 {% endapibody %}
 
-Count the number of elements in the sequence. With a single argument, count the number
-of elements equal to it. If the argument is a function, it is equivalent to calling
-filter before count.
+Counts the number of elements in a sequence.  If called with a value,
+counts the number of times that value occurs in the sequence.  If
+called with a predicate function, counts the number of elements in the
+sequence where that function returns `True`.
 
-__Example:__ Just how many super heroes are there?
+__Example:__ Count the number of users.
 
 ```py
-(r.table('marvel').count() + r.table('dc').count()).run(conn)
+r.table('users').count().run(conn)
 ```
 
 [Read more about this command &rarr;](count/)
-
 
 ## [sum](sum/) ##
 
@@ -1177,8 +1258,6 @@ r.expr([3, 5, 7]).sum().run(conn)
 
 [Read more about this command &rarr;](sum/)
 
-
-
 ## [avg](avg/) ##
 
 {% apibody %}
@@ -1192,16 +1271,13 @@ function, calls that function on every element of the sequence and
 averages the results, skipping elements of the sequence where that
 function returns `None` or a non-existence error.
 
-
 __Example:__ What's the average of 3, 5, and 7?
 
 ```py
 r.expr([3, 5, 7]).avg().run(conn)
 ```
 
-
 [Read more about this command &rarr;](avg/)
-
 
 ## [min](min/) ##
 
@@ -1220,7 +1296,6 @@ r.expr([3, 5, 7]).min().run(conn)
 
 [Read more about this command &rarr;](min/)
 
-
 ## [max](max/) ##
 
 {% apibody %}
@@ -1238,8 +1313,6 @@ r.expr([3, 5, 7]).max().run(conn)
 
 [Read more about this command &rarr;](max/)
 
-
-
 ## [distinct](distinct/) ##
 
 {% apibody %}
@@ -1247,9 +1320,9 @@ sequence.distinct() &rarr; array
 table.distinct([index=<indexname>]) &rarr; stream
 {% endapibody %}
 
-Remove duplicate elements from the sequence.
+Removes duplicate elements from a sequence.
 
-__Example:__ Which unique villains have been vanquished by marvel heroes?
+__Example:__ Which unique villains have been vanquished by Marvel heroes?
 
 ```py
 r.table('marvel').concat_map(
@@ -1258,16 +1331,16 @@ r.table('marvel').concat_map(
 
 [Read more about this command &rarr;](distinct/)
 
-
 ## [contains](contains/) ##
 
 {% apibody %}
 sequence.contains([value | predicate_function, ...]) &rarr; bool
 {% endapibody %}
 
-Returns whether or not a sequence contains all the specified values, or if functions are
-provided instead, returns whether or not a sequence contains values matching all the
-specified functions.
+When called with values, returns `True` if a sequence contains all the
+specified values.  When called with predicate functions, returns `True`
+if for each predicate there exists at least one element of the stream
+where that predicate returns `True`.
 
 __Example:__ Has Iron Man ever fought Superman?
 
@@ -1277,12 +1350,7 @@ r.table('marvel').get('ironman')['opponents'].contains('superman').run(conn)
 
 [Read more about this command &rarr;](contains/)
 
-
-
-
-
 {% endapisection %}
-
 
 {% apisection Document manipulation %}
 
@@ -1301,7 +1369,6 @@ r.table('users').filter(r.row['age'] > 5).run(conn)
 ```
 
 [Read more about this command &rarr;](row/)
-
 
 ## [pluck](pluck/) ##
 
@@ -1323,7 +1390,6 @@ r.table('marvel').get('IronMan').pluck('reactorState', 'reactorPower').run(conn)
 ```
 
 [Read more about this command &rarr;](pluck/)
-
 
 ## [without](without/) ##
 
@@ -1355,7 +1421,7 @@ sequence.merge([object | function, object | function, ...]) &rarr; stream
 array.merge([object | function, object | function, ...]) &rarr; array
 {% endapibody %}
 
-Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list.
+Merge two or more objects together to construct a new object with properties from all. When there is a conflict between field names, preference is given to fields in the rightmost object in the argument list `merge` also accepts a subquery function that returns an object, which will be used similarly to a [map](/api/python/map/) function.
 
 __Example:__ Equip Thor for battle.
 
@@ -1382,6 +1448,7 @@ __Example:__ Retrieve Iron Man's equipment list with the addition of some new bo
 r.table('marvel').get('IronMan')['equipment'].append('newBoots').run(conn)
 ```
 
+[Read more about this command &rarr;](append/)
 
 ## [prepend](prepend/) ##
 
@@ -1397,6 +1464,7 @@ __Example:__ Retrieve Iron Man's equipment list with the addition of some new bo
 r.table('marvel').get('IronMan')['equipment'].prepend('newBoots').run(conn)
 ```
 
+[Read more about this command &rarr;](prepend/)
 
 ## [difference](difference/) ##
 
@@ -1412,6 +1480,7 @@ __Example:__ Retrieve Iron Man's equipment list without boots.
 r.table('marvel').get('IronMan')['equipment'].difference(['Boots']).run(conn)
 ```
 
+[Read more about this command &rarr;](difference/)
 
 ## [set_insert](set_insert/) ##
 
@@ -1427,6 +1496,7 @@ __Example:__ Retrieve Iron Man's equipment list with the addition of some new bo
 r.table('marvel').get('IronMan')['equipment'].set_insert('newBoots').run(conn)
 ```
 
+[Read more about this command &rarr;](set_insert/)
 
 ## [set_union](set_union/) ##
 
@@ -1442,6 +1512,7 @@ __Example:__ Retrieve Iron Man's equipment list with the addition of some new bo
 r.table('marvel').get('IronMan')['equipment'].set_union(['newBoots', 'arc_reactor']).run(conn)
 ```
 
+[Read more about this command &rarr;](set_union/)
 
 ## [set_intersection](set_intersection/) ##
 
@@ -1458,6 +1529,7 @@ __Example:__ Check which pieces of equipment Iron Man has from a fixed list.
 r.table('marvel').get('IronMan')['equipment'].set_intersection(['newBoots', 'arc_reactor']).run(conn)
 ```
 
+[Read more about this command &rarr;](set_intersection/)
 
 ## [set_difference](set_difference/) ##
 
@@ -1474,7 +1546,9 @@ __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed lis
 r.table('marvel').get('IronMan')['equipment'].set_difference(['newBoots', 'arc_reactor']).run(conn)
 ```
 
-## [\[\] (bracket)](bracket/) ##
+[Read more about this command &rarr;](set_difference/)
+
+## [[] (bracket)](bracket/) ##
 
 {% apibody %}
 sequence[attr] &rarr; sequence
@@ -1483,7 +1557,7 @@ object[attr] &rarr; value
 array[index] &rarr; value
 {% endapibody %}
 
-Get a single field from an object or a single element from a sequence.
+Get a single field from an object. If called on a sequence, gets that field from every object in the sequence, skipping objects that lack it.
 
 __Example:__ What was Iron Man's first appearance in a comic?
 
@@ -1510,6 +1584,7 @@ __Example:__ What was Iron Man's first appearance in a comic?
 r.table('marvel').get('IronMan').get_field('firstAppearance').run(conn)
 ```
 
+[Read more about this command &rarr;](get_field/)
 
 ## [has_fields](has_fields/) ##
 
@@ -1529,7 +1604,6 @@ r.table('players').has_fields('games_won').run(conn)
 
 [Read more about this command &rarr;](has_fields/)
 
-
 ## [insert_at](insert_at/) ##
 
 {% apibody %}
@@ -1544,6 +1618,7 @@ __Example:__ Hulk decides to join the avengers.
 r.expr(["Iron Man", "Spider-Man"]).insert_at(1, "Hulk").run(conn)
 ```
 
+[Read more about this command &rarr;](insert_at/)
 
 ## [splice_at](splice_at/) ##
 
@@ -1559,6 +1634,7 @@ __Example:__ Hulk and Thor decide to join the avengers.
 r.expr(["Iron Man", "Spider-Man"]).splice_at(1, ["Hulk", "Thor"]).run(conn)
 ```
 
+[Read more about this command &rarr;](splice_at/)
 
 ## [delete_at](delete_at/) ##
 
@@ -1566,7 +1642,7 @@ r.expr(["Iron Man", "Spider-Man"]).splice_at(1, ["Hulk", "Thor"]).run(conn)
 array.delete_at(index [,endIndex]) &rarr; array
 {% endapibody %}
 
-Remove one or more elements from an array at a given index. Returns the modified array.
+Remove one or more elements from an array at a given index. Returns the modified array. (Note: `delete_at` operates on arrays, not documents; to delete documents, see the [delete](/api/python/delete) command.)
 
 __Example:__ Delete the second element of an array.
 
@@ -1577,7 +1653,6 @@ __Example:__ Delete the second element of an array.
 ```
 
 [Read more about this command &rarr;](delete_at/)
-
 
 ## [change_at](change_at/) ##
 
@@ -1592,6 +1667,8 @@ __Example:__ Bruce Banner hulks out.
 ```py
 r.expr(["Iron Man", "Bruce", "Spider-Man"]).change_at(1, "Hulk").run(conn)
 ```
+
+[Read more about this command &rarr;](change_at/)
 
 ## [keys](keys/) ##
 
@@ -1612,6 +1689,8 @@ r.table('users').get(1).keys().run(conn)
 > [ "id", "mail", "name" ]
 ```
 
+[Read more about this command &rarr;](keys/)
+
 ## [values](values/) ##
 
 {% apibody %}
@@ -1631,16 +1710,29 @@ r.table('users').get(1).values().run(conn)
 > [ 1, "fred@example.com", "fred" ]
 ```
 
+[Read more about this command &rarr;](values/)
+
 ## [literal](literal/) ##
 
 {% apibody %}
 r.literal(object) &rarr; special
 {% endapibody %}
 
-Replace an object in a field instead of merging it with an existing object in a `merge` or `update` operation.
+Replace an object in a field instead of merging it with an existing object in a `merge` or `update` operation. = Using `literal` with no arguments in a `merge` or `update` operation will remove the corresponding field.
+
+__Example:__ Replace one nested document with another rather than merging the fields.
 
 ```py
 r.table('users').get(1).update({ 'data': r.literal({ 'age': 19, 'job': 'Engineer' }) }).run(conn)
+
+{
+    "id": 1,
+    "name": "Alice",
+    "data": {
+        "age": 19,
+        "job": "Engineer"
+    }
+}
 ```
 
 [Read more about this command &rarr;](literal/)
@@ -1659,14 +1751,14 @@ __Example:__ Create a simple object.
 
 ```py
 > r.object('id', 5, 'data', ['foo', 'bar']).run(conn)
-{"data": ["foo", "bar"], "id": 5}
+{'data': ["foo", "bar"], 'id': 5}
 ```
+
+[Read more about this command &rarr;](object/)
 
 {% endapisection %}
 
-
 {% apisection String manipulation %}
-These commands provide string operators.
 
 ## [match](match/) ##
 
@@ -1683,7 +1775,8 @@ Matches against a regular expression. If there is a match, returns an object wit
 
 If no match is found, returns `None`.
 
-__Example:__ Get all users whose name starts with "A".
+__Example:__ Get all users whose name starts with "A". Because `None` evaluates to `false` in
+[filter](/api/python/filter/), you can just use the result of `match` for the predicate.
 
 ```py
 r.table('users').filter(lambda doc:
@@ -1705,10 +1798,6 @@ separator.  When called with a separator and a maximum number of
 splits, splits on that separator at most `max_splits` times.  (Can be
 called with `None` as the separator if you want to split on whitespace
 while still specifying `max_splits`.)
-
-Mimics the behavior of Python's `string.split` in edge cases, except
-for splitting on the empty string, which instead produces an array of
-single-character strings.
 
 __Example:__ Split on whitespace.
 
@@ -1734,6 +1823,10 @@ __Example:__
 "SENTENCE ABOUT LATEX."
 ```
 
+__Note:__ `upcase` and `downcase` only affect ASCII characters.
+
+[Read more about this command &rarr;](upcase/)
+
 ## [downcase](downcase/) ##
 
 {% apibody %}
@@ -1749,8 +1842,11 @@ __Example:__
 "sentence about latex."
 ```
 
-{% endapisection %}
+__Note:__ `upcase` and `downcase` only affect ASCII characters.
 
+[Read more about this command &rarr;](downcase/)
+
+{% endapisection %}
 
 {% apisection Math and logic %}
 
@@ -1768,11 +1864,12 @@ Sum two or more numbers, or concatenate two or more strings or arrays.
 __Example:__ It's as easy as 2 + 2 = 4.
 
 ```py
-(r.expr(2) + 2).run(conn)
+> (r.expr(2) + 2).run(conn)
+
+4
 ```
 
 [Read more about this command &rarr;](add/)
-
 
 ## [-](sub/) ##
 
@@ -1794,7 +1891,6 @@ __Example:__ It's as easy as 2 - 2 = 0.
 ```
 
 [Read more about this command &rarr;](sub/)
-
 
 ## [*](mul/) ##
 
@@ -1830,7 +1926,7 @@ __Example:__ It's as easy as 2 / 2 = 1.
 (r.expr(2) / 2).run(conn)
 ```
 
-
+[Read more about this command &rarr;](div/)
 
 ## [%](mod/) ##
 
@@ -1845,6 +1941,10 @@ __Example:__ It's as easy as 2 % 2 = 0.
 ```py
 (r.expr(2) % 2).run(conn)
 ```
+
+`
+
+[Read more about this command &rarr;](mod/)
 
 ## [&, and_](and/) ##
 
@@ -1866,6 +1966,7 @@ __Example:__ Return whether both `a` and `b` evaluate to true.
 False
 ```
 
+[Read more about this command &rarr;](and/)
 
 ## [|, or_](or/) ##
 
@@ -1887,6 +1988,7 @@ __Example:__ Return whether either `a` or `b` evaluate to true.
 True
 ```
 
+[Read more about this command &rarr;](or/)
 
 ## [==, eq](eq/) ##
 
@@ -1897,7 +1999,7 @@ value == value &rarr; bool
 
 Test if two or more values are equal.
 
-__Example:__ See if a user's `role` field is set to `administrator`. 
+__Example:__ See if a user's `role` field is set to `administrator`.
 
 ```py
 r.table('users').get(1)['role'].eq('administrator').run(conn)
@@ -1905,6 +2007,7 @@ r.table('users').get(1)['role'].eq('administrator').run(conn)
 (r.table('users').get(1)['role'] == 'administrator').run(conn)
 ```
 
+[Read more about this command &rarr;](eq/)
 
 ## [!=, ne](ne/) ##
 
@@ -1915,13 +2018,15 @@ value != value &rarr; bool
 
 Test if two or more values are not equal.
 
-__Example:__ See if a user's `role` field is not set to `administrator`. 
+__Example:__ See if a user's `role` field is not set to `administrator`.
 
 ```py
 r.table('users').get(1)['role'].ne('administrator').run(conn)
 # alternative syntax
 (r.table('users').get(1)['role'] != 'administrator').run(conn)
 ```
+
+[Read more about this command &rarr;](ne/)
 
 ## [>, gt](gt/) ##
 
@@ -1940,6 +2045,8 @@ r.table('players').get(1)['score'].gt(10).run(conn)
 (r.table('players').get(1)['score'] > 10).run(conn)
 ```
 
+[Read more about this command &rarr;](gt/)
+
 ## [>=, ge](ge/) ##
 
 {% apibody %}
@@ -1956,6 +2063,8 @@ r.table('players').get(1)['score'].ge(10).run(conn)
 # alternative syntax
 (r.table('players').get(1)['score'] >= 10).run(conn)
 ```
+
+[Read more about this command &rarr;](ge/)
 
 ## [<, lt](lt/) ##
 
@@ -1974,6 +2083,8 @@ r.table('players').get(1)['score'].lt(10).run(conn)
 (r.table('players').get(1)['score'] < 10).run(conn)
 ```
 
+[Read more about this command &rarr;](lt/)
+
 ## [<=, le](le/) ##
 
 {% apibody %}
@@ -1991,6 +2102,8 @@ r.table('players').get(1)['score'].le(10).run(conn)
 (r.table('players').get(1)['score'] <= 10).run(conn)
 ```
 
+[Read more about this command &rarr;](le/)
+
 ## [~, not_](not/) ##
 
 {% apibody %}
@@ -2001,10 +2114,6 @@ not_(bool) &rarr; bool
 
 Compute the logical inverse (not) of an expression.
 
-`not_` can be called either via method chaining, immediately after an expression that evaluates as a boolean value, or by passing the expression as a parameter to `not_`.
-
-You may also use `~` as a shorthand operator.
-
 __Example:__ Not true is false.
 
 ```py
@@ -2012,6 +2121,10 @@ r.not_(True).run(conn)
 r.expr(True).not_().run(conn)
 (~r.expr(True)).run(conn)
 ```
+
+These evaluate to `false`.
+
+Note that when using `~` the expression is wrapped in parentheses. Without this, Python will evaluate `r.expr(True)` *first* rather than using the ReQL operator and return an incorrect value. (`~True` evaluates to &minus;2 in Python.)
 
 [Read more about this command &rarr;](not/)
 
@@ -2050,6 +2163,10 @@ __Example:__ Round 12.345 to the nearest integer.
 12.0
 ```
 
+The `round` command can also be chained after an expression.
+
+[Read more about this command &rarr;](round/)
+
 ## [ceil](ceil/) ##
 
 {% apibody %}
@@ -2066,6 +2183,10 @@ __Example:__ Return the ceiling of 12.345.
 
 13.0
 ```
+
+The `ceil` command can also be chained after an expression.
+
+[Read more about this command &rarr;](ceil/)
 
 ## [floor](floor/) ##
 
@@ -2084,8 +2205,11 @@ __Example:__ Return the floor of 12.345.
 12.0
 ```
 
-{% endapisection %}
+The `floor` command can also be chained after an expression.
 
+[Read more about this command &rarr;](floor/)
+
+{% endapisection %}
 
 {% apisection Dates and times %}
 
@@ -2106,6 +2230,8 @@ r.table("users").insert({
 }).run(conn)
 ```
 
+[Read more about this command &rarr;](now/)
+
 ## [time](time/) ##
 
 {% apibody %}
@@ -2115,25 +2241,13 @@ r.time(year, month, day[, hour, minute, second], timezone)
 
 Create a time object for a specific time.
 
-A few restrictions exist on the arguments:
-
-- `year` is an integer between 1400 and 9,999.
-- `month` is an integer between 1 and 12.
-- `day` is an integer between 1 and 31.
-- `hour` is an integer.
-- `minutes` is an integer.
-- `seconds` is a double. Its value will be rounded to three decimal places
-(millisecond-precision).
-- `timezone` can be `'Z'` (for UTC) or a string with the format `±[hh]:[mm]`.
-
-
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986 UTC.
 
 ```py
 r.table("user").get("John").update({"birthdate": r.time(1986, 11, 3, 'Z')}).run(conn)
 ```
 
-
+[Read more about this command &rarr;](time/)
 
 ## [epoch_time](epoch_time/) ##
 
@@ -2150,6 +2264,7 @@ __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 r.table("user").get("John").update({"birthdate": r.epoch_time(531360000)}).run(conn)
 ```
 
+[Read more about this command &rarr;](epoch_time/)
 
 ## [iso8601](iso8601/) ##
 
@@ -2159,14 +2274,13 @@ r.iso8601(string[, default_timezone='']) &rarr; time
 
 Create a time object based on an ISO 8601 date-time string (e.g. '2013-01-01T01:01:01+00:00'). RethinkDB supports all valid ISO 8601 formats except for week dates. Read more about the ISO 8601 format at [Wikipedia](http://en.wikipedia.org/wiki/ISO_8601).
 
-If you pass an ISO 8601 string without a time zone, you must specify the time zone with the `default_timezone` argument.
-
 __Example:__ Update the time of John's birth.
 
 ```py
 r.table("user").get("John").update({"birth": r.iso8601('1986-11-03T08:30:00-07:00')}).run(conn)
 ```
 
+[Read more about this command &rarr;](iso8601/)
 
 ## [in_timezone](in_timezone/) ##
 
@@ -2182,7 +2296,7 @@ __Example:__ Hour of the day in San Francisco (UTC/GMT -8, without daylight savi
 r.now().in_timezone('-08:00').hours().run(conn)
 ```
 
-
+[Read more about this command &rarr;](in_timezone/)
 
 ## [timezone](timezone/) ##
 
@@ -2200,16 +2314,16 @@ r.table("users").filter(lambda user:
 )
 ```
 
+[Read more about this command &rarr;](timezone/)
 
 ## [during](during/) ##
 
 {% apibody %}
-time.during(start_time, end_time
-    [, left_bound="open/closed", right_bound="open/closed"])
-        &rarr; bool
+time.during(start_time, end_time[, left_bound="closed", right_bound="open"])
+    &rarr; bool
 {% endapibody %}
 
-Return if a time is between two other times (by default, inclusive for the start, exclusive for the end).
+Return whether a time is between two other times.
 
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013 (inclusive) and December 10th, 2013 (exclusive).
 
@@ -2220,8 +2334,6 @@ r.table("posts").filter(
 ```
 
 [Read more about this command &rarr;](during/)
-
-
 
 ## [date](date/) ##
 
@@ -2239,9 +2351,9 @@ r.table("users").filter(lambda user:
 ).run(conn)
 ```
 
+[Read more about this command &rarr;](date/)
 
-
-## [time\_of\_day](time_of_day) ##
+## [time_of_day](time_of_day/) ##
 
 {% apibody %}
 time.time_of_day() &rarr; number
@@ -2257,6 +2369,7 @@ r.table("posts").filter(
 ).run(conn)
 ```
 
+[Read more about this command &rarr;](time_of_day/)
 
 ## [year](year/) ##
 
@@ -2274,6 +2387,7 @@ r.table("users").filter(lambda user:
 ).run(conn)
 ```
 
+[Read more about this command &rarr;](year/)
 
 ## [month](month/) ##
 
@@ -2293,7 +2407,6 @@ r.table("users").filter(
 
 [Read more about this command &rarr;](month/)
 
-
 ## [day](day/) ##
 
 {% apibody %}
@@ -2310,9 +2423,9 @@ r.table("users").filter(
 )
 ```
 
+[Read more about this command &rarr;](day/)
 
-
-## [day\_of\_week](day_of_week/) ##
+## [day_of_week](day_of_week/) ##
 
 {% apibody %}
 time.day_of_week() &rarr; number
@@ -2328,8 +2441,7 @@ r.now().day_of_week().run(conn)
 
 [Read more about this command &rarr;](day_of_week/)
 
-
-## [day\_of\_year](day_of_year) ##
+## [day_of_year](day_of_year/) ##
 
 {% apibody %}
 time.day_of_year() &rarr; number
@@ -2345,6 +2457,7 @@ r.table("users").filter(
 ).run(conn)
 ```
 
+[Read more about this command &rarr;](day_of_year/)
 
 ## [hours](hours/) ##
 
@@ -2362,6 +2475,7 @@ r.table("posts").filter(lambda post:
 ).run(conn)
 ```
 
+[Read more about this command &rarr;](hours/)
 
 ## [minutes](minutes/) ##
 
@@ -2379,7 +2493,7 @@ r.table("posts").filter(lambda post:
 ).run(conn)
 ```
 
-
+[Read more about this command &rarr;](minutes/)
 
 ## [seconds](seconds/) ##
 
@@ -2397,6 +2511,7 @@ r.table("posts").filter(lambda post:
 ).run(conn)
 ```
 
+[Read more about this command &rarr;](seconds/)
 
 ## [to_iso8601](to_iso8601/) ##
 
@@ -2414,8 +2529,9 @@ __Example:__ Return the current ISO 8601 time.
 "2015-04-20T18:37:52.690+00:00"
 ```
 
+[Read more about this command &rarr;](to_iso8601/)
 
-## [to\_epoch\_time](to_epoch_time) ##
+## [to_epoch_time](to_epoch_time/) ##
 
 {% apibody %}
 time.to_epoch_time() &rarr; number
@@ -2429,10 +2545,9 @@ __Example:__ Return the current time in seconds since the Unix Epoch with millis
 r.now().to_epoch_time()
 ```
 
-
+[Read more about this command &rarr;](to_epoch_time/)
 
 {% endapisection %}
-
 
 {% apisection Control structures %}
 
@@ -2444,9 +2559,7 @@ r.args(array) &rarr; special
 
 `r.args` is a special term that's used to splice an array of arguments
 into another term.  This is useful when you want to call a variadic
-term such as `get_all` with a set of arguments produced at runtime.
-
-This is analogous to unpacking argument lists in Python.
+term such as [get_all](/api/python/get_all/) with a set of arguments produced at runtime.
 
 __Example:__ Get Alice and Bob from the table `people`.
 
@@ -2455,6 +2568,8 @@ r.table('people').get_all('Alice', 'Bob').run(conn)
 # or
 r.table('people').get_all(r.args(['Alice', 'Bob'])).run(conn)
 ```
+
+[Read more about this command &rarr;](args/)
 
 ## [binary](binary/) ##
 
@@ -2472,6 +2587,8 @@ avatar_image = f.read()
 f.close()
 r.table('users').get(100).update({'avatar': r.binary(avatar_image)}).run(conn)
 ```
+
+[Read more about this command &rarr;](binary/)
 
 ## [do](do/) ##
 
@@ -2491,6 +2608,7 @@ r.table('players').get('86be93eb-a112-48f5-a829-15b2cb49de1d').do(
     lambda player: player['gross_score'] - player['course_handicap']
 ).run(conn)
 ```
+
 [Read more about this command &rarr;](do/)
 
 ## [branch](branch/) ##
@@ -2530,6 +2648,8 @@ r.table('marvel').for_each(
 ).run(conn)
 ```
 
+[Read more about this command &rarr;](for_each/)
+
 ## [range](range/) ##
 
 {% apibody %}
@@ -2546,6 +2666,8 @@ __Example:__ Return a four-element range of `[0, 1, 2, 3]`.
 
 [0, 1, 2, 3]
 ```
+
+[Read more about this command &rarr;](range/)
 
 ## [error](error/) ##
 
@@ -2565,6 +2687,8 @@ r.table('marvel').get('IronMan').do(
 ).run(conn)
 ```
 
+[Read more about this command &rarr;](error/)
+
 ## [default](default/) ##
 
 {% apibody %}
@@ -2577,7 +2701,6 @@ Provide a default value in case of non-existence errors. The `default` command e
 __Example:__ Retrieve the titles and authors of the table `posts`.
 In the case where the author field is missing or `None`, we want to retrieve the string
 `Anonymous`.
-
 
 ```py
 r.table("posts").map(lambda post:
@@ -2604,6 +2727,8 @@ __Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API fun
 r.expr({'a':'b'}).merge({'b':[1,2,3]}).run(conn)
 ```
 
+[Read more about this command &rarr;](expr/)
+
 ## [js](js/) ##
 
 {% apibody %}
@@ -2613,6 +2738,12 @@ r.js(js_string[, timeout=<number>]) &rarr; value
 Create a javascript expression.
 
 __Example:__ Concatenate two strings using JavaScript.
+
+`timeout` is the number of seconds before `r.js` times out. The default value is 5 seconds.
+
+{% infobox %}
+Whenever possible, you should use native ReQL commands rather than `r.js` for better performance.
+{% endinfobox %}
 
 ```py
 r.js("'str1' + 'str2'").run(conn)
@@ -2635,7 +2766,7 @@ string.coerce_to('binary') &rarr; binary
 
 Convert a value of one type into another.
 
-__Example:__ Coerce a stream to an array.
+__Example:__ Coerce a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 
 ```py
 r.table('posts').map(lambda post: post.merge(
@@ -2645,7 +2776,7 @@ r.table('posts').map(lambda post: post.merge(
 
 [Read more about this command &rarr;](coerce_to/)
 
-## [type_of](type_of) ##
+## [type_of](type_of/) ##
 
 {% apibody %}
 any.type_of() &rarr; string
@@ -2658,6 +2789,8 @@ __Example:__ Get the type of a string.
 ```py
 r.expr("foo").type_of().run(conn)
 ```
+
+[Read more about this command &rarr;](type_of/)
 
 ## [info](info/) ##
 
@@ -2674,6 +2807,8 @@ __Example:__ Get information about a table such as primary key, or cache size.
 r.table('marvel').info().run(conn)
 ```
 
+[Read more about this command &rarr;](info/)
+
 ## [json](json/) ##
 
 {% apibody %}
@@ -2687,6 +2822,8 @@ __Example:__ Send an array to the server.
 ```py
 r.json("[1,2,3]").run(conn)
 ```
+
+[Read more about this command &rarr;](json/)
 
 ## [to_json_string, to_json](to_json_string/) ##
 
@@ -2705,15 +2842,18 @@ __Example:__ Get a ReQL document as a JSON string.
 '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
 ```
 
+[Read more about this command &rarr;](to_json_string/)
+
 ## [http](http/) ##
 
 {% apibody %}
-r.http(url [, options]) &rarr; value
+r.http(url[, options]) &rarr; value
+r.http(url[, options]) &rarr; stream
 {% endapibody %}
 
 Retrieve data from the specified URL over HTTP.  The return type depends on the `result_format` option, which checks the `Content-Type` of the response by default.
 
-__Example:__ Perform a simple HTTP `GET` request, and store the result in a table.
+__Example:__ Perform an HTTP `GET` and store the result in a table.
 
 ```py
 r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn)
@@ -2758,7 +2898,7 @@ __Example:__ Define a circle.
 r.table('geo').insert({
     'id': 300,
     'name': 'Hayes Valley',
-    'neighborhood': r.circle([-122.423246,37.779388], 1000)
+    'neighborhood': r.circle([-122.423246, 37.779388], 1000)
 }).run(conn)
 ```
 
@@ -2776,8 +2916,8 @@ Compute the distance between a point and another geometry object. At least one o
 __Example:__ Compute the distance between two points on the Earth in kilometers.
 
 ```py
-> point1 = r.point(-122.423246,37.779388)
-> point2 = r.point(-117.220406,32.719464)
+> point1 = r.point(-122.423246, 37.779388)
+> point2 = r.point(-117.220406, 32.719464)
 > r.distance(point1, point2, unit='km').run(conn)
 
 734.1252496021841
@@ -2799,10 +2939,10 @@ __Example:__ Create a line object and then convert it to a polygon.
 r.table('geo').insert({
     'id': 201,
     'rectangle': r.line(
-        [-122.423246,37.779388],
-        [-122.423246,37.329898],
-        [-121.886420,37.329898],
-        [-121.886420,37.779388]
+        [-122.423246, 37.779388],
+        [-122.423246, 37.329898],
+        [-121.886420, 37.329898],
+        [-121.886420, 37.779388]
     )
 }).run(conn)
 
@@ -2819,9 +2959,7 @@ r.table('geo').get(201).update({
 r.geojson(geojson) &rarr; geometry
 {% endapibody %}
 
-Convert a [GeoJSON][] object to a ReQL geometry object.
-
-[GeoJSON]: http://geojson.org
+Convert a [GeoJSON](http://geojson.org) object to a ReQL geometry object.
 
 __Example:__ Convert a GeoJSON object to a ReQL geometry object.
 
@@ -2845,12 +2983,12 @@ r.table('geo').insert({
 geometry.to_geojson() &rarr; object
 {% endapibody %}
 
-Convert a ReQL geometry object to a [GeoJSON][] object.
+Convert a ReQL geometry object to a [GeoJSON](http://geojson.org) object.
 
 __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 
 ```py
-> r.table('geo').get('sfo')['location'].to_geojson.run(conn)
+> r.table('geo').get('sfo')['location'].to_geojson().run(conn)
 
 {
     'type': 'Point',
@@ -2871,7 +3009,7 @@ Get all documents where the given geometry object intersects the geometry object
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 
 ```py
-circle1 = r.circle([-117.220406,32.719464], 10, unit='mi')
+circle1 = r.circle([-117.220406, 32.719464], 10, unit='mi')
 r.table('parks').get_intersecting(circle1, index='area').run(conn)
 ```
 
@@ -2880,7 +3018,7 @@ r.table('parks').get_intersecting(circle1, index='area').run(conn)
 ## [get_nearest](get_nearest/) ##
 
 {% apibody %}
-table.get_nearest(point, index='indexname'[, max_results=100, max_dist=100000, unit='m', geo_system='WGS84']) &rarr; selection<array>
+table.get_nearest(point, index='indexname'[, max_results=100, max_dist=100000, unit='m', geo_system='WGS84']) &rarr; array
 {% endapibody %}
 
 Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
@@ -2888,7 +3026,7 @@ Get all documents where the specified geospatial index is within a certain dista
 __Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
 
 ```py
-secret_base = r.point(-122.422876,37.777128)
+secret_base = r.point(-122.422876, 37.777128)
 r.table('hideouts').get_nearest(secret_base, index='location',
     max_dist=5000).run(conn)
 ```
@@ -2907,8 +3045,8 @@ Tests whether a geometry object is completely contained within another. When app
 __Example:__ Is `point2` included within a 2000-meter circle around `point1`?
 
 ```py
-> point1 = r.point(-117.220406,32.719464)
-> point2 = r.point(-117.206201,32.725186)
+> point1 = r.point(-117.220406, 32.719464)
+> point2 = r.point(-117.206201, 32.725186)
 > r.circle(point1, 2000).includes(point2).run(conn)
 
 True
@@ -2927,12 +3065,11 @@ r.intersects(geometry, geometry) &rarr; bool
 
 Tests whether two geometry objects intersect with one another. When applied to a sequence of geometry objects, `intersects` acts as a [filter](/api/python/filter), returning a sequence of objects from the sequence that intersect with the argument.
 
-
 __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 
 ```py
-> point1 = r.point(-117.220406,32.719464)
-> point2 = r.point(-117.206201,32.725186)
+> point1 = r.point(-117.220406, 32.719464)
+> point2 = r.point(-117.206201, 32.725186)
 > r.circle(point1, 2000).intersects(point2).run(conn)
 
 True
@@ -2957,7 +3094,7 @@ __Example:__ Define a line.
 ```py
 r.table('geo').insert({
     'id': 101,
-    'route': r.line([-122.423246,37.779388], [-121.886420,37.329898])
+    'route': r.line([-122.423246, 37.779388], [-121.886420, 37.329898])
 }).run(conn)
 ```
 
@@ -2969,7 +3106,7 @@ r.table('geo').insert({
 r.point(longitude, latitude) &rarr; point
 {% endapibody %}
 
-Construct a geometry object of type Point. The point is specified by two floating point numbers, the longitude (&minus;180 to 180) and latitude (&minus;90 to 90) of the point on a perfect sphere.
+Construct a geometry object of type Point. The point is specified by two floating point numbers, the longitude (&minus;180 to 180) and latitude (&minus;90 to 90) of the point on a perfect sphere. See [Geospatial support](/docs/geo-support/) for more information on ReQL's coordinate system.
 
 __Example:__ Define a point.
 
@@ -2977,7 +3114,7 @@ __Example:__ Define a point.
 r.table('geo').insert({
     'id': 1,
     'name': 'San Francisco',
-    'location': r.point(37.779388,-122.423246)
+    'location': r.point(-122.423246, 37.779388)
 }).run(conn)
 ```
 
@@ -2992,7 +3129,7 @@ r.polygon(point1, point2, point3, ...) &rarr; polygon
 
 Construct a geometry object of type Polygon. The Polygon can be specified in one of two ways:
 
-* Three or more two-item arrays, specifying longitude and latitude numbers of the polygon's vertices;
+* Three or more two-item arrays, specifying latitude and longitude numbers of the polygon's vertices;
 * Three or more [Point](/api/python/point) objects specifying the polygon's vertices.
 
 __Example:__ Define a polygon.
@@ -3001,10 +3138,10 @@ __Example:__ Define a polygon.
 r.table('geo').insert({
     'id': 101,
     'rectangle': r.polygon(
-        [-122.423246,37.779388],
-        [-122.423246,37.329898],
-        [-121.886420,37.329898],
-        [-121.886420,37.779388]
+        [-122.423246, 37.779388],
+        [-122.423246, 37.329898],
+        [-121.886420, 37.329898],
+        [-121.886420, 37.779388]
     )
 }).run(conn)
 ```
@@ -3023,16 +3160,16 @@ __Example:__ Define a polygon with a hole punched in it.
 
 ```py
 outer_polygon = r.polygon(
-    [-122.4,37.7],
-    [-122.4,37.3],
-    [-121.8,37.3],
-    [-121.8,37.7]
+    [-122.4, 37.7],
+    [-122.4, 37.3],
+    [-121.8, 37.3],
+    [-121.8, 37.7]
 )
 inner_polygon = r.polygon(
-    [-122.3,37.4],
-    [-122.3,37.6],
-    [-122.0,37.6],
-    [-122.0,37.4]
+    [-122.3, 37.4],
+    [-122.3, 37.6],
+    [-122.0, 37.6],
+    [-122.0, 37.4]
 )
 outer_polygon.polygon_sub(inner_polygon).run(conn)
 ```
@@ -3055,7 +3192,7 @@ Query (read and/or update) the configurations for individual tables or databases
 __Example:__ Get the configuration for the `users` table.
 
 ```py
-> r.table('users').config().run(conn)
+r.table('users').config().run(conn)
 ```
 
 [Read more about this command &rarr;](config/)
@@ -3072,7 +3209,7 @@ Rebalances the shards of a table. When called on a database, all the tables in t
 __Example:__ Rebalance a table.
 
 ```py
-> r.table('superheroes').rebalance().run(conn)
+r.table('superheroes').rebalance().run(conn)
 ```
 
 [Read more about this command &rarr;](rebalance/)
@@ -3080,8 +3217,9 @@ __Example:__ Rebalance a table.
 ## [reconfigure](reconfigure/) ##
 
 {% apibody %}
-table.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False]) &rarr; object
-database.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False]) &rarr; object
+table.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False, nonvoting_replica_tags=None]) &rarr; object
+database.reconfigure(shards=<s>, replicas=<r>[, primary_replica_tag=<t>, dry_run=False, nonvoting_replica_tags=None]) &rarr; object
+table.reconfigure(emergency_repair=<option>, dry_run=False) &rarr; object
 {% endapibody %}
 
 Reconfigure a table's sharding and replication.
@@ -3089,7 +3227,7 @@ Reconfigure a table's sharding and replication.
 __Example:__ Reconfigure a table.
 
 ```py
-> r.table('superheroes').reconfigure(shards=2, replicas=1).run(conn)
+r.table('superheroes').reconfigure(shards=2, replicas=1).run(conn)
 ```
 
 [Read more about this command &rarr;](reconfigure/)
@@ -3105,7 +3243,7 @@ Return the status of a table.
 __Example:__ Get a table's status.
 
 ```py
-> r.table('superheroes').status().run(conn)
+r.table('superheroes').status().run(conn)
 ```
 
 [Read more about this command &rarr;](status/)
@@ -3120,12 +3258,15 @@ r.wait([wait_for='ready_for_writes', timeout=<sec>]) &rarr; object
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.
 
-__Example:__ Wait for a table to be ready.
+__Example:__ Wait on a table to be ready.
 
 ```py
-> r.table('superheroes').wait().run(conn)
+r.table('superheroes').wait().run(conn)
+
+{"ready": 1}
 ```
 
 [Read more about this command &rarr;](wait/)
 
 {% endapisection %}
+

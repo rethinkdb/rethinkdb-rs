@@ -29,9 +29,6 @@ fields or functions provided.
 
 With the `multi` flag single documents can be assigned to multiple groups, similar to the behavior of [multi-indexes](/docs/secondary-indexes/ruby). When `multi` is `true` and the grouping value is an array, documents will be placed in each group that corresponds to the elements of the array. If the array is empty the row will be ignored.
 
-
-__Example:__ Grouping games by player.
-
 Suppose that the table `games` has the following data:
 
 ```rb
@@ -43,7 +40,7 @@ Suppose that the table `games` has the following data:
 ]
 ```
 
-Grouping games by player can be done with:
+__Example:__ Group games by player.
 
 ```rb
 > r.table('games').group('player').run(conn)
@@ -59,6 +56,8 @@ Grouping games by player can be done with:
     ]
 }
 ```
+
+<!-- stop -->
 
 Commands chained after `group` will be called on each of these grouped
 sub-streams, producing grouped data.

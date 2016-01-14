@@ -63,6 +63,8 @@ r.table("posts").insert({
 }).run(conn, callback)
 ```
 
+<!-- stop -->
+
 The result will be:
 
 ```js

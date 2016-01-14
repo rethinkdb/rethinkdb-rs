@@ -21,8 +21,8 @@ sequence.reduce(function) &rarr; value
 
 # Description #
 
-Produce a single value from a sequence through repeated application of a reduction
-function.  
+Produce a single value from a sequence through repeated application of a reduction function.
+
 The reduction function can be called on:
 
 - two elements of the sequence
@@ -49,7 +49,6 @@ r.table("posts").map{|doc| 1 }
 ```
 
 A shorter way to execute this query is to use [count](/api/ruby/count).
-
 
 __Example:__ Suppose that each `post` has a field `comments` that is an array of
 comments.  

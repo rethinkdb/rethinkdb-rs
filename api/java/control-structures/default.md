@@ -32,6 +32,8 @@ r.table("posts").map(post ->
 ).run(conn);
 ```
 
+<!-- stop -->
+
 We can rewrite the previous query with `r.branch` too.
 
 ```java

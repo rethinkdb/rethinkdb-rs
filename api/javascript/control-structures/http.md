@@ -27,6 +27,8 @@ __Example:__ Perform an HTTP `GET` and store the result in a table.
 r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn, callback)
 ```
 
+<!-- stop -->
+
 See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
 
 # Options #

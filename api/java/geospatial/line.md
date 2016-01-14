@@ -22,6 +22,8 @@ Construct a geometry object of type Line. The line can be specified in one of tw
 * Two or more two-item arrays, specifying latitude and longitude numbers of the line's vertices;
 * Two or more [Point](/api/java/point) objects specifying the line's vertices.
 
+<!-- break -->
+
 Longitude (&minus;180 to 180) and latitude (&minus;90 to 90) of vertices are plotted on a perfect sphere. See [Geospatial support](/docs/geo-support/) for more information on ReQL's coordinate system.
 
 __Example:__ Define a line.

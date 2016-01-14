@@ -39,6 +39,8 @@ __Example:__ Order all the posts using the index `date`.
 r.table('posts').order_by(index='date').run(conn)
 ```
 
+<!-- stop -->
+
 The index must either be the primary key or have been previously created with [index_create](/api/python/index_create/).
 
 ```py

@@ -29,9 +29,6 @@ The format of the array returned by `ungroup` is the same as the
 default native format of grouped data in the javascript driver and
 data explorer.
 
-__Example:__ What is the maximum number of points scored by each
-player, with the highest scorers first?
-
 Suppose that the table `games` has the following data:
 
 ```js
@@ -43,13 +40,16 @@ Suppose that the table `games` has the following data:
 ]
 ```
 
-We can use this query:
+__Example:__ What is the maximum number of points scored by each
+player, with the highest scorers first?
 
 ```js
 r.table('games')
    .group('player').max('points')('points')
    .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
 ```
+
+<!-- stop -->
 
 Result: 
 

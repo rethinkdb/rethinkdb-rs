@@ -16,7 +16,9 @@ r.range([startValue, ]endValue) &rarr; stream
 
 # Description #
 
-Generate a stream of sequential integers in a specified range. `range` takes 0, 1 or 2 arguments:
+Generate a stream of sequential integers in a specified range.
+
+`range` takes 0, 1 or 2 arguments:
 
 * With no arguments, `range` returns an "infinite" stream from 0 up to and including the maximum integer value;
 * With one argument, `range` returns a stream from 0 up to but not including the end value;
@@ -37,6 +39,8 @@ Result (shown as JSON):
 ```json
 [0, 1, 2, 3]
 ```
+
+<!-- stop -->
 
 You can also use the [limit](/api/java/limit) command with the no-argument variant to achieve the same result in this case:
 

@@ -42,6 +42,8 @@ r.table("users").filter(r.hashMap(age, 30)).run(conn);
 
 The predicate `r.hashMap(age, 30)` selects documents in the `users` table with an `age` field whose value is `30`. Documents with an `age` field set to any other value *or* with no `age` field present are skipped.
 
+<!-- stop -->
+
 While the `r.hashMap(field, value)` style of predicate is useful for exact matches, a more general way to write a predicate is to use an anonymous function that returns `true` or `false`.
 
 ```java

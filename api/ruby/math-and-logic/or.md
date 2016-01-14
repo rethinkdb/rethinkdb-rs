@@ -17,7 +17,9 @@ r.or([bool, bool, ...]) &rarr; bool
 
 # Description #
 
-Compute the logical "or" of one or more values. The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true, false)`). The standard Ruby or operator, `|`, may also be used with ReQL.
+Compute the logical "or" of one or more values.
+
+The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true, false)`). The standard Ruby or operator, `|`, may also be used with ReQL.
 
 Calling `or` with zero arguments will return `false`.
 

@@ -29,6 +29,8 @@ Create a new connection to the database server. `connection` returns a builder o
 
 If the connection cannot be established, a `ReqlDriverError` will be thrown.
 
+<!-- break -->
+
 The authentication key can be set from the RethinkDB command line tool. Once set, client connections must provide the key as an option to `run` in order to make the connection. For more information, read "Using the RethinkDB authentication system" in the documentation on [securing your cluster](http://rethinkdb.com/docs/security/).
 
 __Example:__ Open a connection using the default host and port, specifying the default database.

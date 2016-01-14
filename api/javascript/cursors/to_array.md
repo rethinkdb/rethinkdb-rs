@@ -39,6 +39,8 @@ cursor.toArray(function(err, results) {
 });
 ```
 
+<!-- stop -->
+
 The equivalent query with the `each` command would be:
 
 ```js

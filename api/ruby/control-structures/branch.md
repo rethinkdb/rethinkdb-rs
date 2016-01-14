@@ -19,11 +19,13 @@ Perform a branching conditional equivalent to `if-then-else`.
 
 The `branch` command takes 2n+1 arguments: pairs of conditional expressions and commands to be executed if the conditionals return any value but `false` or `nil` (i.e., "truthy" values), with a final "else" command to be evaluated if all of the conditionals are `false` or `nil`.
 
+<!-- break -->
+
 ```
 r.branch(test1, val1, test2, val2, elseval)
 ```
 
-is the equivalent of the Python statement
+is the equivalent of the Ruby statement
 
 ```rb
 if test1

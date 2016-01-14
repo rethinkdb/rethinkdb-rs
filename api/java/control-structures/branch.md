@@ -19,6 +19,8 @@ Perform a branching conditional equivalent to `if-then-else`.
 
 The `branch` command takes 2n+1 arguments: pairs of conditional expressions and commands to be executed if the conditionals return any value but `false` or `null` (i.e., "truthy" values), with a final "else" command to be evaluated if all of the conditionals are `false` or `null`.
 
+<!-- break -->
+
 ```
 r.branch(test1, val1, test2, val2, elseval)
 ```

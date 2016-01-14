@@ -29,9 +29,6 @@ The format of the array returned by `ungroup` is the same as the
 default native format of grouped data in the JavaScript driver and
 Data Explorer.
 
-__Example:__ What is the maximum number of points scored by each
-player, with the highest scorers first?
-
 Suppose that the table `games` has the following data:
 
 ```json
@@ -43,12 +40,15 @@ Suppose that the table `games` has the following data:
 ]
 ```
 
-We can use this query:
+__Example:__ What is the maximum number of points scored by each
+player, with the highest scorers first?
 
 ```java
 r.table("games").group("player").max("points").g("points").ungroup()
  .orderBy(r.desc("reduction")).run(conn);
 ```
+
+<!-- stop -->
 
 The result:
 

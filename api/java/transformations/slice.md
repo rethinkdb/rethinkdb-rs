@@ -31,27 +31,27 @@ Negative `startIndex` and `endIndex` values are allowed with arrays; in that cas
 
 If `slice` is used with a [binary](/api/java/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
 
-**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
+__Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```java
 r.table("players").orderBy().optArg("index", "age").slice(3, 6).run(conn);
 ```
 
-**Example:** Return all but the top three players who have a red flag.
+__Example:__ Return all but the top three players who have a red flag.
 
 ```java
 r.table("players").filter(r.hashMap("flag", "red")).orderBy()
  .optArg("index", r.desc("score")).slice(3).run(conn);
 ```
 
-**Example:** Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
+__Example:__ Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
 
 ```java
 r.table("users").orderBy().optArg("index", "ticket")
  .slice(x, y).optArg("right_bound", "closed").run(conn);
 ```
 
-**Example:** Return the elements of an array from the second through two from the end (that is, not including the last two).
+__Example:__ Return the elements of an array from the second through two from the end (that is, not including the last two).
 
 ```java
 r.expr(r.array(0, 1, 2, 3, 4, 5)).slice(2, -2).run(conn);

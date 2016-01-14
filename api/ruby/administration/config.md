@@ -21,7 +21,13 @@ __Example:__ Get the configuration for the `users` table.
 
 ```rb
 r.table('users').config().run(conn)
+```
 
+<!-- stop -->
+
+Example return:
+
+```rb
 {
     :id => "31c92680-f70c-4a4b-a49e-b238eb12c023",
     :name => "users",

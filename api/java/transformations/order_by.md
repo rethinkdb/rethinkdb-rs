@@ -39,6 +39,8 @@ __Example:__ Order all the posts using the index `date`.
 r.table("posts").orderBy().optArg("index", "date").run(conn);
 ```
 
+<!-- stop -->
+
 The index must either be the primary key or have been previously created with [indexCreate](/api/java/index_create/).
 
 ```java

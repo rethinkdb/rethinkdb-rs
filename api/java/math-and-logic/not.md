@@ -16,6 +16,7 @@ r.not(bool) &rarr; bool
 {% endapibody %}
 
 # Description #
+
 Compute the logical inverse (not) of an expression.
 
 `not` can be called either via method chaining, immediately after an expression that evaluates as a boolean value, or by passing the expression as a parameter to `not`. All values that are not `false` or `null` will be converted to `true`.

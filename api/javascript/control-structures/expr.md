@@ -20,7 +20,7 @@ Construct a ReQL JSON object from a native object.
 
 If the native object is a Node.js `Buffer`, then `expr` will return a binary object. See [binary](/api/javascript/binary) for more information.
 
-__Example:__ Objects wrapped with expr can then be manipulated by ReQL API functions.
+__Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 
 ```js
 r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)

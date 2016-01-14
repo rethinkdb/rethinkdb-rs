@@ -29,6 +29,8 @@ r.table("posts").map(lambda post:
 ).run(conn)
 ```
 
+<!-- stop -->
+
 We can rewrite the previous query with `r.branch` too.
 
 ```py

@@ -34,6 +34,8 @@ r.table("marvel").get("IronMan").bracket("firstAppearance").run(conn);
 r.table("marvel").get("IronMan").g("firstAppearance").run(conn);
 ```
 
+<!-- stop -->
+
 The `bracket` command also accepts integer arguments as array offsets, like the [nth](/api/java/nth) command.
 
 __Example:__ Get the fourth element in a sequence. (The first element is position `0`, so the fourth element is position `3`.)

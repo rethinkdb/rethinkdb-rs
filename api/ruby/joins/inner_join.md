@@ -18,7 +18,9 @@ array.inner_join(other_sequence, predicate_function) &rarr; array
 
 # Description #
 
-Returns an inner join of two sequences. The returned sequence represents an intersection of the left-hand sequence and the right-hand sequence: each row of the left-hand sequence will be compared with each row of the right-hand sequence to find all pairs of rows which satisfy the predicate. Each matched pair of rows of both sequences are combined into a result row. In most cases, you will want to follow the join with [zip](/api/ruby/zip) to combine the left and right results.
+Returns an inner join of two sequences.
+
+The returned sequence represents an intersection of the left-hand sequence and the right-hand sequence: each row of the left-hand sequence will be compared with each row of the right-hand sequence to find all pairs of rows which satisfy the predicate. Each matched pair of rows of both sequences are combined into a result row. In most cases, you will want to follow the join with [zip](/api/ruby/zip) to combine the left and right results.
 
 {% infobox %}
 Note that `inner_join` is slower and much less efficient than using [eq_join](/api/ruby/eq_join/) or [concat_map](/api/ruby/concat_map/) with [get_all](/api/ruby/get_all/). You should avoid using `inner_join` in commands when possible.
@@ -31,5 +33,7 @@ r.table('marvel').inner_join(r.table('dc')) {|marvel_row, dc_row|
     marvel_row[:strength] < dc_row[:strength]
 }.zip().run(conn)
 ```
+
+<!-- stop -->
 
 (Compare this to an [outer_join](/api/ruby/outer_join) with the same inputs and predicate, which would return a list of *all* Marvel heroes along with any DC heroes with a higher strength.)

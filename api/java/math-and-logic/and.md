@@ -18,7 +18,9 @@ r.and([bool, bool, ...]) &rarr; bool
 
 # Description #
 
-Compute the logical "and" of one or more values. The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true,false)`).
+Compute the logical "and" of one or more values.
+
+The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true,false)`).
 
 Calling `and` with zero arguments will return `true`.
 

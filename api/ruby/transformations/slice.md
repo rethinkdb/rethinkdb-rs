@@ -33,7 +33,7 @@ If `slice` is used with a [binary](/api/ruby/binary) object, the indexes refer t
 
 If you are only specifying the indexes and not the bounding options, you may use Ruby's range operator as a shorthand: `[start_index..end_index]`. Note that when you use this shorthand `right_bound` will be `closed` and thus include `end_index`.
 
-**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
+__Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```rb
 r.table('players').order_by(:index => 'age').slice(3,6).run(conn)
@@ -45,19 +45,19 @@ Or, using Ruby's range operator:
 r.table('players').filter({'class': 'amateur'})[10..19].run(conn)
 ```
 
-**Example:** Return all but the top three players who have a red flag.
+__Example:__ Return all but the top three players who have a red flag.
 
 ```rb
 r.table('players').filter(:flag => 'red'}).order_by(:index => r.desc('score')).slice(3).run(conn)
 ```
 
-**Example:** Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
+__Example:__ Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
 
 ```rb
 r.table('users').order_by(:index => 'ticket').slice(x, y, :right_bound => 'closed').run(conn)
 ```
 
-**Example:** Return the elements of an array from the second through two from the end (that is, not including the last two).
+__Example:__ Return the elements of an array from the second through two from the end (that is, not including the last two).
 
 ```rb
 r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn)
