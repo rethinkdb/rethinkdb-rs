@@ -147,7 +147,7 @@ stream.changes([options]) &rarr; stream
 singleSelection.changes([options]) &rarr; stream
 {% endapibody %}
 
-Return a changefeed, an infinite stream of objects representing changes to a query. A changefeed may return changes to a table or an individual document (a "point" changefeed), and document transformation commands such as `filter` or `map` may be used before the `changes` command to affect the output.
+Turn a query into a changefeed, an infinite stream of objects representing changes to the query's results as they occur. A changefeed may return changes to a table or an individual document (a "point" changefeed). Commands such as `filter` or `map` may be used before the `changes` command to transform or filter the output, and many commands that operate on sequences can be chained after `changes`.
 
 __Example:__ Subscribe to the changes on a table.
 
@@ -960,8 +960,6 @@ r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
 sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
 sequence.eqJoin(predicate_function, rightTable[, {index:'id'}]) &rarr; sequence
 {% endapibody %}
-
-src="/assets/images/docs/api_illustrations/table-joins.png" />
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
