@@ -49,7 +49,13 @@ __Example:__ Reconfigure a table.
 
 ```rb
 r.table('superheroes').reconfigure({:shards => 2, :replicas => 1}).run(conn)
+```
 
+<!-- stop -->
+
+Example return:
+
+```rb
 {
   :reconfigured => 1,
   :config_changes => [

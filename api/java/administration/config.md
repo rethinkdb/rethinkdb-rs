@@ -23,6 +23,7 @@ __Example:__ Get the configuration for the `users` table.
 r.table("users").config().run(conn);
 ```
 
+<!-- stop -->
 Result:
 
 ```json

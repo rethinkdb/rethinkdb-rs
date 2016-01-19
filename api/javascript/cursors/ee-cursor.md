@@ -1,7 +1,7 @@
 ---
 layout: api-command
 language: JavaScript
-permalink: api/javascript/event_emitter-cursor/
+permalink: api/javascript/ee-cursor/
 alias:
     - api/javascript/add_listener-cursor/
     - api/javascript/on-cursor/
@@ -62,6 +62,8 @@ r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
     })
 });
 ```
+
+<!-- stop -->
 
 This query can be rewritten with the `each` command:
 

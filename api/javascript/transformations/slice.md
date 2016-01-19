@@ -38,25 +38,25 @@ Negative `startIndex` and `endIndex` values are allowed with arrays; in that cas
 
 If `slice` is used with a [binary](/api/javascript/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
 
-**Example:** Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
+__Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```js
 r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback)
 ```
 
-**Example:** Return all but the top three players who have a red flag.
+__Example:__ Return all but the top three players who have a red flag.
 
 ```js
 r.table('players').filter({flag: 'red'}).orderBy(r.desc('score')).slice(3).run(conn, callback)
 ```
 
-**Example:** Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
+__Example:__ Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
 
 ```js
 r.table('users').orderBy('ticket').slice(x, y, {right_bound: 'closed'}).run(conn, callback)
 ```
 
-**Example:** Return the elements of an array from the second through two from the end (that is, not including the last two).
+__Example:__ Return the elements of an array from the second through two from the end (that is, not including the last two).
 
 ```js
 r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn, callback)

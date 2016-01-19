@@ -17,7 +17,9 @@ time.during(startTime, endTime) &rarr; bool
 
 # Description #
 
-Return whether a time is between two other times. By default, this is inclusive of the start time and exclusive of the end time. Use the [optArgs](/api/java/optarg) `left_bound` and `right_bound` to explicitly include (`closed`) or exclude (`open`) that endpoint of the range.
+Return whether a time is between two other times.
+
+By default, this is inclusive of the start time and exclusive of the end time. Use the [optArgs](/api/java/optarg) `left_bound` and `right_bound` to explicitly include (`closed`) or exclude (`open`) that endpoint of the range.
 
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 (inclusive) and December 10th, 2013 (exclusive).

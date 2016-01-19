@@ -22,7 +22,7 @@ The native object can be any Java primitive type, as well as Array, List, Map, L
 
 If the native object is of type `bytes[]`, then `expr` will return a binary object. See [binary](/api/java/binary) for more information.
 
-__Example:__ Objects wrapped with expr can then be manipulated by ReQL API functions.
+__Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 
 ```java
 import com.rethinkdb.model.MapObject;

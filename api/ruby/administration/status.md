@@ -28,7 +28,13 @@ __Example:__ Get a table's status.
 
 ```rb
 r.table_status('superheroes').run(conn)
+```
 
+<!-- stop -->
+
+Example return:
+
+```rb
 {
   :db => "database",
   :id => "5cb35225-81b2-4cec-9eef-bfad15481265",

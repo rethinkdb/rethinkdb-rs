@@ -40,7 +40,13 @@ __Example:__ Rebalance a table.
 
 ```py
 r.table('superheroes').rebalance().run(conn)
+```
 
+<!-- stop -->
+
+Example return:
+
+```py
 {
   "rebalanced": 1,
   "status_changes": [

@@ -16,7 +16,9 @@ number.round() &rarr; number
 
 # Description #
 
-Rounds the given value to the nearest whole integer. For example, values of 1.0 up to but not including 1.5 will return 1.0, similar to [floor][]; values of 1.5 up to 2.0 will return 2.0, similar to [ceil][].
+Rounds the given value to the nearest whole integer.
+
+For example, values of 1.0 up to but not including 1.5 will return 1.0, similar to [floor][]; values of 1.5 up to 2.0 will return 2.0, similar to [ceil][].
 
 [floor]: /api/python/floor/
 [ceil]:  /api/python/ceil/

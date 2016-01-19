@@ -30,6 +30,8 @@ users = cursor.to_a()
 process_results(users)
 ```
 
+<!-- stop -->
+
 The equivalent query with an `each` block would be:
 
 ```rb

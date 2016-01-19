@@ -17,7 +17,9 @@ r.and([bool, bool, ...]) &rarr; bool
 
 # Description #
 
-Compute the logical "and" of one or more values. The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true, false)`). The standard Ruby or operator, `|`, may also be used with ReQL.
+Compute the logical "and" of one or more values.
+
+The `and` command can be used as an infix operator after its first argument (`r.expr(true).and(false)`) or given all of its arguments as parameters (`r.and(true, false)`). The standard Ruby or operator, `|`, may also be used with ReQL.
 
 Calling `and` with zero arguments will return `true`.
 

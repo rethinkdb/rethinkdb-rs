@@ -31,7 +31,13 @@ __Example:__ Get a table's status.
 
 ```js
 > r.table('superheroes').status().run(conn, callback);
-// Result passed to callback
+```
+
+<!-- stop -->
+
+Example return:
+
+```js
 {
   "db": "database",
   "id": "5cb35225-81b2-4cec-9eef-bfad15481265",

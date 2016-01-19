@@ -42,6 +42,8 @@ __Example:__ Rebalance a table.
 > r.table("superheroes").rebalance().run(conn);
 ```
 
+<!-- stop -->
+
 Result:
 
 ```json

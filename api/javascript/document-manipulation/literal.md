@@ -20,8 +20,6 @@ r.literal(object) &rarr; special
 
 Replace an object in a field instead of merging it with an existing object in a `merge` or `update` operation. Using `literal` with no arguments in a `merge` or `update` operation will remove the corresponding field.
 
-__Example:__ Replace one nested document with another rather than merging the fields.
-
 Assume your users table has this structure:
 
 ```js
@@ -55,7 +53,9 @@ r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn,
 }       
 ```
 
-That will preserve `city` and other existing fields. But to replace the entire `data` document with a new object, use `literal`:
+That will preserve `city` and other existing fields. But to replace the entire `data` document with a new object, use `literal`.
+
+__Example:__ Replace one nested document with another rather than merging the fields.
 
 ```js
 r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)

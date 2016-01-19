@@ -17,7 +17,9 @@ r.and_([bool, bool, ...]) &rarr; bool
 
 # Description #
 
-Compute the logical "and" of one or more values. The `and_` command can be used as an infix operator after its first argument (`r.expr(True).and_(False)`) or given all of its arguments as parameters (`r.and_(True, False)`). The standard Python and operator, `&`, may also be used with ReQL.
+Compute the logical "and" of one or more values.
+
+The `and_` command can be used as an infix operator after its first argument (`r.expr(True).and_(False)`) or given all of its arguments as parameters (`r.and_(True, False)`). The standard Python and operator, `&`, may also be used with ReQL.
 
 Calling `and_` with zero arguments will return `True`.
 

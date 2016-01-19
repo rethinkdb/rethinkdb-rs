@@ -26,7 +26,13 @@ __Example:__ Get the configuration for the `users` table.
 
 ```js
 > r.table('users').config().run(conn, callback);
-// Result passed to callback
+```
+
+<!-- stop -->
+
+Example return:
+
+```js
 {
     "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
     "name": "users",

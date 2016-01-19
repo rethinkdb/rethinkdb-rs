@@ -34,6 +34,8 @@ r.table("posts").map(function (post) {
 }).run(conn, callback);
 ```
 
+<!-- stop -->
+
 We can rewrite the previous query with `r.branch` too.
 
 ```js

@@ -30,7 +30,9 @@ time.add(number[, number, ...]) &rarr; time
 
 # Description #
 
-Sum two or more numbers, or concatenate two or more strings or arrays. (Note that ReQL will not perform type coercion. You cannot, for example, `add` a string and a number together.) The `add` command can be called in either prefix or infix form; both forms are equivalent.
+Sum two or more numbers, or concatenate two or more strings or arrays.
+
+The `add` command can be called in either prefix or infix form; both forms are equivalent. Note that ReQL will not perform type coercion. You cannot, for example, `add` a string and a number together.
 
 __Example:__ It's as easy as 2 + 2 = 4.
 

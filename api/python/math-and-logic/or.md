@@ -17,7 +17,9 @@ r.or_([bool, bool, ...]) &rarr; bool
 
 # Description #
 
-Compute the logical "or" of one or more values. The `or_` command can be used as an infix operator after its first argument (`r.expr(True).or_(False)`) or given all of its arguments as parameters (`r.or_(True, False)`). The standard Python or operator, `|`, may also be used with ReQL.
+Compute the logical "or" of one or more values.
+
+The `or_` command can be used as an infix operator after its first argument (`r.expr(True).or_(False)`) or given all of its arguments as parameters (`r.or_(True, False)`). The standard Python or operator, `|`, may also be used with ReQL.
 
 Calling `or_` with zero arguments will return `False`.
 

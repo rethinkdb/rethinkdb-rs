@@ -33,6 +33,8 @@ users = list(cursor)
 process_results(users)
 ```
 
+<!-- stop -->
+
 The equivalent query with a `for` loop would be:
 
 ```py

@@ -34,6 +34,8 @@ List users = cursor.toList();
 processResults(users);
 ```
 
+<!-- stop -->
+
 The equivalent query with a `for` loop would be:
 
 ```java

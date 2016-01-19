@@ -51,6 +51,8 @@ __Example:__ Reconfigure a table.
 r.table("superheroes").reconfigure().optArg("shards", 2).optArg("replicas", 1).run(conn);
 ```
 
+<!-- stop -->
+
 Result:
 
 ```json

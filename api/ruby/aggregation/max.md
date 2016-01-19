@@ -22,7 +22,9 @@ sequence.max({:index => <indexname>}) &rarr; element
 
 # Description #
 
-Finds the maximum element of a sequence. The `max` command can be called with:
+Finds the maximum element of a sequence.
+
+The `max` command can be called with:
 
 * a **field name**, to return the element of the sequence with the largest value in that field;
 * an **index** (the primary key or a secondary index), to return the element of the sequence with the largest value in that index;

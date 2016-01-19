@@ -14,9 +14,7 @@ r.geojson(geojson) &rarr; geometry
 
 # Description #
 
-Convert a [GeoJSON][] object to a ReQL geometry object.
-
-[GeoJSON]: http://geojson.org
+Convert a [GeoJSON](http://geojson.org) object to a ReQL geometry object.
 
 RethinkDB only allows conversion of GeoJSON objects which have ReQL equivalents: Point, LineString, and Polygon. MultiPoint, MultiLineString, and MultiPolygon are not supported. (You could, however, store multiple points, lines and polygons in an array and use a geospatial multi index with them.)
 

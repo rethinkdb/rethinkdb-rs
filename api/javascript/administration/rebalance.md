@@ -45,7 +45,13 @@ __Example:__ Rebalance a table.
 
 ```js
 > r.table('superheroes').rebalance().run(conn, callback);
-// Result passed to callback
+```
+
+<!-- stop -->
+
+Example return:
+
+```js
 {
   "rebalanced": 1,
   "status_changes": [

@@ -58,6 +58,8 @@ r.table("posts").insert({
 }).run(conn)
 ```
 
+<!-- stop -->
+
 The result will be:
 
 ```py

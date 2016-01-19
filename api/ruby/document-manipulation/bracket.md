@@ -27,6 +27,8 @@ __Example:__ What was Iron Man's first appearance in a comic?
 r.table('marvel').get('IronMan')[:first_appearance].run(conn)
 ```
 
+<!-- stop -->
+
 The `[]` command also accepts integer arguments as array offsets, like the [nth](/api/ruby/nth) command.
 
 __Example:__ Get the fourth element in a sequence. (The first element is position `0`, so the fourth element is position `3`.)

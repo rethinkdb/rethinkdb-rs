@@ -18,7 +18,9 @@ r.or([bool, bool, ...]) &rarr; bool
 
 # Description #
 
-Compute the logical "or" of one or more values. The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true,false)`).
+Compute the logical "or" of one or more values.
+
+The `or` command can be used as an infix operator after its first argument (`r.expr(true).or(false)`) or given all of its arguments as parameters (`r.or(true,false)`).
 
 Calling `or` with zero arguments will return `false`.
 

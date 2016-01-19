@@ -20,16 +20,13 @@ sequence.eq_join(predicate_function, right_table[, :index => 'id']) &rarr; seque
 # Description #
 
 
-<img alt="Data Modeling Illustration" class="api_command_illustration"
-    src="/assets/images/docs/api_illustrations/table-joins.png" />
+<img alt="Data Modeling Illustration" class="api_command_illustration" src="/assets/images/docs/api_illustrations/table-joins.png" />
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
 The result set of `eq_join` is a stream or array of objects. Each object in the returned set will be an object of the form `{ left: <left-document>, right: <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the <code><a href="/api/ruby/zip/">zip</a></code> command to merge the `left` and `right` fields together.
 
-**Example:** Match players with the games they've played against one another.
-
-The players table contains these documents:
+Suppose the players table contains these documents:
 
 ```rb
 [
@@ -52,6 +49,9 @@ The games table contains these documents:
 ]
 ```
 
+
+**Example:** Match players with the games they've played against one another.
+
 Join these tables using `game_id` on the player table and `id` on the games table:
 
 ```rb
@@ -73,6 +73,8 @@ This will return a result set such as the following:
     ...
 ]
 ```
+
+<!-- stop -->
 
 What you likely want is the result of using `zip` with that. For clarity, we'll use `without` to drop the `id` field from the games table (it conflicts with the `id` field for the players and it's redundant anyway), and we'll order it by the games.
 

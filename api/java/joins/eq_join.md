@@ -26,9 +26,7 @@ Join tables using a field or function on the left-hand sequence matching primary
 
 The result set of `eqJoin` is a stream or array of objects. Each object in the returned set will be an object of the form `{ "left": <left-document>, "right": <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the [zip](/api/java/zip/) command to merge the `left` and `right` fields together.
 
-**Example:** Match players with the games they've played against one another.
-
-The players table contains these documents (shown in JSON form):
+Suppose the players table contains these documents (shown in JSON form):
 
 ```json
 [
@@ -51,6 +49,8 @@ The games table contains these documents:
 ]
 ```
 
+**Example:** Match players with the games they've played against one another.
+
 Join these tables using `gameId` on the player table and `id` on the games table:
 
 ```java
@@ -72,6 +72,8 @@ This will return a result set such as the following:
     ...
 ]
 ```
+
+<!-- stop -->
 
 What you likely want is the result of using `zip` with that. For clarity, we'll use `without` to drop the `id` field from the games table (it conflicts with the `id` field for the players and it's redundant anyway), and we'll order it by the games.
 

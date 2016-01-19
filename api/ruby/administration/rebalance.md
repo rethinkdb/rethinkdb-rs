@@ -40,7 +40,13 @@ __Example:__ Rebalance a table.
 
 ```rb
 r.table('superheroes').rebalance().run(conn)
+```
 
+<!-- stop -->
+
+Example return:
+
+```rb
 {
   :rebalanced => 1,
   :status_changes => [

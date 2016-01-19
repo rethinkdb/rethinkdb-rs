@@ -32,6 +32,8 @@ Create a new connection to the database server. The keyword arguments are:
 
 If the connection cannot be established, a `ReqlDriverError` exception will be thrown.
 
+<!-- break -->
+
 {% infobox %}
 Using SSL with RethinkDB requires proxy software on the server, such as [Nginx][], [HAProxy][] or an SSL tunnel. RethinkDB will encrypt traffic and verify the CA certification to prevent [man-in-the-middle][mitm] attacks. Consult your proxy's documentation for more details.
 

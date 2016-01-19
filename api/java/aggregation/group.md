@@ -43,8 +43,6 @@ public class GroupedResult<G,V> {
 }
 ```
 
-__Example:__ Group games by player.
-
 Suppose that the table `games` has the following data:
 
 ```json
@@ -56,7 +54,7 @@ Suppose that the table `games` has the following data:
 ]
 ```
 
-Grouping games by player can be done with:
+__Example:__ Group games by player.
 
 ```java
 r.table("games").group("player").run(conn);
@@ -82,6 +80,8 @@ To show the returned data, we'll use JSON representation again, with `group` and
     }
 ]
 ```
+
+<!-- stop -->
 
 Commands chained after `group` will be called on each of these grouped
 sub-streams, producing grouped data.

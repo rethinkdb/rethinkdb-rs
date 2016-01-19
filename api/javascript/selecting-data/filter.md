@@ -49,6 +49,8 @@ r.table('users').filter({age: 30}).run(conn, callback);
 
 The predicate `{age: 30}` selects documents in the `users` table with an `age` field whose value is `30`. Documents with an `age` field set to any other value *or* with no `age` field present are skipped.
 
+<!-- stop -->
+
 While the `{field: value}` style of predicate is useful for exact matches, a more general way to write a predicate is to use the [row](/api/javascript/row) command with a comparison operator such as [eq](/api/javascript/eq) or [gt](/api/javascript/gt), or to use an anonymous function that returns `true` or `false`.
 
 ```js

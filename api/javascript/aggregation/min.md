@@ -25,7 +25,9 @@ sequence.min({index: <indexname>}) &rarr; element
 
 # Description #
 
-Finds the minimum element of a sequence. The `min` command can be called with:
+Finds the minimum element of a sequence.
+
+The `min` command can be called with:
 
 * a **field name**, to return the element of the sequence with the smallest value in that field;
 * an **index** (the primary key or a secondary index), to return the element of the sequence with the smallest value in that index;

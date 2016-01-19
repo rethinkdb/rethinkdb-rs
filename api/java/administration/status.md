@@ -33,6 +33,8 @@ __Example:__ Get a table's status.
 r.table("superheroes").status().run(conn);
 ```
 
+<!-- stop -->
+
 Result:
 
 ```json

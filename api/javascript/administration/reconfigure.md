@@ -55,7 +55,13 @@ __Example:__ Reconfigure a table.
 
 ```js
 > r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
-// Result passed to callback
+```
+
+<!-- stop -->
+
+Example return:
+
+```js
 {
   "reconfigured": 1,
   "config_changes": [
