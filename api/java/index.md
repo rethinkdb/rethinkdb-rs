@@ -2828,12 +2828,13 @@ r.table("posts").map(post -> post.merge(
 any.typeOf() &rarr; string
 {% endapibody %}
 
-Gets the type of a value.
+Gets the type of a ReQL query's return value.
 
 __Example:__ Get the type of a string.
 
 ```java
 r.expr("foo").typeOf().run(conn);
+// result: "STRING"
 ```
 
 [Read more about this command &rarr;](type_of/)

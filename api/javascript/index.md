@@ -2864,12 +2864,14 @@ r.table('posts').map(function (post) {
 any.typeOf() &rarr; string
 {% endapibody %}
 
-Gets the type of a value.
+Gets the type of a ReQL query's return value.
 
 __Example:__ Get the type of a string.
 
 ```js
-r.expr("foo").typeOf().run(conn, callback)
+r.expr("foo").typeOf().run(conn, callback);
+// Result passed to callback
+"STRING"
 ```
 
 [Read more about this command &rarr;](type_of/)

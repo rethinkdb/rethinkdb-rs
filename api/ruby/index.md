@@ -2743,12 +2743,13 @@ r.table('posts').map { |post|
 any.type_of() &rarr; string
 {% endapibody %}
 
-Gets the type of a value.
+Gets the type of a ReQL query's return value.
 
 __Example:__ Get the type of a string.
 
 ```rb
-r.expr("foo").type_of().run(conn)
+> r.expr("foo").type_of().run(conn)
+"STRING"
 ```
 
 [Read more about this command &rarr;](type_of/)
