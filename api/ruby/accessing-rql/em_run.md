@@ -12,13 +12,15 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-query.em_run(conn, block) &rarr; cursor
-query.em_run(conn, block) &rarr; object
+query.em_run(conn[, options], block) &rarr; cursor
+query.em_run(conn[, options], block) &rarr; object
 {% endapibody %}
 
 # Description #
 
 Run a query asynchronously on a connection using [EventMachine](http://rubyeventmachine.com). If the query returns a sequence (including a stream), the block will be called once with each element of the sequence. Otherwise, the block will be called just once with the returned value.
+
+All the options for the [run](/api/ruby/run/) command are available to `em_run`; consult the `run` documentation for a list and explanations.
 
 The `em_run` command returns a `QueryHandle` instance. The `QueryHandle` will be closed when all results have been received, or when EventMachine stops running. You can explicitly close it with the `close` method.
 
@@ -27,6 +29,17 @@ __Example:__ return a list of users in an EventMachine loop.
 ```rb
 EventMachine.run {
   r.table('users').order_by(:index => 'username').em_run(conn) { |row|
+    # do something with returned row data
+    p row
+  }
+}
+```
+
+__Example:__ The same as above, but allow outdated data for potentially faster reads. 
+
+```rb
+EventMachine.run {
+  r.table('users').order_by(:index => 'username').em_run(conn, :read_mode => 'outdated') { |row|
     # do something with returned row data
     p row
   }

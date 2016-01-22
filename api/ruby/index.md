@@ -220,8 +220,8 @@ __Example:__ Return the server name and UUID.
 ## [em_run](em_run/) ##
 
 {% apibody %}
-query.em_run(conn, block) &rarr; cursor
-query.em_run(conn, block) &rarr; object
+query.em_run(conn[, options], block) &rarr; cursor
+query.em_run(conn[, options], block) &rarr; object
 {% endapibody %}
 
 Run a query asynchronously on a connection using [EventMachine](http://rubyeventmachine.com). If the query returns a sequence (including a stream), the block will be called once with each element of the sequence. Otherwise, the block will be called just once with the returned value.
