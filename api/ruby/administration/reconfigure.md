@@ -37,7 +37,7 @@ The return value of `reconfigure` is an object with three fields:
 
 For `config_changes` and `status_changes`, see the [config](/api/ruby/config) and [status](/api/ruby/status) commands for an explanation of the objects returned in the `old_val` and `new_val` fields.
 
-A table will lose availability temporarily after `reconfigure` is called; use the [table_status](/api/ruby/table_status) command to determine when the table is available again.
+A table will lose availability temporarily after `reconfigure` is called; use the [wait](/api/ruby/wait) command to wait for the table to become available again, or [status](/api/ruby/status) to check if the table is available for writing.
 
 **Note:** Whenever you call `reconfigure`, the write durability will be set to `hard` and the write acknowledgments will be set to `majority`; these can be changed by using the `config` command on the table.
 
