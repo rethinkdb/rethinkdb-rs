@@ -25,12 +25,15 @@ Each deployment provided by Compose is configured as a high-availability cluster
 
 If you haven't already added billing information to your Compose account, you'll be prompted to do so before deployment.
 
-Compose uses SSH tunneling to provide secure access to your hosted cluster. After your RethinkDB deployment is created, the admin console will give you the host and port information that you need to use to set up the SSH tunnel. Once the tunnel is set up on your system, you can work with the hosted RethinkDB instance the same way you'd work with a local installation of the database.
+You can connect to your hosted cluster on Compose in one of two ways: via SSL or via SSH tunneling. With SSL, you can get a direct Admin URL and driver connection URL to your RethinkDB instance. SSL driver connections are only supported with the official RethinkDB drivers and the community-supported Go driver. For more details, read Compose's [RethinkDB and SSL][cssl] blog post.
 
-Read Compose's [overview][over] of RethinkDB support and their [How to Connect to RethinkDB][conn] documentation for more information.
+SSH tunneling lets you connect directly to the virtual private network of your RethinkDB cluster. This is more complicated to set up, but lets you work with the hosted RethinkDB instance the same way you'd work with a local installation, and it can work with any community RethinkDB driver. After your RethinkDB deployment is created, the admin console will give you the host and port information that you need to use to set up the SSH tunnel.
 
+Read Compose's [overview][over] of RethinkDB support and their [Connecting to RethinkDB][conn] documentation for more information.
+
+[cssl]: https://www.compose.io/articles/rethinkdb-and-ssl-think-secure/
 [over]: https://docs.compose.io/getting-started/rethinkdb-deployments.html
-[conn]: https://docs.compose.io/common-questions/how-to-connect-to-rethinkdb.html
+[conn]: https://help.compose.io/docs/connecting-to-rethinkdb
 
 # Deploying on AWS #
 
