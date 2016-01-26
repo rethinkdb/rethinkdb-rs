@@ -34,7 +34,7 @@ If successful, `create_index` will return an object of the form `{:created => 1}
 
 {% infobox %}
 Note that an index may not be immediately available after creation. If your application needs to use indexes immediately after creation, use the [index_wait](/api/ruby/index_wait) command to ensure the indexes are ready before use.
-{% infobox %}
+{% endinfobox %}
 
 __Example:__ Create a simple index based on the field `post_id`.
 
