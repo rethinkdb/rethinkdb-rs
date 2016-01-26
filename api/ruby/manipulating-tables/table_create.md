@@ -50,6 +50,8 @@ The [data type](/docs/data-types/) of a primary key is usually a string (like a 
 
 [ci]: /docs/secondary-indexes/ruby/#compound-indexes
 
+Tables will be available for writing when the command returns.
+
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
 ```rb
