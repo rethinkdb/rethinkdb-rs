@@ -26,10 +26,22 @@ Create a new connection to the database server. `connection` returns a builder o
 - `authKey()`: the authentication key (default none).
 - `timeout()`: timeout period in seconds for the connection to be opened (default `20`).
 - `connect()`: instantiate a connection object with the parameters previously passed to the builder.
+- `certFile()`: a path to an SSL CA certificate.
+- `sslContext()`: an instance of an [SSLContext](https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/SSLContext.html) class to use for SSL connections.
+
+Either `certFile` or `sslContext` must be supplied to make an SSL connection to the RethinkDB server. Only one should be used.
 
 If the connection cannot be established, a `ReqlDriverError` will be thrown.
 
 <!-- break -->
+
+{% infobox %}
+Using SSL with RethinkDB requires proxy software on the server, such as [Nginx][], [HAProxy][] or an SSL tunnel. RethinkDB will encrypt traffic and verify the CA certification to prevent [man-in-the-middle][mitm] attacks. Consult your proxy's documentation for more details.
+
+[Nginx]: http://nginx.org/
+[HAProxy]: http://www.haproxy.org/
+[mitm]: http://en.wikipedia.org/wiki/Man-in-the-middle_attack
+{% endinfobox %}
 
 The authentication key can be set from the RethinkDB command line tool. Once set, client connections must provide the key as an option to `run` in order to make the connection. For more information, read "Using the RethinkDB authentication system" in the documentation on [securing your cluster](http://rethinkdb.com/docs/security/).
 
@@ -47,5 +59,17 @@ Connection conn = r.connection()
     .port(28015)
     .dbname("marvel")
     .authKey("hunter2")
+    .connect();
+```
+
+__Example:__ Open a new connection to the database using an SSL proxy.
+
+```java
+Connection conn = r.connection()
+    .hostname("localhost")
+    .port(28015)
+    .dbname("marvel")
+    .authKey("hunter2")
+    .certFile("/path/to/ca.crt")
     .connect();
 ```

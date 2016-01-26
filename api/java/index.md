@@ -45,6 +45,10 @@ Create a new connection to the database server. `connection` returns a builder o
 - `authKey()`: the authentication key (default none).
 - `timeout()`: timeout period in seconds for the connection to be opened (default `20`).
 - `connect()`: instantiate a connection object with the parameters previously passed to the builder.
+- `certFile()`: a path to an SSL CA certificate.
+- `sslContext()`: an instance of an [SSLContext](https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/SSLContext.html) class to use for SSL connections.
+
+Either `certFile` or `sslContext` must be supplied to make an SSL connection to the RethinkDB server. Only one should be used.
 
 If the connection cannot be established, a `ReqlDriverError` will be thrown.
 
