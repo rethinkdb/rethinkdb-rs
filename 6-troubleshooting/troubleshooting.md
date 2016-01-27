@@ -321,3 +321,23 @@ json.dumps(today)
 
 '{"timezone": "-07:00", "$reql_type$": "TIME", "epoch_time": 1433368112.289}'
 ```
+
+## "Cannot use r.row in nested queries" error ##
+
+The JavaScript and Python drivers support a convenience command, `row()`, which simply returns the currently selected document for use with other ReQL functions in the query. However, `row` won't work within nested queries. The solution to this error is to rewrite the `row` clause as an anonymous function. So the following:
+
+```py
+r.table('users').filter(
+    r.row['name'] == r.table('prizes').get('winner')
+).run(conn)
+```
+
+Can be rewritten with this function instead:
+
+```py
+r.table('users').filter(
+    lambda doc: doc['name'] == r.table('prizes').get('winner')
+).run(conn)
+```
+
+Any query, nested or otherwise, can be written with an anonymous function instead of `row`. (The official Ruby and Java drivers don't include `row` at all.)
