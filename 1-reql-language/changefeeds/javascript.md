@@ -98,6 +98,8 @@ The `includeStates` optional argument to `changes` allows you to receive extra "
 
 By specifying `true` to the `includeInitial` optional argument, the changefeed stream will start with the current contents of the table or selection being monitored. The initial results will have `new_val` fields, but no `old_val` fields, so it's easy to distinguish them from change events.
 
+If an initial result for a document has been sent and a change is made to that document that would move it to the unsent part of the result set (for instance, a changefeed monitors the top 100 posters, the first 50 have been sent, and poster 48 has become poster 52), an "uninitial" notification will be sent, with an `old_val` field but no `new_val` field. This is distinct from a delete change event, which would have a `new_val` of `null`. (In the top 100 posters example, that could indicate the poster has been deleted, or has dropped out of the top 100.)
+
 If you specify `true` for both `includeStates` and `includeInitial`, the changefeed stream will start with a `{state: 'initializing'}` status document, followed by initial values. A `{state: 'ready'}` status document will be sent when all the initial values have been sent.
 
 # Handling latency #
