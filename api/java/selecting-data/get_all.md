@@ -11,7 +11,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.getAll(key[, key2...]) &rarr; selection
+table.getAll([key, key2...]) &rarr; selection
 {% endapibody %}
 
 <img src="/assets/images/docs/api_illustrations/get-all.png" class="api_command_illustration" />
@@ -47,5 +47,7 @@ r.do(
     heroines -> r.table("villains").getAll(r.args(heroines))
 ).run(conn);
 ```
+
+Calling `getAll` with zero arguments&mdash;which could happen in this example if the `heroines` list had no elements&mdash;will return nothing, i.e., a zero length stream.
 
 Secondary indexes can be used in extremely powerful ways with `getAll` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.

@@ -782,7 +782,7 @@ r.table("posts").get("a9849eef-7176-4411-935b-79a6e3c56a74").run(conn);
 ## [getAll](get_all/) ##
 
 {% apibody %}
-table.getAll(key[, key2...]) &rarr; selection
+table.getAll([key, key2...]) &rarr; selection
 {% endapibody %}
 
 Get all documents where the given value matches the value of the requested index.

@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.get_all(key[, key2...], [, :index => 'id']) &rarr; selection
+table.get_all([key, key2...], [, :index => 'id']) &rarr; selection
 {% endapibody %}
 
 <img src="/assets/images/docs/api_illustrations/get-all.png" class="api_command_illustration" />
@@ -46,5 +46,7 @@ r.table('heroes').get_all('f', :index => 'gender')['id'].coerce_to('array').do {
     |heroines| r.table('villains').get_all(r.args(heroines))
 }.run(conn)
 ```
+
+Calling `get_all` with zero arguments&mdash;which could happen in this example if the `heroines` list had no elements&mdash;will return nothing, i.e., a zero length stream.
 
 Secondary indexes can be used in extremely powerful ways with `get_all` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
