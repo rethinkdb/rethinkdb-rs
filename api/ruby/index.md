@@ -1217,11 +1217,12 @@ A shorter way to execute this query is to use [count](/api/ruby/count).
 {% apibody %}
 sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
-string.count() &rarr; number
-object.count() &rarr; number
 {% endapibody %}
 
-Counts the number of elements in a sequence or key/value pairs in an object, or returns the size of a string or binary object.
+Counts the number of elements in a sequence.  If called with a value,
+counts the number of times that value occurs in the sequence.  If
+called with a predicate function, counts the number of elements in the
+sequence where that function returns `true`.
 
 __Example:__ Count the number of users.
 
