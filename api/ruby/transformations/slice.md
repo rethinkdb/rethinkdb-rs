@@ -17,6 +17,7 @@ selection.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =
 stream.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
 array.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
 binary.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; binary
+string.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; string
 {% endapibody %}
 
 # Description #
@@ -30,6 +31,10 @@ If `end_index` is past the end of the sequence, all elements from `start_index` 
 Negative `start_index` and `end_index` values are allowed with arrays; in that case, the returned range counts back from the array's end. That is, the range `(-2)` returns the last two elements, and the range of `(2,-1)` returns the second element through the next-to-last element of the range. An error will be raised on a negative `start_index` or `end_index` with non-arrays. (An `end_index` of &minus;1 *is* allowed with a stream if `right_bound` is closed; this behaves as if no `end_index` was specified.)
 
 If `slice` is used with a [binary](/api/ruby/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
+
+With a string, `slice` behaves similarly, with the indexes referring to Unicode codepoints. String indexes start at `0`. (Note that [combining codepoints][cc] are counted separately.)
+
+[cc]: https://en.wikipedia.org/wiki/Combining_character
 
 If you are only specifying the indexes and not the bounding options, you may use Ruby's range operator as a shorthand: `[start_index..end_index]`. Note that when you use this shorthand `right_bound` will be `closed` and thus include `end_index`.
 
@@ -60,11 +65,13 @@ r.table('users').order_by(:index => 'ticket').slice(x, y, :right_bound => 'close
 __Example:__ Return the elements of an array from the second through two from the end (that is, not including the last two).
 
 ```rb
-r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn)
+> r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn)
+[2,3]
 ```
 
-Result:
+__Example:__ Return the third through fifth characters of a string.
 
 ```rb
-[2,3]
+> r.expr("rutabaga").slice(2,5).run(conn)
+"tab"
 ```

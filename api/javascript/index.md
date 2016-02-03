@@ -1126,6 +1126,7 @@ selection.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}])
 stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
 array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
 binary.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; binary
+string.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; string
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1133,7 +1134,7 @@ Return the elements of a sequence within the specified range.
 __Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```js
-r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback)
+r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback);
 ```
 
 [Read more about this command &rarr;](slice/)

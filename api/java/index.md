@@ -1044,6 +1044,7 @@ selection.slice(startIndex[, endIndex]) &rarr; selection
 stream.slice(startIndex[, endIndex]) &rarr; stream
 array.slice(startIndex[, endIndex]) &rarr; array
 binary.slice(startIndex[, endIndex]) &rarr; binary
+string.slice(startIndex[, endIndex]) &rarr; string
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.

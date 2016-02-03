@@ -1033,6 +1033,7 @@ selection.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =
 stream.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
 array.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
 binary.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; binary
+string.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; string
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
