@@ -12,6 +12,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 # Administration tools
 
+- [rethinkdb-cli](https://github.com/athlite/rethinkdb-cli) by [@athlite](https://github.com/athlite)  
+  A Node.js REPL for RethinkDB. 
+
 - [Chateau](https://github.com/neumino/chateau) by [@neumino](https://github.com/neumino)  
   An administrative interface for your data (like phpMyAdmin for RethinkDB).
 
@@ -21,17 +24,17 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [rethink-miner](https://github.com/baruch/rethink-miner) by [@baruch](https://github.com/baruch)  
   Stores queries and their results, and displays them from a web interface.
 
-- [recli](https://github.com/stiang/recli)  
+- [recli](https://github.com/stiang/recli) by [@stiang](https://github.com/stiang)  
   CLI to run ReQL queries in JavaScript.
 
-- [rethinkdb-cli](https://github.com/byterussian/rethinkdb-cli)  
+- [rethinkdb-cli](https://github.com/byterussian/rethinkdb-cli) by [@byterussian](https://github.com/byterussian)  
   CLI to run ReQL queries in Ruby.
 
 - [phpReAdmin](https://github.com/billbarsch/phpReAdmin) by [@billbarsch](https://github.com/billbarsch)  
   Web frontend written in PHP to create/rename/update/delete RethinkDB databases/tables/docs and run ReQL queries in PHP.
 
 - [rethinkdb_nightly](https://github.com/robconery/rethinkdb_nightly) by [@robconery](https://github.com/robconery)  
-  A node module that will execute a nightly backup and push it to S3.
+  A Node.js module that will execute a nightly backup and push it to S3.
 
 # Logging tools
 

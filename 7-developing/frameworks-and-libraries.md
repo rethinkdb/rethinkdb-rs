@@ -1,6 +1,6 @@
 ---
 layout: documentation
-title: Integrations
+title: Third-party libraries
 docs_active: frameworks-and-libraries
 permalink: docs/frameworks-and-libraries/
 ---
@@ -40,6 +40,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [second-thought](https://github.com/robconery/second-thought) by [@robconery](https://github.com/robconery)  
   A light abstraction layer over RethinkDB adding methods you "wished you had."
 
+- [rethinkdb-fixtures](https://github.com/athlite/rethinkdb-fixtures) by [@athlite](https://github.com/athlite)  
+  Easily load fixtures into RethinkDB for testing purposes.
+
 ## ORMs
 
 - [js-data-rethinkdb](https://github.com/js-data/js-data-rethinkdb) by [@jmdobry](https://github.com/jmdobry)  
@@ -66,6 +69,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 - [sails-hook-thinky](https://github.com/mwielbut/sails-hook-thinky) by [@mwielbut](https://github.com/mwielbut)  
   A hook to use [Thinky][] with [Sails](http://sailsjs.org/).
+
+- [hapi-rethinkdb-crud](https://github.com/athlite/hapi-rethinkdb-crud) by [@athlite](https://github.com/athlite)  
+  Basic CRUD mapping between [hapi](http://hapijs.com) and RethinkDB.
 
 # Python libraries
 
