@@ -72,7 +72,6 @@ r.table('games').group('player').ungroup().sample(1).run(conn)
 Result:
 
 ```py
-```java
 r.table("games").group("player").max("points").g("points").ungroup()
  .orderBy(r.desc("reduction")).run(conn);
 ```
@@ -88,7 +87,6 @@ r.table("games").group("player").max("points").g("points").ungroup()
         "reduction": 7
     }
 ]
-```
 ```
 
 Note that if you didn't call `ungroup`, you would instead select one
