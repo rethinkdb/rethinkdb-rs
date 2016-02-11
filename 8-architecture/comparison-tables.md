@@ -131,7 +131,7 @@ RethinkDB can be manually deployed on cloud platforms such as AWS.
 
 |           | RethinkDB | MongoDB |
 | :-------- | --------- | ------- |
-| CLI tools | Admin CLI | JavaScript interactive shell |
+| CLI tools | ReQL admin commands | JavaScript interactive shell |
 | UI tools  | Web-based admin UI | Simple HTTP interface |
 | Failover  | Auto primary re-election | Replica-sets with auto primary re-election |
 | Backup    | `rethinkdb-dump` | `mongodump` or snapshotting |
@@ -143,9 +143,9 @@ shell](http://docs.mongodb.org/manual/reference/program/mongo/) that
 can be used for inspecting data, testing queries, creating indexes, maintenance
 scripts, and other administrative functions.
 
-RethinkDB has an administration CLI that can be attached to any node in the
-cluster and provides fine grained administrative control of the cluster
-resources. The command-line client offers integrated help and auto-completion.
+RethinkDB administration tasks, including fine-grained cluster and server
+configuration, can be scripted in any language with a ReQL driver. These
+commands can also be executed in the admin UI's Data Explorer.
 
 ## UI tools ##
 
