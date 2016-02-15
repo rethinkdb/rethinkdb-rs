@@ -2657,7 +2657,8 @@ r.table("players").get("86be93eb-a112-48f5-a829-15b2cb49de1d").do_(
 ## [branch](branch/) ##
 
 {% apibody %}
-r.branch(test, true_action[, test2, else_action, ...], false_action) &rarr; any
+r.branch(test, true_action[, test2, test2_action, ...], false_action) &rarr; any
+test.branch(true_action[, test2, test2_action, ...], false_action) &rarr; any
 {% endapibody %}
 
 Perform a branching conditional equivalent to `if-then-else`.
