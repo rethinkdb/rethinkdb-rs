@@ -15,18 +15,18 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-array.deleteAt(index [,endIndex]) &rarr; array
+array.deleteAt(offset [,endOffset]) &rarr; array
 {% endapibody %}
 
 # Description #
 
 Remove one or more elements from an array at a given index. Returns the modified array. (Note: `deleteAt` operates on arrays, not documents; to delete documents, see the [delete](/api/javascript/delete) command.)
 
-If only `index` is specified, `deleteAt` removes the element at that index. If both `index` and `endIndex` are specified, `deleteAt` removes the range of elements between `index` and `endIndex`, inclusive of `index` but not inclusive of `endIndex`.
+If only `offset` is specified, `deleteAt` removes the element at that index. If both `offset` and `endOffset` are specified, `deleteAt` removes the range of elements between `offset` and `endOffset`, inclusive of `offset` but not inclusive of `endOffset`.
 
-If `endIndex` is specified, it must not be less than `index`. Both `index` and `endIndex` must be within the array's bounds (i.e., if the array has 10 elements, an `index` or `endIndex` of 10 or higher is invalid).
+If `endOffset` is specified, it must not be less than `offset`. Both `offset` and `endOffset` must be within the array's bounds (i.e., if the array has 10 elements, an `offset` or `endOffset` of 10 or higher is invalid).
 
-By using a negative `index` you can delete from the end of the array. `-1` is the last element in the array, `-2` is the second-to-last element, and so on. You may specify a negative `endIndex`, although just as with a positive value, this will not be inclusive. The range `(2,-1)` specifies the third element through the next-to-last element.
+By using a negative `offset` you can delete from the end of the array. `-1` is the last element in the array, `-2` is the second-to-last element, and so on. You may specify a negative `endOffset`, although just as with a positive value, this will not be inclusive. The range `(2,-1)` specifies the third element through the next-to-last element.
 
 __Example:__ Delete the second element of an array.
 

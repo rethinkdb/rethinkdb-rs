@@ -1122,10 +1122,10 @@ r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
 ## [slice](slice/) ##
 
 {% apibody %}
-selection.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
-stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
-array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
-binary.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; binary
+selection.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
+stream.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
+array.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; array
+binary.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; binary
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1701,7 +1701,7 @@ r.table('players').hasFields('games_won').run(conn, callback)
 ## [insertAt](insert_at/) ##
 
 {% apibody %}
-array.insertAt(index, value) &rarr; array
+array.insertAt(offset, value) &rarr; array
 {% endapibody %}
 
 Insert a value in to an array at a given index. Returns the modified array.
@@ -1717,7 +1717,7 @@ r.expr(["Iron Man", "Spider-Man"]).insertAt(1, "Hulk").run(conn, callback)
 ## [spliceAt](splice_at/) ##
 
 {% apibody %}
-array.spliceAt(index, array) &rarr; array
+array.spliceAt(offset, array) &rarr; array
 {% endapibody %}
 
 Insert several values in to an array at a given index. Returns the modified array.
@@ -1733,7 +1733,7 @@ r.expr(["Iron Man", "Spider-Man"]).spliceAt(1, ["Hulk", "Thor"]).run(conn, callb
 ## [deleteAt](delete_at/) ##
 
 {% apibody %}
-array.deleteAt(index [,endIndex]) &rarr; array
+array.deleteAt(offset [,endOffset]) &rarr; array
 {% endapibody %}
 
 Remove one or more elements from an array at a given index. Returns the modified array. (Note: `deleteAt` operates on arrays, not documents; to delete documents, see the [delete](/api/javascript/delete) command.)
@@ -1751,7 +1751,7 @@ __Example:__ Delete the second element of an array.
 ## [changeAt](change_at/) ##
 
 {% apibody %}
-array.changeAt(index, value) &rarr; array
+array.changeAt(offset, value) &rarr; array
 {% endapibody %}
 
 Change a value in an array at a given index. Returns the modified array.

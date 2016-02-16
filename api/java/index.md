@@ -1040,10 +1040,10 @@ r.table("marvel").orderBy("belovedness").limit(10).run(conn);
 ## [slice](slice/) ##
 
 {% apibody %}
-selection.slice(startIndex[, endIndex]) &rarr; selection
-stream.slice(startIndex[, endIndex]) &rarr; stream
-array.slice(startIndex[, endIndex]) &rarr; array
-binary.slice(startIndex[, endIndex]) &rarr; binary
+selection.slice(startOffset[, endOffset]) &rarr; selection
+stream.slice(startOffset[, endOffset]) &rarr; stream
+array.slice(startOffset[, endOffset]) &rarr; array
+binary.slice(startOffset[, endOffset]) &rarr; binary
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1606,7 +1606,7 @@ r.table("players").hasFields("games_won").run(conn);
 ## [insertAt](insert_at/) ##
 
 {% apibody %}
-array.insertAt(index, value) &rarr; array
+array.insertAt(offset, value) &rarr; array
 {% endapibody %}
 
 Insert a value in to an array at a given index. Returns the modified array.
@@ -1622,7 +1622,7 @@ r.expr(r.array("Iron Man", "Spider-Man")).insertAt(1, "Hulk").run(conn);
 ## [spliceAt](splice_at/) ##
 
 {% apibody %}
-array.spliceAt(index, array) &rarr; array
+array.spliceAt(offset, array) &rarr; array
 {% endapibody %}
 
 Insert several values into an array at the given index. Returns the modified array.
@@ -1639,7 +1639,7 @@ r.expr(r.array("Iron Man", "Spider-Man"))
 ## [deleteAt](delete_at/) ##
 
 {% apibody %}
-array.deleteAt(index [,endIndex]) &rarr; array
+array.deleteAt(offset [,endOffset]) &rarr; array
 {% endapibody %}
 
 Remove one or more elements from an array at a given index. Returns the modified array. (Note: `deleteAt` operates on arrays, not documents; to delete documents, see the [delete](/api/java/delete) command.)
@@ -1658,7 +1658,7 @@ r.expr(r.array("a", "b", "c", "d", "e", "f")).deleteAt(1).run(conn);
 ## [changeAt](change_at/) ##
 
 {% apibody %}
-array.changeAt(index, value) &rarr; array
+array.changeAt(offset, value) &rarr; array
 {% endapibody %}
 
 Change a value in an array at a given index. Returns the modified array.

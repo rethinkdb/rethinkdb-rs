@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-array.splice_at(index, array) &rarr; array
+array.splice_at(offset, array) &rarr; array
 {% endapibody %}
 
 # Description #
