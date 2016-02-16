@@ -216,7 +216,8 @@ A changefeed is handled like any other stream; when you pass a block to `em_run`
 
 In addition, there are changefeed-specific methods that may be defined.
 
-* `on_initial_val`: if the changefeed returns initial values (such as `.get.changes` or `.order_by.limit.changes`), those initial values will be passed to this method.
+* `on_initial_val`: if the changefeed returns initial values (`include_initial` has been specified as an option to [changes](/api/ruby/changes/), those values will be passed to this method.
+* `on_uninitial_val`: a changefeed that returns initial values may also return "uninitial" values to indicate a document already sent as an initial value has been changed (see the `changes` documentation for details); those values, if any, will be passed to this method.
 * `on_change`: changes will be passed to this method.
 * `on_change_error`: if the feed includes a document specifying errors that do not cause the feed to abort (for instance, a notification the server discarded some changes), those errors will be passed to this method.
 * `on_state`: a feed may include documents specifying the state of the stream; those documents will be passed to this function if defined.
