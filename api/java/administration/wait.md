@@ -16,7 +16,7 @@ io:
 {% apibody %}
 table.wait() &rarr; object
 database.wait() &rarr; object
-r.wait() &rarr; object
+r.wait(table | database) &rarr; object
 {% endapibody %}
 
 # Description #
@@ -31,7 +31,9 @@ The `wait` command takes two optional arguments using [optArg](/api/java/optarg/
 
 The return value is an object consisting of a single field, `ready`. The value is an integer indicating the number of tables waited for. It will always be `1` when `wait` is called on a table, and the total number of tables when called on a database.
 
-If `wait` is called with no table or database specified (the `r.wait()` form), it will wait on all the tables in the default database (set with the [connect](/api/java/connect/) command's `db` parameter, which defaults to `test`).
+{% infobox %}
+Versions of RethinkDB prior to 2.3 allowed `wait` to be called without a table or database specified. This is no longer valid; `wait` requires explicit selection of a database or table.
+{% endinfobox %}
 
 __Example:__ Wait on a table to be ready.
 

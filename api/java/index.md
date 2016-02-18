@@ -3334,7 +3334,7 @@ r.table("superheroes").status().run(conn);
 {% apibody %}
 table.wait() &rarr; object
 database.wait() &rarr; object
-r.wait() &rarr; object
+r.wait(table | database) &rarr; object
 {% endapibody %}
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.
