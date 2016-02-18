@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-array.changeAt(index, value) &rarr; array
+array.changeAt(offset, value) &rarr; array
 {% endapibody %}
 
 # Description #

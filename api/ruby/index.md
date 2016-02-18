@@ -1029,10 +1029,10 @@ r.table('marvel').order_by(:belovedness).limit(10).run(conn)
 ## [slice, []](slice/) ##
 
 {% apibody %}
-selection.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; selection
-stream.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
-array.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
-binary.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; binary
+selection.slice(start_offset[, end_offset, :left_bound => 'closed', :right_bound =>'open']) &rarr; selection
+stream.slice(start_offset[, end_offset, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
+array.slice(start_offset[, end_offset, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
+binary.slice(start_offset[, end_offset, :left_bound => 'closed', :right_bound =>'open']) &rarr; binary
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1585,7 +1585,7 @@ r.table('players').has_fields(:games_won).run(conn)
 ## [insert_at](insert_at/) ##
 
 {% apibody %}
-array.insert_at(index, value) &rarr; array
+array.insert_at(offset, value) &rarr; array
 {% endapibody %}
 
 Insert a value in to an array at a given index. Returns the modified array.
@@ -1601,7 +1601,7 @@ r.expr(["Iron Man", "Spider-Man"]).insert_at(1, "Hulk").run(conn)
 ## [splice_at](splice_at/) ##
 
 {% apibody %}
-array.splice_at(index, array) &rarr; array
+array.splice_at(offset, array) &rarr; array
 {% endapibody %}
 
 Insert several values in to an array at a given index. Returns the modified array.
@@ -1617,7 +1617,7 @@ r.expr(["Iron Man", "Spider-Man"]).splice_at(1, ["Hulk", "Thor"]).run(conn)
 ## [delete_at](delete_at/) ##
 
 {% apibody %}
-array.delete_at(index [,endIndex]) &rarr; array
+array.delete_at(offset [,end_offset]) &rarr; array
 {% endapibody %}
 
 Remove one or more elements from an array at a given index. Returns the modified array. (Note: `delete_at` operates on arrays, not documents; to delete documents, see the [delete](/api/ruby/delete) command.)
@@ -1635,7 +1635,7 @@ __Example:__ Delete the second element of an array.
 ## [change_at](change_at/) ##
 
 {% apibody %}
-array.change_at(index, value) &rarr; array
+array.change_at(offset, value) &rarr; array
 {% endapibody %}
 
 Change a value in an array at a given index. Returns the modified array.
