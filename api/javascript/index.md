@@ -3106,14 +3106,14 @@ r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 table.getNearest(point, {index: 'indexname'[, maxResults: 100, maxDist: 100000, unit: 'm', geoSystem: 'WGS84']}) &rarr; array
 {% endapibody %}
 
-Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
+Return a list of documents closest to a specified point based on a geospatial index, sorted in order of increasing distance.
 
-__Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
+__Example:__ Return a list of the closest 25 enemy hideouts to the secret base.
 
 ```js
 var secretBase = r.point(-122.422876,37.777128);
 r.table('hideouts').getNearest(secretBase,
-    {index: 'location', maxDist: 5000}
+    {index: 'location', maxResults: 25}
 ).run(conn, callback)
 ```
 

@@ -3023,14 +3023,14 @@ r.table('parks').get_intersecting(circle1, index='area').run(conn)
 table.get_nearest(point, index='indexname'[, max_results=100, max_dist=100000, unit='m', geo_system='WGS84']) &rarr; array
 {% endapibody %}
 
-Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
+Return a list of documents closest to a specified point based on a geospatial index, sorted in order of increasing distance.
 
-__Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
+__Example:__ Return a list of the closest 25 enemy hideouts to the secret base.
 
 ```py
 secret_base = r.point(-122.422876, 37.777128)
 r.table('hideouts').get_nearest(secret_base, index='location',
-    max_dist=5000).run(conn)
+    max_results=25).run(conn)
 ```
 
 [Read more about this command &rarr;](get_nearest/)
