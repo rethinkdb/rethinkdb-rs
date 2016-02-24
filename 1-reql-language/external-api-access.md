@@ -97,7 +97,7 @@ number of their followers.
 Let's update our stargazer data with this additional information:
 
 ```javascript
-r.table('stargazers').update(r.http(r.row('url')))
+r.table('stargazers').update(r.http(r.row('url')), {nonAtomic: true})
 ```
 
 The update command will go through every row and issue an API request
