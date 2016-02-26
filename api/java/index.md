@@ -1226,6 +1226,27 @@ A shorter way to execute this query is to use [count](/api/java/count).
 
 [Read more about this command &rarr;](reduce/)
 
+## [fold](fold/) ##
+
+{% apibody %}
+sequence.fold(base, function) &rarr; value
+sequence.fold(base, function).optArg("emit", function)[.optArg("final_emit", function)] &rarr; sequence
+{% endapibody %}
+
+Apply a function to a sequence in order, maintaining state via an accumulator. The `fold` command returns either a single value or a new sequence.
+
+__Example:__ Concatenate words from a list.
+
+```java
+r.table("words").orderBy("id").fold("",
+    (acc, word) -> acc.add(r.branch(r.eq(acc, ""), "", ", ")).add(word)
+).run(conn);
+```
+
+(This example could be implemented with `reduce`, but `fold` will preserve the order when `words` is a RethinkDB table or other stream, which is not guaranteed with `reduce`.)
+
+[Read more about this command &rarr;](fold/)
+
 ## [count](count/) ##
 
 {% apibody %}

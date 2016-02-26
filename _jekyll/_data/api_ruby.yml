@@ -139,6 +139,8 @@
           permalink: ungroup
         - name: reduce
           permalink: reduce
+        - name: fold
+          permalink: fold
         - name: count
           permalink: count
         - name: sum

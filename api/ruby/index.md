@@ -1213,6 +1213,27 @@ A shorter way to execute this query is to use [count](/api/ruby/count).
 
 [Read more about this command &rarr;](reduce/)
 
+## [fold](fold/) ##
+
+{% apibody %}
+sequence.fold(base, function) &rarr; value
+sequence.fold(base, function, :emit => function[, :final_emit => function]) &rarr; sequence
+{% endapibody %}
+
+Apply a function to a sequence in order, maintaining state via an accumulator. The `fold` command returns either a single value or a new sequence.
+
+__Example:__ Concatenate words from a list.
+
+```rb
+r.table('words').order_by('id').fold('',
+    lambda { |acc, word| acc + r.branch(acc == '', '', ', ') + word }
+).run(conn)
+```
+
+(This example could be implemented with `reduce`, but `fold` will preserve the order when `words` is a RethinkDB table or other stream, which is not guaranteed with `reduce`.)
+
+[Read more about this command &rarr;](fold/)
+
 ## [count](count/) ##
 
 {% apibody %}
