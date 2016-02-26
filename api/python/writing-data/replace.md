@@ -68,6 +68,10 @@ Replace returns an object that contains the following attributes:
   objects, one for each objected affected by the `replace` operation. Each
   object will have two keys: `{"new_val": <new value>, "old_val": <old value>}`.
 
+{% infobox alert %}
+RethinkDB write operations will only throw exceptions if errors occur before any writes. Other errors will be listed in `first_error`, and `errors` will be set to a non-zero count. To properly handle errors with this term, code must both handle exceptions and check the `errors` return value!
+{% endinfobox %}
+
 __Example:__ Replace the document with the primary key `1`.
 
 ```py
