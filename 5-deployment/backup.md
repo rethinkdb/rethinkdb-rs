@@ -47,7 +47,7 @@ The `restore` subcommand has most of the the same options and defaults as the `d
 
     rethinkdb restore filename
 
-(Note that you must specify the archive to restore from; there is no default.)
+(You must specify the archive to restore from; there is no default.)
 
 * `-c`, `--connect`: host and client port of the node to connect to (default: `localhost:28015`)
 * `-a`, `--auth`: authorization key for client connection, if needed (see "[Securing the driver port][sec]" for details)
@@ -58,6 +58,12 @@ The `restore` subcommand has most of the the same options and defaults as the `d
 * `--force`: import data even if a table already exists
 * `--no-secondary-indexes`: do not create secondary indexes for the restored tables
 * `-h`, `--help`: print help
+
+{% infobox %}
+**Note:** `rethinkdb restore` may not work for restoring backups made with later versions of RethinkDB to servers running _earlier_ versions. For example, you cannot restore a backup made on RethinkDB 2.2 to a server running RethinkDB 2.1.
+
+If you need to do this, you can try passing the `--no-secondary-indexes` flag to `restore` as a workaround. This will usually allow restores to work on older versions, although this is not guaranteed.
+{% endinfobox %}
 
 ## Examples
 
