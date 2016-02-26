@@ -9,7 +9,7 @@ permalink: docs/install/windows/
 
 # Downloading #
 
-_Prerequisites:_ We provide native binaries for Windows 7 and above.
+_Prerequisites:_ We provide native 64-bit binaries for Windows 7 and above. A 64-bit version of Windows is required.
 
 [Download](https://download.rethinkdb.com/windows/rethinkdb-dev-preview-0.zip) the ZIP archive and unpack it in a directory of your choice.
 
