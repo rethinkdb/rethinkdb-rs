@@ -45,7 +45,7 @@ To start with a specific data directory:
 
 To specify a server name and another cluster to join:
 
-    rethinkdb.exe -n jarvis --j cluster.example.com
+    rethinkdb.exe -n jarvis -j cluster.example.com
 
 # Compile from source #
 
