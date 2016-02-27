@@ -74,12 +74,6 @@ r.table("games").group("player").ungroup().sample(1).run(conn);
 Result:
 
 ```json
-```java
-r.table("games").group("player").max("points").g("points").ungroup()
- .orderBy(r.desc("reduction")).run(conn);
-```
-
-```json
 [
     {
         "group": "Bob",
@@ -90,7 +84,6 @@ r.table("games").group("player").max("points").g("points").ungroup()
         "reduction": 7
     }
 ]
-```
 ```
 
 Note that if you didn't call `ungroup`, you would instead select one
@@ -116,9 +109,21 @@ Result: (Note this is a JSON representation of a `List<GroupedResult>`; see the 
             {"id": 11, "player": "Bob", "points": 10, "type": "free"}
         ]
     }
-}
+[
 ```
 
+__Example:__ Finding the statistical mode of an array of values:
+```java
+r.expr(r.array([1,2,2,2,3,3])).group(
+  row -> row
+).ungroup().orderBy("reduction").nth(-1).bracket("group")
+```
+
+Result:
+
+```json
+2
+```
 
 
 __Example:__ Types!
