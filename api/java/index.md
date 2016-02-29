@@ -1113,7 +1113,7 @@ stream.union(sequence[, sequence, ...]) &rarr; stream
 array.union(sequence[, sequence, ...]) &rarr; array
 {% endapibody %}
 
-Merge two or more sequences. (Note that ordering is not guaranteed by `union`.)
+Merge two or more sequences.
 
 __Example:__ Construct a stream of all heroes.
 

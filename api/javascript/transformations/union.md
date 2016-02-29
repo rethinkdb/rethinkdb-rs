@@ -11,13 +11,19 @@ io:
 # Command syntax #
 
 {% apibody %}
-stream.union(sequence[, sequence, ...]) &rarr; stream
-array.union(sequence[, sequence, ...]) &rarr; array
+stream.union(sequence[, sequence, ...][, {interleave: true}]) &rarr; stream
+array.union(sequence[, sequence, ...][, {interleave: true}]) &rarr; array
 {% endapibody %}
 
 # Description #
 
-Merge two or more sequences. (Note that ordering is not guaranteed by `union`.)
+Merge two or more sequences.
+
+The optional `interleave` argument controls how the sequences will be merged:
+
+* `true`: results will be mixed together; this is the fastest setting, but ordering of elements is not guaranteed. (This is the default.)
+* `false`: input sequences will be appended to one another, left to right.
+* `"field_name"`: a string will be taken as the name of a field to perform a merge-sort on. The input sequences must be ordered _before_ being passed to `union`.
 
 __Example:__ Construct a stream of all heroes.
 
@@ -50,3 +56,11 @@ r.table('marvel').union(r.table('dc')).changes().run(conn, callback);
 Now, when any heroes are added, modified or deleted from either table, a change notification will be sent out.
 
 [cf]: /docs/changefeeds/javascript
+
+__Example:__ Merge-sort the tables of heroes, ordered by name.
+
+```js
+r.table('marvel').order_by('name').union(
+    r.table('dc').order_by('name'), {interleave: 'name'}
+).run(conn, callback);
+```

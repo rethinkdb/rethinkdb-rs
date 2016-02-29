@@ -1110,11 +1110,11 @@ r.table('marvel').is_empty().run(conn)
 ## [union](union/) ##
 
 {% apibody %}
-stream.union(sequence[, sequence, ...]) &rarr; stream
-array.union(sequence[, sequence, ...]) &rarr; array
+stream.union(sequence[, sequence, ...][, interleave=True]) &rarr; stream
+array.union(sequence[, sequence, ...][, interleave=True]) &rarr; array
 {% endapibody %}
 
-Merge two or more sequences. (Note that ordering is not guaranteed by `union`.)
+Merge two or more sequences.
 
 __Example:__ Construct a stream of all heroes.
 
