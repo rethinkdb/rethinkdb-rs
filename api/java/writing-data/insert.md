@@ -31,6 +31,8 @@ You can pass the following options using [optArg](/api/java/optarg/):
     - `"replace"`: [Replace](/api/java/replace/) the old document in its entirety with the new one.
     - `"update"`: [Update](/api/java/update/) fields of the old document with fields from the new one.
 
+If `return_changes` is set to `true` or `"always"`, the `changes` array will follow the same order as the inserted documents. Documents in `changes` for which an error occurs (such as a key conflict) will have a third field, `error`, with an explanation of the error.
+
 Insert returns an object that contains the following attributes:
 
 - `inserted`: the number of documents successfully inserted.
