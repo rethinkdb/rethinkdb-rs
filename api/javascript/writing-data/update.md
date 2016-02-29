@@ -51,6 +51,9 @@ Update returns an object that contains the following attributes:
 - `deleted` and `inserted`: 0 for an update operation.
 - `changes`: if `returnChanges` is set to `true`, this will be an array of objects, one for each objected affected by the `update` operation. Each object will have two keys: `{new_val: <new value>, old_val: <old value>}`.
 
+{% infobox alert %}
+RethinkDB write operations will only throw exceptions if errors occur before any writes. Other errors will be listed in `first_error`, and `errors` will be set to a non-zero count. To properly handle errors with this term, code must both handle exceptions and check the `errors` return value!
+{% endinfobox %}
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
