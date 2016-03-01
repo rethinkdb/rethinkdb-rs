@@ -92,7 +92,7 @@ Note that if you didn't call `ungroup`, you would instead select one
 random game from each player:
 
 ```js
-r.table('games').group('player').sample(1).run(conn)
+r.table('games').group('player').sample(1).run(conn, callback)
 ```
 
 Result:
@@ -116,7 +116,7 @@ Result:
 
 __Example:__ Finding the arithmetic mode of an array of values:
 ```javascript
-r.expr([1,2,2,2,3,3]).group(r.row).count().ungroup().orderBy('reduction').nth(-1)('group')
+r.expr([1,2,2,2,3,3]).group(r.row).count().ungroup().orderBy('reduction').nth(-1)('group').run(conn, callback)
 ```
 
 Result:
