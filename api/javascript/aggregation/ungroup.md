@@ -115,6 +115,7 @@ Result:
 ```
 
 __Example:__ Finding the arithmetic mode of an array of values:
+
 ```javascript
 r.expr([1,2,2,2,3,3]).group(r.row).count().ungroup().orderBy('reduction').nth(-1)('group').run(conn, callback)
 ```

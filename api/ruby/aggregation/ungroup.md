@@ -104,6 +104,7 @@ Result:
 ```
 
 __Example:__ Finding the arithmetic mode of an array of values:
+
 ```ruby
 r.expr([1,2,2,2,3,3]).group(){|row| row}.count().ungroup().order_by('reduction').nth(-1)['group'].run(conn)
 ```

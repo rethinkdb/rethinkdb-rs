@@ -113,6 +113,7 @@ Result: (Note this is a JSON representation of a `List<GroupedResult>`; see the 
 ```
 
 __Example:__ Finding the arithmetic mode of an array of values:
+
 ```java
 r.expr(r.array([1,2,2,2,3,3])).group(
   row -> row
