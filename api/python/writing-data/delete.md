@@ -105,5 +105,5 @@ __Example:__ Delete all documents from the table `comments` without waiting for 
 operation to be flushed to disk.
 
 ```py
-r.table("comments").delete(durability="soft"}).run(conn)
+r.table("comments").delete(durability="soft").run(conn)
 ```
