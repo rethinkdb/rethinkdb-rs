@@ -48,7 +48,7 @@ r.table('games')
 
 <!-- stop -->
 
-Result: 
+Result:
 
 ```py
 [
@@ -101,6 +101,17 @@ Result:
         {"id": 11, "player": "Bob", "points": 10, "type": "free"}
     ]
 }
+```
+
+__Example:__ Finding the arithmetic mode of an array of values:
+```python
+r.expr([1,2,2,2,3,3]).group(r.row).count().ungroup().order_by('reduction').nth(-1)['group'].run(conn)
+```
+
+Result:
+
+```json
+2
 ```
 
 __Example:__ Types!
