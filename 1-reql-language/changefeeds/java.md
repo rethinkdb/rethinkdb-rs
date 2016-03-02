@@ -89,6 +89,7 @@ There are some limitations and caveats on chaining with changefeeds.
 * `orderBy` requires `limit`; neither command works by itself.
 * `orderBy` must be used with a [secondary index](/docs/secondary-indexes/java) or the primary index; it cannot be used with an unindexed field.
 * You cannot use changefeeds after [concatMap](/api/java/concat_map) or other transformations whose results cannot be pushed to the shards.
+* You cannot apply a `filter` after `orderBy.limit` in a changefeed.
 * Transformations are applied before changes are calculated.
 
 # Including state changes #
