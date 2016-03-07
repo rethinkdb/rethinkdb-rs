@@ -311,22 +311,23 @@ cursor.each(function(err, row) {
 ## [eachAsync](each_async/) ##
 
 {% apibody %}
-cursor.eachAsync(function) &rarr; promise
-array.eachAsync(function) &rarr; promise
-feed.eachAsync(function) &rarr; promise
+sequence.eachAsync(function[, errorFunction]) &rarr; promise
 {% endapibody %}
 
-Lazily iterate over a result set one element at a time in an identical fashion to [each](/api/javascript/each/), returning a Promise that will be resolved once all rows are returned.
+Lazily iterate over a cursor, array or feed one element at a time. `eachAsync` always returns a promise that will be resolved once all rows are returned.
 
-__Example:__ Process all the elements in a stream.
+__Example:__ Process all the elements in a stream, using `then` and `catch` for handling the end of the stream and any errors. Note that iteration may be stopped in the first callback (`rowProcess`) by returning any non-Promise value.
 
 ```js
-cursor.eachAsync(function(row) {
-    // if a Promise is returned, it will be processed before the cursor
-    // continues iteration.
-    return asyncRowHandler(row);
+cursor.eachAsync(function (row) {
+    var ok = processRowData(row);
+    if (!ok) {
+        return 'Bad row: ' + row;
+    }
 }).then(function () {
-    console.log("done processing");
+    console.log('done processing');
+}).catch(function (error) {
+    console.log('Error:', error.message);
 });
 ```
 
