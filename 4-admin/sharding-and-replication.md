@@ -51,6 +51,8 @@ When using the web UI, simply specify the number of shards you want, and based o
 
 ![Shard with the web interface](/assets/images/docs/administration/shard.png)
 
+A table may have up to 64 shards.
+
 # Sharding and replication via ReQL #
 
 There are three primary commands for changing sharding and replication in ReQL. In addition, there are lower-level values that can be changed by manipulating [system tables](/docs/system-tables/).

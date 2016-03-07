@@ -13,7 +13,7 @@ RethinkDB has a few hard limitations, as well as some soft limitations that are 
 
 * There is no hard limit on the number of databases that can be created. 
 
-* There is a hard limit of 32 shards. (See [Sharding and replication](/docs/sharding-and-replication/) for more information.)
+* There is a hard limit of 64 shards. (See [Sharding and replication](/docs/sharding-and-replication/) for more information.)
 
 ## Table/document limits ##
 
