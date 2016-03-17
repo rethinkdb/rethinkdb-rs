@@ -873,7 +873,29 @@ sequence.eq_join(predicate_function, right_table[, :index => 'id']) &rarr; seque
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
+__Example:__ Match players with the games they've played against one another.
 
+Join these tables using `game_id` on the player table and `id` on the games table:
+
+```rb
+r.table('players').eq_join('game_id', r.table('games')).run(conn)
+```
+
+This will return a result set such as the following:
+
+```rb
+[
+    {
+        'left' => { 'game_id' => 3, 'id' => 2, 'player' => "Agatha" },
+        'right' => { 'id' => 3, 'field' => "Bucklebury" }
+    },
+    {
+        'left' => { 'game_id' => 2, 'id' => 3, 'player' => "Fred" },
+        'right' => { 'id' => 2, 'field' => "Rushock Bog" }
+    },
+    ...
+]
+```
 
 [Read more about this command &rarr;](eq_join/)
 

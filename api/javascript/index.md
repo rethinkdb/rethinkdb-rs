@@ -385,7 +385,7 @@ cursor.listeners(event)
 cursor.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
-Cursors and feeds implement the same interface as Node's [EventEmitter][ee].
+Cursors and feeds implement the same interface as Node's [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
 __Example:__ Broadcast all messages with [socket.io](http://socket.io).
 
@@ -963,7 +963,29 @@ sequence.eqJoin(predicate_function, rightTable[, {index:'id'}]) &rarr; sequence
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
+__Example:__ Match players with the games they've played against one another.
 
+Join these tables using `gameId` on the player table and `id` on the games table:
+
+```js
+r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
+```
+
+This will return a result set such as the following:
+
+```js
+[
+    {
+        "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
+        "right" : { "id" : 3, "field" : "Bucklebury" }
+    },
+    {
+        "left" : { "gameId" : 2, "id" : 3, "player" : "Fred" },
+        "right" : { "id" : 2, "field" : "Rushock Bog" }
+    },
+    ...
+]
+```
 
 [Read more about this command &rarr;](eq_join/)
 
