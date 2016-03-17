@@ -29,12 +29,12 @@ Suppose the players table contains these documents:
 
 ```py
 [
-    { 'id': 1, 'player': 'George', 'gameId': 1 },
-    { 'id': 2, 'player': 'Agatha', 'gameId': 3 },
-    { 'id': 3, 'player': 'Fred', 'gameId': 2 },
-    { 'id': 4, 'player': 'Marie', 'gameId': 2 },
-    { 'id': 5, 'player': 'Earnest', 'gameId': 1 },
-    { 'id': 6, 'player': 'Beth', 'gameId': 3 }
+    { 'id': 1, 'player': 'George', 'game_id': 1 },
+    { 'id': 2, 'player': 'Agatha', 'game_id': 3 },
+    { 'id': 3, 'player': 'Fred', 'game_id': 2 },
+    { 'id': 4, 'player': 'Marie', 'game_id': 2 },
+    { 'id': 5, 'player': 'Earnest', 'game_id': 1 },
+    { 'id': 6, 'player': 'Beth', 'game_id': 3 }
 ]
 ```
 
@@ -61,11 +61,11 @@ This will return a result set such as the following:
 ```py
 [
     {
-        "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
+        "left" : { "game_id" : 3, "id" : 2, "player" : "Agatha" },
         "right" : { "id" : 3, "field" : "Bucklebury" }
     },
     {
-        "left" : { "gameId" : 2, "id" : 3, "player" : "Fred" },
+        "left" : { "game_id" : 2, "id" : 3, "player" : "Fred" },
         "right" : { "id" : 2, "field" : "Rushock Bog" }
     },
     ...
@@ -80,12 +80,12 @@ What you likely want is the result of using `zip` with that. For clarity, we'll 
 r.table('players').eq_join('game_id', r.table('games')).without({'right': "id"}).zip().order_by('game_id').run(conn)
 
 [
-    { "field": "Little Delving", "gameId": 1, "id": 5, "player": "Earnest" },
-    { "field": "Little Delving", "gameId": 1, "id": 1, "player": "George" },
-    { "field": "Rushock Bog", "gameId": 2, "id": 3, "player": "Fred" },
-    { "field": "Rushock Bog", "gameId": 2, "id": 4, "player": "Marie" },
-    { "field": "Bucklebury", "gameId": 3, "id": 6, "player": "Beth" },
-    { "field": "Bucklebury", "gameId": 3, "id": 2, "player": "Agatha" }
+    { "field": "Little Delving", "game_id": 1, "id": 5, "player": "Earnest" },
+    { "field": "Little Delving", "game_id": 1, "id": 1, "player": "George" },
+    { "field": "Rushock Bog", "game_id": 2, "id": 3, "player": "Fred" },
+    { "field": "Rushock Bog", "game_id": 2, "id": 4, "player": "Marie" },
+    { "field": "Bucklebury", "game_id": 3, "id": 6, "player": "Beth" },
+    { "field": "Bucklebury", "game_id": 3, "id": 2, "player": "Agatha" }
 ]
 ```
 
