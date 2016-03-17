@@ -21,7 +21,7 @@ No special procedures or commands are necessary to execute RethinkDB queries asy
 
 In addition, RethinkDB's cursors and feeds implement an [EventEmitter interface][ee] compatible with Node's. This allows your application to set up listeners to receive data from queries as the data becomes available.
 
-[ee]: /api/javascript/event_emitter-cursor/
+[ee]: /api/javascript/ee-cursor/
 
 # Ruby with EventMachine
 
