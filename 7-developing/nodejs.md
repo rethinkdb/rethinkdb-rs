@@ -43,11 +43,11 @@ The main difference with the official driver is the presence of a connection poo
 You can find three guides to build a classic TODO application:
 
 - A simple implementation with ExpressJS, AngularJS and RethinkDB.  
-Take a look at [the article](/docs/examples/node-todo/) or the
-[source code](https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express)
+Take a look at the
+[source code](https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express).
 - A implementation using __promises__, with ExpressJS, AngularJS and RethinkDB.  
-Take a look at [the article](/docs/examples/node-todo-promises/) or the
+Take a look at the
 [source code](https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express-promise)
 - A implementation using __generators__, with KoaJS, AngularJS and RethinkDB.  
-Take a look at [the article](/docs/examples/node-todo-koa/) or the
+Take a look at the
 [source code](https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-koa)

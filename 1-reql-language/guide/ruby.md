@@ -66,7 +66,7 @@ The `repl` command is a convenience method that sets a default connection in you
 __Note:__ the `repl` command is useful to experiment in the shell, but
 you should pass the connection to the `run` command explicitly in
 real applications. See [an example
-project](/docs/examples/sinatra-pastie/) for more details.
+project](https://github.com/rethinkdb/rethinkdb-example-sinatra-pastie) for more details.
 {% endinfobox%}
 
 # Create a new table #
