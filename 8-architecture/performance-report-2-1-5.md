@@ -146,6 +146,7 @@ Near to the release of this performance report, we will be releasing RethinkDB 2
 ### Notes
 
 * We were fortunate enough to receive free credits from Rackspace to perform the majority of these tests and are very grateful for their contributions to open source software. All of [Rackspace’s OnMetal offerings can be found here](https://www.rackspace.com/cloud/servers/onmetal).
+* We have published all relevant performance testing code and final results in the [rethinkdb/preformance-reports repository on Github](https://github.com/rethinkdb/performance-reports)
 * We’d love to answer any questions you have about these tests. Come join us at [http://slack.rethinkdb.com](http://slack.rethinkdb.com) and feel free to ask more specific questions we don’t answer here by pinging @danielmewes or @dalanmiller.
 * Recently, the team behind BigchainDB - a scalable blockchain database built on top of RethinkDB - has benchmarked RethinkDB on a 32-server cluster running on Amazon's EC2. They measured throughputs of  more than a million writes per second. Their conclusion: "There is linear scaling in write performance with the number of nodes". The full report is available at [https://www.bigchaindb.com/whitepaper/](https://www.bigchaindb.com/whitepaper/)
 
