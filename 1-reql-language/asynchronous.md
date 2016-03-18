@@ -551,7 +551,7 @@ r.set_loop_type('twisted')
 connection = r.connect(host='localhost', port=28015)
 ```
 
-After executing `set_loop_type`, `r.connect` will return a Tornado `Deferred`, as will `r.run`.
+After executing `set_loop_type`, `r.connect` will return a Twisted `Deferred`, as will `r.run`.
 
 __Example:__ Simple use
 
