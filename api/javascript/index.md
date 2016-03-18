@@ -3359,9 +3359,9 @@ __Example:__ Get a table's status.
 ## [wait](wait/) ##
 
 {% apibody %}
-table.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
-database.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
-r.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
+table.wait([{waitFor: 'all_replicas_ready', timeout: <sec>}]) &rarr; object
+database.wait([{waitFor: 'all_replicas_ready', timeout: <sec>}]) &rarr; object
+r.wait([{waitFor: 'all_replicas_ready', timeout: <sec>}]) &rarr; object
 {% endapibody %}
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.

@@ -3235,9 +3235,9 @@ r.table_status('superheroes').run(conn)
 ## [wait](wait/) ##
 
 {% apibody %}
-table.wait([{:wait_for => 'ready_for_writes', :timeout => <sec>}]) &rarr; object
-database.wait([{:wait_for => 'ready_for_writes', :timeout => <sec>}]) &rarr; object
-r.wait([{:wait_for => 'ready_for_writes', :timeout => <sec>}]) &rarr; object
+table.wait([{:wait_for => 'all_replicas_ready', :timeout => <sec>}]) &rarr; object
+database.wait([{:wait_for => 'all_replicas_ready', :timeout => <sec>}]) &rarr; object
+r.wait([{:wait_for => 'all_replicas_ready', :timeout => <sec>}]) &rarr; object
 {% endapibody %}
 
 Wait for a table (or tables) to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring.
