@@ -1,6 +1,6 @@
 ---
 layout: documentation
-title: RethinkDB 2.1.5 Performance & Scaling Report
+title: RethinkDB 2.1.5 performance & scaling report
 docs_active: 2-1-5-performance-report
 permalink: docs/performance-reports/2-1-5-performance-report/
 ---
