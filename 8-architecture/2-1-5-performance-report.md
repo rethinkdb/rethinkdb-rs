@@ -1,9 +1,11 @@
 ---
 layout: documentation
 title: RethinkDB 2.1.5 performance & scaling report
-docs_active: 2-1-5-performance-report
-permalink: docs/performance-reports/2-1-5-performance-report/
+docs_active: performance-report
+permalink: docs/2-1-5-performance-report/
 ---
+
+{% toctag %}
 
 We are happy to present our first published RethinkDB performance report to the world. After an internal collaborative effort we can reveal what we’ve discovered about the performance of RethinkDB. Some of the questions you might be looking to address may include:
 
@@ -14,7 +16,7 @@ We are happy to present our first published RethinkDB performance report to the 
 We’ll attempt to answer these questions by using workloads from the YCSB benchmark suite. You can learn more about YCSB here, and review the source code here. We created an additional test which investigates scalability for analytical workloads.
 In the results, we’ll see how RethinkDB 2.1.5 scales to perform 1.3 million individual reads per second. We will also demonstrate well above 100 thousand operations per second in a mixed 50:50 read/write workload - while at the full level of durability and data integrity guarantees. We performed all benchmarks across a range of cluster sizes, scaling up to 16 servers.
 
-## A quick overview of the results
+# A quick overview of the results #
 
 We found that in a mixed read/write workload RethinkDB with two servers was able to perform nearly 16K queries per second (QPS) and scaled to almost 120K QPS while in a 16 server cluster. Under a read only workload and synchronous read settings, RethinkDB was able to scale from about 150,000 QPS on a single node up to over 550K QPS on 16 nodes. Under the same workload, in an asynchronous “outdated read” setting, RethinkDB went from 150K QPS on one server to 1.3M in a 16 node cluster.
 
@@ -27,7 +29,7 @@ Here we we show how RethinkDB scales up to 16 servers with these various workloa
 ![](/assets/images/docs/performance-report/w-c-async.png)
 ![](/assets/images/docs/performance-report/analytical.png)
 
-## Workloads, Clusters, and Hardware. Oh My.
+# Workloads, Clusters, and Hardware. Oh My. #
 
 YCSB comes with a variety of default workloads, but for the purposes of our testing we chose two of them to run against RethinkDB. Out of the YCSB workload options, we chose to run workload A which comprises 50% reads and 50% update operations and workload C which performs strictly read operations. All documents stored by the YCSB tests contain 10 fields with randomized 100 byte strings as values with each document totaling about 1 KB in size.
 
@@ -35,7 +37,7 @@ We used a port of YCSB based on our official Java driver and intend to submit a 
 
 Given the ease of RethinkDB to cluster across multiple instances, we deemed it necessary to observe performance when moving from a single RethinkDB instance to a larger cluster. We tested all of our workloads on a single instance of RethinkDB up to a 16 server cluster in varying increments of cluster size.
 
-## Hardware
+# Hardware #
 
 In terms of hardware, we used the OnMetal offerings from Rackspace to run both RethinkDB server and RethinkDB client nodes. We used different hardware configurations for the server and client nodes as shown below:
 
@@ -49,7 +51,7 @@ Seagate Nytro WarpDrive BLP4-1600 storage         |
 http://www.rackspace.com/cloud/servers/onmetal/
 
 
-## Configuration
+# Configuration #
 
 At the time of the test, we used RethinkDB 2.1.5 which was compiled from source on Ubuntu 14.04 LTS. During the performance test we used the RethinkDB Java driver with Oracle Java 1.8.0. A full list of configuration settings follows below:
 RethinkDB version 2.1.5
@@ -62,9 +64,9 @@ RethinkDB port of YCSB used:
 https://github.com/rethinkdb/YCSB at commit a15e249d6b10147e615ddfaf03672bad35e85e7f
 ```
 
-## Detailed Results
+# Detailed Results #
 
-### Workload A
+## Workload A ##
 
 * Simulates a mixed read/write workload with equally many writes as reads
 * Query types:  50% single-document read ops, 50% single-document update ops
@@ -87,7 +89,7 @@ Latency is also an important metric to measure when testing performance. We’ve
 
 ![](/assets/images/docs/performance-report/w-a-reads-latency.png)
 
-### Workload C
+## Workload C ##
 
 * Simulates a read-only workload
 * Query types: Single-document gets
@@ -110,7 +112,7 @@ RethinkDB demonstrates extremely high scalability in this configuration, reachin
 
 ![](/assets/images/docs/performance-report/w-c-reads-latency.png)
 
-### Analytical queries
+## Analytical queries ##
 
 * Tests the response time for analytical MapReduce queries involving string operations
 * Query types:  Count the total number of sentences over a single field:
@@ -133,15 +135,15 @@ Query Runtime (seconds) | 58859.76 | 32101.36 | 23245.40 | 15188.86 | 9567.36 | 
 
 With a single server, our query takes 59 seconds to complete. The automatic query parallelization in RethinkDB results in practically linear scalability, as the same query is executed in just above 4 seconds on 16 servers. The graph, shown in the results overview section, demonstrates the inverse execution time (queries per second) of the query.
 
-## Conclusion
+# Conclusion #
 
 We wanted to provide a reasonably comprehensive RethinkDB test that covers a variety of different workloads. Given limited time, we chose to use the YCSB testing framework as a reliable and community-approved means of conducting rigorous testing on our database. We saw that most of the tests resulted in near-linear scalability as we moved from a single RethinkdB instance to a 16 node cluster. Although most of the tests resulted in performance metrics that suggest linear horizontal scalability, we know that there are plenty of improvements to make as our database evolves.
 
-## Ongoing
+# Ongoing #
 
-Near to the release of this performance report, we will be releasing RethinkDB 2.3  where we will again publish our next set of performance metrics during the lifetime of the 2.3 release and additionally measure performance while scaling up to 16 servers and beyond.
+Near to the release of this performance report, we are excited to be releasing RethinkDB 2.3 with plenty of new features. We plan to again publish our next set of performance metrics sometime during the lifetime of the 2.3 release. Performance testing and publishing is a very time consuming process but we understand its importance and will be doing this regularly from now on. We also would like to test RethinkDB performance when scaled to beyond a 16 node cluster during our next testing cycle. Finally, going further we will always keep a list of previous performance reports at the end of future reports for posterity. 
 
-### Notes
+## Notes ##
 
 * We were fortunate enough to receive free credits from Rackspace to perform the majority of these tests and are very grateful for their contributions to open source software. All of [Rackspace’s OnMetal offerings can be found here](https://www.rackspace.com/cloud/servers/onmetal).
 * We have published all relevant performance testing code and final results in the [rethinkdb/preformance-reports repository on Github](https://github.com/rethinkdb/performance-reports)
