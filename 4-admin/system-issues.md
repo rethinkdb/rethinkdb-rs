@@ -152,3 +152,18 @@ This message is a warning that a [page fault][paging] has occurred on a RethinkD
 [paging]: https://en.wikipedia.org/wiki/Paging
 
 When paging occurs on RethinkDB's process, performance will be adversely affected, and the more paging occurs the worse performance will be. You may be able to address it by ensuring other applications are not using physical memory on the server, tuning the paging cache, or adding more RAM to the server.
+
+## Connectivity issues ##
+
+```
+type: "non_transitive_error"
+critical: false
+info: {
+    servers: [ "server1", "server2" ],
+    message: "Server connectivity is non-transitive."
+}
+```
+
+This message indicates there are currently servers that cannot see every server in the cluster. This may cause table availability issues. It can be resolved by restoring full connectivity.
+
+This issue will appear at most once for each server.
