@@ -199,6 +199,6 @@
 - section:
     name: Performance Reports
     docs:
-      - name: 2-1-5
-        permalink: 2-1-5
-        url: /docs/performance-reports/2-1-5/
+      - name: 2.1.5
+        permalink: 2-1-5-performance-report
+        url: /docs/performance-reports/2-1-5-performance-report/

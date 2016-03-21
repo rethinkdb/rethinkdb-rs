@@ -1,18 +1,16 @@
 ---
 layout: documentation
 title: RethinkDB 2.1.5 Performance & Scaling Report
-docs_active: 2-1-5
-permalink: docs/performance-reports/2-1-5/
+docs_active: 2-1-5-performance-report
+permalink: docs/performance-reports/2-1-5-performance-report/
 ---
-
-# Performance & Scaling of RethinkDB
 
 We are happy to present our first published RethinkDB performance report to the world. After an internal collaborative effort we can reveal what we’ve discovered about the performance of RethinkDB. Some of the questions you might be looking to address may include:
 
 * What sort of performance can I expect from a RethinkDB cluster?
 * Does RethinkDB scale?
 * Can I use the outdated read mode to improve throughput in read-heavy workloads?
-*
+
 We’ll attempt to answer these questions by using workloads from the YCSB benchmark suite. You can learn more about YCSB here, and review the source code here. We created an additional test which investigates scalability for analytical workloads.
 In the results, we’ll see how RethinkDB 2.1.5 scales to perform 1.3 million individual reads per second. We will also demonstrate well above 100 thousand operations per second in a mixed 50:50 read/write workload - while at the full level of durability and data integrity guarantees. We performed all benchmarks across a range of cluster sizes, scaling up to 16 servers.
 
