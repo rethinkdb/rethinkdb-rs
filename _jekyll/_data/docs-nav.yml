@@ -196,3 +196,9 @@
       - name: Frequently Asked Questions
         permalink: faq
         url: /docs/faq/
+- section:
+    name: Performance Reports
+    docs:
+      - name: 2-1-5
+        permalink: 2-1-5
+        url: /docs/performance-reports/2-1-5/
