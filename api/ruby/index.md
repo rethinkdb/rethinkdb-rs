@@ -205,14 +205,18 @@ conn.noreply_wait
 conn.server
 {% endapibody %}
 
-Return the server name and server UUID being used by a connection.
+Return information about the server being used by a connection.
 
-__Example:__ Return the server name and UUID.
+__Example:__ Return server information.
 
 ```rb
 > conn.server
 
-{ :id => "404bef53-4b2c-433f-9184-bc3f7bda4a15", :name => "amadeus" }
+{
+    :id => "404bef53-4b2c-433f-9184-bc3f7bda4a15",
+    :name => "amadeus",
+    :proxy => false
+}
 ```
 
 [Read more about this command &rarr;](server/)

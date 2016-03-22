@@ -233,6 +233,30 @@ conn.noreplyWait();
 
 [Read more about this command &rarr;](noreply_wait/)
 
+## [server](server/) ##
+
+{% apibody %}
+conn.server()
+{% endapibody %}
+
+Return information about the server being used by a connection.
+
+__Example:__ Return server information.
+
+```java
+conn.server();
+```
+
+```json
+{
+    "id": "404bef53-4b2c-433f-9184-bc3f7bda4a15",
+    "name": "amadeus",
+    "proxy": false
+}
+```
+
+[Read more about this command &rarr;](server/)
+
 ## [optArg](optarg/) ##
 
 {% apibody %}

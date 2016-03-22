@@ -19,6 +19,8 @@
           permalink: changes
         - name: noreplyWait
           permalink: noreply_wait
+        - name: server
+          permalink: server
         - name: optArg
           permalink: optarg
 - section:
