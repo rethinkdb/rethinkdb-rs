@@ -18,8 +18,8 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
-sequence.eqJoin(predicate_function, rightTable[, {index:'id'}]) &rarr; sequence
+sequence.eqJoin(leftField, rightTable[, {index: 'id', ordered: false}]) &rarr; sequence
+sequence.eqJoin(predicate_function, rightTable[, {index: 'id', ordered: false}]) &rarr; sequence
 {% endapibody %}
 
 # Description #
@@ -29,6 +29,8 @@ sequence.eqJoin(predicate_function, rightTable[, {index:'id'}]) &rarr; sequence
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
 The result set of `eqJoin` is a stream or array of objects. Each object in the returned set will be an object of the form `{ left: <left-document>, right: <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the <code><a href="/api/javascript/zip/">zip</a></code> command to merge the `left` and `right` fields together.
+
+The results from `eqJoin` are, by default, not ordered. The optional `ordered: true` parameter will cause `eqJoin` to order the output based on the left side input stream. (If there are multiple matches on the right side for a document on the left side, their order is not guaranteed even if `ordered` is `true`.) Requiring ordered results can significantly slow down `eqJoin`, and in many circumstances this ordering will not be required. (See the first example, in which ordered results are obtained by using `orderBy` after `eqJoin`.)
 
 Suppose the players table contains these documents:
 

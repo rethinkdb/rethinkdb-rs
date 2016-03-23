@@ -25,6 +25,9 @@ Join tables using a field or function on the left-hand sequence matching primary
 
 The result set of `eqJoin` is a stream or array of objects. Each object in the returned set will be an object of the form `{ "left": <left-document>, "right": <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the [zip](/api/java/zip/) command to merge the `left` and `right` fields together.
 
+The results from `eqJoin` are, by default, not ordered. Providing <code><a href="/api/java/optarg">optArg</a>('ordered', 'true')</code>
+ will cause `eqJoin` to order the output based on the left side input stream. (If there are multiple matches on the right side for a document on the left side, their order is not guaranteed even if `ordered` is `true`.) Requiring ordered results can significantly slow down `eqJoin`, and in many circumstances this ordering will not be required. (See the first example, in which ordered results are obtained by using `orderBy` after `eqJoin`.)
+
 Suppose the players table contains these documents (shown in JSON form):
 
 ```json
