@@ -24,7 +24,7 @@ From version 1.14, the Python driver for RethinkDB supports Python 2 and 3. Vers
 
 # Start the server #
 
-For a more detailed look, make sure to read the [quickstart](docs/quickstart/).
+For a more detailed look, make sure to read the [quickstart](/docs/quickstart/).
 
 ## Linux and OS X ##
 
