@@ -19,9 +19,6 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [rethinkdbdash](https://github.com/neumino/rethinkdbdash) by [@neumino](https://github.com/neumino)  
   An alternative Node.js driver with native promises and a connection pool.
 
-- [RQL Promise](https://github.com/guillaumervls/rql-promise) by [@guillaumervls](https://github.com/guillaumervls)  
-   Wraps the RethinkDB driver with [when](https://github.com/cujojs/when) to return promises.
-
 - [rethinkdb-co](https://github.com/hden/rethinkdb-co) by [@hden](https://github.com/hden)  
   Allows using ECMAScript 6 generators with RethinkDB callbacks.
 
