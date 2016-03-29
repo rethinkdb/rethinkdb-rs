@@ -21,18 +21,9 @@ world.
 # Securing the web interface #
 
 First, protect the web interface port so that it cannot be accessed
-from the outside world. On Unix-based systems, you can use `iptables`
-to block the port as follows:
+directly from a remote machine. You can bind it to a specific IP address using the `--bind-http` [command line option][cli]; to bind it to the local machine, simply bind it to `localhost`:
 
-```
-sudo iptables -A INPUT -i eth0 -p tcp --dport 8080 -j DROP
-sudo iptables -I INPUT -i eth0 -s 127.0.0.1 -p tcp --dport 8080 -j ACCEPT
-```
-
-{% infobox %}
-__Note__: You may have to replace `eth0` and `8080` above if you are
-using another interface or not using the default web interface port.
-{% endinfobox%}
+    rethinkdb --bind-http localhost
 
 Now, use one of the following two methods to enable secure access.
 
@@ -178,18 +169,9 @@ outside networks it's strongly suggested you use SSH tunneling for protection
 ## Using SSH tunneling ##
 
 First, protect the driver port so that it cannot be accessed from the
-outside world. On unix-based systems, you can use `iptables` to block
-the port as follows:
+outside world. Use the `--bind-driver` [command line option][cli] to bind it to `localhost`.
 
-```
-sudo iptables -A INPUT -i eth0 -p tcp --dport 28015 -j DROP
-sudo iptables -I INPUT -i eth0 -s 127.0.0.1 -p tcp --dport 28015 -j ACCEPT
-```
-
-{% infobox %}
-__Note__: You may have to replace `eth0` and `28015` above if you are
-using another interface or not using the default driver port.
-{% endinfobox%}
+    rethinkdb --bind-driver localhost
 
 Now create an SSH tunnel on the server that needs to access the
 remote RethinkDB driver port:
@@ -216,15 +198,12 @@ r.connect({host: 'localhost', port: <local_port>},
 
 # Securing the intracluster port #
 
-To secure the intracluster port, you can use iptables to allow traffic
-only from the local network:
+To secure the cluster port, bind it to a specific IP address using the `--bind-cluster` [command line option][cli]. Bind it to an IP address that is only accessible from within your local network.
 
-```bash
-sudo iptables -A INPUT -i eth0 -p tcp --dport 29015 -j DROP
-sudo iptables -I INPUT -i eth0 -s 192.168.0.0/24 -p tcp --dport 29015 -j ACCEPT
-```
+    rethinkdb --bind-cluster 192.168.0.100
 
 The intracluster port will be accessible from within the local network
 where you run RethinkDB nodes, but will not be accessible from the
 outside world.
 
+[cli]: /docs/cli-options/

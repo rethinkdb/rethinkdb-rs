@@ -21,7 +21,10 @@ These options can be passed to the `rethinkdb` server on the command line on sta
 
 ## Network options ##
 
-* `--bind {all | addr}`: add the address of a local interface to listen on when accepting connections, loopback addresses are enabled by default
+* `--bind {all | addr}`: add the address of a local interface to listen on when accepting connections; loopback addresses are enabled by default
+* `--bind-http {all | addr}`: bind the web administration UI port to a specific address
+* `--bind-cluster {all | addr}`: bind the cluster connection port to a specific address
+* `--bind-driver {all | addr}`: bind the client driver to a specific address
 * `--no-default-bind`: disable automatic listening on loopback addresses, unless explicitly specified in a separate `--bind` option
 * `--cluster-port port`: port for receiving connections from other nodes
 * `--driver-port port`: port for RethinkDB protocol client drivers
@@ -29,6 +32,12 @@ These options can be passed to the `rethinkdb` server on the command line on sta
 * `-j [ --join ] host:port`: host and port of a RethinkDB node to connect to
 * `--reql-http-proxy [protocol://]host[:port]`: HTTP proxy to use for performing `r.http(...)` queries, default port is 1080
 * `--canonical-address addr`: address that other RethinkDB instances will use to connect to us, can be specified multiple times
+
+The `--bind` option controls the default behavior for all RethinkDB ports. If it's specified, the `--bind-http`, `--bind-cluster` and `--bind-driver` options will override that behavior for a specific port. So:
+
+    rethinkdb --bind all --bind-cluster 192.168.0.1
+
+This will bind the HTTP and driver ports on all available interfaces, while the cluster port will only be bound on the loopback interface and `192.168.0.1`.
 
 ## Web options ##
 
