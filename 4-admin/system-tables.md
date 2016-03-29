@@ -220,6 +220,10 @@ This is a typical document schema for a server connected to the host server&mdas
         http_admin_port: 8080,
         reql_port: 28015,
         time_connected: <ReQL time object>,
+        connected_to: {
+            "companion-orb": true,
+            "companion-dodecahedron": true
+        },
         canonical_addresses: [
             { host: "127.0.0.1", port: 29015 },
             { host: "::1", port: 29015 }
@@ -242,6 +246,7 @@ This is a typical document schema for a server connected to the host server&mdas
 	* `*_port`: the RethinkDB ports on that server (from the server's own point of view).
 	* `canonical_addresses`: a list of the canonical addresses and ports of the server. These may differ from `hostname` and `cluster_port` depending on your network configuration.
 	* `time_connected`: the time the server connected (or reconnected) to the cluster.
+	* `connected_to`: a key/value list of servers this server is either currently connected to (`true`), or knows about but is not currently connected to (`false`). In most cases other servers will be identified by name, but if the server being queried cannot determine the name of a server in the cluster it is not connected to, it will be identified by UUID.
 * `process`: information about the RethinkDB server process:
     * `argv`: the command line arguments the server started with, as an array of strings.
 	* `cache_size_mb`: the cache size in megabytes. (This can be [configured on startup][startup].)
