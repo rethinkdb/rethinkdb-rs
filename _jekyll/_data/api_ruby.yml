@@ -358,6 +358,8 @@
 - section:
     name: Administration
     commands:
+      - name: grant
+        permalink: grant
       - name: config
         permalink: config
       - name: rebalance
@@ -368,4 +370,3 @@
         permalink: status
       - name: wait
         permalink: wait
-

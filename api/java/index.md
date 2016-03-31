@@ -42,7 +42,8 @@ Create a new connection to the database server. `connection` returns a builder o
 - `hostname()`: the host to connect to (default `localhost`).
 - `port()`: the port to connect on (default `28015`).
 - `dbname()`: the default database (default `test`).
-- `authKey()`: the authentication key (default none).
+- `user()`: the user account to connect as (default `admin`).
+- `password()`: the password for the user account to connect as (default `""`, empty).
 - `timeout()`: timeout period in seconds for the connection to be opened (default `20`).
 - `connect()`: instantiate a connection object with the parameters previously passed to the builder.
 - `certFile()`: a path to an SSL CA certificate.
@@ -3285,6 +3286,37 @@ outerPolygon.polygonSub(inner_polygon).run(conn);
 {% endapisection %}
 
 {% apisection Administration %}
+
+## [grant](grant/) ##
+
+{% apibody %}
+r.grant("username", r.hashMap("permission", bool[, ...])) &rarr; object
+db.grant("username", r.hashMap("permission", bool[, ...])) &rarr; object
+table.grant("username", r.hashMap("permission", bool[, ...])) &rarr; object
+{% endapibody %}
+
+Grant or deny access permissions for a user account, globally or on a per-database or per-table basis.
+
+__Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
+
+```java
+r.db("users").grant("chatapp", r.hashMap("read", true).with("write", true)).run(conn);
+```
+
+Return:
+
+```json
+{
+    "granted": 1,
+    "permissions_changes": [
+        {
+            "new_val": { "read": true, "write": true },
+            "old_val": { null }
+        }
+    ]
+```
+
+[Read more about this command &rarr;](grant/)
 
 ## [config](config/) ##
 

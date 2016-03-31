@@ -59,6 +59,12 @@ This will bind the HTTP and driver ports on all available interfaces, while the 
 * `--runuser user`: run as the specified user
 * `--rungroup group`: run with the specified group
 
+## Security options ##
+
+* `--initial-password`: set a password for the `admin` user if none has previously been set; use `auto` to choose a random password that will be printed to `stdout` (see [Secure your cluster][sec] for more information)
+
+[sec]: /docs/security
+
 ## Help options ##
 
 * `-h [ --help ]`: print this help

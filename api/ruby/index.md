@@ -38,7 +38,8 @@ options:
 - `host`: the host to connect to (default `localhost`).
 - `port`: the port to connect on (default `28015`).
 - `db`: the default database (default `test`).
-- `auth_key`: the authentication key (default none).
+- `user`: the user account to connect as (default `admin`).
+- `password`: the password for the user account to connect as (default `''`, empty).
 - `timeout`: timeout period in seconds for the connection to be opened (default `20`).
 - `ssl`: a hash of options to support SSL connections (default `nil`). Currently, there is only one option available, and if the `ssl` option is specified, this key is required:
     - `ca_certs`: a path to the SSL CA certificate.
@@ -3145,6 +3146,33 @@ outer_polygon.polygon_sub(inner_polygon).run(conn)
 {% endapisection %}
 
 {% apisection Administration %}
+
+## [grant](grant/) ##
+
+{% apibody %}
+r.grant("username", {:permission => bool[, ...]}) &rarr; object
+db.grant("username", {:permission => bool[, ...]}) &rarr; object
+table.grant("username", {:permission => bool[, ...]}) &rarr; object
+{% endapibody %}
+
+Grant or deny access permissions for a user account, globally or on a per-database or per-table basis.
+
+__Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
+
+```rb
+> r.db('users').grant('chatapp', {:read => True, :write => true}).run(conn)
+
+{
+    :granted => 1,
+    :permissions_changes => [
+        {
+            :new_val => { :read => true, :write => true },
+            :old_val => { nil }
+        }
+    ]
+```
+
+[Read more about this command &rarr;](grant/)
 
 ## [config](config/) ##
 
