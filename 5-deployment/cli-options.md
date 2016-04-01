@@ -39,6 +39,33 @@ The `--bind` option controls the default behavior for all RethinkDB ports. If it
 
 This will bind the HTTP and driver ports on all available interfaces, while the cluster port will only be bound on the loopback interface and `192.168.0.1`.
 
+## TLS options ##
+
+* `--http-tls-key key_filename`: private key to use for web administration console TLS
+* `--http-tls-cert cert_filename`: certificate to use for web administration console TLS
+
+__Note:__ `--http-tls-key` and `--http-tls-cert` must be used together.
+
+* `--driver-tls-key key_filename`: private key to use for client driver connection TLS
+* `--driver-tls-cert cert_filename`: certificate to use for client driver connection TLS
+* `--driver-tls-ca ca_filename`: CA certificate bundle used to verify client certificates; TLS client authentication disabled if omitted
+
+__Note:__ `--driver-tls-key` and `--driver-tls-cert` must be used together; `--driver-tls-ca` is optional.
+
+* `--cluster-tls-key key_filename`: private key to use for intra-cluster connection TLS
+* `--cluster-tls-cert cert_filename`: certificate to use for intra-cluster connection TLS
+* `--cluster-tls-ca ca_filename`: CA certificate bundle used to verify cluster peer certificates
+
+__Note:__ all three `--cluster-tls-*` options must be used together.
+
+* `--tls-ciphers cipher_list`: specify a list of TLS ciphers to use; default is 'EECDH+AESGCM'
+* `--tls-ecdh-curve curve_name`: specify a named elliptic curve to use for ECDHE; default is 'prime256v1'
+* `--tls-dhparams dhparams_filename`: provide parameters for DHE key agreement; REQUIRED if using DHE cipher suites; at least 2048-bit recommended
+
+For details about these options, read [Securing your cluster][sec].
+
+[sec]: /docs/security/
+
 ## Web options ##
 
 * `--web-static-directory directory`: the directory containing web resources for the http interface
