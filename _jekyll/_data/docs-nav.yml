@@ -101,7 +101,7 @@
         permalink: backup
         url: /docs/backup/
       - name: System tables
-        permalink: system-tables/
+        permalink: system-tables
         url: /docs/system-tables/
       - name: Current issues
         permalink: system-issues
