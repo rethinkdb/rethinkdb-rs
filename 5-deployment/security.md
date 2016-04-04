@@ -18,10 +18,27 @@ The following is a list of techniques that help mitigate the risk of
 attacks for RethinkDB setups that require access from the outside
 world.
 
+# The admin account #
+
+All RethinkDB servers have an `admin` account with full access to the cluster, and by default this account has no password. (For full details on this topic, read [Permissions and user accounts][pa].) One of the first things you should do to secure a cluster is to assign a password to `admin`. You can do this when the first server starts up by using the `--initial-password` [command line option][cli], or by updating the `admin` record with a new password in the user [system table][st].
+
+[pa]:  /docs/permissions-and-accounts/
+[cli]: /docs/cli-options/
+[st]:  /docs/system-tables/#users
+
+When new servers (including proxies) join an existing cluster, it will synchronize with all the user account information, including passwords, from that cluster. This includes the `admin` account. However, a server with no admin password set cannot join an existing cluster that _does_ have a password set. Otherwise, it would technically be possible for an attacker to connect to that server as an admin and run arbitrary queries in the time between that server starting and the accounts synchronizing from the rest of the cluster.
+
+If you're setting up a cluster in a secure environment (for instance, the whole cluster is on a local network behind a firewall), you can simply start the servers in the cluster without an admin password, then update the `admin` record in the `users` table with a new password. However, if you're joining a new server to a cluster that's already password-protected, the best way to do it is to specify the `--initial-password auto` option.
+
+This option creates a random password for that server's `admin` account. Once that server is synchronized with the cluster, the random password will be overwritten by the `admin` password, preventing the exploit described above.
+
+    rethinkdb --initial-password auto --join cluster
+
 # Securing the web interface #
 
-First, protect the web interface port so that it cannot be accessed
-directly from a remote machine. You can bind it to a specific IP address using the `--bind-http` [command line option][cli]; to bind it to the local machine, simply bind it to `localhost`:
+The web UI always effectively runs as the `admin` user, including queries in the Data Explorer. Therefore, it's important to secure this port so it can't be accessed by an unauthorized remote machine.
+
+You can bind the web UI port to a specific IP address using the `--bind-http` [command line option][cli]; to bind it to the local machine, simply bind it to `localhost`:
 
     rethinkdb --bind-http localhost
 
@@ -205,5 +222,3 @@ To secure the cluster port, bind it to a specific IP address using the `--bind-c
 The intracluster port will be accessible from within the local network
 where you run RethinkDB nodes, but will not be accessible from the
 outside world.
-
-[cli]: /docs/cli-options/

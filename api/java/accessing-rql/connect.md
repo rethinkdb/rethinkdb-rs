@@ -23,7 +23,7 @@ Create a new connection to the database server. `connection` returns a builder o
 - `hostname()`: the host to connect to (default `localhost`).
 - `port()`: the port to connect on (default `28015`).
 - `dbname()`: the default database (default `test`).
-- `authKey()`: the authentication key (default none).
+- `user()`: the user account and password to connect as (default `"admin", ""`).
 - `timeout()`: timeout period in seconds for the connection to be opened (default `20`).
 - `connect()`: instantiate a connection object with the parameters previously passed to the builder.
 - `certFile()`: a path to an SSL CA certificate.
@@ -41,9 +41,11 @@ Using SSL with RethinkDB requires proxy software on the server, such as [Nginx][
 [Nginx]: http://nginx.org/
 [HAProxy]: http://www.haproxy.org/
 [mitm]: http://en.wikipedia.org/wiki/Man-in-the-middle_attack
-{% endinfobox %}
 
-The authentication key can be set from the RethinkDB command line tool. Once set, client connections must provide the key as an option to `run` in order to make the connection. For more information, read "Using the RethinkDB authentication system" in the documentation on [securing your cluster](http://rethinkdb.com/docs/security/).
+Alternatively, you may use RethinkDB's built-in [TLS support][tls].
+
+[tls]: /docs/security/
+{% endinfobox %}
 
 __Example:__ Open a connection using the default host and port, specifying the default database.
 
@@ -58,7 +60,17 @@ Connection conn = r.connection()
     .hostname("localhost")
     .port(28015)
     .dbname("marvel")
-    .authKey("hunter2")
+    .connect();
+```
+
+__Example:__ Open a new connection, specifying a user/password combination for authentication.
+
+```java
+Connection conn = r.connection()
+    .hostname("localhost")
+    .port(28015)
+    .dbname("marvel")
+    .user("herofinder", "metropolis")
     .connect();
 ```
 

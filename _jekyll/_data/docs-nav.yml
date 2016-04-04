@@ -94,6 +94,9 @@
       - name: Scaling, sharding and replication
         permalink: sharding-and-replication
         url: /docs/sharding-and-replication/
+      - name: Permissions and user accounts
+        permalink: permissions-and-accounts
+        url: /docs/permissions-and-accounts/
       - name: Failover
         permalink: failover
         url: /docs/failover/

@@ -37,7 +37,8 @@ Create a new connection to the database server. The keyword arguments are:
 - `host`: host of the RethinkDB instance. The default value is `localhost`.
 - `port`: the driver port, by default `28015`.
 - `db`: the database used if not explicitly specified in a query, by default `test`.
-- `auth_key`: the authentication key, by default the empty string.
+- `user`: the user account to connect as (default `admin`).
+- `password`: the password for the user account to connect as (default `''`, empty).
 - `timeout`: timeout period in seconds for the connection to be opened (default `20`).
 - `ssl`: a hash of options to support SSL connections (default `None`). Currently, there is only one option available, and if the `ssl` option is specified, this key is required:
     - `ca_certs`: a path to the SSL CA certificate.
@@ -3185,6 +3186,33 @@ outer_polygon.polygon_sub(inner_polygon).run(conn)
 {% endapisection %}
 
 {% apisection Administration %}
+
+## [grant](grant/) ##
+
+{% apibody %}
+r.grant("username", {"permission": bool[, ...]}) &rarr; object
+db.grant("username", {"permission": bool[, ...]}) &rarr; object
+table.grant("username", {"permission": bool[, ...]}) &rarr; object
+{% endapibody %}
+
+Grant or deny access permissions for a user account, globally or on a per-database or per-table basis.
+
+__Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
+
+```py
+> r.db('users').grant('chatapp', {'read': True, 'write': True}).run(conn)
+
+{
+    "granted": 1,
+    "permissions_changes": [
+        {
+            "new_val": { "read": true, "write": true },
+            "old_val": { null }
+        }
+    ]
+```
+
+[Read more about this command &rarr;](grant/)
 
 ## [config](config/) ##
 
