@@ -66,8 +66,6 @@ For details about these options, read [Securing your cluster][sec].
 
 [sec]: /docs/security/
 
-* `--tls-cert`: specify a TLS certificate for use with the `restore`, `dump`, `import`, `export`, and `index_rebuild` commands.
-
 ## Web options ##
 
 * `--web-static-directory directory`: the directory containing web resources for the http interface

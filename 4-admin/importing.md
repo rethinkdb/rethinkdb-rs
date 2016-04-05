@@ -8,7 +8,9 @@ permalink: docs/importing/
 <img alt="Importing Data Illustration" class="api_command_illustration"
     src="/assets/images/docs/api_illustrations/importing_data.png" />
 
-The `rethinkdb` utility includes an `import` command to load existing data into RethinkDB databases. It can read JSON files, organized in one of two formats described below, or comma-separated value (CSV) files (including ones with other delimiters such as tab characters).
+The `rethinkdb` utility includes an `import` command to load existing data into RethinkDB databases. It can read JSON files, organized in one of two formats described below, or comma-separated value (CSV) files (including ones with other delimiters such as tab characters). The utility runs under the `admin` user account (see [Permissions and user accounts][pua]).
+
+[pua]: /docs/permissions-and-accounts
 
 When the option is available, you should choose the JSON file format. If you're exporting from a SQL database this might not be possible, but you might be able to write a separate script to transform CSV output into JSON, or use the `mysql2json` script available as part of [mysql2xxxx][m2x].
 
@@ -16,9 +18,39 @@ When the option is available, you should choose the JSON file format. If you're 
 
 The full syntax for the `import` command is as follows:
 
-    rethinkdb import -f FILE --table DB.TABLE [-c HOST:PORT] [-a AUTH_KEY]
-      [--force] [--clients NUM] [--format (csv | json)] [--pkey PRIMARY_KEY]
+_Import from a directory_
+
+    rethinkdb import -d DIR [-c HOST:PORT] [--force] [-p]
+      [--password-file FILE] [-i (DB | DB.TABLE)] [--clients NUM]
+      [--shards NUM_SHARDS] [--replicas NUM_REPLICAS]
+
+_Import from a file_
+
+    rethinkdb import -f FILE --table DB.TABLE [-c HOST:PORT] [--force]
+      [-p] [--password-file FILE] [--clients NUM] [--format (csv | json)]
+      [--pkey PRIMARY_KEY] [--shards NUM_SHARDS] [--replicas NUM_REPLICAS]
       [--delimiter CHARACTER] [--custom-header FIELD,FIELD... [--no-header]]
+
+Importing from a directory is only supported for directories created by the `rethinkdb export` command.
+
+Options for imports include:
+
+* `-f`: file to import from
+* `--table`: table to import to
+* `--format`: CSV or JSON (default JSON)
+* `-c`: connect to the given IP address/host and port
+* `-p`, `--password`: prompt for the admin password, if one has been set
+* `--password-file`: read the admin password from a plain text file
+* `--tls-cert`: specify a path to a TLS certificate to allow encrypted connections to the server (see [Securing the cluster][sec])
+* `--clients`: the number of client connections to use at once (default 8)
+* `--force`: import data even if a table already exists
+* `--fields`: only import from the listed fields
+* `--no-header`: indicate the first line of a CSV file is _not_ a header row
+* `--custom-header`: supply a custom header row for a CSV file
+
+[sec]: /docs/security/
+
+(Some of these options only apply to file imports, and there are other options available. Type `rethinkdb help import` for a full list.)
 
 To import the file `users.json` into the table `test.users`, you would use:
 
@@ -32,9 +64,9 @@ By default, the import command will connect to `localhost` port `28015`. You can
 
     rethinkdb import -f crew.json --table discovery.crew -c hal:2001
 
-If the cluster requires authorization, you can specify the authorization key with the `-a` option.
+If the cluster requires authorization, you can prompt for the `admin` user account password with `-p`, or supply a `--password-file` to read the password from. (The password file is just a plain text file, with the password on the first and only line.)
 
-    rethinkdb import -f crew.json --table discovery.crew -c hal:2001 -a daisy
+    rethinkdb import -f crew.json --table discovery.crew -c hal:2001 -p
 
 A primary key other than `id` can be specified with `--pkey`:
 
