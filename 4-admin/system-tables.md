@@ -141,29 +141,19 @@ Documents can be inserted to create new databases, deleted to remove databases, 
 
 ## cluster_config ##
 
-The `cluster_config` table contains two rows, each one with two key/value pairs: a unique `id` and a variable. Documents cannot be inserted into or deleted from this table.
+The `cluster_config` table contains only one row. Documents cannot be inserted into or deleted from this table.
 
 ```js
-{
-    id: "auth",
-    auth_key: null
-},
 {
     id: "heartbeat",
     heartbeat_timeout_secs: 10
 }
 ```
 
-* `id`: the primary key, `auth` or `heartbeat`.
-* `auth_key`: the [authentication key][auth], or `null` if no key is set.
+* `id`: the primary key, `heartbeat`.
 * `heartbeat_timeout_secs`: the time, in seconds, between when a server loses connectivity to a cluster and the [failover][] process begins. The default is 10 seconds.
 
-[auth]: /docs/security/
 [failover]: /docs/failover/
-
-Updating the `auth_key` field is the only way to set or change the cluster authentication key. Read [Securing your cluster][auth] to learn about the key and why you might want to set it.
-
-The `auth_key` field is unusual in that it is a *write-only* field. If you try to read its value, you will get `null` or `{hidden: true}` but will not see the actual key.
 
 # Status tables #
 

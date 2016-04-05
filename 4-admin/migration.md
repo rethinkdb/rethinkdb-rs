@@ -64,7 +64,7 @@ You must export your data **before** you've upgraded RethinkDB to a new version!
 
 To export your data, use `rethinkdb dump`:
 
-    rethinkdb dump -c <host>:<port> [-a <auth_key>] 
+    rethinkdb dump -c <host>:<port>
 
 This command will export all your data to a `tar.gz` file named `rethinkdb_dump_<timestamp>.tar.gz` (this may vary depending on your platform).
 
@@ -92,7 +92,7 @@ to read the old file.
 
 To import your data, use `rethinkdb restore`:
 
-    rethinkdb restore <exported_file> -c <host>:<port> [-a <auth_key>] 
+    rethinkdb restore <exported_file> -c <host>:<port>
 
 Use `rethinkdb restore --help` to see the complete list of options for importing your data. Again, for more details, see [Backing up your data][backup].
 

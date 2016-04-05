@@ -54,7 +54,6 @@ The `restore` subcommand has most of the the same options and defaults as the `d
 (Note that you must specify the archive to restore from; there is no default.)
 
 * `-c`, `--connect`: host and client port of the node to connect to (default: `localhost:28015`)
-* `-a`, `--auth`: authorization key for client connection, if needed (see "[Securing the cluster][sec]" for details)
 * `-p`, `--password`: prompt for the admin password, if one has been set
 * `--password-file`: read the admin password from a plain text file
 * `--tls-cert`: specify a path to a TLS certificate to allow encrypted connections to the server (see [Securing the cluster][sec])
