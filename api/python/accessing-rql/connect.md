@@ -12,8 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-r.connect(host="localhost", port=28015, db="test", auth_key="", timeout=20) &rarr; connection
-r.connect(host) &rarr; connection
+r.connect(options) &rarr; connection
 {% endapibody %}
 
 # Description #
@@ -83,7 +82,6 @@ __Example:__ Open a new connection to the database using an SSL proxy.
 ```py
 conn = r.connect(host='localhost',
                  port=28015,
-                 auth_key='hunter2',
                  ssl={'ca_certs': '/path/to/ca.crt'})
 ```
 

@@ -28,8 +28,7 @@ import rethinkdb as r
 ## [connect](connect/) ##
 
 {% apibody %}
-r.connect(host="localhost", port=28015, db="test", auth_key="", timeout=20) &rarr; connection
-r.connect(host) &rarr; connection
+r.connect(options) &rarr; connection
 {% endapibody %}
 
 Create a new connection to the database server. The keyword arguments are:

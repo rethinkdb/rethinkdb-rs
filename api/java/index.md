@@ -42,8 +42,7 @@ Create a new connection to the database server. `connection` returns a builder o
 - `hostname()`: the host to connect to (default `localhost`).
 - `port()`: the port to connect on (default `28015`).
 - `dbname()`: the default database (default `test`).
-- `user()`: the user account to connect as (default `admin`).
-- `password()`: the password for the user account to connect as (default `""`, empty).
+- `user()`: the user account and password to connect as (default `"admin", ""`).
 - `timeout()`: timeout period in seconds for the connection to be opened (default `20`).
 - `connect()`: instantiate a connection object with the parameters previously passed to the builder.
 - `certFile()`: a path to an SSL CA certificate.

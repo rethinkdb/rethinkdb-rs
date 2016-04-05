@@ -81,7 +81,6 @@ __Example:__ Open a new connection to the database using an SSL proxy.
 ```rb
 conn = r.connect(:host => 'localhost',
                  :port => 28015,
-                 :auth_key => 'hunter2',
                  :ssl => {
                     :ca_certs => '/path/to/ca.crt'
                  })
