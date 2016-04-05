@@ -265,6 +265,10 @@ This is a typical document schema for a server connected to the host server&mdas
 
 # User account tables #
 
+For details on these two tables, read [Permissions and user accounts][pua].
+
+[pua]: /docs/permissions-and-accounts/
+
 ## users ##
 
 The `users` table contains one document for each user in the system, each with two key/value pairs: a unique `id` and a `password` field. The `id` is the account name. The `password` field behaves differently on writes than on reads; you can change an account's password by writing a value to this field (or remove the password by writing `false`), but the password cannot be read. Instead, on a read operation `password` will be `true` or `false`, indicating whether the account has a password or not.

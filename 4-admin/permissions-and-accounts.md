@@ -45,6 +45,18 @@ You cannot change a username once it's been created. You can, however, [delete][
 
 [dl]: /api/javascript/delete
 
+## Password hashing iterations
+
+By default, RethinkDB will use 4096 iterations for hashing passwords during the connection handshake between client drivers and the server. There is an option to set iterations on a per-account basis by setting passwords to an object of the form `{password: "password", iterations: 4096}`. If you wished to use only 1024 iterations, you could set a password like so:
+
+```js
+r.db('rethinkdb').table('users').insert({id: 'bob', password: {password: 'secret', iterations: 1024}})
+```
+
+Note that you will not be able to read the `iterations` value for an account; as it's stored in the password field, it remains read-only.
+
+The value for `iterations` is a tradeoff between performance and security against brute force attacks. If connections are slow, consider lowering the number of iterations. Raising the number of iterations will make it harder to use a brute force attack, but will increase the CPU usage on clients while establishing a connection.
+
 ## The admin user
 
 A new RethinkDB cluster always has one user named `admin`; this user always has all permissions at a global scope, and the user cannot be deleted. By default, the `admin` user has no password. You can change this by updating the `admin` user document, or by specifying the `--initial-password` [command line option][cli] on startup.
