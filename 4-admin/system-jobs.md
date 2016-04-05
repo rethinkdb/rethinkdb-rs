@@ -9,11 +9,9 @@ The jobs table is one of the [system tables][st] added in version 1.16 of Rethin
 
 [st]: /docs/system-tables/
 
-{% infobox alert %}
-__Note:__ the `jobs` table cannot be read by non-admin user accounts.
-{% endinfobox %}
-
 # Querying the jobs table #
+
+__Note:__ as with other system tables, the jobs table can only be accessed by the `admin` user account.
 
 The table's primary key is the `id` field, and the keys are always arrays. The first element in the array is always a string indicating the type of job (e.g., `"query"`, `"disk_compaction"`, etc.); the second element is the UUID of the job. The type of job is also given in the `type` field.
 
