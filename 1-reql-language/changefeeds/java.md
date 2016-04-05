@@ -104,6 +104,19 @@ If an initial result for a document has been sent and a change is made to that d
 
 If you specify `true` for both `include_states` and `include_initial`, the changefeed stream will start with a `{"state": "initializing"}` status document, followed by initial values. A `{"state": "ready"}` status document will be sent when all the initial values have been sent.
 
+# Including result types #
+
+The `include_states` optional argument adds a third field, `type`, to each result sent. The string values for `type` are largely self-explanatory:
+
+* `add`: a new value added to the result set.
+* `remove`: an old value removed from the result set.
+* `change`: an existing value changed in the result set.
+* `initial`: an initial value notification.
+* `uninitial`: an uninitial value notification.
+* `state`: a status document from `include_states`.
+
+Including the `type` field can simplify code that handles different cases for changefeed results.
+
 # Handling latency #
 
 Depending on how fast your application makes changes to monitored data and how fast it processes change notifications, it's possible that more than one change will happen between calls to the `changes` command. You can control what happens in that case with the `squash` optional argument.
