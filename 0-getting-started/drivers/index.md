@@ -147,27 +147,9 @@ alias: docs/guides/drivers/
     </section>
 
     <section class="platform-category">
-        <h2>Older community-supported drivers</h2>
-        <p>These drivers may not support all of RethinkDB 2.0's ReQL or, in some cases, may not work with current versions of RethinkDB at all. However, if you wish to work with one of these languages, they may provide a good starting point.</p>
+        <h2>Drivers with limited features</h2>
+        <p>These drivers may not support all of RethinkDB 2.0's ReQL. However, if you wish to work with one of these languages, they may provide a good starting point.</p>
         <ul class="platform-buttons">
-            <li>
-                <a href="https://github.com/unbit/librethinkdb">
-                    <img src="/assets/images/docs/driver-languages/c.png" />
-                    <p class="name">C</p>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/npiv/rethink-java-driver">
-                    <img src="/assets/images/docs/driver-languages/java.png" />
-                    <p class="name">Java <span class="driver-author">npiv</span></p>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/dkhenry/rethinkjava">
-                    <img src="/assets/images/docs/driver-languages/java.png" />
-                    <p class="name">Java <span class="driver-author">dkhenry</span></p>
-                </a>
-            </li>
             <li>
                 <a href="https://github.com/dparnell/rethink-db-client">
                     <img src="/assets/images/docs/driver-languages/objc.png" />
@@ -178,6 +160,12 @@ alias: docs/guides/drivers/
                 <a href="https://github.com/kclay/rethink-scala">
                     <img src="/assets/images/docs/driver-languages/scala.png" />
                     <p class="name">Scala</p>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/pixelspark/rethink-swift">
+                    <img src="/assets/images/docs/driver-languages/swift.png" />
+                    <p class="name">Swift</p>
                 </a>
             </li>
         </ul>
@@ -225,6 +213,7 @@ __Thanks to all our amazing driver contributors!__
 - [@njlg](https://github.com/njlg) (Perl): <https://github.com/njlg/perl-rethinkdb>
 - [@npiv](https://github.com/npiv/) (Java): <https://github.com/npiv/rethink-java-driver>
 - [@orthecreedence](https://github.com/orthecreedence) (Common Lisp): <https://github.com/orthecreedence/cl-rethinkdb>
+- [@pixelspark](https://github.com/pixelspark) (Swift): <https://github.com/pixelspark/rethink-swift>
 - [@rgv151](https://github.com/rgv151) (Nim): <https://github.com/rgv151/rethinkdb.nim>
 - [@unbit](https://github.com/unbit) (C): <https://github.com/unbit/librethinkdb>
 - The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C#/.NET): <https://github.com/mfenniak/rethinkdb-net>

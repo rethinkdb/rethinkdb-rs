@@ -49,6 +49,9 @@ deletes some of those documents first, they will be counted as skipped.
 - `inserted`, `replaced`, and `unchanged`: all 0 for a delete operation..
 - `changes`: if `returnChanges` is set to `true`, this will be an array of objects, one for each objected affected by the `delete` operation. Each object will have two keys: `{new_val: null, old_val: <old value>}`.
 
+{% infobox alert %}
+RethinkDB write operations will only throw exceptions if errors occur before any writes. Other errors will be listed in `first_error`, and `errors` will be set to a non-zero count. To properly handle errors with this term, code must both handle exceptions and check the `errors` return value!
+{% endinfobox %}
 
 __Example:__ Delete a single document from the table `comments`.
 

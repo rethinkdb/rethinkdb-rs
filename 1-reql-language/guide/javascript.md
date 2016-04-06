@@ -17,6 +17,22 @@ __Before you start:__
 
 <img src="/assets/images/docs/api_illustrations/10-minute-guide_javascript.png" class="api_command_illustration" />
 
+# Start the server #
+
+For a more detailed look, make sure to read the [quickstart](/docs/quickstart/).
+
+## Linux and OS X ##
+
+Start the server from a terminal window.
+
+    $ rethinkdb
+
+## Windows ##
+
+Start the server from the Windows command prompt.
+
+    C:\Users\Slava\RethinkDB\>rethinkdb.exe
+
 # Import the driver #
 
 First, start Node.js:
@@ -411,4 +427,4 @@ is:
 }
 ```
 
-{% include docs/quickstart-footer.md %} 
+{% include docs/quickstart-footer.md %}

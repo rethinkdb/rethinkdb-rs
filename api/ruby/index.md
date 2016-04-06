@@ -878,7 +878,29 @@ sequence.eq_join(predicate_function, right_table[, :index => 'id', :ordered => f
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
+__Example:__ Match players with the games they've played against one another.
 
+Join these tables using `game_id` on the player table and `id` on the games table:
+
+```rb
+r.table('players').eq_join('game_id', r.table('games')).run(conn)
+```
+
+This will return a result set such as the following:
+
+```rb
+[
+    {
+        'left' => { 'game_id' => 3, 'id' => 2, 'player' => "Agatha" },
+        'right' => { 'id' => 3, 'field' => "Bucklebury" }
+    },
+    {
+        'left' => { 'game_id' => 2, 'id' => 3, 'player' => "Fred" },
+        'right' => { 'id' => 2, 'field' => "Rushock Bog" }
+    },
+    ...
+]
+```
 
 [Read more about this command &rarr;](eq_join/)
 
@@ -1034,11 +1056,11 @@ r.table('marvel').order_by(:belovedness).limit(10).run(conn)
 ## [slice, []](slice/) ##
 
 {% apibody %}
-selection.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; selection
-stream.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
-array.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
-binary.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; binary
-string.slice(start_index[, end_index, :left_bound => 'closed', :right_bound =>'open']) &rarr; string
+selection.slice(start_offset[, end_offset, :left_bound => 'closed', :right_bound =>'open']) &rarr; selection
+stream.slice(start_offset[, end_offset, :left_bound => 'closed', :right_bound =>'open']) &rarr; stream
+array.slice(start_offset[, end_offset, :left_bound => 'closed', :right_bound =>'open']) &rarr; array
+binary.slice(start_offset[, end_offset, :left_bound => 'closed', :right_bound =>'open']) &rarr; binary
+string.slice(start_offset[, end_offset, :left_bound => 'closed', :right_bound =>'open']) &rarr; string
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1611,7 +1633,7 @@ r.table('players').has_fields(:games_won).run(conn)
 ## [insert_at](insert_at/) ##
 
 {% apibody %}
-array.insert_at(index, value) &rarr; array
+array.insert_at(offset, value) &rarr; array
 {% endapibody %}
 
 Insert a value in to an array at a given index. Returns the modified array.
@@ -1627,7 +1649,7 @@ r.expr(["Iron Man", "Spider-Man"]).insert_at(1, "Hulk").run(conn)
 ## [splice_at](splice_at/) ##
 
 {% apibody %}
-array.splice_at(index, array) &rarr; array
+array.splice_at(offset, array) &rarr; array
 {% endapibody %}
 
 Insert several values in to an array at a given index. Returns the modified array.
@@ -1643,7 +1665,7 @@ r.expr(["Iron Man", "Spider-Man"]).splice_at(1, ["Hulk", "Thor"]).run(conn)
 ## [delete_at](delete_at/) ##
 
 {% apibody %}
-array.delete_at(index [,endIndex]) &rarr; array
+array.delete_at(offset [,end_offset]) &rarr; array
 {% endapibody %}
 
 Remove one or more elements from an array at a given index. Returns the modified array. (Note: `delete_at` operates on arrays, not documents; to delete documents, see the [delete](/api/ruby/delete) command.)
@@ -1661,7 +1683,7 @@ __Example:__ Delete the second element of an array.
 ## [change_at](change_at/) ##
 
 {% apibody %}
-array.change_at(index, value) &rarr; array
+array.change_at(offset, value) &rarr; array
 {% endapibody %}
 
 Change a value in an array at a given index. Returns the modified array.
@@ -3009,14 +3031,14 @@ r.table('parks').get_intersecting(circle1, {:index => 'area'}).run(conn)
 table.get_nearest(point, {:index => 'indexname'[, :max_results => 100, :max_dist => 100000, :unit => 'm', :geo_system => 'WGS84']}) &rarr; array
 {% endapibody %}
 
-Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
+Return a list of documents closest to a specified point based on a geospatial index, sorted in order of increasing distance.
 
-__Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
+__Example:__ Return a list of the closest 25 enemy hideouts to the secret base.
 
 ```rb
 secret_base = r.point(-122.422876,37.777128)
 r.table('hideouts').get_nearest(secret_base, {:index => 'location',
-    :max_dist => 5000}).run(conn)
+    :max_results => 25}).run(conn)
 ```
 
 [Read more about this command &rarr;](get_nearest/)
@@ -3266,9 +3288,9 @@ r.table_status('superheroes').run(conn)
 ## [wait](wait/) ##
 
 {% apibody %}
-table.wait([{:wait_for => 'ready_for_writes', :timeout => <sec>}]) &rarr; object
-database.wait([{:wait_for => 'ready_for_writes', :timeout => <sec>}]) &rarr; object
-r.wait(table | database, [{:wait_for => 'ready_for_writes', :timeout => <sec>}]) &rarr; object
+table.wait([{:wait_for => 'all_replicas_ready', :timeout => <sec>}]) &rarr; object
+database.wait([{:wait_for => 'all_replicas_ready', :timeout => <sec>}]) &rarr; object
+r.wait(table | database, [{:wait_for => 'all_replicas_ready', :timeout => <sec>}]) &rarr; object
 {% endapibody %}
 
 Wait for a table (or tables) to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring.
@@ -3284,4 +3306,3 @@ __Example:__ Wait on a table to be ready.
 [Read more about this command &rarr;](wait/)
 
 {% endapisection %}
-

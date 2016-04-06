@@ -21,7 +21,7 @@ No special procedures or commands are necessary to execute RethinkDB queries asy
 
 In addition, RethinkDB's cursors and feeds implement an [EventEmitter interface][ee] compatible with Node's. This allows your application to set up listeners to receive data from queries as the data becomes available.
 
-[ee]: /api/javascript/event_emitter-cursor/
+[ee]: /api/javascript/ee-cursor/
 
 # Ruby with EventMachine
 
@@ -551,7 +551,7 @@ r.set_loop_type('twisted')
 connection = r.connect(host='localhost', port=28015)
 ```
 
-After executing `set_loop_type`, `r.connect` will return a Tornado `Deferred`, as will `r.run`.
+After executing `set_loop_type`, `r.connect` will return a Twisted `Deferred`, as will `r.run`.
 
 __Example:__ Simple use
 

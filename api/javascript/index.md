@@ -391,7 +391,7 @@ cursor.listeners(event)
 cursor.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
-Cursors and feeds implement the same interface as Node's [EventEmitter][ee].
+Cursors and feeds implement the same interface as Node's [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
 __Example:__ Broadcast all messages with [socket.io](http://socket.io).
 
@@ -969,7 +969,29 @@ sequence.eqJoin(predicate_function, rightTable[, {index: 'id', ordered: false}])
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
+__Example:__ Match players with the games they've played against one another.
 
+Join these tables using `gameId` on the player table and `id` on the games table:
+
+```js
+r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
+```
+
+This will return a result set such as the following:
+
+```js
+[
+    {
+        "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
+        "right" : { "id" : 3, "field" : "Bucklebury" }
+    },
+    {
+        "left" : { "gameId" : 2, "id" : 3, "player" : "Fred" },
+        "right" : { "id" : 2, "field" : "Rushock Bog" }
+    },
+    ...
+]
+```
 
 [Read more about this command &rarr;](eq_join/)
 
@@ -1128,11 +1150,11 @@ r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
 ## [slice](slice/) ##
 
 {% apibody %}
-selection.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
-stream.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
-array.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; array
-binary.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; binary
-string.slice(startIndex[, endIndex, {leftBound:'closed', rightBound:'open'}]) &rarr; string
+selection.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; selection
+stream.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
+array.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; array
+binary.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; binary
+string.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; string
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1728,7 +1750,7 @@ r.table('players').hasFields('games_won').run(conn, callback)
 ## [insertAt](insert_at/) ##
 
 {% apibody %}
-array.insertAt(index, value) &rarr; array
+array.insertAt(offset, value) &rarr; array
 {% endapibody %}
 
 Insert a value in to an array at a given index. Returns the modified array.
@@ -1744,7 +1766,7 @@ r.expr(["Iron Man", "Spider-Man"]).insertAt(1, "Hulk").run(conn, callback)
 ## [spliceAt](splice_at/) ##
 
 {% apibody %}
-array.spliceAt(index, array) &rarr; array
+array.spliceAt(offset, array) &rarr; array
 {% endapibody %}
 
 Insert several values in to an array at a given index. Returns the modified array.
@@ -1760,7 +1782,7 @@ r.expr(["Iron Man", "Spider-Man"]).spliceAt(1, ["Hulk", "Thor"]).run(conn, callb
 ## [deleteAt](delete_at/) ##
 
 {% apibody %}
-array.deleteAt(index [,endIndex]) &rarr; array
+array.deleteAt(offset [,endOffset]) &rarr; array
 {% endapibody %}
 
 Remove one or more elements from an array at a given index. Returns the modified array. (Note: `deleteAt` operates on arrays, not documents; to delete documents, see the [delete](/api/javascript/delete) command.)
@@ -1778,7 +1800,7 @@ __Example:__ Delete the second element of an array.
 ## [changeAt](change_at/) ##
 
 {% apibody %}
-array.changeAt(index, value) &rarr; array
+array.changeAt(offset, value) &rarr; array
 {% endapibody %}
 
 Change a value in an array at a given index. Returns the modified array.
@@ -3133,14 +3155,14 @@ r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 table.getNearest(point, {index: 'indexname'[, maxResults: 100, maxDist: 100000, unit: 'm', geoSystem: 'WGS84']}) &rarr; array
 {% endapibody %}
 
-Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
+Return a list of documents closest to a specified point based on a geospatial index, sorted in order of increasing distance.
 
-__Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
+__Example:__ Return a list of the closest 25 enemy hideouts to the secret base.
 
 ```js
 var secretBase = r.point(-122.422876,37.777128);
 r.table('hideouts').getNearest(secretBase,
-    {index: 'location', maxDist: 5000}
+    {index: 'location', maxResults: 25}
 ).run(conn, callback)
 ```
 
@@ -3392,9 +3414,9 @@ __Example:__ Get a table's status.
 ## [wait](wait/) ##
 
 {% apibody %}
-table.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
-database.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
-r.wait(table | database, [{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
+table.wait([{waitFor: 'all_replicas_ready', timeout: <sec>}]) &rarr; object
+database.wait([{waitFor: 'all_replicas_ready', timeout: <sec>}]) &rarr; object
+r.wait(table | database, [{waitFor: 'all_replicas_ready', timeout: <sec>}]) &rarr; object
 {% endapibody %}
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.
@@ -3410,4 +3432,3 @@ __Example:__ Wait on a table to be ready.
 [Read more about this command &rarr;](wait/)
 
 {% endapisection %}
-

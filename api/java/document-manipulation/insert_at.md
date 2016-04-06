@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-array.insertAt(index, value) &rarr; array
+array.insertAt(offset, value) &rarr; array
 {% endapibody %}
 
 # Description #

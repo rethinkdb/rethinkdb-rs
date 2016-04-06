@@ -13,18 +13,18 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-array.delete_at(index [,endIndex]) &rarr; array
+array.delete_at(offset [,end_offset]) &rarr; array
 {% endapibody %}
 
 # Description #
 
 Remove one or more elements from an array at a given index. Returns the modified array. (Note: `delete_at` operates on arrays, not documents; to delete documents, see the [delete](/api/ruby/delete) command.)
 
-If only `index` is specified, `delete_at` removes the element at that index. If both `index` and `end_index` are specified, `delete_at` removes the range of elements between `index` and `end_index`, inclusive of `index` but not inclusive of `end_index`.
+If only `offset` is specified, `delete_at` removes the element at that index. If both `offset` and `end_offset` are specified, `delete_at` removes the range of elements between `offset` and `end_offset`, inclusive of `offset` but not inclusive of `end_offset`.
 
-If `end_index` is specified, it must not be less than `index`. Both `index` and `end_index` must be within the array's bounds (i.e., if the array has 10 elements, an `index` or `end_index` of 10 or higher is invalid).
+If `end_offset` is specified, it must not be less than `offset`. Both `offset` and `end_offset` must be within the array's bounds (i.e., if the array has 10 elements, an `offset` or `end_offset` of 10 or higher is invalid).
 
-By using a negative `index` you can delete from the end of the array. `-1` is the last element in the array, `-2` is the second-to-last element, and so on. You may specify a negative `end_index`, although just as with a positive value, this will not be inclusive. The range `(2,-1)` specifies the third element through the next-to-last element.
+By using a negative `offset` you can delete from the end of the array. `-1` is the last element in the array, `-2` is the second-to-last element, and so on. You may specify a negative `end_offset`, although just as with a positive value, this will not be inclusive. The range `(2,-1)` specifies the third element through the next-to-last element.
 
 __Example:__ Delete the second element of an array.
 

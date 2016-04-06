@@ -108,13 +108,15 @@ Every server that has ever been part of the cluster and has not been permanently
 {
     id: "de8b75d1-3184-48f0-b1ef-99a9c04e2be5",
     name: "servername",
-    tags: ["default"]
+    tags: ["default"],
+    cache_size_mb: "auto"
 }
 ```
 
 * `id`: the UUID of the server. (Read-only.)
 * `name`: the server's name.
 * `tags`: a list of unordered tags associated with the server.
+* `cache_size_mb`: the server's cache size, either a number (the desired size in megabytes) or `"auto"` (let the server decide on startup, based on the system's available memory).
 
 If tags aren't specified when a server starts, the server is automatically assigned the `default` tag. Documents cannot be inserted into `server_config`. A new document gets created when a server connects to the cluster.
 
@@ -228,11 +230,11 @@ This is a typical document schema for a server connected to the host server&mdas
     },
     process: {
         argv: ["/usr/bin/rethinkdb"],
-        cache_size_mb: 1882.30078125,
+        cache_size_mb: 100,
         pid: 28580,
         time_started: <ReQL time object>,
-        version: "rethinkdb 2.1.0-xxx (CLANG 3.4 (tags/RELEASE_34/final))"
-    },
+        version: "rethinkdb 2.2.5 (CLANG 7.0.2 (clang-700.1.81))"
+    }
 }
 ```
 
@@ -246,7 +248,7 @@ This is a typical document schema for a server connected to the host server&mdas
 	* `connected_to`: a key/value list of servers this server is either currently connected to (`true`), or knows about but is not currently connected to (`false`). In most cases other servers will be identified by name, but if the server being queried cannot determine the name of a server in the cluster it is not connected to, it will be identified by UUID.
 * `process`: information about the RethinkDB server process:
     * `argv`: the command line arguments the server started with, as an array of strings.
-	* `cache_size_mb`: the cache size in megabytes. (This can be [configured on startup][startup].)
+	* `cache_size_mb`: the cache size in megabytes. (This can be [configured on startup][startup] or by editing the `server_status` entry for that server.)
 	* `pid`: the process ID.
 	* `time_started`: the time the server process started.
 	* `version`: the version string of the RethinkDB server.

@@ -5,22 +5,34 @@ should only take a minute!
 [install]: /install
 {% endinfobox %}
 
-# Start the server #
-
-First, start the RethinkDB server like this:
-
-```
-$ rethinkdb
-info: Creating directory 'rethinkdb_data'
-info: Listening for intracluster connections on port 29015
-info: Listening for client driver connections on port 28015
-info: Listening for administrative HTTP connections on port 8080
-info: Server ready
-```
-
 <img src="/assets/images/docs/api_illustrations/quickstart.png" class="api_command_illustration" />
 
-Point your browser to `localhost:8080` &ndash; you'll see an administrative UI
+# Start the server #
+
+First, start the RethinkDB server. Under OS X or Linux, do this from a terminal window.
+
+    $ rethinkdb
+    info: Creating directory 'rethinkdb_data'
+    info: Listening for intracluster connections on port 29015
+    info: Listening for client driver connections on port 28015
+    info: Listening for administrative HTTP connections on port 8080
+    info: Server ready
+
+From Windows, do this from a command prompt window. Use the `cd` command to go to the directory that you unpacked `rethinkdb.exe` in.
+
+    C:\Users\Slava\>cd RethinkDB
+    C:\Users\Slava\RethinkDB\>
+
+Then, start RethinkDB with its default options.
+
+    C:\Users\Slava\RethinkDB\>rethinkdb.exe
+    info: Creating directory 'rethinkdb_data'
+    info: Listening for intracluster connections on port 29015
+    info: Listening for client driver connections on port 28015
+    info: Listening for administrative HTTP connections on port 8080
+    info: Server ready
+
+Point your browser to `localhost:8080`. You'll see an administrative UI
 where you can control the cluster (which so far consists of one server), and
 play with the query language.
 

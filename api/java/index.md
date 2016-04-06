@@ -908,7 +908,29 @@ sequence.eqJoin(predicate_function, rightTable) &rarr; sequence
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
+__Example:__ Match players with the games they've played against one another.
 
+Join these tables using `gameId` on the player table and `id` on the games table:
+
+```java
+r.table("players").eqJoin("gameId", r.table("games")).run(conn);
+```
+
+This will return a result set such as the following:
+
+```json
+[
+    {
+        "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
+        "right" : { "id" : 3, "field" : "Bucklebury" }
+    },
+    {
+        "left" : { "gameId" : 2, "id" : 3, "player" : "Fred" },
+        "right" : { "id" : 2, "field" : "Rushock Bog" }
+    },
+    ...
+]
+```
 
 [Read more about this command &rarr;](eq_join/)
 
@@ -1064,11 +1086,11 @@ r.table("marvel").orderBy("belovedness").limit(10).run(conn);
 ## [slice](slice/) ##
 
 {% apibody %}
-selection.slice(startIndex[, endIndex]) &rarr; selection
-stream.slice(startIndex[, endIndex]) &rarr; stream
-array.slice(startIndex[, endIndex]) &rarr; array
-binary.slice(startIndex[, endIndex]) &rarr; binary
-string.slice(startIndex[, endIndex]) &rarr; string
+selection.slice(startOffset[, endOffset]) &rarr; selection
+stream.slice(startOffset[, endOffset]) &rarr; stream
+array.slice(startOffset[, endOffset]) &rarr; array
+binary.slice(startOffset[, endOffset]) &rarr; binary
+string.slice(startOffset[, endOffset]) &rarr; string
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1651,7 +1673,7 @@ r.table("players").hasFields("games_won").run(conn);
 ## [insertAt](insert_at/) ##
 
 {% apibody %}
-array.insertAt(index, value) &rarr; array
+array.insertAt(offset, value) &rarr; array
 {% endapibody %}
 
 Insert a value in to an array at a given index. Returns the modified array.
@@ -1667,7 +1689,7 @@ r.expr(r.array("Iron Man", "Spider-Man")).insertAt(1, "Hulk").run(conn);
 ## [spliceAt](splice_at/) ##
 
 {% apibody %}
-array.spliceAt(index, array) &rarr; array
+array.spliceAt(offset, array) &rarr; array
 {% endapibody %}
 
 Insert several values into an array at the given index. Returns the modified array.
@@ -1684,7 +1706,7 @@ r.expr(r.array("Iron Man", "Spider-Man"))
 ## [deleteAt](delete_at/) ##
 
 {% apibody %}
-array.deleteAt(index [,endIndex]) &rarr; array
+array.deleteAt(offset [,endOffset]) &rarr; array
 {% endapibody %}
 
 Remove one or more elements from an array at a given index. Returns the modified array. (Note: `deleteAt` operates on arrays, not documents; to delete documents, see the [delete](/api/java/delete) command.)
@@ -1703,7 +1725,7 @@ r.expr(r.array("a", "b", "c", "d", "e", "f")).deleteAt(1).run(conn);
 ## [changeAt](change_at/) ##
 
 {% apibody %}
-array.changeAt(index, value) &rarr; array
+array.changeAt(offset, value) &rarr; array
 {% endapibody %}
 
 Change a value in an array at a given index. Returns the modified array.
@@ -3133,9 +3155,9 @@ r.table("parks").getIntersecting(circle1).optArg("index", "area").run(conn);
 table.getNearest(point).optArg("index", index) &rarr; array
 {% endapibody %}
 
-Get all documents where the specified geospatial index is within a certain distance of the specified point (default 100 kilometers).
+Return a list of documents closest to a specified point based on a geospatial index, sorted in order of increasing distance.
 
-__Example:__ Return a list of enemy hideouts within 5000 meters of the secret base.
+__Example:__ Return a list of the closest 25 enemy hideouts to the secret base.
 
 ```java
 import com.rethinkdb.gen.ast.Point;
@@ -3145,7 +3167,7 @@ Point secretBase = r.point(-122.422876,37.777128);
 r.table("hideouts")
  .getNearest(secretBase)
  .optArg("index", "location")
- .optArg("max_dist", 5000)
+ .optArg("max_results", 25)
  .run(conn);
 ```
 
@@ -3430,4 +3452,3 @@ Result:
 [Read more about this command &rarr;](wait/)
 
 {% endapisection %}
-

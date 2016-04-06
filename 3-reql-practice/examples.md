@@ -14,6 +14,35 @@ we can. If you have written a cool app and want us to showcase it,
 <table class="docs-grid docs-examples">
   <tbody>
     <tr>
+      <td>
+      <div class="docs-grid-block">
+        <h1>Todo list 1</h1>
+        <p>Todo list with Angular and Express</p>
+        <strong>Technologies:</strong>
+        <ul>
+          <li>Node.js</li>
+          <li>Express 4.0</li>
+          <li>Angular.js</li>
+        </ul>
+        <i class="tag javascript"></i> Go to the <a class="action" href="https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express">callbacks</a> or <a href="https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-express-promise">promises</a> tutorial &raquo;
+      </div>
+      </td>
+      <td>
+      <div class="docs-grid-block">
+        <h1>Todo list 2</h1>
+        <p>Node.js Todo list</p>
+        <strong>Technologies:</strong>
+        <ul>
+          <li>Node.js</li>
+          <li>Koa</li>
+          <li>Angular.js</li>
+        </ul>
+        <i class="tag javascript"></i> <a class="action" href="https://github.com/rethinkdb/rethinkdb-example-nodejs/tree/master/todo-angular-koa">Go to the tutorial &raquo;</a>
+      </div>
+      </td>
+    </tr>
+  
+    <tr>
       <td> 
       <div class="docs-grid-block elections">
         <h1>US election analysis</h1>
