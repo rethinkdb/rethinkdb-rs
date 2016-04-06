@@ -11,7 +11,7 @@ permalink: docs/install/windows/
 
 _Prerequisites:_ We provide native binaries for Windows 7 and above.
 
-[Download](https://download.rethinkdb.com/windows/rethinkdb-dev-preview-0.zip) the ZIP archive and unpack it in a directory of your choice.
+[Download](https://download.rethinkdb.com/windows/rethinkdb-{{site.version.full}}.zip) the ZIP archive and unpack it in a directory of your choice.
 
 {% infobox alert %}
 The Windows port of RethinkDB is still in beta, and is not considered production ready yet!
