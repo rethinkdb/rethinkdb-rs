@@ -201,6 +201,7 @@ If we want to retrieve all users on the Galactica and Pegasus, we can write:
 r.table("user").filter{ |user|
     r.expr(["Galactica", "Pegasus"]).contains(user["ship"])
 }.run()
+```
 
 ## Filtering based on nested fields ##
 
@@ -766,6 +767,7 @@ But you'd like to get a document more like a "report card":
     "Mathematics" => 70,
     "English" => 90
 }
+```
 
 You can accomplish this with `object` and a pivot.
 
