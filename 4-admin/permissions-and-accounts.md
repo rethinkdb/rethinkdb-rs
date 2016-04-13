@@ -122,7 +122,7 @@ r.db('field_notes').grant('bob', {read: true, write: true, config: false});
 
 // set table scopes
 r.db('field_notes').table('calendar').grant('bob', {write: false});
-r.db(field_notes').table('supervisor_only').grant('bob', {read: false, write: false});
+r.db('field_notes').table('supervisor_only').grant('bob', {read: false, write: false});
 ```
 
 # For more information
