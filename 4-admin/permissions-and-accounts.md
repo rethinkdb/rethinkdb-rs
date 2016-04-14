@@ -110,9 +110,9 @@ The ReQL [grant][gr] command is used to grant and revoke permissions for users. 
 
 [gr]: /api/javascript/grant
 
-    r.grant("user", {permissions}) &rarr; object
-    table.grant("user", {permissions}) &rarr; object
-    db.grant("user", {permissions}) &rarr; object
+    r.grant("user", {permissions}) → object
+    table.grant("user", {permissions}) → object
+    db.grant("user", {permissions}) → object
 
 To specify the permissions described above for Bob, you would execute the following ReQL commands:
 
