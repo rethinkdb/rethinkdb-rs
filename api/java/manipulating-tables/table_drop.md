@@ -31,6 +31,8 @@ __Example:__ Drop a table named "dc_universe".
 
 ```java
 r.db("test").tableDrop("dc_universe").run(conn);
+```
+
 Result:
 
 ```json
