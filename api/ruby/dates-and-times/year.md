@@ -24,5 +24,5 @@ __Example:__ Retrieve all the users born in 1986.
 r.table("users").filter{ |user|
     user["birthdate"].year().eq(1986)
 }.run(conn)
-
+```
 
