@@ -40,7 +40,7 @@ The optional arguments are:
     - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
     - `"replace"`: [Replace](/api/javascript/replace/) the old document in its entirety with the new one.
     - `"update"`: [Update](/api/javascript/update/) fields of the old document with fields from the new one.
-    - `function (oldDoc, newDoc) { return resolvedDoc }`: a function that receives the old and new documents as arguments and returns a document which will be inserted in place of the conflicted one.
+    - `function (id, oldDoc, newDoc) { return resolvedDoc }`: a function that receives the id, old and new documents as arguments and returns a document which will be inserted in place of the conflicted one.
 
 If `returnChanges` is set to `true` or `"always"`, the `changes` array will follow the same order as the inserted documents. Documents in `changes` for which an error occurs (such as a key conflict) will have a third field, `error`, with an explanation of the error.
 
@@ -194,10 +194,9 @@ __Example:__ Provide a resolution function that concatenates memo content in cas
 
 ```js
 // assume newMemos is a list of memo documents to insert
-r.table("memos").insert(newMemos, {conflict:
-    function (oldDoc, newDoc) {
-        newDoc('content') = oldDoc('content').add("\n").addnewDoc('content');
-        return newDoc;
-    }
-}).run(conn, callback)
+r.table('memos').insert(newMemos, {conflict: function(id, oldDoc, newDoc) {
+    return newDoc.merge(
+        {content: oldDoc('content').add("\n").add(newDoc('content'))}
+    );
+}}).run(conn, callback)
 ```
