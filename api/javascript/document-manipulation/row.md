@@ -34,7 +34,7 @@ r.table('users').filter(r.row('age').gt(5)).run(conn, callback)
 __Example:__ Access the attribute 'child' of an embedded document.
 
 ```js
-r.table('users').filter(r.row('embedded_doc')('child') > 5).run(conn, callback)
+r.table('users').filter(r.row('embedded_doc')('child').gt(5)).run(conn, callback)
 ```
 
 
