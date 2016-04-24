@@ -319,7 +319,7 @@
         - name: js
           permalink: js
         - name: coerceTo
-          permalink: coerce_to
+          permalink: coerceTo
         - name: typeOf
           permalink: type_of
         - name: info
