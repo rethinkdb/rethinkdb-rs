@@ -24,12 +24,26 @@ In its first form, `fold` operates like [reduce][rd], returning a value by apply
 * it is guaranteed to proceed through the sequence from first element to last.
 * it passes an initial base value to the function with the first element in place of the previous reduction result.
 
+{% apibody %}
+combining_function(accumulator | base, element) &rarr; new_accumulator
+{% endapibody %}
+
 In its second form, `fold` operates like [concat_map][cm], returning a new sequence rather than a single value. When an `emit` function is provided, `fold` will:
 
 * proceed through the sequence in order and take an initial base value, as above.
 * for each element in the sequence, call both the combining function and a separate emitting function. The emitting function takes three parameters: the previous reduction result (the accumulator), the current element, and the output from the combining function (the new value of the accumulator).
 
 If provided, the emitting function must return a list.
+
+{% apibody %}
+emit(previous_accumulator, element, accumulator) &rarr; array
+{% endapibody %}
+
+A `finalEmit` function may also be provided, which will be called at the end of the sequence. It takes a single parameter: the result of the last reduction through the iteration (the accumulator), or the original base value if the input sequence was empty. This function must return a list, which will be appended to `fold`'s output stream.
+
+{% apibody %}
+final_emit(accumulator | base) &rarr; array
+{% endapibody %}
 
 [rd]: /api/ruby/reduce/
 [cm]: /api/ruby/concat_map/
