@@ -1,6 +1,5 @@
-#[cfg(test)]
-mod test {
-    #[test]
-    fn it_works() {
-    }
-}
+//! RethinkDB Driver
+
+extern crate protobuf;
+
+mod ql2;

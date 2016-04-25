@@ -6,3 +6,4 @@ license = "MIT"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
+protobuf = "1.0.18"
