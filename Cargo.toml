@@ -1,0 +1,8 @@
+[package]
+name = "reql"
+description = "RethinkDB Driver"
+version = "0.0.0"
+license = "MIT"
+authors = ["rushmorem <rushmore@webenchanter.com>"]
+
+[dependencies]
