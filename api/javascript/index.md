@@ -364,16 +364,20 @@ cursor.toArray(function(err, results) {
 ## [close](close-cursor/) ##
 
 {% apibody %}
-cursor.close()
+cursor.close([callback])
+cursor.close() &rarr; promise
 {% endapibody %}
 
-Close a cursor. Closing a cursor cancels the corresponding query and frees the memory
-associated with the open request.
+Close a cursor. Closing a cursor cancels the corresponding query and frees the memory associated with the open request.
 
 __Example:__ Close a cursor.
 
 ```js
-cursor.close()
+cursor.close(function (err) {
+    if (err) {
+        console.log("An error occurred on cursor close");
+    }
+});
 ```
 
 [Read more about this command &rarr;](close-cursor/)
@@ -3432,3 +3436,4 @@ __Example:__ Wait on a table to be ready.
 [Read more about this command &rarr;](wait/)
 
 {% endapisection %}
+
