@@ -227,6 +227,16 @@ r.table("users").get(10001).update(
 ).run(conn)
 ```
 
+This will fail if the `notes` field does not exist in the document. To perform this as an "upsert" (update or insert), use the [default][] command to ensure the field is initialized as an empty list.
+
+[default]: /api/python/default/
+
+```py
+r.table("users").get(10001).update(
+    {"notes": r.row["notes"].default([]).append(new_note)}
+).run(conn)
+```
+
 __Example:__ Send a note to every user with an ICQ number.
 
 ```py
