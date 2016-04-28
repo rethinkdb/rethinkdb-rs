@@ -8,4 +8,4 @@ pub struct Connection;
 struct Reql;
 
 #[allow(non_upper_case_globals)]
-const r: Reql = Reql{};
+pub const r: Reql = Reql{};
