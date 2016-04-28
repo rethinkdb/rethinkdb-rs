@@ -9,9 +9,6 @@ use std::io;
 
 struct ConnectionManager;
 
-#[allow(non_upper_case_globals)]
-const r: ConnectionManager = ConnectionManager{};
-
 impl r2d2::ManageConnection for ConnectionManager {
     type Connection = ::Connection;
     type Error = io::Error;
