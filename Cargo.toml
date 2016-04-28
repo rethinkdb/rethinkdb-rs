@@ -1,10 +1,14 @@
 [package]
 name = "reql"
 description = "RethinkDB Driver"
-version = "0.0.0"
-license = "MIT"
+version = "0.0.1"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/rust-rethinkdb/reql"
+documentation = "http://rust-rethinkdb.github.io/reql/0.1.x/reql"
+readme = "README.md"
+keywords = ["database", "rethinkdb", "reql", "driver"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
-protobuf = "1.0.18"
 r2d2 = "0.7.0"
+ql2 = "1.0.0"
