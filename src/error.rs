@@ -12,6 +12,24 @@ pub enum ReqlError {
     Driver(ReqlDriverError),
 }
 
+impl From<ReqlCompileError> for ReqlError {
+    fn from(err: ReqlCompileError) -> ReqlError {
+        ReqlError::Compile(err)
+    }
+}
+
+impl From<ReqlRuntimeError> for ReqlError {
+    fn from(err: ReqlRuntimeError) -> ReqlError {
+        ReqlError::Runtime(err)
+    }
+}
+
+impl From<ReqlDriverError> for ReqlError {
+    fn from(err: ReqlDriverError) -> ReqlError {
+        ReqlError::Driver(err)
+    }
+}
+
 /// The query cannot be compiled by the server
 ///
 /// This may be due to a syntax error, such as an unrecognized optional argument, or specifying the
