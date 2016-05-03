@@ -1,6 +1,6 @@
-# RethinkDB Driver
+# RethinkDB Traits and Errors
 
-This is a [RethinkDB] driver for [Rust].
+Common [RethinkDB] traits and errors for [Rust].
 
 [RethinkDB]: https://www.rethinkdb.com
 [Rust]: https://www.rust-lang.org
