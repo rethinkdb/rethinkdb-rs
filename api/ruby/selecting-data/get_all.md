@@ -39,6 +39,10 @@ __Example:__ You can get multiple documents in a single call to `get_all`.
 r.table('dc').get_all('superman', 'ant man').run(conn)
 ```
 
+{% infobox %}
+__Note:__ `get_all` does not perform any de-duplication. If you pass the same key more than once, the same document will be returned multiple times.
+{% endinfobox %}
+
 __Example:__ You can use [args](/api/ruby/args/) with `get_all` to retrieve multiple documents whose keys are in a list. This uses `get_all` to get a list of female superheroes, coerces that to an array, and then gets a list of villains who have those superheroes as enemies.
 
 ```rb
