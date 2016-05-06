@@ -32,6 +32,7 @@ These options can be passed to the `rethinkdb` server on the command line on sta
 * `-j [ --join ] host:port`: host and port of a RethinkDB node to connect to
 * `--reql-http-proxy [protocol://]host[:port]`: HTTP proxy to use for performing `r.http(...)` queries, default port is 1080
 * `--canonical-address addr`: address that other RethinkDB instances will use to connect to us, can be specified multiple times
+* `--cluster-reconnect-timeout secs`: the amount of time, in seconds, this server will try to reconnect to a cluster if it loses connection before giving up; default `86400`
 
 The `--bind` option controls the default behavior for all RethinkDB ports. If it's specified, the `--bind-http`, `--bind-cluster` and `--bind-driver` options will override that behavior for a specific port. So:
 
