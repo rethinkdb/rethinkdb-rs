@@ -261,11 +261,6 @@ post written by every author in our database:
 If you use the `zip` command after `join`, the document from the right
 table will be merged into the left one.
 
-{% infobox %}
-ReQL will eventually provide a better function to manipulate the output of a JOIN query.  
-See [Github issue #325](https://github.com/rethinkdb/rethinkdb/issues/325) to track progress.
-{% endinfobox %}
-
 Consider the following query:
 
 ```py
