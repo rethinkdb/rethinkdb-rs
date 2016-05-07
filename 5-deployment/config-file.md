@@ -119,4 +119,7 @@ config file without the `.conf` extension.
 
 * `server-tag`: Specifies tags for this server, which can be used to group servers together for administration purposes (for instance, servers in the same data center). See [Sharding and replication][sar] for more details. To assign multiple tags to a server, repeat `server-tag` lines for each tag.
 
+* `cluster-reconnect-timeout`: the amount of time, in seconds, this server will try to reconnect to a cluster if it loses connection before giving up.  
+  *Default*: `86400`
+
 [sar]: /docs/sharding-and-replication/
