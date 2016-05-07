@@ -3,6 +3,7 @@
 pub mod error;
 pub mod conn;
 
-pub trait Reql {
-    fn connect<T: conn::Connection>(&self, opts: conn::Opts) -> T;
+pub trait R {
+    type Connection;
+    fn connect(&self, opts: conn::Opts) -> Self::Connection;
 }
