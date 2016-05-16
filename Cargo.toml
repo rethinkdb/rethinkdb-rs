@@ -1,6 +1,6 @@
 [package]
 name = "reql"
-description = "Common traits, data structures and errors for RethinkDB drivers"
+description = "Common traits and errors for RethinkDB drivers"
 version = "0.0.4"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rust-rethinkdb/reql"
