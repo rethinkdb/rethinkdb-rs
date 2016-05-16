@@ -8,5 +8,3 @@ documentation = "http://rust-rethinkdb.github.io/reql/0.1.x/reql"
 readme = "README.md"
 keywords = ["database", "rethinkdb", "reql"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
-
-[dependencies]
