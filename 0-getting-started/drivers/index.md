@@ -143,6 +143,12 @@ alias: docs/guides/drivers/
                     <p class="name">R</p>
                 </a>
             </li>
+            <li>
+                <a href="https://github.com/pixelspark/rethink-swift">
+                    <img src="/assets/images/docs/driver-languages/swift.png" />
+                    <p class="name">Swift</p>
+                </a>
+            </li>
         </ul>
     </section>
 
@@ -160,12 +166,6 @@ alias: docs/guides/drivers/
                 <a href="https://github.com/kclay/rethink-scala">
                     <img src="/assets/images/docs/driver-languages/scala.png" />
                     <p class="name">Scala</p>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/pixelspark/rethink-swift">
-                    <img src="/assets/images/docs/driver-languages/swift.png" />
-                    <p class="name">Swift</p>
                 </a>
             </li>
         </ul>
