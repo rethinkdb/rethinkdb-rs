@@ -64,8 +64,8 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [koa-rethinkdb](https://github.com/hden/koa-rethinkdb) by [@hden](https://github.com/hden)  
   Koa middleware that automatically manages connections via a connection pool.
 
-- [sails-hook-thinky](https://github.com/mwielbut/sails-hook-thinky) by [@mwielbut](https://github.com/mwielbut)  
-  A hook to use [Thinky][] with [Sails](http://sailsjs.org/).
+- [thinky-loader](https://github.com/mwielbut/thinky-loader) by [@mwielbut](https://github.com/mwielbut)  
+  A general-purpose model loader for the Thinky ORM. (Supersedes sails-hook-thinky.)
 
 - [hapi-rethinkdb-crud](https://github.com/athlite/hapi-rethinkdb-crud) by [@athlite](https://github.com/athlite)  
   Basic CRUD mapping between [hapi](http://hapijs.com) and RethinkDB.
