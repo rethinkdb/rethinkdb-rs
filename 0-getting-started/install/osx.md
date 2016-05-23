@@ -47,7 +47,7 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb-{{site.version.full}}
-./configure --allow-fetch
+./configure --allow-fetch --fetch openssl
 make
 ```
 
