@@ -13,11 +13,11 @@ _Prerequisites:_ We provide native 64-bit binaries for Windows 7 and above. A 64
 
 [Download](https://download.rethinkdb.com/windows/rethinkdb-{{site.version.full}}.zip) the ZIP archive and unpack it in a directory of your choice.
 
-{% infobox alert %}
+{% infobox %}
 The Windows port of RethinkDB is a recent addition and hasn't received as much tuning as the Linux and OS X versions yet. Please report any performance issues on [GitHub][gh-issues].
-{% endinfobox %}
 
 [gh-issues]: https://github.com/rethinkdb/rethinkdb/issues/
+{% endinfobox %}
 
 
 # Running RethinkDB #
