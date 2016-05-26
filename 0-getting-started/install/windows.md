@@ -14,8 +14,10 @@ _Prerequisites:_ We provide native 64-bit binaries for Windows 7 and above. A 64
 [Download](https://download.rethinkdb.com/windows/rethinkdb-{{site.version.full}}.zip) the ZIP archive and unpack it in a directory of your choice.
 
 {% infobox alert %}
-The Windows port of RethinkDB is still in beta, and is not considered production ready yet!
+The Windows port of RethinkDB is a recent addition and hasn't received as much tuning as the Linux and OS X versions yet. Please report any performance issues on [GitHub][gh-issues].
 {% endinfobox %}
+
+[gh-issues]: https://github.com/rethinkdb/rethinkdb/issues/
 
 
 # Running RethinkDB #
@@ -49,9 +51,9 @@ To specify a server name and another cluster to join:
 
 # Compile from source #
 
-Since RethinkDB on Windows is still in beta, the build process may change with each beta release. For information on how to build the current release, you'll need to check out the [`atnnn/windows2`][aw] branch and follow the instructions in [`WINDOWS.md`][readme].
+The Windows port of RethinkDB has not been merged into the main source branch yet, and the build process is still subject to change. For information on how to build the current release, you'll need to check out the [`atnnn/windows3`][aw] branch and follow the instructions in [`WINDOWS.md`][readme].
 
-[aw]: https://github.com/rethinkdb/rethinkdb/tree/atnnn/windows2
-[readme]: https://github.com/rethinkdb/rethinkdb/blob/atnnn/windows2/WINDOWS.md
+[aw]: https://github.com/rethinkdb/rethinkdb/tree/atnnn/windows3
+[readme]: https://github.com/rethinkdb/rethinkdb/blob/atnnn/windows3/WINDOWS.md
 
 {% include docs/install-next-step.md %}
