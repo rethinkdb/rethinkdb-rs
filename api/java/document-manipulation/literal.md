@@ -37,7 +37,7 @@ Using `update` to modify the `data` field will normally merge the nested documen
 
 ```java
 r.table("users").get(1)
- .update(r.hashMap(data, r.hashMap(age, 19).with(job, "Engineer")))
+ .update(r.hashMap("data", r.hashMap("age", 19).with("job", "Engineer")))
  .run(conn);
 
 // Result:
@@ -58,7 +58,7 @@ __Example:__ Replace one nested document with another rather than merging the fi
 
 ```java
 r.table("users").get(1)
- .update(r.hashMap(data, r.literal(r.hashMap(age, 19).with(job, "Engineer"))))
+ .update(r.hashMap("data", r.literal(r.hashMap("age", 19).with("job", "Engineer"))))
  .run(conn);
 
 // Result:
@@ -75,7 +75,7 @@ r.table("users").get(1)
 __Example:__ Use `literal` to remove a field from a document.
 
 ```java
-r.table("users").get(1).merge(r.hashMap(data, r.literal())).run(conn);
+r.table("users").get(1).merge(r.hashMap("data", r.literal())).run(conn);
 
 // Result:
 {
