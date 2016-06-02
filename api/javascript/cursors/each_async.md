@@ -34,7 +34,7 @@ function(row[, rowFinished])
 
 If you accept the `rowFinished` callback, it _must_ be called at the end of each row. If you call `rowFinished` with any value, iteration will stop, and the value will be wrapped in `error.message` for the error handler.
 
-If you do _not_ use `rowFinished`, the `rowProcess` callback can end iteration early by returning any value _other_ than a Promise; that value will be wrapped in an error object and passed to `final` if it is provided. If it returns a Promise, the Promise will be resolved before iteration continues. (If the resolved Promise returns a value, iteration will be stopped and the value will be wrapped in an error object and passed to `final` if it is provided.)
+If you do _not_ use `rowFinished`, the `rowProcess` callback can end iteration early by returning any value _other_ than a Promise. If it returns a non-Promise value (other than `undefined`), then `final` will receive an error object. If it returns a Promise, the Promise will be resolved before iteration continues; if the resolved Promise returns a value, iteration will be stopped and an error object will be passed to `final`.
 
 If you provide a `final` callback, it will always be executed when row processing is completed (the end of the sequence is hit, iteration is stopped prematurely, or an error occurs). The `final` callback will receive an `error` object if an error is thrown or `rowProcess` returns any value (other than a Promise). If `final` returns any value it will be ignored.
 
