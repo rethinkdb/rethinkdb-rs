@@ -40,15 +40,6 @@ r.expr(r.array(1, 2)).union(r.array(3, 4), r.array(5, 6), r.array(7, 8, 9)).run(
 [1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
 
-__Example:__ Combine four arrays into one.
-
-```java
-r.expr(r.array(1, 2)).union(r.array(3, 4), r.array(5, 6), r.array(7, 8, 9)).run(conn);
-
-// Result:
-[1, 2, 3, 4, 5, 6, 7, 8, 9]
-```
-
 __Example:__ Create a [changefeed][cf] from the first example.
 
 ```java
