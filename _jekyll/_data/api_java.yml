@@ -3,7 +3,7 @@
     commands:
         - name: r
           permalink: r
-        - name: connect
+        - name: connection
           permalink: connect
         - name: close
           permalink: close
