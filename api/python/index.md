@@ -1989,8 +1989,6 @@ __Example:__ It's as easy as 2 % 2 = 0.
 (r.expr(2) % 2).run(conn)
 ```
 
-
-
 [Read more about this command &rarr;](mod/)
 
 ## [&, and_](and/) ##
@@ -3345,3 +3343,4 @@ r.table('superheroes').wait().run(conn)
 [Read more about this command &rarr;](wait/)
 
 {% endapisection %}
+

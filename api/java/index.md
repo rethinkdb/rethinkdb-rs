@@ -1797,7 +1797,7 @@ __Example:__ Replace one nested document with another rather than merging the fi
 
 ```java
 r.table("users").get(1)
- .update(r.hashMap(data, r.literal(r.hashMap(age, 19).with(job, "Engineer"))))
+ .update(r.hashMap("data", r.literal(r.hashMap("age", 19).with("job", "Engineer"))))
  .run(conn);
 
 // Result:
@@ -3454,3 +3454,4 @@ Result:
 [Read more about this command &rarr;](wait/)
 
 {% endapisection %}
+
