@@ -17,7 +17,7 @@ r.args(array) &rarr; special
 into another term.  This is useful when you want to call a variadic
 term such as [get_all](/api/python/get_all/) with a set of arguments produced at runtime.
 
-This is analogous to unpacking argument lists in Python.
+This is analogous to unpacking argument lists in Python. (However, note that `args` evaluates all its arguments before passing them into the parent term, even if the parent term otherwise allows lazy evaluation.)
 
 __Example:__ Get Alice and Bob from the table `people`.
 

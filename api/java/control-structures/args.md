@@ -19,6 +19,8 @@ r.args(array) &rarr; special
 into another term.  This is useful when you want to call a variadic
 term such as [getAll](/api/java/get_all/) with a set of arguments produced at runtime.
 
+Note that `args` evaluates all its arguments before passing them into the parent term, even if the parent term otherwise allows lazy evaluation.
+
 __Example:__ Get Alice and Bob from the table `people`.
 
 ```java
