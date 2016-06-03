@@ -29,7 +29,7 @@ RethinkDB has a few hard limitations, as well as some soft limitations that are 
 
 * RethinkDB requires data structures in RAM on each server proportional to the size of the data on that server's disk, usually around 1% of the size of the total data set. See [Understanding RethinkDB memory requirements](/docs/memory-usage) for more details.
 
-## Key lengths ##
+## Restrictions on keys ##
 
 * Primary keys are limited to 127 characters.
 
@@ -37,11 +37,14 @@ RethinkDB has a few hard limitations, as well as some soft limitations that are 
 
 * Secondary indexes do not store objects or `null` values. See [Using secondary indexes](/docs/secondary-indexes/) for more details.
 
+* Primary key strings may not include the `null` codepoint (U+0000).
+
 ## Data types ##
 
 * Numbers are double precision [IEEE 754][fp] floating point. Integers from &minus;2<sup>53</sup> to 2<sup>53</sup> are stored precisely; integers outside that range may be rounded. RethinkDB does not allow `NaN` or infinite values.
 
 * By default, arrays on the RethinkDB server have a size limit of 100,000 elements. This can be changed on a per-query basis with the `arrayLimit` (or `array_limit`) option to [run](/api/javascript/run).
+
 
 [fp]: https://en.wikipedia.org/wiki/IEEE_floating_point
 
