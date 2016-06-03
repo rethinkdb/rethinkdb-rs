@@ -38,7 +38,7 @@ def gen_fragment(input_file)
         end
     
         # collect API body
-        in_apibody = true if line == "{% apibody %}\n"
+        in_apibody = true if line == "{% apibody %}\n" and in_apibody == nil
         apibody += line if in_apibody
         in_apibody = false if line == "{% endapibody %}\n"
     
