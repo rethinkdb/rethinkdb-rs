@@ -13,7 +13,7 @@ RethinkDB stores six basic single-value data types: *numbers, strings, binary ob
 
 * **Numbers** are any real number: `5`, `3.14159`, `-42`. RethinkDB uses double precision (64-bit) floating point numbers internally. (Neither infinity nor [NaN](http://en.wikipedia.org/wiki/NaN) are allowed.)
 
-* **Strings** are any UTF-8 string that does not contain the `null` code point (U+0000): `"superhero"`, <code>&quot;&uuml;nn&euml;c&euml;ss&auml;r&yuml; &uuml;ml&auml;&uuml;ts&quot;</code>. Currently RethinkDB does not enforce UTF-8 encoding, but most string operations assume they are operating on UTF-8 strings. Future versions of RethinkDB will enforce UTF-8 encoding and allow `null` to be included.
+* **Strings** are any valid UTF-8 string: `"superhero"`, <code>&quot;&uuml;nn&euml;c&euml;ss&auml;r&yuml; &uuml;ml&auml;&uuml;ts&quot;</code>. Strings may include the null code point (U+0000).
 
 * **Binary objects** are similar to BLOBs in SQL databases: files, images and other binary data. See [Storing binary objects](/docs/storing-binary/) for details.
 
