@@ -26,7 +26,7 @@ documentation for further details.
 
 | | RethinkDB | MongoDB |  
 | ------ | ------ | ------ |  
-| Platforms | Linux, OS X | Linux, OS X, Windows, Solaris |  
+| Platforms | Linux, OS X, Windows | Linux, OS X, Windows, Solaris |  
 | Data model | JSON documents | BSON documents |  
 | Data access | Unified chainable dynamic query language | Dynamic rich query language |  
 | JavaScript integration | V8 engine | Spidermonkey/V8 engine |  
