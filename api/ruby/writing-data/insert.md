@@ -190,7 +190,7 @@ __Example:__ Provide a resolution function that concatenates memo content in cas
 
 ```rb
 # assume new_memos is a list of memo documents to insert
-r.table("memos").insert(new_memos, :conflict => lambda { |id, old_doc, new+doc|
+r.table("memos").insert(new_memos, :conflict => lambda { |id, old_doc, new_doc|
     new_doc.merge({:content => old_doc['content'] + "\n" + new_doc['content']})
 }).run(conn)
 ```
