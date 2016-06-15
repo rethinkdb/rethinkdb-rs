@@ -88,7 +88,8 @@ config file without the `.conf` extension.
 * `tls-dhparams`: A filename containing parameters for DHE key agreement; this is required if using DHE cipher suites, and unused otherwise. At least a 2048-bit key is recommended.
 
 * `canonical-address`: Address that other rethinkdb instances will use to connect to this machine.
-  It can be specified multiple times.
+  The address must be specified as `host:port` if the instance uses a port other than `29015`.
+  This option can be specified multiple times.
 
 * `http-port`, `driver-port`, and `cluster-port`: the web UI
   port (default `8080`), the client driver port (default
