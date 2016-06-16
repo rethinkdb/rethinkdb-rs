@@ -48,6 +48,9 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 - [Thinky][] by [@neumino](https://github.com/neumino)  
   JavaScript ORM for RethinkDB.
 
+- [ThinkAgain](https://github.com/mbroadst/thinkagain) by [@mbroadst](https://github.com/mbroadst)  
+  A fork of [Thinky][] with first-class support for [JSON Schema](http://json-schema.org).
+
 - [JugglingDB-RethinkDB](https://github.com/fuwaneko/jugglingdb-rethink) by [@fuwaneko](https://github.com/fuwaneko)  
   A RethinkDB adapter for [JugglingDB](https://github.com/1602/jugglingdb), a multi-database ORM for Node.js.
 
@@ -65,7 +68,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
   Koa middleware that automatically manages connections via a connection pool.
 
 - [thinky-loader](https://github.com/mwielbut/thinky-loader) by [@mwielbut](https://github.com/mwielbut)  
-  A general-purpose model loader for the Thinky ORM. (Supersedes sails-hook-thinky.)
+  A general-purpose model loader for the [Thinky][] ORM. (Supersedes sails-hook-thinky.)
 
 - [hapi-rethinkdb-crud](https://github.com/athlite/hapi-rethinkdb-crud) by [@athlite](https://github.com/athlite)  
   Basic CRUD mapping between [hapi](http://hapijs.com) and RethinkDB.
