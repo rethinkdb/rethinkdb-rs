@@ -70,6 +70,15 @@ And to use TLS connections between servers in the cluster:
 
 Note that in the last case, you're required to provide a CA certificate as well. This is a certificate used to sign other certificates. In this case, we're using the same certificate for both, but we could sign our `cert.pem` with a different CA certificate and specify both of them. Servers can only connect to the cluster if the certificates specified by their `cluster-tls-cert` value are signed by the CA certificate specified by `cluster-tls-ca`.
 
+{% infobox alert %}
+Under OS X, the system versions of Python and Ruby link to old versions of OpenSSL which do not support RethinkDB's defaults for TLS. To use those drivers under OS X, the server must specify:
+
+* `tls-min-protocol TLSv1`
+* `tls-ciphers EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH:AES256-SHA`
+
+These may be specified as startup options to `rethinkdb` or in the configuration file.
+{% endinfobox %}
+
 # The admin account #
 
 All RethinkDB servers have an `admin` account with full access to the cluster, and by default this account has no password. (For full details on this topic, read [Permissions and user accounts][pa].) One of the first things you should do to secure a cluster is to assign a password to `admin`. You can do this when the first server starts up by using the `--initial-password` [command line option][cli], or by updating the `admin` record with a new password in the user [system table][st].

@@ -79,6 +79,9 @@ config file without the `.conf` extension.
 
 * `cluster-tls-ca`: the filename of a CA certificate to use for verifying cluster connections. All three `cluster-tls-*` configurations must be specified.
 
+* `tls-min-protocol`: the minimum TLS protocol version the server accepts, one of `TLSv1`, `TLSv1.1`, `TLSv1.2`.  
+  *Default*: `TLSv1.2`
+
 * `tls-ciphers`: A list of TLS ciphers to use.  
   *Default*: `EECDH+AESGCM`
 

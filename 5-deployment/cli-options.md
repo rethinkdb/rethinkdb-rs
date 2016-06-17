@@ -59,8 +59,9 @@ __Note:__ `--driver-tls-key` and `--driver-tls-cert` must be used together; `--d
 
 __Note:__ all three `--cluster-tls-*` options must be used together.
 
-* `--tls-ciphers cipher_list`: specify a list of TLS ciphers to use; default is 'EECDH+AESGCM'
-* `--tls-ecdh-curve curve_name`: specify a named elliptic curve to use for ECDHE; default is 'prime256v1'
+* `--tls-min-protocol protocol`: the minimum TLS protocol version the server accepts, one of `TLSv1`, `TLSv1.1`, `TLSv1.2`; default is `TLSv1.2`
+* `--tls-ciphers cipher_list`: specify a list of TLS ciphers to use; default is `EECDH+AESGCM`
+* `--tls-ecdh-curve curve_name`: specify a named elliptic curve to use for ECDHE; default is `prime256v1`
 * `--tls-dhparams dhparams_filename`: provide parameters for DHE key agreement; REQUIRED if using DHE cipher suites; at least 2048-bit recommended
 
 For details about these options, read [Securing your cluster][sec].
