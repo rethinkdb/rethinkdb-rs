@@ -71,8 +71,6 @@ r.db("test").tableCreate("tv_shows").run(conn);
 r.table("tv_shows").insert(r.hashMap("name", "Star Trek TNG")).run(conn);
 ```
 
-__Note:__ RethinkDB connection objects are not thread-safe. It's recommended that applications open a separate connection per thread, or establish a connection pool.
-
 # Next steps #
 
 {% infobox %}
