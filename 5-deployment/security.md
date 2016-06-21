@@ -64,7 +64,11 @@ To use TLS connections with client drivers, specify:
 
     rethinkdb --driver-tls-key key.pem --driver-tls-cert cert.pem
 
-And to use TLS connections between servers in the cluster:
+If you use this option on the server, the client must use a secure connection as well. Pass the certificate information in the `ssl` option to the `connect` ReQL command; read the API documentation for [connect][] for details on your language's specific syntax.
+
+[connect]: /api/javascript/connect/
+
+To use TLS connections between servers in the cluster:
 
     rethindb --cluster-tls-key key.pem --cluster-tls-cert cert.pem --cluster-tls-ca cert.pem
 
