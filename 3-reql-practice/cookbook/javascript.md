@@ -249,7 +249,7 @@ If we want to retrieve all users on the Galactica and Pegasus, we can write:
 
 ```js
 r.table("user").filter(function (user) {
-    r(["Galactica", "Pegasus"]).contains(user("ship"))
+    return r.expr(["Galactica", "Pegasus"]).contains(user("ship"))
 }).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
