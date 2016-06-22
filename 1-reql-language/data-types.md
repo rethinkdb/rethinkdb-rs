@@ -5,7 +5,16 @@ docs_active: data-types
 permalink: docs/data-types/
 ---
 
-RethinkDB stores six basic single-value data types: *numbers, strings, binary objects, times, boolean* values, and the *null* value. In addition, it stores two basic composite data types. *Objects* and *arrays* are key/value pairs and lists, respectively, with direct counterparts in most programming languages. *Streams, selections* and *tables* are RethinkDB-specific composite data types. Lastly, there are geometry data types: *point, line* and *polygon.*
+
+RethinkDB's basic data types include numbers, strings, boolean values, objects, arrays, and the `null` value. In addition, it stores RethinkDB-specific data types including tables, streams, selections, binary objects, time objects, geometry data types, and grouped data.
+
+The `typeOf` command can be appended to any ReQL command to display what data type that command will returns. For instance (in JavaScript):
+
+```js
+r.table('users').get(1).typeOf().run(conn, callback)
+```
+
+Returns `"SELECTION<OBJECT>"`. (Yes, the type of the `typeOf` command is `"STRING"`.)
 
 {% toctag %}
 
@@ -14,10 +23,6 @@ RethinkDB stores six basic single-value data types: *numbers, strings, binary ob
 * **Numbers** are any real number: `5`, `3.14159`, `-42`. RethinkDB uses double precision (64-bit) floating point numbers internally. (Neither infinity nor [NaN](http://en.wikipedia.org/wiki/NaN) are allowed.)
 
 * **Strings** are any valid UTF-8 string: `"superhero"`, <code>&quot;&uuml;nn&euml;c&euml;ss&auml;r&yuml; &uuml;ml&auml;&uuml;ts&quot;</code>. Strings may include the null code point (U+0000).
-
-* **Binary objects** are similar to BLOBs in SQL databases: files, images and other binary data. See [Storing binary objects](/docs/storing-binary/) for details.
-
-* **Times** are RethinkDB's native date/time type, stored with millisecond precision. You can use native date/time types in supported languages, as the conversion will be done by the driver. See [Dates and times in RethinkDB](/docs/dates-and-times/) for details.
 
 * **Booleans** are `true` and `false`.
 
@@ -44,23 +49,39 @@ RethinkDB stores six basic single-value data types: *numbers, strings, binary ob
 
 # RethinkDB-specific data types #
 
-* **Streams** are lists like arrays, but they're loaded in a lazy fashion. Operations that return streams return a *cursor.* A cursor is a pointer into the result set. Instead of reading the results all at once like an array, you loop over the results, retrieving the next member of the set with each iteration. This makes it possible to efficiently work with large result sets. (See "Working with Streams," below, for some tips.) Streams are read-only; you can't pass one as an input to an ReQL command meant to modify its input like `update` or `delete`.
+* **Databases** are RethinkDB databases. This is the return type of `db`.
 
-* **Selections** represent subsets of tables, for example, the return values of `filter` or `get`. There are two kinds of selections, **Selection&lt;Object&gt;** and  **Selection&lt;Stream&gt;**, which behave like objects or streams respectively. The difference between selections and objects/streams are that selections are writable&mdash;their return values can be passed as inputs to ReQL commands that modify the database. For instance, the `get` command will return a Selection&lt;Object&gt; that could then be passed to an `update` or `delete` command.
-
-    Some commands ([orderBy] and [between]) return a data type similar to a selection called a **table\_slice**. In most cases a table\_slice behaves identically to a selection, but `between` can only be called on a table or a table_slice, not any other kind of selection.
-    
 * **Tables** are RethinkDB database tables. They behave like selections&mdash;they're writable, as you can insert and delete documents in them. ReQL methods that use an [index](/docs/secondary-indexes), like `getAll`, are only available on tables.
 
-In the ReQL API documentation you'll often come across the term **Sequence.** Sequences aren't their own data type&mdash;instead, that's a collective word for all the list data types: arrays, streams, selections, and tables. You may also see **Any** used for commands that work with any data type.
+* **Streams** are lists like arrays, but they're loaded in a lazy fashion. Operations that return streams return a *cursor.* A cursor is a pointer into the result set. Instead of reading the results all at once like an array, you loop over the results, retrieving the next member of the set with each iteration. This makes it possible to efficiently work with large result sets. (See "Working with Streams," below, for some tips.) Streams are read-only; you can't pass one as an input to an ReQL command meant to modify its input like `update` or `delete`.
 
-You can use the `typeOf` command at the end of a ReQL command to find out what you get as a result set. For instance (in JavaScript):
+* **Selections** represent subsets of tables, for example, the return values of `filter` or `get`. There are three kinds of selections: **Selection&lt;Object&gt;**, **Selection&lt;Array&gt;** and  **Selection&lt;Stream&gt;**. The difference between selections and their non-selection counterparts is that selections are writable&mdash;their return values can be passed as inputs to ReQL commands that modify the database. For instance, the `get` command will return a Selection&lt;Object&gt; that could then be passed to an `update` or `delete` command. (_Note:_ **singleSelection** is an older term for Selection&lt;Object&gt;; they mean the same thing.)
 
-```js
-r.table('users').get(1).typeOf().run(conn, callback)
-```
+    Some commands (`orderBy` and `between`) return a data type similar to a selection called a **table\_slice**. In most cases a table\_slice behaves identically to a selection, but `between` can only be called on a table or a table_slice, not any other kind of selection.
 
-Returns `"SELECTION<OBJECT>"`.
+* **Pseudotypes** cover several kinds of other ReQL-specific data types which are generally composites or special cases of other types:
+
+    * **Binary objects** are similar to BLOBs in SQL databases: files, images and other binary data. See [Storing binary objects](/docs/storing-binary/) for details.
+
+    * **Times** are RethinkDB's native date/time type, stored with millisecond precision. You can use native date/time types in supported languages, as the conversion will be done by the driver. See [Dates and times in RethinkDB](/docs/dates-and-times/) for details.
+
+    * **Geometry data types** for geospatial support, including points, lines, and polygons. (See below for more detail.)
+
+    * **Grouped data** is created by the `group` command, which partitions a stream into multiple groups based on specified fields or functions. ReQL commands called on `GROUPED_DATA` operate on each group individually. For more details, read the [group](/api/javascript/group) documentation. Depending on the input to `group`, grouped data may have the type of `GROUPED_STREAM`.
+
+# Abstract data types #
+
+In the ReQL API documentation and some error messages, you'll come across terms for "data types" that are actually *classes* of other data types.
+
+* A **datum** is a catch-all term for most non-stream data types, including all basic data types, pseudotypes, objects, and non-stream selections. Datum types do *not* include streams (including Selection&lt;Stream&gt;), databases, tables and table slices, and functions.
+
+* A **Sequence** is any list data type: arrays, streams, selections, and tables.
+
+* **Minval** and **maxval** are used with some commands such as `between` to specify absolute lower and upper bounds (e.g., `between(r.minval, 1000)` would return all documents in a table whose primary key is less than 1000).
+
+* **Functions** can be passed as parameters to certain ReQL commands.
+
+You may also see **Any** used for commands that work with any data type.
 
 # Sorting order #
 
@@ -167,6 +188,3 @@ Smaller result sets can be turned into an array directly, with native language c
 [toArray]: /api/javascript/to_array/
 [toList]:  /api/java/to_array/
 
-# Grouped data #
-
-The `group` command partitions a stream into multiple groups based on specified fields or functions. It returns a pseudotype named `GROUPED_DATA`. ReQL comments called on `GROUPED_DATA` operate on each group individually. For a thorough discussion about groups with examples, read the [group](/api/javascript/group) documentation.
