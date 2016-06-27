@@ -7,17 +7,17 @@ permalink: docs/2-1-5-performance-report/
 
 {% toctag %}
 
-# Performance & Scaling of RethinkDB 2.1.5
+# RethinkDB 2.1.5 performance & scaling report
 
-We are happy to present the first published RethinkDB performance report, and what we've discovered along the way. In this report some of the questions we’ll address include:
+This report describes a recent effort that the RethinkDB team took to measure our database product, RethinkDB, under different workloads and in different clustering configurations. We seek to provide a general overview of RethinkDB’s performance metrics for a variety of workloads and potential use cases. In this report some of the questions we’ll address include:
 
 * What sort of performance can I expect from a RethinkDB cluster?
-* Does RethinkDB scale?
-* Can I use the outdated read mode to improve throughput in read-heavy workloads?
+* How well does RethinkDB scale?
+* Can I trade consistency for performance?
 
 We’ll attempt to answer these questions by using workloads from the YCSB benchmark suite. You can [learn more about YCSB here](https://labs.yahoo.com/news/yahoo-cloud-serving-benchmark), and [review the source code here](https://github.com/rethinkdb/ycsb). Expanding beyond the YCSB workloads we selected, we created an additional test which investigates scalability for analytic workloads.
 
-In the results, we’ll see how RethinkDB 2.1.5 scales to perform 1.3 million individual reads per second. We will also demonstrate well above 100 thousand operations per second in a mixed 50:50 read/write workload - while at the full level of durability and data integrity guarantees. We performed all benchmarks across a range of cluster sizes, scaling up to 16 nodes.
+In the results, we’ll see how RethinkDB scales to perform 1.3 million individual reads per second. We will also demonstrate how RethinkDB performs well above 100 thousand operations per second in a mixed 50:50 read/write workload - while at the full level of durability and data integrity guarantees. We performed all benchmarks across a range of cluster sizes, scaling up from one to 16 nodes.
 
 ## A quick overview of the results
 
@@ -157,4 +157,4 @@ Near to the release of this performance report, we are excited to be releasing R
 * We were fortunate enough to receive free credits from Rackspace to perform the majority of these tests and are very grateful for their contributions to open source software. All of [Rackspace’s OnMetal offerings can be found here](https://www.rackspace.com/cloud/servers/onmetal).
 * We’d love to answer any questions you have about these tests. Come join us at [http://slack.rethinkdb.com](http://slack.rethinkdb.com) and feel free to ask more specific questions we don’t answer here by pinging @danielmewes or @dalanmiller.
 * Recently, the team behind BigchainDB – a scalable blockchain database built on top of RethinkDB – has benchmarked RethinkDB on a 32-server cluster running on Amazon's EC2. They measured throughput of more than a million writes per second. Their conclusion: "There is linear scaling in write performance with the number of nodes." The full report is available at [https://www.bigchaindb.com/whitepaper/](https://www.bigchaindb.com/whitepaper/)
-* We also recently employed Kyle Kingsbury, known to the Internet as [@aphyr](https://twitter.com/aphyr), as an independent researcher to evaluate RethinkDB. He wrote [a pair of blog posts](https://aphyr.com/tags/RethinkDB) on how he tested and confirmed RethinkDB clustering and consistency guarantees.
+* We also recently contracted Kyle Kingsbury, known to the Internet as [@aphyr](https://twitter.com/aphyr), as an independent researcher to evaluate RethinkDB. He wrote [a pair of blog posts](https://aphyr.com/tags/RethinkDB) on how he tested and confirmed RethinkDB clustering and consistency guarantees.
