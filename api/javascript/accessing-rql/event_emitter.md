@@ -44,7 +44,7 @@ Connections implement the same interface as Node's [EventEmitter][ee]. This allo
 Four events are emitted: `connect`, `close`, `timeout` and `error`.
 
 - `connect`: a successful connection to the server.
-- `close`: the connection has been closed, either thorugh an error or by calling `connection.close()`.
+- `close`: the connection has been closed, either through an error or by calling `connection.close()`.
 - `timeout`: the underlying socket has timed out.
 - `error`: a protocol-level error has occurred. (This will *not* be sent on a query error; those are returned to callbacks/promises.)
 

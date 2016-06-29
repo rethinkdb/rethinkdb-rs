@@ -25,6 +25,9 @@ Join tables using a field or function on the left-hand sequence matching primary
 
 The result set of `eqJoin` is a stream or array of objects. Each object in the returned set will be an object of the form `{ "left": <left-document>, "right": <right-document> }`, where the values of `left` and `right` will be the joined documents. Use the [zip](/api/java/zip/) command to merge the `left` and `right` fields together.
 
+The results from `eqJoin` are, by default, not ordered. Providing <code><a href="/api/java/optarg">optArg</a>('ordered', 'true')</code>
+ will cause `eqJoin` to order the output based on the left side input stream. (If there are multiple matches on the right side for a document on the left side, their order is not guaranteed even if `ordered` is `true`.) Requiring ordered results can significantly slow down `eqJoin`, and in many circumstances this ordering will not be required. (See the first example, in which ordered results are obtained by using `orderBy` after `eqJoin`.)
+
 Suppose the players table contains these documents (shown in JSON form):
 
 ```json
@@ -48,7 +51,7 @@ The games table contains these documents:
 ]
 ```
 
-**Example:** Match players with the games they've played against one another.
+__Example:__ Match players with the games they've played against one another.
 
 Join these tables using `gameId` on the player table and `id` on the games table:
 
@@ -98,14 +101,14 @@ r.table("players")
 
 For more information, see [Table joins in RethinkDB](/docs/table-joins/).
 
-**Example:** Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
+__Example:__ Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
 
 ```java
-r.table("arenas").eqJoin("city_id", r.table("arenas"))
+r.table("players").eqJoin("city_id", r.table("arenas"))
  .optArg("index", "city_id").run(conn);
 ```
 
-**Example:** Use a nested key as the join field. Suppose the documents in the players table were structured like this:
+__Example:__ Use a nested key as the join field. Suppose the documents in the players table were structured like this:
 
 ```json
 { "id": 1, "player": "George", "game": {"id": 1} },
@@ -130,10 +133,10 @@ r.table("players").eqJoin(
 ]
 ```
 
-**Example:** Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
+__Example:__ Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
 
 ```java
-r.table("players3").eqJoin(
+r.table("players").eqJoin(
     player -> player.g("favorites").nth(0),
     r.table("games")
 ).without(

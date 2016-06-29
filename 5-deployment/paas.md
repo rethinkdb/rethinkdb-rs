@@ -114,15 +114,15 @@ The default security group opens 4 ports:
 To secure your instance more tightly, we recommend that you perform
 the following steps:
 
-* __Change the authentication key.__
+* __Change the admin user password.__
 
     Open the RethinkDB Data Explorer in the web UI and execute the following command:
 
     ```js
-    r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: 'newkey'})
+    r.db('rethinkdb').table('users').get('admin').update({password: 'newpass'})
     ```
     
-    Where "newkey" is the new key you want to use.
+    Where "newpass" is the new password you want to use.
 
 * __Restrict access to port 28015__ to allow only IP addresses or
   security groups that should have driver access.
@@ -138,18 +138,11 @@ htpasswd /etc/nginx/htpasswd rethinkdb
 
 The `htpasswd` tool will prompt for your new password.
 
-## Changing the driver API key ##
+## Set a user account and password for your application ##
 
-To change the API key used by the server to authenticate the drivers,
-follow the "Change the authentication key" instructions above.
+For details about this, read [Permissions and user accounts][pua].
 
-You can run the following commands to generate a good API key:
-
-```
-API_KEY=$(head /dev/urandom | md5sum | cut -f 1 -d ' ')
-htpasswd /etc/nginx/htpasswd rethinkdb $API_KEY
-echo $API_KEY
-```
+[pua]: /docs/permissions-and-accounts
 
 ## Setting up VPC security groups ##
 

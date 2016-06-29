@@ -3,7 +3,7 @@
     commands:
         - name: r
           permalink: r
-        - name: connect
+        - name: connection
           permalink: connect
         - name: close
           permalink: close
@@ -19,6 +19,8 @@
           permalink: changes
         - name: noreplyWait
           permalink: noreply_wait
+        - name: server
+          permalink: server
         - name: optArg
           permalink: optarg
 - section:
@@ -137,6 +139,8 @@
           permalink: ungroup
         - name: reduce
           permalink: reduce
+        - name: fold
+          permalink: fold
         - name: count
           permalink: count
         - name: sum
@@ -362,6 +366,8 @@
 - section:
     name: Administration
     commands:
+      - name: grant
+        permalink: grant
       - name: config
         permalink: config
       - name: rebalance

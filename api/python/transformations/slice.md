@@ -17,6 +17,7 @@ selection.slice(start_offset[, end_offset, left_bound='closed', right_bound='ope
 stream.slice(start_offset[, end_offset, left_bound='closed', right_bound='open']) &rarr; stream
 array.slice(start_offset[, end_offset, left_bound='closed', right_bound='open']) &rarr; array
 binary.slice(start_offset[, end_offset, left_bound='closed', right_bound='open']) &rarr; binary
+string.slice(start_offset[, end_offset, left_bound='closed', right_bound='open']) &rarr; string
 {% endapibody %}
 
 # Description #
@@ -31,7 +32,15 @@ Negative `start_offset` and `end_offset` values are allowed with arrays; in that
 
 If `slice` is used with a [binary](/api/python/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
 
+<<<<<<< HEAD
+With a string, `slice` behaves similarly, with the indexes referring to Unicode codepoints. String indexes start at `0`. (Note that [combining codepoints][cc] are counted separately.)
+
+[cc]: https://en.wikipedia.org/wiki/Combining_character
+
+If you are only specifying the indexes and not the bounding options, you may use Python's slice operator as a shorthand: `[start_index:end_index]`.
+=======
 If you are only specifying the indexes and not the bounding options, you may use Python's slice operator as a shorthand: `[start_offset:end_offset]`.
+>>>>>>> master
 
 __Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
@@ -61,10 +70,12 @@ __Example:__ Return the elements of an array from the second through two from th
 
 ```py
 r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn)
+[2,3]
 ```
 
-Result:
+__Example:__ Return the third through fifth characters of a string.
 
 ```py
-[2,3]
+> r.expr("rutabaga").slice(2,5).run(conn)
+"tab"
 ```

@@ -42,7 +42,8 @@ options:
 - `host`: the host to connect to (default `localhost`).
 - `port`: the port to connect on (default `28015`).
 - `db`: the default database (default `test`).
-- `authKey`: the authentication key (default none).
+- `user`: the user account to connect as (default `admin`).
+- `password`: the password for the user account to connect as (default `''`, empty).
 - `timeout`: timeout period in seconds for the connection to be opened (default `20`).
 - `ssl`: a hash of options to support SSL connections (default `null`). Currently, there is only one option available, and if the `ssl` option is specified, this key is required:
     - `ca`: a list of [Node.js](http://nodejs.org) `Buffer` objects containing SSL CA certificates.
@@ -209,15 +210,19 @@ conn.server(callback)
 conn.server() &rarr; promise
 {% endapibody %}
 
-Return the server name and server UUID being used by a connection.
+Return information about the server being used by a connection.
 
-__Example:__ Return the server name and UUID.
+__Example:__ Return server information.
 
 ```js
 conn.server(callback);
 
 // Result passed to callback
-{ "id": "404bef53-4b2c-433f-9184-bc3f7bda4a15", "name": "amadeus" }
+{
+    "id": "404bef53-4b2c-433f-9184-bc3f7bda4a15",
+    "name": "amadeus",
+    "proxy": false
+}
 ```
 
 If no callback is provided, a promise will be returned.
@@ -311,22 +316,23 @@ cursor.each(function(err, row) {
 ## [eachAsync](each_async/) ##
 
 {% apibody %}
-cursor.eachAsync(function) &rarr; promise
-array.eachAsync(function) &rarr; promise
-feed.eachAsync(function) &rarr; promise
+sequence.eachAsync(function[, errorFunction]) &rarr; promise
 {% endapibody %}
 
-Lazily iterate over a result set one element at a time in an identical fashion to [each](/api/javascript/each/), returning a Promise that will be resolved once all rows are returned.
+Lazily iterate over a cursor, array, or feed one element at a time. `eachAsync` always returns a promise that will be resolved once all rows are returned.
 
-__Example:__ Process all the elements in a stream.
+__Example:__ Process all the elements in a stream, using `then` and `catch` for handling the end of the stream and any errors. Note that iteration may be stopped in the first callback (`rowProcess`) by returning any non-Promise value.
 
 ```js
-cursor.eachAsync(function(row) {
-    // if a Promise is returned, it will be processed before the cursor
-    // continues iteration.
-    return asyncRowHandler(row);
+cursor.eachAsync(function (row) {
+    var ok = processRowData(row);
+    if (!ok) {
+        return 'Bad row: ' + row;
+    }
 }).then(function () {
-    console.log("done processing");
+    console.log('done processing');
+}).catch(function (error) {
+    console.log('Error:', error.message);
 });
 ```
 
@@ -358,16 +364,20 @@ cursor.toArray(function(err, results) {
 ## [close](close-cursor/) ##
 
 {% apibody %}
-cursor.close()
+cursor.close([callback])
+cursor.close() &rarr; promise
 {% endapibody %}
 
-Close a cursor. Closing a cursor cancels the corresponding query and frees the memory
-associated with the open request.
+Close a cursor. Closing a cursor cancels the corresponding query and frees the memory associated with the open request.
 
 __Example:__ Close a cursor.
 
 ```js
-cursor.close()
+cursor.close(function (err) {
+    if (err) {
+        console.log("An error occurred on cursor close");
+    }
+});
 ```
 
 [Read more about this command &rarr;](close-cursor/)
@@ -385,7 +395,7 @@ cursor.listeners(event)
 cursor.emit(event, [arg1], [arg2], [...])
 {% endapibody %}
 
-Cursors and feeds implement the same interface as Node's [EventEmitter][ee].
+Cursors and feeds implement the same interface as Node's [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
 __Example:__ Broadcast all messages with [socket.io](http://socket.io).
 
@@ -860,7 +870,7 @@ r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn, callback)
 ## [getAll](get_all/) ##
 
 {% apibody %}
-table.getAll(key[, key2...], [, {index:'id'}]) &rarr; selection
+table.getAll([key, key2...], [, {index:'id'}]) &rarr; selection
 {% endapibody %}
 
 Get all documents where the given value matches the value of the requested index.
@@ -957,13 +967,35 @@ r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
 ## [eqJoin](eq_join/) ##
 
 {% apibody %}
-sequence.eqJoin(leftField, rightTable[, {index:'id'}]) &rarr; sequence
-sequence.eqJoin(predicate_function, rightTable[, {index:'id'}]) &rarr; sequence
+sequence.eqJoin(leftField, rightTable[, {index: 'id', ordered: false}]) &rarr; sequence
+sequence.eqJoin(predicate_function, rightTable[, {index: 'id', ordered: false}]) &rarr; sequence
 {% endapibody %}
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
+__Example:__ Match players with the games they've played against one another.
 
+Join these tables using `gameId` on the player table and `id` on the games table:
+
+```js
+r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
+```
+
+This will return a result set such as the following:
+
+```js
+[
+    {
+        "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
+        "right" : { "id" : 3, "field" : "Bucklebury" }
+    },
+    {
+        "left" : { "gameId" : 2, "id" : 3, "player" : "Fred" },
+        "right" : { "id" : 2, "field" : "Rushock Bog" }
+    },
+    ...
+]
+```
 
 [Read more about this command &rarr;](eq_join/)
 
@@ -1126,6 +1158,7 @@ selection.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}
 stream.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; stream
 array.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; array
 binary.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; binary
+string.slice(startOffset[, endOffset, {leftBound:'closed', rightBound:'open'}]) &rarr; string
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1133,7 +1166,7 @@ Return the elements of a sequence within the specified range.
 __Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
 ```js
-r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback)
+r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback);
 ```
 
 [Read more about this command &rarr;](slice/)
@@ -1191,11 +1224,11 @@ r.table('marvel').isEmpty().run(conn, callback)
 ## [union](union/) ##
 
 {% apibody %}
-stream.union(sequence[, sequence, ...]) &rarr; stream
-array.union(sequence[, sequence, ...]) &rarr; array
+stream.union(sequence[, sequence, ...][, {interleave: true}]) &rarr; stream
+array.union(sequence[, sequence, ...][, {interleave: true}]) &rarr; array
 {% endapibody %}
 
-Merge two or more sequences. (Note that ordering is not guaranteed by `union`.)
+Merge two or more sequences.
 
 __Example:__ Construct a stream of all heroes.
 
@@ -1308,22 +1341,42 @@ A shorter way to execute this query is to use [count](/api/javascript/count).
 
 [Read more about this command &rarr;](reduce/)
 
+## [fold](fold/) ##
+
+{% apibody %}
+sequence.fold(base, function) &rarr; value
+sequence.fold(base, function, {emit: function[, finalEmit: function]}) &rarr; sequence
+{% endapibody %}
+
+Apply a function to a sequence in order, maintaining state via an accumulator. The `fold` command returns either a single value or a new sequence.
+
+__Example:__ Concatenate words from a list.
+
+```js
+r.table('words').orderBy('id').fold('', function (acc, word) {
+    return acc.add(r.branch(acc.eq(''), '', ', ')).add(word);
+}).run(conn, callback);
+```
+
+(This example could be implemented with `reduce`, but `fold` will preserve the order when `words` is a RethinkDB table or other stream, which is not guaranteed with `reduce`.)
+
+[Read more about this command &rarr;](fold/)
+
 ## [count](count/) ##
 
 {% apibody %}
 sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
+string.count() &rarr; number
+object.count() &rarr; number
 {% endapibody %}
 
-Counts the number of elements in a sequence.  If called with a value,
-counts the number of times that value occurs in the sequence.  If
-called with a predicate function, counts the number of elements in the
-sequence where that function returns `true`.
+Counts the number of elements in a sequence or key/value pairs in an object, or returns the size of a string or binary object.
 
 __Example:__ Count the number of users.
 
 ```js
-r.table('users').count().run(conn, callback)
+r.table('users').count().run(conn, callback);
 ```
 
 [Read more about this command &rarr;](count/)
@@ -1840,7 +1893,7 @@ r.object([key, value,]...) &rarr; object
 
 Creates an object from a list of key-value pairs, where the keys must
 be strings.  `r.object(A, B, C, D)` is equivalent to
-`r.expr([[A, B], [C, D]]).coerce_to('OBJECT')`.
+`r.expr([[A, B], [C, D]]).coerceTo('OBJECT')`.
 
 __Example:__ Create a simple object.
 
@@ -3266,6 +3319,34 @@ outerPolygon.polygonSub(innerPolygon).run(conn, callback);
 
 {% apisection Administration %}
 
+## [grant](grant/) ##
+
+{% apibody %}
+r.grant("username", {permission: bool[, ...]}) &rarr; object
+db.grant("username", {permission: bool[, ...]}) &rarr; object
+table.grant("username", {permission: bool[, ...]}) &rarr; object
+{% endapibody %}
+
+Grant or deny access permissions for a user account, globally or on a per-database or per-table basis.
+
+__Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
+
+```js
+r.db('users').grant('chatapp', {read: true, write: true}).run(conn, callback);
+
+// Result passed to callback
+{
+    "granted": 1,
+    "permissions_changes": [
+        {
+            "new_val": { "read": true, "write": true },
+            "old_val": { null }
+        }
+    ]
+```
+
+[Read more about this command &rarr;](grant/)
+
 ## [config](config/) ##
 
 {% apibody %}
@@ -3337,9 +3418,9 @@ __Example:__ Get a table's status.
 ## [wait](wait/) ##
 
 {% apibody %}
-table.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
-database.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
-r.wait([{waitFor: 'ready_for_writes', timeout: <sec>}]) &rarr; object
+table.wait([{waitFor: 'all_replicas_ready', timeout: <sec>}]) &rarr; object
+database.wait([{waitFor: 'all_replicas_ready', timeout: <sec>}]) &rarr; object
+r.wait(table | database, [{waitFor: 'all_replicas_ready', timeout: <sec>}]) &rarr; object
 {% endapibody %}
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.

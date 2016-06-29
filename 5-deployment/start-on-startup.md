@@ -243,6 +243,13 @@ In each configuration file, set a different data directory, and include the `joi
 
 {% infobox alert %}
 The `bind=all` option is a security risk if your machine is open to the internet, and you should take steps to prevent unauthorized access. See the [security page](/docs/security/) for more details.
+
+Under OS X, the system versions of Python and Ruby link to old versions of OpenSSL which do not support RethinkDB's defaults for TLS. To use those drivers under OS X, the server must specify:
+
+* `tls-min-protocol TLSv1`
+* `tls-ciphers EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH:AES256-SHA`
+
+These may be specified as startup options to `rethinkdb` or in the configuration file.
 {% endinfobox %}
 
 # Troubleshooting #

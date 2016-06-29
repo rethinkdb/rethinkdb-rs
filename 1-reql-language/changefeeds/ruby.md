@@ -86,6 +86,7 @@ Limitations and caveats on chaining with changefeeds:
 * `order_by` requires `limit`; neither command works by itself.
 * `order_by` must be used with a [secondary index](/docs/secondary-indexes/ruby) or the primary index; it cannot be used with an unindexed field.
 * You cannot use changefeeds after [concat_map](/api/ruby/concat_map) or other transformations whose results cannot be pushed to the shards.
+* You cannot apply a `filter` after `order_by.limit` in a changefeed.
 * Transformations are applied before changes are calculated.
 
 # Including state changes #
@@ -99,6 +100,19 @@ By specifying `true` to the `include_initial` optional argument, the changefeed 
 If an initial result for a document has been sent and a change is made to that document that would move it to the unsent part of the result set (for instance, a changefeed monitors the top 100 posters, the first 50 have been sent, and poster 48 has become poster 52), an "uninitial" notification will be sent, with an `old_val` field but no `new_val` field. This is distinct from a delete change event, which would have a `new_val` of `nil`. (In the top 100 posters example, that could indicate the poster has been deleted, or has dropped out of the top 100.)
 
 If you specify `true` for both `include_states` and `include_initial`, the changefeed stream will start with a `{:state => 'initializing'}` status document, followed by initial values. A `{:state => 'ready'}` status document will be sent when all the initial values have been sent.
+
+# Including result types #
+
+The `include_states` optional argument adds a third field, `type`, to each result sent. The string values for `type` are largely self-explanatory:
+
+* `add`: a new value added to the result set.
+* `remove`: an old value removed from the result set.
+* `change`: an existing value changed in the result set.
+* `initial`: an initial value notification.
+* `uninitial`: an uninitial value notification.
+* `state`: a status document from `include_states`.
+
+Including the `type` field can simplify code that handles different cases for changefeed results.
 
 # Handling latency #
 

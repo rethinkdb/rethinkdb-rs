@@ -12,7 +12,7 @@ related_commands:
 # Command syntax #
 
 {% apibody %}
-table.get_all(key[, key2...], [, :index => 'id']) &rarr; selection
+table.get_all([key, key2...], [, :index => 'id']) &rarr; selection
 {% endapibody %}
 
 <img src="/assets/images/docs/api_illustrations/get-all.png" class="api_command_illustration" />
@@ -39,6 +39,10 @@ __Example:__ You can get multiple documents in a single call to `get_all`.
 r.table('dc').get_all('superman', 'ant man').run(conn)
 ```
 
+{% infobox %}
+__Note:__ `get_all` does not perform any de-duplication. If you pass the same key more than once, the same document will be returned multiple times.
+{% endinfobox %}
+
 __Example:__ You can use [args](/api/ruby/args/) with `get_all` to retrieve multiple documents whose keys are in a list. This uses `get_all` to get a list of female superheroes, coerces that to an array, and then gets a list of villains who have those superheroes as enemies.
 
 ```rb
@@ -46,5 +50,7 @@ r.table('heroes').get_all('f', :index => 'gender')['id'].coerce_to('array').do {
     |heroines| r.table('villains').get_all(r.args(heroines))
 }.run(conn)
 ```
+
+Calling `get_all` with zero arguments&mdash;which could happen in this example if the `heroines` list had no elements&mdash;will return nothing, i.e., a zero length stream.
 
 Secondary indexes can be used in extremely powerful ways with `get_all` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.

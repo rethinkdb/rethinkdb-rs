@@ -11,6 +11,8 @@ The current issues table is one of the [system tables][st] added in version 1.16
 
 Querying this table with no filters produces a list of all current issues within the cluster.
 
+__Note:__ as with other system tables, the jobs table can only be accessed by the `admin` user account.
+
 ```js
 r.db("rethinkdb").table("current_issues").run(conn, callback);
 ```
@@ -135,3 +137,35 @@ A table on the cluster is missing at least one replica. The `description` string
 If a table is unavailable for reads and/or writes but all its servers are still available, no issue will be shown.
 
 This issue will appear at most once for each table.
+
+## Memory availability issues ##
+
+```
+type: "memory_error"
+critical: false
+info: {
+    servers: [ "server1" ],
+    message: "Data from a process on this server has been placed into swap memory in the past hour. If the data is from RethinkDB, this may impact performance."
+}
+```
+
+This message is a warning that a [page fault][paging] has occurred on a RethinkDB server and swap space is being used. Under Linux, this message will only appear if a RethinkDB process has started paging memory; under OS X, it will appear when *any* process is paging. The Windows version of RethinkDB cannot detect when paging occurs.
+
+[paging]: https://en.wikipedia.org/wiki/Paging
+
+When paging occurs on RethinkDB's process, performance will be adversely affected, and the more paging occurs the worse performance will be. You may be able to address it by ensuring other applications are not using physical memory on the server, tuning the paging cache, or adding more RAM to the server.
+
+## Connectivity issues ##
+
+```
+type: "non_transitive_error"
+critical: false
+info: {
+    servers: [ "server1", "server2" ],
+    message: "Server connectivity is non-transitive."
+}
+```
+
+This message indicates there are currently servers that cannot see every server in the cluster. This may cause table availability issues. It can be resolved by restoring full connectivity.
+
+This issue will appear at most once for each server.

@@ -21,7 +21,7 @@ table.reconfigure(emergencyRepair: <option>, dryRun: false) &rarr; object
 
 Reconfigure a table's sharding and replication.
 
-* `shards`: the number of shards, an integer from 1-32. Required.
+* `shards`: the number of shards, an integer from 1-64. Required.
 * `replicas`: either an integer or a mapping object. Required.
     * If `replicas` is an integer, it specifies the number of replicas per shard. Specifying more replicas than there are servers will return an error.
     * If `replicas` is an object, it specifies key-value pairs of server tags and the number of replicas to assign to those servers: `{tag1: 2, tag2: 4, tag3: 2, ...}`. For more information about server tags, read [Administration tools](/docs/administration-tools/).

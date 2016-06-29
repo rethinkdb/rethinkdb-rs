@@ -31,10 +31,13 @@ The optional arguments are:
     - `True`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
     - `False`: do not return a `changes` array (the default).
     - `"always"`: behave as `True`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `True` pre-2.0.)
-- `conflict`: Determine handling of inserting documents with the same primary key as existing entries. Possible values are `"error"`, `"replace"` or `"update"`.
+- `conflict`: Determine handling of inserting documents with the same primary key as existing entries. There are three built-in methods: `"error"`, `"replace"` or `"update"`; alternatively, you may provide a conflict resolution function.
     - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
     - `"replace"`: [Replace](/api/python/replace/) the old document in its entirety with the new one.
     - `"update"`: [Update](/api/python/update/) fields of the old document with fields from the new one.
+    - `lambda id, old_doc, newdoc: resolved_doc`: a function that receives the id, old and new documents as arguments and returns a document which will be inserted in place of the conflicted one.
+
+If `return_changes` is set to `True` or `"always"`, the `changes` array will follow the same order as the inserted documents. Documents in `changes` for which an error occurs (such as a key conflict) will have a third field, `error`, with an explanation of the error.
 
 Insert returns an object that contains the following attributes:
 
@@ -182,4 +185,13 @@ The result will be
         }
     ]
 }
+```
+
+__Example:__ Provide a resolution function that concatenates memo content in case of conflict.
+
+```py
+# assume new_memos is a list of memo documents to insert
+r.table('memos').insert(new_memos, conflict=
+    lambda id, old_doc, new_doc: new_doc.merge({content: old_doc['content'] + "\n" + new_doc['content']})
+).run(conn)
 ```

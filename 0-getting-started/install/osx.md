@@ -9,14 +9,16 @@ permalink: docs/install/osx/
 
 # Using the installer #
 
-_Prerequisites:_ We provide native binaries for OS X Lion and above (>= 10.7).
+__Prerequisites:__ We provide native binaries for OS X 10.7 (Lion) and above. _OS X 10.9 (Mavericks) or higher is required for HTTPS support. See [issue #5681][i5681] for more information._
+
+[i5681]: https://github.com/rethinkdb/rethinkdb/issues/5681
 
 [Download](https://download.rethinkdb.com/osx/rethinkdb-{{site.version.full}}.dmg) the disk
 image, run `rethinkdb.pkg`, and follow the installation instructions.
 
 # Using Homebrew #
 
-_Prerequisites:_ Make sure you're on OS X Lion or above (>= 10.7) and
+_Prerequisites:_ Make sure you're on OS X 10.9 (Mavericks) or above, and
 have [Homebrew](http://mxcl.github.com/homebrew/) installed.
 
 Run the following in your terminal:
@@ -27,9 +29,7 @@ brew update && brew install rethinkdb
 
 # Compile from source #
 
-## Get the build dependencies ##
-
-On OS X, [Xcode](https://developer.apple.com/xcode/) is required to
+Building RethinkDB from source requires OS X 10.9 (Mavericks) or greater. [Xcode](https://developer.apple.com/xcode/) is required to
 build from source.
 
 ## Get the source code ##
@@ -47,7 +47,7 @@ Kick off the build process:
 
 ```bash
 cd rethinkdb-{{site.version.full}}
-./configure --allow-fetch
+./configure --allow-fetch --fetch openssl
 make
 ```
 

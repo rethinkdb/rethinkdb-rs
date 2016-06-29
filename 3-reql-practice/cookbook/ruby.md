@@ -201,6 +201,7 @@ If we want to retrieve all users on the Galactica and Pegasus, we can write:
 r.table("user").filter{ |user|
     r.expr(["Galactica", "Pegasus"]).contains(user["ship"])
 }.run()
+```
 
 ## Filtering based on nested fields ##
 
@@ -505,7 +506,7 @@ r.table("users").order_by(:index => "name"}).limit(25).run(conn)
 For each successive page, start with the last name in the previous page.
 
 ```rb
-r.table("users").between(last_name, nil, {:left_bound => "open",
+r.table("users").between(last_name, r.maxval, {:left_bound => "open",
     :index => "name"}).order_by({:index => "name"}).limit(25).run(conn)
 ```
 
@@ -766,6 +767,7 @@ But you'd like to get a document more like a "report card":
     "Mathematics" => 70,
     "English" => 90
 }
+```
 
 You can accomplish this with `object` and a pivot.
 

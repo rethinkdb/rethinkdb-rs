@@ -42,7 +42,7 @@ Create a new connection to the database server. `connection` returns a builder o
 - `hostname()`: the host to connect to (default `localhost`).
 - `port()`: the port to connect on (default `28015`).
 - `dbname()`: the default database (default `test`).
-- `authKey()`: the authentication key (default none).
+- `user()`: the user account and password to connect as (default `"admin", ""`).
 - `timeout()`: timeout period in seconds for the connection to be opened (default `20`).
 - `connect()`: instantiate a connection object with the parameters previously passed to the builder.
 - `certFile()`: a path to an SSL CA certificate.
@@ -232,6 +232,30 @@ conn.noreplyWait();
 ```
 
 [Read more about this command &rarr;](noreply_wait/)
+
+## [server](server/) ##
+
+{% apibody %}
+conn.server()
+{% endapibody %}
+
+Return information about the server being used by a connection.
+
+__Example:__ Return server information.
+
+```java
+conn.server();
+```
+
+```json
+{
+    "id": "404bef53-4b2c-433f-9184-bc3f7bda4a15",
+    "name": "amadeus",
+    "proxy": false
+}
+```
+
+[Read more about this command &rarr;](server/)
 
 ## [optArg](optarg/) ##
 
@@ -477,6 +501,8 @@ __Example:__ Drop a table named "dc_universe".
 
 ```java
 r.db("test").tableDrop("dc_universe").run(conn);
+```
+
 Result:
 
 ```json
@@ -782,7 +808,7 @@ r.table("posts").get("a9849eef-7176-4411-935b-79a6e3c56a74").run(conn);
 ## [getAll](get_all/) ##
 
 {% apibody %}
-table.getAll(key[, key2...]) &rarr; selection
+table.getAll([key, key2...]) &rarr; selection
 {% endapibody %}
 
 Get all documents where the given value matches the value of the requested index.
@@ -884,7 +910,29 @@ sequence.eqJoin(predicate_function, rightTable) &rarr; sequence
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
+__Example:__ Match players with the games they've played against one another.
 
+Join these tables using `gameId` on the player table and `id` on the games table:
+
+```java
+r.table("players").eqJoin("gameId", r.table("games")).run(conn);
+```
+
+This will return a result set such as the following:
+
+```json
+[
+    {
+        "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
+        "right" : { "id" : 3, "field" : "Bucklebury" }
+    },
+    {
+        "left" : { "gameId" : 2, "id" : 3, "player" : "Fred" },
+        "right" : { "id" : 2, "field" : "Rushock Bog" }
+    },
+    ...
+]
+```
 
 [Read more about this command &rarr;](eq_join/)
 
@@ -1044,6 +1092,7 @@ selection.slice(startOffset[, endOffset]) &rarr; selection
 stream.slice(startOffset[, endOffset]) &rarr; stream
 array.slice(startOffset[, endOffset]) &rarr; array
 binary.slice(startOffset[, endOffset]) &rarr; binary
+string.slice(startOffset[, endOffset]) &rarr; string
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1112,7 +1161,7 @@ stream.union(sequence[, sequence, ...]) &rarr; stream
 array.union(sequence[, sequence, ...]) &rarr; array
 {% endapibody %}
 
-Merge two or more sequences. (Note that ordering is not guaranteed by `union`.)
+Merge two or more sequences.
 
 __Example:__ Construct a stream of all heroes.
 
@@ -1225,17 +1274,37 @@ A shorter way to execute this query is to use [count](/api/java/count).
 
 [Read more about this command &rarr;](reduce/)
 
+## [fold](fold/) ##
+
+{% apibody %}
+sequence.fold(base, function) &rarr; value
+sequence.fold(base, function).optArg("emit", function)[.optArg("final_emit", function)] &rarr; sequence
+{% endapibody %}
+
+Apply a function to a sequence in order, maintaining state via an accumulator. The `fold` command returns either a single value or a new sequence.
+
+__Example:__ Concatenate words from a list.
+
+```java
+r.table("words").orderBy("id").fold("",
+    (acc, word) -> acc.add(r.branch(r.eq(acc, ""), "", ", ")).add(word)
+).run(conn);
+```
+
+(This example could be implemented with `reduce`, but `fold` will preserve the order when `words` is a RethinkDB table or other stream, which is not guaranteed with `reduce`.)
+
+[Read more about this command &rarr;](fold/)
+
 ## [count](count/) ##
 
 {% apibody %}
 sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
+string.count() &rarr; number
+object.count() &rarr; number
 {% endapibody %}
 
-Counts the number of elements in a sequence.  If called with a value,
-counts the number of times that value occurs in the sequence.  If
-called with a predicate function, counts the number of elements in the
-sequence where that function returns `true`.
+Counts the number of elements in a sequence or key/value pairs in an object, or returns the size of a string or binary object.
 
 __Example:__ Count the number of users.
 
@@ -1728,7 +1797,7 @@ __Example:__ Replace one nested document with another rather than merging the fi
 
 ```java
 r.table("users").get(1)
- .update(r.hashMap(data, r.literal(r.hashMap(age, 19).with(job, "Engineer"))))
+ .update(r.hashMap("data", r.literal(r.hashMap("age", 19).with("job", "Engineer"))))
  .run(conn);
 
 // Result:
@@ -3262,6 +3331,37 @@ outerPolygon.polygonSub(inner_polygon).run(conn);
 
 {% apisection Administration %}
 
+## [grant](grant/) ##
+
+{% apibody %}
+r.grant("username", r.hashMap("permission", bool[, ...])) &rarr; object
+db.grant("username", r.hashMap("permission", bool[, ...])) &rarr; object
+table.grant("username", r.hashMap("permission", bool[, ...])) &rarr; object
+{% endapibody %}
+
+Grant or deny access permissions for a user account, globally or on a per-database or per-table basis.
+
+__Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
+
+```java
+r.db("users").grant("chatapp", r.hashMap("read", true).with("write", true)).run(conn);
+```
+
+Return:
+
+```json
+{
+    "granted": 1,
+    "permissions_changes": [
+        {
+            "new_val": { "read": true, "write": true },
+            "old_val": { null }
+        }
+    ]
+```
+
+[Read more about this command &rarr;](grant/)
+
 ## [config](config/) ##
 
 {% apibody %}
@@ -3334,7 +3434,7 @@ r.table("superheroes").status().run(conn);
 {% apibody %}
 table.wait() &rarr; object
 database.wait() &rarr; object
-r.wait() &rarr; object
+r.wait(table | database) &rarr; object
 {% endapibody %}
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.

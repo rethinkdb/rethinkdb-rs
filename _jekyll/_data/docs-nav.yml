@@ -94,6 +94,9 @@
       - name: Scaling, sharding and replication
         permalink: sharding-and-replication
         url: /docs/sharding-and-replication/
+      - name: Permissions and user accounts
+        permalink: permissions-and-accounts
+        url: /docs/permissions-and-accounts/
       - name: Failover
         permalink: failover
         url: /docs/failover/
@@ -101,7 +104,7 @@
         permalink: backup
         url: /docs/backup/
       - name: System tables
-        permalink: system-tables/
+        permalink: system-tables
         url: /docs/system-tables/
       - name: Current issues
         permalink: system-issues

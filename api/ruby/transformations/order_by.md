@@ -33,6 +33,8 @@ memory, and is limited to 100,000 documents (or the setting of the `array_limit`
 be done on arbitrarily large tables, or after a [between](/api/ruby/between/) command
 using the same index. This applies to both secondary indexes and the primary key (e.g., `:index => 'id'`).
 
+Sorting functions passed to `order_by` must be deterministic. You cannot, for instance, order rows using the [random](/api/ruby/random/) command. Using a non-deterministic function with `order_by` will raise a `ReqlQueryLogicError`.
+
 __Example:__ Order all the posts using the index `date`.   
 
 ```rb

@@ -57,8 +57,42 @@ config file without the `.conf` extension.
    May be 'all' or an IP address, loopback addresses are enabled by default.  
    *Default*: all local addresses
 
+* `bind-http`: Similar to `bind`, but only for the web UI connection port. This option will override `bind` for this port if both are specified in the configuration file.
+
+* `bind-cluster`: Similar to `bind`, but only for the cluster connection port. This option will override `bind` for this port if both are specified in the configuration file.
+
+* `bind-driver`: Similar to `bind`, but only for the client driver connection port. This option will override `bind` for this port if both are specified in the configuration file.
+
+* `http-tls-key`: the filename of a private key to use with TLS for the web administration console. Both `http-tls-key` and `http-tls-cert` must be specified.
+
+* `http-tls-cert`: the filename of a TLS certificate to use for the web administration console. Both `http-tls-key` and `http-tls-cert` must be specified.
+
+* `driver-tls-key`: the filename of a private key to use with TLS for client driver connections. Both `driver-tls-key` and `driver-tls-cert` must be specified.
+
+* `driver-tls-cert`: the filename of a TLS certificate to use for client driver connections. Both `driver-tls-key` and `driver-tls-cert` must be specified.
+
+* `driver-tls-ca`: the filename of a CA certificate bundle to use for verifying client driver connections. If specified, the server will only accept connections from clients that provide a certificate signed with the CA certificate.
+
+* `cluster-tls-key`: the filename of a private key to use with TLS for cluster connections. All three `cluster-tls-*` configurations must be specified.
+
+* `cluster-tls-cert`: the filename of a TLS certificate to use for cluster connections. All three `cluster-tls-*` configurations must be specified.
+
+* `cluster-tls-ca`: the filename of a CA certificate to use for verifying cluster connections. All three `cluster-tls-*` configurations must be specified.
+
+* `tls-min-protocol`: the minimum TLS protocol version the server accepts, one of `TLSv1`, `TLSv1.1`, `TLSv1.2`.  
+  *Default*: `TLSv1.2`
+
+* `tls-ciphers`: A list of TLS ciphers to use.  
+  *Default*: `EECDH+AESGCM`
+
+* `tls-ecdh-curve`: A named elliptic curve to use for ECDHE.  
+  *Default*: `prime256v1`
+  
+* `tls-dhparams`: A filename containing parameters for DHE key agreement; this is required if using DHE cipher suites, and unused otherwise. At least a 2048-bit key is recommended.
+
 * `canonical-address`: Address that other rethinkdb instances will use to connect to this machine.
-  It can be specified multiple times.
+  The address must be specified as `host:port` if the instance uses a port other than `29015`.
+  This option can be specified multiple times.
 
 * `http-port`, `driver-port`, and `cluster-port`: the web UI
   port (default `8080`), the client driver port (default
@@ -88,5 +122,8 @@ config file without the `.conf` extension.
   *Default*: Randomly chosen from a short list of names.
 
 * `server-tag`: Specifies tags for this server, which can be used to group servers together for administration purposes (for instance, servers in the same data center). See [Sharding and replication][sar] for more details. To assign multiple tags to a server, repeat `server-tag` lines for each tag.
+
+* `cluster-reconnect-timeout`: the amount of time, in seconds, this server will try to reconnect to a cluster if it loses connection before giving up.  
+  *Default*: `86400`
 
 [sar]: /docs/sharding-and-replication/

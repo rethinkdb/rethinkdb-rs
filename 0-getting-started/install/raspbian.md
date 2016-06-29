@@ -18,7 +18,7 @@ Install the main dependencies:
 
 ```
 sudo apt-get install g++ protobuf-compiler libprotobuf-dev \
-                     libboost-dev curl m4 wget
+                     libboost-dev curl m4 wget libssl-dev
 ```
 
 ## Prepare the raspberrypi ##

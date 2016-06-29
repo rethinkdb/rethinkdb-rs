@@ -194,8 +194,8 @@ out additional resources for more information.
 
 - The [NoBrainer documentation](http://nobrainer.io/).
 - The [ReQL API docs](/api/ruby) for information on RethinkDB commands.
-- The [annotated Sinatra example
-  application](/docs/examples/sinatra-pastie/) for a different style
+- The [Sinatra example
+  application](https://github.com/rethinkdb/rethinkdb-example-sinatra-pastie) for a different style
   of a Ruby web app using RethinkDB.
 - The [cookbook section](/docs/cookbook/ruby/) for common queries and
   example snippets.

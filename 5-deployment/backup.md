@@ -5,7 +5,9 @@ docs_active: backup
 permalink: docs/backup/
 ---
 
-The RethinkDB command line utility allows you to easily take hot backups on a live cluster with the `dump` and `restore` subcommands.
+The RethinkDB command line utility allows you to easily take hot backups on a live cluster with the `dump` and `restore` subcommands. The utility runs under the `admin` user account (see [Permissions and user accounts][pua]).
+
+[pua]: /docs/permissions-and-accounts
 
 # Backup
 
@@ -16,14 +18,16 @@ Use the `dump` subcommand to create an archive of data from the cluster. This cr
 Options to `dump` let you specify cluster information and limit the archive to specific databases or tables.
 
 * `-c`, `--connect`: host and client port of the node to connect to (default: `localhost:28015`)
-* `-a`, `--auth`: authorization key for client connection, if needed (see "[Securing the driver port][sec]" for details)
 * `-f`, `--file`: specify a filename for the archive (default: `rethinkdb_dump_<date>_<time>.tar.gz`)
 * `-e`, `--export`: limit the dump to the given database or table (specified as `database.table`); may be specified multiple times for multiple databases/tables
+* `-p`, `--password`: prompt for the admin password, if one has been set
+* `--password-file`: read the admin password from a plain text file
+* `--tls-cert`: specify a path to a TLS certificate to allow encrypted connections to the server (see [Securing the cluster][sec])
 * `--clients`: number of tables to export simultaneously (default: `3`)
 * `--temp-dir`: directory to use for intermediary results
 * `-h`, `--help`: print help
 
-[sec]: /docs/security/#securing-the-driver-port
+[sec]: /docs/security/
 
 Since the backup process uses client drivers, it takes advantage of RethinkDB's concurrency. While it will use some cluster resources, it won't lock out any clients, and it can be safely run on a live cluster.
 
@@ -33,9 +37,9 @@ Since the backup process uses client drivers, it takes advantage of RethinkDB's 
 
 Connect to the cluster at host `fortress` with a client port at `39500`, saving to the default archive name.
 
-    rethinkdb dump -e league.users -f backup.tar.gz -a skyla
+    rethinkdb dump -e league.users -f backup.tar.gz --password-file pw.txt
 
-Connect to the default cluster (`localhost:28015`) and archive the `users` table from the `league` database in `backup.tar.gz`. Use `skyla` as the authorization key.
+Connect to the default cluster (`localhost:28015`) and archive the `users` table from the `league` database in `backup.tar.gz`. Read the `admin` user password from the file `pw.txt`.
 
 {% infobox alert %}
 **Note:** The `dump` command saves database and table contents and metadata, but does **not** save cluster configuration data.
@@ -50,7 +54,9 @@ The `restore` subcommand has most of the the same options and defaults as the `d
 (You must specify the archive to restore from; there is no default.)
 
 * `-c`, `--connect`: host and client port of the node to connect to (default: `localhost:28015`)
-* `-a`, `--auth`: authorization key for client connection, if needed (see "[Securing the driver port][sec]" for details)
+* `-p`, `--password`: prompt for the admin password, if one has been set
+* `--password-file`: read the admin password from a plain text file
+* `--tls-cert`: specify a path to a TLS certificate to allow encrypted connections to the server (see [Securing the cluster][sec])
 * `-i`, `--import`: limit the restore to the given database or table (specified as `database.table`); may be specified multiple times for multiple databases/tables
 * `--clients`: number of client connections to use (default: `8`)
 * `--temp-dir`: directory to use for intermediary results
@@ -75,6 +81,6 @@ Restore to the default cluster (`localhost:28015`).
 
 Restore `backup.tar.gz` to the cluster running on `fortress` at port `39500`.
 
-    rethinkdb restore backup.tar.gz -i league.users -a skyla
+    rethinkdb restore backup.tar.gz -i league.users --password-file pw.txt
 
-Restore to the default cluster, only importing the table `users` to the database `league` from the archive `backup.tar.gz`. Use `skyla` as the authorization key.
+Restore to the default cluster, only importing the table `users` to the database `league` from the archive `backup.tar.gz`. Read the `admin` user password from the file `pw.txt`. (This should be a plain text file with the password on the first and only line.)

@@ -11,6 +11,8 @@ The stats table is one of the [system tables][st] added in version 1.16 of Rethi
 
 # Querying the stats table #
 
+__Note:__ as with other system tables, the jobs table can only be accessed by the `admin` user account.
+
 The table's primary key is the `id` field, and the keys are always arrays. The first element in the array is always a string indicating the object type being queried (i.e., `"table"`, `"server"`, etc.); for all objects but the cluster (which has only one document in the `stats` table), the second element is the UUID of the object being queried.
 
 ```js

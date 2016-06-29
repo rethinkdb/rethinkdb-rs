@@ -139,6 +139,8 @@
           permalink: ungroup
         - name: reduce
           permalink: reduce
+        - name: fold
+          permalink: fold
         - name: count
           permalink: count
         - name: sum
@@ -360,6 +362,8 @@
 - section:
     name: Administration
     commands:
+      - name: grant
+        permalink: grant
       - name: config
         permalink: config
       - name: rebalance

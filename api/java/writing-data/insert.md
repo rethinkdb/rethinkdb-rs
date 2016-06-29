@@ -26,10 +26,13 @@ You can pass the following options using [optArg](/api/java/optarg/):
     - `true`: return a `changes` array consisting of `old_val`/`new_val` objects describing the changes made, only including the documents actually updated.
     - `false`: do not return a `changes` array (the default).
     - `"always"`: behave as `true`, but include all documents the command tried to update whether or not the update was successful. (This was the behavior of `true` pre-2.0.)
-- `conflict`: Determine handling of inserting documents with the same primary key as existing entries. Possible values are `"error"`, `"replace"` or `"update"`.
+- `conflict`: Determine handling of inserting documents with the same primary key as existing entries. There are three built-in methods: `"error"`, `"replace"` or `"update"`; alternatively, you may provide a conflict resolution function.
     - `"error"`: Do not insert the new document and record the conflict as an error. This is the default.
     - `"replace"`: [Replace](/api/java/replace/) the old document in its entirety with the new one.
     - `"update"`: [Update](/api/java/update/) fields of the old document with fields from the new one.
+    - `(id, oldDoc, newDoc) -> resolvedDoc`: a function that receives the id, old and new documents as arguments and returns a document which will be inserted in place of the conflicted one.
+
+If `return_changes` is set to `true` or `"always"`, the `changes` array will follow the same order as the inserted documents. Documents in `changes` for which an error occurs (such as a key conflict) will have a third field, `error`, with an explanation of the error.
 
 Insert returns an object that contains the following attributes:
 
@@ -175,4 +178,16 @@ The result will be
         }
     ]
 }
+```
+
+__Example:__ Provide a resolution function that concatenates memo content in case of conflict.
+
+```java
+// assume newMemos is a list of memo documents to insert
+r.table("memos").insert(new_memos).optArg("conflict",
+    (id, old_doc, new_doc) -> new_doc.merge(
+        r.hashMap(content, old_doc.g("content").add("\n")
+                  .add(new_doc.g("content")))
+    )
+).run(conn);
 ```

@@ -71,10 +71,11 @@ r.table('users').orderBy('name').filter({role: 'admin'}).run(conn, callback);
 
 Commands that stop subsequent commands from being parallelized include:
 
-* `reduce`
 * `order_by` (with or without indexes)
 * `distinct`
-* `limit`
+* `eq_join`
+* `reduce`, `fold`
+* `limit`, `skip`, `slice`
 * `max`, `min`, `avg`
 
 Any command that requires the results from the shards to be combined on the server executing the query will finish executing on that server rather than being distributed. Optimize your queries by putting commands that can execute in parallel *before* commands that combine the result set whenever possible.

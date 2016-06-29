@@ -7,6 +7,7 @@ active: docs
 docs_active: writing-drivers
 ---
 
+{% toctag %}
 
 RethinkDB client drivers are responsible for serializing queries, sending them to the server using the ReQL wire protocol, and receiving responses from the server and returning them to the calling application. This process takes the following steps:
 
@@ -37,6 +38,78 @@ The `ql2.proto` file is well-commented, showing arguments and output for each co
 Open a TCP connection to the server on the driver port. The default port is `28015`.
 
 # Perform a handshake #
+
+With version `V1_0` of the protocol, the handshake protocol has changed from previous versions.
+
+## Version V1_0 ##
+
+1. The client sends the "magic number" (`0x34c2bdc3`) for the protocol version, as a 32-bit little-endian integer (4 bytes).
+
+        SEND c3 bd c2 34
+
+2. On **success,** the server sends a null-terminated JSON response, indicating success, minimum and maximum protocol versions, and the server version.
+
+        {
+            "success": true,
+            "min_protocol_version": 0,
+            "max_protocol_version": 0,
+            "server_version": "2.3.0"
+        }
+
+    On **failure,** the server sends a null-terminated error string (_not_ JSON).
+    
+        ERROR: Received an unsupported protocol version. This port is for RethinkDB queries. Does your client driver version not match the server?
+
+3. The client sends the protocol version, authentication method, and authentication as a null-terminated JSON response. RethinkDB currently supports only one authentication method, `SCRAM-SHA-256`, as specified in [IETF RFC 7677][rfc7677] and [RFC 5802][rfc5802]. The RFC is followed with the exception of error handling (RethinkDB uses its own higher level error reporting rather than the `e=` field). RethinkDB does not support channel binding and clients should not request this. The value of `"authentication"` is the "client-first-message" specified in RFC 5802 (the channel binding flag, optional SASL authorization identity, username (`n=`), and random nonce (`r=`).
+
+        {
+            "protocol_version": 0,
+            "authentication_method": "SCRAM-SHA-256",
+            "authentication": "n,,n=user,r=rOprNGfwEbeRWgbNEkqO"
+        }
+
+4. The server sends a null-terminated JSON response with a `"success"` value of either `true` or `false`. On `true`, then `"authentication"` will contain the "server-first-message" containing the iteration count (`i=`), salt (`s=`) and a concatenation of the client nonce with its own nonce.
+
+        {
+            "success": true,
+            "authentication": "r=rOprNGfwEbeRWgbNEkqO%hvYDpWUa2RaTCAfuxFIlj)hNlF$k0,
+              s=W22ZaJ0SNY7soEsUEjb6gQ==,i=4096"
+        }
+
+    On `false`, the server will send an error and error code.
+            
+        {
+            "success": false,
+            "error": "You mucked up.",
+            "error_code": 12
+        }
+    
+    A `ReqlAuthError` should be thrown if the error code is between 10 and 20 (inclusive).
+
+5. The client sends the null-terminated JSON "client-final-message" with the same nonce and the ClientProof computed as specified by the RFC.
+
+        {
+            "authentication": "c=biws,r=rOprNGfwEbeRWgbNEkqO%hvYDpWUa2RaTCAfuxFIlj)hNlF$k0,
+              p=dHzbZapWIk4jUhN+Ute9ytag9zjfMHgsqmmiz7AndVQ="
+        }
+
+6. The server sends a null-terminated JSON response with a `"success"` value of either `true` or `false`. On `true`, then `"authentication"` will contain the "server-final-message" with the ServerSignature value. The client should compute a ServerSignature as specified in the RFC and verify the values are identical.
+
+        {
+            "success": true,
+            "authentication": "v=6rriTRBi23WpRR/wtup+mMhUZUn/dB5nLTJRsjl95G4="
+        }
+
+    On `false`, the server will send an error and error code as above.
+
+[rfc7677]: https://tools.ietf.org/html/rfc7677
+[rfc5802]: https://tools.ietf.org/html/rfc5802
+
+__Note:__ It is possible to optimize the handshake by sending message #3 immediately after #1 without waiting for the server response, and read messages #2 and #4 afterward, handling them as appropriate.
+
+## Versions V0_3 and V0_4 ##
+
+_**Note:** these versions do not support RethinkDB users and permissions, and may be deprecated in a future release. When communicating with RethinkDB 2.3 or later, the authentication key will be compared to the admin user account password._
 
 1. Send the protocol version, as a 32-bit little-endian integer (4 bytes). _Note:_ All instructions below assume a protocol of `V0_3` or higher. The current protocol as of RethinkDB 2.0 is `V0_4`.
 2. Send the length of the authorization key, as a 32-bit little-endian integer (4 bytes). Send `0` if there is no authorization key.

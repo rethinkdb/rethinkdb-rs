@@ -32,7 +32,7 @@ RethinkDB supports different types of secondary indexes:
 - *Geospatial indexes* based on indexes of geometry objects, created when the `geo` optional argument is true.
 - Indexes based on *arbitrary expressions*.
 
-The `indexFunction` can be an anonymous function or a binary representation obtained from the `function` field of [indexStatus](/api/javascript/index_status).
+The `indexFunction` can be an anonymous function or a binary representation obtained from the `function` field of [indexStatus](/api/javascript/index_status). The function must be deterministic, and so cannot use a subquery or the `r.js` command.
 
 If successful, `createIndex` will return an object of the form `{"created": 1}`. If an index by that name already exists on the table, a `ReqlRuntimeError` will be thrown.
 

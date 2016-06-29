@@ -15,6 +15,11 @@ Access the system tables through the `rethinkdb` database. These tables aren't r
 
 The metadata in the system tables applies to the RethinkDB cluster as a whole. Each server in a cluster maintains its own copy of the system tables. Whenever a system table on a server changes, the changes are synced across all the servers.
 
+__Note:__ As of version 2.3, only the `admin` user can access system tables. Read [Permissions and user accounts][pua] for more details on user accounts and permissions.
+
+[pua]: /docs/permissions-and-accounts/
+
+
 ## The Tables ##
 
 * `table_config` stores table configurations, including sharding and replication. By writing to `table_config`, you can create, delete, and reconfigure tables.
@@ -24,6 +29,8 @@ The metadata in the system tables applies to the RethinkDB cluster as a whole. E
 * `table_status` is a read-only table which returns the status and configuration of tables in the system.
 * `server_status` is a read-only table that returns information about the process and host machine for each server.
 * `current_issues` is a read-only table that returns statistics about cluster problems. For details, read the [System current issues table][sit] documentation.
+* `users` stores RethinkDB user accounts. (See [Permissions and user accounts][pua].)
+* `permissions` stores permissions and scopes associated with RethinkDB user accounts. (See [Permissions and user accounts][pua].)
 * `jobs` lists the jobs&mdash;queries, index creation, disk compaction, and other utility tasks&mdash;the cluster is spending time on, and also allows you to interrupt running queries.
 * `stats` is a read-only table that returns statistics about the cluster.
 * `logs` is a read-only table that stores log messages from all the servers in the cluster.
@@ -101,13 +108,15 @@ Every server that has ever been part of the cluster and has not been permanently
 {
     id: "de8b75d1-3184-48f0-b1ef-99a9c04e2be5",
     name: "servername",
-    tags: ["default"]
+    tags: ["default"],
+    cache_size_mb: "auto"
 }
 ```
 
 * `id`: the UUID of the server. (Read-only.)
 * `name`: the server's name.
 * `tags`: a list of unordered tags associated with the server.
+* `cache_size_mb`: the server's cache size, either a number (the desired size in megabytes) or `"auto"` (let the server decide on startup, based on the system's available memory).
 
 If tags aren't specified when a server starts, the server is automatically assigned the `default` tag. Documents cannot be inserted into `server_config`. A new document gets created when a server connects to the cluster.
 
@@ -134,29 +143,19 @@ Documents can be inserted to create new databases, deleted to remove databases, 
 
 ## cluster_config ##
 
-The `cluster_config` table contains two rows, each one with two key/value pairs: a unique `id` and a variable. Documents cannot be inserted into or deleted from this table.
+The `cluster_config` table contains only one row. Documents cannot be inserted into or deleted from this table.
 
 ```js
-{
-    id: "auth",
-    auth_key: null
-},
 {
     id: "heartbeat",
     heartbeat_timeout_secs: 10
 }
 ```
 
-* `id`: the primary key, `auth` or `heartbeat`.
-* `auth_key`: the [authentication key][auth], or `null` if no key is set.
+* `id`: the primary key, `heartbeat`.
 * `heartbeat_timeout_secs`: the time, in seconds, between when a server loses connectivity to a cluster and the [failover][] process begins. The default is 10 seconds.
 
-[auth]: /docs/security/
 [failover]: /docs/failover/
-
-Updating the `auth_key` field is the only way to set or change the cluster authentication key. Read [Securing your cluster][auth] to learn about the key and why you might want to set it.
-
-The `auth_key` field is unusual in that it is a *write-only* field. If you try to read its value, you will get `null` or `{hidden: true}` but will not see the actual key.
 
 # Status tables #
 
@@ -220,6 +219,10 @@ This is a typical document schema for a server connected to the host server&mdas
         http_admin_port: 8080,
         reql_port: 28015,
         time_connected: <ReQL time object>,
+        connected_to: {
+            "companion-orb": true,
+            "companion-dodecahedron": true
+        },
         canonical_addresses: [
             { host: "127.0.0.1", port: 29015 },
             { host: "::1", port: 29015 }
@@ -227,11 +230,11 @@ This is a typical document schema for a server connected to the host server&mdas
     },
     process: {
         argv: ["/usr/bin/rethinkdb"],
-        cache_size_mb: 1882.30078125,
+        cache_size_mb: 100,
         pid: 28580,
         time_started: <ReQL time object>,
-        version: "rethinkdb 2.1.0-xxx (CLANG 3.4 (tags/RELEASE_34/final))"
-    },
+        version: "rethinkdb 2.2.5 (CLANG 7.0.2 (clang-700.1.81))"
+    }
 }
 ```
 
@@ -242,14 +245,84 @@ This is a typical document schema for a server connected to the host server&mdas
 	* `*_port`: the RethinkDB ports on that server (from the server's own point of view).
 	* `canonical_addresses`: a list of the canonical addresses and ports of the server. These may differ from `hostname` and `cluster_port` depending on your network configuration.
 	* `time_connected`: the time the server connected (or reconnected) to the cluster.
+	* `connected_to`: a key/value list of servers this server is either currently connected to (`true`), or knows about but is not currently connected to (`false`). In most cases other servers will be identified by name, but if the server being queried cannot determine the name of a server in the cluster it is not connected to, it will be identified by UUID.
 * `process`: information about the RethinkDB server process:
     * `argv`: the command line arguments the server started with, as an array of strings.
-	* `cache_size_mb`: the cache size in megabytes. (This can be [configured on startup][startup].)
+	* `cache_size_mb`: the cache size in megabytes. (This can be [configured on startup][startup] or by editing the `server_status` entry for that server.)
 	* `pid`: the process ID.
 	* `time_started`: the time the server process started.
 	* `version`: the version string of the RethinkDB server.
 
 [startup]: /docs/cluster-on-startup/
+
+# User account tables #
+
+For details on these two tables, read [Permissions and user accounts][pua].
+
+[pua]: /docs/permissions-and-accounts/
+
+## users ##
+
+The `users` table contains one document for each user in the system, each with two key/value pairs: a unique `id` and a `password` field. The `id` is the account name. The `password` field behaves differently on writes than on reads; you can change an account's password by writing a value to this field (or remove the password by writing `false`), but the password cannot be read. Instead, on a read operation `password` will be `true` or `false`, indicating whether the account has a password or not.
+
+```js
+{
+    id: "admin",
+    password: true
+}
+```
+
+Documents can be inserted into `users` to create new users and deleted to remove them. You cannot change the `id` value of an existing document, only change or remove passwords via `update`.
+
+## permissions ##
+
+Documents in the permissions table have two to four key/value pairs.
+
+* `id`: a list of one to three items indicating the user and the scope for the given permission, the items being a username, a database UUID (for database and table scope), and a table UUID (only for table scope).
+* `permissions`: an object with one to four boolean keys corresponding to the valid permissions (`read`, `write`, `connect` and `config`).
+* `database`: the name of the database these permissions apply to, only present for permissions with database or table scope.
+* `table`: the name of the table these permissions apply to, only present for permissions with table scope.
+
+```js
+{
+    id: [
+            "bob"
+        ],
+    permissions: {
+        read: true,
+        write: false,
+        config: false
+    }
+}
+{
+    database: "field_notes",
+    id: [
+            "bob",
+            "8b2c3f00-f312-4524-847a-25c79e1a22d4"
+        ],
+    permissions: {
+        write: true
+    }
+}
+{
+    database: "field_notes",
+    table: "calendar",
+    id: [
+            "bob",
+            "8b2c3f00-f312-4524-847a-25c79e1a22d4",
+            "9d705e8c-4e49-4648-b4a9-4ad82ebba635"
+        ],
+    permissions: {
+        write: false
+    }
+}
+```
+
+__Note:__ The `table` and `database` fields will be automatically filled in when inserting into `permissions`, based on how many items are in the `id` list.
+
+Under most circumstances, it is easier to manipulate the `permissions` table by using the [grant][] command.
+
+[grant]: /api/javascript/grant
 
 # Other tables #
 

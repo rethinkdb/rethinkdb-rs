@@ -26,7 +26,8 @@ options:
 - `host`: the host to connect to (default `localhost`).
 - `port`: the port to connect on (default `28015`).
 - `db`: the default database (default `test`).
-- `auth_key`: the authentication key (default none).
+- `user`: the user account to connect as (default `admin`).
+- `password`: the password for the user account to connect as (default `''`, empty).
 - `timeout`: timeout period in seconds for the connection to be opened (default `20`).
 - `ssl`: a hash of options to support SSL connections (default `nil`). Currently, there is only one option available, and if the `ssl` option is specified, this key is required:
     - `ca_certs`: a path to the SSL CA certificate.
@@ -41,9 +42,11 @@ Using SSL with RethinkDB requires proxy software on the server, such as [Nginx][
 [Nginx]: http://nginx.org/
 [HAProxy]: http://www.haproxy.org/
 [mitm]: http://en.wikipedia.org/wiki/Man-in-the-middle_attack
-{% endinfobox %}
 
-The authentication key can be set from the RethinkDB command line tool. Once set, client connections must provide the key as an option to `run` in order to make the connection. For more information, read "Using the RethinkDB authentication system" in the documentation on [securing your cluster](http://rethinkdb.com/docs/security/).
+Alternatively, you may use RethinkDB's built-in [TLS support][tls].
+
+[tls]: /docs/security/
+{% endinfobox %}
 
 The RethinkDB Ruby driver includes support for asynchronous connections using EventMachine. Read the [asynchronous connections][ac] documentation for more information.
 
@@ -60,8 +63,17 @@ __Example:__ Open a new connection to the database.
 ```rb
 conn = r.connect(:host => 'localhost',
                  :port => 28015,
+                 :db => 'heroes')
+```
+
+__Example:__ Open a new connection to the database, specifying a user/password combination for authentication.
+
+```rb
+conn = r.connect(:host => 'localhost',
+                 :port => 28015,
                  :db => 'heroes',
-                 :auth_key => 'hunter2')
+                 :user => 'herofinder',
+                 :password => 'metropolis')
 ```
 
 __Example:__ Open a new connection to the database using an SSL proxy.
@@ -69,7 +81,6 @@ __Example:__ Open a new connection to the database using an SSL proxy.
 ```rb
 conn = r.connect(:host => 'localhost',
                  :port => 28015,
-                 :auth_key => 'hunter2',
                  :ssl => {
                     :ca_certs => '/path/to/ca.crt'
                  })

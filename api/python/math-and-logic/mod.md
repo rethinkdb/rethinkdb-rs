@@ -25,5 +25,3 @@ __Example:__ It's as easy as 2 % 2 = 0.
 ```py
 (r.expr(2) % 2).run(conn)
 ```
-
-`

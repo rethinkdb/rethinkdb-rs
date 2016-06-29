@@ -39,7 +39,7 @@ The type will be returned as a string:
 * `TABLE_SLICE`
 * `TABLE`
 
-Read the article on [ReQL data types](docs/data-types/) for a more detailed discussion. Note that some possible return values from `type_of` are internal values, such as `MAXVAL`, and unlikely to be returned from queries in standard practice.
+Read the article on [ReQL data types](/docs/data-types/) for a more detailed discussion. Note that some possible return values from `type_of` are internal values, such as `MAXVAL`, and unlikely to be returned from queries in standard practice.
 
 __Example:__ Get the type of a string.
 

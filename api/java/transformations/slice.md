@@ -17,6 +17,7 @@ selection.slice(startOffset[, endOffset]) &rarr; selection
 stream.slice(startOffset[, endOffset]) &rarr; stream
 array.slice(startOffset[, endOffset]) &rarr; array
 binary.slice(startOffset[, endOffset]) &rarr; binary
+string.slice(startOffset[, endOffset]) &rarr; string
 {% endapibody %}
 
 # Description #
@@ -30,6 +31,10 @@ If `endOffset` is past the end of the sequence, all elements from `startOffset` 
 Negative `startOffset` and `endOffset` values are allowed with arrays; in that case, the returned range counts back from the array's end. That is, the range `(-2)` returns the last two elements, and the range of `(2,-1)` returns the second element through the next-to-last element of the range. An error will be raised on a negative `startOffset` or `endOffset` with non-arrays. (An `endOffset` of &minus;1 *is* allowed with a stream if `rightBound` is closed; this behaves as if no `endOffset` was specified.)
 
 If `slice` is used with a [binary](/api/java/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
+
+With a string, `slice` behaves similarly, with the indexes referring to Unicode codepoints. String indexes start at `0`. (Note that [combining codepoints][cc] are counted separately.)
+
+[cc]: https://en.wikipedia.org/wiki/Combining_character
 
 __Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
@@ -61,4 +66,16 @@ Result:
 
 ```json
 [2,3]
+```
+
+__Example:__ Return the third through fifth characters of a string.
+
+```java
+r.expr("rutabaga").slice(2,5).run(conn);
+```
+
+Result:
+
+```json
+"tab"
 ```

@@ -36,10 +36,13 @@ RethinkDB has three classes of errors: driver (`ReqlDriverError`), query compila
 
 `ReqlDriverError`: an error has occurred within the driver. This may be a driver bug, or it may be an unfulfillable command, such as an unserializable query.
 
+`ReqlPermissionsError`: the user account does not have the permissions necessary to execute the query. See [Permissions and user accounts][pua] for more information.
+
 `ReqlAuthError`: the client failed authentication with the server. This is a subclass of `ReqlDriverError`.
 
 [default]: /api/javascript/default/
 [error]: /api/javascript/error/
+[pua]: /docs/permissions-and-accounts/
 
 # Hierarchy
 
@@ -57,5 +60,6 @@ All errors are subclassed from the `ReqlError` class.
         * `ReqlAvailabilityError`
             * `ReqlOpFailedError`
             * `ReqlOpIndeterminateError`
+        * `ReqlPermissionsError`
     * `ReqlDriverError`
         * `ReqlAuthError`

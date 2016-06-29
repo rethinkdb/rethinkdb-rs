@@ -249,7 +249,7 @@ If we want to retrieve all users on the Galactica and Pegasus, we can write:
 
 ```js
 r.table("user").filter(function (user) {
-    r(["Galactica", "Pegasus"]).contains(user("ship"))
+    return r.expr(["Galactica", "Pegasus"]).contains(user("ship"))
 }).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);
@@ -638,7 +638,7 @@ For each successive page, start with the last name in the previous page.
 
 
 ```javascript
-r.table("users").between(lastName, null, {leftBound: "open", index: "name"})
+r.table("users").between(lastName, r.maxval, {leftBound: "open", index: "name"})
  .orderBy({index: "name"}).limit(25).run(conn, function(err, result) {
     if (err) throw err;
     console.log(result);

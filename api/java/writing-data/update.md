@@ -223,12 +223,22 @@ __Example:__ Add another note to Bob Smith's record.
 ```java
 import com.rethinkdb.model.MapObject;
 
-MapObject icqNote = r.hashMap("date", r.now())
+MapObject newNote = r.hashMap("date", r.now())
                      .with("from", "Admin")
                      .with("subject", "You killed my father");
 
 r.table("users").get(10001).update(
-    row -> r.hashMap("notes", row.g("notes").append(icqNote))
+    row -> r.hashMap("notes", row.g("notes").append(newNote))
+).run(conn);
+```
+
+This will fail if the `notes` field does not exist in the document. To perform this as an "upsert" (update or insert), use the [default_][def] command to ensure the field is initialized as an empty list.
+
+[def]: /api/java/default/
+
+```java
+r.table("users").get(10001).update(
+    row -> r.hashMap(notes, row.g("notes").default_(r.array()).append(newNote))
 ).run(conn);
 ```
 

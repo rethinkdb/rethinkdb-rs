@@ -33,6 +33,8 @@ memory, and is limited to 100,000 documents (or the setting of the `arrayLimit` 
 be done on arbitrarily large tables, or after a [between](/api/java/between/) command
 using the same index. This applies to both secondary indexes and the primary key (e.g., `{"index": "id"}`).
 
+Sorting functions passed to `orderBy` must be deterministic. You cannot, for instance, order rows using the [random](/api/java/random/) command. Using a non-deterministic function with `orderBy` will raise a `ReqlQueryLogicError`.
+
 __Example:__ Order all the posts using the index `date`.   
 
 ```java

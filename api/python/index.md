@@ -28,8 +28,7 @@ import rethinkdb as r
 ## [connect](connect/) ##
 
 {% apibody %}
-r.connect(host="localhost", port=28015, db="test", auth_key="", timeout=20) &rarr; connection
-r.connect(host) &rarr; connection
+r.connect(options) &rarr; connection
 {% endapibody %}
 
 Create a new connection to the database server. The keyword arguments are:
@@ -37,7 +36,8 @@ Create a new connection to the database server. The keyword arguments are:
 - `host`: host of the RethinkDB instance. The default value is `localhost`.
 - `port`: the driver port, by default `28015`.
 - `db`: the database used if not explicitly specified in a query, by default `test`.
-- `auth_key`: the authentication key, by default the empty string.
+- `user`: the user account to connect as (default `admin`).
+- `password`: the password for the user account to connect as (default `''`, empty).
 - `timeout`: timeout period in seconds for the connection to be opened (default `20`).
 - `ssl`: a hash of options to support SSL connections (default `None`). Currently, there is only one option available, and if the `ssl` option is specified, this key is required:
     - `ca_certs`: a path to the SSL CA certificate.
@@ -205,14 +205,18 @@ conn.noreply_wait()
 conn.server()
 {% endapibody %}
 
-Return the server name and server UUID being used by a connection.
+Return information about the server being used by a connection.
 
-__Example:__ Return the server name and UUID.
+__Example:__ Return server information.
 
 ```py
 > conn.server()
 
-{ "id": "404bef53-4b2c-433f-9184-bc3f7bda4a15", "name": "amadeus" }
+{
+    "id": "404bef53-4b2c-433f-9184-bc3f7bda4a15",
+    "name": "amadeus",
+    "proxy": False
+}
 ```
 
 [Read more about this command &rarr;](server/)
@@ -777,7 +781,7 @@ r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn)
 ## [get_all](get_all/) ##
 
 {% apibody %}
-table.get_all(key1[, key2...], [, index='id']) &rarr; selection
+table.get_all([key1, key2...], [, index='id']) &rarr; selection
 {% endapibody %}
 
 Get all documents where the given value matches the value of the requested index.
@@ -874,13 +878,35 @@ r.table('marvel').outer_join(r.table('dc'),
 ## [eq_join](eq_join/) ##
 
 {% apibody %}
-sequence.eq_join(left_field, right_table[, index='id']) &rarr; sequence
-sequence.eq_join(predicate_function, right_table[, index='id']) &rarr; sequence
+sequence.eq_join(left_field, right_table[, index='id', ordered=False]) &rarr; sequence
+sequence.eq_join(predicate_function, right_table[, index='id', ordered=False]) &rarr; sequence
 {% endapibody %}
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eq_join` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
 
+__Example:__ Match players with the games they've played against one another.
 
+Join these tables using `game_id` on the player table and `id` on the games table:
+
+```py
+r.table('players').eq_join('game_id', r.table('games')).run(conn)
+```
+
+This will return a result set such as the following:
+
+```py
+[
+    {
+        "left" : { "game_id" : 3, "id" : 2, "player" : "Agatha" },
+        "right" : { "id" : 3, "field" : "Bucklebury" }
+    },
+    {
+        "left" : { "game_id" : 2, "id" : 3, "player" : "Fred" },
+        "right" : { "id" : 2, "field" : "Rushock Bog" }
+    },
+    ...
+]
+```
 
 [Read more about this command &rarr;](eq_join/)
 
@@ -1038,6 +1064,7 @@ selection.slice(start_offset[, end_offset, left_bound='closed', right_bound='ope
 stream.slice(start_offset[, end_offset, left_bound='closed', right_bound='open']) &rarr; stream
 array.slice(start_offset[, end_offset, left_bound='closed', right_bound='open']) &rarr; array
 binary.slice(start_offset[, end_offset, left_bound='closed', right_bound='open']) &rarr; binary
+string.slice(start_offset[, end_offset, left_bound='closed', right_bound='open']) &rarr; string
 {% endapibody %}
 
 Return the elements of a sequence within the specified range.
@@ -1109,11 +1136,11 @@ r.table('marvel').is_empty().run(conn)
 ## [union](union/) ##
 
 {% apibody %}
-stream.union(sequence[, sequence, ...]) &rarr; stream
-array.union(sequence[, sequence, ...]) &rarr; array
+stream.union(sequence[, sequence, ...][, interleave=True]) &rarr; stream
+array.union(sequence[, sequence, ...][, interleave=True]) &rarr; array
 {% endapibody %}
 
-Merge two or more sequences. (Note that ordering is not guaranteed by `union`.)
+Merge two or more sequences.
 
 __Example:__ Construct a stream of all heroes.
 
@@ -1217,17 +1244,37 @@ A shorter way to execute this query is to use [count](/api/python/count).
 
 [Read more about this command &rarr;](reduce/)
 
+## [fold](fold/) ##
+
+{% apibody %}
+sequence.fold(base, function) &rarr; value
+sequence.fold(base, function, emit=function[, final_emit=function]) &rarr; sequence
+{% endapibody %}
+
+Apply a function to a sequence in order, maintaining state via an accumulator. The `fold` command returns either a single value or a new sequence.
+
+__Example:__ Concatenate words from a list.
+
+```py
+r.table('words').order_by('id').fold('',
+    lambda acc, word: acc + r.branch(acc == '', '', ', ') + word
+).run(conn)
+```
+
+(This example could be implemented with `reduce`, but `fold` will preserve the order when `words` is a RethinkDB table or other stream, which is not guaranteed with `reduce`.)
+
+[Read more about this command &rarr;](fold/)
+
 ## [count](count/) ##
 
 {% apibody %}
 sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
+string.count() &rarr; number
+object.count() &rarr; number
 {% endapibody %}
 
-Counts the number of elements in a sequence.  If called with a value,
-counts the number of times that value occurs in the sequence.  If
-called with a predicate function, counts the number of elements in the
-sequence where that function returns `True`.
+Counts the number of elements in a sequence or key/value pairs in an object, or returns the size of a string or binary object.
 
 __Example:__ Count the number of users.
 
@@ -1941,8 +1988,6 @@ __Example:__ It's as easy as 2 % 2 = 0.
 ```py
 (r.expr(2) % 2).run(conn)
 ```
-
-`
 
 [Read more about this command &rarr;](mod/)
 
@@ -3182,6 +3227,33 @@ outer_polygon.polygon_sub(inner_polygon).run(conn)
 
 {% apisection Administration %}
 
+## [grant](grant/) ##
+
+{% apibody %}
+r.grant("username", {"permission": bool[, ...]}) &rarr; object
+db.grant("username", {"permission": bool[, ...]}) &rarr; object
+table.grant("username", {"permission": bool[, ...]}) &rarr; object
+{% endapibody %}
+
+Grant or deny access permissions for a user account, globally or on a per-database or per-table basis.
+
+__Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
+
+```py
+> r.db('users').grant('chatapp', {'read': True, 'write': True}).run(conn)
+
+{
+    "granted": 1,
+    "permissions_changes": [
+        {
+            "new_val": { "read": true, "write": true },
+            "old_val": { null }
+        }
+    ]
+```
+
+[Read more about this command &rarr;](grant/)
+
 ## [config](config/) ##
 
 {% apibody %}
@@ -3253,9 +3325,9 @@ r.table('superheroes').status().run(conn)
 ## [wait](wait/) ##
 
 {% apibody %}
-table.wait([wait_for='ready_for_writes', timeout=<sec>]) &rarr; object
-database.wait([wait_for='ready_for_writes', timeout=<sec>]) &rarr; object
-r.wait([wait_for='ready_for_writes', timeout=<sec>]) &rarr; object
+table.wait([wait_for='all_replicas_ready', timeout=<sec>]) &rarr; object
+database.wait([wait_for='all_replicas_ready', timeout=<sec>]) &rarr; object
+r.wait(table | database, [wait_for='all_replicas_ready', timeout=<sec>]) &rarr; object
 {% endapibody %}
 
 Wait for a table or all the tables in a database to be ready. A table may be temporarily unavailable after creation, rebalancing or reconfiguring. The `wait` command blocks until the given table (or database) is fully up to date.

@@ -18,7 +18,7 @@ If you're using Maven, add this to your `pom.xml` file:
   <dependency>
     <groupId>com.rethinkdb</groupId>
     <artifactId>rethinkdb-driver</artifactId>
-    <version>2.2-beta-1</version>
+    <version>2.3.0</version>
   </dependency>
 </dependencies>
 ```
@@ -29,7 +29,7 @@ If you're using Gradle, modify your `build.gradle` file:
 
 ```groovy
 dependencies {
-    compile group: 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.2-beta-1'
+    compile group: 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.3.0'
 }
 ```
 
@@ -39,7 +39,7 @@ If you're using Ant, add the following to your `build.xml`:
 
 ```xml
 <artifact:dependencies pathId="dependency.classpath">
-  <dependency groupId="com.rethinkdb" artifactId="rethinkdb-driver" version="2.2-beta-1" />
+  <dependency groupId="com.rethinkdb" artifactId="rethinkdb-driver" version="2.3.0" />
 </artifact:dependencies>
 ```
 
@@ -48,7 +48,7 @@ If you're using Ant, add the following to your `build.xml`:
 If you're using SBT, add the following to your `build.sbt`:
 
 ```scala
-libraryDependencies += "com.rethinkdb" % "rethinkdb-driver" % "2.2-beta-1"
+libraryDependencies += "com.rethinkdb" % "rethinkdb-driver" % "2.3.0"
 ```
 
 # Usage #
@@ -70,8 +70,6 @@ Connection conn = r.connection().hostname("localhost").port(28015).connect();
 r.db("test").tableCreate("tv_shows").run(conn);
 r.table("tv_shows").insert(r.hashMap("name", "Star Trek TNG")).run(conn);
 ```
-
-__Note:__ RethinkDB connection objects are not thread-safe. It's recommended that applications open a separate connection per thread, or establish a connection pool.
 
 # Next steps #
 

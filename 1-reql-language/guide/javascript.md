@@ -19,7 +19,7 @@ __Before you start:__
 
 # Start the server #
 
-For a more detailed look, make sure to read the [quickstart](docs/quickstart/).
+For a more detailed look, make sure to read the [quickstart](/docs/quickstart/).
 
 ## Linux and OS X ##
 
@@ -427,4 +427,4 @@ is:
 }
 ```
 
-{% include docs/quickstart-footer.md %} 
+{% include docs/quickstart-footer.md %}

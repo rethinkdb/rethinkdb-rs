@@ -222,7 +222,7 @@ encounter a failure of availability.
 If the programmer marks a read query to be ok with out-of-date data,
 RethinkDB will route the query to the closest available replica
 instead of routing it to the primary. In this case the client will see
-the data as long as there are replicas of the data on the its side of
+the data as long as there are replicas of the data on its side of
 the netsplit. However, in this case the data has the risk of being out
 of date. This is usually ok for reports, analytics, cached data, or
 any scenario in general where having the absolute latest information
