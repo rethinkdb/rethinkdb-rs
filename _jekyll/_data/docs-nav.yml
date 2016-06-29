@@ -193,7 +193,7 @@
       - name: Stability report
         permalink: stability
         url: /docs/stability/
-      - name: Frequently Asked Questions
+      - name: Frequently asked questions
         permalink: faq
         url: /docs/faq/
       - name: Performance report
