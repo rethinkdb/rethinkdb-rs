@@ -282,7 +282,7 @@ WHERE name NOT IN ('Peter', 'John')
 r.table("users").filter(lambda doc:
     r.expr(["Peter", "John"])
         .contains(doc["name"])
-        .not()
+        .not_()
 )
 {% endhighlight %}
 
