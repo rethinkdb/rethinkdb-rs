@@ -14,7 +14,7 @@ related_commands:
 
 {% apibody %}
 sequence.eq_join(left_field, right_table[, :index => 'id', :ordered => false]) &rarr; sequence
-sequence.eq_join(predicate_function, right_table[, :index => 'id', :ordered => false]) &rarr; sequence
+sequence.eq_join(function, right_table[, :index => 'id', :ordered => false]) &rarr; sequence
 {% endapibody %}
 
 # Description #

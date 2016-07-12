@@ -905,7 +905,7 @@ r.table("marvel").outerJoin(r.table("dc"),
 
 {% apibody %}
 sequence.eqJoin(leftField, rightTable) &rarr; sequence
-sequence.eqJoin(predicate_function, rightTable) &rarr; sequence
+sequence.eqJoin(function, rightTable) &rarr; sequence
 {% endapibody %}
 
 Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.

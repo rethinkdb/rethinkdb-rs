@@ -14,7 +14,7 @@ related_commands:
 
 {% apibody %}
 sequence.eqJoin(leftField, rightTable) &rarr; sequence
-sequence.eqJoin(predicate_function, rightTable) &rarr; sequence
+sequence.eqJoin(function, rightTable) &rarr; sequence
 {% endapibody %}
 
 # Description #
