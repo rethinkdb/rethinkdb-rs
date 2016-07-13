@@ -21,6 +21,7 @@ related_commands:
 
 {% apibody %}
 sequence.group(field | function..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
+r.group(sequence, field | function..., [{index: <indexname>, multi: false}]) &rarr; grouped_stream
 {% endapibody %}
 
 <img src="/assets/images/docs/api_illustrations/group.png" class="api_command_illustration" />

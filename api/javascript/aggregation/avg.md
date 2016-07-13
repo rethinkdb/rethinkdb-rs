@@ -20,6 +20,7 @@ related_commands:
 
 {% apibody %}
 sequence.avg([field | function]) &rarr; number
+r.avg(sequence, [field | function]) &rarr; number
 {% endapibody %}
 
 # Description #

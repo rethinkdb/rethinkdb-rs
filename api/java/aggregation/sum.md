@@ -17,6 +17,7 @@ related_commands:
 
 {% apibody %}
 sequence.sum([field | function]) &rarr; number
+r.sum(sequence, [field | function]) &rarr; number
 {% endapibody %}
 
 # Description #

@@ -17,6 +17,7 @@ related_commands:
 
 {% apibody %}
 sequence.max([field | function]) &rarr; element
+r.max(sequence, [field | function]) &rarr; element
 {% endapibody %}
 
 # Description #

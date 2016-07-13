@@ -20,6 +20,7 @@ sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
 string.count() &rarr; number
 object.count() &rarr; number
+r.count(sequence | binary | string | object[, predicate_function]) &rarr; number
 {% endapibody %}
 
 # Description #

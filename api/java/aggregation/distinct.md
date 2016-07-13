@@ -14,6 +14,8 @@ related_commands:
 {% apibody %}
 sequence.distinct() &rarr; array
 table.distinct() &rarr; stream
+r.distinct(sequence) &rarr; array
+r.distinct(table) &rarr; stream
 {% endapibody %}
 
 # Description #

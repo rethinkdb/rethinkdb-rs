@@ -17,6 +17,7 @@ related_commands:
 
 {% apibody %}
 sequence.min([field | function]) &rarr; element
+r.min(sequence, [field | function]) &rarr; element
 {% endapibody %}
 
 # Description #

@@ -13,6 +13,7 @@ related_commands:
 
 {% apibody %}
 sequence.contains([value | predicate_function, ...]) &rarr; bool
+r.contains(sequence, [value | predicate_function, ...]) &rarr; bool
 {% endapibody %}
 
 # Description #

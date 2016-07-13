@@ -1134,6 +1134,8 @@ r.table('marvel').is_empty().run(conn)
 {% apibody %}
 stream.union(sequence[, sequence, ...][, :interleave => true]) &rarr; stream
 array.union(sequence[, sequence, ...][, :interleave => true]) &rarr; array
+r.union(stream, sequence[, sequence, ...][, :interleave => true]) &rarr; stream
+r.union(array, sequence[, sequence, ...][, :interleave => true]) &rarr; array
 {% endapibody %}
 
 Merge two or more sequences.
@@ -1172,6 +1174,7 @@ r.table('marvel').sample(3).run(conn)
 
 {% apibody %}
 sequence.group(field | function..., [:index => <indexname>, :multi => true]) &rarr; grouped_stream
+r.group(sequence, field | function..., [:index => <indexname>, :multi => true]) &rarr; grouped_stream
 {% endapibody %}
 
 Takes a stream and partitions it into multiple groups based on the
@@ -1224,6 +1227,7 @@ r.table('games')
 
 {% apibody %}
 sequence.reduce(function) &rarr; value
+r.reduce(sequence, function) &rarr; value
 {% endapibody %}
 
 Produce a single value from a sequence through repeated application of a reduction function.
@@ -1268,6 +1272,7 @@ sequence.count([value | predicate_function]) &rarr; number
 binary.count() &rarr; number
 string.count() &rarr; number
 object.count() &rarr; number
+r.count(sequence | binary | string | object[, predicate_function]) &rarr; number
 {% endapibody %}
 
 Counts the number of elements in a sequence or key/value pairs in an object, or returns the size of a string or binary object.
@@ -1284,6 +1289,7 @@ r.table('users').count().run(conn)
 
 {% apibody %}
 sequence.sum([field | function]) &rarr; number
+r.sum(sequence, [field | function]) &rarr; number
 {% endapibody %}
 
 Sums all the elements of a sequence.  If called with a field name,
@@ -1305,6 +1311,7 @@ r([3, 5, 7]).sum().run(conn)
 
 {% apibody %}
 sequence.avg([field | function]) &rarr; number
+r.avg(sequence, [field | function]) &rarr; number
 {% endapibody %}
 
 Averages all the elements of a sequence.  If called with a field name,
@@ -1327,6 +1334,8 @@ r([3, 5, 7]).avg().run(conn)
 {% apibody %}
 sequence.min(field | function) &rarr; element
 sequence.min({:index => <indexname>}) &rarr; element
+r.min(sequence, field | function) &rarr; element
+r.min(sequence, {:index => <indexname>}) &rarr; element
 {% endapibody %}
 
 Finds the minimum element of a sequence.
@@ -1344,6 +1353,8 @@ r([3, 5, 7]).min().run(conn)
 {% apibody %}
 sequence.max(field | function) &rarr; element
 sequence.max({:index => <indexname>}) &rarr; element
+r.max(sequence, field | function) &rarr; element
+r.max(sequence, {:index => <indexname>}) &rarr; element
 {% endapibody %}
 
 Finds the maximum element of a sequence.
@@ -1361,6 +1372,8 @@ r([3, 5, 7]).max().run(conn)
 {% apibody %}
 sequence.distinct() &rarr; array
 table.distinct([:index => <indexname>]) &rarr; stream
+r.distinct(sequence) &rarr; array
+r.distinct(table, [:index => <indexname>]) &rarr; stream
 {% endapibody %}
 
 Removes duplicate elements from a sequence.
@@ -1377,6 +1390,7 @@ r.table('marvel').concat_map{|hero| hero[:villain_list]}.distinct.run(conn)
 
 {% apibody %}
 sequence.contains([value | predicate_function, ...]) &rarr; bool
+r.contains(sequence, [value | predicate_function, ...]) &rarr; bool
 {% endapibody %}
 
 When called with values, returns `true` if a sequence contains all the

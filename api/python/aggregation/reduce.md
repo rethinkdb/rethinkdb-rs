@@ -17,6 +17,7 @@ related_commands:
 
 {% apibody %}
 sequence.reduce(function) &rarr; value
+r.reduce(sequence, function) &rarr; value
 {% endapibody %}
 
 # Description #

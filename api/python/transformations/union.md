@@ -10,6 +10,8 @@ command: union
 {% apibody %}
 stream.union(sequence[, sequence, ...][, interleave=True]) &rarr; stream
 array.union(sequence[, sequence, ...][, interleave=True]) &rarr; array
+r.union(stream, sequence[, sequence, ...][, interleave=True]) &rarr; stream
+r.union(array, sequence[, sequence, ...][, interleave=True]) &rarr; array
 {% endapibody %}
 
 # Description #

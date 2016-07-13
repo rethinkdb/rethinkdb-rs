@@ -13,6 +13,8 @@ io:
 {% apibody %}
 stream.union(sequence[, sequence, ...][, {interleave: true}]) &rarr; stream
 array.union(sequence[, sequence, ...][, {interleave: true}]) &rarr; array
+r.union(stream, sequence[, sequence, ...][, {interleave: true}]) &rarr; stream
+r.union(array, sequence[, sequence, ...][, {interleave: true}]) &rarr; array
 {% endapibody %}
 
 # Description #

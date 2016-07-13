@@ -21,6 +21,8 @@ related_commands:
 {% apibody %}
 sequence.max(field | function) &rarr; element
 sequence.max({index: <indexname>}) &rarr; element
+r.max(sequence, field | function) &rarr; element
+r.max(sequence, {index: <indexname>}) &rarr; element
 {% endapibody %}
 
 # Description #
