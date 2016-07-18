@@ -52,7 +52,7 @@ __Example:__ Concatenate words from a list.
 
 ```rb
 r.table('words').order_by('id').fold('',
-    lambda { |acc, word| acc + r.branch(acc == '', '', ', ') + word }
+    lambda { |acc, word| acc + r.branch(acc.eq(''), '', ', ') + word }
 ).run(conn)
 ```
 
@@ -76,7 +76,7 @@ r.table('tracker').filter({:name => 'bob'}).order_by('date')['weight'].fold(
     [],
     lambda { |acc, row| ([row] + acc).limit(5) },
     :emit => lambda {
-        |acc, row, new_acc| r.branch(new_acc.size() == 5, [new_acc.avg()], [])
+        |acc, row, new_acc| r.branch(new_acc.size().eq(5), [new_acc.avg()], [])
     }
 ).run(conn)
 ```
