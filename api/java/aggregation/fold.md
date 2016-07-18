@@ -64,7 +64,8 @@ __Example:__ Return every other row in a table.
 r.table("even_things").fold(0,
     (acc, row) -> r.add(acc, 1)
 ).optArg("emit",
-    (acc, row) -> r.branch(r.mod(acc, 2).eq(0), r.array(row), r.array())
+    (acc, row, new_acc) -> r.branch(r.mod(new_acc, 2).eq(0),
+                                    r.array(row), r.array())
 ).run(conn);
 ```
 

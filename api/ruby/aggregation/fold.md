@@ -61,9 +61,9 @@ r.table('words').order_by('id').fold('',
 __Example:__ Return every other row in a table.
 
 ```rb
-r.table('even_things').fold(0,
+r.table('players').fold(0,
     lambda { |acc, row| acc + 1 },
-    :emit => lambda { |acc, row| r.branch((acc % 2 == 0), [row], []) }
+    :emit => lambda { |acc, row, new_acc| r.branch((new_acc % 2).eq(0), [row], []) }
 ).run(conn)
 ```
 

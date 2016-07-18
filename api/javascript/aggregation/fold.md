@@ -66,11 +66,11 @@ r.table('words').orderBy('id').fold('', function (acc, word) {
 __Example:__ Return every other row in a table.
 
 ```js
-r.table('even_things').fold(0, function(acc, row, new_acc) {
+r.table('even_things').fold(0, function(acc, row) {
     return acc.add(1);
 }, {emit:
-    function (acc, row) {
-        return r.branch(acc.mod(2).eq(0), [row], []);
+    function (acc, row, new_acc) {
+        return r.branch(new_acc.mod(2).eq(0), [row], []);
     }
 }).run(conn, callback);
 ```

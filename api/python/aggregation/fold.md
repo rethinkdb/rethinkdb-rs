@@ -63,7 +63,7 @@ __Example:__ Return every other row in a table.
 ```py
 r.table('even_things').fold(0,
     lambda acc, row: acc + 1,
-    emit=lambda acc, row: r.branch((acc % 2 == 0), [row], [])
+    emit=lambda acc, row, new_acc: r.branch((new_acc % 2 == 0), [row], [])
 ).run(conn)
 ```
 
