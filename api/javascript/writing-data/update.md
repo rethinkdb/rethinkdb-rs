@@ -73,6 +73,9 @@ __Example:__ Update the status of all the posts written by William.
 r.table("posts").filter({author: "William"}).update({status: "published"}).run(conn, callback)
 ```
 
+{% infobox alert %}
+Note that `filter`, `getAll` and similar operations do _not_ execute in an atomic fashion with `update`. Read [Consistency guarantees](/docs/consistency) for more details. Also, see the example for conditional updates below for a solution using `branch` in an `update` clause.
+{% endinfobox %}
 
 __Example:__ Increment the field `view` of the post with `id` of `1`.
 This query will throw an error if the field `views` doesn't exist.
