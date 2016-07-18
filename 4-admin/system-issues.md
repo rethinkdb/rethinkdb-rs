@@ -11,7 +11,7 @@ The current issues table is one of the [system tables][st] added in version 1.16
 
 Querying this table with no filters produces a list of all current issues within the cluster.
 
-__Note:__ as with other system tables, the jobs table can only be accessed by the `admin` user account.
+__Note:__ as with other system tables, the current_issues table can only be accessed by the `admin` user account.
 
 ```js
 r.db("rethinkdb").table("current_issues").run(conn, callback);
