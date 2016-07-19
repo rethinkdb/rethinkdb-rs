@@ -106,7 +106,7 @@ If you specify `true` for both `include_states` and `include_initial`, the chang
 
 # Including result types #
 
-The `include_states` optional argument adds a third field, `type`, to each result sent. The string values for `type` are largely self-explanatory:
+The `include_types` optional argument adds a third field, `type`, to each result sent. The string values for `type` are largely self-explanatory:
 
 * `add`: a new value added to the result set.
 * `remove`: an old value removed from the result set.

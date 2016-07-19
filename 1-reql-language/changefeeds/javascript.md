@@ -105,7 +105,7 @@ If you specify `true` for both `includeStates` and `includeInitial`, the changef
 
 # Including result types #
 
-The `includeStates` optional argument adds a third field, `type`, to each result sent. The string values for `type` are largely self-explanatory:
+The `includeTypes` optional argument adds a third field, `type`, to each result sent. The string values for `type` are largely self-explanatory:
 
 * `add`: a new value added to the result set.
 * `remove`: an old value removed from the result set.
