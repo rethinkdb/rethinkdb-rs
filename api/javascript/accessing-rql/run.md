@@ -88,7 +88,7 @@ r.table('marvel').run(conn).then(function(cursor) {
     return cursor.toArray()
 }).then(function(results) {
     // process the results
-}).error(function(err) {
+}).catch(function(err) {
     // process error
 })
 ```
@@ -147,7 +147,7 @@ r.table('marvel').run(conn, {db: 'heroes'}).then(function(cursor) {
     return cursor.toArray()
 }).then(function(results) {
     // process the results
-}).error(function(err) {
+}).catch(function(err) {
     // process error
 })
 ```
