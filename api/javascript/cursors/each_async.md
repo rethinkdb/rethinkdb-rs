@@ -68,7 +68,7 @@ __Example:__ Process all the elements in a stream, using `then` and `catch` for 
 cursor.eachAsync(function (row) {
     var ok = processRowData(row);
     if (!ok) {
-        return 'Bad row: ' + row;
+        throw new Error('Bad row: ' + row);
     } 
 }).then(function () {
     console.log('done processing'); 
