@@ -1,9 +1,11 @@
 pub trait R {
     type Connection;
-    fn connect<T: ConnectOpts>(&self, opts: T) -> Self::Connection;
+    fn connect<T: IntoConnectOpts>(&self, opts: T) -> Self::Connection;
 }
 
-pub trait ConnectOpts {}
+pub trait IntoConnectOpts {
+    fn into(self) -> ::ConnectOpts;
+}
 
 pub trait Connector {
     type Connection;

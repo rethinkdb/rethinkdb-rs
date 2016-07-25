@@ -9,3 +9,40 @@ mod traits;
 
 pub use errors::*;
 pub use traits::*;
+
+/// Options
+#[derive(Debug)]
+pub struct ConnectOpts {
+    pub host: &'static str,
+    pub port: u16,
+    pub db: &'static str,
+    pub user: &'static str,
+    pub password: &'static str,
+    pub timeout: u16,
+    pub ssl: Option<SslCfg>,
+}
+
+#[derive(Debug)]
+pub struct SslCfg {
+    pub ca_certs: &'static str,
+}
+
+impl Default for ConnectOpts {
+    fn default() -> ConnectOpts {
+        ConnectOpts {
+            host: "localhost",
+            port: 28015,
+            db: "test",
+            user: "admin",
+            password: "",
+            timeout: 20,
+            ssl: None,
+        }
+    }
+}
+
+impl IntoConnectOpts for ConnectOpts {
+    fn into(self) -> ConnectOpts {
+        self
+    }
+}
