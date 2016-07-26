@@ -34,3 +34,15 @@ __Example:__ Which of the locations in a list of parks include `circle1`?
 circle1 = r.circle([-117.220406, 32.719464], 10, unit='mi')
 r.table('parks')['area'].includes(circle1).run(conn)
 ```
+
+{% infobox %}
+The `includes` command cannot take advantage of a geospatial [secondary index](/docs/secondary-indexes/python). If you're working with large data sets, consider using an index and [get_intersecting](/api/python/get_intersecting) before `includes` to narrow down the initial result set.
+{% endinfobox %}
+
+__Example:__ Rewrite the previous example with `getIntersecting`.
+
+```py
+circle1 = r.circle([-117.220406, 32.719464], 10, unit='mi')
+r.table('parks').get_intersecting(circle1,
+    index='area')['area'].includes(circle1).run(conn)
+```

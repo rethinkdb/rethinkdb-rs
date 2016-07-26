@@ -41,3 +41,7 @@ r.table("parks").g("area")
  .intersects(r.circle(r.array(-117.220406, 32.719464), 10).optArg("unit", "mi"))
  .run(conn);
 ```
+
+{% infobox %}
+The `intersects` command cannot take advantage of a geospatial [secondary index](/docs/secondary-indexes/java). If you're working with large data sets, you should consider using an index and the [getIntersecting](/api/java/get_intersecting) command instead of `intersects`.
+{% endinfobox %}
