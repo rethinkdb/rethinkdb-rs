@@ -37,7 +37,7 @@ build from source.
 Download and extract the archive:
 
 ```bash
-wget https://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
+curl -O https://download.rethinkdb.com/dist/rethinkdb-{{site.version.full}}.tgz
 tar xf rethinkdb-{{site.version.full}}.tgz
 ```
 
