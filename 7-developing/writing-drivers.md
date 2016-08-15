@@ -315,10 +315,10 @@ The function would be serialized as:
 
     [FUNC, 
      [[MAKE_ARRAY, [1, 2, 3]],
-       [ADD,
-        [[VAR, [1]],
-         [VAR, [2]],
-         [VAR, [3]]]]]]
+      [ADD,
+       [[VAR, [1]],
+        [VAR, [2]],
+        [VAR, [3]]]]]]
 
     // FUNC = 69, MAKE_ARRAY = 2, ADD = 24, VAR = 10 (from ql2.proto)
 
