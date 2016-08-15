@@ -153,7 +153,7 @@ This message is a warning that a [page fault][paging] has occurred on a RethinkD
 
 [paging]: https://en.wikipedia.org/wiki/Paging
 
-When paging occurs on RethinkDB's process, performance will be adversely affected, and the more paging occurs the worse performance will be. You may be able to address it by ensuring other applications are not using physical memory on the server, tuning the paging cache, or adding more RAM to the server.
+When paging occurs on RethinkDB's process, performance will be adversely affected, and the more paging occurs the worse performance will be. You may be able to address it by ensuring other applications are not using physical memory on the server, tuning the paging cache, adjusting the `swappiness` kernel parameter (see [Troubleshooting](/docs/troubleshooting) for details), or adding more RAM to the server.
 
 ## Connectivity issues ##
 
