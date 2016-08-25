@@ -57,6 +57,7 @@ r.table("users").between("Smith", "Wade", {index: "last_name"}).run(conn, callba
 r.table("users").orderBy({index: "last_name"}).run(conn, callback)
 
 // For each blog post, return the post and its author using the last_name index
+// (assume "author_full_name" is the name of a field in "posts")
 r.table("posts").eqJoin("author_last_name", r.table("users"), {index: "last_name"}) \
     .zip().run(conn, callback)
 ```

@@ -100,6 +100,7 @@ r.table("users").between(
 r.table("users").order_by(:index => "full_name").run(conn)
 
 # For each blog post, return the post and its author using the full_name index
+# (assume "author_full_name" is the name of a field in "posts")
 r.table("posts").eq_join("author_full_name", r.table("users"), :index => "full_name") \
     .run(conn)
 ```
