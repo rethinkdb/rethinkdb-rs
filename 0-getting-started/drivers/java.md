@@ -18,7 +18,7 @@ If you're using Maven, add this to your `pom.xml` file:
   <dependency>
     <groupId>com.rethinkdb</groupId>
     <artifactId>rethinkdb-driver</artifactId>
-    <version>2.3.0</version>
+    <version>2.3.3</version>
   </dependency>
 </dependencies>
 ```
@@ -29,7 +29,7 @@ If you're using Gradle, modify your `build.gradle` file:
 
 ```groovy
 dependencies {
-    compile group: 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.3.0'
+    compile group: 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.3.3'
 }
 ```
 
@@ -39,7 +39,7 @@ If you're using Ant, add the following to your `build.xml`:
 
 ```xml
 <artifact:dependencies pathId="dependency.classpath">
-  <dependency groupId="com.rethinkdb" artifactId="rethinkdb-driver" version="2.3.0" />
+  <dependency groupId="com.rethinkdb" artifactId="rethinkdb-driver" version="2.3.3" />
 </artifact:dependencies>
 ```
 
@@ -48,7 +48,7 @@ If you're using Ant, add the following to your `build.xml`:
 If you're using SBT, add the following to your `build.sbt`:
 
 ```scala
-libraryDependencies += "com.rethinkdb" % "rethinkdb-driver" % "2.3.0"
+libraryDependencies += "com.rethinkdb" % "rethinkdb-driver" % "2.3.3"
 ```
 
 # Usage #
