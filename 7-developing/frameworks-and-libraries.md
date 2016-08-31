@@ -17,16 +17,7 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 ## Drivers and extensions
 
 - [rethinkdbdash](https://github.com/neumino/rethinkdbdash) by [@neumino](https://github.com/neumino)  
-  An alternative Node.js driver with native promises and a connection pool.
-
-- [rethinkdb-co](https://github.com/hden/rethinkdb-co) by [@hden](https://github.com/hden)  
-  Allows using ECMAScript 6 generators with RethinkDB callbacks.
-
-- [rdb-cursor-stream](https://github.com/guillaumervls/rdb-cursor-stream) by [@guillaumervls](https://github.com/guillaumervls)  
-  Replaces cursors with streams.
-
-- [connect-rethinkdb](https://github.com/guillaumervls/connect-rethinkdb) by [@guillaumervls](https://github.com/guillaumervls)  
-  A RethinkDB session store for Connect, similar to connect-redis.
+  An alternative Node.js driver with a connection pool.
 
 - [express-session-rethinkdb](https://www.npmjs.com/package/express-session-rethinkdb) by [@armenfilipetyan](https://github.com/armenfilipetyan)  
   Use RethinkDB as session store with Express 4.x framework. Adapted from connect-rethinkdb.
@@ -50,9 +41,6 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 - [ThinkAgain](https://github.com/mbroadst/thinkagain) by [@mbroadst](https://github.com/mbroadst)  
   A fork of [Thinky][] with first-class support for [JSON Schema](http://json-schema.org).
-
-- [JugglingDB-RethinkDB](https://github.com/fuwaneko/jugglingdb-rethink) by [@fuwaneko](https://github.com/fuwaneko)  
-  A RethinkDB adapter for [JugglingDB](https://github.com/1602/jugglingdb), a multi-database ORM for Node.js.
 
 - [Osmos](https://github.com/mtabini/osmos) by [@mtabini](https://github.com/mtabini)  
   A store-agnostic object data mapper for Node.js with support for RethinkDB.
