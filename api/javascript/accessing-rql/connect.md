@@ -41,6 +41,13 @@ If the connection cannot be established, a `ReqlDriverError` will be passed to t
 
 <!-- break -->
 
+The returned connection object will have two properties on it containing the connection's port and address:
+
+```js
+conn.clientPort;
+conn.clientAddress;
+```
+
 {% infobox %}
 Using SSL with RethinkDB requires proxy software on the server, such as [Nginx][], [HAProxy][] or an SSL tunnel. RethinkDB will encrypt traffic and verify the CA certification to prevent [man-in-the-middle][mitm] attacks. Consult your proxy's documentation for more details.
 
