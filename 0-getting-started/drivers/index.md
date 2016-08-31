@@ -108,15 +108,15 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
-                <a href="https://github.com/grandquista/Lua-ReQL">
-                    <img src="/assets/images/docs/driver-languages/lua.png" />
-                    <p class="name">Lua</p>
+                <a href="https://github.com/neumino/rethinkdbdash">
+                    <img src="/assets/images/docs/driver-languages/javascript.png" />
+                    <p class="name">JS <span class="driver-author">neumino</span></p>
                 </a>
             </li>
             <li>
-                <a href="https://github.com/neumino/rethinkdbdash">
-                    <img src="/assets/images/docs/driver-languages/nodejs.png" />
-                    <p class="name">Node.js</p>
+                <a href="https://github.com/grandquista/Lua-ReQL">
+                    <img src="/assets/images/docs/driver-languages/lua.png" />
+                    <p class="name">Lua</p>
                 </a>
             </li>
             <li>
@@ -172,6 +172,8 @@ alias: docs/guides/drivers/
     </section>
 </section>
 
+Note that both the official JavaScript driver and neumino's "rethinkdbdash" driver are designed to work with Node.js.
+
 {% infobox %}
     __Haven't installed the server yet?__ [Go do that](/install) first!
 {% endinfobox %}
@@ -209,7 +211,7 @@ __Thanks to all our amazing driver contributors!__
 - [@kclay](https://github.com/kclay) (Scala): <https://github.com/kclay/rethink-scala>
 - [@kureikain](https://github.com/kureikain) (Erlang): <https://github.com/kureikain/relang>
 - [@mbq](https://github.com/mbq) (R): <https://github.com/mbq/rethinker>
-- [@neumino](https://github.com/neumino) (Node.js): <https://github.com/neumino/rethinkdbdash>
+- [@neumino](https://github.com/neumino) (JavaScript): <https://github.com/neumino/rethinkdbdash>
 - [@njlg](https://github.com/njlg) (Perl): <https://github.com/njlg/perl-rethinkdb>
 - [@npiv](https://github.com/npiv/) (Java): <https://github.com/npiv/rethink-java-driver>
 - [@orthecreedence](https://github.com/orthecreedence) (Common Lisp): <https://github.com/orthecreedence/cl-rethinkdb>
