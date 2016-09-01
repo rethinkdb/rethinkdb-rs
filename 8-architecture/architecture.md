@@ -423,6 +423,13 @@ caching engine which allows file sizes many orders of magnitude
 greater than the amount of available memory. RethinkDB can operate on
 a terabyte of data with about ten gigabytes of free RAM.
 
+## How does RethinkDB handle data corruption? ##
+
+It relies on the underlying storage system to ensure data consistency.
+RethinkDB does not perform additional checksums on stored data. It is,
+however, compatible with file systems which do guarantee data integrity,
+such as ZFS.
+
 ## Which file systems are supported? ##
 
 RethinkDB supports most commonly used file systems. It optionally
