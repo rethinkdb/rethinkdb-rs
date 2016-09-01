@@ -1257,7 +1257,7 @@ __Example:__ Concatenate words from a list.
 
 ```rb
 r.table('words').order_by('id').fold('',
-    lambda { |acc, word| acc + r.branch(acc == '', '', ', ') + word }
+    lambda { |acc, word| acc + r.branch(acc.eq(''), '', ', ') + word }
 ).run(conn)
 ```
 

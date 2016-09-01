@@ -327,7 +327,7 @@ __Example:__ Process all the elements in a stream, using `then` and `catch` for 
 cursor.eachAsync(function (row) {
     var ok = processRowData(row);
     if (!ok) {
-        return 'Bad row: ' + row;
+        throw new Error('Bad row: ' + row);
     }
 }).then(function () {
     console.log('done processing');
@@ -1504,7 +1504,7 @@ where that predicate returns `true`.
 __Example:__ Has Iron Man ever fought Superman?
 
 ```js
-r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, callback)
+r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, callback);
 ```
 
 [Read more about this command &rarr;](contains/)
