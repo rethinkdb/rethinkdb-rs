@@ -41,6 +41,14 @@ r.table("marvel").get("ironman").g("battles").contains(
 ).run(conn);
 ```
 
+__Example:__ Return all heroes who have fought _both_ Loki and the Hulk.
+
+```java
+r.table("marvel").filter(
+    hero -> hero.g("opponents").contains("loki", "hulk")
+).run(conn);
+```
+
 __Example:__ Use `contains` with a predicate function to simulate an `or`. Return the Marvel superheroes who live in Detroit, Chicago or Hoboken.
 
 ```java
