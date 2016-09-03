@@ -64,7 +64,7 @@ For many cases where a GMR query might be used, ReQL provides even simpler aggre
 r.table('posts').count().run(conn)
 ```
 
-RethinkDB has shortcuts for five common aggregation operations: `count`, `sum`, `avg`, `min`, and `max`. In practice, you'll often be able to use these with `group` these rather than writing your own `map` and `reduce` functions.
+RethinkDB has shortcuts for five common aggregation operations: `count`, `sum`, `avg`, `min`, and `max`. In practice, you'll often be able to use these with `group` in place of writing your own `map` and `reduce` functions.
 
 
 # An example with group #
