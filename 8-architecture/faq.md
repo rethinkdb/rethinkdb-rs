@@ -109,7 +109,7 @@ partners at [Compose.io][] and [Amazon AWS][], it can also be deployed
 in your own infrastructures without restrictions.
 
 [Compose.io]: https://www.compose.io/
-[Amazon AWS]: https://aws.amazon.com/marketplace/pp/B00E9EZ5DK
+[Amazon AWS]: https://aws.amazon.com/marketplace/pp/B013R60Q8Y
 
 Secondly, realtime sync APIs are limited to syncing documents, while
 RethinkDB is a general purpose database system. In RethinkDB you can
