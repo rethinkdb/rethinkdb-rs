@@ -70,7 +70,7 @@ If you use this option on the server, the client must use a secure connection as
 
 To use TLS connections between servers in the cluster:
 
-    rethindb --cluster-tls-key key.pem --cluster-tls-cert cert.pem --cluster-tls-ca cert.pem
+    rethinkdb --cluster-tls-key key.pem --cluster-tls-cert cert.pem --cluster-tls-ca cert.pem
 
 Note that in the last case, you're required to provide a CA certificate as well. This is a certificate used to sign other certificates. In this case, we're using the same certificate for both, but we could sign our `cert.pem` with a different CA certificate and specify both of them. Servers can only connect to the cluster if the certificates specified by their `cluster-tls-cert` value are signed by the CA certificate specified by `cluster-tls-ca`.
 
