@@ -42,7 +42,7 @@ impl Default for ConnectOpts {
 }
 
 impl IntoConnectOpts for ConnectOpts {
-    fn into(self) -> ConnectOpts {
-        self
+    fn into(self) -> Result<ConnectOpts, UserError> {
+        Ok(self)
     }
 }

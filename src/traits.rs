@@ -4,7 +4,7 @@ pub trait R {
 }
 
 pub trait IntoConnectOpts {
-    fn into(self) -> ::ConnectOpts;
+    fn into(self) -> Result<::ConnectOpts, ::UserError>;
 }
 
 pub trait Connector {
