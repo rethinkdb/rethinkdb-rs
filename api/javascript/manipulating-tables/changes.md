@@ -153,3 +153,22 @@ r.table('games').orderBy(
     { index: r.desc('score') }
 ).limit(10).changes().run(conn, callback);
 ```
+
+__Example:__ Maintain the state of an array based on a changefeed.
+
+```js
+r.table('data').changes(
+    {includeInitial: true, includeOffsets: true}
+).run(conn, function (err, change) {
+    if (change.old_offset != null) {
+        myArray.splice(change.old_offset, 1);
+    }
+    if (change.new_offset != null) {
+        myArray.splice(change.new_offset, 0, change.new_val);
+    }
+});
+```
+
+(This is a simplistic implementation; for a more sophisticated treatment, see the `applyChange` function in Horizon's [client/src/ast.js][ast] source.)
+
+[ast]: https://github.com/rethinkdb/horizon/blob/next/client/src/ast.js
