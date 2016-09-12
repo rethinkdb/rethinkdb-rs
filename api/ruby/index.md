@@ -2375,7 +2375,7 @@ __Example:__ Retrieve all the users whose birthday is today.
 
 ```rb
 r.table("users").filter{ |user|
-    user["birthdate"].date().eq(r.now().date())
+    user["birthdate"].date() == r.now().date()
 }.run(conn)
 ```
 

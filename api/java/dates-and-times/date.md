@@ -29,4 +29,15 @@ r.table("users").filter(
 ).run(conn);
 ```
 
+<!-- stop -->
 
+Note that the [now][] command always returns UTC time, so the comparison may fail if `user.g("birthdate")` isn't also in UTC. You can use the [inTimezone][itz] command to adjust for this:
+
+```js
+r.table("users").filter(
+    user -> user.g("birthdate").date().eq(r.now().inTimezone("-08:00").date())
+).run(conn);
+```
+
+[now]: /api/java/now/
+[itz]: /api/java/in_timezone/

@@ -30,4 +30,15 @@ r.table("users").filter(function(user) {
 }).run(conn, callback)
 ```
 
+<!-- stop -->
 
+Note that the [now][] command always returns UTC time, so the comparison may fail if `user("birthdate")` isn't also in UTC. You can use the [inTimezone][itz] command to adjust for this:
+
+```js
+r.table("users").filter(function(user) {
+    return user("birthdate").date().eq(r.now().inTimezone("-08:00").date())
+}).run(conn, callback)
+```
+
+[now]: /api/javascript/now/
+[itz]: /api/javascript/in_timezone/
