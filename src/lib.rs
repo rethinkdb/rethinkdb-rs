@@ -11,7 +11,7 @@ pub use errors::*;
 pub use traits::*;
 
 /// Options
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ConnectOpts {
     pub host: &'static str,
     pub port: u16,
@@ -22,7 +22,7 @@ pub struct ConnectOpts {
     pub ssl: Option<SslCfg>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct SslCfg {
     pub ca_certs: &'static str,
 }
@@ -42,7 +42,7 @@ impl Default for ConnectOpts {
 }
 
 impl IntoConnectOpts for ConnectOpts {
-    fn into(self) -> Result<ConnectOpts, UserError> {
-        Ok(self)
+    fn into(self) -> ConnectOpts {
+        self
     }
 }

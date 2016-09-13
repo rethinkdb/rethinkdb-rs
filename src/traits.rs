@@ -1,10 +1,11 @@
 pub trait R {
     type Connection;
-    fn connect<T: IntoConnectOpts>(&self, opts: T) -> Self::Connection;
+    type Error;
+    fn connect<T: IntoConnectOpts>(&self, opts: T) -> Result<Self::Connection, Self::Error>;
 }
 
 pub trait IntoConnectOpts {
-    fn into(self) -> Result<::ConnectOpts, ::UserError>;
+    fn into(self) -> ::ConnectOpts;
 }
 
 pub trait Connector {
