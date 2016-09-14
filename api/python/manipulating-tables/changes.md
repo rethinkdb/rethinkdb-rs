@@ -144,3 +144,19 @@ __Example:__ Return all the changes to the top 10 games. This assumes the presen
 ```py
 r.table('games').order_by(index=r.desc('score')).limit(10).changes().run(conn)
 ```
+
+__Example:__ Maintain the state of an array based on a changefeed.
+
+```py
+for change in r.table('data').changes(include_initial=True, include_offsets=True).run(conn):
+    # delete item at old_offset before inserting at new_offset
+    if change.old_offset != None:
+        my_array.pop(change.old_offset)
+    if change.new_offset != None:
+        my_array.insert(change.new_offset, change.new_val);
+```
+
+(This is a simplistic implementation, and in production you should use an asynchronous event model defined with [set_loop_type][slt]. For a more sophisticated example, see the `applyChange` function in Horizon's [client/src/ast.js][ast] source; it's written in JavaScript, but the principles apply to all languages.)
+
+[slt]: /api/python/set_loop_type/
+[ast]: https://github.com/rethinkdb/horizon/blob/next/client/src/ast.js

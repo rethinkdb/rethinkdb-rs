@@ -160,6 +160,7 @@ __Example:__ Maintain the state of an array based on a changefeed.
 r.table('data').changes(
     {includeInitial: true, includeOffsets: true}
 ).run(conn, function (err, change) {
+    // delete item at old_offset before inserting at new_offset
     if (change.old_offset != null) {
         myArray.splice(change.old_offset, 1);
     }
