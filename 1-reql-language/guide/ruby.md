@@ -364,7 +364,7 @@ Browse the [API reference](/api/ruby/) for many more array operations available 
 Suppose we'd like to trim down our database and delete every document
 with less than three posts (sorry Laura and Jean-Luc):
 
-```python
+```ruby
 r.table("authors").
     filter{ |author| author["posts"].count < 3 }.
     delete.run

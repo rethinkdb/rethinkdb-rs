@@ -318,8 +318,8 @@ web browser and click "Data Explorer."
 Let's update all documents in the `authors` table and add a `type`
 field to note that every author so far is fictional:
 
-```javascript
-r.table('authors').update({type: "fictional"})
+```java
+r.table("authors").update(r.hashMap("type", "fictional")).run(conn);
 ```
 
 Since we changed three documents, the result should look like this:
@@ -340,10 +340,10 @@ chained the `update` command to the end of the query. We could also
 update a subset of documents by filtering the table first. Let's
 update William Adama's record to note that he has the rank of Admiral:
 
-```js
-r.table('authors').filter(
-    r.row("name").eq("William Adama")
-).update({rank: "Admiral"})
+```java
+r.table("authors").filter(
+    row -> row.g("name").eq("William Adama")
+).update(r.hashMap("rank", "Admiral")).run(conn);
 ```
 
 Since we only updated one document, we get back this object:
@@ -364,15 +364,14 @@ as well as values inside of arrays. Let's suppose Star Trek
 archaeologists unearthed a new speech by Jean-Luc Picard that we'd like
 to add to his posts:
 
-```javascript
-r.table('authors').filter(
-    r.row("name").eq("Jean-Luc Picard")
-).update({
-    posts: r.row("posts").append({
-        title: "Shakespeare",
-        content: "What a piece of work is man..."
-    })
-})
+```java
+r.table("authors").filter(
+    row -> row.g("name").eq("Jean-Luc Picard")
+).update(
+    r.hashMap("posts", row -> row.g("posts")
+     .append(r.hashMap("title", "Shakespeare")
+     .with("content", "What a piece of work is man...")))
+).run();
 ```
 
 After processing this query, RethinkDB will add an additional post to
@@ -387,8 +386,8 @@ Browse the [API reference](/api/java/) for many more array operations available 
 Suppose we'd like to trim down our database and delete every document
 with less than three posts (sorry Laura and Jean-Luc):
 
-```javascript
-r.table('authors').filter(r.row('posts').count().lt(3)).delete()
+```java
+r.table("authors").filter(row -> row.g("posts").count().lt(3)).delete().run(conn);
 ```
 
 Since we have two authors with less than two posts, the result
