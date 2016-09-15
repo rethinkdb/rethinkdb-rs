@@ -181,3 +181,25 @@ __Example:__ Return all the changes to the top 10 games. This assumes the presen
 r.table("games").orderBy().optArg("index", r.desc("score"))
  .limit(10).changes().run(conn);
 ```
+
+__Example:__ Maintain the state of a list based on a changefeed.
+
+```java
+Cursor changeCursor = r.table("data").changes()
+    .optArg("include_initial", true)
+    .optArg("include_offsets", true)
+    .run((conn);
+for (Object change : changeCursor) {
+    // Delete item at old_offset before inserting at new_offset
+    if (change.old_offset != null) {
+        myList.remove(change.old_offset);
+    }
+    if (change.new_offset != null) {
+        myList.add(change.new_offset, change_new.val);
+    }
+};
+```
+
+(This is a simplistic implementation. For a more sophisticated example, see the `applyChange` function in Horizon's [client/src/ast.js][ast] source; it's written in JavaScript, but the principles apply to all languages.)
+
+[ast]: https://github.com/rethinkdb/horizon/blob/next/client/src/ast.js

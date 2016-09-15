@@ -152,3 +152,21 @@ r.table('games').order_by(
     {:index => r.desc('score')}
 ).limit(10).changes().run(conn)
 ```
+__Example:__ Maintain the state of an array based on a changefeed.
+
+```rb
+EventMachine.run {
+    r.table('data').changes(
+        {:include_initial => true, :include_offsets => true}
+    ).em_run(conn) { |change|
+        # delete item at old_offset before inserting at new_offset
+        my_array.delete_at(change.old_offset) if change.old_offset != nil
+        my.array.insert(change.new_offset, change.new_val) if change.new_offset != nil
+    }
+}
+```
+
+(This is a simplistic implementation; for more information about RethinkDB's EventMachine support, read the documentation for [em_run][emr]. For a more sophisticated example, see the `applyChange` function in Horizon's [client/src/ast.js][ast] source; it's written in JavaScript, but the principles apply to all languages.)
+
+[emr]: /api/ruby/em_run
+[ast]: https://github.com/rethinkdb/horizon/blob/next/client/src/ast.js
