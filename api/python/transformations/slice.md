@@ -32,15 +32,11 @@ Negative `start_offset` and `end_offset` values are allowed with arrays; in that
 
 If `slice` is used with a [binary](/api/python/binary) object, the indexes refer to byte positions within the object. That is, the range `(10,20)` will refer to the 10th byte through the 19th byte.
 
-<<<<<<< HEAD
 With a string, `slice` behaves similarly, with the indexes referring to Unicode codepoints. String indexes start at `0`. (Note that [combining codepoints][cc] are counted separately.)
 
 [cc]: https://en.wikipedia.org/wiki/Combining_character
 
-If you are only specifying the indexes and not the bounding options, you may use Python's slice operator as a shorthand: `[start_index:end_index]`.
-=======
 If you are only specifying the indexes and not the bounding options, you may use Python's slice operator as a shorthand: `[start_offset:end_offset]`.
->>>>>>> master
 
 __Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
