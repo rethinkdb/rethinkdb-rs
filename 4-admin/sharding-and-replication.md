@@ -95,7 +95,7 @@ While running, a server's configuration can be changed by writing to the `rethin
 # get server by UUID
 r.db('rethinkdb').table('server_config').get(
     'd5211b11-9824-47b1-9f2e-516a999a6451').update(
-    {tags: ['default', 'us', 'us_west']}.run(conn)
+    {tags: ['default', 'us', 'us_west']}).run(conn)
 ```
 
 If no tags are specified on startup, the server will be started with one tag, `default`. Changing the sharding/replica information from the web UI or from ReQL commands that do not specify server tags will affect all servers with the `default` tag.
@@ -117,7 +117,7 @@ If you remove *all* of a server's tags and then reconfigure all the cluster's ta
 # decommission a server
 r.db('rethinkdb').table('server_config').get(
     'd5211b11-9824-47b1-9f2e-516a999a6451').update(
-    {tags: []}.run(conn)
+    {tags: []}).run(conn)
 r.db('database').reconfigure(shards=2, replicas=3).run(conn)
 ```
 
