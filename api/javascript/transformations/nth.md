@@ -34,7 +34,7 @@ r.expr([1,2,3])(1).run(conn, callback)
 __Example:__ Select the bronze medalist from the competitors.
 
 ```js
-r.table('players').orderBy({index: r.desc('score')}).nth(3).run(conn, callback)
+r.table('players').orderBy({index: r.desc('score')}).nth(2).run(conn, callback)
 ```
 
 __Example:__ Select the last place competitor.
