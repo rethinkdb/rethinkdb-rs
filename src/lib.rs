@@ -7,8 +7,12 @@
 mod errors;
 mod traits;
 
+use std::result;
+
 pub use errors::*;
 pub use traits::*;
+
+type Result<T> = result::Result<T, Error>;
 
 /// Options
 #[derive(Debug, Clone)]
