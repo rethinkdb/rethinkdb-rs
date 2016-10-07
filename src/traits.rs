@@ -1,8 +1,7 @@
 use super::Result;
 
 pub trait R {
-    type Connection;
-    fn connect<T: IntoConnectOpts>(&self, opts: T) -> Result<Self::Connection>;
+    fn connect<T: IntoConnectOpts>(&self, opts: T) -> Result<()>;
 }
 
 pub trait IntoConnectOpts {
