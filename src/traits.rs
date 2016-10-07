@@ -1,7 +1,8 @@
+user super::Result;
+
 pub trait R {
     type Connection;
-    type Error;
-    fn connect<T: IntoConnectOpts>(&self, opts: T) -> Result<Self::Connection, Self::Error>;
+    fn connect<T: IntoConnectOpts>(&self, opts: T) -> Result<Self::Connection>;
 }
 
 pub trait IntoConnectOpts {
