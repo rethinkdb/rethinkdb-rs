@@ -1,4 +1,4 @@
-user super::Result;
+use super::Result;
 
 pub trait R {
     type Connection;
