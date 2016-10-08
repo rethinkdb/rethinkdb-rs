@@ -4,9 +4,9 @@ quick_error! {
     /// The most generic error message in ReQL
     #[derive(Debug)]
     pub enum Error {
-        Compile(descr: &'static str) {}
-        Runtime(err: RuntimeError) {}
-        Driver(err: DriverError) {}
+        Compile(descr: &'static str) { }
+        Runtime(err: RuntimeError) { from() }
+        Driver(err: DriverError) { from() }
     }
 }
 
@@ -17,12 +17,12 @@ quick_error! {
     /// error, but the server will always return a more specific error class.
     #[derive(Debug)]
     pub enum RuntimeError {
-        QueryLogic(err: QueryLogicError) {}
+        QueryLogic(err: QueryLogicError) { from() }
         ResourceLimit(descr: &'static str) {}
         User(descr: &'static str) {}
         Internal(descr: &'static str) {}
         Timeout(descr: &'static str) {}
-        Availability(err: AvailabilityError) {}
+        Availability(err: AvailabilityError) { from() }
         Permissions(descr: &'static str) {}
     }
 }
