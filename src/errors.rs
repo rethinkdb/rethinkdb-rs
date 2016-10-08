@@ -76,3 +76,9 @@ impl From<r2d2::InitializationError> for Error {
         From::from(DriverError::Initialization(err))
     }
 }
+
+impl From<ConnectionError> for Error {
+    fn from(err: ConnectionError) -> Error {
+        From::from(DriverError::Connection(err))
+    }
+}
