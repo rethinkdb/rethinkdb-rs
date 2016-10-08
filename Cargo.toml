@@ -11,3 +11,5 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
 futures = "0.1"
+r2d2 = "0.7.0"
+quick-error = "1.1.0"

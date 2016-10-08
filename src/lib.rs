@@ -4,6 +4,8 @@
 //!
 //! [error types]: https://www.rethinkdb.com/docs/error-types/
 
+#[macro_use] extern crate quick_error;
+
 mod errors;
 mod traits;
 
