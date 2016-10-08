@@ -57,6 +57,16 @@ quick_error! {
     pub enum DriverError {
         Auth(descr: &'static str) {}
         Initialization(err: r2d2::InitializationError) { from() }
+        Connection(err: ConnectionError) { from() }
+    }
+}
+
+quick_error! {
+    /// Connection related errors
+    #[derive(Debug)]
+    pub enum ConnectionError {
+        PoolWrite(descr: &'static str) {}
+        PoolRead(descr: &'static str) {}
     }
 }
 
