@@ -4,7 +4,7 @@ quick_error! {
     /// The most generic error message in ReQL
     #[derive(Debug)]
     pub enum Error {
-        Compile(descr: &'static str) { }
+        Compile(descr: String) { }
         Runtime(err: RuntimeError) { from() }
         Driver(err: DriverError) { from() }
     }
@@ -18,12 +18,12 @@ quick_error! {
     #[derive(Debug)]
     pub enum RuntimeError {
         QueryLogic(err: QueryLogicError) { from() }
-        ResourceLimit(descr: &'static str) {}
-        User(descr: &'static str) {}
-        Internal(descr: &'static str) {}
-        Timeout(descr: &'static str) {}
+        ResourceLimit(descr: String) {}
+        User(descr: String) {}
+        Internal(descr: String) {}
+        Timeout(descr: String) {}
         Availability(err: AvailabilityError) { from() }
-        Permissions(descr: &'static str) {}
+        Permissions(descr: String) {}
     }
 }
 
@@ -31,7 +31,7 @@ quick_error! {
     /// The query contains a logical impossibility, such as adding a number to a string.
     #[derive(Debug)]
     pub enum QueryLogicError {
-        NonExistence(descr: &'static str) {}
+        NonExistence(descr: String) {}
     }
 }
 
@@ -43,8 +43,8 @@ quick_error! {
     /// children.
     #[derive(Debug)]
     pub enum AvailabilityError {
-        OpFailed(descr: &'static str) {}
-        OpIndeterminate(descr: &'static str) {}
+        OpFailed(descr: String) {}
+        OpIndeterminate(descr: String) {}
     }
 }
 
@@ -55,7 +55,7 @@ quick_error! {
     /// query.
     #[derive(Debug)]
     pub enum DriverError {
-        Auth(descr: &'static str) {}
+        Auth(descr: String) {}
         Initialization(err: r2d2::InitializationError) { from() }
         Connection(err: ConnectionError) { from() }
     }
@@ -65,8 +65,8 @@ quick_error! {
     /// Connection related errors
     #[derive(Debug)]
     pub enum ConnectionError {
-        PoolWrite(descr: &'static str) {}
-        PoolRead(descr: &'static str) {}
+        PoolWrite(descr: String) {}
+        PoolRead(descr: String) {}
     }
 }
 
