@@ -56,6 +56,8 @@ quick_error! {
     #[derive(Debug)]
     pub enum DriverError {
         Auth(descr: &'static str) {}
-        Initialization(err: r2d2::InitializationError) {}
+        Initialization(err: r2d2::InitializationError) {
+            from()
+        }
     }
 }
