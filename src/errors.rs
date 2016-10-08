@@ -56,8 +56,13 @@ quick_error! {
     #[derive(Debug)]
     pub enum DriverError {
         Auth(descr: &'static str) {}
-        Initialization(err: r2d2::InitializationError) {
-            from()
-        }
+        Initialization(err: r2d2::InitializationError) { from() }
+    }
+}
+
+/// Converts external error to ours
+impl From<r2d2::InitializationError> for Error {
+    fn from(err: r2d2::InitializationError) -> Error {
+        From::from(DriverError::Initialization(err))
     }
 }
