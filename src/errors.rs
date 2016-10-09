@@ -1,6 +1,7 @@
 extern crate r2d2;
 
 use std::io;
+use std::str;
 
 quick_error! {
     /// The most generic error message in ReQL
@@ -60,6 +61,7 @@ quick_error! {
         Auth(descr: String) {}
         Initialization(err: r2d2::InitializationError) { from() }
         Connection(err: ConnectionError) { from() }
+        ParseResponse(err: str::Utf8Error) { from() }
     }
 }
 
@@ -91,5 +93,12 @@ impl From<ConnectionError> for Error {
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Error {
         From::from(ConnectionError::Io(err))
+    }
+}
+
+/// Converts from Utf8Error error
+impl From<str::Utf8Error> for Error {
+    fn from(err: str::Utf8Error) -> Error {
+        From::from(DriverError::ParseResponse(err))
     }
 }
