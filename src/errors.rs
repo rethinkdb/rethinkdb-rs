@@ -1,7 +1,7 @@
-extern crate r2d2;
-
 use std::io;
 use std::str;
+use super::r2d2;
+use super::serde_json::error as json;
 
 quick_error! {
     /// The most generic error message in ReQL
@@ -62,6 +62,7 @@ quick_error! {
         Initialization(err: r2d2::InitializationError) { from() }
         Connection(err: ConnectionError) { from() }
         ParseResponse(err: str::Utf8Error) { from() }
+        Json(err: json::Error) { from() }
     }
 }
 
@@ -100,5 +101,12 @@ impl From<io::Error> for Error {
 impl From<str::Utf8Error> for Error {
     fn from(err: str::Utf8Error) -> Error {
         From::from(DriverError::ParseResponse(err))
+    }
+}
+
+/// Converts from serde_json error
+impl From<json::Error> for Error {
+    fn from(err: json::Error) -> Error {
+        From::from(DriverError::Json(err))
     }
 }

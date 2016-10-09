@@ -5,6 +5,8 @@
 //! [error types]: https://www.rethinkdb.com/docs/error-types/
 
 #[macro_use] extern crate quick_error;
+extern crate r2d2;
+extern crate serde_json;
 
 mod errors;
 mod traits;
