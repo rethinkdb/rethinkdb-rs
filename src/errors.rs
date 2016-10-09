@@ -1,5 +1,7 @@
 extern crate r2d2;
 
+use std::io;
+
 quick_error! {
     /// The most generic error message in ReQL
     #[derive(Debug)]
@@ -67,10 +69,11 @@ quick_error! {
     pub enum ConnectionError {
         PoolWrite(descr: String) {}
         PoolRead(descr: String) {}
+        Io(err: io::Error) { from() }
     }
 }
 
-/// Converts external error to ours
+/// Converts from r2d2 error
 impl From<r2d2::InitializationError> for Error {
     fn from(err: r2d2::InitializationError) -> Error {
         From::from(DriverError::Initialization(err))
@@ -80,5 +83,12 @@ impl From<r2d2::InitializationError> for Error {
 impl From<ConnectionError> for Error {
     fn from(err: ConnectionError) -> Error {
         From::from(DriverError::Connection(err))
+    }
+}
+
+/// Converts from IO error
+impl From<io::Error> for Error {
+    fn from(err: io::Error) -> Error {
+        From::from(ConnectionError::Io(err))
     }
 }
