@@ -70,6 +70,7 @@ quick_error! {
         PoolWrite(descr: String) {}
         PoolRead(descr: String) {}
         Io(err: io::Error) { from() }
+        Other(descr: String) {}
     }
 }
 
