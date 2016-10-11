@@ -7,9 +7,21 @@ quick_error! {
     /// The most generic error message in ReQL
     #[derive(Debug)]
     pub enum Error {
-        Compile(descr: String) { }
-        Runtime(err: RuntimeError) { from() }
-        Driver(err: DriverError) { from() }
+        Compile(descr: String) {
+            display("{}", descr)
+        }
+        Runtime(err: RuntimeError) {
+            from()
+            description(err.description())
+            cause(err)
+            display("{:?}", err)
+        }
+        Driver(err: DriverError) {
+            from()
+            description(err.description())
+            cause(err)
+            display("{:?}", err)
+        }
     }
 }
 
@@ -21,12 +33,12 @@ quick_error! {
     #[derive(Debug)]
     pub enum RuntimeError {
         QueryLogic(err: QueryLogicError) { from() }
-        ResourceLimit(descr: String) {}
-        User(descr: String) {}
-        Internal(descr: String) {}
-        Timeout(descr: String) {}
+        ResourceLimit(descr: String)
+        User(descr: String)
+        Internal(descr: String)
+        Timeout(descr: String)
         Availability(err: AvailabilityError) { from() }
-        Permissions(descr: String) {}
+        Permissions(descr: String)
     }
 }
 
@@ -34,7 +46,7 @@ quick_error! {
     /// The query contains a logical impossibility, such as adding a number to a string.
     #[derive(Debug)]
     pub enum QueryLogicError {
-        NonExistence(descr: String) {}
+        NonExistence(descr: String)
     }
 }
 
@@ -46,8 +58,8 @@ quick_error! {
     /// children.
     #[derive(Debug)]
     pub enum AvailabilityError {
-        OpFailed(descr: String) {}
-        OpIndeterminate(descr: String) {}
+        OpFailed(descr: String)
+        OpIndeterminate(descr: String)
     }
 }
 
@@ -58,8 +70,7 @@ quick_error! {
     /// query.
     #[derive(Debug)]
     pub enum DriverError {
-        Auth(descr: String) {}
-        Initialization(err: r2d2::InitializationError) { from() }
+        Auth(descr: String)
         Connection(err: ConnectionError) { from() }
         ParseResponse(err: str::Utf8Error) { from() }
         Json(err: json::Error) { from() }
@@ -70,17 +81,18 @@ quick_error! {
     /// Connection related errors
     #[derive(Debug)]
     pub enum ConnectionError {
-        PoolWrite(descr: String) {}
-        PoolRead(descr: String) {}
+        Initialization(err: r2d2::InitializationError) { from() }
+        PoolWrite(descr: String)
+        PoolRead(descr: String)
         Io(err: io::Error) { from() }
-        Other(descr: String) {}
+        Other(descr: String)
     }
 }
 
 /// Converts from r2d2 error
 impl From<r2d2::InitializationError> for Error {
     fn from(err: r2d2::InitializationError) -> Error {
-        From::from(DriverError::Initialization(err))
+        From::from(ConnectionError::Initialization(err))
     }
 }
 
