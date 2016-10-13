@@ -15,3 +15,6 @@ pub trait Connector {
     // use is a reserved keyword in Rust
     fn use_db(&self, db_name: &str) -> Self::Connection;
 }
+
+pub trait Response {
+}

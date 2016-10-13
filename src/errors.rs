@@ -84,6 +84,7 @@ quick_error! {
         Initialization(err: r2d2::InitializationError) { from() }
         PoolWrite(descr: String)
         PoolRead(descr: String)
+        Timeout(err: r2d2::GetTimeout) { from() }
         Io(err: io::Error) { from() }
         Other(descr: String)
     }
@@ -93,6 +94,12 @@ quick_error! {
 impl From<r2d2::InitializationError> for Error {
     fn from(err: r2d2::InitializationError) -> Error {
         From::from(ConnectionError::Initialization(err))
+    }
+}
+
+impl From<r2d2::GetTimeout> for Error {
+    fn from(err: r2d2::GetTimeout) -> Error {
+        From::from(ConnectionError::Timeout(err))
     }
 }
 
