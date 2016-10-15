@@ -7,6 +7,7 @@
 #[macro_use] extern crate quick_error;
 extern crate r2d2;
 extern crate serde_json;
+extern crate protobuf;
 
 mod errors;
 mod traits;
