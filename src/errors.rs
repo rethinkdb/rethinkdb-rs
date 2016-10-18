@@ -3,6 +3,7 @@ use std::str;
 use super::r2d2;
 use super::serde_json::error as json;
 use protobuf::ProtobufError;
+use std::sync::PoisonError;
 
 quick_error! {
     /// The most generic error message in ReQL
@@ -74,8 +75,10 @@ quick_error! {
         Auth(descr: String)
         Connection(err: ConnectionError) { from() }
         ParseResponse(err: str::Utf8Error) { from() }
+        Lock(err: String)
         Json(err: json::Error) { from() }
         Protobuf(err: ProtobufError) { from() }
+        Other(descr: String)
     }
 }
 
@@ -135,5 +138,11 @@ impl From<json::Error> for Error {
 impl From<ProtobufError> for Error {
     fn from(err: ProtobufError) -> Error {
         From::from(DriverError::Protobuf(err))
+    }
+}
+
+impl<T> From<PoisonError<T>> for Error {
+    fn from(err: PoisonError<T>) -> Error {
+        From::from(DriverError::Lock(format!("{}", err)))
     }
 }
