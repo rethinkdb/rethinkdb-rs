@@ -1,57 +1,35 @@
-//! ReQL Traits and Error Types
+//! Rust RethinkDB Driver
 //!
-//! These are the common traits and [error types] returned by ReQL drivers.
+//! ```rust
+//! extern crate reql;
 //!
-//! [error types]: https://www.rethinkdb.com/docs/error-types/
+//! use reql::r;
+//!
+//! # fn main() {
+//! r.connect(Default::default()).unwrap();
+//! # }
+//! ```
 
-#[macro_use] extern crate quick_error;
+extern crate ql2;
 extern crate r2d2;
+extern crate serde;
 extern crate serde_json;
+extern crate byteorder;
+extern crate bufstream;
+#[macro_use] extern crate lazy_static;
+#[macro_use] extern crate slog;
+#[macro_use] extern crate quick_error;
+extern crate slog_term;
 extern crate protobuf;
+extern crate scram;
 
-mod errors;
-mod traits;
+pub mod conn;
+pub mod types;
+pub mod commands;
+pub mod session;
+pub mod errors;
 
-use std::result;
+pub type Result<T> = std::result::Result<T, errors::Error>;
 
-pub use errors::*;
-pub use traits::*;
-
-pub type Result<T> = result::Result<T, Error>;
-
-/// Options
-#[derive(Debug, Clone)]
-pub struct ConnectOpts {
-    pub host: &'static str,
-    pub port: u16,
-    pub db: &'static str,
-    pub user: &'static str,
-    pub password: &'static str,
-    pub timeout: u16,
-    pub ssl: Option<SslCfg>,
-}
-
-#[derive(Debug, Clone)]
-pub struct SslCfg {
-    pub ca_certs: &'static str,
-}
-
-impl Default for ConnectOpts {
-    fn default() -> ConnectOpts {
-        ConnectOpts {
-            host: "localhost",
-            port: 28015,
-            db: "test",
-            user: "admin",
-            password: "",
-            timeout: 20,
-            ssl: None,
-        }
-    }
-}
-
-impl IntoConnectOpts for ConnectOpts {
-    fn into(self) -> ConnectOpts {
-        self
-    }
-}
+#[allow(non_upper_case_globals)]
+pub const r: session::Client = session::Client;
