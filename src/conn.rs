@@ -7,7 +7,7 @@ use byteorder::{WriteBytesExt, LittleEndian};
 use bufstream::BufStream;
 use std::io::BufRead;
 use std::str;
-use r2d2;
+use r2d2::{self, Pool, Config as PoolConfig};
 use errors::*;
 use super::Result;
 use commands::Query;
@@ -24,6 +24,7 @@ pub struct ConnectOpts {
     pub user: &'static str,
     pub password: &'static str,
     pub ssl: Option<SslCfg>,
+    server: Option<&'static str>,
 }
 
 #[derive(Debug, Clone)]
@@ -39,6 +40,7 @@ impl Default for ConnectOpts {
             user: "admin",
             password: "",
             ssl: None,
+            server: None,
         }
     }
 }
@@ -51,12 +53,68 @@ pub struct Connection {
     pub broken: bool,
 }
 
+impl ConnectOpts {
+    /// Sets servers
+    pub fn set_servers(mut self, s: Vec<&'static str>) -> Self {
+        self.servers = s;
+        self
+    }
+    /// Sets database
+    pub fn set_db(mut self, d: &'static str) -> Self {
+        self.db = d;
+        self
+    }
+    /// Sets username
+    pub fn set_user(mut self, u: &'static str) -> Self {
+        self.user = u;
+        self
+    }
+    /// Sets password
+    pub fn set_password(mut self, p: &'static str) -> Self {
+        self.password = p;
+        self
+    }
+
+    /// Creates a connection pool
+    pub fn connect(self) -> Result<()> {
+        let logger = try!(Client::logger().read());
+        trace!(logger, "Calling r.connect()");
+        // If pool is already set we do nothing
+        if try!(Client::pool().read()).is_some() {
+            info!(logger, "A connection pool is already initialised. We will use that one instead...");
+            return Ok(());
+        }
+        // Otherwise we set it
+        let mut opts = self;
+        opts.server = Some(opts.servers[0]);
+        let manager = ConnectionManager::new(opts);
+        let config = PoolConfig::builder()
+            // If we are under load and our pool runs out of connections
+            // we are doomed so we set a very high number of maximum
+            // connections that can be opened
+            .pool_size(1000000)
+            // To counter the high number of open connections we set
+            // a reasonable number of minimum connections we want to
+            // keep when we are idle.
+            .min_idle(Some(10))
+            .build();
+        let new_pool = try!(Pool::new(config, manager));
+        try!(Client::set_pool(new_pool));
+        info!(logger, "A connection pool has been initialised...");
+        Ok(())
+    }
+}
+
 impl Connection {
     pub fn new(opts: &ConnectOpts) -> Result<Connection> {
         let logger = try!(Client::logger().read());
         trace!(logger, "Calling Connection::new()");
+        let server = match opts.server {
+            Some(server) => server,
+            None => return Err(From::from(ConnectionError::Other(String::from("No server selected.")))),
+        };
         let mut conn = Connection{
-            stream  : try!(TcpStream::connect(opts.servers[0])),
+            stream  : try!(TcpStream::connect(server)),
             token: 0,
             broken: false,
         };

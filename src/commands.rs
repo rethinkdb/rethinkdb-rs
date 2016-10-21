@@ -1,8 +1,7 @@
 //! The Actual RethinkDB Commands
 
 use errors::*;
-use conn::{Connection, ConnectOpts, ConnectionManager};
-use r2d2::{Pool, Config as PoolConfig};
+use conn::{Connection, ConnectOpts};
 use serde_json;
 use ql2::proto;
 use std::io::Write;
@@ -17,56 +16,6 @@ use super::{Result, r};
 pub struct RootCommand(Result<String>);
 pub struct Command;
 pub struct Query;
-
-impl ConnectOpts {
-    /// Sets servers
-    pub fn set_servers(mut self, s: Vec<&'static str>) -> Self {
-        self.servers = s;
-        self
-    }
-    /// Sets database
-    pub fn set_db(mut self, d: &'static str) -> Self {
-        self.db = d;
-        self
-    }
-    /// Sets username
-    pub fn set_user(mut self, u: &'static str) -> Self {
-        self.user = u;
-        self
-    }
-    /// Sets password
-    pub fn set_password(mut self, p: &'static str) -> Self {
-        self.password = p;
-        self
-    }
-
-    /// Creates a connection pool
-    pub fn connect(self) -> Result<()> {
-        let logger = try!(Client::logger().read());
-        trace!(logger, "Calling r.connect()");
-        // If pool is already set we do nothing
-        if try!(Client::pool().read()).is_some() {
-            info!(logger, "A connection pool is already initialised. We will use that one instead...");
-            return Ok(());
-        }
-        // Otherwise we set it
-        let manager = ConnectionManager::new(self);
-        let config = PoolConfig::builder()
-            // If we are under load and our pool runs out of connections
-            // we are doomed so we set a very high number of maximum
-            // connections that can be opened
-            .pool_size(1000000)
-            // To counter the high number of open connections we set
-            // a reasonable number of minimum connections we want to
-            // keep when we are idle.
-            .min_idle(Some(10))
-            .build();
-        let new_pool = try!(Pool::new(config, manager));
-        try!(Client::set_pool(new_pool));
-        info!(logger, "A connection pool has been initialised...");
-        Ok(())
-    }
-}
 
 impl Client {
     pub fn connection(&self) -> ConnectOpts {
