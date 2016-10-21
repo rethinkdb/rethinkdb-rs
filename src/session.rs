@@ -38,8 +38,34 @@ impl Client {
         let pool = try!(Self::pool().read());
         match *pool {
             Some(ref pool) => {
-                let conn = try!(pool[0].get());
-                return Ok(conn);
+                let mut least_connections = 0;
+                let mut least_connections_server = 0;
+                let mut most_idle = 0;
+                let mut most_idle_server = 0;
+                for (i, p) in pool.iter().enumerate() {
+                    let state = p.state();
+                    if least_connections == 0 || least_connections > state.connections {
+                        least_connections = state.connections;
+                        least_connections_server = i
+                    }
+                    if most_idle == 0 || most_idle < state.idle_connections {
+                        most_idle = state.idle_connections;
+                        most_idle_server = i
+                    }
+                }
+                if most_idle > 0 {
+                    let conn = try!(pool[most_idle_server].get());
+                    return Ok(conn);
+                } else if least_connections > 0 {
+                    let conn = try!(pool[least_connections_server].get());
+                    return Ok(conn);
+                } else {
+                    return Err(
+                        From::from(
+                            ConnectionError::Other(
+                                String::from("All servers are currently down...")
+                                )));
+                }
             },
             None => {
                 let msg = String::from("Your connection pool is not initialised. \
