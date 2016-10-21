@@ -85,21 +85,25 @@ impl ConnectOpts {
             return Ok(());
         }
         // Otherwise we set it
+        let mut pools: Vec<Pool<ConnectionManager>> = Vec::new();
         let mut opts = self;
-        opts.server = Some(opts.servers[0]);
-        let manager = ConnectionManager::new(opts);
-        let config = PoolConfig::builder()
-            // If we are under load and our pool runs out of connections
-            // we are doomed so we set a very high number of maximum
-            // connections that can be opened
-            .pool_size(1000000)
-            // To counter the high number of open connections we set
-            // a reasonable number of minimum connections we want to
-            // keep when we are idle.
-            .min_idle(Some(10))
-            .build();
-        let new_pool = try!(Pool::new(config, manager));
-        try!(Client::set_pool(new_pool));
+        for s in &opts.servers[..] {
+            opts.server = Some(s);
+            let manager = ConnectionManager::new(opts.clone());
+            let config = PoolConfig::builder()
+                // If we are under load and our pool runs out of connections
+                // we are doomed so we set a very high number of maximum
+                // connections that can be opened
+                .pool_size(1000000)
+                // To counter the high number of open connections we set
+                // a reasonable number of minimum connections we want to
+                // keep when we are idle.
+                .min_idle(Some(10))
+                .build();
+            let new_pool = try!(Pool::new(config, manager));
+            pools.push(new_pool);
+        }
+        try!(Client::set_pool(pools));
         info!(logger, "A connection pool has been initialised...");
         Ok(())
     }

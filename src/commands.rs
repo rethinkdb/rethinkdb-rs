@@ -100,26 +100,17 @@ impl RootCommand {
         let logger = try!(Client::logger().read());
         trace!(logger, "Calling r.run()");
         let commands = try!(self.0);
-        let pool = try!(Client::pool().read());
-        if let Some(ref pool) = *pool {
-            let mut conn = try!(pool.get());
-            conn.token += 1;
-            let query = Query::wrap(
-                proto::Query_QueryType::START,
-                Some(commands),
-                None);
-            debug!(logger, "{}", query);
-            try!(Query::write(&query, &mut conn));
-            let resp = try!(Query::read(&mut conn));
-            let resp = try!(str::from_utf8(&resp));
-            debug!(logger, "{}", resp);
-        } else {
-            let msg = String::from("Your connection pool is not initialised. \
-                                   Use `r.connection().connect()` to initialise the pool \
-                                   before trying to send any connections to the database. \
-                                   This is typically done in the `main` function.");
-            return Err(From::from(ConnectionError::Other(msg)));
-        }
+        let mut conn = try!(Client::conn());
+        conn.token += 1;
+        let query = Query::wrap(
+            proto::Query_QueryType::START,
+            Some(commands),
+            None);
+        debug!(logger, "{}", query);
+        try!(Query::write(&query, &mut conn));
+        let resp = try!(Query::read(&mut conn));
+        let resp = try!(str::from_utf8(&resp));
+        debug!(logger, "{}", resp);
         Ok(String::new())
     }
 }
@@ -178,27 +169,27 @@ impl Query {
     }
 
     pub fn read(conn: &mut Connection) -> Result<Vec<u8>> {
-            // @TODO use response_token to implement parallel reads and writes?
-            // let response_token = try!(conn.stream.read_u64::<LittleEndian>());
-            let _ = match conn.stream.read_u64::<LittleEndian>() {
-                Ok(token) => token,
-                Err(error) => {
-                    conn.broken = true;
-                    return Err(From::from(error));
-                },
-            };
-            let len = match conn.stream.read_u32::<LittleEndian>() {
-                Ok(len) => len,
-                Err(error) => {
-                    conn.broken = true;
-                    return Err(From::from(error));
-                },
-            };
-            let mut resp = vec![0u8; len as usize];
-            if let Err(error) = conn.stream.read_exact(&mut resp) {
-                    conn.broken = true;
-                    return Err(From::from(error));
-            }
-            Ok(resp)
+        // @TODO use response_token to implement parallel reads and writes?
+        // let response_token = try!(conn.stream.read_u64::<LittleEndian>());
+        let _ = match conn.stream.read_u64::<LittleEndian>() {
+            Ok(token) => token,
+            Err(error) => {
+                conn.broken = true;
+                return Err(From::from(error));
+            },
+        };
+        let len = match conn.stream.read_u32::<LittleEndian>() {
+            Ok(len) => len,
+            Err(error) => {
+                conn.broken = true;
+                return Err(From::from(error));
+            },
+        };
+        let mut resp = vec![0u8; len as usize];
+        if let Err(error) = conn.stream.read_exact(&mut resp) {
+            conn.broken = true;
+            return Err(From::from(error));
+        }
+        Ok(resp)
     }
 }
