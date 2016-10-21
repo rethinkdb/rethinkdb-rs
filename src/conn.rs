@@ -94,7 +94,7 @@ impl ConnectOpts {
                 // If we are under load and our pool runs out of connections
                 // we are doomed so we set a very high number of maximum
                 // connections that can be opened
-                .pool_size(1000000)
+                .pool_size(1000)
                 // To counter the high number of open connections we set
                 // a reasonable number of minimum connections we want to
                 // keep when we are idle.

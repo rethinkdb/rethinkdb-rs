@@ -35,6 +35,7 @@ impl Client {
     }
 
     pub fn conn() -> Result<PooledConnection<ConnectionManager>> {
+        let logger = try!(Self::logger().read());
         let pool = try!(Self::pool().read());
         match *pool {
             Some(ref pool) => {
@@ -55,9 +56,11 @@ impl Client {
                 }
                 if most_idle > 0 {
                     let conn = try!(pool[most_idle_server].get());
+                    debug!(logger, "{:?}", conn);
                     return Ok(conn);
                 } else if least_connections > 0 {
                     let conn = try!(pool[least_connections_server].get());
+                    debug!(logger, "{:?}", conn);
                     return Ok(conn);
                 } else {
                     return Err(
