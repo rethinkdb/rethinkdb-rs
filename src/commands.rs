@@ -18,9 +18,40 @@ pub struct RootCommand(Result<String>);
 pub struct Command;
 pub struct Query;
 
-impl Client {
+impl ConnectOpts {
+    /// Sets hostname
+    pub fn set_host(mut self, h: &'static str) -> Self {
+        self.host = h;
+        self
+    }
+    /// Sets port
+    pub fn set_port(mut self, p: u16) -> Self {
+        self.port = p;
+        self
+    }
+    /// Sets database
+    pub fn set_db(mut self, d: &'static str) -> Self {
+        self.db = d;
+        self
+    }
+    /// Sets username
+    pub fn set_user(mut self, u: &'static str) -> Self {
+        self.user = u;
+        self
+    }
+    /// Sets password
+    pub fn set_password(mut self, p: &'static str) -> Self {
+        self.password = p;
+        self
+    }
+    /// Sets timeout
+    pub fn set_timeout(mut self, t: u16) -> Self {
+        self.timeout = t;
+        self
+    }
+
     /// Creates a connection pool
-    pub fn connect(&self, opts: ConnectOpts) -> Result<()> {
+    pub fn connect(self) -> Result<()> {
         let logger = try!(Client::logger().read());
         trace!(logger, "Calling r.connect()");
         // If pool is already set we do nothing
@@ -29,7 +60,7 @@ impl Client {
             return Ok(());
         }
         // Otherwise we set it
-        let manager = ConnectionManager::new(opts);
+        let manager = ConnectionManager::new(self);
         let config = PoolConfig::builder()
             // If we are under load and our pool runs out of connections
             // we are doomed so we set a very high number of maximum
@@ -44,6 +75,12 @@ impl Client {
         try!(Client::set_pool(new_pool));
         info!(logger, "A connection pool has been initialised...");
         Ok(())
+    }
+}
+
+impl Client {
+    pub fn connection(&self) -> ConnectOpts {
+        ConnectOpts::default()
     }
 
     pub fn db(&self, name: &str) -> RootCommand {

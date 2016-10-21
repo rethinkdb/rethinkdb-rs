@@ -4,13 +4,16 @@ use reql::r;
 
 #[test]
 fn connection_pool_works() {
-    r.connect(Default::default()).unwrap();
+    r.connection()
+        .set_host("localhost")
+        .connect()
+        .unwrap();
     //let _ = r.table("users").run().unwrap();
 
     use std::thread;
 
     let mut children = vec![];
-    for i in 0..10000 {
+    for i in 0..1 {
         children.push(thread::spawn(move || {
             //let _ = r.db("mufr").table("users").run().unwrap();
             let _ = r.db("blog").table("users").insert(

@@ -56,7 +56,7 @@ pub struct Connection {
 }
 
 impl Connection {
-    pub fn new(opts: ConnectOpts) -> Result<Connection> {
+    pub fn new(opts: &ConnectOpts) -> Result<Connection> {
         let logger = try!(Client::logger().read());
         trace!(logger, "Calling Connection::new()");
         let mut conn = Connection{
@@ -65,7 +65,7 @@ impl Connection {
             broken: false,
         };
 
-        let _ = try!(conn.handshake(&opts));
+        let _ = try!(conn.handshake(opts));
         Ok(conn)
     }
 
@@ -246,16 +246,11 @@ impl Connection {
     }
 }
 
-#[derive(Debug)]
-pub struct ConnectionManager {
-    opts: ConnectOpts,
-}
+pub struct ConnectionManager(ConnectOpts);
 
 impl ConnectionManager {
-    pub fn new(opts: ConnectOpts) -> ConnectionManager {
-        ConnectionManager {
-            opts: opts,
-        }
+    pub fn new(opts: ConnectOpts) -> Self {
+        ConnectionManager(opts)
     }
 }
 
@@ -264,7 +259,7 @@ impl r2d2::ManageConnection for ConnectionManager {
     type Error = Error;
 
     fn connect(&self) -> Result<Connection> {
-        Connection::new(self.opts.clone())
+        Connection::new(&self.0)
     }
 
     fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {

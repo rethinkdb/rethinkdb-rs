@@ -22,6 +22,8 @@ lazy_static! {
 
 pub struct Client;
 
+pub struct Config;
+
 impl Client {
     //pub fn logger() -> RwLock<Logger> {
     pub fn logger() -> &'static RwLock<Logger> {

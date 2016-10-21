@@ -6,7 +6,7 @@
 //! use reql::r;
 //!
 //! # fn main() {
-//! r.connect(Default::default()).unwrap();
+//! r.connection().connect().unwrap();
 //! # }
 //! ```
 
