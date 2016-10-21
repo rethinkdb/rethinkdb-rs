@@ -5,7 +5,6 @@ use reql::r;
 #[test]
 fn connection_pool_works() {
     r.connection()
-        .set_host("localhost")
         .connect()
         .unwrap();
     //let _ = r.table("users").run().unwrap();

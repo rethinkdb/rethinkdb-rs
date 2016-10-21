@@ -19,12 +19,10 @@ use scram::ClientFirst;
 /// Options
 #[derive(Debug, Clone)]
 pub struct ConnectOpts {
-    pub host: &'static str,
-    pub port: u16,
+    pub servers: Vec<&'static str>,
     pub db: &'static str,
     pub user: &'static str,
     pub password: &'static str,
-    pub timeout: u16,
     pub ssl: Option<SslCfg>,
 }
 
@@ -36,12 +34,10 @@ pub struct SslCfg {
 impl Default for ConnectOpts {
     fn default() -> ConnectOpts {
         ConnectOpts {
-            host: "localhost",
-            port: 28015,
+            servers: vec!["localhost:28015"],
             db: "test",
             user: "admin",
             password: "",
-            timeout: 20,
             ssl: None,
         }
     }
@@ -60,7 +56,7 @@ impl Connection {
         let logger = try!(Client::logger().read());
         trace!(logger, "Calling Connection::new()");
         let mut conn = Connection{
-            stream  : try!(TcpStream::connect((opts.host, opts.port))),
+            stream  : try!(TcpStream::connect(opts.servers[0])),
             token: 0,
             broken: false,
         };

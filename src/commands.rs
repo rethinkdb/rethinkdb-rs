@@ -19,14 +19,9 @@ pub struct Command;
 pub struct Query;
 
 impl ConnectOpts {
-    /// Sets hostname
-    pub fn set_host(mut self, h: &'static str) -> Self {
-        self.host = h;
-        self
-    }
-    /// Sets port
-    pub fn set_port(mut self, p: u16) -> Self {
-        self.port = p;
+    /// Sets servers
+    pub fn set_servers(mut self, s: Vec<&'static str>) -> Self {
+        self.servers = s;
         self
     }
     /// Sets database
@@ -42,11 +37,6 @@ impl ConnectOpts {
     /// Sets password
     pub fn set_password(mut self, p: &'static str) -> Self {
         self.password = p;
-        self
-    }
-    /// Sets timeout
-    pub fn set_timeout(mut self, t: u16) -> Self {
-        self.timeout = t;
         self
     }
 
