@@ -36,39 +36,52 @@ impl Client {
 
     pub fn conn() -> Result<PooledConnection<ConnectionManager>> {
         let logger = try!(Self::logger().read());
+        trace!(logger, "Calling Client::conn()");
         let pool = try!(Self::pool().read());
         match *pool {
             Some(ref pool) => {
-                let mut least_connections = 0;
-                let mut least_connections_server = 0;
-                let mut most_idle = 0;
-                let mut most_idle_server = 0;
-                for (i, p) in pool.iter().enumerate() {
-                    let state = p.state();
-                    if least_connections == 0 || least_connections > state.connections {
-                        least_connections = state.connections;
-                        least_connections_server = i
+                let mut num_retries = 10;
+                let mut last_error = Err(
+                    From::from(
+                        ConnectionError::Other(
+                            String::from("Failed to get a connection")
+                            )));
+                while num_retries > 0 {
+                    let mut least_connections = 0;
+                    let mut least_connected_server = 0;
+                    let mut most_idle = 0;
+                    let mut most_idle_server = 0;
+                    for (i, p) in pool.iter().enumerate() {
+                        let state = p.state();
+                        if least_connections == 0 || least_connections > state.connections {
+                            least_connections = state.connections;
+                            least_connected_server = i
+                        }
+                        if most_idle == 0 || most_idle < state.idle_connections {
+                            most_idle = state.idle_connections;
+                            most_idle_server = i
+                        }
                     }
-                    if most_idle == 0 || most_idle < state.idle_connections {
-                        most_idle = state.idle_connections;
-                        most_idle_server = i
+                    if most_idle > 0 {
+                        match pool[most_idle_server].get() {
+                            Ok(conn) => return Ok(conn),
+                            Err(error) => last_error = Err(From::from(error)),
+                        }
+                    } else if least_connections > 0 {
+                        match pool[least_connected_server].get() {
+                            Ok(conn) => return Ok(conn),
+                            Err(error) => last_error = Err(From::from(error)),
+                        }
+                    } else {
+                        last_error = Err(
+                            From::from(
+                                ConnectionError::Other(
+                                    String::from("All servers are currently down...")
+                                    )));
                     }
+                    num_retries -= 1;
                 }
-                if most_idle > 0 {
-                    let conn = try!(pool[most_idle_server].get());
-                    debug!(logger, "{:?}", conn);
-                    return Ok(conn);
-                } else if least_connections > 0 {
-                    let conn = try!(pool[least_connections_server].get());
-                    debug!(logger, "{:?}", conn);
-                    return Ok(conn);
-                } else {
-                    return Err(
-                        From::from(
-                            ConnectionError::Other(
-                                String::from("All servers are currently down...")
-                                )));
-                }
+                return last_error;
             },
             None => {
                 let msg = String::from("Your connection pool is not initialised. \
