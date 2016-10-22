@@ -84,11 +84,11 @@ impl ConnectOpts {
 
     /// Creates a connection pool
     pub fn connect(self) -> Result<()> {
-        let logger = try!(Client::logger().read());
+        let logger = Client::logger().read();
         trace!(logger, "Calling r.connect()");
         try!(Client::set_config(self.clone()));
         // If pool is already set we do nothing
-        if try!(Client::pool().read()).is_some() {
+        if Client::pool().read().is_some() {
             info!(logger, "A connection pool is already initialised. We will use that one instead...");
             return Ok(());
         }
@@ -119,7 +119,7 @@ impl ConnectOpts {
 
 impl Connection {
     pub fn new(opts: &ConnectOpts) -> Result<Connection> {
-        let logger = try!(Client::logger().read());
+        let logger = Client::logger().read();
         trace!(logger, "Calling Connection::new()");
         let server = match opts.server {
             Some(server) => server,
@@ -136,7 +136,7 @@ impl Connection {
     }
 
     fn handshake(&mut self, opts: &ConnectOpts) -> Result<()> {
-        let logger = try!(Client::logger().read());
+        let logger = Client::logger().read();
         let null_str = b"\0"[0];
         // Process: When you first open a connection, send the magic number
         // for the version of the protobuf you're targeting (in the [Version]
@@ -329,7 +329,7 @@ impl r2d2::ManageConnection for ConnectionManager {
     }
 
     fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
-        let logger = try!(Client::logger().read());
+        let logger = Client::logger().read();
         conn.token += 1;
         let query = Query::wrap(
             proto::Query_QueryType::START,

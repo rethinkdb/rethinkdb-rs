@@ -1,13 +1,12 @@
 //! Primitives to Configure the Execution Environment
 
-use std::sync::RwLock;
+use parking_lot::RwLock;
 use slog::{DrainExt, Logger};
 use conn::{ConnectOpts, ConnectionManager};
 use r2d2::{Pool, PooledConnection};
 use errors::*;
 use super::Result;
 use slog_term;
-use std::error::Error as StdError;
 
 lazy_static! {
     static ref POOL: RwLock<Option<Vec<Pool<ConnectionManager>>>> = RwLock::new(None);
@@ -40,9 +39,9 @@ impl Client {
     }
 
     pub fn conn() -> Result<PooledConnection<ConnectionManager>> {
-        let logger = try!(Self::logger().read());
+        let logger = Self::logger().read();
         trace!(logger, "Calling Client::conn()");
-        let pool = try!(Self::pool().read());
+        let pool = Self::pool().read();
         match *pool {
             Some(ref pool) => {
                 let mut num_retries = 10;
@@ -99,22 +98,14 @@ impl Client {
     }
 
     pub fn set_pool(p: Vec<Pool<ConnectionManager>>) -> Result<()> {
-        match POOL.write() {
-            Ok(mut pool) => {
-                *pool = Some(p);
-                Ok(())
-            },
-            Err(err) => return Err(From::from(DriverError::Lock(err.description().to_string()))),
-        }
+        let mut pool = POOL.write();
+        *pool = Some(p);
+        Ok(())
     }
 
     pub fn set_config(c: ConnectOpts) -> Result<()> {
-        match CONFIG.write() {
-            Ok(mut cfg) => {
-                *cfg = c;
-                Ok(())
-            },
-            Err(err) => return Err(From::from(DriverError::Lock(err.description().to_string()))),
-        }
+        let mut cfg = CONFIG.write();
+        *cfg = c;
+        Ok(())
     }
 }

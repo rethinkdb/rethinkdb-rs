@@ -20,10 +20,7 @@ pub struct Query;
 
 impl Client {
     pub fn connection(&self) -> ConnectOpts {
-        match Self::config().read() {
-            Ok(cfg) => cfg.clone(),
-            Err(_) => unreachable!(),
-        }
+        Self::config().read().clone()
     }
 
     pub fn db(&self, name: &str) -> RootCommand {
@@ -101,10 +98,10 @@ impl RootCommand {
     }
 
     pub fn run(self) -> Result<String> {
-        let logger = try!(Client::logger().read());
+        let logger = Client::logger().read();
         trace!(logger, "Calling r.run()");
         let commands = try!(self.0);
-        let cfg = try!(Client::config().read());
+        let cfg = Client::config().read();
         let mut conn: PooledConnection<ConnectionManager> = {
             let res = || -> Result<PooledConnection<ConnectionManager>> {
                 let mut i = 0;

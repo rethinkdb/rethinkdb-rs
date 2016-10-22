@@ -22,6 +22,7 @@ extern crate bufstream;
 extern crate slog_term;
 extern crate protobuf;
 extern crate scram;
+extern crate parking_lot;
 
 pub mod conn;
 pub mod types;
