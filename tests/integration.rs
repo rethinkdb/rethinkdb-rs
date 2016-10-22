@@ -11,7 +11,7 @@ fn connection_pool_works() {
         .connect()
         .unwrap();
 
-    (0..1_000_000u32)
+    (0..100u32)
         .into_par_iter()
         .enumerate()
         .for_each(|(i, _)| {

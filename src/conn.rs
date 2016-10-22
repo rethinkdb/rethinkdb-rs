@@ -14,7 +14,7 @@ use commands::Query;
 use super::session::Client;
 use super::serde_json;
 use super::types::{ServerInfo, AuthRequest, AuthResponse, AuthConfirmation};
-use scram::ClientFirst;
+use scram::{ClientFirst, ServerFirst, ServerFinal};
 
 /// Options
 #[derive(Debug, Clone)]
@@ -119,197 +119,211 @@ impl ConnectOpts {
 
 impl Connection {
     pub fn new(opts: &ConnectOpts) -> Result<Connection> {
-        let logger = Client::logger().read();
-        trace!(logger, "Calling Connection::new()");
         let server = match opts.server {
             Some(server) => server,
             None => return Err(From::from(ConnectionError::Other(String::from("No server selected.")))),
         };
-        let mut conn = Connection{
+        let mut conn = Connection {
             stream  : try!(TcpStream::connect(server)),
             token: 0,
             broken: false,
         };
-
         let _ = try!(conn.handshake(opts));
         Ok(conn)
     }
 
     fn handshake(&mut self, opts: &ConnectOpts) -> Result<()> {
-        let logger = Client::logger().read();
-        let null_str = b"\0"[0];
-        // Process: When you first open a connection, send the magic number
-        // for the version of the protobuf you're targeting (in the [Version]
-        // enum).  This should **NOT** be sent as a protobuf; just send the
-        // little-endian 32-bit integer over the wire raw.  This number should
-        // only be sent once per connection.
+        // Send desired version to the server
         let _ = try!(self.stream.write_u32::<LittleEndian>(proto::VersionDummy_Version::V1_0 as u32));
-        {
-            // The server will then respond with a NULL-terminated string response.
-            // "SUCCESS" indicates that the connection has been accepted. Any other
-            // response indicates an error, and the response string should describe
-            // the error.
-            let mut resp = Vec::new();
-            let mut buf = BufStream::new(&self.stream);
-            let _ = try!(buf.read_until(null_str, &mut resp));
+        try!(parse_server_version(&self.stream));
 
-            let _ = resp.pop();
+        // Send client first message
+        let (scram, msg) = try!(client_first(opts));
+        let _ = try!(self.stream.write_all(&msg[..]));
 
-            if resp.is_empty() {
-                let msg = String::from("unable to connect for an unknown reason");
-                crit!(logger, "{}", msg);
-                return Err(From::from(ConnectionError::Other(msg)));
-            };
+        // Send client final message
+        let (scram, msg) = try!(client_final(scram, &self.stream));
+        let _ = try!(self.stream.write_all(&msg[..]));
 
-            let resp = try!(str::from_utf8(&resp));
-            // If it's not a JSON object it's an error
-            if !resp.starts_with("{") {
-                crit!(logger, "{}", resp);
-                return Err(From::from(ConnectionError::Other(resp.to_string())));
-            };
-            let info: ServerInfo = match serde_json::from_str(&resp) {
-                Ok(res) => res,
-                Err(err) => {
-                    crit!(logger, "{}", err);
-                    return Err(From::from(err));
-                },
-            };
+        // Validate final server response and flush the buffer
+        try!(parse_server_final(scram, &self.stream));
+        let _ = try!(self.stream.flush());
 
-            if !info.success {
-                return Err(From::from(ConnectionError::Other(resp.to_string())));
-            };
+        Ok(())
+    }
+}
+
+fn parse_server_version(stream: &TcpStream) -> Result<()> {
+    let logger = Client::logger().read();
+    // The server will then respond with a NULL-terminated string response.
+    // "SUCCESS" indicates that the connection has been accepted. Any other
+    // response indicates an error, and the response string should describe
+    // the error.
+    let mut resp = Vec::new();
+    let mut buf = BufStream::new(stream);
+    let _ = try!(buf.read_until(b"\0"[0], &mut resp));
+
+    let _ = resp.pop();
+
+    if resp.is_empty() {
+        let msg = String::from("unable to connect for an unknown reason");
+        crit!(logger, "{}", msg);
+        return Err(From::from(ConnectionError::Other(msg)));
+    };
+
+    let resp = try!(str::from_utf8(&resp));
+    // If it's not a JSON object it's an error
+    if !resp.starts_with("{") {
+        crit!(logger, "{}", resp);
+        return Err(From::from(ConnectionError::Other(resp.to_string())));
+    };
+    let info: ServerInfo = match serde_json::from_str(&resp) {
+        Ok(res) => res,
+        Err(err) => {
+            crit!(logger, "{}", err);
+            return Err(From::from(err));
+        },
+    };
+
+    if !info.success {
+        return Err(From::from(ConnectionError::Other(resp.to_string())));
+    };
+    Ok(())
+}
+
+fn client_first(opts: &ConnectOpts) -> Result<(ServerFirst, Vec<u8>)> {
+    let logger = Client::logger().read();
+    let scram = try!(ClientFirst::new(opts.user, opts.password, None));
+    let (scram, client_first) = scram.client_first();
+
+    let ar = AuthRequest {
+        protocol_version: 0,
+        authentication_method: String::from("SCRAM-SHA-256"),
+        authentication: client_first,
+    };
+    let mut msg = match serde_json::to_vec(&ar) {
+        Ok(res) => res,
+        Err(err) => {
+            crit!(logger, "{}", err);
+            return Err(From::from(err));
+        },
+    };
+    msg.push(b"\0"[0]);
+    Ok((scram, msg))
+}
+
+fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, Vec<u8>)> {
+    let logger = Client::logger().read();
+    // The server will then respond with a NULL-terminated string response.
+    // "SUCCESS" indicates that the connection has been accepted. Any other
+    // response indicates an error, and the response string should describe
+    // the error.
+    let mut resp = Vec::new();
+    let mut buf = BufStream::new(stream);
+    let _ = try!(buf.read_until(b"\0"[0], &mut resp));
+
+    let _ = resp.pop();
+
+    if resp.is_empty() {
+        let msg = String::from("unable to connect for an unknown reason");
+        crit!(logger, "{}", msg);
+        return Err(From::from(ConnectionError::Other(msg)));
+    };
+
+    let resp = try!(str::from_utf8(&resp));
+    // If it's not a JSON object it's an error
+    if !resp.starts_with("{") {
+        crit!(logger, "{}", resp);
+        return Err(From::from(ConnectionError::Other(resp.to_string())));
+    };
+    let info: AuthResponse  = match serde_json::from_str(&resp) {
+        Ok(res) => res,
+        Err(err) => {
+            crit!(logger, "{}", err);
+            return Err(From::from(err));
+        },
+    };
+
+    if !info.success {
+        let mut err = resp.to_string();
+        if let Some(e) = info.error {
+            err = e;
         }
-
-        let scram = ClientFirst::new(opts.user, opts.password, None).unwrap();
-        let (scram, client_first) = scram.client_first();
-
-        let ar = AuthRequest{
-            protocol_version: 0,
-            authentication_method: String::from("SCRAM-SHA-256"),
-            authentication: client_first,
+        // If error code is between 10 and 20, this is an auth error
+        if let Some(10 ... 20) = info.error_code {
+            return Err(From::from(DriverError::Auth(err)));
+        } else {
+            return Err(From::from(ConnectionError::Other(err)));
+        }
+    };
+    if let Some(auth) = info.authentication {
+        let scram = scram.handle_server_first(&auth).unwrap();
+        let (scram, client_final) = scram.client_final();
+        let auth = AuthConfirmation {
+            authentication: client_final,
         };
-        let mut msg = match serde_json::to_vec(&ar) {
+        let mut msg = match serde_json::to_vec(&auth) {
             Ok(res) => res,
             Err(err) => {
                 crit!(logger, "{}", err);
                 return Err(From::from(err));
             },
         };
-        msg.push(null_str);
-
-        // The magic number shall be followed by an authorization key.  The
-        // first 4 bytes are the length of the key to be sent as a little-endian
-        // 32-bit integer, followed by the key string.  Even if there is no key,
-        // an empty string should be sent (length 0 and no data).
-        let info: AuthResponse;
-        let _ = try!(self.stream.write_all(&msg[..]));
-        {
-            // The server will then respond with a NULL-terminated string response.
-            // "SUCCESS" indicates that the connection has been accepted. Any other
-            // response indicates an error, and the response string should describe
-            // the error.
-            let mut resp = Vec::new();
-            let mut buf = BufStream::new(&self.stream);
-            let _ = try!(buf.read_until(null_str, &mut resp));
-
-            let _ = resp.pop();
-
-            if resp.is_empty() {
-                let msg = String::from("unable to connect for an unknown reason");
-                crit!(logger, "{}", msg);
-                return Err(From::from(ConnectionError::Other(msg)));
-            };
-
-            let resp = try!(str::from_utf8(&resp));
-            // If it's not a JSON object it's an error
-            if !resp.starts_with("{") {
-                crit!(logger, "{}", resp);
-                return Err(From::from(ConnectionError::Other(resp.to_string())));
-            };
-            info  = match serde_json::from_str(&resp) {
-                Ok(res) => res,
-                Err(err) => {
-                    crit!(logger, "{}", err);
-                    return Err(From::from(err));
-                },
-            };
-
-            if !info.success {
-                let mut err = resp.to_string();
-                if let Some(e) = info.error {
-                    err = e;
-                }
-                // If error code is between 10 and 20, this is an auth error
-                if let Some(10 ... 20) = info.error_code {
-                    return Err(From::from(DriverError::Auth(err)));
-                } else {
-                    return Err(From::from(ConnectionError::Other(err)));
-                }
-            };
-        }
-
-        if let Some(auth) = info.authentication {
-            let scram = scram.handle_server_first(&auth).unwrap();
-            let (scram, client_final) = scram.client_final();
-            let auth = AuthConfirmation {
-                authentication: client_final,
-            };
-            let mut msg = match serde_json::to_vec(&auth) {
-                Ok(res) => res,
-                Err(err) => {
-                    crit!(logger, "{}", err);
-                    return Err(From::from(err));
-                },
-            };
-            msg.push(null_str);
-            let _ = try!(self.stream.write_all(&msg[..]));
-
-            let mut resp = Vec::new();
-            let mut buf = BufStream::new(&self.stream);
-            let _ = try!(buf.read_until(null_str, &mut resp));
-
-            let _ = resp.pop();
-
-            if resp.is_empty() {
-                let msg = String::from("unable to connect for an unknown reason");
-                crit!(logger, "{}", msg);
-                return Err(From::from(ConnectionError::Other(msg)));
-            };
-
-            let resp = try!(str::from_utf8(&resp));
-            // If it's not a JSON object it's an error
-            if !resp.starts_with("{") {
-                crit!(logger, "{}", resp);
-                return Err(From::from(ConnectionError::Other(resp.to_string())));
-            };
-            let info: AuthResponse  = match serde_json::from_str(&resp) {
-                Ok(res) => res,
-                Err(err) => {
-                    crit!(logger, "{}", err);
-                    return Err(From::from(err));
-                },
-            };
-
-            if !info.success {
-                let mut err = resp.to_string();
-                if let Some(e) = info.error {
-                    err = e;
-                }
-                // If error code is between 10 and 20, this is an auth error
-                if let Some(10 ... 20) = info.error_code {
-                    return Err(From::from(DriverError::Auth(err)));
-                } else {
-                    return Err(From::from(ConnectionError::Other(err)));
-                }
-            };
-            if let Some(auth) = info.authentication {
-                let _ = scram.handle_server_final(&auth).unwrap();
-            }
-        }
-        let _ = try!(self.stream.flush());
-
-        Ok(())
+        msg.push(b"\0"[0]);
+        Ok((scram, msg))
+    } else {
+        Err(
+            From::from(
+                ConnectionError::Other(
+                    String::from("Server did not send authentication info.")
+                    )))
     }
+}
+
+fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
+    let logger = Client::logger().read();
+    let mut resp = Vec::new();
+    let mut buf = BufStream::new(stream);
+    let _ = try!(buf.read_until(b"\0"[0], &mut resp));
+
+    let _ = resp.pop();
+
+    if resp.is_empty() {
+        let msg = String::from("unable to connect for an unknown reason");
+        crit!(logger, "{}", msg);
+        return Err(From::from(ConnectionError::Other(msg)));
+    };
+
+    let resp = try!(str::from_utf8(&resp));
+    // If it's not a JSON object it's an error
+    if !resp.starts_with("{") {
+        crit!(logger, "{}", resp);
+        return Err(From::from(ConnectionError::Other(resp.to_string())));
+    };
+    let info: AuthResponse  = match serde_json::from_str(&resp) {
+        Ok(res) => res,
+        Err(err) => {
+            crit!(logger, "{}", err);
+            return Err(From::from(err));
+        },
+    };
+
+    if !info.success {
+        let mut err = resp.to_string();
+        if let Some(e) = info.error {
+            err = e;
+        }
+        // If error code is between 10 and 20, this is an auth error
+        if let Some(10 ... 20) = info.error_code {
+            return Err(From::from(DriverError::Auth(err)));
+        } else {
+            return Err(From::from(ConnectionError::Other(err)));
+        }
+    };
+    if let Some(auth) = info.authentication {
+        let _ = scram.handle_server_final(&auth).unwrap();
+    }
+    Ok(())
 }
 
 pub struct ConnectionManager(ConnectOpts);
