@@ -10,11 +10,11 @@ fn connection_pool_works() {
         .unwrap();
     //let _ = r.table("users").run().unwrap();
 
-    //use std::thread;
+    use std::thread;
 
-    //let mut children = vec![];
+    let mut children = vec![];
     for i in 0..10000 {
-      //  children.push(thread::spawn(move || {
+        children.push(thread::spawn(move || {
             //let _ = r.db("mufr").table("users").run().unwrap();
             let _ = r.db("blog").table("users").insert(
                 r.object()
@@ -22,11 +22,10 @@ fn connection_pool_works() {
                 .insert("age", i*2)
                 .build()
                 ).run().unwrap();
-    //    }))
+        }))
     }
-/*
+
     for child in children {
         let _ = child.join();
     }
-    */
 }

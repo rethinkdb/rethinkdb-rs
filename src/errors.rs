@@ -114,6 +114,12 @@ impl From<ConnectionError> for Error {
     }
 }
 
+impl From<AvailabilityError> for Error {
+    fn from(err: AvailabilityError) -> Error {
+        From::from(RuntimeError::Availability(err))
+    }
+}
+
 /// Converts from IO error
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Error {

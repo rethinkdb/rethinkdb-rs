@@ -2,7 +2,7 @@
 
 use std::sync::RwLock;
 use slog::{DrainExt, Logger};
-use conn::ConnectionManager;
+use conn::{ConnectOpts, ConnectionManager};
 use r2d2::{Pool, PooledConnection};
 use errors::*;
 use super::Result;
@@ -18,6 +18,8 @@ lazy_static! {
                         o!("version" => env!("CARGO_PKG_VERSION"))
                         )
                     );
+
+    static ref CONFIG: RwLock<ConnectOpts> = RwLock::new(ConnectOpts::default());
 }
 
 pub struct Client;
@@ -25,13 +27,16 @@ pub struct Client;
 pub struct Config;
 
 impl Client {
-    //pub fn logger() -> RwLock<Logger> {
     pub fn logger() -> &'static RwLock<Logger> {
         &LOGGER
     }
 
     pub fn pool() -> &'static RwLock<Option<Vec<Pool<ConnectionManager>>>> {
         &POOL
+    }
+
+    pub fn config() -> &'static RwLock<ConnectOpts> {
+        &CONFIG
     }
 
     pub fn conn() -> Result<PooledConnection<ConnectionManager>> {
@@ -97,6 +102,16 @@ impl Client {
         match POOL.write() {
             Ok(mut pool) => {
                 *pool = Some(p);
+                Ok(())
+            },
+            Err(err) => return Err(From::from(DriverError::Lock(err.description().to_string()))),
+        }
+    }
+
+    pub fn set_config(c: ConnectOpts) -> Result<()> {
+        match CONFIG.write() {
+            Ok(mut cfg) => {
+                *cfg = c;
                 Ok(())
             },
             Err(err) => return Err(From::from(DriverError::Lock(err.description().to_string()))),

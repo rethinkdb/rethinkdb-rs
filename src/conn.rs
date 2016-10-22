@@ -23,6 +23,7 @@ pub struct ConnectOpts {
     pub db: &'static str,
     pub user: &'static str,
     pub password: &'static str,
+    pub retries: u8,
     pub ssl: Option<SslCfg>,
     server: Option<&'static str>,
 }
@@ -39,6 +40,7 @@ impl Default for ConnectOpts {
             db: "test",
             user: "admin",
             password: "",
+            retries: 5,
             ssl: None,
             server: None,
         }
@@ -74,11 +76,17 @@ impl ConnectOpts {
         self.password = p;
         self
     }
+    /// Sets retries
+    pub fn set_retries(mut self, r: u8) -> Self {
+        self.retries = r;
+        self
+    }
 
     /// Creates a connection pool
     pub fn connect(self) -> Result<()> {
         let logger = try!(Client::logger().read());
         trace!(logger, "Calling r.connect()");
+        try!(Client::set_config(self.clone()));
         // If pool is already set we do nothing
         if try!(Client::pool().read()).is_some() {
             info!(logger, "A connection pool is already initialised. We will use that one instead...");
