@@ -12,26 +12,27 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 build = "build.rs"
 
 [dependencies]
-ql2 = "1.0.0"
-protobuf = "1.0.24"
-r2d2 = "0.7.0"
-byteorder = "0.5.1"
-bufstream = "0.1.1"
+ql2 = "1.0"
+protobuf = "1.0"
+r2d2 = "0.7"
+byteorder = "0.5"
+bufstream = "0.1"
 futures = "0.1"
 tokio-core = "0.1"
-slog = "1.0.0"
-slog-term = "1.0.0"
+slog = "1.0"
+slog-term = "1.0"
 serde = "0.8"
 serde_json = "0.8"
-lazy_static = "0.2.1"
-#uuid = { version = "0.3.1", features = ["v4", "use_std"] }
-scram = "0.1.0"
-quick-error = "1.1.0"
-parking_lot = "0.3.6"
+lazy_static = "0.2"
+#uuid = { version = "0.3", features = ["v4", "use_std"] }
+scram = "0.1"
+quick-error = "1.1"
+parking_lot = "0.3"
+rayon = "0.4"
 
 [build-dependencies]
-skeptic = "0.6.1"
+skeptic = "0.6"
 serde_codegen = "0.8"
 
 [dev-dependencies]
-skeptic = "0.6.1"
+skeptic = "0.6"
