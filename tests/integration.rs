@@ -16,12 +16,14 @@ fn connection_pool_works() {
         .connect()
         .unwrap();
 
-    // Recreate our database
-    r.db_drop("blog").run().unwrap();
+    // Create our database if necessary
     r.db_create("blog").run().unwrap();
 
-    // Create our table
+    // Create our table if necessary
     r.table_create("users").run().unwrap();
+
+    // Delete data if nessary
+    r.table("users").delete().run().unwrap();
 
     // Insert 100 users into the table
     (0..100u32)

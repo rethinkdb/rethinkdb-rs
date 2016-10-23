@@ -26,7 +26,7 @@ impl Client {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::DB_CREATE,
-                    format!("{:?}", name),
+                    Some(format!("{:?}", name)),
                     None,
                     None
                     )))
@@ -36,7 +36,7 @@ impl Client {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::DB_DROP,
-                    format!("{:?}", name),
+                    Some(format!("{:?}", name)),
                     None,
                     None
                     )))
@@ -46,7 +46,7 @@ impl Client {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::DB,
-                    format!("{:?}", name),
+                    Some(format!("{:?}", name)),
                     None,
                     None
                     )))
@@ -80,7 +80,7 @@ impl RootCommand {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::TABLE_CREATE,
-                    format!("{:?}", name),
+                    Some(format!("{:?}", name)),
                     None,
                     Some(commands)
                     )))
@@ -94,7 +94,7 @@ impl RootCommand {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::TABLE,
-                    format!("{:?}", name),
+                    Some(format!("{:?}", name)),
                     None,
                     Some(commands)
                     )))
@@ -112,9 +112,23 @@ impl RootCommand {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::INSERT,
-                    data,
+                    Some(data),
                     None,
                     Some(commands),
+                    )))
+    }
+
+    pub fn delete(self) -> RootCommand {
+        let commands = match self.0 {
+            Ok(t) => t,
+            Err(e) => return RootCommand(Err(e)),
+        };
+        RootCommand(Ok(
+                Command::wrap(
+                    proto::Term_TermType::DELETE,
+                    None,
+                    None,
+                    Some(commands)
                     )))
     }
 
@@ -130,7 +144,7 @@ impl RootCommand {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::FILTER,
-                    filter,
+                    Some(filter),
                     None,
                     Some(commands),
                     )))
@@ -155,7 +169,7 @@ impl RootCommand {
             while i < cfg.retries {
                 debug!(logger, "Getting connection...");
                 if connect {
-                    drop(&conn);
+                    drop(&mut conn);
                     conn = match Client::conn() {
                         Ok(c) => c,
                         Err(error) => {
@@ -231,13 +245,17 @@ impl RootCommand {
     }
 
 impl Command {
-    pub fn wrap(command: proto::Term_TermType, arguments: String, options: Option<String>, commands: Option<String>) -> String {
+    pub fn wrap(command: proto::Term_TermType, arguments: Option<String>, options: Option<String>, commands: Option<String>) -> String {
         let mut cmds = format!("[{},", command.value());
-        let args: String;
+        let mut args = String::new();
         if let Some(commands) = commands {
-            args = format!("{},{}", commands, arguments);
-        } else {
-            args = arguments;
+            args.push_str(&commands);
+            if arguments.is_some() {
+                args.push_str(",");
+            }
+        }
+        if let Some(arguments) = arguments {
+            args.push_str(&arguments);
         }
         cmds.push_str(format!("[{}]", args).as_str());
         if let Some(options) = options {
