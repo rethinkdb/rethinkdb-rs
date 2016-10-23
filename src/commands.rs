@@ -23,6 +23,16 @@ impl Client {
         Self::config().read().clone()
     }
 
+    pub fn db_create(&self, name: &str) -> RootCommand {
+        RootCommand(Ok(
+                Command::wrap(
+                    proto::Term_TermType::DB_CREATE,
+                    format!("{:?}", name),
+                    None,
+                    None
+                    )))
+    }
+
     pub fn db(&self, name: &str) -> RootCommand {
         RootCommand(Ok(
                 Command::wrap(
@@ -33,8 +43,14 @@ impl Client {
                     )))
     }
 
+    pub fn table_create(&self, name: &str) -> RootCommand {
+        let config = Client::config().read();
+        r.db(config.db).table_create(name)
+    }
+
     pub fn table(&self, name: &str) -> RootCommand {
-        r.db("test").table(name)
+        let config = Client::config().read();
+        r.db(config.db).table(name)
     }
 
     pub fn object(&self) -> serde_json::builder::ObjectBuilder {
@@ -47,6 +63,20 @@ impl Client {
 }
 
 impl RootCommand {
+    pub fn table_create(self, name: &str) -> RootCommand {
+        let commands = match self.0 {
+            Ok(t) => t,
+            Err(e) => return RootCommand(Err(e)),
+        };
+        RootCommand(Ok(
+                Command::wrap(
+                    proto::Term_TermType::TABLE_CREATE,
+                    format!("{:?}", name),
+                    None,
+                    Some(commands)
+                    )))
+    }
+
     pub fn table(self, name: &str) -> RootCommand {
         let commands = match self.0 {
             Ok(t) => t,

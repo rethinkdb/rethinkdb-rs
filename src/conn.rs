@@ -155,6 +155,23 @@ impl Connection {
 
 fn parse_server_version(stream: &TcpStream) -> Result<()> {
     let logger = Client::logger().read();
+    let resp = try!(parse_server_response(stream));
+    let info: ServerInfo = match serde_json::from_str(&resp) {
+        Ok(res) => res,
+        Err(err) => {
+            crit!(logger, "{}", err);
+            return Err(From::from(err));
+        },
+    };
+
+    if !info.success {
+        return Err(From::from(ConnectionError::Other(resp.to_string())));
+    };
+    Ok(())
+}
+
+fn parse_server_response(stream: &TcpStream) -> Result<String> {
+    let logger = Client::logger().read();
     // The server will then respond with a NULL-terminated string response.
     // "SUCCESS" indicates that the connection has been accepted. Any other
     // response indicates an error, and the response string should describe
@@ -171,24 +188,13 @@ fn parse_server_version(stream: &TcpStream) -> Result<()> {
         return Err(From::from(ConnectionError::Other(msg)));
     };
 
-    let resp = try!(str::from_utf8(&resp));
+    let resp = try!(str::from_utf8(&resp)).to_string();
     // If it's not a JSON object it's an error
     if !resp.starts_with("{") {
         crit!(logger, "{}", resp);
-        return Err(From::from(ConnectionError::Other(resp.to_string())));
+        return Err(From::from(ConnectionError::Other(resp)));
     };
-    let info: ServerInfo = match serde_json::from_str(&resp) {
-        Ok(res) => res,
-        Err(err) => {
-            crit!(logger, "{}", err);
-            return Err(From::from(err));
-        },
-    };
-
-    if !info.success {
-        return Err(From::from(ConnectionError::Other(resp.to_string())));
-    };
-    Ok(())
+    Ok(resp)
 }
 
 fn client_first(opts: &ConnectOpts) -> Result<(ServerFirst, Vec<u8>)> {
@@ -214,28 +220,7 @@ fn client_first(opts: &ConnectOpts) -> Result<(ServerFirst, Vec<u8>)> {
 
 fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, Vec<u8>)> {
     let logger = Client::logger().read();
-    // The server will then respond with a NULL-terminated string response.
-    // "SUCCESS" indicates that the connection has been accepted. Any other
-    // response indicates an error, and the response string should describe
-    // the error.
-    let mut resp = Vec::new();
-    let mut buf = BufStream::new(stream);
-    let _ = try!(buf.read_until(b"\0"[0], &mut resp));
-
-    let _ = resp.pop();
-
-    if resp.is_empty() {
-        let msg = String::from("unable to connect for an unknown reason");
-        crit!(logger, "{}", msg);
-        return Err(From::from(ConnectionError::Other(msg)));
-    };
-
-    let resp = try!(str::from_utf8(&resp));
-    // If it's not a JSON object it's an error
-    if !resp.starts_with("{") {
-        crit!(logger, "{}", resp);
-        return Err(From::from(ConnectionError::Other(resp.to_string())));
-    };
+    let resp = try!(parse_server_response(stream));
     let info: AuthResponse  = match serde_json::from_str(&resp) {
         Ok(res) => res,
         Err(err) => {
@@ -282,24 +267,7 @@ fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, 
 
 fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
     let logger = Client::logger().read();
-    let mut resp = Vec::new();
-    let mut buf = BufStream::new(stream);
-    let _ = try!(buf.read_until(b"\0"[0], &mut resp));
-
-    let _ = resp.pop();
-
-    if resp.is_empty() {
-        let msg = String::from("unable to connect for an unknown reason");
-        crit!(logger, "{}", msg);
-        return Err(From::from(ConnectionError::Other(msg)));
-    };
-
-    let resp = try!(str::from_utf8(&resp));
-    // If it's not a JSON object it's an error
-    if !resp.starts_with("{") {
-        crit!(logger, "{}", resp);
-        return Err(From::from(ConnectionError::Other(resp.to_string())));
-    };
+    let resp = try!(parse_server_response(stream));
     let info: AuthResponse  = match serde_json::from_str(&resp) {
         Ok(res) => res,
         Err(err) => {
@@ -307,7 +275,6 @@ fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
             return Err(From::from(err));
         },
     };
-
     if !info.success {
         let mut err = resp.to_string();
         if let Some(e) = info.error {
