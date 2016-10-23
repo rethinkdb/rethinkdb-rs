@@ -1,18 +1,23 @@
 extern crate reql;
 extern crate rayon;
+#[macro_use] extern crate slog;
 
 use reql::r;
+use reql::session::Client;
 use rayon::prelude::*;
 
 #[test]
 fn connection_pool_works() {
+    let logger = Client::logger().read();
     // Setup the connection
     r.connection()
+        .set_servers(vec!["localhost:28015", "localhost:28016", "localhost:28017"])
         .set_db("blog")
         .connect()
         .unwrap();
 
-    // Create our database
+    // Recreate our database
+    r.db_drop("blog").run().unwrap();
     r.db_create("blog").run().unwrap();
 
     // Create our table
@@ -27,6 +32,7 @@ fn connection_pool_works() {
                 .insert("name", format!("User {}", i))
                 .insert("age", i*2)
                 .build();
-            r.table("users").insert(user).run().unwrap();
+            let res = r.table("users").insert(user).run();
+            debug!(logger, "{:?}", res);
         });
 }

@@ -33,6 +33,16 @@ impl Client {
                     )))
     }
 
+    pub fn db_drop(&self, name: &str) -> RootCommand {
+        RootCommand(Ok(
+                Command::wrap(
+                    proto::Term_TermType::DB_DROP,
+                    format!("{:?}", name),
+                    None,
+                    None
+                    )))
+    }
+
     pub fn db(&self, name: &str) -> RootCommand {
         RootCommand(Ok(
                 Command::wrap(
@@ -177,8 +187,11 @@ impl RootCommand {
                 match Query::read(&mut conn) {
                     Ok(resp) => {
                         let result = try!(str::from_utf8(&resp));
-                        // If the operation failed, retry it
-                        if result.contains(r#"{"t":18,"e":4100000"#) {
+                        debug!(logger, "{}", result);
+                        // If the write operation failed, retry it
+                        // {"t":18,"e":4100000,"r":["Cannot perform write: primary replica for
+                        // shard [\"\", +inf) not available"],"b":[]}
+                        if result.starts_with(r#"{"t":18,"e":4100000,"r":["Cannot perform write: primary replica for shard"#) {
                             write = true;
                             if i == cfg.retries-1 { // The last error
                                 return Err(
@@ -189,7 +202,6 @@ impl RootCommand {
                             }
                         } else {
                             // This is a successful operation
-                            debug!(logger, "{}", result);
                             break;
                         }
                     },
