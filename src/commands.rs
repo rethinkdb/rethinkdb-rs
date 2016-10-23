@@ -1,10 +1,9 @@
 //! The Actual RethinkDB Commands
 
 use errors::*;
-use conn::{Connection, ConnectionManager, ConnectOpts};
+use conn::{Connection, ConnectOpts};
 use serde_json;
 use ql2::proto;
-use r2d2::PooledConnection;
 use std::io::Write;
 use byteorder::{WriteBytesExt, LittleEndian};
 use std::io::Read;
@@ -142,48 +141,52 @@ impl RootCommand {
         trace!(logger, "Calling r.run()");
         let commands = try!(self.0);
         let cfg = Client::config().read();
-        let mut conn: PooledConnection<ConnectionManager> = {
-            let res = || -> Result<PooledConnection<ConnectionManager>> {
-                let mut i = 0;
-                while i < cfg.retries {
-                    match Client::conn() {
-                        Ok(c) => {
-                            return Ok(c);
-                        },
-                        Err(error) => {
-                            if i == cfg.retries-1 { // The last error
-                                return Err(From::from(error));
-                            }
-                        },
-                    }
-                    i += 1;
-                };
-                // This line shouldn't be reachable.
-                // Without it the compiler thinks `not all control paths return a value`
-                Err(From::from(DriverError::Other(String::from("Unreachable!"))))
-            }();
-            try!(res)
-        };
-        conn.token += 1;
         let query = Query::wrap(
             proto::Query_QueryType::START,
             Some(commands),
             None);
         debug!(logger, "{}", query);
+        let mut conn = try!(Client::conn());
         // Try sending the query
         {
             let mut i = 0;
             let mut write = true;
+            let mut connect = false;
             while i < cfg.retries {
-                if write {
-                    if let Err(error) = Query::write(&query, &mut conn) {
+                debug!(logger, "Getting connection...");
+                if connect {
+                    drop(&conn);
+                    conn = match Client::conn() {
+                        Ok(c) => c,
+                        Err(error) => {
                             if i == cfg.retries-1 { // The last error
                                 return Err(From::from(error));
                             } else {
+                                debug!(logger, "Failed getting a connection. Retrying...");
+                                i += 1;
                                 continue;
                             }
-                    }
+                        },
+                    };
                 }
+                debug!(logger, "Connection aquired.");
+                conn.token += 1;
+                if write {
+                    debug!(logger, "Writing query...");
+                    if let Err(error) = Query::write(&query, &mut conn) {
+                        connect = true;
+                        if i == cfg.retries-1 { // The last error
+                            return Err(From::from(error));
+                        } else {
+                            debug!(logger, "Failed to write query. Retrying...");
+                            i += 1;
+                            continue;
+                        }
+                    }
+                    debug!(logger, "Query written...");
+                    connect = false;
+                }
+                debug!(logger, "Reading query...");
                 match Query::read(&mut conn) {
                     Ok(resp) => {
                         let result = try!(str::from_utf8(&resp));
@@ -193,31 +196,39 @@ impl RootCommand {
                         // shard [\"\", +inf) not available"],"b":[]}
                         if result.starts_with(r#"{"t":18,"e":4100000,"r":["Cannot perform write: primary replica for shard"#) {
                             write = true;
-                            if i == cfg.retries-1 { // The last error
-                                return Err(
-                                    From::from(
-                                        AvailabilityError::OpFailed(
-                                            String::from("Not available")
-                                            )));
-                            }
+                        if i == cfg.retries-1 { // The last error
+                            return Err(
+                                From::from(
+                                    AvailabilityError::OpFailed(
+                                        String::from("Not available")
+                                        )));
                         } else {
-                            // This is a successful operation
-                            break;
+                            debug!(logger, "Write operation failed. Retrying...");
+                            i += 1;
+                            continue;
                         }
+                    } else {
+                        debug!(logger, "Query successfully read.");
+                        // This is a successful operation
+                        break;
+                    }
                     },
                     Err(error) => {
                         write = false;
                         if i == cfg.retries-1 { // The last error
                             return Err(From::from(error));
+                        } else {
+                            debug!(logger, "Failed to read query. Retrying...");
+                            i += 1;
+                            continue;
                         }
                     },
+                    }
                 }
-                i += 1;
             }
+            Ok(String::new())
         }
-        Ok(String::new())
     }
-}
 
 impl Command {
     pub fn wrap(command: proto::Term_TermType, arguments: String, options: Option<String>, commands: Option<String>) -> String {

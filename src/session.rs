@@ -40,11 +40,12 @@ impl Client {
 
     pub fn conn() -> Result<PooledConnection<ConnectionManager>> {
         let logger = Self::logger().read();
+        let cfg = Self::config().read();
         trace!(logger, "Calling Client::conn()");
         let pool = Self::pool().read();
         match *pool {
             Some(ref pool) => {
-                let mut num_retries = 10;
+                let mut num_retries = cfg.retries;
                 let mut last_error = Err(
                     From::from(
                         ConnectionError::Other(
