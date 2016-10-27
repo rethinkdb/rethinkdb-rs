@@ -26,7 +26,7 @@ impl Client {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::DB_CREATE,
-                    Some(format!("{:?}", name)),
+                    Some(&format!("{:?}", name)),
                     None,
                     None
                     )))
@@ -36,7 +36,7 @@ impl Client {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::DB_DROP,
-                    Some(format!("{:?}", name)),
+                    Some(&format!("{:?}", name)),
                     None,
                     None
                     )))
@@ -46,7 +46,7 @@ impl Client {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::DB,
-                    Some(format!("{:?}", name)),
+                    Some(&format!("{:?}", name)),
                     None,
                     None
                     )))
@@ -80,9 +80,9 @@ impl RootCommand {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::TABLE_CREATE,
-                    Some(format!("{:?}", name)),
+                    Some(&format!("{:?}", name)),
                     None,
-                    Some(commands)
+                    Some(&commands)
                     )))
     }
 
@@ -94,9 +94,9 @@ impl RootCommand {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::TABLE,
-                    Some(format!("{:?}", name)),
+                    Some(&format!("{:?}", name)),
                     None,
-                    Some(commands)
+                    Some(&commands)
                     )))
     }
 
@@ -112,9 +112,9 @@ impl RootCommand {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::INSERT,
-                    Some(data),
+                    Some(&data),
                     None,
-                    Some(commands),
+                    Some(&commands),
                     )))
     }
 
@@ -128,7 +128,7 @@ impl RootCommand {
                     proto::Term_TermType::DELETE,
                     None,
                     None,
-                    Some(commands)
+                    Some(&commands)
                     )))
     }
 
@@ -144,9 +144,9 @@ impl RootCommand {
         RootCommand(Ok(
                 Command::wrap(
                     proto::Term_TermType::FILTER,
-                    Some(filter),
+                    Some(&filter),
                     None,
-                    Some(commands),
+                    Some(&commands),
                     )))
     }
 
@@ -157,7 +157,7 @@ impl RootCommand {
         let cfg = Client::config().read();
         let query = Query::wrap(
             proto::Query_QueryType::START,
-            Some(commands),
+            Some(&commands),
             None);
         debug!(logger, "{}", query);
         let mut conn = try!(Client::conn());
@@ -245,21 +245,21 @@ impl RootCommand {
     }
 
 impl Command {
-    pub fn wrap(command: proto::Term_TermType, arguments: Option<String>, options: Option<String>, commands: Option<String>) -> String {
+    pub fn wrap(command: proto::Term_TermType, arguments: Option<&str>, options: Option<&str>, commands: Option<&str>) -> String {
         let mut cmds = format!("[{},", command.value());
         let mut args = String::new();
         if let Some(commands) = commands {
-            args.push_str(&commands);
+            args.push_str(commands);
             if arguments.is_some() {
                 args.push_str(",");
             }
         }
         if let Some(arguments) = arguments {
-            args.push_str(&arguments);
+            args.push_str(arguments);
         }
-        cmds.push_str(format!("[{}]", args).as_str());
+        cmds.push_str(&format!("[{}]", args));
         if let Some(options) = options {
-            cmds.push_str(format!(",{{{}}}", options).as_str());
+            cmds.push_str(&format!(",{{{}}}", options));
         }
         cmds.push(']');
         cmds
@@ -267,13 +267,13 @@ impl Command {
 }
 
 impl Query {
-    pub fn wrap(query_type: proto::Query_QueryType, query: Option<String>, options: Option<String>) -> String {
+    pub fn wrap(query_type: proto::Query_QueryType, query: Option<&str>, options: Option<&str>) -> String {
         let mut qry = format!("[{}", query_type.value());
         if let Some(query) = query {
-            qry.push_str(format!(",{}", query).as_str());
+            qry.push_str(&format!(",{}", query));
         }
         if let Some(options) = options {
-            qry.push_str(format!(",{}", options).as_str());
+            qry.push_str(&format!(",{}", options));
         }
         qry.push_str("]");
         qry

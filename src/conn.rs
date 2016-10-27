@@ -314,7 +314,7 @@ impl r2d2::ManageConnection for ConnectionManager {
         conn.token += 1;
         let query = Query::wrap(
             proto::Query_QueryType::START,
-            Some(String::from("1")),
+            Some("1"),
             None);
         try!(Query::write(&query, &mut conn));
         let resp = try!(Query::read(&mut conn));
