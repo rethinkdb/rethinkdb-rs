@@ -12,43 +12,77 @@ use protobuf::ProtobufEnum;
 use byteorder::ReadBytesExt;
 use super::session::Client;
 use super::{Result, r};
+use std::fmt::Debug;
 
 pub struct RootCommand(Result<String>);
 pub struct Command;
 pub struct Query;
+
+pub trait IntoCommandArg {
+    fn to_arg(&self) -> Result<String>;
+}
+
+impl<'a> IntoCommandArg for &'a str {
+    fn to_arg(&self) -> Result<String> {
+        Ok(self.to_string())
+    }
+}
+
+impl<'a> IntoCommandArg for &'a String {
+    fn to_arg(&self) -> Result<String> {
+        let ref arg = **self;
+        Ok(*arg)
+    }
+}
+
+impl IntoCommandArg for serde_json::Value {
+    fn to_arg(&self) -> Result<String> {
+        serde_json::to_string(self).map_err(|e| From::from(DriverError::Json(e)))
+    }
+}
 
 impl Client {
     pub fn connection(&self) -> ConnectOpts {
         Self::config().read().clone()
     }
 
-    pub fn db_create(&self, name: &str) -> RootCommand {
+    pub fn db_create<T>(&self, name: T) -> RootCommand
+        where T: IntoCommandArg + Debug
+    {
         RootCommand(Ok(Command::wrap(proto::Term_TermType::DB_CREATE,
                                      Some(&format!("{:?}", name)),
                                      None,
                                      None)))
     }
 
-    pub fn db_drop(&self, name: &str) -> RootCommand {
+    pub fn db_drop<T>(&self, name: T) -> RootCommand
+        where T: IntoCommandArg + Debug
+    {
         RootCommand(Ok(Command::wrap(proto::Term_TermType::DB_DROP,
                                      Some(&format!("{:?}", name)),
                                      None,
                                      None)))
     }
 
-    pub fn db(&self, name: &str) -> RootCommand {
+    pub fn db<T>(&self, name: T) -> RootCommand
+        where T: IntoCommandArg + Debug
+    {
         RootCommand(Ok(Command::wrap(proto::Term_TermType::DB,
                                      Some(&format!("{:?}", name)),
                                      None,
                                      None)))
     }
 
-    pub fn table_create(&self, name: &str) -> RootCommand {
+    pub fn table_create<T>(&self, name: T) -> RootCommand
+        where T: IntoCommandArg + Debug
+    {
         let config = Client::config().read();
         r.db(config.db).table_create(name)
     }
 
-    pub fn table(&self, name: &str) -> RootCommand {
+    pub fn table<T>(&self, name: T) -> RootCommand
+        where T: IntoCommandArg + Debug
+    {
         let config = Client::config().read();
         r.db(config.db).table(name)
     }
@@ -63,7 +97,9 @@ impl Client {
 }
 
 impl RootCommand {
-    pub fn table_create(self, name: &str) -> RootCommand {
+    pub fn table_create<T>(self, name: T) -> RootCommand
+        where T: IntoCommandArg + Debug
+    {
         let commands = match self.0 {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
@@ -74,7 +110,9 @@ impl RootCommand {
                                      Some(&commands))))
     }
 
-    pub fn table(self, name: &str) -> RootCommand {
+    pub fn table<T>(self, name: T) -> RootCommand
+        where T: IntoCommandArg + Debug
+    {
         let commands = match self.0 {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
@@ -85,17 +123,15 @@ impl RootCommand {
                                      Some(&commands))))
     }
 
-    pub fn insert(self, expr: serde_json::Value) -> RootCommand {
+    pub fn insert<T>(self, data: T) -> RootCommand
+        where T: IntoCommandArg + Debug
+    {
         let commands = match self.0 {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        let data = match serde_json::to_string(&expr) {
-            Ok(f) => f,
-            Err(e) => return RootCommand(Err(From::from(DriverError::Json(e)))),
-        };
         RootCommand(Ok(Command::wrap(proto::Term_TermType::INSERT,
-                                     Some(&data),
+                                     Some(data),
                                      None,
                                      Some(&commands))))
     }
@@ -105,20 +141,18 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Ok(Command::wrap(proto::Term_TermType::DELETE, None, None, Some(&commands))))
+        RootCommand(Ok(Command::wrap(proto::Term_TermType::DELETE, None as Option<&str>, None as Option<&str>, Some(&commands))))
     }
 
-    pub fn filter(self, expr: serde_json::Value) -> RootCommand {
+    pub fn filter<T>(self, filter: T) -> RootCommand
+        where T: IntoCommandArg + Debug
+    {
         let commands = match self.0 {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        let filter = match serde_json::to_string(&expr) {
-            Ok(f) => f,
-            Err(e) => return RootCommand(Err(From::from(DriverError::Json(e)))),
-        };
         RootCommand(Ok(Command::wrap(proto::Term_TermType::FILTER,
-                                     Some(&filter),
+                                     Some(filter),
                                      None,
                                      Some(&commands))))
     }
@@ -220,11 +254,13 @@ impl RootCommand {
 }
 
 impl Command {
-    pub fn wrap(command: proto::Term_TermType,
-                arguments: Option<&str>,
-                options: Option<&str>,
+    pub fn wrap<T>(command: proto::Term_TermType,
+                arguments: Option<T>,
+                options: Option<T>,
                 commands: Option<&str>)
-                -> String {
+                -> String
+        where T: IntoCommandArg
+    {
         let mut cmds = format!("[{},", command.value());
         let mut args = String::new();
         if let Some(commands) = commands {
@@ -234,11 +270,11 @@ impl Command {
             }
         }
         if let Some(arguments) = arguments {
-            args.push_str(arguments);
+            args.push_str(&arguments.to_arg().unwrap());
         }
         cmds.push_str(&format!("[{}]", args));
         if let Some(options) = options {
-            cmds.push_str(&format!(",{{{}}}", options));
+            cmds.push_str(&format!(",{{{}}}", options.to_arg().unwrap()));
         }
         cmds.push(']');
         cmds
