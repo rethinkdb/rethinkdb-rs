@@ -178,7 +178,7 @@ fn parse_server_response(stream: &TcpStream) -> Result<String> {
     // the error.
     let mut resp = Vec::new();
     let mut buf = BufStream::new(stream);
-    let _ = try!(buf.read_until(b"\0"[0], &mut resp));
+    let _ = try!(buf.read_until(b'\0', &mut resp));
 
     let _ = resp.pop();
 
@@ -214,7 +214,7 @@ fn client_first(opts: &ConnectOpts) -> Result<(ServerFirst, Vec<u8>)> {
             return Err(From::from(err));
         },
     };
-    msg.push(b"\0"[0]);
+    msg.push(b'\0');
     Ok((scram, msg))
 }
 
@@ -254,7 +254,7 @@ fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, 
                 return Err(From::from(err));
             },
         };
-        msg.push(b"\0"[0]);
+        msg.push(b'\0');
         Ok((scram, msg))
     } else {
         Err(
