@@ -28,9 +28,9 @@ impl<'a> IntoCommandArg for &'a str {
     }
 }
 
-impl<'a> IntoCommandArg for &'a String {
+impl IntoCommandArg for String {
     fn to_arg(&self) -> Result<String> {
-        Ok(format!("{}", **self))
+        Ok(format!("{}", self))
     }
 }
 
@@ -49,7 +49,7 @@ impl Client {
         where T: IntoCommandArg + Debug
     {
         RootCommand(Ok(Command::wrap(proto::Term_TermType::DB_CREATE,
-                                     Some(&format!("{:?}", name)),
+                                     Some(format!("{:?}", name)),
                                      None,
                                      None)))
     }
@@ -58,7 +58,7 @@ impl Client {
         where T: IntoCommandArg + Debug
     {
         RootCommand(Ok(Command::wrap(proto::Term_TermType::DB_DROP,
-                                     Some(&format!("{:?}", name)),
+                                     Some(format!("{:?}", name)),
                                      None,
                                      None)))
     }
@@ -67,7 +67,7 @@ impl Client {
         where T: IntoCommandArg + Debug
     {
         RootCommand(Ok(Command::wrap(proto::Term_TermType::DB,
-                                     Some(&format!("{:?}", name)),
+                                     Some(format!("{:?}", name)),
                                      None,
                                      None)))
     }
@@ -104,7 +104,7 @@ impl RootCommand {
             Err(e) => return RootCommand(Err(e)),
         };
         RootCommand(Ok(Command::wrap(proto::Term_TermType::TABLE_CREATE,
-                                     Some(&format!("{:?}", name)),
+                                     Some(format!("{:?}", name)),
                                      None,
                                      Some(&commands))))
     }
@@ -117,7 +117,7 @@ impl RootCommand {
             Err(e) => return RootCommand(Err(e)),
         };
         RootCommand(Ok(Command::wrap(proto::Term_TermType::TABLE,
-                                     Some(&format!("{:?}", name)),
+                                     Some(format!("{:?}", name)),
                                      None,
                                      Some(&commands))))
     }
