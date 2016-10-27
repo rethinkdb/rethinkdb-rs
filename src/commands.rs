@@ -183,22 +183,23 @@ impl RootCommand {
                         let msg = r#"{"t":18,"e":4100000,"r":["Cannot perform write: primary replica for shard"#;
                         if result.starts_with(msg) {
                             write = true;
-                        if i == cfg.retries-1 { // The last error
-                            return Err(
+                            if i == cfg.retries - 1 {
+                                // The last error
+                                return Err(
                                 From::from(
                                     AvailabilityError::OpFailed(
                                         String::from("Not available")
                                         )));
+                            } else {
+                                debug!(logger, "Write operation failed. Retrying...");
+                                i += 1;
+                                continue;
+                            }
                         } else {
-                            debug!(logger, "Write operation failed. Retrying...");
-                            i += 1;
-                            continue;
+                            debug!(logger, "Query successfully read.");
+                            // This is a successful operation
+                            break;
                         }
-                    } else {
-                        debug!(logger, "Query successfully read.");
-                        // This is a successful operation
-                        break;
-                    }
                     }
                     Err(error) => {
                         write = false;
