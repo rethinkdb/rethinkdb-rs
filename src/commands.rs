@@ -30,8 +30,7 @@ impl<'a> IntoCommandArg for &'a str {
 
 impl<'a> IntoCommandArg for &'a String {
     fn to_arg(&self) -> Result<String> {
-        let ref arg = **self;
-        Ok(*arg)
+        Ok(format!("{}", **self))
     }
 }
 
