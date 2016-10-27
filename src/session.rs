@@ -46,11 +46,8 @@ impl Client {
         match *pool {
             Some(ref pool) => {
                 let mut num_retries = cfg.retries;
-                let mut last_error = Err(
-                    From::from(
-                        ConnectionError::Other(
-                            String::from("Failed to get a connection")
-                            )));
+                let msg = String::from("Failed to get a connection.");
+                let mut last_error = Err(From::from(ConnectionError::Other(msg)));
                 while num_retries > 0 {
                     let mut least_connections = 0;
                     let mut least_connected_server = 0;
@@ -78,23 +75,20 @@ impl Client {
                             Err(error) => last_error = Err(From::from(error)),
                         }
                     } else {
-                        last_error = Err(
-                            From::from(
-                                ConnectionError::Other(
-                                    String::from("All servers are currently down...")
-                                    )));
+                        let msg = String::from("All servers are currently down.");
+                        last_error = Err(From::from(ConnectionError::Other(msg)));
                     }
                     num_retries -= 1;
                 }
                 return last_error;
-            },
+            }
             None => {
                 let msg = String::from("Your connection pool is not initialised. \
                                    Use `r.connection().connect()` to initialise the pool \
                                    before trying to send any connections to the database. \
                                    This is typically done in the `main` function.");
                 return Err(From::from(ConnectionError::Other(msg)));
-            },
+            }
         }
     }
 

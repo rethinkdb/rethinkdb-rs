@@ -23,33 +23,24 @@ impl Client {
     }
 
     pub fn db_create(&self, name: &str) -> RootCommand {
-        RootCommand(Ok(
-                Command::wrap(
-                    proto::Term_TermType::DB_CREATE,
-                    Some(&format!("{:?}", name)),
-                    None,
-                    None
-                    )))
+        RootCommand(Ok(Command::wrap(proto::Term_TermType::DB_CREATE,
+                                     Some(&format!("{:?}", name)),
+                                     None,
+                                     None)))
     }
 
     pub fn db_drop(&self, name: &str) -> RootCommand {
-        RootCommand(Ok(
-                Command::wrap(
-                    proto::Term_TermType::DB_DROP,
-                    Some(&format!("{:?}", name)),
-                    None,
-                    None
-                    )))
+        RootCommand(Ok(Command::wrap(proto::Term_TermType::DB_DROP,
+                                     Some(&format!("{:?}", name)),
+                                     None,
+                                     None)))
     }
 
     pub fn db(&self, name: &str) -> RootCommand {
-        RootCommand(Ok(
-                Command::wrap(
-                    proto::Term_TermType::DB,
-                    Some(&format!("{:?}", name)),
-                    None,
-                    None
-                    )))
+        RootCommand(Ok(Command::wrap(proto::Term_TermType::DB,
+                                     Some(&format!("{:?}", name)),
+                                     None,
+                                     None)))
     }
 
     pub fn table_create(&self, name: &str) -> RootCommand {
@@ -77,13 +68,10 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Ok(
-                Command::wrap(
-                    proto::Term_TermType::TABLE_CREATE,
-                    Some(&format!("{:?}", name)),
-                    None,
-                    Some(&commands)
-                    )))
+        RootCommand(Ok(Command::wrap(proto::Term_TermType::TABLE_CREATE,
+                                     Some(&format!("{:?}", name)),
+                                     None,
+                                     Some(&commands))))
     }
 
     pub fn table(self, name: &str) -> RootCommand {
@@ -91,13 +79,10 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Ok(
-                Command::wrap(
-                    proto::Term_TermType::TABLE,
-                    Some(&format!("{:?}", name)),
-                    None,
-                    Some(&commands)
-                    )))
+        RootCommand(Ok(Command::wrap(proto::Term_TermType::TABLE,
+                                     Some(&format!("{:?}", name)),
+                                     None,
+                                     Some(&commands))))
     }
 
     pub fn insert(self, expr: serde_json::Value) -> RootCommand {
@@ -109,13 +94,10 @@ impl RootCommand {
             Ok(f) => f,
             Err(e) => return RootCommand(Err(From::from(DriverError::Json(e)))),
         };
-        RootCommand(Ok(
-                Command::wrap(
-                    proto::Term_TermType::INSERT,
-                    Some(&data),
-                    None,
-                    Some(&commands),
-                    )))
+        RootCommand(Ok(Command::wrap(proto::Term_TermType::INSERT,
+                                     Some(&data),
+                                     None,
+                                     Some(&commands))))
     }
 
     pub fn delete(self) -> RootCommand {
@@ -123,13 +105,7 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Ok(
-                Command::wrap(
-                    proto::Term_TermType::DELETE,
-                    None,
-                    None,
-                    Some(&commands)
-                    )))
+        RootCommand(Ok(Command::wrap(proto::Term_TermType::DELETE, None, None, Some(&commands))))
     }
 
     pub fn filter(self, expr: serde_json::Value) -> RootCommand {
@@ -141,13 +117,10 @@ impl RootCommand {
             Ok(f) => f,
             Err(e) => return RootCommand(Err(From::from(DriverError::Json(e)))),
         };
-        RootCommand(Ok(
-                Command::wrap(
-                    proto::Term_TermType::FILTER,
-                    Some(&filter),
-                    None,
-                    Some(&commands),
-                    )))
+        RootCommand(Ok(Command::wrap(proto::Term_TermType::FILTER,
+                                     Some(&filter),
+                                     None,
+                                     Some(&commands))))
     }
 
     pub fn run(self) -> Result<String> {
@@ -155,10 +128,7 @@ impl RootCommand {
         trace!(logger, "Calling r.run()");
         let commands = try!(self.0);
         let cfg = Client::config().read();
-        let query = Query::wrap(
-            proto::Query_QueryType::START,
-            Some(&commands),
-            None);
+        let query = Query::wrap(proto::Query_QueryType::START, Some(&commands), None);
         debug!(logger, "{}", query);
         let mut conn = try!(Client::conn());
         // Try sending the query
@@ -173,14 +143,15 @@ impl RootCommand {
                     conn = match Client::conn() {
                         Ok(c) => c,
                         Err(error) => {
-                            if i == cfg.retries-1 { // The last error
+                            if i == cfg.retries - 1 {
+                                // The last error
                                 return Err(From::from(error));
                             } else {
                                 debug!(logger, "Failed getting a connection. Retrying...");
                                 i += 1;
                                 continue;
                             }
-                        },
+                        }
                     };
                 }
                 debug!(logger, "Connection aquired.");
@@ -189,7 +160,8 @@ impl RootCommand {
                     debug!(logger, "Writing query...");
                     if let Err(error) = Query::write(&query, &mut conn) {
                         connect = true;
-                        if i == cfg.retries-1 { // The last error
+                        if i == cfg.retries - 1 {
+                            // The last error
                             return Err(From::from(error));
                         } else {
                             debug!(logger, "Failed to write query. Retrying...");
@@ -208,7 +180,8 @@ impl RootCommand {
                         // If the write operation failed, retry it
                         // {"t":18,"e":4100000,"r":["Cannot perform write: primary replica for
                         // shard [\"\", +inf) not available"],"b":[]}
-                        if result.starts_with(r#"{"t":18,"e":4100000,"r":["Cannot perform write: primary replica for shard"#) {
+                        let msg = r#"{"t":18,"e":4100000,"r":["Cannot perform write: primary replica for shard"#;
+                        if result.starts_with(msg) {
                             write = true;
                         if i == cfg.retries-1 { // The last error
                             return Err(
@@ -226,26 +199,31 @@ impl RootCommand {
                         // This is a successful operation
                         break;
                     }
-                    },
+                    }
                     Err(error) => {
                         write = false;
-                        if i == cfg.retries-1 { // The last error
+                        if i == cfg.retries - 1 {
+                            // The last error
                             return Err(From::from(error));
                         } else {
                             debug!(logger, "Failed to read query. Retrying...");
                             i += 1;
                             continue;
                         }
-                    },
                     }
                 }
             }
-            Ok(String::new())
         }
+        Ok(String::new())
     }
+}
 
 impl Command {
-    pub fn wrap(command: proto::Term_TermType, arguments: Option<&str>, options: Option<&str>, commands: Option<&str>) -> String {
+    pub fn wrap(command: proto::Term_TermType,
+                arguments: Option<&str>,
+                options: Option<&str>,
+                commands: Option<&str>)
+                -> String {
         let mut cmds = format!("[{},", command.value());
         let mut args = String::new();
         if let Some(commands) = commands {
@@ -267,7 +245,10 @@ impl Command {
 }
 
 impl Query {
-    pub fn wrap(query_type: proto::Query_QueryType, query: Option<&str>, options: Option<&str>) -> String {
+    pub fn wrap(query_type: proto::Query_QueryType,
+                query: Option<&str>,
+                options: Option<&str>)
+                -> String {
         let mut qry = format!("[{}", query_type.value());
         if let Some(query) = query {
             qry.push_str(&format!(",{}", query));
@@ -309,14 +290,14 @@ impl Query {
             Err(error) => {
                 conn.broken = true;
                 return Err(From::from(error));
-            },
+            }
         };
         let len = match conn.stream.read_u32::<LittleEndian>() {
             Ok(len) => len,
             Err(error) => {
                 conn.broken = true;
                 return Err(From::from(error));
-            },
+            }
         };
         let mut resp = vec![0u8; len as usize];
         if let Err(error) = conn.stream.read_exact(&mut resp) {

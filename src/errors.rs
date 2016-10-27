@@ -27,10 +27,10 @@ quick_error! {
 }
 
 quick_error! {
-    /// The parent class of all runtime errors
-    ///
-    /// All errors on the server unrelated to compilation. Programs may use this to catch any runtime
-    /// error, but the server will always return a more specific error class.
+/// The parent class of all runtime errors
+///
+/// All errors on the server unrelated to compilation. Programs may use this to catch any runtime
+/// error, but the server will always return a more specific error class.
     #[derive(Debug)]
     pub enum RuntimeError {
         QueryLogic(err: QueryLogicError) { from() }

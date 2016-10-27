@@ -16,9 +16,12 @@ extern crate serde;
 extern crate serde_json;
 extern crate byteorder;
 extern crate bufstream;
-#[macro_use] extern crate lazy_static;
-#[macro_use] extern crate slog;
-#[macro_use] extern crate quick_error;
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate slog;
+#[macro_use]
+extern crate quick_error;
 extern crate slog_term;
 extern crate protobuf;
 extern crate scram;
