@@ -13,7 +13,7 @@ lazy_static! {
 
     static ref LOGGER: RwLock<Logger> = RwLock::new(
                     Logger::root(
-                        slog_term::streamer().full().build().fuse(),
+                        slog_term::streamer().compact().build().fuse(),
                         o!("version" => env!("CARGO_PKG_VERSION"))
                         )
                     );
