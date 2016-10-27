@@ -11,12 +11,10 @@ use slog_term;
 lazy_static! {
     static ref POOL: RwLock<Option<Vec<Pool<ConnectionManager>>>> = RwLock::new(None);
 
-    static ref LOGGER: RwLock<Logger> = RwLock::new(
-                    Logger::root(
-                        slog_term::streamer().compact().build().fuse(),
-                        o!("version" => env!("CARGO_PKG_VERSION"))
-                        )
-                    );
+    static ref LOGGER: RwLock<Logger> = RwLock::new({
+        let drain = slog_term::streamer().compact().build().fuse();
+        Logger::root(drain, o!("version" => env!("CARGO_PKG_VERSION")))
+    });
 
     static ref CONFIG: RwLock<ConnectOpts> = RwLock::new(ConnectOpts::default());
 }
