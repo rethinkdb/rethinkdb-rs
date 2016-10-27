@@ -48,28 +48,28 @@ impl Client {
     pub fn db_create<T>(&self, name: T) -> RootCommand
         where T: IntoCommandArg + Debug
     {
-        RootCommand(Ok(Command::wrap(proto::Term_TermType::DB_CREATE,
+        RootCommand(Command::wrap(proto::Term_TermType::DB_CREATE,
                                      Some(format!("{:?}", name)),
                                      None,
-                                     None)))
+                                     None))
     }
 
     pub fn db_drop<T>(&self, name: T) -> RootCommand
         where T: IntoCommandArg + Debug
     {
-        RootCommand(Ok(Command::wrap(proto::Term_TermType::DB_DROP,
+        RootCommand(Command::wrap(proto::Term_TermType::DB_DROP,
                                      Some(format!("{:?}", name)),
                                      None,
-                                     None)))
+                                     None))
     }
 
     pub fn db<T>(&self, name: T) -> RootCommand
         where T: IntoCommandArg + Debug
     {
-        RootCommand(Ok(Command::wrap(proto::Term_TermType::DB,
+        RootCommand(Command::wrap(proto::Term_TermType::DB,
                                      Some(format!("{:?}", name)),
                                      None,
-                                     None)))
+                                     None))
     }
 
     pub fn table_create<T>(&self, name: T) -> RootCommand
@@ -103,10 +103,10 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Ok(Command::wrap(proto::Term_TermType::TABLE_CREATE,
+        RootCommand(Command::wrap(proto::Term_TermType::TABLE_CREATE,
                                      Some(format!("{:?}", name)),
                                      None,
-                                     Some(&commands))))
+                                     Some(&commands)))
     }
 
     pub fn table<T>(self, name: T) -> RootCommand
@@ -116,10 +116,10 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Ok(Command::wrap(proto::Term_TermType::TABLE,
+        RootCommand(Command::wrap(proto::Term_TermType::TABLE,
                                      Some(format!("{:?}", name)),
                                      None,
-                                     Some(&commands))))
+                                     Some(&commands)))
     }
 
     pub fn insert<T>(self, data: T) -> RootCommand
@@ -129,10 +129,10 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Ok(Command::wrap(proto::Term_TermType::INSERT,
+        RootCommand(Command::wrap(proto::Term_TermType::INSERT,
                                      Some(data),
                                      None,
-                                     Some(&commands))))
+                                     Some(&commands)))
     }
 
     pub fn delete(self) -> RootCommand {
@@ -140,7 +140,7 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Ok(Command::wrap(proto::Term_TermType::DELETE, None as Option<&str>, None as Option<&str>, Some(&commands))))
+        RootCommand(Command::wrap(proto::Term_TermType::DELETE, None as Option<&str>, None as Option<&str>, Some(&commands)))
     }
 
     pub fn filter<T>(self, filter: T) -> RootCommand
@@ -150,10 +150,10 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Ok(Command::wrap(proto::Term_TermType::FILTER,
+        RootCommand(Command::wrap(proto::Term_TermType::FILTER,
                                      Some(filter),
                                      None,
-                                     Some(&commands))))
+                                     Some(&commands)))
     }
 
     pub fn run(self) -> Result<String> {
@@ -257,7 +257,7 @@ impl Command {
                 arguments: Option<T>,
                 options: Option<T>,
                 commands: Option<&str>)
-                -> String
+                -> Result<String>
         where T: IntoCommandArg
     {
         let mut cmds = format!("[{},", command.value());
@@ -269,14 +269,14 @@ impl Command {
             }
         }
         if let Some(arguments) = arguments {
-            args.push_str(&arguments.to_arg().unwrap());
+            args.push_str(&try!(arguments.to_arg()));
         }
         cmds.push_str(&format!("[{}]", args));
         if let Some(options) = options {
-            cmds.push_str(&format!(",{{{}}}", options.to_arg().unwrap()));
+            cmds.push_str(&format!(",{{{}}}", try!(options.to_arg())));
         }
         cmds.push(']');
-        cmds
+        Ok(cmds)
     }
 }
 
