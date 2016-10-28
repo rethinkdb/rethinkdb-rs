@@ -65,9 +65,30 @@ impl IntoCommandArg for RootCommand {
     }
 }
 
+impl IntoCommandArg for bool { }
+impl IntoCommandArg for char { }
+impl IntoCommandArg for u8 { }
+impl IntoCommandArg for u16 { }
+impl IntoCommandArg for u32 { }
+impl IntoCommandArg for u64 { }
+impl IntoCommandArg for usize { }
+impl IntoCommandArg for i8 { }
+impl IntoCommandArg for i16 { }
+impl IntoCommandArg for i32 { }
+impl IntoCommandArg for i64 { }
+impl IntoCommandArg for isize { }
+impl IntoCommandArg for f32 { }
+impl IntoCommandArg for f64 { }
+
 impl Client {
     pub fn connection(&self) -> ConnectOpts {
         Self::config().read().clone()
+    }
+
+    pub fn expr<T>(&self, e: T) -> RootCommand
+        where T: IntoCommandArg
+    {
+        RootCommand(e.to_arg())
     }
 
     pub fn db_create<T>(&self, name: T) -> RootCommand

@@ -16,6 +16,9 @@ fn connection_pool_works() {
         .connect()
         .unwrap();
 
+    // Try arbitrary expressions
+    r.expr(200).run().unwrap();
+
     // Create our database if necessary
     r.db_create("blog").run().unwrap();
 
@@ -25,8 +28,8 @@ fn connection_pool_works() {
     // Delete data if nessary
     r.table("users").delete().run().unwrap();
 
-    // Insert 10 users into the table
-    (0..10u32)
+    // Insert 1 user(s) into the table
+    (0..1u32)
         .into_par_iter()
         .enumerate()
         .for_each(|(i, _)| {
