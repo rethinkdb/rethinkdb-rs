@@ -3,7 +3,7 @@
 use errors::*;
 use conn::{Connection, ConnectOpts};
 use serde_json;
-use ql2::proto;
+use ql2::proto::{Term_TermType as tt, Query_QueryType as qt};
 use std::io::Write;
 use byteorder::{WriteBytesExt, LittleEndian};
 use std::io::Read;
@@ -94,7 +94,7 @@ impl Client {
     pub fn db_create<T>(&self, name: T) -> RootCommand
         where T: IntoCommandArg
     {
-        RootCommand(Command::wrap(proto::Term_TermType::DB_CREATE,
+        RootCommand(Command::wrap(tt::DB_CREATE,
                                      Some(name),
                                      None,
                                      None))
@@ -103,7 +103,7 @@ impl Client {
     pub fn db_drop<T>(&self, name: T) -> RootCommand
         where T: IntoCommandArg
     {
-        RootCommand(Command::wrap(proto::Term_TermType::DB_DROP,
+        RootCommand(Command::wrap(tt::DB_DROP,
                                      Some(name),
                                      None,
                                      None))
@@ -112,7 +112,7 @@ impl Client {
     pub fn db<T>(&self, name: T) -> RootCommand
         where T: IntoCommandArg
     {
-        RootCommand(Command::wrap(proto::Term_TermType::DB,
+        RootCommand(Command::wrap(tt::DB,
                                      Some(name),
                                      None,
                                      None))
@@ -149,7 +149,7 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Command::wrap(proto::Term_TermType::TABLE_CREATE,
+        RootCommand(Command::wrap(tt::TABLE_CREATE,
                                      Some(name),
                                      None,
                                      Some(&commands)))
@@ -162,7 +162,7 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Command::wrap(proto::Term_TermType::TABLE,
+        RootCommand(Command::wrap(tt::TABLE,
                                      Some(name),
                                      None,
                                      Some(&commands)))
@@ -175,7 +175,7 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Command::wrap(proto::Term_TermType::INSERT,
+        RootCommand(Command::wrap(tt::INSERT,
                                      Some(data),
                                      None,
                                      Some(&commands)))
@@ -186,7 +186,7 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Command::wrap(proto::Term_TermType::DELETE, None as Option<&str>, None as Option<&str>, Some(&commands)))
+        RootCommand(Command::wrap(tt::DELETE, None as Option<&str>, None as Option<&str>, Some(&commands)))
     }
 
     pub fn filter<T>(self, filter: T) -> RootCommand
@@ -196,7 +196,7 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Command::wrap(proto::Term_TermType::FILTER,
+        RootCommand(Command::wrap(tt::FILTER,
                                      Some(filter),
                                      None,
                                      Some(&commands)))
@@ -207,7 +207,7 @@ impl RootCommand {
         trace!(logger, "Calling r.run()");
         let commands = try!(self.0);
         let cfg = Client::config().read();
-        let query = Query::wrap(proto::Query_QueryType::START, Some(&commands), None);
+        let query = Query::wrap(qt::START, Some(&commands), None);
         debug!(logger, "{}", query);
         let mut conn = try!(Client::conn());
         // Try sending the query
@@ -299,7 +299,7 @@ impl RootCommand {
 }
 
 impl Command {
-    pub fn wrap<T>(command: proto::Term_TermType,
+    pub fn wrap<T>(command: tt,
                 arguments: Option<T>,
                 options: Option<T>,
                 commands: Option<&str>)
@@ -327,7 +327,7 @@ impl Command {
 }
 
 impl Query {
-    pub fn wrap(query_type: proto::Query_QueryType,
+    pub fn wrap(query_type: qt,
                 query: Option<&str>,
                 options: Option<&str>)
                 -> String {
