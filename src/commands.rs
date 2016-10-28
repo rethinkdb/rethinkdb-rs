@@ -12,7 +12,6 @@ use protobuf::ProtobufEnum;
 use byteorder::ReadBytesExt;
 use super::session::Client;
 use super::{Result, r};
-use std::fmt::Debug;
 
 pub struct RootCommand(Result<String>);
 pub struct Command;
@@ -47,7 +46,7 @@ impl Client {
     }
 
     pub fn db_create<T>(&self, name: T) -> RootCommand
-        where T: IntoCommandArg + Debug
+        where T: IntoCommandArg
     {
         RootCommand(Command::wrap(proto::Term_TermType::DB_CREATE,
                                      Some(name),
@@ -56,7 +55,7 @@ impl Client {
     }
 
     pub fn db_drop<T>(&self, name: T) -> RootCommand
-        where T: IntoCommandArg + Debug
+        where T: IntoCommandArg
     {
         RootCommand(Command::wrap(proto::Term_TermType::DB_DROP,
                                      Some(name),
@@ -65,7 +64,7 @@ impl Client {
     }
 
     pub fn db<T>(&self, name: T) -> RootCommand
-        where T: IntoCommandArg + Debug
+        where T: IntoCommandArg
     {
         RootCommand(Command::wrap(proto::Term_TermType::DB,
                                      Some(name),
@@ -74,14 +73,14 @@ impl Client {
     }
 
     pub fn table_create<T>(&self, name: T) -> RootCommand
-        where T: IntoCommandArg + Debug
+        where T: IntoCommandArg
     {
         let config = Client::config().read();
         r.db(config.db).table_create(name)
     }
 
     pub fn table<T>(&self, name: T) -> RootCommand
-        where T: IntoCommandArg + Debug
+        where T: IntoCommandArg
     {
         let config = Client::config().read();
         r.db(config.db).table(name)
@@ -98,7 +97,7 @@ impl Client {
 
 impl RootCommand {
     pub fn table_create<T>(self, name: T) -> RootCommand
-        where T: IntoCommandArg + Debug
+        where T: IntoCommandArg
     {
         let commands = match self.0 {
             Ok(t) => t,
@@ -111,7 +110,7 @@ impl RootCommand {
     }
 
     pub fn table<T>(self, name: T) -> RootCommand
-        where T: IntoCommandArg + Debug
+        where T: IntoCommandArg
     {
         let commands = match self.0 {
             Ok(t) => t,
@@ -124,7 +123,7 @@ impl RootCommand {
     }
 
     pub fn insert<T>(self, data: T) -> RootCommand
-        where T: IntoCommandArg + Debug
+        where T: IntoCommandArg
     {
         let commands = match self.0 {
             Ok(t) => t,
@@ -145,7 +144,7 @@ impl RootCommand {
     }
 
     pub fn filter<T>(self, filter: T) -> RootCommand
-        where T: IntoCommandArg + Debug
+        where T: IntoCommandArg
     {
         let commands = match self.0 {
             Ok(t) => t,
