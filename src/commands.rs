@@ -15,6 +15,7 @@ use super::{Result, r};
 use std::fmt;
 use std::error::Error as StdError;
 
+#[derive(Debug)]
 pub struct RootCommand(Result<String>);
 
 impl fmt::Display for RootCommand {
@@ -29,37 +30,37 @@ impl fmt::Display for RootCommand {
 pub struct Command;
 pub struct Query;
 
-pub trait IntoCommandArg : fmt::Display {
-    fn to_arg(&self) -> Result<String> {
-        Ok(format!("{}", self))
+pub trait IntoCommandArg : fmt::Display + fmt::Debug {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(format!("{}", self)), None))
     }
 }
 
 impl<'a> IntoCommandArg for &'a str {
-    fn to_arg(&self) -> Result<String> {
-        Ok(format!("{:?}", self))
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(format!("{:?}", self)), None))
     }
 }
 
 impl IntoCommandArg for String {
-    fn to_arg(&self) -> Result<String> {
-        Ok(format!("{:?}", self))
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(format!("{:?}", self)), None))
     }
 }
 
 impl IntoCommandArg for serde_json::Value {
-    fn to_arg(&self) -> Result<String> {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
         match serde_json::to_string(self) {
-            Ok(cmd) => Ok(cmd),
+            Ok(cmd) => Ok((Some(cmd), None)),
             Err(e) => Err(From::from(DriverError::Json(e))),
         }
     }
 }
 
 impl IntoCommandArg for RootCommand {
-    fn to_arg(&self) -> Result<String> {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
         match self.0 {
-            Ok(ref cmd) => Ok(cmd.to_string()),
+            Ok(ref cmd) => Ok((Some(cmd.to_string()), None)),
             Err(ref e) => Err(From::from(DriverError::Other(e.description().to_string()))),
         }
     }
@@ -88,7 +89,14 @@ impl Client {
     pub fn expr<T>(&self, e: T) -> RootCommand
         where T: IntoCommandArg
     {
-        RootCommand(e.to_arg())
+        match e.to_arg() {
+            Ok(arg) => if let Some(arg) = arg.0 {
+                RootCommand(Ok(arg))
+            } else {
+                RootCommand(Ok(String::new()))
+            },
+            Err(e) => RootCommand(Err(e)),
+        }
     }
 
     pub fn db_create<T>(&self, name: T) -> RootCommand
@@ -96,7 +104,6 @@ impl Client {
     {
         RootCommand(Command::wrap(tt::DB_CREATE,
                                      Some(name),
-                                     None,
                                      None))
     }
 
@@ -105,7 +112,6 @@ impl Client {
     {
         RootCommand(Command::wrap(tt::DB_DROP,
                                      Some(name),
-                                     None,
                                      None))
     }
 
@@ -114,7 +120,6 @@ impl Client {
     {
         RootCommand(Command::wrap(tt::DB,
                                      Some(name),
-                                     None,
                                      None))
     }
 
@@ -151,7 +156,6 @@ impl RootCommand {
         };
         RootCommand(Command::wrap(tt::TABLE_CREATE,
                                      Some(name),
-                                     None,
                                      Some(&commands)))
     }
 
@@ -164,7 +168,6 @@ impl RootCommand {
         };
         RootCommand(Command::wrap(tt::TABLE,
                                      Some(name),
-                                     None,
                                      Some(&commands)))
     }
 
@@ -177,7 +180,6 @@ impl RootCommand {
         };
         RootCommand(Command::wrap(tt::INSERT,
                                      Some(data),
-                                     None,
                                      Some(&commands)))
     }
 
@@ -186,7 +188,9 @@ impl RootCommand {
             Ok(t) => t,
             Err(e) => return RootCommand(Err(e)),
         };
-        RootCommand(Command::wrap(tt::DELETE, None as Option<&str>, None as Option<&str>, Some(&commands)))
+        RootCommand(Command::wrap(tt::DELETE,
+                                  None as Option<&str>,
+                                  Some(&commands)))
     }
 
     pub fn filter<T>(self, filter: T) -> RootCommand
@@ -198,7 +202,6 @@ impl RootCommand {
         };
         RootCommand(Command::wrap(tt::FILTER,
                                      Some(filter),
-                                     None,
                                      Some(&commands)))
     }
 
@@ -300,47 +303,53 @@ impl RootCommand {
 
 impl Command {
     pub fn wrap<T>(command: tt,
-                arguments: Option<T>,
-                options: Option<T>,
+                input: Option<T>,
                 commands: Option<&str>)
                 -> Result<String>
         where T: IntoCommandArg
-    {
-        let mut cmds = format!("[{},", command.value());
-        let mut args = String::new();
-        if let Some(commands) = commands {
-            args.push_str(commands);
-            if arguments.is_some() {
-                args.push_str(",");
+        {
+            let mut cmds = format!("[{},", command.value());
+            let mut args = String::new();
+            if let Some(commands) = commands {
+                args.push_str(commands);
+                if input.is_some() {
+                    args.push_str(",");
+                }
             }
+            let mut arguments: Option<String> = None;
+            let mut options: Option<String> = None;
+            if let Some(input) = input {
+                let (args, opts) = try!(input.to_arg());
+                arguments = args;
+                options = opts;
+            }
+            if let Some(arguments) = arguments {
+                args.push_str(&arguments);
+            }
+            cmds.push_str(&format!("[{}]", args));
+            if let Some(options) = options {
+                cmds.push_str(&format!(",{{{}}}", options));
+            }
+            cmds.push(']');
+            Ok(cmds)
         }
-        if let Some(arguments) = arguments {
-            args.push_str(&try!(arguments.to_arg()));
-        }
-        cmds.push_str(&format!("[{}]", args));
-        if let Some(options) = options {
-            cmds.push_str(&format!(",{{{}}}", try!(options.to_arg())));
-        }
-        cmds.push(']');
-        Ok(cmds)
-    }
 }
 
 impl Query {
     pub fn wrap(query_type: qt,
                 query: Option<&str>,
                 options: Option<&str>)
-                -> String {
-        let mut qry = format!("[{}", query_type.value());
-        if let Some(query) = query {
-            qry.push_str(&format!(",{}", query));
+        -> String {
+            let mut qry = format!("[{}", query_type.value());
+            if let Some(query) = query {
+                qry.push_str(&format!(",{}", query));
+            }
+            if let Some(options) = options {
+                qry.push_str(&format!(",{}", options));
+            }
+            qry.push_str("]");
+            qry
         }
-        if let Some(options) = options {
-            qry.push_str(&format!(",{}", options));
-        }
-        qry.push_str("]");
-        qry
-    }
 
     pub fn write(query: &str, conn: &mut Connection) -> Result<()> {
         let query = query.as_bytes();
