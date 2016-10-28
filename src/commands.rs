@@ -12,13 +12,27 @@ use protobuf::ProtobufEnum;
 use byteorder::ReadBytesExt;
 use super::session::Client;
 use super::{Result, r};
+use std::fmt;
+use std::error::Error as StdError;
 
 pub struct RootCommand(Result<String>);
+
+impl fmt::Display for RootCommand {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.0 {
+            Ok(ref cmd) => write!(f, "{}", cmd),
+            Err(_) => Err(fmt::Error),
+        }
+    }
+}
+
 pub struct Command;
 pub struct Query;
 
-pub trait IntoCommandArg {
-    fn to_arg(&self) -> Result<String>;
+pub trait IntoCommandArg : fmt::Display {
+    fn to_arg(&self) -> Result<String> {
+        Ok(format!("{}", self))
+    }
 }
 
 impl<'a> IntoCommandArg for &'a str {
@@ -35,8 +49,19 @@ impl IntoCommandArg for String {
 
 impl IntoCommandArg for serde_json::Value {
     fn to_arg(&self) -> Result<String> {
-        let arg = try!(serde_json::to_string(self).map_err(|e| DriverError::Json(e)));
-        Ok(format!("{}", arg))
+        match serde_json::to_string(self) {
+            Ok(cmd) => Ok(cmd),
+            Err(e) => Err(From::from(DriverError::Json(e))),
+        }
+    }
+}
+
+impl IntoCommandArg for RootCommand {
+    fn to_arg(&self) -> Result<String> {
+        match self.0 {
+            Ok(ref cmd) => Ok(cmd.to_string()),
+            Err(ref e) => Err(From::from(DriverError::Other(e.description().to_string()))),
+        }
     }
 }
 
