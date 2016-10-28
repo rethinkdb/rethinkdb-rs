@@ -25,8 +25,8 @@ fn connection_pool_works() {
     // Delete data if nessary
     r.table("users").delete().run().unwrap();
 
-    // Insert 100 users into the table
-    (0..100u32)
+    // Insert 10 users into the table
+    (0..10u32)
         .into_par_iter()
         .enumerate()
         .for_each(|(i, _)| {

@@ -24,19 +24,20 @@ pub trait IntoCommandArg {
 
 impl<'a> IntoCommandArg for &'a str {
     fn to_arg(&self) -> Result<String> {
-        Ok(self.to_string())
+        Ok(format!("{:?}", self))
     }
 }
 
 impl IntoCommandArg for String {
     fn to_arg(&self) -> Result<String> {
-        Ok(format!("{}", self))
+        Ok(format!("{:?}", self))
     }
 }
 
 impl IntoCommandArg for serde_json::Value {
     fn to_arg(&self) -> Result<String> {
-        serde_json::to_string(self).map_err(|e| From::from(DriverError::Json(e)))
+        let arg = try!(serde_json::to_string(self).map_err(|e| DriverError::Json(e)));
+        Ok(format!("{}", arg))
     }
 }
 
@@ -49,7 +50,7 @@ impl Client {
         where T: IntoCommandArg + Debug
     {
         RootCommand(Command::wrap(proto::Term_TermType::DB_CREATE,
-                                     Some(format!("{:?}", name)),
+                                     Some(name),
                                      None,
                                      None))
     }
@@ -58,7 +59,7 @@ impl Client {
         where T: IntoCommandArg + Debug
     {
         RootCommand(Command::wrap(proto::Term_TermType::DB_DROP,
-                                     Some(format!("{:?}", name)),
+                                     Some(name),
                                      None,
                                      None))
     }
@@ -67,7 +68,7 @@ impl Client {
         where T: IntoCommandArg + Debug
     {
         RootCommand(Command::wrap(proto::Term_TermType::DB,
-                                     Some(format!("{:?}", name)),
+                                     Some(name),
                                      None,
                                      None))
     }
@@ -104,7 +105,7 @@ impl RootCommand {
             Err(e) => return RootCommand(Err(e)),
         };
         RootCommand(Command::wrap(proto::Term_TermType::TABLE_CREATE,
-                                     Some(format!("{:?}", name)),
+                                     Some(name),
                                      None,
                                      Some(&commands)))
     }
@@ -117,7 +118,7 @@ impl RootCommand {
             Err(e) => return RootCommand(Err(e)),
         };
         RootCommand(Command::wrap(proto::Term_TermType::TABLE,
-                                     Some(format!("{:?}", name)),
+                                     Some(name),
                                      None,
                                      Some(&commands)))
     }
