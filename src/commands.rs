@@ -37,15 +37,11 @@ impl IntoCommandArg for String {
 
 impl IntoCommandArg for Value {
     fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        match serde_json::to_string(self) {
-            Ok(mut cmd) => {
-                // Arrays are a special case: since ReQL commands are sent as arrays
-                if self.is_array() {
-                    // We have to wrap them using MAKE_ARRAY
-                    cmd = format!("[{},{}]", tt::MAKE_ARRAY.value(), cmd);
-                }
-                Ok((Some(cmd), None))
-            },
+        // Arrays are a special case: since ReQL commands are sent as arrays
+        // We have to wrap them using MAKE_ARRAY
+        let val = wrap_arrays(self.clone());
+        match serde_json::to_string(&val) {
+            Ok(cmd) => Ok((Some(cmd), None)),
             Err(e) => Err(From::from(DriverError::Json(e))),
         }
     }
@@ -480,4 +476,32 @@ impl Query {
         }
         Ok(resp)
     }
+}
+
+fn wrap_arrays(mut val: Value) -> Value {
+    if val.is_array() {
+        let mut array = Vec::with_capacity(2);
+        array.push(Value::I64(tt::MAKE_ARRAY.value() as i64));
+        if let Value::Array(vec) = val {
+            let mut new_val = Vec::with_capacity(vec.len());
+            for v in vec.into_iter() {
+                if v.is_array() {
+                    new_val.push(wrap_arrays(v));
+                } else {
+                    new_val.push(v)
+                }
+            }
+            val = Value::Array(new_val);
+        }
+        array.push(val);
+        val = Value::Array(array);
+    } else if val.is_object() {
+        if let Value::Object(mut obj) = val {
+            for (k, v) in obj.clone() {
+                obj.insert(k, wrap_arrays(v));
+            }
+            val = Value::Object(obj);
+        }
+    }
+    val
 }
