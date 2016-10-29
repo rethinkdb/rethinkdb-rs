@@ -22,11 +22,11 @@ fn connection_pool_works() {
     // Create our database if necessary
     r.db_create("blog").run().unwrap();
 
+    // Drop table if nessary
+    r.table_drop("users").run().unwrap();
+
     // Create our table if necessary
     r.table_create("users").run().unwrap();
-
-    // Delete data if nessary
-    r.table("users").delete().run().unwrap();
 
     // Insert 1 user(s) into the table
     (0..1u32)

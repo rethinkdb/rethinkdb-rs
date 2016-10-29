@@ -2,7 +2,7 @@
 
 use errors::*;
 use conn::{Connection, ConnectOpts};
-use serde_json;
+use serde_json::{self, Value};
 use ql2::proto::{Term_TermType as tt, Query_QueryType as qt};
 use std::io::Write;
 use byteorder::{WriteBytesExt, LittleEndian};
@@ -12,28 +12,15 @@ use protobuf::ProtobufEnum;
 use byteorder::ReadBytesExt;
 use super::session::Client;
 use super::{Result, r};
-use std::fmt;
 use std::error::Error as StdError;
 
 #[derive(Debug)]
 pub struct RootCommand(Result<String>);
-
-impl fmt::Display for RootCommand {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.0 {
-            Ok(ref cmd) => write!(f, "{}", cmd),
-            Err(_) => Err(fmt::Error),
-        }
-    }
-}
-
 pub struct Command;
 pub struct Query;
 
-pub trait IntoCommandArg : fmt::Display + fmt::Debug {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(format!("{}", self)), None))
-    }
+pub trait IntoCommandArg {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)>;
 }
 
 impl<'a> IntoCommandArg for &'a str {
@@ -48,12 +35,29 @@ impl IntoCommandArg for String {
     }
 }
 
-impl IntoCommandArg for serde_json::Value {
+impl IntoCommandArg for Value {
     fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
         match serde_json::to_string(self) {
             Ok(cmd) => Ok((Some(cmd), None)),
             Err(e) => Err(From::from(DriverError::Json(e))),
         }
+    }
+}
+
+impl<T> IntoCommandArg for (T, Value)
+        where T: IntoCommandArg
+{
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        if let Value::Object(_) = self.1 {
+            // Do nothing.
+            // We want the value to be an object.
+        } else {
+            let msg = String::from("Only objects are allowed as function options. You should use `r.object()` to pass optional arguments in your functions.");
+            return Err(From::from(DriverError::Other(msg)));
+        }
+        let arg = try!(self.0.to_arg());
+        let opt = try!(self.1.to_arg());
+        Ok((arg.0, opt.0))
     }
 }
 
@@ -66,20 +70,76 @@ impl IntoCommandArg for RootCommand {
     }
 }
 
-impl IntoCommandArg for bool { }
-impl IntoCommandArg for char { }
-impl IntoCommandArg for u8 { }
-impl IntoCommandArg for u16 { }
-impl IntoCommandArg for u32 { }
-impl IntoCommandArg for u64 { }
-impl IntoCommandArg for usize { }
-impl IntoCommandArg for i8 { }
-impl IntoCommandArg for i16 { }
-impl IntoCommandArg for i32 { }
-impl IntoCommandArg for i64 { }
-impl IntoCommandArg for isize { }
-impl IntoCommandArg for f32 { }
-impl IntoCommandArg for f64 { }
+impl IntoCommandArg for bool {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for char {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for u8 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for u16 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for u32 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for u64 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for usize {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for i8 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for i16 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for i32 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for i64 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for isize {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for f32 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
+impl IntoCommandArg for f64 {
+    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+        Ok((Some(self.to_string()), None))
+    }
+}
 
 impl Client {
     pub fn connection(&self) -> ConnectOpts {
@@ -137,6 +197,13 @@ impl Client {
         r.db(config.db).table(name)
     }
 
+    pub fn table_drop<T>(&self, name: T) -> RootCommand
+        where T: IntoCommandArg
+    {
+        let config = Client::config().read();
+        r.db(config.db).table_drop(name)
+    }
+
     pub fn object(&self) -> serde_json::builder::ObjectBuilder {
         serde_json::builder::ObjectBuilder::new()
     }
@@ -167,6 +234,18 @@ impl RootCommand {
             Err(e) => return RootCommand(Err(e)),
         };
         RootCommand(Command::wrap(tt::TABLE,
+                                     Some(name),
+                                     Some(&commands)))
+    }
+
+    pub fn table_drop<T>(self, name: T) -> RootCommand
+        where T: IntoCommandArg
+    {
+        let commands = match self.0 {
+            Ok(t) => t,
+            Err(e) => return RootCommand(Err(e)),
+        };
+        RootCommand(Command::wrap(tt::TABLE_DROP,
                                      Some(name),
                                      Some(&commands)))
     }
@@ -328,7 +407,7 @@ impl Command {
             }
             cmds.push_str(&format!("[{}]", args));
             if let Some(options) = options {
-                cmds.push_str(&format!(",{{{}}}", options));
+                cmds.push_str(&format!(",{}", options));
             }
             cmds.push(']');
             Ok(cmds)
