@@ -38,7 +38,14 @@ impl IntoCommandArg for String {
 impl IntoCommandArg for Value {
     fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
         match serde_json::to_string(self) {
-            Ok(cmd) => Ok((Some(cmd), None)),
+            Ok(mut cmd) => {
+                // Arrays are a special case: since ReQL commands are sent as arrays
+                if self.is_array() {
+                    // We have to wrap them using MAKE_ARRAY
+                    cmd = format!("[{},{}]", tt::MAKE_ARRAY.value(), cmd);
+                }
+                Ok((Some(cmd), None))
+            },
             Err(e) => Err(From::from(DriverError::Json(e))),
         }
     }

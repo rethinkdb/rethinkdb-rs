@@ -1,10 +1,12 @@
 extern crate reql;
 extern crate rayon;
 #[macro_use] extern crate slog;
+extern crate serde_json;
 
 use reql::r;
 use reql::session::Client;
 use rayon::prelude::*;
+use serde_json::{from_str, Value};
 
 #[test]
 fn connection_pool_works() {
@@ -39,7 +41,7 @@ fn connection_pool_works() {
                 .insert("age", i*2)
                 .build();
             */
-            let user = r#"
+            let user: Value = from_str(r#"
                 [
                     { "name": "William Adama", "tv_show": "Battlestar Galactica",
                       "posts": [
@@ -60,7 +62,7 @@ fn connection_pool_works() {
                       ]
                     }
                 ]
-            "#;
+            "#).unwrap();
             let res = r.table("users").insert(user).run();
             debug!(logger, "{:?}", res);
         });
