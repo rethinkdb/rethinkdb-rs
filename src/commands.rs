@@ -48,10 +48,7 @@ impl<T> IntoCommandArg for (T, Value)
         where T: IntoCommandArg
 {
     fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        if let Value::Object(_) = self.1 {
-            // Do nothing.
-            // We want the value to be an object.
-        } else {
+        if !self.1.is_object() {
             let msg = String::from("Only objects are allowed as function options. You should use `r.object()` to pass optional arguments in your functions.");
             return Err(From::from(DriverError::Other(msg)));
         }
