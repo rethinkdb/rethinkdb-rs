@@ -3,6 +3,7 @@
 use errors::*;
 use conn::{Connection, ConnectOpts};
 use serde_json::{self, Value};
+use serde_json::builder::{ObjectBuilder, ArrayBuilder};
 use ql2::proto::{Term_TermType as tt, Query_QueryType as qt};
 use std::io::Write;
 use byteorder::{WriteBytesExt, LittleEndian};
@@ -95,7 +96,47 @@ define!{ impl IntoCommandArg for isize }
 define!{ impl IntoCommandArg for f32 }
 define!{ impl IntoCommandArg for f64 }
 
+macro_rules! command {
+    ($name:ident, $cmd:ident) => {
+        pub fn $name<T>(self, arg: T) -> RootCommand
+            where T: IntoCommandArg
+            {
+                let commands = match self.0 {
+                    Ok(t) => t,
+                    Err(e) => return RootCommand(Err(e)),
+                };
+                RootCommand(Command::wrap(tt::$cmd,
+                                          Some(arg),
+                                          Some(&commands)))
+            }
+    };
+    ($name:ident, $cmd:ident, root_cmd) => {
+        pub fn $name<T>(self, arg: T) -> RootCommand
+            where T: IntoCommandArg
+            {
+                RootCommand(Command::wrap(tt::$cmd,
+                                          Some(arg),
+                                          None))
+            }
+    };
+    ($name:ident, $cmd:ident, no_args) => {
+        pub fn $name(self) -> RootCommand {
+                let commands = match self.0 {
+                    Ok(t) => t,
+                    Err(e) => return RootCommand(Err(e)),
+                };
+                RootCommand(Command::wrap(tt::$cmd,
+                                          None as Option<&str>,
+                                          Some(&commands)))
+            }
+    };
+}
+
 impl Client {
+    command!(db, DB, root_cmd);
+    command!(db_create, DB_CREATE, root_cmd);
+    command!(db_drop, DB_DROP, root_cmd);
+
     pub fn connection(&self) -> ConnectOpts {
         Self::config().read().clone()
     }
@@ -111,30 +152,6 @@ impl Client {
             },
             Err(e) => RootCommand(Err(e)),
         }
-    }
-
-    pub fn db_create<T>(&self, name: T) -> RootCommand
-        where T: IntoCommandArg
-    {
-        RootCommand(Command::wrap(tt::DB_CREATE,
-                                     Some(name),
-                                     None))
-    }
-
-    pub fn db_drop<T>(&self, name: T) -> RootCommand
-        where T: IntoCommandArg
-    {
-        RootCommand(Command::wrap(tt::DB_DROP,
-                                     Some(name),
-                                     None))
-    }
-
-    pub fn db<T>(&self, name: T) -> RootCommand
-        where T: IntoCommandArg
-    {
-        RootCommand(Command::wrap(tt::DB,
-                                     Some(name),
-                                     None))
     }
 
     pub fn table_create<T>(&self, name: T) -> RootCommand
@@ -158,28 +175,12 @@ impl Client {
         r.db(config.db).table_drop(name)
     }
 
-    pub fn object(&self) -> serde_json::builder::ObjectBuilder {
-        serde_json::builder::ObjectBuilder::new()
+    pub fn object(&self) -> ObjectBuilder {
+        ObjectBuilder::new()
     }
 
-    pub fn array(&self) -> serde_json::builder::ArrayBuilder {
-        serde_json::builder::ArrayBuilder::new()
-    }
-}
-
-macro_rules! command {
-    ($name:ident, $cmd:ident) => {
-        pub fn $name<T>(self, arg: T) -> RootCommand
-            where T: IntoCommandArg
-            {
-                let commands = match self.0 {
-                    Ok(t) => t,
-                    Err(e) => return RootCommand(Err(e)),
-                };
-                RootCommand(Command::wrap(tt::$cmd,
-                                          Some(arg),
-                                          Some(&commands)))
-            }
+    pub fn array(&self) -> ArrayBuilder {
+        ArrayBuilder::new()
     }
 }
 
@@ -199,16 +200,7 @@ impl RootCommand {
     command!(get_all, GET_ALL);
     command!(filter, FILTER);
     command!(insert, INSERT);
-
-    pub fn delete(self) -> RootCommand {
-        let commands = match self.0 {
-            Ok(t) => t,
-            Err(e) => return RootCommand(Err(e)),
-        };
-        RootCommand(Command::wrap(tt::DELETE,
-                                  None as Option<&str>,
-                                  Some(&commands)))
-    }
+    command!(delete, DELETE, no_args);
 
     pub fn run(self) -> Result<String> {
         let logger = Client::logger().read();
