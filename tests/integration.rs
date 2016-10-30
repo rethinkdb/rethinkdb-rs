@@ -3,7 +3,7 @@ extern crate rayon;
 #[macro_use] extern crate slog;
 
 use reql::r;
-use reql::session::Client;
+use reql::commands::Client;
 use rayon::prelude::*;
 
 #[test]

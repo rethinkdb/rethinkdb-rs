@@ -27,13 +27,8 @@ extern crate protobuf;
 extern crate scram;
 extern crate parking_lot;
 
-pub mod conn;
-pub mod types;
 pub mod commands;
-pub mod session;
 pub mod errors;
 
-pub type Result<T> = std::result::Result<T, errors::Error>;
-
 #[allow(non_upper_case_globals)]
-pub const r: session::Client = session::Client;
+pub const r: commands::Client = commands::Client;

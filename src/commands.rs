@@ -1,24 +1,455 @@
 //! The Actual RethinkDB Commands
 
-use errors::*;
-use conn::{Connection, ConnectOpts};
+include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
+
+use std::io::{Write, BufRead};
+use std::io::Read;
+use std::{str, result};
+use std::error::Error as StdError;
+use std::net::TcpStream;
+
+use super::r;
+use super::errors::*;
+use ql2::proto::{self, Term_TermType as tt, Query_QueryType as qt};
 use serde_json::{self, Value};
 use serde_json::builder::{ObjectBuilder, ArrayBuilder};
-use ql2::proto::{Term_TermType as tt, Query_QueryType as qt};
-use std::io::Write;
-use byteorder::{WriteBytesExt, LittleEndian};
-use std::io::Read;
-use std::str;
+use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
+use r2d2::{self, Pool, Config as PoolConfig, PooledConnection};
+use parking_lot::RwLock;
+use slog::{DrainExt, Logger};
+use slog_term;
 use protobuf::ProtobufEnum;
-use byteorder::ReadBytesExt;
-use super::session::Client;
-use super::{Result, r};
-use std::error::Error as StdError;
+use bufstream::BufStream;
+use scram::{ClientFirst, ServerFirst, ServerFinal};
+
+pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug)]
 pub struct RootCommand(Result<String>);
 pub struct Command;
 pub struct Query;
+
+lazy_static! {
+    static ref POOL: RwLock<Option<Vec<Pool<ConnectionManager>>>> = RwLock::new(None);
+
+    static ref LOGGER: RwLock<Logger> = RwLock::new({
+        let drain = slog_term::streamer().compact().build().fuse();
+        Logger::root(drain, o!("version" => env!("CARGO_PKG_VERSION")))
+    });
+
+    static ref CONFIG: RwLock<ConnectOpts> = RwLock::new(ConnectOpts::default());
+}
+
+/// Options
+#[derive(Debug, Clone)]
+pub struct ConnectOpts {
+    pub servers: Vec<&'static str>,
+    pub db: &'static str,
+    pub user: &'static str,
+    pub password: &'static str,
+    pub retries: u8,
+    pub ssl: Option<SslCfg>,
+    server: Option<&'static str>,
+}
+
+#[derive(Debug, Clone)]
+pub struct SslCfg {
+    pub ca_certs: &'static str,
+}
+
+impl Default for ConnectOpts {
+    fn default() -> ConnectOpts {
+        ConnectOpts {
+            servers: vec!["localhost:28015"],
+            db: "test",
+            user: "admin",
+            password: "",
+            retries: 5,
+            ssl: None,
+            server: None,
+        }
+    }
+}
+
+/// A connection to a RethinkDB database.
+#[derive(Debug)]
+pub struct Connection {
+    pub stream: TcpStream,
+    pub token: u64,
+    pub broken: bool,
+}
+
+impl ConnectOpts {
+    /// Sets servers
+    pub fn set_servers(mut self, servers: Vec<&'static str>) -> Self {
+        self.servers = servers;
+        self
+    }
+    /// Sets database
+    pub fn set_db(mut self, db: &'static str) -> Self {
+        self.db = db;
+        self
+    }
+    /// Sets username
+    pub fn set_user(mut self, user: &'static str) -> Self {
+        self.user = user;
+        self
+    }
+    /// Sets password
+    pub fn set_password(mut self, password: &'static str) -> Self {
+        self.password = password;
+        self
+    }
+    /// Sets retries
+    pub fn set_retries(mut self, retries: u8) -> Self {
+        self.retries = retries;
+        self
+    }
+
+    /// Creates a connection pool
+    pub fn connect(self) -> Result<()> {
+        let logger = Client::logger().read();
+        trace!(logger, "Calling r.connect()");
+        try!(Client::set_config(self.clone()));
+        // If pool is already set we do nothing
+        if Client::pool().read().is_some() {
+            info!(logger,
+                  "A connection pool is already initialised. We will use that one instead...");
+            return Ok(());
+        }
+        // Otherwise we set it
+        let mut pools: Vec<Pool<ConnectionManager>> = Vec::new();
+        let mut opts = self;
+        for s in &opts.servers[..] {
+            opts.server = Some(s);
+            let manager = ConnectionManager::new(opts.clone());
+            let config = PoolConfig::builder()
+                // If we are under load and our pool runs out of connections
+                // we are doomed so we set a very high number of maximum
+                // connections that can be opened
+                .pool_size(100)
+                // To counter the high number of open connections we set
+                // a reasonable number of minimum connections we want to
+                // keep when we are idle.
+                .min_idle(Some(10))
+                .build();
+            let new_pool = try!(Pool::new(config, manager));
+            pools.push(new_pool);
+        }
+        try!(Client::set_pool(pools));
+        info!(logger, "A connection pool has been initialised...");
+        Ok(())
+    }
+}
+
+impl Connection {
+    pub fn new(opts: &ConnectOpts) -> Result<Connection> {
+        let server = match opts.server {
+            Some(server) => server,
+            None => {
+                return Err(From::from(ConnectionError::Other(String::from("No server selected."))))
+            }
+        };
+        let mut conn = Connection {
+            stream: try!(TcpStream::connect(server)),
+            token: 0,
+            broken: false,
+        };
+        let _ = try!(conn.handshake(opts));
+        Ok(conn)
+    }
+
+    fn handshake(&mut self, opts: &ConnectOpts) -> Result<()> {
+        // Send desired version to the server
+        let _ = try!(self.stream
+            .write_u32::<LittleEndian>(proto::VersionDummy_Version::V1_0 as u32));
+        try!(parse_server_version(&self.stream));
+
+        // Send client first message
+        let (scram, msg) = try!(client_first(opts));
+        let _ = try!(self.stream.write_all(&msg[..]));
+
+        // Send client final message
+        let (scram, msg) = try!(client_final(scram, &self.stream));
+        let _ = try!(self.stream.write_all(&msg[..]));
+
+        // Validate final server response and flush the buffer
+        try!(parse_server_final(scram, &self.stream));
+        let _ = try!(self.stream.flush());
+
+        Ok(())
+    }
+}
+
+fn parse_server_version(stream: &TcpStream) -> Result<()> {
+    let logger = Client::logger().read();
+    let resp = try!(parse_server_response(stream));
+    let info: ServerInfo = match serde_json::from_str(&resp) {
+        Ok(res) => res,
+        Err(err) => {
+            crit!(logger, "{}", err);
+            return Err(From::from(err));
+        }
+    };
+
+    if !info.success {
+        return Err(From::from(ConnectionError::Other(resp.to_string())));
+    };
+    Ok(())
+}
+
+fn parse_server_response(stream: &TcpStream) -> Result<String> {
+    let logger = Client::logger().read();
+    // The server will then respond with a NULL-terminated string response.
+    // "SUCCESS" indicates that the connection has been accepted. Any other
+    // response indicates an error, and the response string should describe
+    // the error.
+    let mut resp = Vec::new();
+    let mut buf = BufStream::new(stream);
+    let _ = try!(buf.read_until(b'\0', &mut resp));
+
+    let _ = resp.pop();
+
+    if resp.is_empty() {
+        let msg = String::from("unable to connect for an unknown reason");
+        crit!(logger, "{}", msg);
+        return Err(From::from(ConnectionError::Other(msg)));
+    };
+
+    let resp = try!(str::from_utf8(&resp)).to_string();
+    // If it's not a JSON object it's an error
+    if !resp.starts_with("{") {
+        crit!(logger, "{}", resp);
+        return Err(From::from(ConnectionError::Other(resp)));
+    };
+    Ok(resp)
+}
+
+fn client_first(opts: &ConnectOpts) -> Result<(ServerFirst, Vec<u8>)> {
+    let logger = Client::logger().read();
+    let scram = try!(ClientFirst::new(opts.user, opts.password, None));
+    let (scram, client_first) = scram.client_first();
+
+    let ar = AuthRequest {
+        protocol_version: 0,
+        authentication_method: String::from("SCRAM-SHA-256"),
+        authentication: client_first,
+    };
+    let mut msg = match serde_json::to_vec(&ar) {
+        Ok(res) => res,
+        Err(err) => {
+            crit!(logger, "{}", err);
+            return Err(From::from(err));
+        }
+    };
+    msg.push(b'\0');
+    Ok((scram, msg))
+}
+
+fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, Vec<u8>)> {
+    let logger = Client::logger().read();
+    let resp = try!(parse_server_response(stream));
+    let info: AuthResponse = match serde_json::from_str(&resp) {
+        Ok(res) => res,
+        Err(err) => {
+            crit!(logger, "{}", err);
+            return Err(From::from(err));
+        }
+    };
+
+    if !info.success {
+        let mut err = resp.to_string();
+        if let Some(e) = info.error {
+            err = e;
+        }
+        // If error code is between 10 and 20, this is an auth error
+        if let Some(10...20) = info.error_code {
+            return Err(From::from(DriverError::Auth(err)));
+        } else {
+            return Err(From::from(ConnectionError::Other(err)));
+        }
+    };
+    if let Some(auth) = info.authentication {
+        let scram = scram.handle_server_first(&auth).unwrap();
+        let (scram, client_final) = scram.client_final();
+        let auth = AuthConfirmation { authentication: client_final };
+        let mut msg = match serde_json::to_vec(&auth) {
+            Ok(res) => res,
+            Err(err) => {
+                crit!(logger, "{}", err);
+                return Err(From::from(err));
+            }
+        };
+        msg.push(b'\0');
+        Ok((scram, msg))
+    } else {
+        Err(From::from(ConnectionError::Other(String::from("Server did not send authentication \
+                                                            info."))))
+    }
+}
+
+fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
+    let logger = Client::logger().read();
+    let resp = try!(parse_server_response(stream));
+    let info: AuthResponse = match serde_json::from_str(&resp) {
+        Ok(res) => res,
+        Err(err) => {
+            crit!(logger, "{}", err);
+            return Err(From::from(err));
+        }
+    };
+    if !info.success {
+        let mut err = resp.to_string();
+        if let Some(e) = info.error {
+            err = e;
+        }
+        // If error code is between 10 and 20, this is an auth error
+        if let Some(10...20) = info.error_code {
+            return Err(From::from(DriverError::Auth(err)));
+        } else {
+            return Err(From::from(ConnectionError::Other(err)));
+        }
+    };
+    if let Some(auth) = info.authentication {
+        let _ = scram.handle_server_final(&auth).unwrap();
+    }
+    Ok(())
+}
+
+pub struct ConnectionManager(ConnectOpts);
+
+impl ConnectionManager {
+    pub fn new(opts: ConnectOpts) -> Self {
+        ConnectionManager(opts)
+    }
+}
+
+impl r2d2::ManageConnection for ConnectionManager {
+    type Connection = Connection;
+    type Error = Error;
+
+    fn connect(&self) -> Result<Connection> {
+        Connection::new(&self.0)
+    }
+
+    fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
+        let logger = Client::logger().read();
+        conn.token += 1;
+        let query = Query::wrap(proto::Query_QueryType::START, Some("1"), None);
+        try!(Query::write(&query, &mut conn));
+        let resp = try!(Query::read(&mut conn));
+        let resp = try!(str::from_utf8(&resp));
+        if resp != r#"{"t":1,"r":[1]}"# {
+            warn!(logger,
+                  "Got {} from server instead of the expected `is_valid()` response.",
+                  resp);
+            return Err(From::from(ConnectionError::Other(String::from("Unexpected response \
+                                                                       from server."))));
+        }
+        Ok(())
+    }
+
+    fn has_broken(&self, conn: &mut Connection) -> bool {
+        if conn.broken {
+            return true;
+        }
+        match conn.stream.take_error() {
+            Ok(error) => {
+                if error.is_some() {
+                    return true;
+                }
+            }
+            Err(_) => {
+                return true;
+            }
+        }
+        false
+    }
+}
+
+pub struct Client;
+
+pub struct Config;
+
+impl Client {
+    pub fn logger() -> &'static RwLock<Logger> {
+        &LOGGER
+    }
+
+    pub fn pool() -> &'static RwLock<Option<Vec<Pool<ConnectionManager>>>> {
+        &POOL
+    }
+
+    pub fn config() -> &'static RwLock<ConnectOpts> {
+        &CONFIG
+    }
+
+    pub fn conn() -> Result<PooledConnection<ConnectionManager>> {
+        let logger = Self::logger().read();
+        let cfg = Self::config().read();
+        trace!(logger, "Calling Client::conn()");
+        let pool = Self::pool().read();
+        match *pool {
+            Some(ref pool) => {
+                let mut num_retries = cfg.retries;
+                let msg = String::from("Failed to get a connection.");
+                let mut last_error = Err(From::from(ConnectionError::Other(msg)));
+                while num_retries > 0 {
+                    let mut least_connections = 0;
+                    let mut least_connected_server = 0;
+                    let mut most_idle = 0;
+                    let mut most_idle_server = 0;
+                    for (i, p) in pool.iter().enumerate() {
+                        let state = p.state();
+                        if least_connections == 0 || least_connections > state.connections {
+                            least_connections = state.connections;
+                            least_connected_server = i
+                        }
+                        if most_idle == 0 || most_idle < state.idle_connections {
+                            most_idle = state.idle_connections;
+                            most_idle_server = i
+                        }
+                    }
+                    if most_idle > 0 {
+                        match pool[most_idle_server].get() {
+                            Ok(conn) => return Ok(conn),
+                            Err(error) => last_error = Err(From::from(error)),
+                        }
+                    } else if least_connections > 0 {
+                        match pool[least_connected_server].get() {
+                            Ok(conn) => return Ok(conn),
+                            Err(error) => last_error = Err(From::from(error)),
+                        }
+                    } else {
+                        let msg = String::from("All servers are currently down.");
+                        last_error = Err(From::from(ConnectionError::Other(msg)));
+                    }
+                    num_retries -= 1;
+                }
+                return last_error;
+            }
+            None => {
+                let msg = String::from("Your connection pool is not initialised. \
+                                   Use `r.connection().connect()` to initialise the pool \
+                                   before trying to send any connections to the database. \
+                                   This is typically done in the `main` function.");
+                return Err(From::from(ConnectionError::Other(msg)));
+            }
+        }
+    }
+
+    pub fn set_pool(p: Vec<Pool<ConnectionManager>>) -> Result<()> {
+        let mut pool = POOL.write();
+        *pool = Some(p);
+        Ok(())
+    }
+
+    pub fn set_config(c: ConnectOpts) -> Result<()> {
+        let mut cfg = CONFIG.write();
+        *cfg = c;
+        Ok(())
+    }
+}
 
 pub trait IntoCommandArg {
     fn to_arg(&self) -> Result<(Option<String>, Option<String>)>;
