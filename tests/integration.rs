@@ -2,7 +2,6 @@ extern crate reql;
 extern crate rayon;
 
 use reql::r;
-use reql::commands::Client;
 use rayon::prelude::*;
 
 #[test]
