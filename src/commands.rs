@@ -22,7 +22,7 @@ use protobuf::ProtobufEnum;
 use bufstream::BufStream;
 use scram::{ClientFirst, ServerFirst, ServerFinal};
 
-/// ReQL Result
+/// A ReQL Result
 ///
 /// All public commands that can possibly return an error return this.
 pub type Result<T> = result::Result<T, Error>;
@@ -94,27 +94,27 @@ struct Connection {
 
 impl ConnectOpts {
     /// Sets servers
-    pub fn set_servers(mut self, servers: Vec<&'static str>) -> Self {
+    pub fn set_servers(mut self, servers: Vec<&'static str>) -> ConnectOpts {
         self.servers = servers;
         self
     }
     /// Sets database
-    pub fn set_db(mut self, db: &'static str) -> Self {
+    pub fn set_db(mut self, db: &'static str) -> ConnectOpts {
         self.db = db;
         self
     }
     /// Sets username
-    pub fn set_user(mut self, user: &'static str) -> Self {
+    pub fn set_user(mut self, user: &'static str) -> ConnectOpts {
         self.user = user;
         self
     }
     /// Sets password
-    pub fn set_password(mut self, password: &'static str) -> Self {
+    pub fn set_password(mut self, password: &'static str) -> ConnectOpts {
         self.password = password;
         self
     }
     /// Sets retries
-    pub fn set_retries(mut self, retries: u8) -> Self {
+    pub fn set_retries(mut self, retries: u8) -> ConnectOpts {
         self.retries = retries;
         self
     }
@@ -136,16 +136,7 @@ impl ConnectOpts {
         for s in &opts.servers[..] {
             opts.server = Some(s);
             let manager = ConnectionManager::new(opts.clone());
-            let config = PoolConfig::builder()
-                // If we are under load and our pool runs out of connections
-                // we are doomed so we set a very high number of maximum
-                // connections that can be opened
-                .pool_size(100)
-                // To counter the high number of open connections we set
-                // a reasonable number of minimum connections we want to
-                // keep when we are idle.
-                .min_idle(Some(10))
-                .build();
+            let config = PoolConfig::default();
             let new_pool = try!(Pool::new(config, manager));
             pools.push(new_pool);
         }
@@ -380,6 +371,12 @@ impl r2d2::ManageConnection for ConnectionManager {
     }
 }
 
+/// A serialised ReQL command argument
+pub type Argument = Option<String>;
+
+/// A serialised ReQL options map
+pub type Options = Option<String>;
+
 /// A type that can be passed into a ReQL command
 pub trait IntoCommandArg {
     /// Defines how a type can be safely passed into a command.
@@ -393,23 +390,23 @@ pub trait IntoCommandArg {
     /// strings.
     ///
     /// [serialised]: https://rethinkdb.com/docs/writing-drivers/#serializing-queries
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)>;
+    fn to_arg(&self) -> Result<(Argument, Options)>;
 }
 
 impl<'a> IntoCommandArg for &'a str {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+    fn to_arg(&self) -> Result<(Argument, Options)> {
         Ok((Some(format!("{:?}", self)), None))
     }
 }
 
 impl IntoCommandArg for String {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+    fn to_arg(&self) -> Result<(Argument, Options)> {
         Ok((Some(format!("{:?}", self)), None))
     }
 }
 
 impl IntoCommandArg for Value {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+    fn to_arg(&self) -> Result<(Argument, Options)> {
         // Arrays are a special case: since ReQL commands are sent as arrays
         // We have to wrap them using MAKE_ARRAY
         let val = wrap_arrays(self.clone());
@@ -423,7 +420,7 @@ impl IntoCommandArg for Value {
 impl<T> IntoCommandArg for (T, Value)
 where T: IntoCommandArg
 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+    fn to_arg(&self) -> Result<(Argument, Options)> {
         if !self.1.is_object() {
             let msg = String::from("Only objects are allowed as function options. You should use `r.object()` to pass optional arguments in your functions.");
             return Err(From::from(DriverError::Other(msg)));
@@ -435,7 +432,7 @@ where T: IntoCommandArg
 }
 
 impl IntoCommandArg for Command {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+    fn to_arg(&self) -> Result<(Argument, Options)> {
         match self.0 {
             Ok(ref cmd) => Ok((Some(cmd.to_string()), None)),
             Err(ref e) => Err(From::from(DriverError::Other(e.description().to_string()))),
@@ -446,7 +443,7 @@ impl IntoCommandArg for Command {
 macro_rules! define {
     (impl IntoCommandArg for $T:ty) => {
         impl IntoCommandArg for $T {
-            fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+            fn to_arg(&self) -> Result<(Argument, Options)> {
                 Ok((Some(self.to_string()), None))
             }
         }
@@ -509,7 +506,7 @@ impl Client {
     command!(db_create, DB_CREATE, root_cmd);
     command!(db_drop, DB_DROP, root_cmd);
 
-    pub fn logger() -> &'static RwLock<Logger> {
+    fn logger() -> &'static RwLock<Logger> {
         &LOGGER
     }
 
@@ -517,7 +514,7 @@ impl Client {
         &POOL
     }
 
-    pub fn config() -> &'static RwLock<ConnectOpts> {
+    fn config() -> &'static RwLock<ConnectOpts> {
         &CONFIG
     }
 
@@ -581,7 +578,7 @@ impl Client {
         Ok(())
     }
 
-    pub fn set_config(c: ConnectOpts) -> Result<()> {
+    fn set_config(c: ConnectOpts) -> Result<()> {
         let mut cfg = CONFIG.write();
         *cfg = c;
         Ok(())

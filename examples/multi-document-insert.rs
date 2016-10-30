@@ -15,7 +15,6 @@ fn main() {
         .connect()
         .unwrap();
 
-    /*
     // Create our database if necessary
     r.db_create(db).run().unwrap();
 
@@ -24,7 +23,6 @@ fn main() {
 
     // Create our table
     r.table_create(table).run().unwrap();
-    */
 
     // Insert user(s) into the table
     let posts: Value = from_str(r#"

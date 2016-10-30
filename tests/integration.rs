@@ -1,6 +1,5 @@
 extern crate reql;
 extern crate rayon;
-#[macro_use] extern crate slog;
 
 use reql::r;
 use reql::commands::Client;
@@ -8,7 +7,6 @@ use rayon::prelude::*;
 
 #[test]
 fn connection_pool_works() {
-    let logger = Client::logger().read();
     // Setup the connection
     r.connection()
         .set_servers(vec!["localhost:28015", "localhost:28016", "localhost:28017"])
@@ -37,7 +35,6 @@ fn connection_pool_works() {
                 .insert("name", format!("User {}", i))
                 .insert("age", i*2)
                 .build();
-            let res = r.table("users").insert(user).run();
-            debug!(logger, "{:?}", res);
+            r.table("users").insert(user).run().unwrap();
         });
 }
