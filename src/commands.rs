@@ -70,76 +70,30 @@ impl IntoCommandArg for RootCommand {
     }
 }
 
-impl IntoCommandArg for bool {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
+macro_rules! define {
+    (impl IntoCommandArg for $T:ty) => {
+        impl IntoCommandArg for $T {
+            fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
+                Ok((Some(self.to_string()), None))
+            }
+        }
     }
 }
-impl IntoCommandArg for char {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for u8 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for u16 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for u32 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for u64 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for usize {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for i8 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for i16 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for i32 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for i64 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for isize {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for f32 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
-impl IntoCommandArg for f64 {
-    fn to_arg(&self) -> Result<(Option<String>, Option<String>)> {
-        Ok((Some(self.to_string()), None))
-    }
-}
+
+define!{ impl IntoCommandArg for bool }
+define!{ impl IntoCommandArg for char }
+define!{ impl IntoCommandArg for u8 }
+define!{ impl IntoCommandArg for u16 }
+define!{ impl IntoCommandArg for u32 }
+define!{ impl IntoCommandArg for u64 }
+define!{ impl IntoCommandArg for usize }
+define!{ impl IntoCommandArg for i8 }
+define!{ impl IntoCommandArg for i16 }
+define!{ impl IntoCommandArg for i32 }
+define!{ impl IntoCommandArg for i64 }
+define!{ impl IntoCommandArg for isize }
+define!{ impl IntoCommandArg for f32 }
+define!{ impl IntoCommandArg for f64 }
 
 impl Client {
     pub fn connection(&self) -> ConnectOpts {

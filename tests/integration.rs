@@ -1,12 +1,10 @@
 extern crate reql;
 extern crate rayon;
 #[macro_use] extern crate slog;
-extern crate serde_json;
 
 use reql::r;
 use reql::session::Client;
 use rayon::prelude::*;
-use serde_json::{from_str, Value};
 
 #[test]
 fn connection_pool_works() {
