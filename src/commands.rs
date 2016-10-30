@@ -187,6 +187,16 @@ impl RootCommand {
     command!(table_create, TABLE_CREATE);
     command!(table_drop, TABLE_DROP);
     command!(table, TABLE);
+    command!(index_drop, INDEX_DROP);
+    command!(index_create, INDEX_CREATE);
+    command!(replace, REPLACE);
+    command!(update, UPDATE);
+    command!(order_by, ORDER_BY);
+    command!(without, WITHOUT);
+    command!(contains, CONTAINS);
+    command!(limit, LIMIT);
+    command!(get, GET);
+    command!(get_all, GET_ALL);
     command!(filter, FILTER);
     command!(insert, INSERT);
 
