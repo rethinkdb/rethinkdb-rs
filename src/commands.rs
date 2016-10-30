@@ -167,54 +167,28 @@ impl Client {
     }
 }
 
+macro_rules! command {
+    ($name:ident, $cmd:ident) => {
+        pub fn $name<T>(self, arg: T) -> RootCommand
+            where T: IntoCommandArg
+            {
+                let commands = match self.0 {
+                    Ok(t) => t,
+                    Err(e) => return RootCommand(Err(e)),
+                };
+                RootCommand(Command::wrap(tt::$cmd,
+                                          Some(arg),
+                                          Some(&commands)))
+            }
+    }
+}
+
 impl RootCommand {
-    pub fn table_create<T>(self, name: T) -> RootCommand
-        where T: IntoCommandArg
-    {
-        let commands = match self.0 {
-            Ok(t) => t,
-            Err(e) => return RootCommand(Err(e)),
-        };
-        RootCommand(Command::wrap(tt::TABLE_CREATE,
-                                     Some(name),
-                                     Some(&commands)))
-    }
-
-    pub fn table<T>(self, name: T) -> RootCommand
-        where T: IntoCommandArg
-    {
-        let commands = match self.0 {
-            Ok(t) => t,
-            Err(e) => return RootCommand(Err(e)),
-        };
-        RootCommand(Command::wrap(tt::TABLE,
-                                     Some(name),
-                                     Some(&commands)))
-    }
-
-    pub fn table_drop<T>(self, name: T) -> RootCommand
-        where T: IntoCommandArg
-    {
-        let commands = match self.0 {
-            Ok(t) => t,
-            Err(e) => return RootCommand(Err(e)),
-        };
-        RootCommand(Command::wrap(tt::TABLE_DROP,
-                                     Some(name),
-                                     Some(&commands)))
-    }
-
-    pub fn insert<T>(self, data: T) -> RootCommand
-        where T: IntoCommandArg
-    {
-        let commands = match self.0 {
-            Ok(t) => t,
-            Err(e) => return RootCommand(Err(e)),
-        };
-        RootCommand(Command::wrap(tt::INSERT,
-                                     Some(data),
-                                     Some(&commands)))
-    }
+    command!(table_create, TABLE_CREATE);
+    command!(table_drop, TABLE_DROP);
+    command!(table, TABLE);
+    command!(filter, FILTER);
+    command!(insert, INSERT);
 
     pub fn delete(self) -> RootCommand {
         let commands = match self.0 {
@@ -224,18 +198,6 @@ impl RootCommand {
         RootCommand(Command::wrap(tt::DELETE,
                                   None as Option<&str>,
                                   Some(&commands)))
-    }
-
-    pub fn filter<T>(self, filter: T) -> RootCommand
-        where T: IntoCommandArg
-    {
-        let commands = match self.0 {
-            Ok(t) => t,
-            Err(e) => return RootCommand(Err(e)),
-        };
-        RootCommand(Command::wrap(tt::FILTER,
-                                     Some(filter),
-                                     Some(&commands)))
     }
 
     pub fn run(self) -> Result<String> {
