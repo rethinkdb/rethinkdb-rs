@@ -5,17 +5,18 @@ use reql::r;
 use rayon::prelude::*;
 
 fn main() {
+    let db = "blog";
+    let table = "users";
+
     // Setup the connection
     r.connection()
         .set_servers(vec!["localhost:28015", "localhost:28016", "localhost:28017"])
-        .set_db("blog")
+        .set_db(db)
         .connect()
         .unwrap();
 
     // Create our database if necessary
     r.db_create(db).run().unwrap();
-
-    let table = "users";
 
     // Drop table if nessary
     r.table_drop(table).run().unwrap();
