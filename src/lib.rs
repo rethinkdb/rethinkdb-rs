@@ -30,5 +30,6 @@ extern crate parking_lot;
 pub mod commands;
 pub mod errors;
 
+/// The top-level ReQL namespace
 #[allow(non_upper_case_globals)]
 pub const r: commands::Client = commands::Client;

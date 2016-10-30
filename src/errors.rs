@@ -1,7 +1,9 @@
+//! ReQL Error Reference
+
 use std::io;
 use std::str;
-use super::r2d2;
-use super::serde_json::error as json;
+use r2d2::{InitializationError, GetTimeout};
+use serde_json::error as json;
 use protobuf::ProtobufError;
 
 quick_error! {
@@ -85,22 +87,22 @@ quick_error! {
     /// Connection related errors
     #[derive(Debug)]
     pub enum ConnectionError {
-        Initialization(err: r2d2::InitializationError) { from() }
-        Timeout(err: r2d2::GetTimeout) { from() }
+        Initialization(err: InitializationError) { from() }
+        Timeout(err: GetTimeout) { from() }
         Io(err: io::Error) { from() }
         Other(descr: String)
     }
 }
 
 /// Converts from r2d2 error
-impl From<r2d2::InitializationError> for Error {
-    fn from(err: r2d2::InitializationError) -> Error {
+impl From<InitializationError> for Error {
+    fn from(err: InitializationError) -> Error {
         From::from(ConnectionError::Initialization(err))
     }
 }
 
-impl From<r2d2::GetTimeout> for Error {
-    fn from(err: r2d2::GetTimeout) -> Error {
+impl From<GetTimeout> for Error {
+    fn from(err: GetTimeout) -> Error {
         From::from(ConnectionError::Timeout(err))
     }
 }
