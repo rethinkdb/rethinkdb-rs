@@ -485,7 +485,7 @@ fn wrap_arrays(mut val: Value) -> Value {
         if let Value::Array(vec) = val {
             let mut new_val = Vec::with_capacity(vec.len());
             for v in vec.into_iter() {
-                if v.is_array() {
+                if v.is_array() || v.is_object() {
                     new_val.push(wrap_arrays(v));
                 } else {
                     new_val.push(v)

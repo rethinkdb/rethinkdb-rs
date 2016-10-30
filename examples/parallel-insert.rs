@@ -1,16 +1,10 @@
 extern crate reql;
 extern crate rayon;
-#[macro_use] extern crate slog;
-extern crate serde_json;
 
 use reql::r;
-use reql::session::Client;
 use rayon::prelude::*;
-use serde_json::{from_str, Value};
 
-#[test]
-fn connection_pool_works() {
-    let logger = Client::logger().read();
+fn main() {
     // Setup the connection
     r.connection()
         .set_servers(vec!["localhost:28015", "localhost:28016", "localhost:28017"])
@@ -18,20 +12,19 @@ fn connection_pool_works() {
         .connect()
         .unwrap();
 
-    // Try arbitrary expressions
-    r.expr(200).run().unwrap();
-
+    /*
     // Create our database if necessary
-    r.db_create("blog").run().unwrap();
+    r.db_create(db).run().unwrap();
 
     // Drop table if nessary
     r.table_drop("users").run().unwrap();
 
     // Create our table if necessary
     r.table_create("users").run().unwrap();
+    */
 
-    // Insert 1 user(s) into the table
-    (0..1u32)
+    // Insert 20000 user(s) into the table
+    (0..20000u32)
         .into_par_iter()
         .enumerate()
         .for_each(|(i, _)| {
@@ -39,7 +32,6 @@ fn connection_pool_works() {
                 .insert("name", format!("User {}", i))
                 .insert("age", i*2)
                 .build();
-            let res = r.table("users").insert(user).run();
-            debug!(logger, "{:?}", res);
+            r.table("users").insert(user).run().unwrap();
         });
 }
