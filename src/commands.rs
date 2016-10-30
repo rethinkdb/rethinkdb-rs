@@ -11,6 +11,7 @@ use std::net::TcpStream;
 use super::r;
 use super::errors::*;
 use ql2::proto::{self, Term_TermType as tt, Query_QueryType as qt};
+use serde::de::Deserialize;
 use serde_json::{self, Value};
 use serde_json::builder::{ObjectBuilder, ArrayBuilder};
 use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
@@ -649,7 +650,9 @@ impl Command {
     command!(insert, INSERT);
     command!(delete, DELETE, no_args);
 
-    pub fn run(self) -> Result<String> {
+    pub fn run<T>(self) -> Result<Response<T>>
+        where T: Deserialize
+    {
         let logger = Client::logger().read();
         trace!(logger, "Calling r.run()");
         let commands = try!(self.0);
@@ -741,7 +744,7 @@ impl Command {
                     }
                 }
             }
-            Ok(String::new())
+            Ok(Response<T>)
         }
     }
 
