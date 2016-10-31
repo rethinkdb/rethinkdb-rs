@@ -1,7 +1,5 @@
 //! ReQL Command Reference
 
-include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
-
 use std::io::{Write, BufRead};
 use std::io::Read;
 use std::{str, result};
@@ -22,6 +20,8 @@ use slog_term;
 use protobuf::ProtobufEnum;
 use bufstream::BufStream;
 use scram::{ClientFirst, ServerFirst, ServerFinal};
+
+include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
 
 /// A ReQL Result
 ///
@@ -650,8 +650,9 @@ impl Command {
     command!(insert, INSERT);
     command!(delete, DELETE, no_args);
 
-    pub fn run<T>(self) -> Result<Response<T>>
-        where T: Deserialize
+    //pub fn run<T>(self) -> Result<Response<T>>
+    pub fn run(self) -> Result<()>
+        //where T: Deserialize
     {
         let logger = Client::logger().read();
         trace!(logger, "Calling r.run()");
@@ -744,7 +745,8 @@ impl Command {
                     }
                 }
             }
-            Ok(Response<T>)
+            //Ok(Response<T>)
+            Ok(())
         }
     }
 

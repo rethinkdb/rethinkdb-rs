@@ -27,6 +27,7 @@ extern crate protobuf;
 extern crate scram;
 extern crate parking_lot;
 extern crate uuid;
+extern crate futures;
 
 pub mod commands;
 pub mod errors;
