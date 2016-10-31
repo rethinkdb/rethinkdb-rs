@@ -5,6 +5,7 @@ use std::io::Read;
 use std::{str, result};
 use std::error::Error as StdError;
 use std::net::TcpStream;
+use std::fmt::Debug;
 
 use super::r;
 use super::errors::*;
@@ -665,7 +666,7 @@ impl Command {
     command!(delete, DELETE, no_args);
 
     pub fn run<T>(self) -> Response<T>
-        where T: 'static + Deserialize + Send
+        where T: 'static + Deserialize + Send + Debug
         {
             let (tx, rx) = channel::<T, Error>();
             let commands = match self.0 {
@@ -681,7 +682,7 @@ impl Command {
 }
 
 fn send<T>(commands: String, tx: Sender<T, Error>) -> BoxFuture<(), ()>
-where T: 'static + Deserialize + Send
+where T: 'static + Deserialize + Send + Debug
 {
     macro_rules! return_error {
         ($e:expr) => {{{
@@ -745,20 +746,19 @@ where T: 'static + Deserialize + Send
             debug!(logger, "Reading query...");
             match read_query(&mut conn) {
                 Ok(resp) => {
-                    let result = try!(str::from_utf8(&resp));
-                    debug!(logger, "{}", result);
+                    let res = try!(str::from_utf8(&resp));
+                    let result: ReqlResponse<T> = try!(serde_json::from_str(&res));
+                    debug!(logger, "{:?}", result);
                     // If the write operation failed, retry it
                     // {"t":18,"e":4100000,"r":["Cannot perform write: primary replica for
                     // shard [\"\", +inf) not available"],"b":[]}
                     let msg = r#"{"t":18,"e":4100000,"r":["Cannot perform write: primary replica for shard"#;
-                    if result.starts_with(msg) {
+                    if res.starts_with(msg) {
                         write = true;
                         if i == cfg.retries - 1 {
                             // The last error
                             return_error!{
-                                    AvailabilityError::OpFailed(
-                                        String::from("Not available")
-                                        )
+                                    AvailabilityError::OpFailed(String::from("Not available"))
                             }
                         } else {
                             debug!(logger, "Write operation failed. Retrying...");
@@ -767,7 +767,9 @@ where T: 'static + Deserialize + Send
                         }
                     } else {
                         debug!(logger, "Query successfully read.");
-                        // This is a successful operation
+                        for _v in result.r {
+                            //tx = tx.send(Ok(v));
+                        }
                         break;
                     }
                 }

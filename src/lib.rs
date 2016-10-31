@@ -29,6 +29,7 @@ extern crate parking_lot;
 extern crate uuid;
 extern crate futures;
 
+pub mod prelude;
 pub mod commands;
 pub mod errors;
 

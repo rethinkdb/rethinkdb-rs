@@ -1,13 +1,9 @@
 extern crate reql;
 extern crate rayon;
-extern crate futures;
-extern crate serde_json;
 
 use reql::r;
-use reql::commands::Response;
+use reql::prelude::*;
 use rayon::prelude::*;
-use futures::stream::Stream;
-use serde_json::Value;
 
 #[test]
 fn connection_pool_works() {
@@ -18,6 +14,7 @@ fn connection_pool_works() {
         .connect()
         .unwrap();
 
+    /*
     // Try arbitrary expressions
     let res: Response<Value> = r.expr(200).run();
     let _ = res.wait();
@@ -33,6 +30,7 @@ fn connection_pool_works() {
     // Create our table if necessary
     let res: Response<Value> = r.table_create("users").run();
     let _ = res.wait();
+    */
 
     // Insert 1 user(s) into the table
     (0..1u32)
@@ -44,6 +42,11 @@ fn connection_pool_works() {
                 .insert("age", i*2)
                 .build();
             let res: Response<Value> = r.table("users").insert(user).run();
-            let _ = res.wait();
+            let res = res.for_each(|v| {
+                println!("Result: {:?}", v);
+                Ok(())
+            });
+            let res = res.wait();
+            println!("{:?}", res);
         });
 }
