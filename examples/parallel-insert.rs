@@ -1,8 +1,13 @@
 extern crate reql;
 extern crate rayon;
+extern crate futures;
+extern crate serde_json;
 
 use reql::r;
+use reql::commands::Response;
 use rayon::prelude::*;
+use futures::stream::Stream;
+use serde_json::Value;
 
 fn main() {
     let db = "blog";
@@ -16,13 +21,16 @@ fn main() {
         .unwrap();
 
     // Create our database if necessary
-    r.db_create(db).run().unwrap();
+    let res: Response<Value> = r.db_create(db).run();
+    let _ = res.wait();
 
     // Drop table if nessary
-    r.table_drop(table).run().unwrap();
+    let res: Response<Value> = r.table_drop(table).run();
+    let _ = res.wait();
 
     // Create our table
-    r.table_create(table).run().unwrap();
+    let res: Response<Value> = r.table_create(table).run();
+    let _ = res.wait();
 
     // Insert 200 user(s) into the table
     (0..200u32)
@@ -33,6 +41,7 @@ fn main() {
                 .insert("name", format!("User {}", i))
                 .insert("age", i*2)
                 .build();
-            r.table(table).insert(user).run().unwrap();
+            let res: Response<Value> = r.table(table).insert(user).run();
+            let _ = res.wait();
         });
 }

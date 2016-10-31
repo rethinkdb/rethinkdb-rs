@@ -16,12 +16,21 @@ use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use r2d2::{self, Pool, Config as PoolConfig, PooledConnection};
 use parking_lot::RwLock;
 use slog::{DrainExt, Logger};
-use slog_term;
+use slog_term::streamer;
 use protobuf::ProtobufEnum;
 use bufstream::BufStream;
 use scram::{ClientFirst, ServerFirst, ServerFinal};
+use std::thread;
+use futures::{finished, Future, BoxFuture};
+use futures::stream::*;
 
 include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
+
+macro_rules! error {
+    ($e:expr) => {
+        Err(Error::from($e))
+    }
+}
 
 /// A ReQL Result
 ///
@@ -41,11 +50,16 @@ pub struct Client;
 #[derive(Debug)]
 pub struct Command(Result<String>);
 
+/// ReQL Response
+///
+/// Response returned by `run()`
+pub type Response<T> = Receiver<T, Error>;
+
 lazy_static! {
     static ref POOL: RwLock<Option<Vec<Pool<ConnectionManager>>>> = RwLock::new(None);
 
     static ref LOGGER: RwLock<Logger> = RwLock::new({
-        let drain = slog_term::streamer().compact().build().fuse();
+        let drain = streamer().compact().build().fuse();
         Logger::root(drain, o!("version" => env!("CARGO_PKG_VERSION")))
     });
 
@@ -476,8 +490,8 @@ macro_rules! command {
                     Err(e) => return Command(Err(e)),
                 };
                 Command(wrap_command(tt::$cmd,
-                                         Some(arg),
-                                         Some(&commands)))
+                                     Some(arg),
+                                     Some(&commands)))
             }
     };
     ($name:ident, $cmd:ident, root_cmd) => {
@@ -485,8 +499,8 @@ macro_rules! command {
             where T: IntoCommandArg
             {
                 Command(wrap_command(tt::$cmd,
-                                         Some(arg),
-                                         None))
+                                     Some(arg),
+                                     None))
             }
     };
     ($name:ident, $cmd:ident, no_args) => {
@@ -496,8 +510,8 @@ macro_rules! command {
                 Err(e) => return Command(Err(e)),
             };
             Command(wrap_command(tt::$cmd,
-                                     None as Option<&str>,
-                                     Some(&commands)))
+                                 None as Option<&str>,
+                                 Some(&commands)))
         }
     };
 }
@@ -650,104 +664,127 @@ impl Command {
     command!(insert, INSERT);
     command!(delete, DELETE, no_args);
 
-    //pub fn run<T>(self) -> Result<Response<T>>
-    pub fn run(self) -> Result<()>
-        //where T: Deserialize
-    {
-        let logger = Client::logger().read();
-        trace!(logger, "Calling r.run()");
-        let commands = try!(self.0);
-        let cfg = Client::config().read();
-        let query = wrap_query(qt::START, Some(&commands), None);
-        debug!(logger, "{}", query);
-        let mut conn = try!(Client::conn());
-        // Try sending the query
+    pub fn run<T>(self) -> Response<T>
+        where T: 'static + Deserialize + Send
         {
-            let mut i = 0;
-            let mut write = true;
-            let mut connect = false;
-            while i < cfg.retries {
-                debug!(logger, "Getting connection...");
-                if connect {
-                    drop(&mut conn);
-                    conn = match Client::conn() {
-                        Ok(c) => c,
-                        Err(error) => {
-                            if i == cfg.retries - 1 {
-                                // The last error
-                                return Err(From::from(error));
-                            } else {
-                                debug!(logger, "Failed getting a connection. Retrying...");
-                                i += 1;
-                                continue;
-                            }
-                        }
-                    };
-                }
-                debug!(logger, "Connection aquired.");
-                conn.token += 1;
-                if write {
-                    debug!(logger, "Writing query...");
-                    if let Err(error) = write_query(&query, &mut conn) {
-                        connect = true;
-                        if i == cfg.retries - 1 {
-                            // The last error
-                            return Err(From::from(error));
-                        } else {
-                            debug!(logger, "Failed to write query. Retrying...");
-                            i += 1;
-                            continue;
-                        }
-                    }
-                    debug!(logger, "Query written...");
-                    connect = false;
-                }
-                debug!(logger, "Reading query...");
-                match read_query(&mut conn) {
-                    Ok(resp) => {
-                        let result = try!(str::from_utf8(&resp));
-                        debug!(logger, "{}", result);
-                        // If the write operation failed, retry it
-                        // {"t":18,"e":4100000,"r":["Cannot perform write: primary replica for
-                        // shard [\"\", +inf) not available"],"b":[]}
-                        let msg = r#"{"t":18,"e":4100000,"r":["Cannot perform write: primary replica for shard"#;
-                        if result.starts_with(msg) {
-                            write = true;
-                            if i == cfg.retries - 1 {
-                                // The last error
-                                return Err(
-                                    From::from(
-                                        AvailabilityError::OpFailed(
-                                            String::from("Not available")
-                                            )));
-                            } else {
-                                debug!(logger, "Write operation failed. Retrying...");
-                                i += 1;
-                                continue;
-                            }
-                        } else {
-                            debug!(logger, "Query successfully read.");
-                            // This is a successful operation
-                            break;
-                        }
-                    }
+            let (tx, rx) = channel::<T, Error>();
+            let commands = match self.0 {
+                Ok(commands) => commands,
+                Err(err) => {
+                    let _ = tx.send(error!(err));
+                    return rx;
+                },
+            };
+            thread::spawn(|| send::<T>(commands, tx).wait());
+            rx
+        }
+}
+
+fn send<T>(commands: String, tx: Sender<T, Error>) -> BoxFuture<(), ()>
+where T: 'static + Deserialize + Send
+{
+    macro_rules! return_error {
+        ($e:expr) => {{{
+            let _ = tx.send(error!($e));
+            return finished(()).boxed();
+        }}}
+    }
+    macro_rules! try {
+        ($e:expr) => {{{
+            match $e {
+                Ok(value) => value,
+                Err(err) => return_error!(err),
+            }
+        }}}
+    }
+    let logger = Client::logger().read();
+    trace!(logger, "Calling r.run()");
+    let cfg = Client::config().read();
+    let query = wrap_query(qt::START, Some(&commands), None);
+    debug!(logger, "{}", query);
+    let mut conn = try!(Client::conn());
+    // Try sending the query
+    {
+        let mut i = 0;
+        let mut write = true;
+        let mut connect = false;
+        while i < cfg.retries {
+            debug!(logger, "Getting connection...");
+            if connect {
+                drop(&mut conn);
+                conn = match Client::conn() {
+                    Ok(c) => c,
                     Err(error) => {
-                        write = false;
                         if i == cfg.retries - 1 {
-                            // The last error
-                            return Err(From::from(error));
+                            return_error!(error);
                         } else {
-                            debug!(logger, "Failed to read query. Retrying...");
+                            debug!(logger, "Failed getting a connection. Retrying...");
                             i += 1;
                             continue;
                         }
                     }
+                };
+            }
+            debug!(logger, "Connection aquired.");
+            conn.token += 1;
+            if write {
+                debug!(logger, "Writing query...");
+                if let Err(error) = write_query(&query, &mut conn) {
+                    connect = true;
+                    if i == cfg.retries - 1 {
+                        return_error!(error);
+                    } else {
+                        debug!(logger, "Failed to write query. Retrying...");
+                        i += 1;
+                        continue;
                     }
+                }
+                debug!(logger, "Query written...");
+                connect = false;
+            }
+            debug!(logger, "Reading query...");
+            match read_query(&mut conn) {
+                Ok(resp) => {
+                    let result = try!(str::from_utf8(&resp));
+                    debug!(logger, "{}", result);
+                    // If the write operation failed, retry it
+                    // {"t":18,"e":4100000,"r":["Cannot perform write: primary replica for
+                    // shard [\"\", +inf) not available"],"b":[]}
+                    let msg = r#"{"t":18,"e":4100000,"r":["Cannot perform write: primary replica for shard"#;
+                    if result.starts_with(msg) {
+                        write = true;
+                        if i == cfg.retries - 1 {
+                            // The last error
+                            return_error!{
+                                    AvailabilityError::OpFailed(
+                                        String::from("Not available")
+                                        )
+                            }
+                        } else {
+                            debug!(logger, "Write operation failed. Retrying...");
+                            i += 1;
+                            continue;
+                        }
+                    } else {
+                        debug!(logger, "Query successfully read.");
+                        // This is a successful operation
+                        break;
+                    }
+                }
+                Err(error) => {
+                    write = false;
+                    if i == cfg.retries - 1 {
+                        return_error!(error);
+                    } else {
+                        debug!(logger, "Failed to read query. Retrying...");
+                        i += 1;
+                        continue;
+                    }
+                }
                 }
             }
-            //Ok(Response<T>)
-            Ok(())
         }
+        finished(()).boxed()
     }
 
 fn wrap_command<T>(command: tt,

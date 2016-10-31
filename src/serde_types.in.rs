@@ -29,7 +29,7 @@ struct AuthConfirmation {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Response<T: Deserialize> {
+struct ReqlResponse<T: Deserialize> {
      t: i32,
      r: Vec<T>,
      b: Option<String>,
