@@ -1,15 +1,25 @@
 //! Prelude
 
-use std::ops::FnMut;
-
-use futures::stream;
-
 pub use command::Response;
 pub use futures::Future;
 pub use futures::stream::Stream;
 pub use serde_json::{Value, from_str, to_string};
 
-pub trait Consumer {
+// Consumers to make blocking more convenient
+//
+// Ideally we would want to use just one trait `Consumer`.
+// However, the implementations for `T: Stream` and `T: Future`
+// would clash.
+
+/// Block the current thread until we have received all the results from
+/// the stream.
+pub trait StreamConsumer {
+    fn consume(self);
+}
+
+/// Block the current thread until we have received all the results from
+/// the future.
+pub trait FutureConsumer {
     fn consume(self);
 }
 
@@ -21,7 +31,5 @@ macro_rules! consume {
     }
 }
 
-impl<T> Consumer for Response<T> { consume!{} }
-impl<S, F> Consumer for stream::ForEach<S, F>
-    where S: Stream, F: FnMut(S::Item) -> Result<(), S::Error>
-{ consume!{} }
+impl<T: Stream> StreamConsumer for T { consume!{} }
+impl<T: Future> FutureConsumer for T { consume!{} }
