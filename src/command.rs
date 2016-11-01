@@ -6,7 +6,6 @@ use std::{str, result};
 use std::error::Error as StdError;
 use std::net::TcpStream;
 use std::fmt::Debug;
-use std::sync::mpsc;
 
 use super::r;
 use super::error::*;
@@ -767,14 +766,12 @@ where T: 'static + Deserialize + Send + Debug
                     } else {
                         let mut tx = tx;
                         for v in result.r {
-                            let (next_tx, next_rx) = mpsc::channel();
-                            debug!(logger, "Query successfully read.");
-                            let _ = tx.send(Ok(v)).and_then(move |new_tx| {
-                                next_tx.send(new_tx).expect("Unable to send successor channel tx");
-                                finished(()).boxed()
-                            }).wait();
-                            tx = next_rx.recv().expect("Unable to receive successor channel tx");
+                            match tx.send(Ok(v)).wait() {
+                                Ok(s) => tx = s,
+                                Err(_) => break,
+                            }
                         }
+                        debug!(logger, "Query successfully read.");
                         break;
                     }
                 }
