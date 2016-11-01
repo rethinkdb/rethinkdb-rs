@@ -30,9 +30,9 @@ extern crate uuid;
 extern crate futures;
 
 pub mod prelude;
-pub mod commands;
-pub mod errors;
+pub mod command;
+pub mod error;
 
 /// The top-level ReQL namespace
 #[allow(non_upper_case_globals)]
-pub const r: commands::Client = commands::Client;
+pub const r: command::Client = command::Client;

@@ -1,4 +1,4 @@
-//! ReQL Error Reference
+//! Error Reference
 
 use std::io;
 use std::str;

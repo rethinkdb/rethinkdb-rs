@@ -1,4 +1,4 @@
-//! ReQL Command Reference
+//! Command Reference
 
 use std::io::{Write, BufRead};
 use std::io::Read;
@@ -6,9 +6,10 @@ use std::{str, result};
 use std::error::Error as StdError;
 use std::net::TcpStream;
 use std::fmt::Debug;
+use std::sync::mpsc;
 
 use super::r;
-use super::errors::*;
+use super::error::*;
 use ql2::proto::{self, Term_TermType as tt, Query_QueryType as qt};
 use serde::de::Deserialize;
 use serde_json::{self, Value};
@@ -665,19 +666,17 @@ impl Command {
     command!(insert, INSERT);
     command!(delete, DELETE, no_args);
 
-    pub fn run<T>(self) -> Response<T>
+    pub fn run<T>(self) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
             let (tx, rx) = channel::<T, Error>();
-            let commands = match self.0 {
-                Ok(commands) => commands,
-                Err(err) => {
-                    let _ = tx.send(error!(err));
-                    return rx;
-                },
+            let commands = try!(self.0);
+            let sender = thread::Builder::new()
+                .name("run_sender".to_string());
+            if let Err(err) = sender.spawn(|| send::<T>(commands, tx).wait()) {
+                return error!(err);
             };
-            thread::spawn(|| send::<T>(commands, tx).wait());
-            rx
+            Ok(rx)
         }
 }
 
@@ -686,7 +685,7 @@ where T: 'static + Deserialize + Send + Debug
 {
     macro_rules! return_error {
         ($e:expr) => {{{
-            let _ = tx.send(error!($e));
+            let _ = tx.send(error!($e)).wait();
             return finished(()).boxed();
         }}}
     }
@@ -766,9 +765,15 @@ where T: 'static + Deserialize + Send + Debug
                             continue;
                         }
                     } else {
-                        debug!(logger, "Query successfully read.");
-                        for _v in result.r {
-                            //tx = tx.send(Ok(v));
+                        let mut tx = tx;
+                        for v in result.r {
+                            let (next_tx, next_rx) = mpsc::channel();
+                            debug!(logger, "Query successfully read.");
+                            let _ = tx.send(Ok(v)).and_then(move |new_tx| {
+                                next_tx.send(new_tx).expect("Unable to send successor channel tx");
+                                finished(()).boxed()
+                            }).wait();
+                            tx = next_rx.recv().expect("Unable to receive successor channel tx");
                         }
                         break;
                     }

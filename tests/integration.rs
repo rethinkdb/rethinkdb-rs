@@ -16,19 +16,19 @@ fn connection_pool_works() {
 
     /*
     // Try arbitrary expressions
-    let res: Response<Value> = r.expr(200).run();
+    let res: Response<Value> = r.expr(200).run().unwrap();
     let _ = res.wait();
 
     // Create our database if necessary
-    let res: Response<Value> = r.db_create("blog").run();
+    let res: Response<Value> = r.db_create("blog").run().unwrap();
     let _ = res.wait();
 
     // Drop table if nessary
-    let res: Response<Value> = r.table_drop("users").run();
+    let res: Response<Value> = r.table_drop("users").run().unwrap();
     let _ = res.wait();
 
     // Create our table if necessary
-    let res: Response<Value> = r.table_create("users").run();
+    let res: Response<Value> = r.table_create("users").run().unwrap();
     let _ = res.wait();
     */
 
@@ -41,12 +41,11 @@ fn connection_pool_works() {
                 .insert("name", format!("User {}", i))
                 .insert("age", i*2)
                 .build();
-            let res: Response<Value> = r.table("users").insert(user).run();
+            let res: Response<Value> = r.table("users").insert(user).run().unwrap();
             let res = res.for_each(|v| {
                 println!("Result: {:?}", v);
                 Ok(())
             });
-            let res = res.wait();
-            println!("{:?}", res);
+            let _ = res.wait();
         });
 }

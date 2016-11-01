@@ -1,11 +1,7 @@
 extern crate reql;
-extern crate serde_json;
-extern crate futures;
 
 use reql::r;
-use reql::commands::Response;
-use serde_json::{from_str, Value};
-use futures::stream::Stream;
+use reql::prelude::*;
 
 fn main() {
     let db = "shows";
@@ -19,15 +15,15 @@ fn main() {
         .unwrap();
 
     // Create our database if necessary
-    let res: Response<Value> = r.db_create(db).run();
+    let res: Response<Value> = r.db_create(db).run().unwrap();
     let _ = res.wait();
 
     // Drop table if nessary
-    let res: Response<Value> = r.table_drop(table).run();
+    let res: Response<Value> = r.table_drop(table).run().unwrap();
     let _ = res.wait();
 
     // Create our table
-    let res: Response<Value> = r.table_create(table).run();
+    let res: Response<Value> = r.table_create(table).run().unwrap();
     let _ = res.wait();
 
     // Insert user(s) into the table
@@ -53,6 +49,6 @@ fn main() {
             }
         ]
     "#).unwrap();
-    let res: Response<Value> = r.table(table).insert(posts).run();
+    let res: Response<Value> = r.table(table).insert(posts).run().unwrap();
     let _ = res.wait();
 }
