@@ -6,6 +6,7 @@ use r2d2::{InitializationError, GetTimeout};
 use serde_json::error as json;
 use protobuf::ProtobufError;
 use prelude::Value;
+use scram::Error as ScramError;
 
 quick_error! {
     /// The most generic error message in ReQL
@@ -74,6 +75,7 @@ quick_error! {
         Lock(err: String)
         Json(err: json::Error) { from() }
         Protobuf(err: ProtobufError) { from() }
+        Scram(err: ScramError) { from() }
         Other(descr: String)
     }
 }
@@ -153,5 +155,11 @@ impl From<json::Error> for Error {
 impl From<ProtobufError> for Error {
     fn from(err: ProtobufError) -> Error {
         From::from(DriverError::Protobuf(err))
+    }
+}
+
+impl From<ScramError> for Error {
+    fn from(err: ScramError) -> Error {
+        From::from(DriverError::Scram(err))
     }
 }

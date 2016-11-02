@@ -17,7 +17,7 @@ use serde_json::value::from_value;
 use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use r2d2::{self, Pool, Config as PoolConfig, PooledConnection};
 use parking_lot::RwLock;
-use slog::{DrainExt, Logger};
+use slog::{DrainExt, Logger, Record};
 use slog_term::streamer;
 use protobuf::ProtobufEnum;
 use bufstream::BufStream;
@@ -29,9 +29,27 @@ use futures::stream::*;
 include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
 
 macro_rules! error {
-    ($e:expr) => {
-        Err(Error::from($e))
-    }
+    ($e:expr) => {{
+        let logger = Client::logger().read();
+        let error = Error::from($e);
+        debug!(logger, "Err({:?})", error);
+        Err(error)
+    }};
+    // Do not log default errors otherwise our logs
+    // will have misleading error messages.
+    (default $e:expr) => {{
+        let error = Error::from($e);
+        Err(error)
+    }}
+}
+
+macro_rules! try {
+    ($e:expr) => {{
+        match $e {
+            Ok(res) => res,
+            Err(err) => return error!(err),
+        }
+    }}
 }
 
 /// A ReQL Result
@@ -68,8 +86,13 @@ lazy_static! {
     static ref POOL: RwLock<Option<Vec<Pool<ConnectionManager>>>> = RwLock::new(None);
 
     static ref LOGGER: RwLock<Logger> = RwLock::new({
-        let drain = streamer().compact().build().fuse();
-        Logger::root(drain, o!("version" => env!("CARGO_PKG_VERSION")))
+        let drain = streamer().full().build();
+        Logger::root(
+            drain.fuse(),
+            o!("where" =>
+               move |info : &Record| {
+                   format!("{}:{} {}", info.file(), info.line(), info.module())
+               }))
     });
 
     static ref CONFIG: RwLock<ConnectOpts> = RwLock::new(ConnectOpts::default());
@@ -146,11 +169,10 @@ impl ConnectOpts {
     /// Creates a connection pool
     pub fn connect(self) -> Result<()> {
         let logger = Client::logger().read();
-        trace!(logger, "Calling r.connect()");
         try!(Client::set_config(self.clone()));
         // If pool is already set we do nothing
         if Client::pool().read().is_some() {
-            info!(logger,
+            debug!(logger,
                   "A connection pool is already initialised. We will use that one instead...");
             return Ok(());
         }
@@ -165,7 +187,6 @@ impl ConnectOpts {
             pools.push(new_pool);
         }
         try!(Client::set_pool(pools));
-        info!(logger, "A connection pool has been initialised...");
         Ok(())
     }
 }
@@ -175,7 +196,7 @@ impl Connection {
         let server = match opts.server {
             Some(server) => server,
             None => {
-                return Err(From::from(ConnectionError::Other(String::from("No server selected."))))
+                return error!(ConnectionError::Other(String::from("No server selected.")))
             }
         };
         let mut conn = Connection {
@@ -210,24 +231,15 @@ impl Connection {
 }
 
 fn parse_server_version(stream: &TcpStream) -> Result<()> {
-    let logger = Client::logger().read();
     let resp = try!(parse_server_response(stream));
-    let info: ServerInfo = match serde_json::from_str(&resp) {
-        Ok(res) => res,
-        Err(err) => {
-            crit!(logger, "{}", err);
-            return Err(From::from(err));
-        }
-    };
-
+    let info: ServerInfo = try!(serde_json::from_str(&resp));
     if !info.success {
-        return Err(From::from(ConnectionError::Other(resp.to_string())));
+        return error!(ConnectionError::Other(resp.to_string()));
     };
     Ok(())
 }
 
 fn parse_server_response(stream: &TcpStream) -> Result<String> {
-    let logger = Client::logger().read();
     // The server will then respond with a NULL-terminated string response.
     // "SUCCESS" indicates that the connection has been accepted. Any other
     // response indicates an error, and the response string should describe
@@ -240,21 +252,18 @@ fn parse_server_response(stream: &TcpStream) -> Result<String> {
 
     if resp.is_empty() {
         let msg = String::from("unable to connect for an unknown reason");
-        crit!(logger, "{}", msg);
-        return Err(From::from(ConnectionError::Other(msg)));
+        return error!(ConnectionError::Other(msg));
     };
 
     let resp = try!(str::from_utf8(&resp)).to_string();
     // If it's not a JSON object it's an error
     if !resp.starts_with("{") {
-        crit!(logger, "{}", resp);
-        return Err(From::from(ConnectionError::Other(resp)));
+        return error!(ConnectionError::Other(resp));
     };
     Ok(resp)
 }
 
 fn client_first(opts: &ConnectOpts) -> Result<(ServerFirst, Vec<u8>)> {
-    let logger = Client::logger().read();
     let scram = try!(ClientFirst::new(opts.user, opts.password, None));
     let (scram, client_first) = scram.client_first();
 
@@ -263,27 +272,14 @@ fn client_first(opts: &ConnectOpts) -> Result<(ServerFirst, Vec<u8>)> {
         authentication_method: String::from("SCRAM-SHA-256"),
         authentication: client_first,
     };
-    let mut msg = match serde_json::to_vec(&ar) {
-        Ok(res) => res,
-        Err(err) => {
-            crit!(logger, "{}", err);
-            return Err(From::from(err));
-        }
-    };
+    let mut msg = try!(serde_json::to_vec(&ar));
     msg.push(b'\0');
     Ok((scram, msg))
 }
 
 fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, Vec<u8>)> {
-    let logger = Client::logger().read();
     let resp = try!(parse_server_response(stream));
-    let info: AuthResponse = match serde_json::from_str(&resp) {
-        Ok(res) => res,
-        Err(err) => {
-            crit!(logger, "{}", err);
-            return Err(From::from(err));
-        }
-    };
+    let info: AuthResponse = try!(serde_json::from_str(&resp));
 
     if !info.success {
         let mut err = resp.to_string();
@@ -292,40 +288,28 @@ fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, 
         }
         // If error code is between 10 and 20, this is an auth error
         if let Some(10...20) = info.error_code {
-            return Err(From::from(DriverError::Auth(err)));
+            return error!(DriverError::Auth(err));
         } else {
-            return Err(From::from(ConnectionError::Other(err)));
+            return error!(ConnectionError::Other(err));
         }
     };
+
     if let Some(auth) = info.authentication {
         let scram = scram.handle_server_first(&auth).unwrap();
         let (scram, client_final) = scram.client_final();
         let auth = AuthConfirmation { authentication: client_final };
-        let mut msg = match serde_json::to_vec(&auth) {
-            Ok(res) => res,
-            Err(err) => {
-                crit!(logger, "{}", err);
-                return Err(From::from(err));
-            }
-        };
+        let mut msg = try!(serde_json::to_vec(&auth));
         msg.push(b'\0');
         Ok((scram, msg))
     } else {
-        Err(From::from(ConnectionError::Other(String::from("Server did not send authentication \
-                                                            info."))))
+        error!(ConnectionError::Other(String::from("Server did not send authentication \
+                                                            info.")))
     }
 }
 
 fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
-    let logger = Client::logger().read();
     let resp = try!(parse_server_response(stream));
-    let info: AuthResponse = match serde_json::from_str(&resp) {
-        Ok(res) => res,
-        Err(err) => {
-            crit!(logger, "{}", err);
-            return Err(From::from(err));
-        }
-    };
+    let info: AuthResponse = try!(serde_json::from_str(&resp));
     if !info.success {
         let mut err = resp.to_string();
         if let Some(e) = info.error {
@@ -333,13 +317,13 @@ fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
         }
         // If error code is between 10 and 20, this is an auth error
         if let Some(10...20) = info.error_code {
-            return Err(From::from(DriverError::Auth(err)));
+            return error!(DriverError::Auth(err));
         } else {
-            return Err(From::from(ConnectionError::Other(err)));
+            return error!(ConnectionError::Other(err));
         }
     };
     if let Some(auth) = info.authentication {
-        let _ = scram.handle_server_final(&auth).unwrap();
+        let _ = try!(scram.handle_server_final(&auth));
     }
     Ok(())
 }
@@ -368,11 +352,11 @@ impl r2d2::ManageConnection for ConnectionManager {
         let resp = try!(read_query(&mut conn));
         let resp = try!(str::from_utf8(&resp));
         if resp != r#"{"t":1,"r":[1]}"# {
-            warn!(logger,
+            debug!(logger,
                   "Got {} from server instead of the expected `is_valid()` response.",
                   resp);
-            return Err(From::from(ConnectionError::Other(String::from("Unexpected response \
-                                                                       from server."))));
+            let msg = String::from("Unexpected response from server.");
+            return error!(ConnectionError::Other(msg));
         }
         Ok(())
     }
@@ -434,10 +418,8 @@ impl IntoCommandArg for Value {
         // Arrays are a special case: since ReQL commands are sent as arrays
         // We have to wrap them using MAKE_ARRAY
         let val = wrap_arrays(self.clone());
-        match serde_json::to_string(&val) {
-            Ok(cmd) => Ok((Some(cmd), None)),
-            Err(e) => Err(From::from(DriverError::Json(e))),
-        }
+        let cmd = try!(serde_json::to_string(&val));
+        Ok((Some(cmd), None))
     }
 }
 
@@ -459,7 +441,7 @@ impl IntoCommandArg for Command {
     fn to_arg(&self) -> Result<(Argument, Options)> {
         match self.0 {
             Ok(ref cmd) => Ok((Some(cmd.to_string()), None)),
-            Err(ref e) => Err(From::from(DriverError::Other(e.description().to_string()))),
+            Err(ref e) => error!(DriverError::Other(e.description().to_string())),
         }
     }
 }
@@ -543,15 +525,13 @@ impl Client {
     }
 
     fn conn() -> Result<PooledConnection<ConnectionManager>> {
-        let logger = Self::logger().read();
         let cfg = Self::config().read();
-        trace!(logger, "Calling Client::conn()");
         let pool = Self::pool().read();
         match *pool {
             Some(ref pool) => {
                 let mut num_retries = cfg.retries;
                 let msg = String::from("Failed to get a connection.");
-                let mut last_error = Err(From::from(ConnectionError::Other(msg)));
+                let mut last_error = error!(default ConnectionError::Other(msg));
                 while num_retries > 0 {
                     let mut least_connections = 0;
                     let mut least_connected_server = 0;
@@ -571,16 +551,16 @@ impl Client {
                     if most_idle > 0 {
                         match pool[most_idle_server].get() {
                             Ok(conn) => return Ok(conn),
-                            Err(error) => last_error = Err(From::from(error)),
+                            Err(error) => last_error = error!(error),
                         }
                     } else if least_connections > 0 {
                         match pool[least_connected_server].get() {
                             Ok(conn) => return Ok(conn),
-                            Err(error) => last_error = Err(From::from(error)),
+                            Err(error) => last_error = error!(error),
                         }
                     } else {
                         let msg = String::from("All servers are currently down.");
-                        last_error = Err(From::from(ConnectionError::Other(msg)));
+                        last_error = error!(ConnectionError::Other(msg));
                     }
                     num_retries -= 1;
                 }
@@ -591,7 +571,7 @@ impl Client {
                                    Use `r.connection().connect()` to initialise the pool \
                                    before trying to send any connections to the database. \
                                    This is typically done in the `main` function.");
-                return Err(From::from(ConnectionError::Other(msg)));
+                return error!(ConnectionError::Other(msg));
             }
         }
     }
@@ -621,7 +601,7 @@ impl Client {
                 } else {
                     Command(Ok(String::new()))
                 },
-                Err(e) => Command(Err(e)),
+                Err(e) => Command(error!(e)),
             }
         }
 
@@ -694,7 +674,6 @@ where T: 'static + Deserialize + Send + Debug
     macro_rules! return_error {
         ($e:expr) => {{{
             let error = error!($e);
-            debug!(logger, "{:?}", error);
             let _ = tx.send(error).wait();
             return finished(()).boxed();
         }}}
@@ -707,7 +686,6 @@ where T: 'static + Deserialize + Send + Debug
             }
         }}}
     }
-    trace!(logger, "Calling r.run()");
     let cfg = Client::config().read();
     let query = wrap_query(qt::START, Some(&commands), None);
     debug!(logger, "{}", query);
@@ -718,7 +696,6 @@ where T: 'static + Deserialize + Send + Debug
         let mut write = true;
         let mut connect = false;
         while i < cfg.retries {
-            debug!(logger, "Getting connection...");
             if connect {
                 drop(&mut conn);
                 conn = match Client::conn() {
@@ -727,37 +704,31 @@ where T: 'static + Deserialize + Send + Debug
                         if i == cfg.retries - 1 {
                             return_error!(error);
                         } else {
-                            debug!(logger, "Failed getting a connection. Retrying...");
                             i += 1;
                             continue;
                         }
                     }
                 };
             }
-            debug!(logger, "Connection aquired.");
             conn.token += 1;
             if write {
-                debug!(logger, "Writing query...");
                 if let Err(error) = write_query(&query, &mut conn) {
                     connect = true;
                     if i == cfg.retries - 1 {
                         return_error!(error);
                     } else {
-                        debug!(logger, "Failed to write query. Retrying...");
                         i += 1;
                         continue;
                     }
                 }
-                debug!(logger, "Query written...");
                 connect = false;
             }
-            debug!(logger, "Reading query...");
             match read_query(&mut conn) {
                 Ok(resp) => {
+                    // @TODO: use from_iter
                     let res = try!(str::from_utf8(&resp));
                     debug!(logger, "{}", res);
                     let result: ReqlResponse = try!(serde_json::from_str(&res));
-                    debug!(logger, "{:?}", result);
                     if let Some(e) = result.e {
                         let msg = if let Value::Array(error) = result.r.clone() {
                             if error.len() == 1 {
@@ -826,7 +797,6 @@ where T: 'static + Deserialize + Send + Debug
                     if i == cfg.retries - 1 {
                         return_error!(error);
                     } else {
-                        debug!(logger, "Failed to read query. Retrying...");
                         i += 1;
                         continue;
                     }
@@ -889,19 +859,19 @@ fn write_query(query: &str, conn: &mut Connection) -> Result<()> {
     let token = conn.token;
     if let Err(error) = conn.stream.write_u64::<LittleEndian>(token) {
         conn.broken = true;
-        return Err(From::from(error));
+        return error!(error);
     }
     if let Err(error) = conn.stream.write_u32::<LittleEndian>(query.len() as u32) {
         conn.broken = true;
-        return Err(From::from(error));
+        return error!(error);
     }
     if let Err(error) = conn.stream.write_all(query) {
         conn.broken = true;
-        return Err(From::from(error));
+        return error!(error);
     }
     if let Err(error) = conn.stream.flush() {
         conn.broken = true;
-        return Err(From::from(error));
+        return error!(error);
     }
     Ok(())
 }
@@ -913,20 +883,20 @@ fn read_query(conn: &mut Connection) -> Result<Vec<u8>> {
         Ok(token) => token,
         Err(error) => {
             conn.broken = true;
-            return Err(From::from(error));
+            return error!(error);
         }
     };
     let len = match conn.stream.read_u32::<LittleEndian>() {
         Ok(len) => len,
         Err(error) => {
             conn.broken = true;
-            return Err(From::from(error));
+            return error!(error);
         }
     };
     let mut resp = vec![0u8; len as usize];
     if let Err(error) = conn.stream.read_exact(&mut resp) {
         conn.broken = true;
-        return Err(From::from(error));
+        return error!(error);
     }
     Ok(resp)
 }
