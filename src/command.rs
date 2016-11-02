@@ -9,7 +9,7 @@ use std::fmt::Debug;
 
 use super::r;
 use super::error::*;
-use ql2::proto::{self, Term_TermType as tt, Query_QueryType as qt};
+use ql2::proto::{self, Term_TermType as tt, Query_QueryType as qt, Response_ErrorType as et};
 use serde::de::Deserialize;
 use serde_json::{self, Value};
 use serde_json::builder::{ObjectBuilder, ArrayBuilder};
@@ -688,7 +688,7 @@ impl Command {
 }
 
 fn send<T>(commands: String, mut tx: Sender<ResponseValue<T>, Error>) -> BoxFuture<(), ()>
-    where T: 'static + Deserialize + Send + Debug
+where T: 'static + Deserialize + Send + Debug
 {
     macro_rules! return_error {
         ($e:expr) => {{{
@@ -756,45 +756,68 @@ fn send<T>(commands: String, mut tx: Sender<ResponseValue<T>, Error>) -> BoxFutu
                     debug!(logger, "{}", res);
                     let result: ReqlResponse = try!(serde_json::from_str(&res));
                     debug!(logger, "{:?}", result);
-                    // If the write operation failed, retry it
-                    // {"t":18,"e":4100000,"r":["Cannot perform write: primary replica for
-                    // shard [\"\", +inf) not available"],"b":[]}
-                    let msg = r#"{"t":18,"e":4100000,"r":["Cannot perform write: primary replica for shard"#;
-                    if res.starts_with(msg) {
-                        write = true;
-                        if i == cfg.retries - 1 {
-                            // The last error
-                            return_error!{
-                                    AvailabilityError::OpFailed(String::from("Not available"))
+                    if let Some(e) = result.e {
+                        let msg = if let Value::Array(error) = result.r.clone() {
+                            if error.len() == 1 {
+                                if let Some(Value::String(msg)) = error.into_iter().next() {
+                                    msg
+                                } else {
+                                    return_error!(ResponseError::Db(result.r));
+                                }
+                            } else {
+                                return_error!(ResponseError::Db(result.r));
                             }
                         } else {
-                            debug!(logger, "Write operation failed. Retrying...");
-                            i += 1;
-                            continue;
+                            return_error!(ResponseError::Db(result.r));
+                        };
+                        if let Some(error) = et::from_i32(e) {
+                            match error {
+                                et::INTERNAL => return_error!(RuntimeError::Internal(msg)),
+                                et::RESOURCE_LIMIT => return_error!(RuntimeError::ResourceLimit(msg)),
+                                et::QUERY_LOGIC => return_error!(RuntimeError::QueryLogic(msg)),
+                                et::NON_EXISTENCE => return_error!(RuntimeError::NonExistence(msg)),
+                                et::OP_FAILED => {
+                                    if !msg.starts_with("Cannot perform write: primary replica for shard") {
+                                        return_error!(AvailabilityError::OpFailed(msg));
+                                    } else {
+                                        write = true;
+                                        if i == cfg.retries - 1 {
+                                            // The last error
+                                            return_error!(AvailabilityError::OpFailed(msg));
+                                        } else {
+                                            debug!(logger, "Write operation failed. Retrying...");
+                                            i += 1;
+                                            continue;
+                                        }
+                                    }
+                                },
+                                et::OP_INDETERMINATE => return_error!(AvailabilityError::OpIndeterminate(msg)),
+                                et::USER => return_error!(RuntimeError::User(msg)),
+                                et::PERMISSION_ERROR => return_error!(RuntimeError::Permission(msg)),
+                            }
+                        } else {
+                            return_error!(ResponseError::Db(result.r));
+                        }
+                    }
+                    debug!(logger, "Query successfully read.");
+                    if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
+                        for v in stati {
+                            match tx.send(Ok(ResponseValue::Write(v))).wait() {
+                                Ok(s) => tx = s,
+                                Err(_) => break,
+                            }
+                        }
+                    } else if let Ok(data) = from_value::<Vec<T>>(result.r) {
+                        for v in data {
+                            match tx.send(Ok(ResponseValue::Read(v))).wait() {
+                                Ok(s) => tx = s,
+                                Err(_) => break,
+                            }
                         }
                     } else {
-                        if result.e.is_some() {
-                            return_error!(DriverError::Other(String::from("Error occured")));
-                        } else if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
-                            for v in stati {
-                                match tx.send(Ok(ResponseValue::Write(v))).wait() {
-                                    Ok(s) => tx = s,
-                                    Err(_) => break,
-                                }
-                            }
-                        } else if let Ok(data) = from_value::<Vec<T>>(result.r) {
-                            for v in data {
-                                match tx.send(Ok(ResponseValue::Read(v))).wait() {
-                                    Ok(s) => tx = s,
-                                    Err(_) => break,
-                                }
-                            }
-                        } else {
-                            return_error!(DriverError::Other(String::from("Failed to deserilise payload")));
-                        }
-                        debug!(logger, "Query successfully read.");
-                        break;
+                        return_error!(DriverError::Other(String::from("Failed to deserilise payload")));
                     }
+                    break;
                 }
                 Err(error) => {
                     write = false;
@@ -806,11 +829,11 @@ fn send<T>(commands: String, mut tx: Sender<ResponseValue<T>, Error>) -> BoxFutu
                         continue;
                     }
                 }
-                }
             }
         }
-        finished(()).boxed()
     }
+    finished(()).boxed()
+}
 
 fn wrap_command<T>(command: tt,
                    input: Option<T>,

@@ -5,6 +5,7 @@ use std::str;
 use r2d2::{InitializationError, GetTimeout};
 use serde_json::error as json;
 use protobuf::ProtobufError;
+use prelude::Value;
 
 quick_error! {
     /// The most generic error message in ReQL
@@ -35,21 +36,15 @@ quick_error! {
 /// error, but the server will always return a more specific error class.
     #[derive(Debug)]
     pub enum RuntimeError {
-        QueryLogic(err: QueryLogicError) { from() }
+        /// The query contains a logical impossibility, such as adding a number to a string.
+        QueryLogic(descr: String)
+        NonExistence(descr: String)
         ResourceLimit(descr: String)
         User(descr: String)
         Internal(descr: String)
         Timeout(descr: String)
         Availability(err: AvailabilityError) { from() }
-        Permissions(descr: String)
-    }
-}
-
-quick_error! {
-    /// The query contains a logical impossibility, such as adding a number to a string.
-    #[derive(Debug)]
-    pub enum QueryLogicError {
-        NonExistence(descr: String)
+        Permission(descr: String)
     }
 }
 
@@ -75,7 +70,7 @@ quick_error! {
     pub enum DriverError {
         Auth(descr: String)
         Connection(err: ConnectionError) { from() }
-        ParseResponse(err: str::Utf8Error) { from() }
+        Response(err: ResponseError) { from() }
         Lock(err: String)
         Json(err: json::Error) { from() }
         Protobuf(err: ProtobufError) { from() }
@@ -91,6 +86,15 @@ quick_error! {
         Timeout(err: GetTimeout) { from() }
         Io(err: io::Error) { from() }
         Other(descr: String)
+    }
+}
+
+quick_error! {
+    /// Response related errors
+    #[derive(Debug)]
+    pub enum ResponseError {
+        Parse(err: str::Utf8Error) { from() }
+        Db(err: Value) { from() }
     }
 }
 
@@ -113,6 +117,12 @@ impl From<ConnectionError> for Error {
     }
 }
 
+impl From<ResponseError> for Error {
+    fn from(err: ResponseError) -> Error {
+        From::from(DriverError::Response(err))
+    }
+}
+
 impl From<AvailabilityError> for Error {
     fn from(err: AvailabilityError) -> Error {
         From::from(RuntimeError::Availability(err))
@@ -129,7 +139,7 @@ impl From<io::Error> for Error {
 /// Converts from Utf8Error error
 impl From<str::Utf8Error> for Error {
     fn from(err: str::Utf8Error) -> Error {
-        From::from(DriverError::ParseResponse(err))
+        From::from(ResponseError::Parse(err))
     }
 }
 
