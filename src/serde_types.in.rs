@@ -30,15 +30,16 @@ struct AuthConfirmation {
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ReqlResponse<T: Deserialize> {
-     t: i32,
-     r: Vec<T>,
-     b: Option<String>,
-     p: Option<String>,
-     n: Option<i32>,
+    t: i32,
+    e: Option<i32>,
+    r: Vec<Value>,
+    b: Option<String>,
+    p: Option<String>,
+    n: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct WriteStatus<T: Deserialize> {
+pub struct WriteStatus {
     pub inserted: u32,
     pub replaced: u32,
     pub unchanged: u32,
@@ -48,6 +49,6 @@ pub struct WriteStatus<T: Deserialize> {
     pub first_error: Option<String>,
     pub generated_keys: Option<Vec<Uuid>>,
     pub warnings: Option<String>,
-    pub changes: Option<Vec<(T, T)>>,
+    pub changes: Option<Vec<Value>>,
     _p: (),
 }

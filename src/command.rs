@@ -10,9 +10,10 @@ use std::fmt::Debug;
 use super::r;
 use super::error::*;
 use ql2::proto::{self, Term_TermType as tt, Query_QueryType as qt};
-use serde::de::Deserialize;
+use serde::de::{self, Deserialize, Deserializer};
 use serde_json::{self, Value};
 use serde_json::builder::{ObjectBuilder, ArrayBuilder};
+use serde_json::value::from_value;
 use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use r2d2::{self, Pool, Config as PoolConfig, PooledConnection};
 use parking_lot::RwLock;
@@ -54,7 +55,13 @@ pub struct Command(Result<String>);
 /// ReQL Response
 ///
 /// Response returned by `run()`
-pub type Response<T> = Receiver<T, Error>;
+pub type Response<T> = Receiver<ResponseValue<T>, Error>;
+
+/// Response value
+pub enum ResponseValue<T: Deserialize> {
+    Write(WriteStatus),
+    Read(T),
+}
 
 lazy_static! {
     static ref POOL: RwLock<Option<Vec<Pool<ConnectionManager>>>> = RwLock::new(None);
@@ -668,10 +675,10 @@ impl Command {
     pub fn run<T>(self) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
-            let (tx, rx) = channel::<T, Error>();
+            let (tx, rx) = channel();
             let commands = try!(self.0);
             let sender = thread::Builder::new()
-                .name("run_sender".to_string());
+                .name("reql_command_run".to_string());
             if let Err(err) = sender.spawn(|| send::<T>(commands, tx).wait()) {
                 return error!(err);
             };
@@ -679,8 +686,8 @@ impl Command {
         }
 }
 
-fn send<T>(commands: String, tx: Sender<T, Error>) -> BoxFuture<(), ()>
-where T: 'static + Deserialize + Send + Debug
+fn send<T>(commands: String, tx: Sender<ResponseValue<T>, Error>) -> BoxFuture<(), ()>
+    where T: 'static + Deserialize + Send + Debug
 {
     macro_rules! return_error {
         ($e:expr) => {{{
@@ -745,6 +752,7 @@ where T: 'static + Deserialize + Send + Debug
             match read_query(&mut conn) {
                 Ok(resp) => {
                     let res = try!(str::from_utf8(&resp));
+                    debug!(logger, "{}", res);
                     let result: ReqlResponse<T> = try!(serde_json::from_str(&res));
                     debug!(logger, "{:?}", result);
                     // If the write operation failed, retry it
@@ -765,7 +773,16 @@ where T: 'static + Deserialize + Send + Debug
                         }
                     } else {
                         let mut tx = tx;
-                        for v in result.r {
+                        let results = if result.e.is_some() {
+                            return_error!(DriverError::Other(String::from("Error occured")));
+                        } else if let Ok(status) = from_value::<<Vec<WriteStatus>>(result) {
+                            Vec<ResponseValue::Write(status)>
+                        } else if let Ok(data) = from_value::<Vec<T>>(result) {
+                            Vec<ResponseValue::Read(data)>
+                        } else {
+                            return_error!(DriverError::Other("Failed to deserilise payload"));
+                        };
+                        for v in results {
                             match tx.send(Ok(v)).wait() {
                                 Ok(s) => tx = s,
                                 Err(_) => break,
