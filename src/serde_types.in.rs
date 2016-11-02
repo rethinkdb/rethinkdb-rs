@@ -29,16 +29,16 @@ struct AuthConfirmation {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct ReqlResponse<T: Deserialize> {
+struct ReqlResponse {
     t: i32,
     e: Option<i32>,
-    r: Vec<Value>,
+    r: Value,
     b: Option<String>,
     p: Option<String>,
     n: Option<i32>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WriteStatus {
     pub inserted: u32,
     pub replaced: u32,

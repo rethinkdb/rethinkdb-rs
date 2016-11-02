@@ -10,7 +10,7 @@ use std::fmt::Debug;
 use super::r;
 use super::error::*;
 use ql2::proto::{self, Term_TermType as tt, Query_QueryType as qt};
-use serde::de::{self, Deserialize, Deserializer};
+use serde::de::Deserialize;
 use serde_json::{self, Value};
 use serde_json::builder::{ObjectBuilder, ArrayBuilder};
 use serde_json::value::from_value;
@@ -58,6 +58,7 @@ pub struct Command(Result<String>);
 pub type Response<T> = Receiver<ResponseValue<T>, Error>;
 
 /// Response value
+#[derive(Debug, Clone)]
 pub enum ResponseValue<T: Deserialize> {
     Write(WriteStatus),
     Read(T),
@@ -686,7 +687,7 @@ impl Command {
         }
 }
 
-fn send<T>(commands: String, tx: Sender<ResponseValue<T>, Error>) -> BoxFuture<(), ()>
+fn send<T>(commands: String, mut tx: Sender<ResponseValue<T>, Error>) -> BoxFuture<(), ()>
     where T: 'static + Deserialize + Send + Debug
 {
     macro_rules! return_error {
@@ -753,7 +754,7 @@ fn send<T>(commands: String, tx: Sender<ResponseValue<T>, Error>) -> BoxFuture<(
                 Ok(resp) => {
                     let res = try!(str::from_utf8(&resp));
                     debug!(logger, "{}", res);
-                    let result: ReqlResponse<T> = try!(serde_json::from_str(&res));
+                    let result: ReqlResponse = try!(serde_json::from_str(&res));
                     debug!(logger, "{:?}", result);
                     // If the write operation failed, retry it
                     // {"t":18,"e":4100000,"r":["Cannot perform write: primary replica for
@@ -772,21 +773,24 @@ fn send<T>(commands: String, tx: Sender<ResponseValue<T>, Error>) -> BoxFuture<(
                             continue;
                         }
                     } else {
-                        let mut tx = tx;
-                        let results = if result.e.is_some() {
+                        if result.e.is_some() {
                             return_error!(DriverError::Other(String::from("Error occured")));
-                        } else if let Ok(status) = from_value::<<Vec<WriteStatus>>(result) {
-                            Vec<ResponseValue::Write(status)>
-                        } else if let Ok(data) = from_value::<Vec<T>>(result) {
-                            Vec<ResponseValue::Read(data)>
-                        } else {
-                            return_error!(DriverError::Other("Failed to deserilise payload"));
-                        };
-                        for v in results {
-                            match tx.send(Ok(v)).wait() {
-                                Ok(s) => tx = s,
-                                Err(_) => break,
+                        } else if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
+                            for v in stati {
+                                match tx.send(Ok(ResponseValue::Write(v))).wait() {
+                                    Ok(s) => tx = s,
+                                    Err(_) => break,
+                                }
                             }
+                        } else if let Ok(data) = from_value::<Vec<T>>(result.r) {
+                            for v in data {
+                                match tx.send(Ok(ResponseValue::Read(v))).wait() {
+                                    Ok(s) => tx = s,
+                                    Err(_) => break,
+                                }
+                            }
+                        } else {
+                            return_error!(DriverError::Other(String::from("Failed to deserilise payload")));
                         }
                         debug!(logger, "Query successfully read.");
                         break;
