@@ -80,6 +80,7 @@ pub type Response<T> = Receiver<ResponseValue<T>, Error>;
 pub enum ResponseValue<T: Deserialize> {
     Write(WriteStatus),
     Read(T),
+    Raw(Value),
 }
 
 lazy_static! {
@@ -696,6 +697,7 @@ where T: 'static + Deserialize + Send + Debug
         let mut write = true;
         let mut connect = false;
         while i < cfg.retries {
+            // Open a new connection if necessary
             if connect {
                 drop(&mut conn);
                 conn = match Client::conn() {
@@ -710,7 +712,9 @@ where T: 'static + Deserialize + Send + Debug
                     }
                 };
             }
+            // and incremend the token
             conn.token += 1;
+            // Submit the query if necessary
             if write {
                 if let Err(error) = write_query(&query, &mut conn) {
                     connect = true;
@@ -723,13 +727,17 @@ where T: 'static + Deserialize + Send + Debug
                 }
                 connect = false;
             }
+            // Handle the response
             match read_query(&mut conn) {
                 Ok(resp) => {
                     // @TODO: use from_iter
                     let res = try!(str::from_utf8(&resp));
                     debug!(logger, "{}", res);
                     let result: ReqlResponse = try!(serde_json::from_str(&res));
+                    // If the database says this response is an error convert the error 
+                    // message to our native one.
                     if let Some(e) = result.e {
+                        // First get the error message
                         let msg = if let Value::Array(error) = result.r.clone() {
                             if error.len() == 1 {
                                 if let Some(Value::String(msg)) = error.into_iter().next() {
@@ -743,6 +751,7 @@ where T: 'static + Deserialize + Send + Debug
                         } else {
                             return_error!(ResponseError::Db(result.r));
                         };
+                        // Then use the message to and error code to convert to our native error
                         if let Some(error) = et::from_i32(e) {
                             match error {
                                 et::INTERNAL => return_error!(RuntimeError::Internal(msg)),
@@ -769,10 +778,12 @@ where T: 'static + Deserialize + Send + Debug
                                 et::PERMISSION_ERROR => return_error!(RuntimeError::Permission(msg)),
                             }
                         } else {
+                            // returning a genneral database error if we don't recognise this error
                             return_error!(ResponseError::Db(result.r));
                         }
                     }
-                    debug!(logger, "Query successfully read.");
+                    // Since this is a successful query let's process the results and send
+                    // them to the caller
                     if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
                         for v in stati {
                             match tx.send(Ok(ResponseValue::Write(v))).wait() {
@@ -780,7 +791,7 @@ where T: 'static + Deserialize + Send + Debug
                                 Err(_) => break,
                             }
                         }
-                    } else if let Ok(data) = from_value::<Vec<T>>(result.r) {
+                    } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                         for v in data {
                             match tx.send(Ok(ResponseValue::Read(v))).wait() {
                                 Ok(s) => tx = s,
@@ -788,10 +799,18 @@ where T: 'static + Deserialize + Send + Debug
                             }
                         }
                     } else {
-                        return_error!(DriverError::Other(String::from("Failed to deserilise payload")));
+                        // Send unexpected query response
+                        // This is not an error according to the database
+                        // but the caller wasn't expecting such a response
+                        // so we just return it raw.
+                        if let Ok(s) = tx.send(Ok(ResponseValue::Raw(result.r))).wait() {
+                            tx = s
+                        }
                     }
                     break;
                 }
+                // We failed to read the server's response so we will
+                // try again as long as we haven't used up all our allowed retries.
                 Err(error) => {
                     write = false;
                     if i == cfg.retries - 1 {
