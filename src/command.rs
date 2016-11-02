@@ -90,7 +90,7 @@ lazy_static! {
         let drain = streamer().full().build();
         Logger::root(
             drain.fuse(),
-            o!("where" =>
+            o!("source" =>
                move |info : &Record| {
                    format!("{}:{} {}", info.file(), info.line(), info.module())
                }))
@@ -730,10 +730,8 @@ where T: 'static + Deserialize + Send + Debug
             // Handle the response
             match read_query(&mut conn) {
                 Ok(resp) => {
-                    // @TODO: use from_iter
-                    let res = try!(str::from_utf8(&resp));
-                    debug!(logger, "{}", res);
-                    let result: ReqlResponse = try!(serde_json::from_str(&res));
+                    let result: ReqlResponse = try!(serde_json::from_slice(&resp[..]));
+                    debug!(logger, "{:?}", result);
                     // If the database says this response is an error convert the error 
                     // message to our native one.
                     if let Some(e) = result.e {
@@ -803,9 +801,7 @@ where T: 'static + Deserialize + Send + Debug
                         // This is not an error according to the database
                         // but the caller wasn't expecting such a response
                         // so we just return it raw.
-                        if let Ok(s) = tx.send(Ok(ResponseValue::Raw(result.r))).wait() {
-                            tx = s
-                        }
+                        let _ = tx.send(Ok(ResponseValue::Raw(result.r))).wait();
                     }
                     break;
                 }
