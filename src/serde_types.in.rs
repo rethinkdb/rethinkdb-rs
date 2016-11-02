@@ -33,7 +33,7 @@ struct ReqlResponse {
     t: i32,
     e: Option<i32>,
     r: Value,
-    b: Option<String>,
+    b: Option<Vec<String>>,
     p: Option<String>,
     n: Option<i32>,
 }

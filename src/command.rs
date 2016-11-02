@@ -690,9 +690,12 @@ impl Command {
 fn send<T>(commands: String, mut tx: Sender<ResponseValue<T>, Error>) -> BoxFuture<(), ()>
 where T: 'static + Deserialize + Send + Debug
 {
+    let logger = Client::logger().read();
     macro_rules! return_error {
         ($e:expr) => {{{
-            let _ = tx.send(error!($e)).wait();
+            let error = error!($e);
+            debug!(logger, "{:?}", error);
+            let _ = tx.send(error).wait();
             return finished(()).boxed();
         }}}
     }
@@ -704,7 +707,6 @@ where T: 'static + Deserialize + Send + Debug
             }
         }}}
     }
-    let logger = Client::logger().read();
     trace!(logger, "Calling r.run()");
     let cfg = Client::config().read();
     let query = wrap_query(qt::START, Some(&commands), None);
