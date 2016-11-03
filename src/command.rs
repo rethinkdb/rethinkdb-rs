@@ -358,16 +358,9 @@ impl r2d2::ManageConnection for ConnectionManager {
         let resp: ReqlResponse = try!(serde_json::from_slice(&resp[..]));
         if let Some(respt) = rt::from_i32(resp.t) {
             if let rt::SUCCESS_ATOM = respt {
-                if let Some(val) = resp.r.as_array() {
-                    if val.len() == 1 {
-                        if let Some(val) = val.iter().next() {
-                            if let Some(num) = val.as_i64() {
-                                if num == 1 {
-                                    return Ok(());
-                                }
-                            }
-                        }
-                    }
+                let val: Vec<i32> = try!(serde_json::from_value(resp.r.clone()));
+                if val == [1] {
+                    return Ok(());
                 }
             }
         }
