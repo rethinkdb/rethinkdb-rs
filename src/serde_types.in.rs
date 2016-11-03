@@ -33,9 +33,9 @@ struct ReqlResponse {
     t: i32,
     e: Option<i32>,
     r: Value,
-    b: Option<Vec<String>>,
-    p: Option<String>,
-    n: Option<i32>,
+    b: Option<Value>,
+    p: Option<Value>,
+    n: Option<Value>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -48,6 +48,6 @@ pub struct WriteStatus {
     errors: u32,
     first_error: Option<String>,
     generated_keys: Option<Vec<Uuid>>,
-    warnings: Option<String>,
-    changes: Option<Vec<Value>>,
+    warnings: Option<Vec<String>>,
+    changes: Option<Value>,
 }
