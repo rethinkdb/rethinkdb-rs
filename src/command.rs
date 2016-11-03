@@ -9,7 +9,12 @@ use std::fmt::Debug;
 
 use super::r;
 use super::error::*;
-use ql2::proto::{self, Term_TermType as tt, Query_QueryType as qt, Response_ErrorType as et};
+use ql2::proto::{self
+    ,Term_TermType as tt,
+    Query_QueryType as qt,
+    Response_ErrorType as et,
+    Response_ResponseType as rt
+};
 use serde::de::Deserialize;
 use serde_json::{self, Value};
 use serde_json::builder::{ObjectBuilder, ArrayBuilder};
@@ -346,20 +351,28 @@ impl r2d2::ManageConnection for ConnectionManager {
     }
 
     fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
-        let logger = Client::logger().read();
         conn.token += 1;
-        let query = wrap_query(proto::Query_QueryType::START, Some("1"), None);
+        let query = wrap_query(qt::START, Some("1"), None);
         try!(write_query(&query, &mut conn));
         let resp = try!(read_query(&mut conn));
-        let resp = try!(str::from_utf8(&resp));
-        if resp != r#"{"t":1,"r":[1]}"# {
-            debug!(logger,
-                  "Got {} from server instead of the expected `is_valid()` response.",
-                  resp);
-            let msg = String::from("Unexpected response from server.");
-            return error!(ConnectionError::Other(msg));
+        let resp: ReqlResponse = try!(serde_json::from_slice(&resp[..]));
+        if let Some(respt) = rt::from_i32(resp.t) {
+            if let rt::SUCCESS_ATOM = respt {
+                if let Some(val) = resp.r.as_array() {
+                    if val.len() == 1 {
+                        if let Some(val) = val.iter().next() {
+                            if let Some(num) = val.as_i64() {
+                                if num == 1 {
+                                    return Ok(());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        Ok(())
+        let msg = format!("Unexpected response from server: {:?}", resp);
+        error!(ConnectionError::Other(msg))
     }
 
     fn has_broken(&self, conn: &mut Connection) -> bool {
@@ -673,19 +686,19 @@ where T: 'static + Deserialize + Send + Debug
 {
     let logger = Client::logger().read();
     macro_rules! return_error {
-        ($e:expr) => {{{
+        ($e:expr) => {{
             let error = error!($e);
             let _ = tx.send(error).wait();
             return finished(()).boxed();
-        }}}
+        }}
     }
     macro_rules! try {
-        ($e:expr) => {{{
+        ($e:expr) => {{
             match $e {
                 Ok(value) => value,
                 Err(err) => return_error!(err),
             }
-        }}}
+        }}
     }
     let cfg = Client::config().read();
     let query = wrap_query(qt::START, Some(&commands), None);
