@@ -6,19 +6,20 @@ use std::{str, result};
 use std::error::Error as StdError;
 use std::net::TcpStream;
 use std::fmt::Debug;
+use std::thread;
 
 use super::r;
-use super::error::*;
-use ql2::proto::{self
-    ,Term_TermType as tt,
+use error::*;
+use prelude::*;
+use ql2::proto::{self,
+    Term_TermType as tt,
     Query_QueryType as qt,
     Response_ErrorType as et,
     Response_ResponseType as rt
 };
+
 use serde::de::Deserialize;
-use serde_json::{self, Value};
 use serde_json::builder::{ObjectBuilder, ArrayBuilder};
-use serde_json::value::from_value;
 use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use r2d2::{self, Pool, Config as PoolConfig, PooledConnection};
 use parking_lot::RwLock;
@@ -27,17 +28,16 @@ use slog_term::streamer;
 use protobuf::ProtobufEnum;
 use bufstream::BufStream;
 use scram::{ClientFirst, ServerFirst, ServerFinal};
-use std::thread;
-use futures::{finished, Future, BoxFuture};
-use futures::stream::*;
+use futures::{finished, BoxFuture};
+use futures::stream::{self, Receiver, Sender};
 
 include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
 
 macro_rules! error {
     ($e:expr) => {{
-        let logger = Client::logger().read();
+        let _logger = Client::logger().read();
         let error = Error::from($e);
-        debug!(logger, "Err({:?})", error);
+        debug!(_logger, "Err({:?})", error);
         Err(error)
     }};
     // Do not log default errors otherwise our logs
@@ -49,10 +49,16 @@ macro_rules! error {
 }
 
 macro_rules! try {
-    ($e:expr) => {{
+    ($e:expr $(, $f:expr ),*) => {{
         match $e {
             Ok(res) => res,
-            Err(err) => return error!(err),
+            Err(err) => {
+                let _logger = Client::logger().read();
+                $(
+                    debug!(_logger, "{:?}", $f);
+                )*
+                return error!(err);
+            },
         }
     }}
 }
@@ -174,12 +180,9 @@ impl ConnectOpts {
 
     /// Creates a connection pool
     pub fn connect(self) -> Result<()> {
-        let logger = Client::logger().read();
         try!(Client::set_config(self.clone()));
         // If pool is already set we do nothing
         if Client::pool().read().is_some() {
-            debug!(logger,
-                  "A connection pool is already initialised. We will use that one instead...");
             return Ok(());
         }
         // Otherwise we set it
@@ -238,7 +241,7 @@ impl Connection {
 
 fn parse_server_version(stream: &TcpStream) -> Result<()> {
     let resp = try!(parse_server_response(stream));
-    let info: ServerInfo = try!(serde_json::from_str(&resp));
+    let info: ServerInfo = try!(from_str(&resp));
     if !info.success {
         return error!(ConnectionError::Other(resp.to_string()));
     };
@@ -278,14 +281,14 @@ fn client_first(opts: &ConnectOpts) -> Result<(ServerFirst, Vec<u8>)> {
         authentication_method: String::from("SCRAM-SHA-256"),
         authentication: client_first,
     };
-    let mut msg = try!(serde_json::to_vec(&ar));
+    let mut msg = try!(to_vec(&ar));
     msg.push(b'\0');
     Ok((scram, msg))
 }
 
 fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, Vec<u8>)> {
     let resp = try!(parse_server_response(stream));
-    let info: AuthResponse = try!(serde_json::from_str(&resp));
+    let info: AuthResponse = try!(from_str(&resp));
 
     if !info.success {
         let mut err = resp.to_string();
@@ -304,7 +307,7 @@ fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, 
         let scram = scram.handle_server_first(&auth).unwrap();
         let (scram, client_final) = scram.client_final();
         let auth = AuthConfirmation { authentication: client_final };
-        let mut msg = try!(serde_json::to_vec(&auth));
+        let mut msg = try!(to_vec(&auth));
         msg.push(b'\0');
         Ok((scram, msg))
     } else {
@@ -315,7 +318,7 @@ fn client_final(scram: ServerFirst, stream: &TcpStream) -> Result<(ServerFinal, 
 
 fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
     let resp = try!(parse_server_response(stream));
-    let info: AuthResponse = try!(serde_json::from_str(&resp));
+    let info: AuthResponse = try!(from_str(&resp));
     if !info.success {
         let mut err = resp.to_string();
         if let Some(e) = info.error {
@@ -355,10 +358,10 @@ impl r2d2::ManageConnection for ConnectionManager {
         let query = wrap_query(qt::START, Some("1"), None);
         try!(write_query(&query, &mut conn));
         let resp = try!(read_query(&mut conn));
-        let resp: ReqlResponse = try!(serde_json::from_slice(&resp[..]));
+        let resp: ReqlResponse = try!(from_slice(&resp[..]));
         if let Some(respt) = rt::from_i32(resp.t) {
             if let rt::SUCCESS_ATOM = respt {
-                let val: Vec<i32> = try!(serde_json::from_value(resp.r.clone()));
+                let val: Vec<i32> = try!(from_value(resp.r.clone()));
                 if val == [1] {
                     return Ok(());
                 }
@@ -425,7 +428,7 @@ impl IntoCommandArg for Value {
         // Arrays are a special case: since ReQL commands are sent as arrays
         // We have to wrap them using MAKE_ARRAY
         let val = wrap_arrays(self.clone());
-        let cmd = try!(serde_json::to_string(&val));
+        let cmd = try!(to_string(&val));
         Ok((Some(cmd), None))
     }
 }
@@ -663,7 +666,7 @@ impl Command {
     pub fn run<T>(self) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
-            let (tx, rx) = channel();
+            let (tx, rx) = stream::channel();
             let commands = try!(self.0);
             let sender = thread::Builder::new()
                 .name("reql_command_run".to_string());
@@ -677,7 +680,6 @@ impl Command {
 fn send<T>(commands: String, mut tx: Sender<ResponseValue<T>, Error>) -> BoxFuture<(), ()>
 where T: 'static + Deserialize + Send + Debug
 {
-    let logger = Client::logger().read();
     macro_rules! return_error {
         ($e:expr) => {{
             let error = error!($e);
@@ -695,7 +697,6 @@ where T: 'static + Deserialize + Send + Debug
     }
     let cfg = Client::config().read();
     let query = wrap_query(qt::START, Some(&commands), None);
-    debug!(logger, "{}", query);
     let mut conn = try!(Client::conn());
     // Try sending the query
     {
@@ -736,8 +737,7 @@ where T: 'static + Deserialize + Send + Debug
             // Handle the response
             match read_query(&mut conn) {
                 Ok(resp) => {
-                    let result: ReqlResponse = try!(serde_json::from_slice(&resp[..]));
-                    debug!(logger, "{:?}", result);
+                    let result: ReqlResponse = try!(from_slice(&resp[..]));
                     // If the database says this response is an error convert the error 
                     // message to our native one.
                     if let Some(e) = result.e {
@@ -771,7 +771,6 @@ where T: 'static + Deserialize + Send + Debug
                                             // The last error
                                             return_error!(AvailabilityError::OpFailed(msg));
                                         } else {
-                                            debug!(logger, "Write operation failed. Retrying...");
                                             i += 1;
                                             continue;
                                         }

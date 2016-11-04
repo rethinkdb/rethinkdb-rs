@@ -3,7 +3,10 @@
 pub use command::Response;
 pub use futures::Future;
 pub use futures::stream::Stream;
-pub use serde_json::{Value, from_str, to_string};
+pub use serde_json::{Value,
+    from_iter, from_reader, from_slice, from_str, from_value, to_value,
+    to_string, to_vec
+};
 
 // Consumers to make blocking more convenient
 //
