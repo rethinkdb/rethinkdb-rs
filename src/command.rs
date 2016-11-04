@@ -704,7 +704,7 @@ where T: 'static + Deserialize + Send + Debug
         let mut write = true;
         let mut connect = false;
         macro_rules! handle_response {
-            () => {
+            () => {{
                 match read_query(&mut conn) {
                     Ok(resp) => {
                         let result: ReqlResponse = try!(from_slice(&resp[..]));
@@ -776,9 +776,10 @@ where T: 'static + Deserialize + Send + Debug
                             // This is not an error according to the database
                             // but the caller wasn't expecting such a response
                             // so we just return it raw.
-                            let _ = tx.send(Ok(ResponseValue::Raw(result.r))).wait();
+                            let _ = tx.send(Ok(ResponseValue::Raw(result.r.clone()))).wait();
                         }
-                        break;
+                        // Return response type so we know if we need to retrieve more data
+                        result.t
                     }
                     // We failed to read the server's response so we will
                     // try again as long as we haven't used up all our allowed retries.
@@ -792,7 +793,7 @@ where T: 'static + Deserialize + Send + Debug
                         }
                     }
                 }
-            }
+            }}
         }
         while i < cfg.retries {
             // Open a new connection if necessary
