@@ -7,6 +7,7 @@ use serde_json::error as json;
 use protobuf::ProtobufError;
 use prelude::Value;
 use scram::Error as ScramError;
+use futures::stream::SendError;
 
 quick_error! {
     /// The most generic error message in ReQL
@@ -122,6 +123,13 @@ impl From<ConnectionError> for Error {
 impl From<ResponseError> for Error {
     fn from(err: ResponseError) -> Error {
         From::from(DriverError::Response(err))
+    }
+}
+
+impl<T, E> From<SendError<T, E>> for Error {
+    fn from(err: SendError<T, E>) -> Error {
+        let err = format!("{:?}", err);
+        From::from(DriverError::Other(err))
     }
 }
 

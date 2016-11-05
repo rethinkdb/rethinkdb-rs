@@ -703,98 +703,6 @@ where T: 'static + Deserialize + Send + Debug
         let mut i = 0;
         let mut write = true;
         let mut connect = false;
-        macro_rules! handle_response {
-            () => {{
-                match read_query(&mut conn) {
-                    Ok(resp) => {
-                        let result: ReqlResponse = try!(from_slice(&resp[..]));
-                        // If the database says this response is an error convert the error 
-                        // message to our native one.
-                        if let Some(e) = result.e {
-                            // First get the error message
-                            let msg = if let Value::Array(error) = result.r.clone() {
-                                if error.len() == 1 {
-                                    if let Some(Value::String(msg)) = error.into_iter().next() {
-                                        msg
-                                    } else {
-                                        return_error!(ResponseError::Db(result.r));
-                                    }
-                                } else {
-                                    return_error!(ResponseError::Db(result.r));
-                                }
-                            } else {
-                                return_error!(ResponseError::Db(result.r));
-                            };
-                            // Then use the message to and error code to convert to our native error
-                            if let Some(error) = et::from_i32(e) {
-                                match error {
-                                    et::INTERNAL => return_error!(RuntimeError::Internal(msg)),
-                                    et::RESOURCE_LIMIT => return_error!(RuntimeError::ResourceLimit(msg)),
-                                    et::QUERY_LOGIC => return_error!(RuntimeError::QueryLogic(msg)),
-                                    et::NON_EXISTENCE => return_error!(RuntimeError::NonExistence(msg)),
-                                    et::OP_FAILED => {
-                                        if !msg.starts_with("Cannot perform write: primary replica for shard") {
-                                            return_error!(AvailabilityError::OpFailed(msg));
-                                        } else {
-                                            write = true;
-                                            if i == cfg.retries - 1 {
-                                                // The last error
-                                                return_error!(AvailabilityError::OpFailed(msg));
-                                            } else {
-                                                i += 1;
-                                                continue;
-                                            }
-                                        }
-                                    },
-                                    et::OP_INDETERMINATE => return_error!(AvailabilityError::OpIndeterminate(msg)),
-                                    et::USER => return_error!(RuntimeError::User(msg)),
-                                    et::PERMISSION_ERROR => return_error!(RuntimeError::Permission(msg)),
-                                }
-                            } else {
-                                // returning a genneral database error if we don't recognise this error
-                                return_error!(ResponseError::Db(result.r));
-                            }
-                        }
-                        // Since this is a successful query let's process the results and send
-                        // them to the caller
-                        if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
-                            for v in stati {
-                                match tx.send(Ok(ResponseValue::Write(v))).wait() {
-                                    Ok(s) => tx = s,
-                                    Err(_) => break,
-                                }
-                            }
-                        } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
-                            for v in data {
-                                match tx.send(Ok(ResponseValue::Read(v))).wait() {
-                                    Ok(s) => tx = s,
-                                    Err(_) => break,
-                                }
-                            }
-                        } else {
-                            // Send unexpected query response
-                            // This is not an error according to the database
-                            // but the caller wasn't expecting such a response
-                            // so we just return it raw.
-                            let _ = tx.send(Ok(ResponseValue::Raw(result.r.clone()))).wait();
-                        }
-                        // Return response type so we know if we need to retrieve more data
-                        result.t
-                    }
-                    // We failed to read the server's response so we will
-                    // try again as long as we haven't used up all our allowed retries.
-                    Err(error) => {
-                        write = false;
-                        if i == cfg.retries - 1 {
-                            return_error!(error);
-                        } else {
-                            i += 1;
-                            continue;
-                        }
-                    }
-                }
-            }}
-        }
         while i < cfg.retries {
             // Open a new connection if necessary
             if connect {
@@ -811,7 +719,7 @@ where T: 'static + Deserialize + Send + Debug
                     }
                 };
             }
-            // and incremend the token
+            // and increment the token
             conn.token += 1;
             // Submit the query if necessary
             if write {
@@ -827,10 +735,99 @@ where T: 'static + Deserialize + Send + Debug
                 connect = false;
             }
             // Handle the response
-            handle_response!();
+            match handle_response::<T>(&mut conn, tx) {
+                Ok((_t, s)) => {
+                    tx = s;
+                }
+                Err(error) => {
+                    if let Error::Runtime(error) = error {
+                        if let RuntimeError::Availability(error) = error {
+                            if let AvailabilityError::OpFailed(msg) = error {
+                                if msg.starts_with("Cannot perform write: primary replica for shard") {
+                                    write = true;
+                                }
+                            }
+                        }
+                    }
+                    i += 1;
+                    continue;
+                }
+            }
+            /*
+            loop {
+            }
+            */
+            break;
         }
     }
     finished(()).boxed()
+}
+
+fn handle_response<T>(conn: &mut PooledConnection<ConnectionManager>, mut tx: Sender<ResponseValue<T>, Error>)
+-> Result<(i32, Sender<ResponseValue<T>, Error>)>
+where T: 'static + Deserialize + Send + Debug
+{
+    match read_query(conn) {
+        Ok(resp) => {
+            let result: ReqlResponse = try!(from_slice(&resp[..]));
+            // If the database says this response is an error convert the error 
+            // message to our native one.
+            if let Some(e) = result.e {
+                // First get the error message
+                let msg = if let Value::Array(error) = result.r.clone() {
+                    if error.len() == 1 {
+                        if let Some(Value::String(msg)) = error.into_iter().next() {
+                            msg
+                        } else {
+                            return error!(ResponseError::Db(result.r));
+                        }
+                    } else {
+                        return error!(ResponseError::Db(result.r));
+                    }
+                } else {
+                    return error!(ResponseError::Db(result.r));
+                };
+                // Then use the message to and error code to convert to our native error
+                if let Some(error) = et::from_i32(e) {
+                    match error {
+                        et::INTERNAL => return error!(RuntimeError::Internal(msg)),
+                        et::RESOURCE_LIMIT => return error!(RuntimeError::ResourceLimit(msg)),
+                        et::QUERY_LOGIC => return error!(RuntimeError::QueryLogic(msg)),
+                        et::NON_EXISTENCE => return error!(RuntimeError::NonExistence(msg)),
+                        et::OP_FAILED => return error!(AvailabilityError::OpFailed(msg)),
+                        et::OP_INDETERMINATE => return error!(AvailabilityError::OpIndeterminate(msg)),
+                        et::USER => return error!(RuntimeError::User(msg)),
+                        et::PERMISSION_ERROR => return error!(RuntimeError::Permission(msg)),
+                    }
+                } else {
+                    // returning a genneral database error if we don't recognise this error
+                    return error!(ResponseError::Db(result.r));
+                }
+            }
+            // Since this is a successful query let's process the results and send
+            // them to the caller
+            if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
+                for v in stati {
+                    tx = try!(tx.send(Ok(ResponseValue::Write(v))).wait());
+                }
+            } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
+                for v in data {
+                    tx = try!(tx.send(Ok(ResponseValue::Read(v))).wait());
+                }
+            } else {
+                // Send unexpected query response
+                // This is not an error according to the database
+                // but the caller wasn't expecting such a response
+                // so we just return it raw.
+                tx = try!(tx.send(Ok(ResponseValue::Raw(result.r.clone()))).wait());
+            }
+            // Return response type so we know if we need to retrieve more data
+            Ok((result.t, tx))
+        },
+        // We failed to read the server's response so we will
+        // try again as long as we haven't used up all our allowed retries.
+        Err(error) => return error!(error),
+    }
 }
 
 fn wrap_command<T>(command: tt,
