@@ -12,16 +12,16 @@ use super::r;
 use error::*;
 use prelude::*;
 use ql2::proto::{self,
-    Term_TermType as tt,
-    Query_QueryType as qt,
-    Response_ErrorType as et,
-    Response_ResponseType as rt
+    Term_TermType as TT,
+    Query_QueryType as QT,
+    Response_ErrorType as ET,
+    Response_ResponseType as RT
 };
 
 use serde::de::Deserialize;
 use serde_json::builder::{ObjectBuilder, ArrayBuilder};
 use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
-use r2d2::{self, Pool, Config as PoolConfig, PooledConnection};
+use r2d2::{self, Pool, Config as PoolConfig, PooledConnection as PConn};
 use parking_lot::RwLock;
 use slog::{DrainExt, Logger, Record};
 use slog_term::streamer;
@@ -29,7 +29,7 @@ use protobuf::ProtobufEnum;
 use bufstream::BufStream;
 use scram::{ClientFirst, ServerFirst, ServerFinal};
 use futures::{finished, BoxFuture};
-use futures::stream::{self, Receiver, Sender};
+use futures::stream::{self, Receiver, Sender as StreamSender};
 
 include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
 
@@ -355,12 +355,12 @@ impl r2d2::ManageConnection for ConnectionManager {
 
     fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
         conn.token += 1;
-        let query = wrap_query(qt::START, Some("1"), None);
+        let query = wrap_query(QT::START, Some("1"), None);
         try!(write_query(&query, &mut conn));
         let resp = try!(read_query(&mut conn));
         let resp: ReqlResponse = try!(from_slice(&resp[..]));
-        if let Some(respt) = rt::from_i32(resp.t) {
-            if let rt::SUCCESS_ATOM = respt {
+        if let Some(respt) = RT::from_i32(resp.t) {
+            if let RT::SUCCESS_ATOM = respt {
                 let val: Vec<i32> = try!(from_value(resp.r.clone()));
                 if val == [1] {
                     return Ok(());
@@ -490,7 +490,7 @@ macro_rules! command {
                     Ok(t) => t,
                     Err(e) => return Command(Err(e)),
                 };
-                Command(wrap_command(tt::$cmd,
+                Command(wrap_command(TT::$cmd,
                                      Some(arg),
                                      Some(&commands)))
             }
@@ -499,7 +499,7 @@ macro_rules! command {
         pub fn $name<T>(self, arg: T) -> Command
             where T: IntoCommandArg
             {
-                Command(wrap_command(tt::$cmd,
+                Command(wrap_command(TT::$cmd,
                                      Some(arg),
                                      None))
             }
@@ -510,12 +510,14 @@ macro_rules! command {
                 Ok(t) => t,
                 Err(e) => return Command(Err(e)),
             };
-            Command(wrap_command(tt::$cmd,
+            Command(wrap_command(TT::$cmd,
                                  None as Option<&str>,
                                  Some(&commands)))
         }
     };
 }
+
+type PooledConnection = PConn<ConnectionManager>;
 
 impl Client {
     command!(db, DB, root_cmd);
@@ -534,7 +536,7 @@ impl Client {
         &CONFIG
     }
 
-    fn conn() -> Result<PooledConnection<ConnectionManager>> {
+    fn conn() -> Result<PooledConnection> {
         let cfg = Self::config().read();
         let pool = Self::pool().read();
         match *pool {
@@ -677,7 +679,9 @@ impl Command {
         }
 }
 
-fn send<T>(commands: String, mut tx: Sender<ResponseValue<T>, Error>) -> BoxFuture<(), ()>
+type Sender<T> = StreamSender<ResponseValue<T>, Error>;
+
+fn send<T>(commands: String, mut tx: Sender<T>) -> BoxFuture<(), ()>
 where T: 'static + Deserialize + Send + Debug
 {
     macro_rules! return_error {
@@ -696,7 +700,7 @@ where T: 'static + Deserialize + Send + Debug
         }}
     }
     let cfg = Client::config().read();
-    let query = wrap_query(qt::START, Some(&commands), None);
+    let query = wrap_query(QT::START, Some(&commands), None);
     let mut conn = try!(Client::conn());
     // Try sending the query
     {
@@ -720,6 +724,7 @@ where T: 'static + Deserialize + Send + Debug
                 };
             }
             // and increment the token
+            // @TODO: this doesn't seem like the correct position to increment the token
             conn.token += 1;
             // Submit the query if necessary
             if write {
@@ -735,38 +740,73 @@ where T: 'static + Deserialize + Send + Debug
                 connect = false;
             }
             // Handle the response
-            match handle_response::<T>(&mut conn, tx) {
-                Ok((_t, s)) => {
-                    tx = s;
+            let (new_tx, s, res) = handle_response::<T>(&mut conn, tx);
+            tx = new_tx;
+            let tx_returned = s.is_some();
+            if let Some(s) = s {
+                tx = s;
+            }
+            match res {
+                Ok(t) => {
+                    match t {
+                        RT::SUCCESS_ATOM | RT::SUCCESS_SEQUENCE | RT::WAIT_COMPLETE | RT::SERVER_INFO | RT::CLIENT_ERROR | RT::COMPILE_ERROR | RT::RUNTIME_ERROR  => break,
+                        RT::SUCCESS_PARTIAL => {
+                        },
+                    }
                 }
                 Err(error) => {
-                    if let Error::Runtime(error) = error {
-                        if let RuntimeError::Availability(error) = error {
-                            if let AvailabilityError::OpFailed(msg) = error {
-                                if msg.starts_with("Cannot perform write: primary replica for shard") {
-                                    write = true;
+                    if i == cfg.retries - 1 {
+                        return_error!(error);
+                    }
+                    if !tx_returned {
+                        return_error!(error);
+                    } else {
+                        if let Error::Runtime(error) = error {
+                            if let RuntimeError::Availability(error) = error {
+                                if let AvailabilityError::OpFailed(msg) = error {
+                                    if msg.starts_with("Cannot perform write: primary replica for shard") {
+                                        write = true;
+                                    }
                                 }
                             }
                         }
+                        i += 1;
+                        continue;
                     }
-                    i += 1;
-                    continue;
                 }
             }
-            /*
-            loop {
-            }
-            */
             break;
         }
     }
     finished(()).boxed()
 }
 
-fn handle_response<T>(conn: &mut PooledConnection<ConnectionManager>, mut tx: Sender<ResponseValue<T>, Error>)
--> Result<(i32, Sender<ResponseValue<T>, Error>)>
-where T: 'static + Deserialize + Send + Debug
+fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender<T>, Option<Sender<T>>, Result<RT>)
+    where T: 'static + Deserialize + Send + Debug
 {
+    let (new_tx, _) = stream::channel();
+    macro_rules! return_error {
+        ($e:expr) => {{
+            let error = $e;
+            return (new_tx, Some(tx), error!(default error));
+        }}
+    }
+    macro_rules! try {
+        ($e:expr) => {{
+            match $e {
+                Ok(v) => v,
+                Err(error) => return_error!(error),
+            }
+        }}
+    }
+    macro_rules! try_tx {
+        ($e:expr) => {{
+            match $e {
+                Ok(v) => v,
+                Err(error) => return (new_tx, None, error!(default error)),
+            }
+        }}
+    }
     match read_query(conn) {
         Ok(resp) => {
             let result: ReqlResponse = try!(from_slice(&resp[..]));
@@ -779,58 +819,63 @@ where T: 'static + Deserialize + Send + Debug
                         if let Some(Value::String(msg)) = error.into_iter().next() {
                             msg
                         } else {
-                            return error!(ResponseError::Db(result.r));
+                            return_error!(ResponseError::Db(result.r));
                         }
                     } else {
-                        return error!(ResponseError::Db(result.r));
+                        return_error!(ResponseError::Db(result.r));
                     }
                 } else {
-                    return error!(ResponseError::Db(result.r));
+                    return_error!(ResponseError::Db(result.r));
                 };
                 // Then use the message to and error code to convert to our native error
-                if let Some(error) = et::from_i32(e) {
+                if let Some(error) = ET::from_i32(e) {
                     match error {
-                        et::INTERNAL => return error!(RuntimeError::Internal(msg)),
-                        et::RESOURCE_LIMIT => return error!(RuntimeError::ResourceLimit(msg)),
-                        et::QUERY_LOGIC => return error!(RuntimeError::QueryLogic(msg)),
-                        et::NON_EXISTENCE => return error!(RuntimeError::NonExistence(msg)),
-                        et::OP_FAILED => return error!(AvailabilityError::OpFailed(msg)),
-                        et::OP_INDETERMINATE => return error!(AvailabilityError::OpIndeterminate(msg)),
-                        et::USER => return error!(RuntimeError::User(msg)),
-                        et::PERMISSION_ERROR => return error!(RuntimeError::Permission(msg)),
+                        ET::INTERNAL => return_error!(RuntimeError::Internal(msg)),
+                        ET::RESOURCE_LIMIT => return_error!(RuntimeError::ResourceLimit(msg)),
+                        ET::QUERY_LOGIC => return_error!(RuntimeError::QueryLogic(msg)),
+                        ET::NON_EXISTENCE => return_error!(RuntimeError::NonExistence(msg)),
+                        ET::OP_FAILED => return_error!(AvailabilityError::OpFailed(msg)),
+                        ET::OP_INDETERMINATE => return_error!(AvailabilityError::OpIndeterminate(msg)),
+                        ET::USER => return_error!(RuntimeError::User(msg)),
+                        ET::PERMISSION_ERROR => return_error!(RuntimeError::Permission(msg)),
                     }
                 } else {
                     // returning a genneral database error if we don't recognise this error
-                    return error!(ResponseError::Db(result.r));
+                    return_error!(ResponseError::Db(result.r));
                 }
             }
             // Since this is a successful query let's process the results and send
             // them to the caller
             if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
                 for v in stati {
-                    tx = try!(tx.send(Ok(ResponseValue::Write(v))).wait());
+                    tx = try_tx!(tx.send(Ok(ResponseValue::Write(v))).wait());
                 }
             } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                 for v in data {
-                    tx = try!(tx.send(Ok(ResponseValue::Read(v))).wait());
+                    tx = try_tx!(tx.send(Ok(ResponseValue::Read(v))).wait());
                 }
             } else {
                 // Send unexpected query response
                 // This is not an error according to the database
                 // but the caller wasn't expecting such a response
                 // so we just return it raw.
-                tx = try!(tx.send(Ok(ResponseValue::Raw(result.r.clone()))).wait());
+                tx = try_tx!(tx.send(Ok(ResponseValue::Raw(result.r.clone()))).wait());
             }
             // Return response type so we know if we need to retrieve more data
-            Ok((result.t, tx))
+            if let Some(respt) = RT::from_i32(result.t) {
+                (new_tx, Some(tx), Ok(respt))
+            } else {
+                let msg = format!("Unsupported response type ({}), returned by the database.", result.t);
+                return_error!(DriverError::Other(msg));
+            }
         },
         // We failed to read the server's response so we will
         // try again as long as we haven't used up all our allowed retries.
-        Err(error) => return error!(error),
+        Err(error) => return_error!(error),
     }
 }
 
-fn wrap_command<T>(command: tt,
+fn wrap_command<T>(command: TT,
                    input: Option<T>,
                    commands: Option<&str>)
 -> Result<String>
@@ -862,7 +907,7 @@ where T: IntoCommandArg
     Ok(cmds)
 }
 
-fn wrap_query(query_type: qt,
+fn wrap_query(query_type: QT,
               query: Option<&str>,
               options: Option<&str>)
 -> String {
@@ -927,7 +972,7 @@ fn read_query(conn: &mut Connection) -> Result<Vec<u8>> {
 fn wrap_arrays(mut val: Value) -> Value {
     if val.is_array() {
         let mut array = Vec::with_capacity(2);
-        array.push(Value::I64(tt::MAKE_ARRAY.value() as i64));
+        array.push(Value::I64(TT::MAKE_ARRAY.value() as i64));
         if let Value::Array(vec) = val {
             let mut new_val = Vec::with_capacity(vec.len());
             for v in vec.into_iter() {
