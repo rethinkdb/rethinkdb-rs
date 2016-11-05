@@ -669,6 +669,7 @@ impl Command {
     command!(filter, FILTER);
     command!(insert, INSERT);
     command!(delete, DELETE, no_args);
+    command!(changes, CHANGES, no_args);
 
     pub fn run<T>(self) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
