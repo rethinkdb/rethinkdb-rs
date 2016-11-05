@@ -860,11 +860,22 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
     match read_query(conn) {
         Ok(resp) => {
             let result: ReqlResponse = try!(from_slice(&resp[..]));
+            let respt: RT;
+            if let Some(t) = RT::from_i32(result.t) {
+                respt = t;
+            } else {
+                let msg = format!("Unsupported response type ({}), returned by the database.", result.t);
+                return_error!(DriverError::Other(msg));
+            }
             // If the database says this response is an error convert the error 
             // message to our native one.
-            if let Some(e) = result.e {
-                // First get the error message
-                let msg = if let Value::Array(error) = result.r.clone() {
+            let has_generic_error = match respt {
+                RT::CLIENT_ERROR | RT::COMPILE_ERROR | RT::RUNTIME_ERROR => true,
+                _ => false,
+            };
+            let mut msg = String::new();
+            if result.e.is_some() || has_generic_error {
+                msg = if let Value::Array(error) = result.r.clone() {
                     if error.len() == 1 {
                         if let Some(Value::String(msg)) = error.into_iter().next() {
                             msg
@@ -877,7 +888,8 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
                 } else {
                     return_error!(ResponseError::Db(result.r));
                 };
-                // Then use the message to and error code to convert to our native error
+            }
+            if let Some(e) = result.e {
                 if let Some(error) = ET::from_i32(e) {
                     match error {
                         ET::INTERNAL => return_error!(RuntimeError::Internal(msg)),
@@ -890,8 +902,15 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
                         ET::PERMISSION_ERROR => return_error!(RuntimeError::Permission(msg)),
                     }
                 } else {
-                    // returning a genneral database error if we don't recognise this error
                     return_error!(ResponseError::Db(result.r));
+                }
+            }
+            if has_generic_error {
+                match respt {
+                    RT::CLIENT_ERROR => return_error!(DriverError::Other(msg)),
+                    RT::COMPILE_ERROR => return_error!(Error::Compile(msg)),
+                    RT::RUNTIME_ERROR => return_error!(ResponseError::Db(result.r)),
+                    _ => {/* not an error */},
                 }
             }
             // Since this is a successful query let's process the results and send
@@ -912,12 +931,7 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
                 tx = try_tx!(tx.send(Ok(ResponseValue::Raw(result.r.clone()))).wait());
             }
             // Return response type so we know if we need to retrieve more data
-            if let Some(respt) = RT::from_i32(result.t) {
-                (tx, true, retry, Ok(respt))
-            } else {
-                let msg = format!("Unsupported response type ({}), returned by the database.", result.t);
-                return_error!(DriverError::Other(msg));
-            }
+            (tx, true, retry, Ok(respt))
         },
         // We failed to read the server's response so we will
         // try again as long as we haven't used up all our allowed retries.
