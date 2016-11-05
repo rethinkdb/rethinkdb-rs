@@ -699,8 +699,9 @@ where T: 'static + Deserialize + Send + Debug
             }
         }}
     }
+    let logger = Client::logger().read();
     let cfg = Client::config().read();
-    let query = wrap_query(QT::START, Some(&commands), None);
+    let mut query = wrap_query(QT::START, Some(&commands), None);
     let mut conn = try!(Client::conn());
     // Try sending the query
     {
@@ -723,6 +724,7 @@ where T: 'static + Deserialize + Send + Debug
                     }
                 };
             }
+            debug!(logger, "{}", "Connection acquired.");
             // and increment the token
             // @TODO: this doesn't seem like the correct position to increment the token
             conn.token += 1;
@@ -739,41 +741,23 @@ where T: 'static + Deserialize + Send + Debug
                 }
                 connect = false;
             }
+            debug!(logger, "{}", "Query written.");
             // Handle the response
-            let (new_tx, s, res) = handle_response::<T>(&mut conn, tx);
+            let (new_tx, tx_returned, write_opt, retry, res) = process_response::<T>(&mut query, &mut conn, tx);
+            debug!(logger, "{}", "Got response.");
+            debug!(logger, "{:?}", res);
             tx = new_tx;
-            let tx_returned = s.is_some();
-            if let Some(s) = s {
-                tx = s;
-            }
-            match res {
-                Ok(t) => {
-                    match t {
-                        RT::SUCCESS_ATOM | RT::SUCCESS_SEQUENCE | RT::WAIT_COMPLETE | RT::SERVER_INFO | RT::CLIENT_ERROR | RT::COMPILE_ERROR | RT::RUNTIME_ERROR  => break,
-                        RT::SUCCESS_PARTIAL => {
-                        },
-                    }
-                }
-                Err(error) => {
-                    if i == cfg.retries - 1 {
+            if let Err(error) = res {
+                    write = write_opt;
+                    if i == cfg.retries - 1 || !retry {
                         return_error!(error);
                     }
                     if !tx_returned {
                         return_error!(error);
                     } else {
-                        if let Error::Runtime(error) = error {
-                            if let RuntimeError::Availability(error) = error {
-                                if let AvailabilityError::OpFailed(msg) = error {
-                                    if msg.starts_with("Cannot perform write: primary replica for shard") {
-                                        write = true;
-                                    }
-                                }
-                            }
-                        }
                         i += 1;
                         continue;
                     }
-                }
             }
             break;
         }
@@ -781,14 +765,83 @@ where T: 'static + Deserialize + Send + Debug
     finished(()).boxed()
 }
 
-fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender<T>, Option<Sender<T>>, Result<RT>)
+fn process_response<T>(query: &mut String, conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender<T>, bool, bool, bool, Result<()>)
     where T: 'static + Deserialize + Send + Debug
 {
-    let (new_tx, _) = stream::channel();
+    let mut write = false;
+    let mut retry = false;
+    let (new_tx, tx_returned, new_retry, res) = handle_response::<T>(conn, tx);
+    tx = new_tx;
     macro_rules! return_error {
         ($e:expr) => {{
             let error = $e;
-            return (new_tx, Some(tx), error!(default error));
+            return (tx, tx_returned, write, retry, error!(default error));
+        }}
+    }
+    macro_rules! try {
+        ($e:expr) => {{
+            match $e {
+                Ok(v) => v,
+                Err(error) => return_error!(error),
+            }
+        }}
+    }
+    match res {
+        Ok(t) => {
+            match t {
+                RT::SUCCESS_ATOM | RT::SUCCESS_SEQUENCE | RT::WAIT_COMPLETE | RT::SERVER_INFO | RT::CLIENT_ERROR | RT::COMPILE_ERROR | RT::RUNTIME_ERROR  => {/* we are done */},
+                RT::SUCCESS_PARTIAL => {
+                    *query = wrap_query(QT::CONTINUE, None, None);
+                    if let Err(error) = write_query(query, conn) {
+                        write = true;
+                        retry = true;
+                        return_error!(error);
+                    }
+                    let (new_tx, _, _, new_retry, res) = process_response::<T>(query, conn, tx);
+                    tx = new_tx;
+                    retry = new_retry;
+                    if let Err(error) = res {
+                        return_error!(error);
+                    }
+                },
+            }
+        }
+        Err(error) => {
+            retry = new_retry;
+            match error {
+                Error::Runtime(error) => {
+                    match error {
+                        RuntimeError::Availability(error) => {
+                            match error {
+                                AvailabilityError::OpFailed(msg) => {
+                                    if msg.starts_with("Cannot perform write: primary replica for shard") {
+                                        write = true;
+                                        retry = true;
+                                    }
+                                    return_error!(AvailabilityError::OpFailed(msg));
+                                }
+                                error => return_error!(error),
+                            }
+                        }
+                        error => return_error!(error),
+                    }
+                }
+                error => return_error!(error),
+            }
+        }
+    }
+    (tx, tx_returned, write, retry, Ok(()))
+}
+
+fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender<T>, bool, bool, Result<RT>)
+    where T: 'static + Deserialize + Send + Debug
+{
+    let (new_tx, _) = stream::channel();
+    let mut retry = false;
+    macro_rules! return_error {
+        ($e:expr) => {{
+            let error = $e;
+            return (tx, true, retry, error!(default error));
         }}
     }
     macro_rules! try {
@@ -803,7 +856,7 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
         ($e:expr) => {{
             match $e {
                 Ok(v) => v,
-                Err(error) => return (new_tx, None, error!(default error)),
+                Err(error) => return (new_tx, false, retry, error!(default error)),
             }
         }}
     }
@@ -863,7 +916,7 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
             }
             // Return response type so we know if we need to retrieve more data
             if let Some(respt) = RT::from_i32(result.t) {
-                (new_tx, Some(tx), Ok(respt))
+                (tx, true, retry, Ok(respt))
             } else {
                 let msg = format!("Unsupported response type ({}), returned by the database.", result.t);
                 return_error!(DriverError::Other(msg));
@@ -871,7 +924,10 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
         },
         // We failed to read the server's response so we will
         // try again as long as we haven't used up all our allowed retries.
-        Err(error) => return_error!(error),
+        Err(error) => {
+            retry = true;
+            return_error!(error);
+        },
     }
 }
 
