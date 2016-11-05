@@ -541,9 +541,20 @@ impl Client {
         let pool = Self::pool().read();
         match *pool {
             Some(ref pool) => {
-                let mut num_retries = cfg.retries;
                 let msg = String::from("Failed to get a connection.");
                 let mut last_error = error!(default ConnectionError::Other(msg));
+                macro_rules! return_conn {
+                    ($e:expr) => {{
+                        match $e {
+                            Ok(mut conn) => {
+                                conn.token += 1;
+                                return Ok(conn);
+                            },
+                            Err(error) => last_error = error!(error),
+                        }
+                    }}
+                }
+                let mut num_retries = cfg.retries;
                 while num_retries > 0 {
                     let mut least_connections = 0;
                     let mut least_connected_server = 0;
@@ -561,15 +572,9 @@ impl Client {
                         }
                     }
                     if most_idle > 0 {
-                        match pool[most_idle_server].get() {
-                            Ok(conn) => return Ok(conn),
-                            Err(error) => last_error = error!(error),
-                        }
+                        return_conn!(pool[most_idle_server].get());
                     } else if least_connections > 0 {
-                        match pool[least_connected_server].get() {
-                            Ok(conn) => return Ok(conn),
-                            Err(error) => last_error = error!(error),
-                        }
+                        return_conn!(pool[least_connected_server].get());
                     } else {
                         let msg = String::from("All servers are currently down.");
                         last_error = error!(ConnectionError::Other(msg));
@@ -699,7 +704,6 @@ where T: 'static + Deserialize + Send + Debug
             }
         }}
     }
-    let logger = Client::logger().read();
     let cfg = Client::config().read();
     let mut query = wrap_query(QT::START, Some(&commands), None);
     let mut conn = try!(Client::conn());
@@ -724,10 +728,6 @@ where T: 'static + Deserialize + Send + Debug
                     }
                 };
             }
-            debug!(logger, "{}", "Connection acquired.");
-            // and increment the token
-            // @TODO: this doesn't seem like the correct position to increment the token
-            conn.token += 1;
             // Submit the query if necessary
             if write {
                 if let Err(error) = write_query(&query, &mut conn) {
@@ -741,11 +741,8 @@ where T: 'static + Deserialize + Send + Debug
                 }
                 connect = false;
             }
-            debug!(logger, "{}", "Query written.");
             // Handle the response
             let (new_tx, tx_returned, write_opt, retry, res) = process_response::<T>(&mut query, &mut conn, tx);
-            debug!(logger, "{}", "Got response.");
-            debug!(logger, "{:?}", res);
             tx = new_tx;
             if let Err(error) = res {
                     write = write_opt;
