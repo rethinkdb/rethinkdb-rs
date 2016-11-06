@@ -7,6 +7,7 @@ use std::error::Error as StdError;
 use std::net::TcpStream;
 use std::fmt::Debug;
 use std::thread;
+use std::collections::BTreeMap;
 
 use super::r;
 use error::*;
@@ -67,6 +68,9 @@ macro_rules! try {
 ///
 /// All public commands that can possibly return an error return this.
 pub type Result<T> = result::Result<T, Error>;
+
+/// A JSON Object
+pub type Object = BTreeMap<String, Value>;
 
 /// ReQL Client
 ///
@@ -456,6 +460,12 @@ impl IntoCommandArg for Command {
     }
 }
 
+impl IntoCommandArg for () {
+    fn to_arg(&self) -> Result<(Argument, Options)> {
+        Ok((None, None))
+    }
+}
+
 macro_rules! define {
     (impl IntoCommandArg for $T:ty) => {
         impl IntoCommandArg for $T {
@@ -672,6 +682,19 @@ impl Command {
     command!(changes, CHANGES, no_args);
 
     pub fn run<T>(self) -> Result<Response<T>>
+        where T: 'static + Deserialize + Send + Debug
+        {
+            let (tx, rx) = stream::channel();
+            let commands = try!(self.0);
+            let sender = thread::Builder::new()
+                .name("reql_command_run".to_string());
+            if let Err(err) = sender.spawn(|| send::<T>(commands, tx).wait()) {
+                return error!(err);
+            };
+            Ok(rx)
+        }
+
+    pub fn run_with_opts<T>(self, _opts: Object) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
             let (tx, rx) = stream::channel();
@@ -1013,8 +1036,6 @@ fn write_query(query: &str, conn: &mut Connection) -> Result<()> {
 }
 
 fn read_query(conn: &mut Connection) -> Result<Vec<u8>> {
-    // @TODO use response_token to implement parallel reads and writes?
-    // let response_token = try!(conn.stream.read_u64::<LittleEndian>());
     let _ = match conn.stream.read_u64::<LittleEndian>() {
         Ok(token) => token,
         Err(error) => {
