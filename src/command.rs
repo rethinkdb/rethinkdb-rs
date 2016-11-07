@@ -359,7 +359,7 @@ impl r2d2::ManageConnection for ConnectionManager {
 
     fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
         conn.token += 1;
-        let query = wrap_query(QT::START, Some("1"), None);
+        let query = wrap_query(QT::START, Some(String::from("1")), None);
         try!(write_query(&query, &mut conn));
         let resp = try!(read_query(&mut conn));
         let resp: ReqlResponse = try!(from_slice(&resp[..]));
@@ -502,7 +502,7 @@ macro_rules! command {
                 };
                 Command(wrap_command(TT::$cmd,
                                      Some(arg),
-                                     Some(&commands)))
+                                     Some(commands)))
             }
     };
     ($name:ident, $cmd:ident, root_cmd) => {
@@ -521,8 +521,8 @@ macro_rules! command {
                 Err(e) => return Command(Err(e)),
             };
             Command(wrap_command(TT::$cmd,
-                                 None as Option<&str>,
-                                 Some(&commands)))
+                                 None as Option<String>,
+                                 Some(commands)))
         }
     };
 }
@@ -684,33 +684,33 @@ impl Command {
     pub fn run<T>(self) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
-            let (tx, rx) = stream::channel();
-            let commands = try!(self.0);
-            let sender = thread::Builder::new()
-                .name("reql_command_run".to_string());
-            if let Err(err) = sender.spawn(|| send::<T>(commands, tx).wait()) {
-                return error!(err);
-            };
-            Ok(rx)
+            run::<T>(self.0, None)
         }
 
-    pub fn run_with_opts<T>(self, _opts: Object) -> Result<Response<T>>
+    pub fn run_with_opts<T>(self, opts: Object) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
-            let (tx, rx) = stream::channel();
-            let commands = try!(self.0);
-            let sender = thread::Builder::new()
-                .name("reql_command_run".to_string());
-            if let Err(err) = sender.spawn(|| send::<T>(commands, tx).wait()) {
-                return error!(err);
-            };
-            Ok(rx)
+            let opts = try!(to_string(&opts));
+            run::<T>(self.0, Some(opts))
         }
+}
+
+fn run<T>(commands: Result<String>, opts: Option<String>) -> Result<Response<T>>
+        where T: 'static + Deserialize + Send + Debug
+{
+    let (tx, rx) = stream::channel();
+    let commands = try!(commands);
+    let sender = thread::Builder::new()
+        .name("reql_command_run".to_string());
+    if let Err(err) = sender.spawn(|| send::<T>(commands, opts, tx).wait()) {
+        return error!(err);
+    };
+    Ok(rx)
 }
 
 type Sender<T> = StreamSender<ResponseValue<T>, Error>;
 
-fn send<T>(commands: String, mut tx: Sender<T>) -> BoxFuture<(), ()>
+fn send<T>(commands: String, opts: Option<String>, mut tx: Sender<T>) -> BoxFuture<(), ()>
 where T: 'static + Deserialize + Send + Debug
 {
     macro_rules! return_error {
@@ -729,7 +729,7 @@ where T: 'static + Deserialize + Send + Debug
         }}
     }
     let cfg = Client::config().read();
-    let mut query = wrap_query(QT::START, Some(&commands), None);
+    let mut query = wrap_query(QT::START, Some(commands), opts);
     let mut conn = try!(Client::conn());
     // Try sending the query
     {
@@ -968,14 +968,14 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
 
 fn wrap_command<T>(command: TT,
                    input: Option<T>,
-                   commands: Option<&str>)
+                   commands: Option<String>)
 -> Result<String>
 where T: IntoCommandArg
 {
     let mut cmds = format!("[{},", command.value());
     let mut args = String::new();
     if let Some(commands) = commands {
-        args.push_str(commands);
+        args.push_str(&commands);
         if input.is_some() {
             args.push_str(",");
         }
@@ -999,8 +999,8 @@ where T: IntoCommandArg
 }
 
 fn wrap_query(query_type: QT,
-              query: Option<&str>,
-              options: Option<&str>)
+              query: Option<String>,
+              options: Option<String>)
 -> String {
     let mut qry = format!("[{}", query_type.value());
     if let Some(query) = query {
