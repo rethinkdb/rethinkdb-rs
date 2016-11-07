@@ -20,7 +20,7 @@ reql = "0.0.5"
 
 Import it in your `main.rs` or `lib.rs`:-
 
-```rust
+```rust,ignore
 extern crate reql;
 
 use reql::prelude::*;
@@ -32,7 +32,6 @@ Create a connection pool and connect to your database server(s) in your `main` o
 ```rust
 extern crate reql;
 
-use reql::prelude::*;
 use reql::r;
 
 fn main() {
@@ -42,7 +41,7 @@ fn main() {
 
 Run ReQL commands:-
 
-```rust,norun
+```rust,ignore
 extern crate reql;
 
 use reql::prelude::*;
