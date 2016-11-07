@@ -17,8 +17,8 @@ protobuf = "1.0"
 r2d2 = "0.7"
 byteorder = "0.5"
 bufstream = "0.1"
-#futures = "0.1"
-futures = { git = "https://github.com/alexcrichton/futures-rs" }
+futures = "0.1"
+#futures = { git = "https://github.com/alexcrichton/futures-rs" }
 slog = { version = "1.2", features = ["release_max_level_warn"] }
 slog-term = "1.0"
 serde = "0.8"
