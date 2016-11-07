@@ -503,7 +503,7 @@ define!{ impl IntoCommandArg for isize }
 define!{ impl IntoCommandArg for f32 }
 define!{ impl IntoCommandArg for f64 }
 
-fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmds: Option<Command>) -> Command
+fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmd_type: CommandType, cmds: Option<Command>) -> Command
     where T: IntoCommandArg
 {
     let cmd: String;
@@ -540,7 +540,7 @@ fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmds: Option<Command>) ->
     }
     Command {
         cmds: new_cmds,
-        cmd_type: CommandType::Read,
+        cmd_type: cmd_type,
         result: result,
         error_pos: error_pos,
     }
@@ -552,19 +552,19 @@ impl Client {
     pub fn db<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("db", Some(arg), TT::DB, None)
+            make_command::<T>("db", Some(arg), TT::DB, CommandType::Read, None)
         }
 
     pub fn db_create<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("db_create", Some(arg), TT::DB_CREATE, None)
+            make_command::<T>("db_create", Some(arg), TT::DB_CREATE, CommandType::Read, None)
         }
 
     pub fn db_drop<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("db_drop", Some(arg), TT::DB_DROP, None)
+            make_command::<T>("db_drop", Some(arg), TT::DB_DROP, CommandType::Read, None)
         }
 
     fn logger() -> &'static RwLock<Logger> {
@@ -706,101 +706,101 @@ impl Command {
     pub fn table_create<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("table_create", Some(arg), TT::TABLE_CREATE, Some(self))
+            make_command::<T>("table_create", Some(arg), TT::TABLE_CREATE, CommandType::Read, Some(self))
         }
 
     pub fn table_drop<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("table_drop", Some(arg), TT::TABLE_DROP, Some(self))
+            make_command::<T>("table_drop", Some(arg), TT::TABLE_DROP, CommandType::Read, Some(self))
         }
 
     pub fn table<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("table", Some(arg), TT::TABLE, Some(self))
+            make_command::<T>("table", Some(arg), TT::TABLE, CommandType::Read, Some(self))
         }
 
     pub fn index_drop<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("index_drop", Some(arg), TT::INDEX_DROP, Some(self))
+            make_command::<T>("index_drop", Some(arg), TT::INDEX_DROP, CommandType::Read, Some(self))
         }
 
     pub fn index_create<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("index_create", Some(arg), TT::INDEX_CREATE, Some(self))
+            make_command::<T>("index_create", Some(arg), TT::INDEX_CREATE, CommandType::Read, Some(self))
         }
 
     pub fn replace<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("replace", Some(arg), TT::REPLACE, Some(self))
+            make_command::<T>("replace", Some(arg), TT::REPLACE, CommandType::Read, Some(self))
         }
 
     pub fn update<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("update", Some(arg), TT::UPDATE, Some(self))
+            make_command::<T>("update", Some(arg), TT::UPDATE, CommandType::Read, Some(self))
         }
 
     pub fn order_by<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("order_by", Some(arg), TT::ORDER_BY, Some(self))
+            make_command::<T>("order_by", Some(arg), TT::ORDER_BY, CommandType::Read, Some(self))
         }
 
     pub fn without<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("without", Some(arg), TT::WITHOUT, Some(self))
+            make_command::<T>("without", Some(arg), TT::WITHOUT, CommandType::Read, Some(self))
         }
 
     pub fn contains<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("contains", Some(arg), TT::CONTAINS, Some(self))
+            make_command::<T>("contains", Some(arg), TT::CONTAINS, CommandType::Read, Some(self))
         }
 
     pub fn limit<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("limit", Some(arg), TT::LIMIT, Some(self))
+            make_command::<T>("limit", Some(arg), TT::LIMIT, CommandType::Read, Some(self))
         }
 
     pub fn get<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("get", Some(arg), TT::GET, Some(self))
+            make_command::<T>("get", Some(arg), TT::GET, CommandType::Read, Some(self))
         }
 
     pub fn get_all<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("get_all", Some(arg), TT::GET_ALL, Some(self))
+            make_command::<T>("get_all", Some(arg), TT::GET_ALL, CommandType::Read, Some(self))
         }
 
     pub fn filter<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("filter", Some(arg), TT::FILTER, Some(self))
+            make_command::<T>("filter", Some(arg), TT::FILTER, CommandType::Read, Some(self))
         }
 
     pub fn insert<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("insert", Some(arg), TT::INSERT, Some(self))
+            make_command::<T>("insert", Some(arg), TT::INSERT, CommandType::Write, Some(self))
         }
 
     pub fn delete(self) -> Command
         {
-            make_command::<()>("delete", None, TT::DELETE, Some(self))
+            make_command::<()>("delete", None, TT::DELETE, CommandType::Read, Some(self))
         }
 
     pub fn changes(self) -> Command
         {
-            make_command::<()>("changes", None, TT::CHANGES, Some(self))
+            make_command::<()>("changes", None, TT::CHANGES, CommandType::ChangeFeed, Some(self))
         }
 
     pub fn run<T>(self) -> Result<Response<T>>
