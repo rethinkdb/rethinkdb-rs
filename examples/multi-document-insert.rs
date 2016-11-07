@@ -16,15 +16,15 @@ fn main() {
 
     // Create our database if necessary
     let res: Response<Value> = r.db_create(db).run().unwrap();
-    res.consume();
+    for _ in res.wait() { }
 
     // Drop table if nessary
     let res: Response<Value> = r.table_drop(table).run().unwrap();
-    res.consume();
+    for _ in res.wait() { }
 
     // Create our table
     let res: Response<Value> = r.table_create(table).run().unwrap();
-    res.consume();
+    for _ in res.wait() { }
 
     // Insert user(s) into the table
     let posts: Value = from_str(r#"
@@ -50,5 +50,5 @@ fn main() {
         ]
     "#).unwrap();
     let res: Response<Value> = r.table(table).insert(posts).run().unwrap();
-    res.consume();
+    for _ in res.wait() { }
 }

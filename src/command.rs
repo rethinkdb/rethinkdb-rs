@@ -452,14 +452,18 @@ impl IntoCommandArg for Value {
     }
 }
 
-impl<T> IntoCommandArg for (T, Value)
+impl IntoCommandArg for Object {
+    fn to_arg(&self) -> Result<(Argument, Options)> {
+        let val = Value::Object(self.clone());
+        let arg = try!(val.to_arg());
+        Ok((arg.0, None))
+    }
+}
+
+impl<T> IntoCommandArg for (T, Object)
 where T: IntoCommandArg
 {
     fn to_arg(&self) -> Result<(Argument, Options)> {
-        if !self.1.is_object() {
-            let msg = String::from("Only objects are allowed as function options. You should use `r.object()` to pass optional arguments in your functions.");
-            return Err(From::from(DriverError::Other(msg)));
-        }
         let arg = try!(self.0.to_arg());
         let opt = try!(self.1.to_arg());
         Ok((arg.0, opt.0))

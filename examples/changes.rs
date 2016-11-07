@@ -14,5 +14,5 @@ fn main() {
         println!("{:?}", val);
         Ok(())
     });
-    response.consume();
+    for _ in response.wait() { }
 }

@@ -14,6 +14,7 @@ pub use serde_json::{Value,
 // However, the implementations for `T: Stream` and `T: Future`
 // would clash.
 
+/*
 /// Block the current thread until we have received all the results from
 /// the stream.
 pub trait StreamConsumer {
@@ -36,3 +37,4 @@ macro_rules! consume {
 
 impl<T: Stream> StreamConsumer for T { consume!{} }
 impl<T: Future> FutureConsumer for T { consume!{} }
+*/

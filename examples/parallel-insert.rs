@@ -18,15 +18,15 @@ fn main() {
 
     // Create our database if necessary
     let res: Response<Value> = r.db_create(db).run().unwrap();
-    let _ = res.wait();
+    for _ in res.wait() { }
 
     // Drop table if nessary
     let res: Response<Value> = r.table_drop(table).run().unwrap();
-    let _ = res.wait();
+    for _ in res.wait() { }
 
     // Create our table
     let res: Response<Value> = r.table_create(table).run().unwrap();
-    let _ = res.wait();
+    for _ in res.wait() { }
 
     // Insert 200 user(s) into the table
     (0..200u32)
@@ -38,6 +38,6 @@ fn main() {
                 .insert("age", i*2)
                 .build();
             let res: Response<Value> = r.table(table).insert(user).run().unwrap();
-            let _ = res.wait();
+            for _ in res.wait() { }
         });
 }
