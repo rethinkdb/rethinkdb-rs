@@ -83,7 +83,19 @@ pub struct Client;
 /// Implements all other ReQL commands that are not implemented on the
 /// `Client`.
 #[derive(Debug)]
-pub struct Command(Result<String>);
+pub struct Command {
+    cmds: Vec<String>,
+    cmd_type: CommandType,
+    result: Result<String>,
+    error_pos: u32,
+}
+
+#[derive(Debug)]
+enum CommandType {
+    Read,
+    Write,
+    ChangeFeed,
+}
 
 /// ReQL Response
 ///
@@ -400,7 +412,7 @@ pub type Argument = Option<String>;
 pub type Options = Option<String>;
 
 /// A type that can be passed into a ReQL command
-pub trait IntoCommandArg {
+pub trait IntoCommandArg : Debug {
     /// Defines how a type can be safely passed into a command.
     ///
     /// A successful result returns a tuple as (argument, options).
@@ -453,7 +465,7 @@ where T: IntoCommandArg
 
 impl IntoCommandArg for Command {
     fn to_arg(&self) -> Result<(Argument, Options)> {
-        match self.0 {
+        match self.result {
             Ok(ref cmd) => Ok((Some(cmd.to_string()), None)),
             Err(ref e) => error!(DriverError::Other(e.description().to_string())),
         }
@@ -491,48 +503,69 @@ define!{ impl IntoCommandArg for isize }
 define!{ impl IntoCommandArg for f32 }
 define!{ impl IntoCommandArg for f64 }
 
-macro_rules! command {
-    ($name:ident, $cmd:ident) => {
-        pub fn $name<T>(self, arg: T) -> Command
-            where T: IntoCommandArg
-            {
-                let commands = match self.0 {
-                    Ok(t) => t,
-                    Err(e) => return Command(Err(e)),
-                };
-                Command(wrap_command(TT::$cmd,
-                                     Some(arg),
-                                     Some(commands)))
-            }
-    };
-    ($name:ident, $cmd:ident, root_cmd) => {
-        pub fn $name<T>(self, arg: T) -> Command
-            where T: IntoCommandArg
-            {
-                Command(wrap_command(TT::$cmd,
-                                     Some(arg),
-                                     None))
-            }
-    };
-    ($name:ident, $cmd:ident, no_args) => {
-        pub fn $name(self) -> Command {
-            let commands = match self.0 {
-                Ok(t) => t,
-                Err(e) => return Command(Err(e)),
-            };
-            Command(wrap_command(TT::$cmd,
-                                 None as Option<String>,
-                                 Some(commands)))
+fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmds: Option<Command>) -> Command
+    where T: IntoCommandArg
+{
+    let cmd: String;
+    let new_arg: Option<T>;
+    if let Some(arg) = arg {
+        cmd = format!("{}({:?})", name, arg);
+        new_arg = Some(arg);
+    } else {
+        cmd = format!("{}()", name);
+        new_arg = None;
+    }
+    let mut new_cmds: Vec<String>;
+    let mut error_pos: u32;
+    let result: Result<String>;
+    if let Some(old_cmd) = cmds {
+        new_cmds = old_cmd.cmds;
+        new_cmds.push(cmd);
+        error_pos = old_cmd.error_pos;
+        match old_cmd.result {
+            Ok(commands) => {
+                result = wrap_command(tt, new_arg, Some(commands));
+            },
+            Err(e) => {
+                result = Err(e);
+                if error_pos == 0 {
+                    error_pos = (new_cmds.len() as u32) - 1;
+                }
+            },
         }
-    };
+    } else {
+        new_cmds = vec![cmd];
+        result = wrap_command(tt, new_arg, None);
+        error_pos = 0;
+    }
+    Command {
+        cmds: new_cmds,
+        cmd_type: CommandType::Read,
+        result: result,
+        error_pos: error_pos,
+    }
 }
 
 type PooledConnection = PConn<ConnectionManager>;
 
 impl Client {
-    command!(db, DB, root_cmd);
-    command!(db_create, DB_CREATE, root_cmd);
-    command!(db_drop, DB_DROP, root_cmd);
+    pub fn db<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("db", Some(arg), TT::DB, None)
+        }
+
+    pub fn db_create<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("db_create", Some(arg), TT::DB_CREATE, None)
+        }
+
+    pub fn db_drop<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("db_drop", Some(arg), TT::DB_DROP, None)
+        }
 
     fn logger() -> &'static RwLock<Logger> {
         &LOGGER
@@ -622,13 +655,20 @@ impl Client {
     pub fn expr<T>(&self, e: T) -> Command
         where T: IntoCommandArg
         {
-            match e.to_arg() {
+            let result = match e.to_arg() {
                 Ok(arg) => if let Some(arg) = arg.0 {
-                    Command(Ok(arg))
+                    Ok(arg)
                 } else {
-                    Command(Ok(String::new()))
+                    Ok(String::new())
                 },
-                Err(e) => Command(error!(e)),
+                Err(e) => error!(e),
+            };
+            let cmd = format!("expr({:?})", e);
+            Command {
+                cmds: vec![cmd],
+                cmd_type: CommandType::Read,
+                result: result,
+                error_pos: 0,
             }
         }
 
@@ -663,43 +703,126 @@ impl Client {
 }
 
 impl Command {
-    command!(table_create, TABLE_CREATE);
-    command!(table_drop, TABLE_DROP);
-    command!(table, TABLE);
-    command!(index_drop, INDEX_DROP);
-    command!(index_create, INDEX_CREATE);
-    command!(replace, REPLACE);
-    command!(update, UPDATE);
-    command!(order_by, ORDER_BY);
-    command!(without, WITHOUT);
-    command!(contains, CONTAINS);
-    command!(limit, LIMIT);
-    command!(get, GET);
-    command!(get_all, GET_ALL);
-    command!(filter, FILTER);
-    command!(insert, INSERT);
-    command!(delete, DELETE, no_args);
-    command!(changes, CHANGES, no_args);
+    pub fn table_create<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("table_create", Some(arg), TT::TABLE_CREATE, Some(self))
+        }
+
+    pub fn table_drop<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("table_drop", Some(arg), TT::TABLE_DROP, Some(self))
+        }
+
+    pub fn table<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("table", Some(arg), TT::TABLE, Some(self))
+        }
+
+    pub fn index_drop<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("index_drop", Some(arg), TT::INDEX_DROP, Some(self))
+        }
+
+    pub fn index_create<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("index_create", Some(arg), TT::INDEX_CREATE, Some(self))
+        }
+
+    pub fn replace<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("replace", Some(arg), TT::REPLACE, Some(self))
+        }
+
+    pub fn update<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("update", Some(arg), TT::UPDATE, Some(self))
+        }
+
+    pub fn order_by<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("order_by", Some(arg), TT::ORDER_BY, Some(self))
+        }
+
+    pub fn without<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("without", Some(arg), TT::WITHOUT, Some(self))
+        }
+
+    pub fn contains<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("contains", Some(arg), TT::CONTAINS, Some(self))
+        }
+
+    pub fn limit<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("limit", Some(arg), TT::LIMIT, Some(self))
+        }
+
+    pub fn get<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("get", Some(arg), TT::GET, Some(self))
+        }
+
+    pub fn get_all<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("get_all", Some(arg), TT::GET_ALL, Some(self))
+        }
+
+    pub fn filter<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("filter", Some(arg), TT::FILTER, Some(self))
+        }
+
+    pub fn insert<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("insert", Some(arg), TT::INSERT, Some(self))
+        }
+
+    pub fn delete(self) -> Command
+        {
+            make_command::<()>("delete", None, TT::DELETE, Some(self))
+        }
+
+    pub fn changes(self) -> Command
+        {
+            make_command::<()>("changes", None, TT::CHANGES, Some(self))
+        }
 
     pub fn run<T>(self) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
-            run::<T>(self.0, None)
+            run::<T>(self, None)
         }
 
     pub fn run_with_opts<T>(self, opts: Object) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
             let opts = try!(to_string(&opts));
-            run::<T>(self.0, Some(opts))
+            run::<T>(self, Some(opts))
         }
 }
 
-fn run<T>(commands: Result<String>, opts: Option<String>) -> Result<Response<T>>
+fn run<T>(commands: Command, opts: Option<String>) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
 {
     let (tx, rx) = stream::channel();
-    let commands = try!(commands);
+    let cmd = format!("r.{}", commands.cmds.join("."));
+    let commands = try!(commands.result, cmd);
     let sender = thread::Builder::new()
         .name("reql_command_run".to_string());
     if let Err(err) = sender.spawn(|| send::<T>(commands, opts, tx).wait()) {
