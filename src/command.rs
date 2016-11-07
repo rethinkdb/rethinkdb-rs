@@ -34,11 +34,14 @@ use futures::stream::{self, Receiver, Sender as StreamSender};
 
 include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
 
+// Macro to make it convenient to construct a `reql::error::Error`
+// The macro also logs every error passed to it unless the error
+// is marked as default.
 macro_rules! error {
     ($e:expr) => {{
         let _logger = Client::logger().read();
         let error = Error::from($e);
-        debug!(_logger, "Err({:?})", error);
+        debug!(_logger, "Error({:?})", error);
         Err(error)
     }};
     // Do not log default errors otherwise our logs
@@ -49,6 +52,9 @@ macro_rules! error {
     }}
 }
 
+// A custom `try` macro that makes use of our error macro to log errors and also any extra
+// information sent to it. The idea is to log only when an error occurs and make sure we have all
+// the infomation we need on our fingertips when that happens.
 macro_rules! try {
     ($e:expr $(, $f:expr ),*) => {{
         match $e {
@@ -56,7 +62,7 @@ macro_rules! try {
             Err(err) => {
                 let _logger = Client::logger().read();
                 $(
-                    debug!(_logger, "{:?}", $f);
+                    info!(_logger, "{:?}", $f);
                 )*
                 return error!(err);
             },
@@ -220,7 +226,7 @@ impl ConnectOpts {
 }
 
 impl Connection {
-    pub fn new(opts: &ConnectOpts) -> Result<Connection> {
+    fn new(opts: &ConnectOpts) -> Result<Connection> {
         let server = match opts.server {
             Some(server) => server,
             None => {
@@ -359,7 +365,7 @@ fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
 struct ConnectionManager(ConnectOpts);
 
 impl ConnectionManager {
-    pub fn new(opts: ConnectOpts) -> Self {
+    fn new(opts: ConnectOpts) -> Self {
         ConnectionManager(opts)
     }
 }
@@ -510,6 +516,15 @@ define!{ impl IntoCommandArg for isize }
 define!{ impl IntoCommandArg for f32 }
 define!{ impl IntoCommandArg for f64 }
 
+// Command factory
+// 
+// All the commands except `r.expr()` use this function to create the command
+// 
+// - `name`: The name of the command.
+// - `arg`: The argument that can be passed into the command if any.
+// - `tt`: The ReQL command type this commad uses. This is usually name uppercased.
+// - `cmd_type`: Whether the command is write, read or changefeed.
+// - `cmds`: The commands that we have so far, encoded into the Command object.
 fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmd_type: CommandType, cmds: Option<Command>) -> Command
     where T: IntoCommandArg
 {
@@ -556,6 +571,13 @@ fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmd_type: CommandType, cm
 type PooledConnection = PConn<ConnectionManager>;
 
 impl Client {
+    /// Reference a database.
+    ///
+    /// # Examples
+    ///
+    /// ```norun
+    /// r.db("heroes").table("marvel").run();
+    /// ```
     pub fn db<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {

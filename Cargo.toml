@@ -19,7 +19,7 @@ byteorder = "0.5"
 bufstream = "0.1"
 #futures = "0.1"
 futures = { git = "https://github.com/alexcrichton/futures-rs" }
-slog = "1.0"
+slog = { version = "1.2", features = ["release_max_level_warn"] }
 slog-term = "1.0"
 serde = "0.8"
 serde_json = "0.8"
