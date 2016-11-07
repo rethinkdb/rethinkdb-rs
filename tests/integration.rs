@@ -1,9 +1,7 @@
 extern crate reql;
-extern crate rayon;
 
 use reql::r;
 use reql::prelude::*;
-use rayon::prelude::*;
 
 #[test]
 fn connection_pool_works() {
@@ -30,20 +28,14 @@ fn connection_pool_works() {
     let res: Response<Value> = r.table_create("users").run().unwrap();
     for _ in res.wait() { }
 
-    // Insert 1 user(s) into the table
-    (0..1u32)
-        .into_par_iter()
-        .enumerate()
-        .for_each(|(i, _)| {
-            let user = r.object()
-                .insert("name", format!("User {}", i))
-                .insert("age", i*2)
-                .build();
-            let res: Response<Value> = r.table("users").insert(user).run().unwrap();
-            let res = res.for_each(|v| {
-                println!("Result: {:?}", v);
-                Ok(())
-            });
-            for _ in res.wait() { }
-        });
+    // Insert a user into the table
+    let user = r.object()
+        .insert("name", "John Doe")
+        .build();
+    let res: Response<Value> = r.table("users").insert(user).run().unwrap();
+    let res = res.and_then(|v| {
+        println!("Result: {:?}", v);
+        Ok(())
+    });
+    for _ in res.wait() { }
 }
