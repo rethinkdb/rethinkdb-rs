@@ -72,6 +72,9 @@ pub type Result<T> = result::Result<T, Error>;
 /// A JSON Object
 pub type Object = BTreeMap<String, Value>;
 
+/// A JSON Array
+pub type Array = Vec<Value>;
+
 /// ReQL Client
 ///
 /// The entry point for all ReQL commands. All top level 

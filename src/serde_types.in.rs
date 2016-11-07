@@ -38,6 +38,7 @@ struct ReqlResponse {
     n: Option<Value>,
 }
 
+/// Status returned by a write command
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WriteStatus {
     inserted: u32,
