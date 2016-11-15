@@ -826,6 +826,12 @@ impl Command {
             make_command::<T>("filter", Some(arg), TT::FILTER, CommandType::Read, Some(self))
         }
 
+    pub fn map<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("map", Some(arg), TT::MAP, CommandType::Read, Some(self))
+        }
+
     pub fn insert<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
