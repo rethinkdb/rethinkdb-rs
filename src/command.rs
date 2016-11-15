@@ -448,6 +448,12 @@ impl IntoCommandArg for String {
     }
 }
 
+impl<'a> IntoCommandArg for &'a String {
+    fn to_arg(&self) -> Result<(Argument, Options)> {
+        Ok((Some(format!("{:?}", self)), None))
+    }
+}
+
 impl IntoCommandArg for Value {
     fn to_arg(&self) -> Result<(Argument, Options)> {
         // Arrays are a special case: since ReQL commands are sent as arrays
