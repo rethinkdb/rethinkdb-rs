@@ -29,9 +29,7 @@ fn connection_pool_works() {
     for _ in res.wait() { }
 
     // Insert a user into the table
-    let user = r.object()
-        .insert("name", "John Doe")
-        .build();
+    let user = r.object(vec![("name", "John Doe")]);
     let res: Response<Value> = r.table("users").insert(user).run().unwrap();
     let res = res.and_then(|v| {
         println!("Result: {:?}", v);

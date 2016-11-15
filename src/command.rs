@@ -20,7 +20,7 @@ use ql2::proto::{self,
 };
 
 use serde::de::Deserialize;
-use serde_json::builder::{ObjectBuilder, ArrayBuilder};
+use serde_json::value::ToJson;
 use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use r2d2::{self, Pool, Config as PoolConfig, PooledConnection as PConn};
 use parking_lot::RwLock;
@@ -728,12 +728,16 @@ impl Client {
             r.db(config.db).table_drop(name)
         }
 
-    pub fn object(&self) -> ObjectBuilder {
-        ObjectBuilder::new()
+    pub fn object<T: ToJson>(&self, pairs: Vec<(&str, T)>) -> Object {
+        let mut object = BTreeMap::new();
+        for v in pairs {
+            object.insert(v.0.to_string(), v.1.to_json());
+        }
+        object
     }
 
-    pub fn array(&self) -> ArrayBuilder {
-        ArrayBuilder::new()
+    pub fn array<T: ToJson>(&self, list: Vec<T>) -> Array {
+        list.into_iter().map(|v| v.to_json()).collect::<Vec<Value>>()
     }
 }
 

@@ -94,9 +94,7 @@
 //! ### Examples
 //!
 //! ```norun
-//! let options = r.object()
-//!     .insert("profile", true)
-//!     .build();
+//! let options = r.object(vec![("profile", true)]);
 //! let users = try!(r.table("users").run_with_opts::<User>(options));
 //! let response = users.for_each(|user| {
 //!     println!("{:?}", user);
