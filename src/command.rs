@@ -7,7 +7,6 @@ use std::error::Error as StdError;
 use std::net::TcpStream;
 use std::fmt::Debug;
 use std::thread;
-use std::collections::BTreeMap;
 
 use super::r;
 use error::*;
@@ -76,7 +75,7 @@ macro_rules! try {
 pub type Result<T> = result::Result<T, Error>;
 
 /// A JSON Object
-pub type Object = BTreeMap<String, Value>;
+pub type Object<T> = Vec<(String, T)>;
 
 /// A JSON Array
 pub type Array = Vec<Value>;
@@ -436,6 +435,15 @@ pub trait IntoCommandArg : Debug {
     fn to_arg(&self) -> Result<(Argument, Options)>;
 }
 
+impl ToJson for Command {
+    fn to_json(&self) -> Value {
+        match self.result {
+            Ok(ref val) => Value::String(val.to_string()),
+            Err(_) => Value::String(String::new()),
+        }
+    }
+}
+
 impl<'a> IntoCommandArg for &'a str {
     fn to_arg(&self) -> Result<(Argument, Options)> {
         Ok((Some(format!("{:?}", self)), None))
@@ -464,16 +472,24 @@ impl IntoCommandArg for Value {
     }
 }
 
-impl IntoCommandArg for Object {
+impl<T> IntoCommandArg for Object<T>
+    where T: IntoCommandArg
+{
     fn to_arg(&self) -> Result<(Argument, Options)> {
-        let val = Value::Object(self.clone());
-        let arg = try!(val.to_arg());
-        Ok((arg.0, None))
+        let mut cmd = String::from("{");
+        for v in self {
+            let ref key = v.0;
+            let val = try!(v.1.to_arg());
+            cmd.push_str(&format!("{:?}: {},", key, val.0.unwrap()));
+        }
+        cmd = cmd.trim_right_matches(',').to_string();
+        cmd.push_str("}");
+        Ok((Some(cmd), None))
     }
 }
 
-impl<T> IntoCommandArg for (T, Object)
-where T: IntoCommandArg
+impl<T, O> IntoCommandArg for (T, Object<O>)
+where T: IntoCommandArg, O: IntoCommandArg
 {
     fn to_arg(&self) -> Result<(Argument, Options)> {
         let arg = try!(self.0.to_arg());
@@ -602,6 +618,16 @@ impl Client {
             make_command::<T>("db_drop", Some(arg), TT::DB_DROP, CommandType::Read, None)
         }
 
+    pub fn row(self) -> Command
+        {
+            Command {
+                cmds: vec![String::from("row()")],
+                cmd_type: CommandType::Read,
+                result: Ok(format!("[{},[]]", TT::IMPLICIT_VAR.value())),
+                error_pos: 0,
+            }
+        }
+
     fn logger() -> &'static RwLock<Logger> {
         &LOGGER
     }
@@ -728,12 +754,12 @@ impl Client {
             r.db(config.db).table_drop(name)
         }
 
-    pub fn object<T: ToJson>(&self, pairs: Vec<(&str, T)>) -> Object {
-        let mut object = BTreeMap::new();
+    pub fn object<T: IntoCommandArg>(&self, pairs: Vec<(&str, T)>) -> Object<T> {
+        let mut obj = Vec::with_capacity(pairs.len());
         for v in pairs {
-            object.insert(v.0.to_string(), v.1.to_json());
+            obj.push((v.0.to_string(), v.1));
         }
-        object
+        obj
     }
 
     pub fn array<T: ToJson>(&self, list: Vec<T>) -> Array {
@@ -832,6 +858,12 @@ impl Command {
             make_command::<T>("map", Some(arg), TT::MAP, CommandType::Read, Some(self))
         }
 
+    pub fn get_field<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("get_field", Some(arg), TT::GET_FIELD, CommandType::Read, Some(self))
+        }
+
     pub fn insert<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
@@ -854,11 +886,12 @@ impl Command {
             run::<T>(self, None)
         }
 
-    pub fn run_with_opts<T>(self, opts: Object) -> Result<Response<T>>
-        where T: 'static + Deserialize + Send + Debug
+    pub fn run_with_opts<T, O>(self, opts: Object<O>) -> Result<Response<T>>
+        where T: 'static + Deserialize + Send + Debug,
+                O: IntoCommandArg
         {
-            let opts = try!(to_string(&opts));
-            run::<T>(self, Some(opts))
+            let opts = try!(opts.to_arg());
+            run::<T>(self, Some(opts.0.unwrap()))
         }
 }
 
@@ -898,6 +931,7 @@ where T: 'static + Deserialize + Send + Debug
     }
     let cfg = Client::config().read();
     let mut query = wrap_query(QT::START, Some(commands), opts);
+    println!("{}", query);
     let mut conn = try!(Client::conn());
     // Try sending the query
     {
