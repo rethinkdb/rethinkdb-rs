@@ -98,7 +98,7 @@ pub struct Command {
     error_pos: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 enum CommandType {
     Read,
     Write,
@@ -551,13 +551,41 @@ fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmd_type: CommandType, cm
     where T: IntoCommandArg
 {
     let cmd: String;
-    let new_arg: Option<T>;
+    let arguments: Option<String>;
+    let opts: Option<String>;
+    let decode_error: Option<Error>;
     if let Some(arg) = arg {
         cmd = format!("{}({:?})", name, arg);
-        new_arg = Some(arg);
+        let (arg, opt) = match arg.to_arg() {
+            Ok(val) => {
+                decode_error = None;
+                val
+            },
+            Err(err) => {
+                decode_error = Some(err);
+                (None, None)
+            },
+        };
+        arguments = match arg {
+            Some(arg) => {
+                // @TODO: Make this check more robust
+                // Here we are looking for the row() command and wrapping in a func if we find it.
+                // However, by looking for the serialised version ([13,[]]), this is bound to break
+                // down if a user's `query contains this same string.
+                if arg.contains("[13,[]]") {
+                    Some(format!("[{},[[{},[1]],{}]]", TT::FUNC.value(), TT::MAKE_ARRAY.value(), arg))
+                } else {
+                    Some(arg)
+                }
+            },
+            None => None,
+        };
+        opts = opt;
     } else {
         cmd = format!("{}()", name);
-        new_arg = None;
+        arguments = None;
+        opts = None;
+        decode_error = None;
     }
     let mut new_cmds: Vec<String>;
     let mut error_pos: u32;
@@ -568,7 +596,11 @@ fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmd_type: CommandType, cm
         error_pos = old_cmd.error_pos;
         match old_cmd.result {
             Ok(commands) => {
-                result = wrap_command(tt, new_arg, Some(commands));
+                if let Some(err) = decode_error {
+                    result = Err(err);
+                } else {
+                    result = Ok(wrap_command(tt, arguments, opts, Some(commands)));
+                }
             },
             Err(e) => {
                 result = Err(e);
@@ -579,7 +611,11 @@ fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmd_type: CommandType, cm
         }
     } else {
         new_cmds = vec![cmd];
-        result = wrap_command(tt, new_arg, None);
+        if let Some(err) = decode_error {
+            result = Err(err);
+        } else {
+            result = Ok(wrap_command(tt, arguments, opts, None));
+        }
         error_pos = 0;
     }
     Command {
@@ -1168,26 +1204,18 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
     }
 }
 
-fn wrap_command<T>(command: TT,
-                   input: Option<T>,
+fn wrap_command(command: TT,
+                   arguments: Option<String>,
+                   options: Option<String>,
                    commands: Option<String>)
--> Result<String>
-where T: IntoCommandArg
-{
+-> String {
     let mut cmds = format!("[{},", command.value());
     let mut args = String::new();
     if let Some(commands) = commands {
         args.push_str(&commands);
-        if input.is_some() {
+        if arguments.is_some() {
             args.push_str(",");
         }
-    }
-    let mut arguments: Option<String> = None;
-    let mut options: Option<String> = None;
-    if let Some(input) = input {
-        let (args, opts) = try!(input.to_arg());
-        arguments = args;
-        options = opts;
     }
     if let Some(arguments) = arguments {
         args.push_str(&arguments);
@@ -1197,7 +1225,7 @@ where T: IntoCommandArg
         cmds.push_str(&format!(",{}", options));
     }
     cmds.push(']');
-    Ok(cmds)
+    cmds
 }
 
 fn wrap_query(query_type: QT,
