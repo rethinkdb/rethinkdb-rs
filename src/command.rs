@@ -78,7 +78,7 @@ pub type Result<T> = result::Result<T, Error>;
 pub type Object<T> = Vec<(String, T)>;
 
 /// A JSON Array
-pub type Array = Vec<Value>;
+pub type Array<T> = Vec<T>;
 
 /// ReQL Client
 ///
@@ -488,6 +488,19 @@ impl<T> IntoCommandArg for Object<T>
     }
 }
 
+impl IntoCommandArg for Vec<Box<IntoCommandArg>> {
+    fn to_arg(&self) -> Result<(Argument, Options)> {
+        let mut cmd = String::from("[");
+        for v in self {
+            let val = try!(v.to_arg());
+            cmd.push_str(&format!("{}, ", val.0.unwrap()));
+        }
+        cmd = cmd.trim_right_matches(", ").to_string();
+        cmd.push_str("]");
+        Ok((Some(cmd), None))
+    }
+}
+
 impl<T, O> IntoCommandArg for (T, Object<O>)
 where T: IntoCommandArg, O: IntoCommandArg
 {
@@ -654,6 +667,12 @@ impl Client {
             make_command::<T>("db_drop", Some(arg), TT::DB_DROP, CommandType::Read, None)
         }
 
+    pub fn branch<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("branch", Some(arg), TT::BRANCH, CommandType::Read, None)
+        }
+
     pub fn row(self) -> Command
         {
             Command {
@@ -797,10 +816,6 @@ impl Client {
         }
         obj
     }
-
-    pub fn array<T: ToJson>(&self, list: Vec<T>) -> Array {
-        list.into_iter().map(|v| v.to_json()).collect::<Vec<Value>>()
-    }
 }
 
 impl Command {
@@ -904,6 +919,12 @@ impl Command {
         where T: IntoCommandArg
         {
             make_command::<T>("insert", Some(arg), TT::INSERT, CommandType::Write, Some(self))
+        }
+
+    pub fn has_fields<T>(self, arg: T) -> Command
+        where T: IntoCommandArg
+        {
+            make_command::<T>("has_fields", Some(arg), TT::HAS_FIELDS, CommandType::Read, Some(self))
         }
 
     pub fn delete(self) -> Command
