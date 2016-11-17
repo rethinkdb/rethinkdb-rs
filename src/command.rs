@@ -419,6 +419,9 @@ pub type Argument = Option<String>;
 /// A serialised ReQL options map
 pub type Options = Option<String>;
 
+/// A serialised command argument
+pub type CommandArg = Result<(Argument, Options)>;
+
 /// A type that can be passed into a ReQL command
 pub trait IntoCommandArg : Debug {
     /// Defines how a type can be safely passed into a command.
@@ -432,7 +435,7 @@ pub trait IntoCommandArg : Debug {
     /// strings.
     ///
     /// [serialised]: https://rethinkdb.com/docs/writing-drivers/#serializing-queries
-    fn to_arg(&self) -> Result<(Argument, Options)>;
+    fn to_arg(&self) -> CommandArg;
 }
 
 impl ToJson for Command {
@@ -445,25 +448,25 @@ impl ToJson for Command {
 }
 
 impl<'a> IntoCommandArg for &'a str {
-    fn to_arg(&self) -> Result<(Argument, Options)> {
+    fn to_arg(&self) -> CommandArg {
         Ok((Some(format!("{:?}", self)), None))
     }
 }
 
 impl IntoCommandArg for String {
-    fn to_arg(&self) -> Result<(Argument, Options)> {
+    fn to_arg(&self) -> CommandArg {
         Ok((Some(format!("{:?}", self)), None))
     }
 }
 
 impl<'a> IntoCommandArg for &'a String {
-    fn to_arg(&self) -> Result<(Argument, Options)> {
+    fn to_arg(&self) -> CommandArg {
         Ok((Some(format!("{:?}", self)), None))
     }
 }
 
 impl IntoCommandArg for Value {
-    fn to_arg(&self) -> Result<(Argument, Options)> {
+    fn to_arg(&self) -> CommandArg {
         // Arrays are a special case: since ReQL commands are sent as arrays
         // We have to wrap them using MAKE_ARRAY
         let val = wrap_arrays(self.clone());
@@ -475,7 +478,7 @@ impl IntoCommandArg for Value {
 impl<T> IntoCommandArg for Object<T>
     where T: IntoCommandArg
 {
-    fn to_arg(&self) -> Result<(Argument, Options)> {
+    fn to_arg(&self) -> CommandArg {
         let mut cmd = String::from("{");
         for v in self {
             let ref key = v.0;
@@ -489,7 +492,7 @@ impl<T> IntoCommandArg for Object<T>
 }
 
 impl IntoCommandArg for Vec<Box<IntoCommandArg>> {
-    fn to_arg(&self) -> Result<(Argument, Options)> {
+    fn to_arg(&self) -> CommandArg {
         let mut cmd = String::from("[");
         for v in self {
             let val = try!(v.to_arg());
@@ -504,7 +507,7 @@ impl IntoCommandArg for Vec<Box<IntoCommandArg>> {
 impl<T, O> IntoCommandArg for (T, Object<O>)
 where T: IntoCommandArg, O: IntoCommandArg
 {
-    fn to_arg(&self) -> Result<(Argument, Options)> {
+    fn to_arg(&self) -> CommandArg {
         let arg = try!(self.0.to_arg());
         let opt = try!(self.1.to_arg());
         Ok((arg.0, opt.0))
@@ -512,7 +515,7 @@ where T: IntoCommandArg, O: IntoCommandArg
 }
 
 impl IntoCommandArg for Command {
-    fn to_arg(&self) -> Result<(Argument, Options)> {
+    fn to_arg(&self) -> CommandArg {
         match self.result {
             Ok(ref cmd) => Ok((Some(cmd.to_string()), None)),
             Err(ref e) => error!(DriverError::Other(e.description().to_string())),
@@ -521,7 +524,7 @@ impl IntoCommandArg for Command {
 }
 
 impl IntoCommandArg for () {
-    fn to_arg(&self) -> Result<(Argument, Options)> {
+    fn to_arg(&self) -> CommandArg {
         Ok((None, None))
     }
 }
@@ -529,7 +532,7 @@ impl IntoCommandArg for () {
 macro_rules! define {
     (impl IntoCommandArg for $T:ty) => {
         impl IntoCommandArg for $T {
-            fn to_arg(&self) -> Result<(Argument, Options)> {
+            fn to_arg(&self) -> CommandArg {
                 Ok((Some(self.to_string()), None))
             }
         }
@@ -560,16 +563,14 @@ define!{ impl IntoCommandArg for f64 }
 // - `tt`: The ReQL command type this commad uses. This is usually name uppercased.
 // - `cmd_type`: Whether the command is write, read or changefeed.
 // - `cmds`: The commands that we have so far, encoded into the Command object.
-fn make_command<T>(name: &str, arg: Option<T>, tt: TT, cmd_type: CommandType, cmds: Option<Command>) -> Command
-    where T: IntoCommandArg
-{
+fn make_command(name: &str, arg: Option<CommandArg>, tt: TT, cmd_type: CommandType, cmds: Option<Command>) -> Command {
     let cmd: String;
     let arguments: Option<String>;
     let opts: Option<String>;
     let decode_error: Option<Error>;
     if let Some(arg) = arg {
         cmd = format!("{}({:?})", name, arg);
-        let (arg, opt) = match arg.to_arg() {
+        let (arg, opt) = match arg {
             Ok(val) => {
                 decode_error = None;
                 val
@@ -652,25 +653,23 @@ impl Client {
     pub fn db<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("db", Some(arg), TT::DB, CommandType::Read, None)
+            make_command("db", Some(arg.to_arg()), TT::DB, CommandType::Read, None)
         }
 
     pub fn db_create<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("db_create", Some(arg), TT::DB_CREATE, CommandType::Read, None)
+            make_command("db_create", Some(arg.to_arg()), TT::DB_CREATE, CommandType::Read, None)
         }
 
     pub fn db_drop<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("db_drop", Some(arg), TT::DB_DROP, CommandType::Read, None)
+            make_command("db_drop", Some(arg.to_arg()), TT::DB_DROP, CommandType::Read, None)
         }
 
-    pub fn branch<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command::<T>("branch", Some(arg), TT::BRANCH, CommandType::Read, None)
+    pub fn branch(self, arg: Vec<Box<IntoCommandArg>>) -> Command {
+            make_command("branch", Some(arg.to_arg()), TT::BRANCH, CommandType::Read, None)
         }
 
     pub fn row(self) -> Command
@@ -822,119 +821,119 @@ impl Command {
     pub fn table_create<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("table_create", Some(arg), TT::TABLE_CREATE, CommandType::Read, Some(self))
+            make_command("table_create", Some(arg.to_arg()), TT::TABLE_CREATE, CommandType::Read, Some(self))
         }
 
     pub fn table_drop<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("table_drop", Some(arg), TT::TABLE_DROP, CommandType::Read, Some(self))
+            make_command("table_drop", Some(arg.to_arg()), TT::TABLE_DROP, CommandType::Read, Some(self))
         }
 
     pub fn table<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("table", Some(arg), TT::TABLE, CommandType::Read, Some(self))
+            make_command("table", Some(arg.to_arg()), TT::TABLE, CommandType::Read, Some(self))
         }
 
     pub fn index_drop<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("index_drop", Some(arg), TT::INDEX_DROP, CommandType::Read, Some(self))
+            make_command("index_drop", Some(arg.to_arg()), TT::INDEX_DROP, CommandType::Read, Some(self))
         }
 
     pub fn index_create<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("index_create", Some(arg), TT::INDEX_CREATE, CommandType::Read, Some(self))
+            make_command("index_create", Some(arg.to_arg()), TT::INDEX_CREATE, CommandType::Read, Some(self))
         }
 
     pub fn replace<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("replace", Some(arg), TT::REPLACE, CommandType::Read, Some(self))
+            make_command("replace", Some(arg.to_arg()), TT::REPLACE, CommandType::Read, Some(self))
         }
 
     pub fn update<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("update", Some(arg), TT::UPDATE, CommandType::Read, Some(self))
+            make_command("update", Some(arg.to_arg()), TT::UPDATE, CommandType::Read, Some(self))
         }
 
     pub fn order_by<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("order_by", Some(arg), TT::ORDER_BY, CommandType::Read, Some(self))
+            make_command("order_by", Some(arg.to_arg()), TT::ORDER_BY, CommandType::Read, Some(self))
         }
 
     pub fn without<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("without", Some(arg), TT::WITHOUT, CommandType::Read, Some(self))
+            make_command("without", Some(arg.to_arg()), TT::WITHOUT, CommandType::Read, Some(self))
         }
 
     pub fn contains<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("contains", Some(arg), TT::CONTAINS, CommandType::Read, Some(self))
+            make_command("contains", Some(arg.to_arg()), TT::CONTAINS, CommandType::Read, Some(self))
         }
 
     pub fn limit<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("limit", Some(arg), TT::LIMIT, CommandType::Read, Some(self))
+            make_command("limit", Some(arg.to_arg()), TT::LIMIT, CommandType::Read, Some(self))
         }
 
     pub fn get<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("get", Some(arg), TT::GET, CommandType::Read, Some(self))
+            make_command("get", Some(arg.to_arg()), TT::GET, CommandType::Read, Some(self))
         }
 
     pub fn get_all<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("get_all", Some(arg), TT::GET_ALL, CommandType::Read, Some(self))
+            make_command("get_all", Some(arg.to_arg()), TT::GET_ALL, CommandType::Read, Some(self))
         }
 
     pub fn filter<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("filter", Some(arg), TT::FILTER, CommandType::Read, Some(self))
+            make_command("filter", Some(arg.to_arg()), TT::FILTER, CommandType::Read, Some(self))
         }
 
     pub fn map<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("map", Some(arg), TT::MAP, CommandType::Read, Some(self))
+            make_command("map", Some(arg.to_arg()), TT::MAP, CommandType::Read, Some(self))
         }
 
     pub fn get_field<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("get_field", Some(arg), TT::GET_FIELD, CommandType::Read, Some(self))
+            make_command("get_field", Some(arg.to_arg()), TT::GET_FIELD, CommandType::Read, Some(self))
         }
 
     pub fn insert<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("insert", Some(arg), TT::INSERT, CommandType::Write, Some(self))
+            make_command("insert", Some(arg.to_arg()), TT::INSERT, CommandType::Write, Some(self))
         }
 
     pub fn has_fields<T>(self, arg: T) -> Command
         where T: IntoCommandArg
         {
-            make_command::<T>("has_fields", Some(arg), TT::HAS_FIELDS, CommandType::Read, Some(self))
+            make_command("has_fields", Some(arg.to_arg()), TT::HAS_FIELDS, CommandType::Read, Some(self))
         }
 
     pub fn delete(self) -> Command
         {
-            make_command::<()>("delete", None, TT::DELETE, CommandType::Read, Some(self))
+            make_command("delete", None, TT::DELETE, CommandType::Read, Some(self))
         }
 
     pub fn changes(self) -> Command
         {
-            make_command::<()>("changes", None, TT::CHANGES, CommandType::ChangeFeed, Some(self))
+            make_command("changes", None, TT::CHANGES, CommandType::ChangeFeed, Some(self))
         }
 
     pub fn run<T>(self) -> Result<Response<T>>
