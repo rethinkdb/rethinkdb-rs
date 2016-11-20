@@ -3,23 +3,23 @@
 use std::io::{Write, BufRead};
 use std::io::Read;
 use std::{str, result};
-use std::error::Error as StdError;
 use std::net::TcpStream;
 use std::fmt::Debug;
 use std::thread;
 
-use super::r;
 use error::*;
-use prelude::*;
-use ql2::proto::{self,
-    Term_TermType as TT,
+use ql2::proto::{self, Term,
     Query_QueryType as QT,
     Response_ErrorType as ET,
     Response_ResponseType as RT
 };
+use ql2::{Command, FromTerm, ToTerm, Encode};
 
 use serde::de::Deserialize;
-use serde_json::value::ToJson;
+pub use serde_json::{Value,
+    from_iter, from_reader, from_slice, from_str, from_value, to_value,
+    to_string, to_vec
+};
 use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use r2d2::{self, Pool, Config as PoolConfig, PooledConnection as PConn};
 use parking_lot::RwLock;
@@ -28,7 +28,7 @@ use slog_term::streamer;
 use protobuf::ProtobufEnum;
 use bufstream::BufStream;
 use scram::{ClientFirst, ServerFirst, ServerFinal};
-use futures::{finished, BoxFuture};
+use futures::{finished, BoxFuture, Future};
 use futures::stream::{self, Receiver, Sender as StreamSender};
 
 include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
@@ -74,36 +74,20 @@ macro_rules! try {
 /// All public commands that can possibly return an error return this.
 pub type Result<T> = result::Result<T, Error>;
 
-/// A JSON Object
-pub type Object<T> = Vec<(String, T)>;
-
-/// A JSON Array
-pub type Array<T> = Vec<T>;
-
 /// ReQL Client
 ///
 /// The entry point for all ReQL commands. All top level 
 /// commands are implemented here.
 pub struct Client;
 
-/// ReQL Command
-///
-/// Implements all other ReQL commands that are not implemented on the
-/// `Client`.
-#[derive(Debug)]
-pub struct Command {
-    cmds: Vec<String>,
-    cmd_type: CommandType,
-    result: Result<String>,
-    error_pos: u32,
-}
-
+/*
 #[derive(Debug, Copy, Clone)]
 enum CommandType {
     Read,
     Write,
     ChangeFeed,
 }
+*/
 
 /// ReQL Response
 ///
@@ -413,275 +397,9 @@ impl r2d2::ManageConnection for ConnectionManager {
     }
 }
 
-/// A serialised ReQL command argument
-pub type Argument = Option<String>;
-
-/// A serialised ReQL options map
-pub type Options = Option<String>;
-
-/// A serialised command argument
-pub type CommandArg = Result<(Argument, Options)>;
-
-/// A type that can be passed into a ReQL command
-pub trait IntoCommandArg : Debug {
-    /// Defines how a type can be safely passed into a command.
-    ///
-    /// A successful result returns a tuple as (argument, options).
-    /// An argument is the main argument that is mandatory for 
-    /// commands that do accept at least one argument. Options
-    /// is a map of optional options that a command can accept.
-    ///
-    /// Both arguments and options are returned as [serialised] 
-    /// strings.
-    ///
-    /// [serialised]: https://rethinkdb.com/docs/writing-drivers/#serializing-queries
-    fn to_arg(&self) -> CommandArg;
-}
-
-impl ToJson for Command {
-    fn to_json(&self) -> Value {
-        match self.result {
-            Ok(ref val) => Value::String(val.to_string()),
-            Err(_) => Value::String(String::new()),
-        }
-    }
-}
-
-impl<'a> IntoCommandArg for &'a str {
-    fn to_arg(&self) -> CommandArg {
-        Ok((Some(format!("{:?}", self)), None))
-    }
-}
-
-impl IntoCommandArg for String {
-    fn to_arg(&self) -> CommandArg {
-        Ok((Some(format!("{:?}", self)), None))
-    }
-}
-
-impl<'a> IntoCommandArg for &'a String {
-    fn to_arg(&self) -> CommandArg {
-        Ok((Some(format!("{:?}", self)), None))
-    }
-}
-
-impl IntoCommandArg for Value {
-    fn to_arg(&self) -> CommandArg {
-        // Arrays are a special case: since ReQL commands are sent as arrays
-        // We have to wrap them using MAKE_ARRAY
-        let val = wrap_arrays(self.clone());
-        let cmd = try!(to_string(&val));
-        Ok((Some(cmd), None))
-    }
-}
-
-impl<T> IntoCommandArg for Object<T>
-    where T: IntoCommandArg
-{
-    fn to_arg(&self) -> CommandArg {
-        let mut cmd = String::from("{");
-        for v in self {
-            let ref key = v.0;
-            let val = try!(v.1.to_arg());
-            cmd.push_str(&format!("{:?}: {},", key, val.0.unwrap()));
-        }
-        cmd = cmd.trim_right_matches(',').to_string();
-        cmd.push_str("}");
-        Ok((Some(cmd), None))
-    }
-}
-
-impl IntoCommandArg for Vec<Box<IntoCommandArg>> {
-    fn to_arg(&self) -> CommandArg {
-        let mut cmd = String::from("[");
-        for v in self {
-            let val = try!(v.to_arg());
-            cmd.push_str(&format!("{}, ", val.0.unwrap()));
-        }
-        cmd = cmd.trim_right_matches(", ").to_string();
-        cmd.push_str("]");
-        Ok((Some(cmd), None))
-    }
-}
-
-impl<T, O> IntoCommandArg for (T, Object<O>)
-where T: IntoCommandArg, O: IntoCommandArg
-{
-    fn to_arg(&self) -> CommandArg {
-        let arg = try!(self.0.to_arg());
-        let opt = try!(self.1.to_arg());
-        Ok((arg.0, opt.0))
-    }
-}
-
-impl IntoCommandArg for Command {
-    fn to_arg(&self) -> CommandArg {
-        match self.result {
-            Ok(ref cmd) => Ok((Some(cmd.to_string()), None)),
-            Err(ref e) => error!(DriverError::Other(e.description().to_string())),
-        }
-    }
-}
-
-impl IntoCommandArg for () {
-    fn to_arg(&self) -> CommandArg {
-        Ok((None, None))
-    }
-}
-
-macro_rules! define {
-    (impl IntoCommandArg for $T:ty) => {
-        impl IntoCommandArg for $T {
-            fn to_arg(&self) -> CommandArg {
-                Ok((Some(self.to_string()), None))
-            }
-        }
-    }
-}
-
-define!{ impl IntoCommandArg for bool }
-define!{ impl IntoCommandArg for char }
-define!{ impl IntoCommandArg for u8 }
-define!{ impl IntoCommandArg for u16 }
-define!{ impl IntoCommandArg for u32 }
-define!{ impl IntoCommandArg for u64 }
-define!{ impl IntoCommandArg for usize }
-define!{ impl IntoCommandArg for i8 }
-define!{ impl IntoCommandArg for i16 }
-define!{ impl IntoCommandArg for i32 }
-define!{ impl IntoCommandArg for i64 }
-define!{ impl IntoCommandArg for isize }
-define!{ impl IntoCommandArg for f32 }
-define!{ impl IntoCommandArg for f64 }
-
-// Command factory
-// 
-// All the commands except `r.expr()` use this function to create the command
-// 
-// - `name`: The name of the command.
-// - `arg`: The argument that can be passed into the command if any.
-// - `tt`: The ReQL command type this commad uses. This is usually name uppercased.
-// - `cmd_type`: Whether the command is write, read or changefeed.
-// - `cmds`: The commands that we have so far, encoded into the Command object.
-fn make_command(name: &str, arg: Option<CommandArg>, tt: TT, cmd_type: CommandType, cmds: Option<Command>) -> Command {
-    let cmd: String;
-    let arguments: Option<String>;
-    let opts: Option<String>;
-    let decode_error: Option<Error>;
-    if let Some(arg) = arg {
-        cmd = format!("{}({:?})", name, arg);
-        let (arg, opt) = match arg {
-            Ok(val) => {
-                decode_error = None;
-                val
-            },
-            Err(err) => {
-                decode_error = Some(err);
-                (None, None)
-            },
-        };
-        arguments = match arg {
-            Some(arg) => {
-                // @TODO: Make this check more robust
-                // Here we are looking for the row() command and wrapping in a func if we find it.
-                // However, by looking for the serialised version ([13,[]]), this is bound to break
-                // down if a user's `query contains this same string.
-                if arg.contains("[13,[]]") {
-                    Some(format!("[{},[[{},[1]],{}]]", TT::FUNC.value(), TT::MAKE_ARRAY.value(), arg))
-                } else {
-                    Some(arg)
-                }
-            },
-            None => None,
-        };
-        opts = opt;
-    } else {
-        cmd = format!("{}()", name);
-        arguments = None;
-        opts = None;
-        decode_error = None;
-    }
-    let mut new_cmds: Vec<String>;
-    let mut error_pos: u32;
-    let result: Result<String>;
-    if let Some(old_cmd) = cmds {
-        new_cmds = old_cmd.cmds;
-        new_cmds.push(cmd);
-        error_pos = old_cmd.error_pos;
-        match old_cmd.result {
-            Ok(commands) => {
-                if let Some(err) = decode_error {
-                    result = Err(err);
-                } else {
-                    result = Ok(wrap_command(tt, arguments, opts, Some(commands)));
-                }
-            },
-            Err(e) => {
-                result = Err(e);
-                if error_pos == 0 {
-                    error_pos = (new_cmds.len() as u32) - 1;
-                }
-            },
-        }
-    } else {
-        new_cmds = vec![cmd];
-        if let Some(err) = decode_error {
-            result = Err(err);
-        } else {
-            result = Ok(wrap_command(tt, arguments, opts, None));
-        }
-        error_pos = 0;
-    }
-    Command {
-        cmds: new_cmds,
-        cmd_type: cmd_type,
-        result: result,
-        error_pos: error_pos,
-    }
-}
-
 type PooledConnection = PConn<ConnectionManager>;
 
 impl Client {
-    /// Reference a database.
-    ///
-    /// # Examples
-    ///
-    /// ```norun
-    /// r.db("heroes").table("marvel").run();
-    /// ```
-    pub fn db<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("db", Some(arg.to_arg()), TT::DB, CommandType::Read, None)
-        }
-
-    pub fn db_create<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("db_create", Some(arg.to_arg()), TT::DB_CREATE, CommandType::Read, None)
-        }
-
-    pub fn db_drop<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("db_drop", Some(arg.to_arg()), TT::DB_DROP, CommandType::Read, None)
-        }
-
-    pub fn branch(self, arg: Vec<Box<IntoCommandArg>>) -> Command {
-            make_command("branch", Some(arg.to_arg()), TT::BRANCH, CommandType::Read, None)
-        }
-
-    pub fn row(self) -> Command
-        {
-            Command {
-                cmds: vec![String::from("row()")],
-                cmd_type: CommandType::Read,
-                result: Ok(format!("[{},[]]", TT::IMPLICIT_VAR.value())),
-                error_pos: 0,
-            }
-        }
-
     fn logger() -> &'static RwLock<Logger> {
         &LOGGER
     }
@@ -767,196 +485,28 @@ impl Client {
         Self::config().read().clone()
     }
 
-    pub fn expr<T>(&self, e: T) -> Command
-        where T: IntoCommandArg
-        {
-            let result = match e.to_arg() {
-                Ok(arg) => if let Some(arg) = arg.0 {
-                    Ok(arg)
-                } else {
-                    Ok(String::new())
-                },
-                Err(e) => error!(e),
-            };
-            let cmd = format!("expr({:?})", e);
-            Command {
-                cmds: vec![cmd],
-                cmd_type: CommandType::Read,
-                result: result,
-                error_pos: 0,
-            }
-        }
-
-    pub fn table_create<T>(&self, name: T) -> Command
-        where T: IntoCommandArg
-        {
-            let config = Client::config().read();
-            r.db(config.db).table_create(name)
-        }
-
-    pub fn table<T>(&self, name: T) -> Command
-        where T: IntoCommandArg
-        {
-            let config = Client::config().read();
-            r.db(config.db).table(name)
-        }
-
-    pub fn table_drop<T>(&self, name: T) -> Command
-        where T: IntoCommandArg
-        {
-            let config = Client::config().read();
-            r.db(config.db).table_drop(name)
-        }
-
-    pub fn object<T: IntoCommandArg>(&self, pairs: Vec<(&str, T)>) -> Object<T> {
-        let mut obj = Vec::with_capacity(pairs.len());
-        for v in pairs {
-            obj.push((v.0.to_string(), v.1));
-        }
-        obj
-    }
-}
-
-impl Command {
-    pub fn table_create<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("table_create", Some(arg.to_arg()), TT::TABLE_CREATE, CommandType::Read, Some(self))
-        }
-
-    pub fn table_drop<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("table_drop", Some(arg.to_arg()), TT::TABLE_DROP, CommandType::Read, Some(self))
-        }
-
-    pub fn table<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("table", Some(arg.to_arg()), TT::TABLE, CommandType::Read, Some(self))
-        }
-
-    pub fn index_drop<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("index_drop", Some(arg.to_arg()), TT::INDEX_DROP, CommandType::Read, Some(self))
-        }
-
-    pub fn index_create<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("index_create", Some(arg.to_arg()), TT::INDEX_CREATE, CommandType::Read, Some(self))
-        }
-
-    pub fn replace<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("replace", Some(arg.to_arg()), TT::REPLACE, CommandType::Read, Some(self))
-        }
-
-    pub fn update<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("update", Some(arg.to_arg()), TT::UPDATE, CommandType::Read, Some(self))
-        }
-
-    pub fn order_by<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("order_by", Some(arg.to_arg()), TT::ORDER_BY, CommandType::Read, Some(self))
-        }
-
-    pub fn without<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("without", Some(arg.to_arg()), TT::WITHOUT, CommandType::Read, Some(self))
-        }
-
-    pub fn contains<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("contains", Some(arg.to_arg()), TT::CONTAINS, CommandType::Read, Some(self))
-        }
-
-    pub fn limit<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("limit", Some(arg.to_arg()), TT::LIMIT, CommandType::Read, Some(self))
-        }
-
-    pub fn get<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("get", Some(arg.to_arg()), TT::GET, CommandType::Read, Some(self))
-        }
-
-    pub fn get_all<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("get_all", Some(arg.to_arg()), TT::GET_ALL, CommandType::Read, Some(self))
-        }
-
-    pub fn filter<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("filter", Some(arg.to_arg()), TT::FILTER, CommandType::Read, Some(self))
-        }
-
-    pub fn map<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("map", Some(arg.to_arg()), TT::MAP, CommandType::Read, Some(self))
-        }
-
-    pub fn get_field<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("get_field", Some(arg.to_arg()), TT::GET_FIELD, CommandType::Read, Some(self))
-        }
-
-    pub fn insert<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("insert", Some(arg.to_arg()), TT::INSERT, CommandType::Write, Some(self))
-        }
-
-    pub fn has_fields<T>(self, arg: T) -> Command
-        where T: IntoCommandArg
-        {
-            make_command("has_fields", Some(arg.to_arg()), TT::HAS_FIELDS, CommandType::Read, Some(self))
-        }
-
-    pub fn delete(self) -> Command
-        {
-            make_command("delete", None, TT::DELETE, CommandType::Read, Some(self))
-        }
-
-    pub fn changes(self) -> Command
-        {
-            make_command("changes", None, TT::CHANGES, CommandType::ChangeFeed, Some(self))
-        }
-
     pub fn run<T>(self) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
-            run::<T>(self, None)
+            run::<T>(self.to(), None)
         }
 
-    pub fn run_with_opts<T, O>(self, opts: Object<O>) -> Result<Response<T>>
-        where T: 'static + Deserialize + Send + Debug,
-                O: IntoCommandArg
+    pub fn run_with_opts<T, O>(self, opts: O) -> Result<Response<T>>
+        where T: 'static + Deserialize + Send + Debug, O: ToTerm
         {
-            let opts = try!(opts.to_arg());
-            run::<T>(self, Some(opts.0.unwrap()))
+            run::<T>(self.to(), Some(opts.to()))
         }
 }
 
-fn run<T>(commands: Command, opts: Option<String>) -> Result<Response<T>>
+fn run<T>(commands: Term, opts: Option<Term>) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
 {
     let (tx, rx) = stream::channel();
-    let cmd = format!("r.{}", commands.cmds.join("."));
-    let commands = try!(commands.result, cmd);
+    let commands = commands.encode();
+    let opts = match opts {
+        Some(opts) => Some(opts.encode()),
+        None => None,
+    };
     let sender = thread::Builder::new()
         .name("reql_command_run".to_string());
     if let Err(err) = sender.spawn(|| send::<T>(commands, opts, tx).wait()) {
@@ -1224,30 +774,6 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
     }
 }
 
-fn wrap_command(command: TT,
-                   arguments: Option<String>,
-                   options: Option<String>,
-                   commands: Option<String>)
--> String {
-    let mut cmds = format!("[{},", command.value());
-    let mut args = String::new();
-    if let Some(commands) = commands {
-        args.push_str(&commands);
-        if arguments.is_some() {
-            args.push_str(",");
-        }
-    }
-    if let Some(arguments) = arguments {
-        args.push_str(&arguments);
-    }
-    cmds.push_str(&format!("[{}]", args));
-    if let Some(options) = options {
-        cmds.push_str(&format!(",{}", options));
-    }
-    cmds.push(']');
-    cmds
-}
-
 fn wrap_query(query_type: QT,
               query: Option<String>,
               options: Option<String>)
@@ -1308,30 +834,16 @@ fn read_query(conn: &mut Connection) -> Result<Vec<u8>> {
     Ok(resp)
 }
 
-fn wrap_arrays(mut val: Value) -> Value {
-    if val.is_array() {
-        let mut array = Vec::with_capacity(2);
-        array.push(Value::I64(TT::MAKE_ARRAY.value() as i64));
-        if let Value::Array(vec) = val {
-            let mut new_val = Vec::with_capacity(vec.len());
-            for v in vec.into_iter() {
-                if v.is_array() || v.is_object() {
-                    new_val.push(wrap_arrays(v));
-                } else {
-                    new_val.push(v)
-                }
-            }
-            val = Value::Array(new_val);
-        }
-        array.push(val);
-        val = Value::Array(array);
-    } else if val.is_object() {
-        if let Value::Object(mut obj) = val {
-            for (k, v) in obj.clone() {
-                obj.insert(k, wrap_arrays(v));
-            }
-            val = Value::Object(obj);
-        }
+impl Command for Client { }
+
+impl FromTerm for Client {
+    fn from(_: Term) -> Client {
+        Client
     }
-    val
+}
+
+impl ToTerm for Client {
+    fn to(&self) -> Term {
+        Term::new()
+    }
 }

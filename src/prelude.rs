@@ -1,6 +1,7 @@
 //! Prelude
 
 pub use command::Response;
+pub use ql2::Command;
 pub use futures::Future;
 pub use futures::stream::Stream;
 pub use serde_json::{Value,
