@@ -1,6 +1,10 @@
 extern crate reql;
+extern crate futures;
+extern crate serde_json;
 
-use reql::prelude::*;
+use reql::{r, Command};
+use futures::stream::Stream;
+use serde_json::Value;
 
 fn main() {
     let db = "shows";
@@ -14,19 +18,19 @@ fn main() {
         .unwrap();
 
     // Create our database if necessary
-    let res: Response<Value> = r.db_create(db).run().unwrap();
+    let res = r.db_create(db).run::<Value>().unwrap();
     for _ in res.wait() { }
 
     // Drop table if nessary
-    let res: Response<Value> = r.table_drop(table).run().unwrap();
+    let res = r.table_drop(table).run::<Value>().unwrap();
     for _ in res.wait() { }
 
     // Create our table
-    let res: Response<Value> = r.table_create(table).run().unwrap();
+    let res = r.table_create(table).run::<Value>().unwrap();
     for _ in res.wait() { }
 
     // Insert user(s) into the table
-    let posts: Value = from_str(r#"
+    let posts = r#"
         [
             { "name": "William Adama", "tv_show": "Battlestar Galactica",
               "posts": [
@@ -47,7 +51,7 @@ fn main() {
               ]
             }
         ]
-    "#).unwrap();
-    let res: Response<Value> = r.table(table).insert(posts).run().unwrap();
+    "#;
+    let res = r.table(table).insert(posts).run::<Value>().unwrap();
     for _ in res.wait() { }
 }

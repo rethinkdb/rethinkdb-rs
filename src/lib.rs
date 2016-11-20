@@ -5,12 +5,10 @@
 //!
 //! # Accessing ReQL
 //!
-//! Import this crate and bring the prelude into scope:-
+//! Import this crate:-
 //!
 //! ```norun
 //! extern crate reql;
-//!
-//! use reql::prelude::*;
 //! ```
 //!
 //! ## r
@@ -126,6 +124,8 @@ extern crate parking_lot;
 extern crate uuid;
 extern crate futures;
 
-pub mod prelude;
 pub mod command;
 pub mod error;
+
+pub use command::{r, Response};
+pub use ql2::Command;

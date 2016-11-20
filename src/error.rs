@@ -5,7 +5,7 @@ use std::str;
 use r2d2::{InitializationError, GetTimeout};
 use serde_json::error as json;
 use protobuf::ProtobufError;
-use prelude::Value;
+use serde_json::Value;
 use scram::Error as ScramError;
 use futures::stream::SendError;
 

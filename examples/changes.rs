@@ -1,6 +1,10 @@
 extern crate reql;
+extern crate futures;
+extern crate serde_json;
 
-use reql::prelude::*;
+use reql::{r, Command};
+use futures::stream::Stream;
+use serde_json::Value;
 
 fn main() {
     r.connection()
