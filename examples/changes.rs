@@ -1,6 +1,5 @@
 extern crate reql;
 
-use reql::r;
 use reql::prelude::*;
 
 fn main() {

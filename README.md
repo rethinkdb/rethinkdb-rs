@@ -24,7 +24,6 @@ Import it in your `main.rs` or `lib.rs`:-
 extern crate reql;
 
 use reql::prelude::*;
-use reql::r;
 ```
 
 Create a connection pool and connect to your database server(s) in your `main` or similar function if creating a library:-
@@ -32,7 +31,7 @@ Create a connection pool and connect to your database server(s) in your `main` o
 ```rust
 extern crate reql;
 
-use reql::r;
+use reql::prelude::*;
 
 fn main() {
     r.connection().connect().expect("Failed to connect to the database server");
@@ -45,7 +44,6 @@ Run ReQL commands:-
 extern crate reql;
 
 use reql::prelude::*;
-use reql::r;
 
 fn print_users() -> Result<(), Error> {
     let users = try!(r.table("users").run::<User>());

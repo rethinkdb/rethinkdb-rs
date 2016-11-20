@@ -1,5 +1,7 @@
 //! Command Reference
 
+#![allow(non_upper_case_globals)]
+
 use std::io::{Write, BufRead};
 use std::io::Read;
 use std::{str, result};
@@ -78,7 +80,8 @@ pub type Result<T> = result::Result<T, Error>;
 ///
 /// The entry point for all ReQL commands. All top level 
 /// commands are implemented here.
-pub struct Client;
+#[derive(Debug, Clone)]
+pub struct Client(Term);
 
 /*
 #[derive(Debug, Copy, Clone)]
@@ -103,6 +106,9 @@ pub enum ResponseValue<T: Deserialize> {
 }
 
 lazy_static! {
+    /// The top-level ReQL namespace
+    pub static ref r: Client = Client(Term::new());
+
     static ref POOL: RwLock<Option<Vec<Pool<ConnectionManager>>>> = RwLock::new(None);
 
     static ref LOGGER: RwLock<Logger> = RwLock::new({
@@ -837,13 +843,13 @@ fn read_query(conn: &mut Connection) -> Result<Vec<u8>> {
 impl Command for Client { }
 
 impl FromTerm for Client {
-    fn from(_: Term) -> Client {
-        Client
+    fn from(t: Term) -> Client {
+        Client(t)
     }
 }
 
 impl ToTerm for Client {
     fn to(&self) -> Term {
-        Term::new()
+        self.0.clone()
     }
 }
