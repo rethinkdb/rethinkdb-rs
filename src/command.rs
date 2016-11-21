@@ -921,3 +921,10 @@ impl ToTerm for Client {
         self.0.clone()
     }
 }
+
+impl From<Object> for Client {
+    fn from(t: Object) -> Client {
+        let term = Term::from(t);
+        FromTerm::from_term(term)
+    }
+}
