@@ -129,3 +129,27 @@ pub mod error;
 
 pub use command::{r, Response};
 pub use ql2::Command;
+
+#[macro_export]
+macro_rules! obj {
+    ($( $key:ident: $val:expr ),* $(,)*) => {{
+        use ::std::collections::BTreeMap;
+        use ::serde_json::value::ToJson;
+
+        let mut o = BTreeMap::new();
+        $(
+            let key = stringify!($key).to_string();
+            let val = $val.to_json();
+            o.insert(key, val);
+        )*
+        o
+    }}
+}
+
+#[macro_export]
+macro_rules! arr {
+    ($( $val:expr ),* $(,)*) => {{
+        use ::serde_json::value::ToJson;
+        vec![$( $val.to_json(), )*]
+    }}
+}

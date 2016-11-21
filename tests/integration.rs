@@ -1,3 +1,4 @@
+#[macro_use]
 extern crate reql;
 extern crate futures;
 extern crate serde_json;
@@ -31,14 +32,11 @@ fn connection_pool_works() {
     let res = r.table_create("users").run::<Value>().unwrap();
     for _ in res.wait() { }
 
-    /*
     // Insert a user into the table
-    let user = r.object(vec![("name", "John Doe")]);
-    let res: Response<Value> = r.table("users").insert(user).run().unwrap();
+    let res = r.table("users").insert(obj!{ name: "John Doe" }).run::<Value>().unwrap();
     let res = res.and_then(|v| {
         println!("Result: {:?}", v);
         Ok(())
     });
     for _ in res.wait() { }
-    */
 }
