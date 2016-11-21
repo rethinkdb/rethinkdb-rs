@@ -17,7 +17,7 @@ fn connection_pool_works() {
         .unwrap();
 
     // Try arbitrary expressions
-    let res = r.db("test").expr(200).run::<Value>().unwrap();
+    let res = r.expr(200).run::<Value>().unwrap();
     for _ in res.wait() { }
 
     // Create our database if necessary

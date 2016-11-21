@@ -16,7 +16,10 @@ use ql2::proto::{self, Term,
     Response_ErrorType as ET,
     Response_ResponseType as RT
 };
-use ql2::{Command, FromTerm, ToTerm, Encode, Object, Info};
+use ql2::{self, Command
+    , FromTerm, ToTerm, Encode, Object, Info
+    , IsDatum,
+};
 
 use serde::de::Deserialize;
 pub use serde_json::{Value,
@@ -549,10 +552,31 @@ fn run<T>(mut commands: Term) -> Result<Response<T>>
 {
     let (tx, rx) = stream::channel();
     let opts = {
-        let oa = commands.take_optargs().into_vec();
+        let mut oa = commands.take_optargs().into_vec();
         if oa.is_empty() {
             None
         } else {
+            let mut index = None;
+            let mut object = None;
+            for (i, ta) in oa.iter_mut().enumerate() {
+                let key = ta.get_key();
+                let val = ta.get_val();
+                if key == "db" && val.is_datum() {
+                    if let Some(datum) = ql2::find_datum(val.clone()) {
+                        if datum.has_r_str() {
+                            let mut obj = ql2::TA::new();
+                            obj.set_key(key.to_string());
+                            obj.set_val(r.db(datum.get_r_str()).to_term());
+                            index = Some(i);
+                            object = Some(obj);
+                            break;
+                        }
+                    }
+                }
+            }
+            if index.is_some() && object.is_some() {
+                oa[index.unwrap()] = object.unwrap();
+            }
             Some(oa.encode())
         }
     };

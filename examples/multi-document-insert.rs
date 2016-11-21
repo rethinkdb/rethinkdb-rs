@@ -4,7 +4,7 @@ extern crate serde_json;
 
 use reql::{r, Command};
 use futures::stream::Stream;
-use serde_json::Value;
+use serde_json::{Value, from_str};
 
 fn main() {
     let db = "shows";
@@ -30,7 +30,7 @@ fn main() {
     for _ in res.wait() { }
 
     // Insert user(s) into the table
-    let posts = r#"
+    let posts = from_str::<Value>(r#"
         [
             { "name": "William Adama", "tv_show": "Battlestar Galactica",
               "posts": [
@@ -51,7 +51,7 @@ fn main() {
               ]
             }
         ]
-    "#;
+    "#).unwrap();
     let res = r.table(table).insert(posts).run::<Value>().unwrap();
     for _ in res.wait() { }
 }

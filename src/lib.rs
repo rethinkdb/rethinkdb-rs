@@ -127,5 +127,5 @@ extern crate futures;
 pub mod command;
 pub mod error;
 
-pub use command::{r, Response};
+pub use command::{r, Response, ResponseValue};
 pub use ql2::{Command, Term, FromTerm, ToTerm, Encode};
