@@ -3,7 +3,7 @@ extern crate reql;
 extern crate futures;
 extern crate serde_json;
 
-use reql::{r, Command};
+use reql::{r, Command, Term};
 use futures::stream::Stream;
 use serde_json::Value;
 
@@ -17,7 +17,7 @@ fn connection_pool_works() {
         .unwrap();
 
     // Try arbitrary expressions
-    let res = r.expr(200).run::<Value>().unwrap();
+    let res = r.db("test").expr(200).run::<Value>().unwrap();
     for _ in res.wait() { }
 
     // Create our database if necessary
@@ -33,7 +33,7 @@ fn connection_pool_works() {
     for _ in res.wait() { }
 
     // Insert a user into the table
-    let res = r.table("users").insert(obj!{ name: "John Doe" }).run::<Value>().unwrap();
+    let res = r.table("users").insert::<Term>(obj!{ name: "John Doe" }).run::<Value>().unwrap();
     let res = res.and_then(|v| {
         println!("Result: {:?}", v);
         Ok(())

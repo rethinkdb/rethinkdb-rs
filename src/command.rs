@@ -1,6 +1,7 @@
 //! Command Reference
 
 #![allow(non_upper_case_globals)]
+#![macro_use]
 
 use std::io::{Write, BufRead};
 use std::io::Read;
@@ -15,7 +16,7 @@ use ql2::proto::{self, Term,
     Response_ErrorType as ET,
     Response_ResponseType as RT
 };
-use ql2::{Command, FromTerm, ToTerm, Encode};
+use ql2::{Command, FromTerm, ToTerm, Encode, Object, Info};
 
 use serde::de::Deserialize;
 pub use serde_json::{Value,
@@ -34,6 +35,32 @@ use futures::{finished, BoxFuture, Future};
 use futures::stream::{self, Receiver, Sender as StreamSender};
 
 include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
+
+#[macro_export]
+macro_rules! obj {
+    ($( $key:ident: $val:expr ),* $(,)*) => {{
+        use $crate::ToTerm;
+        use ::std::collections::BTreeMap;
+
+        let mut o = BTreeMap::new();
+        $(
+            let key = stringify!($key).to_string();
+            let val = $val.to_term();
+            o.insert(key, val);
+        )*
+        From::from(o)
+    }}
+}
+
+#[macro_export]
+macro_rules! arr {
+    ($( $val:expr ),* $(,)*) => {{
+        use $crate::ToTerm;
+
+        let v = vec![$( $val.to_term(), )*];
+        From::from(v)
+    }}
+}
 
 // Macro to make it convenient to construct a `reql::error::Error`
 // The macro also logs every error passed to it unless the error
@@ -491,28 +518,45 @@ impl Client {
         Self::config().read().clone()
     }
 
-    pub fn run<T>(self) -> Result<Response<T>>
+    pub fn run<T>(&self) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
         {
-            run::<T>(self.to(), None)
+            let mut query = self.to_term();
+            if !query.info().db_set() {
+                let config = Client::config().read();
+                query = self.opt_arg("db", r.db(config.db)).to_term();
+            }
+            run::<T>(query)
         }
 
-    pub fn run_with_opts<T, O>(self, opts: O) -> Result<Response<T>>
-        where T: 'static + Deserialize + Send + Debug, O: ToTerm
+    pub fn run_with_opts<T>(&self, opts: Object) -> Result<Response<T>>
+        where T: 'static + Deserialize + Send + Debug
         {
-            run::<T>(self.to(), Some(opts.to()))
+            let mut query = self.clone();
+            for (key, val) in opts {
+                query = query.opt_arg(&key, val);
+            }
+            if !query.to_term().info().db_set() {
+                let config = Client::config().read();
+                query = self.opt_arg("db", r.db(config.db));
+            }
+            run::<T>(query.to_term())
         }
 }
 
-fn run<T>(commands: Term, opts: Option<Term>) -> Result<Response<T>>
+fn run<T>(mut commands: Term) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
 {
     let (tx, rx) = stream::channel();
-    let commands = commands.encode();
-    let opts = match opts {
-        Some(opts) => Some(opts.encode()),
-        None => None,
+    let opts = {
+        let oa = commands.take_optargs().into_vec();
+        if oa.is_empty() {
+            None
+        } else {
+            Some(oa.encode())
+        }
     };
+    let commands = commands.encode();
     let sender = thread::Builder::new()
         .name("reql_command_run".to_string());
     if let Err(err) = sender.spawn(|| send::<T>(commands, opts, tx).wait()) {
@@ -843,13 +887,13 @@ fn read_query(conn: &mut Connection) -> Result<Vec<u8>> {
 impl Command for Client { }
 
 impl FromTerm for Client {
-    fn from(t: Term) -> Client {
+    fn from_term(t: Term) -> Client {
         Client(t)
     }
 }
 
 impl ToTerm for Client {
-    fn to(&self) -> Term {
+    fn to_term(&self) -> Term {
         self.0.clone()
     }
 }
