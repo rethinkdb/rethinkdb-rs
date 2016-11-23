@@ -1,3 +1,4 @@
+/*
 #[macro_use]
 extern crate reql;
 extern crate futures;
@@ -40,3 +41,4 @@ fn connection_pool_works() {
     });
     for _ in res.wait() { }
 }
+*/

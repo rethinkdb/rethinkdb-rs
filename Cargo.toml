@@ -12,7 +12,7 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 build = "build.rs"
 
 [dependencies]
-ql2 = { git = "https://github.com/rust-rethinkdb/ql2" }
+ql2 = { path = "/home/enchanter/projects/ql2" }
 protobuf = "1.0"
 r2d2 = "0.7"
 byteorder = "0.5"
