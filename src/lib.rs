@@ -32,7 +32,8 @@ use std::fmt::Debug;
 use std::thread;
 
 use error::*;
-use ql2::{Command, TermType};
+use ql2::{TermType, RootCommand, Db};
+use ql2::types::Command;
 
 use serde::de::Deserialize;
 pub use serde_json::{Value,
@@ -448,10 +449,6 @@ impl r2d2::ManageConnection for ConnectionManager {
 
 type PooledConnection = PConn<ConnectionManager>;
 
-macro_rules! none {
-    () => {None as Option<ql2::Null>}
-}
-
 impl Client {
     fn logger() -> &'static RwLock<Logger> {
         &LOGGER
@@ -553,7 +550,7 @@ impl Client {
         }
 
     pub fn run_with_opts<T, O>(&self, opts: O) -> Result<Response<T>>
-        where T: 'static + Deserialize + Send + Debug, O: Into<ql2::Object>
+        where T: 'static + Deserialize + Send + Debug, O: Into<ql2::types::Object>
         {
             let _opts = opts.into();
             //run::<T>(query.to_term())
@@ -561,73 +558,14 @@ impl Client {
         }
 }
 
-#[derive(Debug, Clone)]
-pub struct WithOpts<T, O>(T, Option<O>);
-
-// ROOT COMMAND
-pub trait RootCommand where Self: Sized {
-    fn db<T>(self, arg: T) -> ql2::Db
-        where T: Into<ql2::String>
-        {
-            let mut output = Command::new(TermType::DB, none!());
-            output.set_args(arg.into());
-            output.into()
-        }
-
-    fn table<T>(self, arg: T) -> WithOpts<ql2::Table, TableOpts>
-        where T: Into<ql2::String>
+impl ql2::RootCommand for Client {
+    fn table<T>(self, arg: T) -> ql2::types::WithOpts<ql2::types::Table, ql2::types::TableOpts>
+        where T: Into<ql2::types::String>
         {
             let config = Client::config().read();
             r.db(config.db).table(arg)
         }
-
-    fn uuid(self) -> ql2::String {
-        Command::new(TermType::UUID, none!()).into()
-    }
 }
-
-impl RootCommand for Client {}
-
-#[derive(Debug, Clone)]
-pub struct TableOpts;
-
-// DB
-pub trait Db where Self: ql2::DataType {
-    fn table<T>(self, arg: T) -> WithOpts<ql2::Table, TableOpts>
-        where T: Into<ql2::String>
-    {
-        let mut output = Command::new(TermType::TABLE, Some(self));
-        output.set_args(arg.into());
-        WithOpts(output.into(), None)
-    }
-}
-
-impl Db for ql2::Db {}
-
-#[derive(Debug, Clone)]
-pub struct ChangesOpts;
-
-// STREAM
-pub trait Stream where Self: ql2::DataType {
-    fn changes(self) -> WithOpts<ql2::Stream, ChangesOpts> {
-        let output: ql2::Stream = Command::new(TermType::CHANGES, Some(self))
-            .into();
-        WithOpts(output, None)
-    }
-}
-
-impl Stream for ql2::Stream {}
-
-// OBJECT SELECTION
-pub trait ObjectSelection where Self: ql2::DataType {
-    fn changes(self) -> WithOpts<ql2::Stream, ChangesOpts> {
-        let output: ql2::Stream = Command::new(TermType::CHANGES, Some(self))
-            .into();
-        WithOpts(output, None)
-    }
-}
-
-impl ObjectSelection for ql2::Selection<ql2::Object> {}
 
 #[test]
 fn test_collision() {
