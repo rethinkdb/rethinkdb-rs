@@ -19,8 +19,11 @@ extern crate scram;
 extern crate parking_lot;
 extern crate uuid;
 extern crate futures;
+extern crate serde;
+extern crate serde_json;
 
-pub mod error;
+pub mod errors;
+pub mod commands;
 
 use std::io::{Write, BufRead};
 use std::io::Read;
@@ -29,9 +32,14 @@ use std::net::TcpStream;
 use std::fmt::Debug;
 use std::thread;
 
-use error::*;
-use ql2::{TermType, RootCommand, Db};
+use errors::*;
 use ql2::types::Command;
+use ql2::proto::{
+    VersionDummy_Version as Version,
+    Query_QueryType as QueryType,
+    Response_ResponseType as ResponseType,
+    Response_ErrorType as ErrorType,
+};
 
 use serde::de::Deserialize;
 pub use serde_json::{Value,
@@ -46,8 +54,11 @@ use slog_term::streamer;
 use protobuf::ProtobufEnum;
 use bufstream::BufStream;
 use scram::{ClientFirst, ServerFirst, ServerFinal};
-use futures::{finished, BoxFuture, Future};
-use futures::stream::{self, Receiver, Sender as StreamSender};
+use futures::{finished, BoxFuture, Future, Sink};
+use futures::sync::mpsc::{self, Receiver, Sender as StreamSender};
+
+include!(concat!(env!("OUT_DIR"), "/conn.rs"));
+include!(concat!(env!("OUT_DIR"), "/query.rs"));
 
 #[macro_export]
 macro_rules! obj {
@@ -134,7 +145,7 @@ enum CommandType {
 /// ReQL Response
 ///
 /// Response returned by `run()`
-pub type Response<T> = Receiver<ResponseValue<T>, Error>;
+pub type Response<T> = Receiver<ResponseValue<T>>;
 
 /// Response value
 #[derive(Debug, Clone)]
@@ -143,10 +154,6 @@ pub enum ResponseValue<T: Deserialize> {
     Read(T),
     Raw(Value),
 }
-
-/// The top-level ReQL namespace
-#[allow(non_upper_case_globals)]
-pub const r: Client = Client;
 
 lazy_static! {
     static ref POOL: RwLock<Option<Vec<Pool<ConnectionManager>>>> = RwLock::new(None);
@@ -274,7 +281,7 @@ impl Connection {
     fn handshake(&mut self, opts: &ConnectOpts) -> Result<()> {
         // Send desired version to the server
         let _ = try!(self.stream
-                     .write_u32::<LittleEndian>(ql2::Version::V1_0 as u32));
+                     .write_u32::<LittleEndian>(Version::V1_0 as u32));
         try!(parse_server_version(&self.stream));
 
         // Send client first message
@@ -409,12 +416,12 @@ impl r2d2::ManageConnection for ConnectionManager {
 
     fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
         conn.token += 1;
-        let query = wrap_query(ql2::QueryType::START, Some(String::from("1")), None);
+        let query = wrap_query(QueryType::START, Some(String::from("1")), None);
         try!(write_query(&query, &mut conn));
         let resp = try!(read_query(&mut conn));
         let resp: ReqlResponse = try!(from_slice(&resp[..]));
-        if let Some(respt) = ql2::ResponseType::from_i32(resp.t) {
-            if let ql2::ResponseType::SUCCESS_ATOM = respt {
+        if let Some(respt) = ResponseType::from_i32(resp.t) {
+            if let ResponseType::SUCCESS_ATOM = respt {
                 let val: Vec<i32> = try!(from_value(resp.r.clone()));
                 if val == [1] {
                     return Ok(());
@@ -554,24 +561,10 @@ impl Client {
         }
 }
 
-impl ql2::RootCommand for Client {
-    fn table<T>(self, arg: T) -> ql2::types::WithOpts<ql2::types::Table, ql2::types::TableOpts>
-        where T: Into<ql2::types::String>
-        {
-            let config = Client::config().read();
-            r.db(config.db).table(arg)
-        }
-}
-
-#[test]
-fn test_collision() {
-    panic!("{:?}", r.db("tv").table("shows"));
-}
-
 fn run<T>(mut commands: String, opts: Option<String>) -> Result<Response<T>>
         where T: 'static + Deserialize + Send + Debug
 {
-    let (tx, rx) = stream::channel();
+    let (tx, rx) = mpsc::channel(512);
     let sender = thread::Builder::new()
         .name("reql_command_run".to_string());
     if let Err(err) = sender.spawn(|| send::<T>(commands, opts, tx).wait()) {
@@ -580,7 +573,7 @@ fn run<T>(mut commands: String, opts: Option<String>) -> Result<Response<T>>
     Ok(rx)
 }
 
-type Sender<T> = StreamSender<ResponseValue<T>, Error>;
+type Sender<T> = StreamSender<ResponseValue<T>>;
 
 fn send<T>(commands: String, opts: Option<String>, mut tx: Sender<T>) -> BoxFuture<(), ()>
 where T: 'static + Deserialize + Send + Debug
@@ -601,7 +594,7 @@ where T: 'static + Deserialize + Send + Debug
         }}
     }
     let cfg = Client::config().read();
-    let mut query = wrap_query(ql2::QueryType::START, Some(commands), opts);
+    let mut query = wrap_query(QueryType::START, Some(commands), opts);
     println!("{}", query);
     let mut conn = try!(Client::conn());
     // Try sending the query
@@ -683,9 +676,9 @@ fn process_response<T>(query: &mut String, conn: &mut PooledConnection, mut tx: 
     match res {
         Ok(t) => {
             match t {
-                ql2::ResponseType::SUCCESS_ATOM | ql2::ResponseType::SUCCESS_SEQUENCE | ql2::ResponseType::WAIT_COMPLETE | ql2::ResponseType::SERVER_INFO | ql2::ResponseType::CLIENT_ERROR | ql2::ResponseType::COMPILE_ERROR | ql2::ResponseType::RUNTIME_ERROR  => {/* we are done */},
-                ql2::ResponseType::SUCCESS_PARTIAL => {
-                    *query = wrap_query(ql2::QueryType::CONTINUE, None, None);
+                ResponseType::SUCCESS_ATOM | ResponseType::SUCCESS_SEQUENCE | ResponseType::WAIT_COMPLETE | ResponseType::SERVER_INFO | ResponseType::CLIENT_ERROR | ResponseType::COMPILE_ERROR | ResponseType::RUNTIME_ERROR  => {/* we are done */},
+                ResponseType::SUCCESS_PARTIAL => {
+                    *query = wrap_query(QueryType::CONTINUE, None, None);
                     if let Err(error) = write_query(query, conn) {
                         write = true;
                         retry = true;
@@ -727,10 +720,10 @@ fn process_response<T>(query: &mut String, conn: &mut PooledConnection, mut tx: 
     (tx, tx_returned, write, retry, Ok(()))
 }
 
-fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender<T>, bool, bool, Result<ql2::ResponseType>)
+fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender<T>, bool, bool, Result<ResponseType>)
     where T: 'static + Deserialize + Send + Debug
 {
-    let (new_tx, _) = stream::channel();
+    let (new_tx, _) = mpsc::channel(512);
     let mut retry = false;
     macro_rules! return_error {
         ($e:expr) => {{
@@ -757,8 +750,8 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
     match read_query(conn) {
         Ok(resp) => {
             let result: ReqlResponse = try!(from_slice(&resp[..]));
-            let respt: ql2::ResponseType;
-            if let Some(t) = ql2::ResponseType::from_i32(result.t) {
+            let respt: ResponseType;
+            if let Some(t) = ResponseType::from_i32(result.t) {
                 respt = t;
             } else {
                 let msg = format!("Unsupported response type ({}), returned by the database.", result.t);
@@ -767,7 +760,7 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
             // If the database says this response is an error convert the error 
             // message to our native one.
             let has_generic_error = match respt {
-                ql2::ResponseType::CLIENT_ERROR | ql2::ResponseType::COMPILE_ERROR | ql2::ResponseType::RUNTIME_ERROR => true,
+                ResponseType::CLIENT_ERROR | ResponseType::COMPILE_ERROR | ResponseType::RUNTIME_ERROR => true,
                 _ => false,
             };
             let mut msg = String::new();
@@ -787,16 +780,16 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
                 };
             }
             if let Some(e) = result.e {
-                if let Some(error) = ql2::ErrorType::from_i32(e) {
+                if let Some(error) = ErrorType::from_i32(e) {
                     match error {
-                        ql2::ErrorType::INTERNAL => return_error!(RuntimeError::Internal(msg)),
-                        ql2::ErrorType::RESOURCE_LIMIT => return_error!(RuntimeError::ResourceLimit(msg)),
-                        ql2::ErrorType::QUERY_LOGIC => return_error!(RuntimeError::QueryLogic(msg)),
-                        ql2::ErrorType::NON_EXISTENCE => return_error!(RuntimeError::NonExistence(msg)),
-                        ql2::ErrorType::OP_FAILED => return_error!(AvailabilityError::OpFailed(msg)),
-                        ql2::ErrorType::OP_INDETERMINATE => return_error!(AvailabilityError::OpIndeterminate(msg)),
-                        ql2::ErrorType::USER => return_error!(RuntimeError::User(msg)),
-                        ql2::ErrorType::PERMISSION_ERROR => return_error!(RuntimeError::Permission(msg)),
+                        ErrorType::INTERNAL => return_error!(RuntimeError::Internal(msg)),
+                        ErrorType::RESOURCE_LIMIT => return_error!(RuntimeError::ResourceLimit(msg)),
+                        ErrorType::QUERY_LOGIC => return_error!(RuntimeError::QueryLogic(msg)),
+                        ErrorType::NON_EXISTENCE => return_error!(RuntimeError::NonExistence(msg)),
+                        ErrorType::OP_FAILED => return_error!(AvailabilityError::OpFailed(msg)),
+                        ErrorType::OP_INDETERMINATE => return_error!(AvailabilityError::OpIndeterminate(msg)),
+                        ErrorType::USER => return_error!(RuntimeError::User(msg)),
+                        ErrorType::PERMISSION_ERROR => return_error!(RuntimeError::Permission(msg)),
                     }
                 } else {
                     return_error!(ResponseError::Db(result.r));
@@ -804,9 +797,9 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
             }
             if has_generic_error {
                 match respt {
-                    ql2::ResponseType::CLIENT_ERROR => return_error!(DriverError::Other(msg)),
-                    ql2::ResponseType::COMPILE_ERROR => return_error!(Error::Compile(msg)),
-                    ql2::ResponseType::RUNTIME_ERROR => return_error!(ResponseError::Db(result.r)),
+                    ResponseType::CLIENT_ERROR => return_error!(DriverError::Other(msg)),
+                    ResponseType::COMPILE_ERROR => return_error!(Error::Compile(msg)),
+                    ResponseType::RUNTIME_ERROR => return_error!(ResponseError::Db(result.r)),
                     _ => {/* not an error */},
                 }
             }
@@ -839,7 +832,7 @@ fn handle_response<T>(conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender
     }
 }
 
-fn wrap_query(query_type: ql2::QueryType,
+fn wrap_query(query_type: QueryType,
               query: Option<String>,
               options: Option<String>)
 -> String {
