@@ -5,8 +5,6 @@
 
 extern crate ql2;
 extern crate r2d2;
-extern crate serde;
-extern crate serde_json;
 extern crate byteorder;
 extern crate bufstream;
 #[macro_use]
@@ -50,8 +48,6 @@ use bufstream::BufStream;
 use scram::{ClientFirst, ServerFirst, ServerFinal};
 use futures::{finished, BoxFuture, Future};
 use futures::stream::{self, Receiver, Sender as StreamSender};
-
-include!(concat!(env!("OUT_DIR"), "/serde_types.rs"));
 
 #[macro_export]
 macro_rules! obj {
