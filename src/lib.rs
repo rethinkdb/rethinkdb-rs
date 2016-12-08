@@ -54,7 +54,7 @@ use slog_term::streamer;
 use protobuf::ProtobufEnum;
 use bufstream::BufStream;
 use scram::{ClientFirst, ServerFirst, ServerFinal};
-use futures::{finished, BoxFuture, Future, Sink};
+use futures::{self, BoxFuture, Future, Sink};
 use futures::sync::mpsc::{self, Receiver, Sender as StreamSender};
 
 include!(concat!(env!("OUT_DIR"), "/conn.rs"));
@@ -582,7 +582,7 @@ where T: 'static + Deserialize + Send + Debug
         ($e:expr) => {{
             let error = error!($e);
             let _ = tx.send(error).wait();
-            return finished(()).boxed();
+            return futures::ok(()).boxed();
         }}
     }
     macro_rules! try {
@@ -649,7 +649,7 @@ where T: 'static + Deserialize + Send + Debug
             break;
         }
     }
-    finished(()).boxed()
+    futures::ok(()).boxed()
 }
 
 fn process_response<T>(query: &mut String, conn: &mut PooledConnection, mut tx: Sender<T>) -> (Sender<T>, bool, bool, bool, Result<()>)
