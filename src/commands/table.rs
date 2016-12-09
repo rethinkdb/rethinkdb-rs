@@ -56,7 +56,6 @@
 #![allow(dead_code)]
 
 use ql2::types;
-use ql2::types::Command as Cmd;
 use ql2::proto::Term_TermType as TermType;
 use super::{Command, TableOpts, ReadMode, IdentifierFormat};
 use serde_json::value::ToJson;
@@ -67,8 +66,8 @@ impl Command<(), ()>
     pub fn table<T>(&self, arg: T) -> Command<types::Table, TableOpts>
         where T: Into<types::String>
     {
-            let config = ::Client::config().read();
-            super::r.db(config.db).table(arg)
+            let config = ::config().read();
+            super::r.db(config.db()).table(arg)
     }
 }
 

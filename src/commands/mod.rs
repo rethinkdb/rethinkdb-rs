@@ -1,5 +1,3 @@
-#[macro_use]
-mod macros;
 pub mod db;
 pub mod table;
 pub mod uuid;
@@ -14,7 +12,7 @@ use std::string::String as StdString;
 
 use ql2::types;
 
-use serde_json::value::{ToJson, Value};
+use serde_json::value::ToJson;
 
 use ql2::proto::{Term, Term_TermType as TermType};
 

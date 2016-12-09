@@ -63,3 +63,10 @@ macro_rules! func {
         func
     }}
 }
+
+macro_rules! error {
+    ($e:expr) => {{
+        let error = ::ql2::errors::Error::from($e);
+        Err(error)
+    }}
+}

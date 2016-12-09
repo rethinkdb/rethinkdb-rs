@@ -1,7 +1,7 @@
-extern crate ql2;
+extern crate reql;
 
-use ql2::commands::*;
-use ql2::types;
+use reql::commands::*;
+use reql::types;
 /*
 use ql2::commands::ReadMode::Outdated;
 use ql2::commands::IdentifierFormat::Uuid;
