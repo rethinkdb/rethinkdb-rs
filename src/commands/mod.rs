@@ -1,3 +1,4 @@
+pub mod connection;
 pub mod db;
 pub mod table;
 pub mod uuid;

@@ -201,18 +201,6 @@ impl ConnectionOpts {
 }
 
 impl Client {
-    fn set_pool(p: Vec<Pool<ConnectionManager>>) -> Result<()> {
-        let mut pool = POOL.write();
-        *pool = Some(p);
-        Ok(())
-    }
-
-    fn set_config(c: ConnectionOpts) -> Result<()> {
-        let mut cfg = CONFIG.write();
-        *cfg = c;
-        Ok(())
-    }
-
     pub fn connection(&self) -> ConnectionOpts {
         Self::config().read().clone()
     }
