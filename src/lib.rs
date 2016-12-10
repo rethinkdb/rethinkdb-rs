@@ -9,11 +9,12 @@ extern crate byteorder;
 extern crate bufstream;
 #[macro_use]
 extern crate lazy_static;
-#[macro_use]
+#[macro_use(o, slog_info, slog_log)]
 extern crate slog;
 #[macro_use]
+extern crate slog_scope;
+#[macro_use]
 extern crate quick_error;
-extern crate slog_term;
 extern crate protobuf;
 extern crate parking_lot;
 extern crate uuid;
@@ -30,29 +31,13 @@ pub use commands::r;
 pub use commands::run::{Run, RunWithConn};
 
 use parking_lot::RwLock;
-use slog::{DrainExt, Logger, Record};
-use slog_term::streamer;
 use conn::ConnectionOpts;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Pool;
 
 lazy_static! {
-    static ref LOGGER: RwLock<Logger> = RwLock::new({
-        let drain = streamer().full().build();
-        Logger::root(
-            drain.fuse(),
-            o!("source" =>
-               move |info : &Record| {
-                   format!("{}:{} {}", info.file(), info.line(), info.module())
-               }))
-    });
-
     static ref CONFIG: RwLock<ConnectionOpts> = RwLock::new(ConnectionOpts::default());
-}
-
-fn logger() -> &'static RwLock<Logger> {
-    &LOGGER
 }
 
 fn config() -> &'static RwLock<ConnectionOpts> {

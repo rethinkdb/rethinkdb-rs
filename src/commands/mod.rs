@@ -15,6 +15,8 @@ use std::string::String as StdString;
 use ::types::{self, Command as Cmd};
 use ql2::proto::{Term, Term_TermType as TermType};
 use serde_json::value::ToJson;
+use slog::Logger;
+use slog_scope::set_global_logger;
 
 include!(concat!(env!("OUT_DIR"), "/opts.rs"));
 
@@ -67,5 +69,13 @@ O: ToJson + Clone
             cmd.with_opts(obj);
         }
         cmd.into()
+    }
+}
+
+impl Command<(), ()>
+{
+    pub fn logger(&self, arg: &Logger)
+    {
+        set_global_logger(arg.clone());
     }
 }

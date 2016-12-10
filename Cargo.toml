@@ -16,7 +16,8 @@ ql2 = { path = "/home/enchanter/projects/ql2" }
 r2d2 = "0.7"
 protobuf = "1.0"
 slog = { version = "1.2", features = ["release_max_level_warn"] }
-slog-term = "1.0"
+slog-scope = "0.2"
+slog-term = "1.3"
 lazy_static = "0.2"
 parking_lot = "0.3"
 uuid = { version = "0.3", features = ["v4", "serde", "use_std"] }
