@@ -10,13 +10,9 @@ pub mod rem;
 
 use std::string::String as StdString;
 
-use ql2::types;
-
-use serde_json::value::ToJson;
-
+use ::types::{self, Command as Cmd};
 use ql2::proto::{Term, Term_TermType as TermType};
-
-use ql2::types::Command as Cmd;
+use serde_json::value::ToJson;
 
 include!(concat!(env!("OUT_DIR"), "/opts.rs"));
 
@@ -24,14 +20,12 @@ include!(concat!(env!("OUT_DIR"), "/opts.rs"));
 pub type Arg = Command<types::Object, ()>;
 
 #[allow(non_upper_case_globals)]
-pub const r: Client = Command((), None);
+pub const r: Command<(), ()> = Command((), None);
 
 #[derive(Debug)]
 pub struct Command<T, O>(T, Option<O>);
 
-pub type Client = Command<(), ()>;
-
-pub fn make_cmd<A, T, O, PT, PO>(typ: TermType,
+fn make_cmd<A, T, O, PT, PO>(typ: TermType,
                                  args: Option<Vec<A>>,
                                  opts: Option<O>,
                                  cmd: Option<&Command<PT, PO>>)

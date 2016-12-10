@@ -111,11 +111,11 @@ fn pool() -> &'static RwLock<Option<Vec<Pool<ConnectionManager>>>> {
     &POOL
 }
 
-pub fn config() -> &'static RwLock<ConnectionOpts> {
+fn config() -> &'static RwLock<ConnectionOpts> {
     &CONFIG
 }
 
-pub fn conn() -> Result<PooledConnection> {
+fn connection() -> Result<PooledConnection> {
     let cfg = config().read();
     let pool = pool().read();
     match *pool {
