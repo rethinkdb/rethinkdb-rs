@@ -26,12 +26,14 @@ mod macros;
 
 pub mod commands;
 
-pub use ql2::{Result, types, conn, errors};
 pub use commands::r;
 pub use commands::run::{Run, RunWithConn};
+pub use ql2::{Result, types, conn, errors};
 
-use parking_lot::RwLock;
 use conn::ConnectionOpts;
+use parking_lot::RwLock;
+use slog::Logger;
+use slog_scope::set_global_logger;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Pool;
@@ -47,4 +49,9 @@ fn config() -> &'static RwLock<ConnectionOpts> {
 fn set_config(c: ConnectionOpts) {
     let mut cfg = CONFIG.write();
     *cfg = c;
+}
+
+pub fn set_logger(l: &Logger)
+{
+    set_global_logger(l.clone());
 }

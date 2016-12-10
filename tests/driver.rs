@@ -13,7 +13,7 @@ use ql2::commands::IdentifierFormat::Uuid;
 #[test]
 fn db_works() {
     let log = Logger::root(slog_term::streamer().build().fuse(), o!("test" => "driver"));
-    r.logger(&log);
+    reql::set_logger(&log);
     //r.connection().connect().unwrap();
     /*
     let query = r.table("heroes").map(|hero: Arg| {
