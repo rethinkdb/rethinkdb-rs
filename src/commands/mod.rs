@@ -8,6 +8,7 @@ pub mod changes;
 pub mod map;
 pub mod get_field;
 pub mod rem;
+pub mod run;
 
 use std::string::String as StdString;
 

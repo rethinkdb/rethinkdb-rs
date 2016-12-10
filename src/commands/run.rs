@@ -1,72 +1,63 @@
 #![allow(dead_code)]
 
+use ::Pool;
 use ql2::types;
-use ql2::proto::{Term, Term_TermType as TermType};
-use super::{Command, Arg};
+use ql2::proto::Term;
+use super::Command;
+use conn::Session;
 use serde_json::value::ToJson;
 
-impl<O> Command<types::Table, O>
+#[derive(Debug, Clone)]
+pub struct RunOpts;
+
+impl Default for RunOpts {
+    fn default() -> RunOpts {
+        RunOpts
+    }
+}
+
+#[derive(Debug)]
+pub struct Query<S: Session> {
+    term: Term,
+    sess: S,
+}
+
+fn run<S, D, O>(cmd: Command<D, O>, pool: S) -> Command<Query<S>, RunOpts>
+    where S: Session,
+          D: types::DataType,
+          O: ToJson + Clone,
+{
+    let query = Query {
+        term: cmd.into(),
+        sess: pool,
+    };
+    Command(query, Some(RunOpts::default()))
+}
+
+pub trait Run {
+    fn run(self) -> Command<Query<Pool>, RunOpts>;
+}
+
+pub trait RunWithConn {
+    fn run<T>(self, arg: T) -> Command<Query<T>, RunOpts>
+        where T: Session;
+}
+
+impl<O> Run for Command<types::Table, O>
     where O: ToJson + Clone
 {
-    pub fn run<T>(&self, arg: T) -> Command<types::Stream, ()>
-        where T: Into<MapArg<types::Stream>>
+    fn run(self) -> Command<Query<Pool>, RunOpts>
     {
-        let arg: Vec<types::Stream> = arg.into().into();
-        super::make_cmd(TermType::MAP, Some(arg), None, Some(self))
+        run(self, Pool)
     }
 }
 
-pub struct MapArg<T>(Vec<T>);
-
-impl From<MapArg<types::Stream>> for Vec<types::Stream> {
-    fn from(t: MapArg<types::Stream>) -> Vec<types::Stream> {
-        t.0
-    }
-}
-
-impl<F, T, O> From<F> for MapArg<types::Stream>
-    where T: types::DataType,
-          O: ToJson + Clone,
-          F: Fn(Arg) -> Command<T, O>
+impl<O> RunWithConn for Command<types::Table, O>
+    where O: ToJson + Clone
 {
-    fn from(t: F) -> MapArg<types::Stream> {
-        let res = t(var!());
-        let term = func!(res.into());
-        MapArg(vec![term.into()])
-    }
-}
-
-pub trait Stream: types::DataType {}
-
-impl Stream for types::Table {}
-
-impl<F, CT, CO, T, O> From<(Command<CT, CO>, F)> for MapArg<types::Stream>
-    where CT: Stream,
-          CO: ToJson + Clone,
-          T: types::DataType,
-          O: ToJson + Clone,
-          F: Fn(Arg, Arg) -> Command<T, O>
-{
-    fn from(t: (Command<CT, CO>, F)) -> MapArg<types::Stream> {
-        let arg: Term = t.0.into();
-        let res = t.1(var!(), var!());
-        let func = func!(res.into());
-        MapArg(vec![arg.into(), func.into()])
-    }
-}
-
-impl<F, CT, CO, T, O> From<(Command<CT, CO>, Command<CT, CO>, F)> for MapArg<types::Stream>
-    where CT: Stream,
-          CO: ToJson + Clone,
-          T: types::DataType,
-          O: ToJson + Clone,
-          F: Fn(Arg, Arg, Arg) -> Command<T, O>
-{
-    fn from(t: (Command<CT, CO>, Command<CT, CO>, F)) -> MapArg<types::Stream> {
-        let arg0: Term = t.0.into();
-        let arg1: Term = t.1.into();
-        let res = t.2(var!(), var!(), var!());
-        let func = func!(res.into());
-        MapArg(vec![arg0.into(), arg1.into(), func.into()])
+    fn run<T>(self, arg: T) -> Command<Query<T>, RunOpts>
+        where T: Session
+    {
+        run(self, arg)
     }
 }

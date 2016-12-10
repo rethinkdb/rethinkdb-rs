@@ -26,6 +26,8 @@ mod macros;
 pub mod commands;
 
 pub use ql2::{Result, types, conn, errors};
+pub use commands::r;
+pub use commands::run::{Run, RunWithConn};
 
 use parking_lot::RwLock;
 use slog::{DrainExt, Logger, Record};

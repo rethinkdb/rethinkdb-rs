@@ -10,7 +10,7 @@ use conn::{
     Connection,
     ReqlConnection,
     TlsCfg,
-    Pool as Ql2Pool,
+    Session,
 };
 use ::{Result, set_config, config, Pool as ReqlPool};
 use r2d2::{ManageConnection, Pool, Config, PooledConnection as PConn};
@@ -174,7 +174,7 @@ impl ReqlConnection for PooledConnection {
     }
 }
 
-impl Ql2Pool for ReqlPool {
+impl Session for ReqlPool {
     type Connection = PooledConnection;
 
     fn get(&self) -> Result<PooledConnection> {
