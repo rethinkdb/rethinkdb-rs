@@ -24,7 +24,7 @@ pub type Arg = Command<types::Object, ()>;
 #[allow(non_upper_case_globals)]
 pub const r: Command<(), ()> = Command((), None);
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Command<T, O>(T, Option<O>);
 
 fn make_cmd<A, T, O, PT, PO>(typ: TermType,
@@ -67,5 +67,54 @@ O: ToJson + Clone
             cmd.with_opts(obj);
         }
         cmd.into()
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum Format {
+    Native,
+    Raw,
+}
+
+#[derive(Debug, Clone)]
+pub enum Durability {
+    Hard,
+    Soft,
+}
+
+#[derive(Debug, Clone)]
+pub struct RunOpts {
+    read_mode: ReadMode,
+    time_format: Format,
+    profile: bool,
+    durability: Durability,
+    group_format: Format,
+    db: Command<types::Db, ()>,
+    array_limit: u64,
+    binary_format: Format,
+    min_batch_rows: u32,
+    max_batch_rows: u64,
+    max_batch_bytes: u64,
+    max_batch_seconds: f32,
+    first_batch_scaledown_factor: u64,
+}
+
+impl Default for RunOpts {
+    fn default() -> RunOpts {
+        RunOpts {
+            read_mode: ReadMode::Single,
+            time_format: Format::Native,
+            profile: false,
+            durability: Durability::Hard,
+            group_format: Format::Native,
+            db: r.db("test"),
+            array_limit: 100_000,
+            binary_format: Format::Native,
+            min_batch_rows: 8,
+            max_batch_rows: u64::max_value(),
+            max_batch_bytes: 1000000,
+            max_batch_seconds: 0.5,
+            first_batch_scaledown_factor: 4,
+        }
     }
 }

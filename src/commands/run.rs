@@ -3,18 +3,9 @@
 use ::Pool;
 use ql2::types;
 use ql2::proto::Term;
-use super::Command;
+use super::{Command, RunOpts};
 use conn::Session;
 use serde_json::value::ToJson;
-
-#[derive(Debug, Clone)]
-pub struct RunOpts;
-
-impl Default for RunOpts {
-    fn default() -> RunOpts {
-        RunOpts
-    }
-}
 
 #[derive(Debug)]
 pub struct Query<S: Session> {
