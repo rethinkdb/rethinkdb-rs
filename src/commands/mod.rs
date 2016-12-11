@@ -98,8 +98,9 @@ impl Default for RunOpts {
             array_limit: 100_000,
             binary_format: Format::Native,
             min_batch_rows: 8,
-            max_batch_rows: u64::max_value(),
-            max_batch_bytes: 1000000,
+            // 2^53 is the biggest integer that RethinkDB supports
+            max_batch_rows: 2u64.pow(53),
+            max_batch_bytes: 1_000_000,
             max_batch_seconds: 0.5,
             first_batch_scaledown_factor: 4,
         }

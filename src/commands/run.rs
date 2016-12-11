@@ -121,21 +121,20 @@ fn request<S, T>(cmd: Command<Query<S, T>, RunOpts>, tx: SyncSender<Result<Respo
     where S: Session + Send,
           T: Deserialize + Send
 {
-    let mut req = Request::new(cmd.0.sess, tx)?;
+    let conn = cmd.0.sess;
+    let mut req = Request::new(conn, tx)?;
     let ref cfg = ::config().read();
-    req.submit(cfg, cmd.encode_cmd(), cmd.encode_opts())
+    let commands = cmd.0.term.encode();
+    let opts = match cmd.1 {
+        Some(ref opts) => Some(opts.encode()),
+        None => None,
+    };
+    req.submit(cfg, commands, opts)
 }
 
-impl<S, T> Command<Query<S, T>, RunOpts>
-    where S: Session + Send,
-          T: Deserialize + Send
-{
-    fn encode_cmd(&self) -> String {
-        self.0.term.encode()
-    }
-
-    fn encode_opts(&self) -> Option<String> {
-        let opts = self.1.clone().unwrap_or(Default::default());
+impl Encode for RunOpts {
+    fn encode(&self) -> String {
+        let opts = self.clone();
         let mut o = BTreeMap::new();
         o.insert("read_mode", Term::from_json(opts.read_mode));
         o.insert("time_format", Term::from_json(opts.time_format));
@@ -154,7 +153,7 @@ impl<S, T> Command<Query<S, T>, RunOpts>
         o.insert("max_batch_seconds", Term::from_json(opts.max_batch_seconds));
         o.insert("first_batch_scaledown_factor", Term::from_json(opts.first_batch_scaledown_factor));
         let opts: Term = o.into();
-        Some(opts.encode())
+        opts.encode()
     }
 }
 
