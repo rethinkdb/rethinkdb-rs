@@ -1,6 +1,9 @@
 #![allow(dead_code)]
 
-use ::Pool;
+use std::marker::PhantomData;
+use std::iter::{IntoIterator, Iterator};
+
+use ::{Pool, Result};
 use ql2::types;
 use ql2::proto::Term;
 use super::{
@@ -8,57 +11,93 @@ use super::{
     Command, RunOpts,
     ReadMode, Format, Durability,
 };
-use conn::Session;
+use conn::{
+    Session, ResponseValue,
+};
 use serde_json::value::ToJson;
+use serde::Deserialize;
+
+/// ReQL Response
+///
+/// Response returned by `run()`
+pub struct Response<T: Deserialize>(Result<ResponseValue<T>>);
 
 #[derive(Debug)]
-pub struct Query<S: Session> {
+pub struct Query<S: Session, T: Deserialize> {
     term: Term,
     sess: S,
+    resp: PhantomData<T>,
 }
 
-fn run<S, D, O>(cmd: Command<D, O>, pool: S) -> Command<Query<S>, RunOpts>
+fn run<T, S, D, O>(cmd: Command<D, O>, pool: S) -> Command<Query<S, T>, RunOpts>
     where S: Session,
+          T: Deserialize,
           D: types::DataType,
           O: ToJson + Clone,
 {
     let query = Query {
         term: cmd.into(),
         sess: pool,
+        resp: PhantomData,
     };
     Command(query, Some(RunOpts::default()))
 }
 
 pub trait Run {
-    fn run(self) -> Command<Query<Pool>, RunOpts>;
+    fn run<T>(self) -> Command<Query<Pool, T>, RunOpts>
+        where T: Deserialize;
 }
 
 pub trait RunWithConn {
-    fn run<T>(self, arg: T) -> Command<Query<T>, RunOpts>
-        where T: Session;
+    fn run<S, T>(self, arg: S) -> Command<Query<S, T>, RunOpts>
+        where S: Session, T: Deserialize;
 }
 
 impl<O> Run for Command<types::Table, O>
     where O: ToJson + Clone
 {
-    fn run(self) -> Command<Query<Pool>, RunOpts>
+    fn run<T>(self) -> Command<Query<Pool, T>, RunOpts>
+        where T: Deserialize
     {
-        run(self, Pool)
+        run::<T, _, _, _>(self, Pool)
     }
 }
 
 impl<O> RunWithConn for Command<types::Table, O>
     where O: ToJson + Clone
 {
-    fn run<T>(self, arg: T) -> Command<Query<T>, RunOpts>
-        where T: Session
+    fn run<S, T>(self, arg: S) -> Command<Query<S, T>, RunOpts>
+        where S: Session, T: Deserialize
     {
-        run(self, arg)
+        run::<T, _, _, _>(self, arg)
     }
 }
 
-impl<S> Command<Query<S>, RunOpts>
-    where S: Session
+impl<T> Iterator for Response<T>
+    where T: Deserialize
+{
+    type Item = Result<ResponseValue<T>>;
+
+    fn next(&mut self) -> Option<Result<ResponseValue<T>>> {
+        unimplemented!();
+    }
+}
+
+impl<S, T> IntoIterator for Command<Query<S, T>, RunOpts>
+    where S: Session,
+          T: Deserialize,
+{
+    type Item = Result<ResponseValue<T>>;
+    type IntoIter = Response<T>;
+
+    fn into_iter(self) -> Response<T> {
+        unimplemented!();
+    }
+}
+
+impl<S, T> Command<Query<S, T>, RunOpts>
+    where S: Session,
+          T: Deserialize,
 {
     pub fn read_mode(&mut self, arg: ReadMode) -> &mut Self {
         set_opt!(self, read_mode(arg));
