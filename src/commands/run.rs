@@ -4,6 +4,7 @@ use std::marker::PhantomData;
 use std::iter::{IntoIterator, Iterator};
 use std::sync::mpsc::{self, SyncSender};
 use std::thread;
+use std::collections::BTreeMap;
 
 use ::{Pool, Result, Response};
 use ql2::{types, Encode};
@@ -122,9 +123,39 @@ fn request<S, T>(cmd: Command<Query<S, T>, RunOpts>, tx: SyncSender<Result<Respo
 {
     let mut req = Request::new(cmd.0.sess, tx)?;
     let ref cfg = ::config().read();
-    let commands = cmd.0.term.encode();
-    let opts = None;
-    req.submit(cfg, commands, opts)
+    req.submit(cfg, cmd.encode_cmd(), cmd.encode_opts())
+}
+
+impl<S, T> Command<Query<S, T>, RunOpts>
+    where S: Session + Send,
+          T: Deserialize + Send
+{
+    fn encode_cmd(&self) -> String {
+        self.0.term.encode()
+    }
+
+    fn encode_opts(&self) -> Option<String> {
+        let opts = self.1.clone().unwrap_or(Default::default());
+        let mut o = BTreeMap::new();
+        o.insert("read_mode", Term::from_json(opts.read_mode));
+        o.insert("time_format", Term::from_json(opts.time_format));
+        o.insert("profile", Term::from_json(opts.profile));
+        o.insert("durability", Term::from_json(opts.durability));
+        o.insert("group_format", Term::from_json(opts.group_format));
+        if let Some(db) = opts.db {
+            let db: Term = db.into();
+            o.insert("db", db);
+        }
+        o.insert("array_limit", Term::from_json(opts.array_limit));
+        o.insert("binary_format", Term::from_json(opts.binary_format));
+        o.insert("min_batch_rows", Term::from_json(opts.min_batch_rows));
+        o.insert("max_batch_rows", Term::from_json(opts.max_batch_rows));
+        o.insert("max_batch_bytes", Term::from_json(opts.max_batch_bytes));
+        o.insert("max_batch_seconds", Term::from_json(opts.max_batch_seconds));
+        o.insert("first_batch_scaledown_factor", Term::from_json(opts.first_batch_scaledown_factor));
+        let opts: Term = o.into();
+        Some(opts.encode())
+    }
 }
 
 impl<S, T> Command<Query<S, T>, RunOpts>

@@ -65,3 +65,19 @@ default_changes_opts!{ f32 is 0.0 }
 pub struct GetAllOpts {
     index: StdString,
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum Format {
+    #[serde(rename = "native")]
+    Native,
+    #[serde(rename = "raw")]
+    Raw,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum Durability {
+    #[serde(rename = "hard")]
+    Hard,
+    #[serde(rename = "soft")]
+    Soft,
+}

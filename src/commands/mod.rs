@@ -70,18 +70,6 @@ O: ToJson + Clone
 }
 
 #[derive(Debug, Clone)]
-pub enum Format {
-    Native,
-    Raw,
-}
-
-#[derive(Debug, Clone)]
-pub enum Durability {
-    Hard,
-    Soft,
-}
-
-#[derive(Debug, Clone)]
 pub struct RunOpts {
     read_mode: ReadMode,
     time_format: Format,
