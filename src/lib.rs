@@ -9,7 +9,8 @@ extern crate byteorder;
 extern crate bufstream;
 #[macro_use]
 extern crate lazy_static;
-#[macro_use(o, slog_info, slog_log)]
+//#[macro_use(o, slog_info, slog_log)]
+#[macro_use]
 extern crate slog;
 #[macro_use]
 extern crate slog_scope;

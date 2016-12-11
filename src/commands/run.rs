@@ -5,7 +5,7 @@ use std::iter::{IntoIterator, Iterator};
 use std::sync::mpsc::{self, SyncSender};
 
 use ::{Pool, Result, Response};
-use ql2::types;
+use ql2::{types, Encode};
 use ql2::proto::Term;
 use super::{
     r,
@@ -52,25 +52,32 @@ pub trait RunWithConn {
         where S: Session, T: Deserialize + Send;
 }
 
-impl<O> Run for Command<types::Table, O>
-    where O: ToJson + Clone
-{
-    fn run<T>(self) -> Command<Query<Pool, T>, RunOpts>
-        where T: Deserialize + Send
-    {
-        run::<T, _, _, _>(self, Pool)
+macro_rules! define {
+    ($typ:ty) => {
+        impl<O> Run for Command<$typ, O>
+            where O: ToJson + Clone
+            {
+                fn run<T>(self) -> Command<Query<Pool, T>, RunOpts>
+                    where T: Deserialize + Send
+                    {
+                        run::<T, _, _, _>(self, Pool)
+                    }
+            }
+
+        impl<O> RunWithConn for Command<$typ, O>
+            where O: ToJson + Clone
+            {
+                fn run<S, T>(self, arg: S) -> Command<Query<S, T>, RunOpts>
+                    where S: Session, T: Deserialize + Send
+                    {
+                        run::<T, _, _, _>(self, arg)
+                    }
+            }
     }
 }
 
-impl<O> RunWithConn for Command<types::Table, O>
-    where O: ToJson + Clone
-{
-    fn run<S, T>(self, arg: S) -> Command<Query<S, T>, RunOpts>
-        where S: Session, T: Deserialize + Send
-    {
-        run::<T, _, _, _>(self, arg)
-    }
-}
+define!{ types::Table }
+define!{ types::Stream }
 
 impl<T> Iterator for Response<T>
     where T: Deserialize + Send
@@ -111,9 +118,10 @@ fn request<S, T>(cmd: Command<Query<S, T>, RunOpts>, tx: SyncSender<Result<Respo
 {
     let mut req = Request::new(cmd.0.sess, tx)?;
     let ref cfg = ::config().read();
-    let cmds = String::from("1");
+    let commands = cmd.0.term.encode();
+    debug!("{}", commands);
     let opts = None;
-    req.submit(cfg, cmds, opts)
+    req.submit(cfg, commands, opts)
 }
 
 impl<S, T> Command<Query<S, T>, RunOpts>

@@ -38,19 +38,18 @@ O: ToJson + Clone,
 PT: types::DataType,
 PO: ToJson + Clone
 {
-    let (prev_cmd, prev_opts) = match cmd {
-        Some(cmd) => (Some(cmd.0.clone().into()), cmd.1.clone()),
-        None => (None, None),
+    let prev_cmd = match cmd {
+        Some(cmd) => {
+            let cmd: Term = cmd.clone().into();
+            Some(cmd)
+        },
+        None => None,
     };
     let mut dt = Cmd::new(typ, prev_cmd);
     if let Some(args) = args {
         for arg in args {
             dt.with_args(arg.into());
         }
-    }
-    if let Some(opt) = prev_opts {
-        let obj = types::Object::from(opt);
-        dt.with_opts(obj);
     }
     Command(dt.into(), opts)
 }

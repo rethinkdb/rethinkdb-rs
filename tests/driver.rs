@@ -36,7 +36,7 @@ fn db_works() {
     });
     */
 
-    let query = r.table("heroes").run::<()>();
+    let query = r.table("heroes").changes().run::<()>();
     for res in query {
         debug!(log, "{:?}", res);
     }
