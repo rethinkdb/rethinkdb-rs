@@ -70,3 +70,19 @@ macro_rules! error {
         Err(error)
     }}
 }
+
+macro_rules! set_opt {
+    ($opts:ident, $func:ident($arg:ident)) => {
+        match $opts.1 {
+            Some(ref mut opts) => {
+                opts.$func = $arg;
+            }
+            None => {
+                $opts.1 = Some(Default::default());
+                if let Some(ref mut opts) = $opts.1 {
+                    opts.$func = $arg;
+                }
+            }
+        }
+    }
+}
