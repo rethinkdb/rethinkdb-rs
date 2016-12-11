@@ -3,6 +3,7 @@
 use std::marker::PhantomData;
 use std::iter::{IntoIterator, Iterator};
 use std::sync::mpsc::{self, SyncSender};
+use std::thread;
 
 use ::{Pool, Result, Response};
 use ql2::{types, Encode};
@@ -17,7 +18,6 @@ use conn::{
 };
 use serde_json::value::ToJson;
 use serde::Deserialize;
-use crossbeam;
 
 const CHANNEL_SIZE: usize = 1024 * 1024;
 
@@ -93,21 +93,25 @@ impl<T> Iterator for Response<T>
 }
 
 impl<S, T> IntoIterator for Command<Query<S, T>, RunOpts>
-    where S: Session + Send,
-          T: Deserialize + Send,
+    where S: 'static + Session + Send,
+          T: 'static + Deserialize + Send,
 {
     type Item = Result<ResponseValue<T>>;
     type IntoIter = Response<T>;
 
     fn into_iter(self) -> Response<T> {
         let (tx, rx) = mpsc::sync_channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
-        crossbeam::scope(|scope| {
-            scope.spawn(move || {
-                if let Err(err) = request(self, tx.clone()) {
-                    let _ = tx.send(error!(err));
+        let sender = thread::Builder::new().name("reql_command_run".to_string());
+        let res = sender.spawn(move || {
+            if let Err(err) = request(self, tx.clone()) {
+                if let Err(err) = tx.send(err!(err)) {
+                    error!("Failed to send message: {:?}", err);
                 }
-            });
+            }
         });
+        if let Err(err) = res {
+            error!("Failed to spawn a thread: {:?}", err);
+        };
         Response(rx)
     }
 }
@@ -119,7 +123,6 @@ fn request<S, T>(cmd: Command<Query<S, T>, RunOpts>, tx: SyncSender<Result<Respo
     let mut req = Request::new(cmd.0.sess, tx)?;
     let ref cfg = ::config().read();
     let commands = cmd.0.term.encode();
-    debug!("{}", commands);
     let opts = None;
     req.submit(cfg, commands, opts)
 }

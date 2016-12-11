@@ -26,7 +26,6 @@ bufstream = "0.1"
 serde = "0.8"
 serde_json = "0.8"
 quick-error = "1.1"
-crossbeam = "0.2"
 
 [build-dependencies]
 skeptic = "0.6"

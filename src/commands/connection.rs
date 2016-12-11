@@ -94,7 +94,7 @@ impl Command<(), ConnectionOpts>
             },
             None => {
                 let msg = String::from("ConnectionOpts is unset");
-                return error!(DriverError::Other(msg));
+                return err!(DriverError::Other(msg));
             },
         }
     }
@@ -128,7 +128,7 @@ impl ManageConnection for ConnectionManager {
             }
         }
         let msg = format!("Unexpected response from server: {:?}", resp);
-        error!(ConnectionError::Other(msg))
+        err!(ConnectionError::Other(msg))
         */
     }
 
@@ -183,7 +183,7 @@ impl Session for Pool {
         match *pool {
             Some(ref pool) => {
                 let msg = String::from("Failed to get a connection.");
-                let mut last_error = error!(ConnectionError::Other(msg));
+                let mut last_error = err!(ConnectionError::Other(msg));
                 macro_rules! return_conn {
                     ($e:expr) => {{
                         match $e {
@@ -191,7 +191,7 @@ impl Session for Pool {
                                 conn.incr_token();
                                 return Ok(PooledConnection(conn));
                             },
-                            Err(error) => last_error = error!(error),
+                            Err(error) => last_error = err!(error),
                         }
                     }}
                 }
@@ -218,7 +218,7 @@ impl Session for Pool {
                         return_conn!(pool[least_connected_server].get());
                     } else {
                         let msg = String::from("All servers are currently down.");
-                        last_error = error!(ConnectionError::Other(msg));
+                        last_error = err!(ConnectionError::Other(msg));
                     }
                     num_retries -= 1;
                 }
@@ -229,7 +229,7 @@ impl Session for Pool {
                                    Use `r.connection().connect()` to initialise the pool \
                                    before trying to send any connections to the database. \
                                    This is typically done in the `main` function.");
-                return error!(ConnectionError::Other(msg));
+                return err!(ConnectionError::Other(msg));
             }
         }
     }

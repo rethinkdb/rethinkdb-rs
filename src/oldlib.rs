@@ -83,18 +83,18 @@ macro_rules! arr {
 // Macro to make it convenient to construct a `reql::error::Error`
 // The macro also logs every error passed to it unless the error
 // is marked as default.
-macro_rules! error {
+macro_rules! err {
     ($e:expr) => {{
         let _logger = Client::logger().read();
-        let error = Error::from($e);
-        debug!(_logger, "Error({:?})", error);
-        Err(error)
+        let err = Error::from($e);
+        debug!(_logger, "Error({:?})", err);
+        Err(err)
     }};
-    // Do not log default errors otherwise our logs
-    // will have misleading error messages.
+    // Do not log default errs otherwise our logs
+    // will have misleading err messages.
     (default $e:expr) => {{
-        let error = Error::from($e);
-        Err(error)
+        let err = Error::from($e);
+        Err(err)
     }}
 }
 
@@ -110,7 +110,7 @@ macro_rules! try {
                 $(
                     info!(_logger, "{:?}", $f);
                 )*
-                return error!(err);
+                return err!(err);
             },
         }
     }}
@@ -232,10 +232,10 @@ fn run<T>(mut commands: String, opts: Option<String>) -> Response<T>
         where T: 'static + Deserialize + Send + Debug
 {
     let (tx, rx) = mpsc::sync_channel(CHANNEL_SIZE);
-    let sender = thread::Builder::new()
-        .name("reql_command_run".to_string());
-    if let Err(err) = sender.spawn(|| try!(send::<T>(commands, opts, tx))) {
-        return error!(err);
+    let sender = thread::Builder::new().name("reql_command_run".to_string());
+    let res = sender.spawn(|| try!(send::<T>(commands, opts, tx)));
+    if let Err(err) = res {
+        return err!(err);
     };
     Ok(rx)
 }
