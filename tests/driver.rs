@@ -14,7 +14,7 @@ use ql2::commands::IdentifierFormat::Uuid;
 fn db_works() {
     let log = Logger::root(slog_term::streamer().build().fuse(), o!("test" => "driver"));
     reql::set_logger(&log);
-    //r.connection().connect().unwrap();
+    r.connection().connect().unwrap();
     /*
     let query = r.table("heroes").map(|hero: Arg| {
             //(row as Command<types::Object, ()>).get_field::<_, types::Object>("villain")
@@ -37,5 +37,7 @@ fn db_works() {
     */
 
     let query = r.table("heroes").run::<()>();
-    debug!(log, "{:?}", query);
+    for res in query {
+        debug!(log, "{:?}", res);
+    }
 }

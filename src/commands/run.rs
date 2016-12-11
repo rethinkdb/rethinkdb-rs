@@ -2,8 +2,9 @@
 
 use std::marker::PhantomData;
 use std::iter::{IntoIterator, Iterator};
+use std::sync::mpsc::{self, SyncSender};
 
-use ::{Pool, Result};
+use ::{Pool, Result, Response};
 use ql2::types;
 use ql2::proto::Term;
 use super::{
@@ -12,15 +13,13 @@ use super::{
     ReadMode, Format, Durability,
 };
 use conn::{
-    Session, ResponseValue,
+    Session, Request, ResponseValue,
 };
 use serde_json::value::ToJson;
 use serde::Deserialize;
+use crossbeam;
 
-/// ReQL Response
-///
-/// Response returned by `run()`
-pub struct Response<T: Deserialize>(Result<ResponseValue<T>>);
+const CHANNEL_SIZE: usize = 1024 * 1024;
 
 #[derive(Debug)]
 pub struct Query<S: Session, T: Deserialize> {
@@ -31,7 +30,7 @@ pub struct Query<S: Session, T: Deserialize> {
 
 fn run<T, S, D, O>(cmd: Command<D, O>, pool: S) -> Command<Query<S, T>, RunOpts>
     where S: Session,
-          T: Deserialize,
+          T: Deserialize + Send,
           D: types::DataType,
           O: ToJson + Clone,
 {
@@ -45,19 +44,19 @@ fn run<T, S, D, O>(cmd: Command<D, O>, pool: S) -> Command<Query<S, T>, RunOpts>
 
 pub trait Run {
     fn run<T>(self) -> Command<Query<Pool, T>, RunOpts>
-        where T: Deserialize;
+        where T: Deserialize + Send;
 }
 
 pub trait RunWithConn {
     fn run<S, T>(self, arg: S) -> Command<Query<S, T>, RunOpts>
-        where S: Session, T: Deserialize;
+        where S: Session, T: Deserialize + Send;
 }
 
 impl<O> Run for Command<types::Table, O>
     where O: ToJson + Clone
 {
     fn run<T>(self) -> Command<Query<Pool, T>, RunOpts>
-        where T: Deserialize
+        where T: Deserialize + Send
     {
         run::<T, _, _, _>(self, Pool)
     }
@@ -67,37 +66,59 @@ impl<O> RunWithConn for Command<types::Table, O>
     where O: ToJson + Clone
 {
     fn run<S, T>(self, arg: S) -> Command<Query<S, T>, RunOpts>
-        where S: Session, T: Deserialize
+        where S: Session, T: Deserialize + Send
     {
         run::<T, _, _, _>(self, arg)
     }
 }
 
 impl<T> Iterator for Response<T>
-    where T: Deserialize
+    where T: Deserialize + Send
 {
     type Item = Result<ResponseValue<T>>;
 
     fn next(&mut self) -> Option<Result<ResponseValue<T>>> {
-        unimplemented!();
+        match self.0.recv() {
+            Ok(resp) => Some(resp),
+            Err(_) => None,
+        }
     }
 }
 
 impl<S, T> IntoIterator for Command<Query<S, T>, RunOpts>
-    where S: Session,
-          T: Deserialize,
+    where S: Session + Send,
+          T: Deserialize + Send,
 {
     type Item = Result<ResponseValue<T>>;
     type IntoIter = Response<T>;
 
     fn into_iter(self) -> Response<T> {
-        unimplemented!();
+        let (tx, rx) = mpsc::sync_channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
+        crossbeam::scope(|scope| {
+            scope.spawn(move || {
+                if let Err(err) = request(self, tx.clone()) {
+                    let _ = tx.send(error!(err));
+                }
+            });
+        });
+        Response(rx)
     }
+}
+
+fn request<S, T>(cmd: Command<Query<S, T>, RunOpts>, tx: SyncSender<Result<ResponseValue<T>>>) -> Result<()>
+    where S: Session + Send,
+          T: Deserialize + Send
+{
+    let mut req = Request::new(cmd.0.sess, tx)?;
+    let ref cfg = ::config().read();
+    let cmds = String::from("1");
+    let opts = None;
+    req.submit(cfg, cmds, opts)
 }
 
 impl<S, T> Command<Query<S, T>, RunOpts>
     where S: Session,
-          T: Deserialize,
+          T: Deserialize + Send,
 {
     pub fn read_mode(&mut self, arg: ReadMode) -> &mut Self {
         set_opt!(self, read_mode(arg));

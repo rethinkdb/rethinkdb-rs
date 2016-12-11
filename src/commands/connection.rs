@@ -113,7 +113,7 @@ impl ManageConnection for ConnectionManager {
 
     fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
         conn.incr_token();
-        unimplemented!();
+        Ok(())
         /*
         let query = wrap_query(QueryType::START, Some(String::from("1")), None);
         try!(write_query(&query, &mut conn));

@@ -20,6 +20,7 @@ extern crate parking_lot;
 extern crate uuid;
 extern crate serde;
 extern crate serde_json;
+extern crate crossbeam;
 
 #[macro_use]
 mod macros;
@@ -30,13 +31,21 @@ pub use commands::r;
 pub use commands::run::{Run, RunWithConn};
 pub use ql2::{Result, types, conn, errors};
 
-use conn::ConnectionOpts;
+use std::sync::mpsc::Receiver;
+
+use conn::{ConnectionOpts, ResponseValue};
 use parking_lot::RwLock;
 use slog::Logger;
 use slog_scope::set_global_logger;
+use serde::Deserialize;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Pool;
+
+/// ReQL Response
+///
+/// Response returned by `run()`
+pub struct Response<T: Deserialize>(Receiver<Result<ResponseValue<T>>>);
 
 lazy_static! {
     static ref CONFIG: RwLock<ConnectionOpts> = RwLock::new(ConnectionOpts::default());
