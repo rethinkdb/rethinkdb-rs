@@ -112,24 +112,7 @@ impl ManageConnection for ConnectionManager {
     }
 
     fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
-        conn.incr_token();
-        Ok(())
-        /*
-        let query = wrap_query(QueryType::START, Some(String::from("1")), None);
-        try!(write_query(&query, &mut conn));
-        let resp = try!(read_query(&mut conn));
-        let resp: ReqlResponse = try!(from_slice(&resp[..]));
-        if let Some(respt) = ResponseType::from_i32(resp.t) {
-            if let ResponseType::SUCCESS_ATOM = respt {
-                let val: Vec<i32> = try!(from_value(resp.r.clone()));
-                if val == [1] {
-                    return Ok(());
-                }
-            }
-        }
-        let msg = format!("Unexpected response from server: {:?}", resp);
-        err!(ConnectionError::Other(msg))
-        */
+        conn.is_valid()
     }
 
     fn has_broken(&self, conn: &mut Connection) -> bool {

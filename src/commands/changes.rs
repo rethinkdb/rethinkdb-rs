@@ -90,61 +90,31 @@ use ql2::proto::Term_TermType as TermType;
 use super::{Command, ChangesOpts};
 use serde_json::value::ToJson;
 
-impl<O> Command<types::Table, O>
-    where O: ToJson + Clone
-{
-    /// Turn a query into a changefeed. [Read more](changes/index.html)
-    pub fn changes(&self) -> Command<types::Stream, ChangesOpts<bool>>
-        where ChangesOpts<bool>: Default + ToJson + Clone
-    {
-        let opts: ChangesOpts<bool> = Default::default();
-        super::make_cmd(TermType::CHANGES, NoArg!(), Some(opts), Some(self))
+macro_rules! define {
+    ($typ:ty) => {
+        impl<O> Command<$typ, O>
+            where O: ToJson + Clone
+            {
+                /// Turn a query into a changefeed. [Read more](changes/index.html)
+                pub fn changes(&self) -> Command<types::Stream, ChangesOpts<bool>>
+                    where ChangesOpts<bool>: Default + ToJson + Clone
+                    {
+                        let opts: ChangesOpts<bool> = Default::default();
+                        super::make_cmd(TermType::CHANGES, NoArg!(), Some(opts), Some(self))
+                    }
+            }
     }
 }
 
-impl<O> Command<types::Stream, O>
-    where O: ToJson + Clone
-{
-    /// Turn a query into a changefeed. [Read more](changes/index.html)
-    pub fn changes(&self) -> Command<types::Stream, ChangesOpts<bool>>
-        where ChangesOpts<bool>: Default + ToJson + Clone
-    {
-        let opts: ChangesOpts<bool> = Default::default();
-        super::make_cmd(TermType::CHANGES, NoArg!(), Some(opts), Some(self))
-    }
-}
-
-#[allow(dead_code)]
-impl<O> Command<types::StreamSelection, O>
-    where O: ToJson + Clone
-{
-    /// Turn a query into a changefeed. [Read more](changes/index.html)
-    pub fn changes(&self) -> Command<types::Stream, ChangesOpts<bool>>
-        where ChangesOpts<bool>: Default + ToJson + Clone
-    {
-        let opts: ChangesOpts<bool> = Default::default();
-        super::make_cmd(TermType::CHANGES, NoArg!(), Some(opts), Some(self))
-    }
-}
-
-#[allow(dead_code)]
-impl<O> Command<types::ObjectSelection, O>
-    where O: ToJson + Clone
-{
-    /// Turn a query into a changefeed. [Read more](changes/index.html)
-    pub fn changes(&self) -> Command<types::Stream, ChangesOpts<bool>>
-        where ChangesOpts<bool>: Default + ToJson + Clone
-    {
-        let opts: ChangesOpts<bool> = Default::default();
-        super::make_cmd(TermType::CHANGES, NoArg!(), Some(opts), Some(self))
-    }
-}
+define!{ types::Table }
+define!{ types::Stream }
+define!{ types::StreamSelection }
+define!{ types::ObjectSelection }
 
 pub trait SquashArg where Self: ToJson + Clone {}
 impl SquashArg for bool {}
 impl SquashArg for f32 {}
 
-#[allow(dead_code)]
 impl<T, A> Command<T, ChangesOpts<A>>
     where A: SquashArg,
           ChangesOpts<A>: Default + ToJson + Clone

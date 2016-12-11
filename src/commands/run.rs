@@ -77,6 +77,16 @@ macro_rules! define {
     }
 }
 
+define!{ types::Array }
+define!{ types::Binary }
+define!{ types::Bool }
+define!{ types::Function }
+define!{ types::ObjectSelection }
+define!{ types::ArraySelection }
+define!{ types::StreamSelection }
+define!{ types::Geometry }
+define!{ types::GroupedData }
+define!{ types::GroupedStream }
 define!{ types::Table }
 define!{ types::Stream }
 
