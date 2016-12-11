@@ -12,14 +12,14 @@ use conn::{
     TlsCfg,
     Session,
 };
-use ::{Result, set_config, config, Pool as ReqlPool};
-use r2d2::{ManageConnection, Pool, Config, PooledConnection as PConn};
+use ::{Result, set_config, config, Pool};
+use r2d2::{self, ManageConnection, Config, PooledConnection as PConn};
 
 #[derive(Debug)]
 pub struct PooledConnection(PConn<ConnectionManager>);
 
 lazy_static! {
-    static ref POOL: RwLock<Option<Vec<Pool<ConnectionManager>>>> = RwLock::new(None);
+    static ref POOL: RwLock<Option<Vec<r2d2::Pool<ConnectionManager>>>> = RwLock::new(None);
 }
 
 impl Command<(), ()>
@@ -78,19 +78,19 @@ impl Command<(), ConnectionOpts>
         self
     }
 
-    pub fn connect(&self) -> Result<ReqlPool> {
+    pub fn connect(&self) -> Result<Pool> {
         match self.1.clone() {
             Some(opts) => {
                 set_config(opts.clone());
-                let mut pools: Vec<Pool<ConnectionManager>> = Vec::new();
+                let mut pools: Vec<r2d2::Pool<ConnectionManager>> = Vec::new();
                 for server in opts.servers() {
                     let manager = ConnectionManager(server);
                     let config = Config::default();
-                    let new_pool = Pool::new(config, manager)?;
+                    let new_pool = r2d2::Pool::new(config, manager)?;
                     pools.push(new_pool);
                 }
                 set_pool(pools);
-                Ok(ReqlPool)
+                Ok(Pool)
             },
             None => {
                 let msg = String::from("ConnectionOpts is unset");
@@ -174,7 +174,7 @@ impl ReqlConnection for PooledConnection {
     }
 }
 
-impl Session for ReqlPool {
+impl Session for Pool {
     type Connection = PooledConnection;
 
     fn get(&self) -> Result<PooledConnection> {
@@ -235,11 +235,11 @@ impl Session for ReqlPool {
     }
 }
 
-fn pool() -> &'static RwLock<Option<Vec<Pool<ConnectionManager>>>> {
+fn pool() -> &'static RwLock<Option<Vec<r2d2::Pool<ConnectionManager>>>> {
     &POOL
 }
 
-fn set_pool(p: Vec<Pool<ConnectionManager>>) {
+fn set_pool(p: Vec<r2d2::Pool<ConnectionManager>>) {
     let mut pool = POOL.write();
     *pool = Some(p);
 }
