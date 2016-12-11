@@ -136,7 +136,9 @@ impl Encode for RunOpts {
     fn encode(&self) -> String {
         let opts = self.clone();
         let mut o = BTreeMap::new();
-        o.insert("read_mode", Term::from_json(opts.read_mode));
+        if let Some(read_mode) = opts.read_mode {
+            o.insert("read_mode", Term::from_json(read_mode));
+        }
         o.insert("time_format", Term::from_json(opts.time_format));
         o.insert("profile", Term::from_json(opts.profile));
         o.insert("durability", Term::from_json(opts.durability));
@@ -162,6 +164,7 @@ impl<S, T> Command<Query<S, T>, RunOpts>
           T: Deserialize + Send,
 {
     pub fn read_mode(&mut self, arg: ReadMode) -> &mut Self {
+        let arg = Some(arg);
         set_opt!(self, read_mode(arg));
         self
     }

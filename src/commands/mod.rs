@@ -71,7 +71,7 @@ O: ToJson + Clone
 
 #[derive(Debug, Clone)]
 pub struct RunOpts {
-    read_mode: ReadMode,
+    read_mode: Option<ReadMode>,
     time_format: Format,
     profile: bool,
     durability: Durability,
@@ -89,7 +89,7 @@ pub struct RunOpts {
 impl Default for RunOpts {
     fn default() -> RunOpts {
         RunOpts {
-            read_mode: ReadMode::Single,
+            read_mode: Some(ReadMode::Single),
             time_format: Format::Native,
             profile: false,
             durability: Durability::Hard,
