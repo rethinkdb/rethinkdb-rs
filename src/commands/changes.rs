@@ -87,7 +87,7 @@
 
 use ql2::types;
 use ql2::proto::Term_TermType as TermType;
-use super::{Command, ChangesOpts};
+use super::{Command, ChangesOpts, SquashArg};
 use serde_json::value::ToJson;
 
 macro_rules! define {
@@ -110,10 +110,6 @@ define!{ types::Table }
 define!{ types::Stream }
 define!{ types::StreamSelection }
 define!{ types::ObjectSelection }
-
-pub trait SquashArg where Self: ToJson + Clone {}
-impl SquashArg for bool {}
-impl SquashArg for f32 {}
 
 impl<T, A> Command<T, ChangesOpts<A>>
     where A: SquashArg,

@@ -78,10 +78,7 @@ macro_rules! set_opt {
                 opts.$func = $arg;
             }
             None => {
-                $opts.1 = Some(Default::default());
-                if let Some(ref mut opts) = $opts.1 {
-                    opts.$func = $arg;
-                }
+                unreachable!();
             }
         }
     }

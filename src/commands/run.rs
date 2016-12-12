@@ -88,6 +88,7 @@ define!{ types::Geometry }
 define!{ types::GroupedData }
 define!{ types::GroupedStream }
 define!{ types::Table }
+define!{ types::Object }
 define!{ types::Stream }
 
 impl<T> Iterator for Response<T>

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TableOpts {
     read_mode: ReadMode,
@@ -31,8 +33,12 @@ impl Default for TableOpts {
     }
 }
 
+pub trait SquashArg where Self: ToJson + Clone {}
+impl SquashArg for bool {}
+impl SquashArg for f32 {}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ChangesOpts<T> {
+pub struct ChangesOpts<T: SquashArg> {
     squash: T,
     changefeed_queue_size: u64,
     include_initial: bool,
@@ -80,4 +86,37 @@ pub enum Durability {
     Hard,
     #[serde(rename = "soft")]
     Soft,
+}
+
+pub trait PrimaryKeyArg where Self: ToJson + Clone {}
+impl PrimaryKeyArg for u64 {}
+impl PrimaryKeyArg for StdString {}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct TagReplicas {
+    replicas: HashMap<StdString, u64>,
+    primary_replica_tag: StdString,
+}
+
+pub trait ReplicaArg where Self: ToJson + Clone {}
+impl ReplicaArg for u64 {}
+impl ReplicaArg for TagReplicas {}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct TableCreateOpts<P: PrimaryKeyArg, R: ReplicaArg> {
+    primary_key: P,
+    durability: Durability,
+    shards: u8,
+    replicas: R,
+}
+
+impl Default for TableCreateOpts<StdString, u64> {
+    fn default() -> TableCreateOpts<StdString, u64> {
+        TableCreateOpts {
+            primary_key: "id".into(),
+            durability: Durability::Hard,
+            shards: 1,
+            replicas: 1,
+        }
+    }
 }

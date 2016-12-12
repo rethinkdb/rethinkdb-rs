@@ -1,5 +1,7 @@
 pub mod connection;
+pub mod db_create;
 pub mod db;
+pub mod table_create;
 pub mod table;
 pub mod uuid;
 pub mod get;
