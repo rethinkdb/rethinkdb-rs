@@ -35,7 +35,8 @@ fn db_works() {
         //seq.info()
     });
     */
-    let query = r.table("heroes").run::<()>().unwrap();
+    r.table_create("heroes").run::<()>().unwrap().into_iter().next();
+    let query = r.table("heroes").changes().run::<()>().unwrap();
     for row in query {
         debug!(log, "{:?}", row);
     }
