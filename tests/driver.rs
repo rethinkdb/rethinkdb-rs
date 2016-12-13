@@ -2,9 +2,12 @@ extern crate reql;
 #[macro_use]
 extern crate slog;
 extern crate slog_term;
+extern crate futures;
 
 use reql::{r, Run};
 use slog::{Logger, DrainExt};
+use futures::Future;
+use futures::stream::Stream;
 //use reql::types;
 /*
 use ql2::commands::ReadMode::Outdated;
@@ -35,9 +38,11 @@ fn db_works() {
         //seq.info()
     });
     */
-    r.table_create("heroes").run::<()>().unwrap().into_iter().next();
-    let query = r.table("heroes").changes().run::<()>().unwrap();
-    for row in query {
+    //r.table_create("heroes").run::<()>().unwrap().into_iter().next();
+    let query = r.table("heroes").changes().run::<()>().unwrap().into_stream();
+    let res = query.for_each(|row| {
         debug!(log, "{:?}", row);
-    }
+        Ok(())
+    });
+    let _ = res.wait();
 }
