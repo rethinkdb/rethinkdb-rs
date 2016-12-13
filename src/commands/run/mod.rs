@@ -1,14 +1,13 @@
 #![allow(dead_code)]
 
+pub mod result;
+
 use std::marker::PhantomData;
-use std::iter::{IntoIterator, Iterator};
-use std::sync::mpsc::{self, SyncSender};
-use std::thread;
 use std::collections::BTreeMap;
-use std::result;
+use std::result::Result as StdResult;
 
 use errors::*;
-use ::{Pool, Result, Response};
+use ::Pool;
 use ql2::{types, Encode};
 use ql2::proto::Term;
 use super::{
@@ -16,9 +15,7 @@ use super::{
     Client, Command, RunOpts,
     ReadMode, Format, Durability,
 };
-use conn::{
-    Session, Request, ResponseValue,
-};
+use conn::Session;
 use serde_json::value::ToJson;
 use serde::Deserialize;
 
@@ -31,7 +28,7 @@ pub struct Query<S: Session, T: Deserialize> {
     resp: PhantomData<T>,
 }
 
-fn run<T, S, D, O>(client: Client<D, O>, pool: S) -> result::Result<Command<Query<S, T>, RunOpts>, Vec<Error>>
+fn run<T, S, D, O>(client: Client<D, O>, pool: S) -> StdResult<Command<Query<S, T>, RunOpts>, Vec<Error>>
     where S: Session,
           T: Deserialize + Send,
           D: types::DataType,
@@ -49,12 +46,12 @@ fn run<T, S, D, O>(client: Client<D, O>, pool: S) -> result::Result<Command<Quer
 }
 
 pub trait Run {
-    fn run<T>(self) -> result::Result<Command<Query<Pool, T>, RunOpts>, Vec<Error>>
+    fn run<T>(self) -> StdResult<Command<Query<Pool, T>, RunOpts>, Vec<Error>>
         where T: Deserialize + Send;
 }
 
 pub trait RunWithConn {
-    fn run<S, T>(self, arg: S) -> result::Result<Command<Query<S, T>, RunOpts>, Vec<Error>>
+    fn run<S, T>(self, arg: S) -> StdResult<Command<Query<S, T>, RunOpts>, Vec<Error>>
         where S: Session, T: Deserialize + Send;
 }
 
@@ -63,7 +60,7 @@ macro_rules! define {
         impl<O> Run for Client<$typ, O>
             where O: ToJson + Clone
             {
-                fn run<T>(self) -> result::Result<Command<Query<Pool, T>, RunOpts>, Vec<Error>>
+                fn run<T>(self) -> StdResult<Command<Query<Pool, T>, RunOpts>, Vec<Error>>
                     where T: Deserialize + Send
                     {
                         run::<T, _, _, _>(self, Pool)
@@ -73,7 +70,7 @@ macro_rules! define {
         impl<O> RunWithConn for Client<$typ, O>
             where O: ToJson + Clone
             {
-                fn run<S, T>(self, arg: S) -> result::Result<Command<Query<S, T>, RunOpts>, Vec<Error>>
+                fn run<S, T>(self, arg: S) -> StdResult<Command<Query<S, T>, RunOpts>, Vec<Error>>
                     where S: Session, T: Deserialize + Send
                     {
                         run::<T, _, _, _>(self, arg)
@@ -95,58 +92,6 @@ define!{ types::GroupedStream }
 define!{ types::Table }
 define!{ types::Object }
 define!{ types::Stream }
-
-impl<T> Iterator for Response<T>
-    where T: Deserialize + Send
-{
-    type Item = Result<ResponseValue<T>>;
-
-    fn next(&mut self) -> Option<Result<ResponseValue<T>>> {
-        match self.0.recv() {
-            Ok(resp) => Some(resp),
-            Err(_) => None,
-        }
-    }
-}
-
-impl<S, T> IntoIterator for Command<Query<S, T>, RunOpts>
-    where S: 'static + Session + Send,
-          T: 'static + Deserialize + Send,
-{
-    type Item = Result<ResponseValue<T>>;
-    type IntoIter = Response<T>;
-
-    fn into_iter(self) -> Response<T> {
-        let (tx, rx) = mpsc::sync_channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
-        let sender = thread::Builder::new().name("reql_command_run".to_string());
-        let res = sender.spawn(move || {
-            if let Err(err) = request(self, tx.clone()) {
-                if let Err(err) = tx.send(err!(err)) {
-                    error!("Failed to send message: {:?}", err);
-                }
-            }
-        });
-        if let Err(err) = res {
-            error!("Failed to spawn a thread: {:?}", err);
-        };
-        Response(rx)
-    }
-}
-
-fn request<S, T>(cmd: Command<Query<S, T>, RunOpts>, tx: SyncSender<Result<ResponseValue<T>>>) -> Result<()>
-    where S: Session + Send,
-          T: Deserialize + Send
-{
-    let conn = cmd.0.sess;
-    let mut req = Request::new(conn, tx)?;
-    let ref cfg = ::config().read();
-    let commands = cmd.0.term.encode();
-    let opts = match cmd.1 {
-        Some(ref opts) => Some(opts.encode()),
-        None => None,
-    };
-    req.submit(cfg, commands, opts)
-}
 
 impl Encode for RunOpts {
     fn encode(&self) -> String {
