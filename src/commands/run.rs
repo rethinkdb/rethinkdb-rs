@@ -5,13 +5,15 @@ use std::iter::{IntoIterator, Iterator};
 use std::sync::mpsc::{self, SyncSender};
 use std::thread;
 use std::collections::BTreeMap;
+use std::result;
 
+use errors::*;
 use ::{Pool, Result, Response};
 use ql2::{types, Encode};
 use ql2::proto::Term;
 use super::{
     r,
-    Command, RunOpts,
+    Client, Command, RunOpts,
     ReadMode, Format, Durability,
 };
 use conn::{
@@ -29,46 +31,49 @@ pub struct Query<S: Session, T: Deserialize> {
     resp: PhantomData<T>,
 }
 
-fn run<T, S, D, O>(cmd: Command<D, O>, pool: S) -> Command<Query<S, T>, RunOpts>
+fn run<T, S, D, O>(client: Client<D, O>, pool: S) -> result::Result<Command<Query<S, T>, RunOpts>, Vec<Error>>
     where S: Session,
           T: Deserialize + Send,
           D: types::DataType,
           O: ToJson + Clone,
 {
     let query = Query {
-        term: cmd.into(),
+        term: client.cmd.into(),
         sess: pool,
         resp: PhantomData,
     };
-    Command(query, Some(RunOpts::default()))
+    match client.errors {
+        Some(errors) => Err(errors),
+        None => Ok(Command(query, Some(RunOpts::default()))),
+    }
 }
 
 pub trait Run {
-    fn run<T>(self) -> Command<Query<Pool, T>, RunOpts>
+    fn run<T>(self) -> result::Result<Command<Query<Pool, T>, RunOpts>, Vec<Error>>
         where T: Deserialize + Send;
 }
 
 pub trait RunWithConn {
-    fn run<S, T>(self, arg: S) -> Command<Query<S, T>, RunOpts>
+    fn run<S, T>(self, arg: S) -> result::Result<Command<Query<S, T>, RunOpts>, Vec<Error>>
         where S: Session, T: Deserialize + Send;
 }
 
 macro_rules! define {
     ($typ:ty) => {
-        impl<O> Run for Command<$typ, O>
+        impl<O> Run for Client<$typ, O>
             where O: ToJson + Clone
             {
-                fn run<T>(self) -> Command<Query<Pool, T>, RunOpts>
+                fn run<T>(self) -> result::Result<Command<Query<Pool, T>, RunOpts>, Vec<Error>>
                     where T: Deserialize + Send
                     {
                         run::<T, _, _, _>(self, Pool)
                     }
             }
 
-        impl<O> RunWithConn for Command<$typ, O>
+        impl<O> RunWithConn for Client<$typ, O>
             where O: ToJson + Clone
             {
-                fn run<S, T>(self, arg: S) -> Command<Query<S, T>, RunOpts>
+                fn run<S, T>(self, arg: S) -> result::Result<Command<Query<S, T>, RunOpts>, Vec<Error>>
                     where S: Session, T: Deserialize + Send
                     {
                         run::<T, _, _, _>(self, arg)
@@ -201,7 +206,7 @@ impl<S, T> Command<Query<S, T>, RunOpts>
     }
 
     pub fn db(&mut self, arg: &str) -> &mut Self {
-        let arg = Some(r.db(arg));
+        let arg = Some(r.db(arg).cmd);
         set_opt!(self, db(arg));
         self
     }

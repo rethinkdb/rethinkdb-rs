@@ -1,6 +1,6 @@
 //! ReQL command: changes
 //!
-//! ## Command syntax
+//! ## Client syntax
 //!
 //! > stream.changes() → stream
 //!
@@ -10,7 +10,7 @@
 //!
 //! Turn a query into a changefeed, an infinite stream of objects representing changes to the
 //! query’s results as they occur. A changefeed may return changes to a table or an individual
-//! document (a “point” changefeed). Commands such as `filter` or `map` may be used before the `changes`
+//! document (a “point” changefeed). Clients such as `filter` or `map` may be used before the `changes`
 //! command to transform or filter the output, and many commands that operate on sequences can be
 //! chained after `changes`.
 //!
@@ -87,20 +87,20 @@
 
 use ql2::types;
 use ql2::proto::Term_TermType as TermType;
-use super::{Command, ChangesOpts, SquashArg};
+use super::{Client, Command, ChangesOpts, SquashArg};
 use serde_json::value::ToJson;
 
 macro_rules! define {
     ($typ:ty) => {
-        impl<O> Command<$typ, O>
+        impl<O> Client<$typ, O>
             where O: ToJson + Clone
             {
                 /// Turn a query into a changefeed. [Read more](changes/index.html)
-                pub fn changes(&self) -> Command<types::Stream, ChangesOpts<bool>>
+                pub fn changes(self) -> Client<types::Stream, ChangesOpts<bool>>
                     where ChangesOpts<bool>: Default + ToJson + Clone
                     {
                         let opts: ChangesOpts<bool> = Default::default();
-                        super::make_cmd(TermType::CHANGES, NoArg!(), Some(opts), Some(self))
+                        super::make_cmd(TermType::CHANGES, NoArg!(), Some(opts), Some(self.cmd), self.errors)
                     }
             }
     }
@@ -111,15 +111,15 @@ define!{ types::Stream }
 define!{ types::StreamSelection }
 define!{ types::ObjectSelection }
 
-impl<T, A> Command<T, ChangesOpts<A>>
+impl<T, A> Client<T, ChangesOpts<A>>
     where A: SquashArg,
           ChangesOpts<A>: Default + ToJson + Clone
 {
-    pub fn squash<B>(self, arg: B) -> Command<T, ChangesOpts<B>>
+    pub fn squash<B>(self, arg: B) -> Client<T, ChangesOpts<B>>
         where B: SquashArg,
               ChangesOpts<B>: Default + ToJson + Clone
     {
-        let o = self.1.unwrap_or(Default::default());
+        let o = self.cmd.1.unwrap_or(Default::default());
         let opts = ChangesOpts {
             squash: arg,
             changefeed_queue_size: o.changefeed_queue_size,
@@ -128,39 +128,42 @@ impl<T, A> Command<T, ChangesOpts<A>>
             include_offsets: o.include_offsets,
             include_types: o.include_types,
         };
-        Command(self.0, Some(opts))
+        Client {
+            cmd: Command(self.cmd.0, Some(opts)),
+            errors: self.errors,
+        }
     }
 
     pub fn changefeed_queue_size(mut self, arg: u64) -> Self {
-        if let Some(ref mut opts) = self.1 {
+        if let Some(ref mut opts) = self.cmd.1 {
             opts.changefeed_queue_size = arg;
         }
         self
     }
 
     pub fn include_initial(mut self, arg: bool) -> Self {
-        if let Some(ref mut opts) = self.1 {
+        if let Some(ref mut opts) = self.cmd.1 {
             opts.include_initial = arg;
         }
         self
     }
 
     pub fn include_states(mut self, arg: bool) -> Self {
-        if let Some(ref mut opts) = self.1 {
+        if let Some(ref mut opts) = self.cmd.1 {
             opts.include_states = arg;
         }
         self
     }
 
     pub fn include_offsets(mut self, arg: bool) -> Self {
-        if let Some(ref mut opts) = self.1 {
+        if let Some(ref mut opts) = self.cmd.1 {
             opts.include_offsets = arg;
         }
         self
     }
 
     pub fn include_types(mut self, arg: bool) -> Self {
-        if let Some(ref mut opts) = self.1 {
+        if let Some(ref mut opts) = self.cmd.1 {
             opts.include_types = arg;
         }
         self

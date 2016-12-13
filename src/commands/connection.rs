@@ -3,7 +3,7 @@
 use std::net::TcpStream;
 
 use parking_lot::RwLock;
-use super::Command;
+use super::{Client, Command};
 use errors::*;
 use conn::{
     ConnectionOpts,
@@ -22,17 +22,20 @@ lazy_static! {
     static ref POOL: RwLock<Option<Vec<r2d2::Pool<ConnectionManager>>>> = RwLock::new(None);
 }
 
-impl Command<(), ()>
+impl Client<(), ()>
 {
-    pub fn connection(&self) -> Command<(), ConnectionOpts>
+    pub fn connection(self) -> Client<(), ConnectionOpts>
     {
         let opts = ConnectionOpts::default();
-        Command((), Some(opts))
+        Client {
+            cmd: Command((), Some(opts)),
+            errors: self.errors,
+        }
     }
 }
 
 macro_rules! set_opt {
-    ($opts:ident, $func:ident($arg:ident)) => {
+    ($opts:expr, $func:ident($arg:ident)) => {
         match $opts.1 {
             Some(ref mut opts) => {
                 opts.$func($arg);
@@ -46,40 +49,40 @@ macro_rules! set_opt {
     }
 }
 
-impl Command<(), ConnectionOpts>
+impl Client<(), ConnectionOpts>
 {
     pub fn servers(&mut self, servers: Vec<&'static str>) -> &mut Self {
-        set_opt!(self, set_servers(servers));
+        set_opt!(self.cmd, set_servers(servers));
         self
     }
 
     pub fn db(&mut self, db: &'static str) -> &mut Self {
-        set_opt!(self, set_db(db));
+        set_opt!(self.cmd, set_db(db));
         self
     }
 
     pub fn user(&mut self, user: &'static str) -> &mut Self {
-        set_opt!(self, set_user(user));
+        set_opt!(self.cmd, set_user(user));
         self
     }
 
     pub fn password(&mut self, password: &'static str) -> &mut Self {
-        set_opt!(self, set_password(password));
+        set_opt!(self.cmd, set_password(password));
         self
     }
 
     pub fn retries(&mut self, retries: u8) -> &mut Self {
-        set_opt!(self, set_retries(retries));
+        set_opt!(self.cmd, set_retries(retries));
         self
     }
 
     pub fn tls(&mut self, tls: Option<TlsCfg>) -> &mut Self {
-        set_opt!(self, set_tls(tls));
+        set_opt!(self.cmd, set_tls(tls));
         self
     }
 
     pub fn connect(&self) -> Result<Pool> {
-        match self.1.clone() {
+        match self.cmd.1.clone() {
             Some(opts) => {
                 set_config(opts.clone());
                 let mut pools: Vec<r2d2::Pool<ConnectionManager>> = Vec::new();

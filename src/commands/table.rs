@@ -1,6 +1,6 @@
 //! ReQL command: table
 //!
-//! ## Command syntax
+//! ## Client syntax
 //!
 //! > db.table(name) → table
 //!
@@ -57,13 +57,13 @@
 
 use ql2::types;
 use ql2::proto::Term_TermType as TermType;
-use super::{Command, TableOpts, ReadMode, IdentifierFormat};
+use super::{Client, TableOpts, ReadMode, IdentifierFormat};
 use serde_json::value::ToJson;
 
-impl Command<(), ()>
+impl Client<(), ()>
 {
     /// Return all documents in a table. [Read more](table/index.html)
-    pub fn table<T>(&self, arg: T) -> Command<types::Table, TableOpts>
+    pub fn table<T>(self, arg: T) -> Client<types::Table, TableOpts>
         where T: Into<types::String>
     {
             let config = ::config().read();
@@ -71,24 +71,21 @@ impl Command<(), ()>
     }
 }
 
-impl<O> Command<types::Db, O>
+impl<O> Client<types::Db, O>
     where O: ToJson + Clone
 {
     /// Return all documents in a table. [Read more](table/index.html)
-    pub fn table<T>(&self, arg: T) -> Command<types::Table, TableOpts>
+    pub fn table<T>(self, arg: T) -> Client<types::Table, TableOpts>
         where T: Into<types::String>
     {
-        super::make_cmd(TermType::TABLE,
-                  Some(vec![arg.into()]),
-                  Some(TableOpts::default()),
-                  Some(self))
+        super::make_cmd(TermType::TABLE, Some(vec![arg.into()]), Some(TableOpts::default()), Some(self.cmd), self.errors)
     }
 }
 
-impl<T> Command<T, TableOpts> {
+impl<T> Client<T, TableOpts> {
     /// Sets read mode
     pub fn read_mode(mut self, arg: ReadMode) -> Self {
-        if let Some(ref mut opts) = self.1 {
+        if let Some(ref mut opts) = self.cmd.1 {
             opts.read_mode = arg;
         }
         self
@@ -96,7 +93,7 @@ impl<T> Command<T, TableOpts> {
 
     /// Sets identifier format
     pub fn identifier_format(mut self, arg: IdentifierFormat) -> Self {
-        if let Some(ref mut opts) = self.1 {
+        if let Some(ref mut opts) = self.cmd.1 {
             opts.identifier_format = arg;
         }
         self

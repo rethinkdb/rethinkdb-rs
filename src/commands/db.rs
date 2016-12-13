@@ -1,6 +1,6 @@
 //! ReQL command: db
 //!
-//! ## Command syntax
+//! ## Client syntax
 //!
 //! > r.db(dbName) → db
 //!
@@ -28,13 +28,13 @@
 
 use ql2::types;
 use ql2::proto::Term_TermType as TermType;
-use super::Command;
+use super::Client;
 
-impl Command<(), ()> {
+impl Client<(), ()> {
     /// Reference a database. [Read more](db/index.html)
-    pub fn db<T>(&self, arg: T) -> Command<types::Db, ()>
+    pub fn db<T>(self, arg: T) -> Client<types::Db, ()>
         where T: Into<types::String>
     {
-        super::make_cmd(TermType::DB, Some(vec![arg.into()]), None, Root!())
+        super::make_cmd(TermType::DB, Some(vec![arg.into()]), None, Root!(), self.errors)
     }
 }

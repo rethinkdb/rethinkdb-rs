@@ -1,5 +1,5 @@
 macro_rules! Root {
-    () => {None as Option<&Command<::ql2::types::Null, ()>>}
+    () => {None as Option<::commands::Command<::ql2::types::Null, ()>>}
 }
 
 macro_rules! NoArg {
@@ -72,7 +72,7 @@ macro_rules! err {
 }
 
 macro_rules! set_opt {
-    ($opts:ident, $func:ident($arg:ident)) => {
+    ($opts:expr, $func:ident($arg:ident)) => {
         match $opts.1 {
             Some(ref mut opts) => {
                 opts.$func = $arg;

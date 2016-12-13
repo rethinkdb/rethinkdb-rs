@@ -3,15 +3,15 @@
 use ql2::types;
 use ql2::proto::Term_TermType as TermType;
 use super::{
-    Command, TableCreateOpts,
+    Client, Command, TableCreateOpts,
     ReplicaArg, PrimaryKeyArg,
     Durability,
 };
 use serde_json::value::ToJson;
 
-impl Command<(), ()>
+impl Client<(), ()>
 {
-    pub fn table_create<T>(&self, arg: T) -> Command<types::Object, TableCreateOpts<String, u64>>
+    pub fn table_create<T>(self, arg: T) -> Client<types::Object, TableCreateOpts<String, u64>>
         where T: Into<types::String>
     {
             let config = ::config().read();
@@ -19,55 +19,58 @@ impl Command<(), ()>
     }
 }
 
-impl<O> Command<types::Db, O>
+impl<O> Client<types::Db, O>
     where O: ToJson + Clone
 {
-    pub fn table_create<T>(&self, arg: T) -> Command<types::Object, TableCreateOpts<String, u64>>
+    pub fn table_create<T>(self, arg: T) -> Client<types::Object, TableCreateOpts<String, u64>>
         where T: Into<types::String>
     {
-        super::make_cmd(TermType::TABLE_CREATE,
-                  Some(vec![arg.into()]),
-                  Some(TableCreateOpts::default()),
-                  Some(self))
+        super::make_cmd(TermType::TABLE_CREATE, Some(vec![arg.into()]), Some(TableCreateOpts::default()), Some(self.cmd), self.errors)
     }
 }
 
-impl<T, P, R> Command<T, TableCreateOpts<P, R>>
+impl<T, P, R> Client<T, TableCreateOpts<P, R>>
     where P: PrimaryKeyArg,
           R: ReplicaArg,
 {
-    pub fn primary_key<K>(self, arg: K) -> Command<T, TableCreateOpts<K, R>>
+    pub fn primary_key<K>(self, arg: K) -> Client<T, TableCreateOpts<K, R>>
         where K: PrimaryKeyArg
     {
-        let opts = self.1.expect("TableCreateOpts must be set during command construction");
+        let opts = self.cmd.1.expect("TableCreateOpts must be set during command construction");
         let opts = TableCreateOpts {
             primary_key: arg,
             durability: opts.durability,
             shards: opts.shards,
             replicas: opts.replicas,
         };
-        Command(self.0, Some(opts))
+        Client {
+            cmd: Command(self.cmd.0, Some(opts)),
+            errors: self.errors,
+        }
     }
 
     pub fn durability(&mut self, arg: Durability) -> &mut Self {
-        set_opt!(self, durability(arg));
+        set_opt!(self.cmd, durability(arg));
         self
     }
     pub fn shards(&mut self, arg: u8) -> &mut Self {
-        set_opt!(self, shards(arg));
+        set_opt!(self.cmd, shards(arg));
         self
     }
 
-    pub fn replicas<A>(self, arg: A) -> Command<T, TableCreateOpts<P, A>>
+    pub fn replicas<A>(self, arg: A) -> Client<T, TableCreateOpts<P, A>>
         where A: ReplicaArg
     {
-        let opts = self.1.expect("TableCreateOpts must be set during command construction");
+        let opts = self.cmd.1.expect("TableCreateOpts must be set during command construction");
         let opts = TableCreateOpts {
             primary_key: opts.primary_key,
             durability: opts.durability,
             shards: opts.shards,
             replicas: arg,
         };
-        Command(self.0, Some(opts))
+        Client {
+            cmd: Command(self.cmd.0, Some(opts)),
+            errors: self.errors,
+        }
     }
 }

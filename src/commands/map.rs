@@ -2,38 +2,38 @@
 
 use ql2::types;
 use ql2::proto::{Term, Term_TermType as TermType};
-use super::{Command, Arg};
+use super::{Client, Command, Arg};
 use serde_json::value::ToJson;
 
-impl<O> Command<types::Table, O>
+impl<O> Client<types::Table, O>
     where O: ToJson + Clone
 {
-    pub fn map<T>(&self, arg: T) -> Command<types::Stream, ()>
+    pub fn map<T>(self, arg: T) -> Client<types::Stream, ()>
         where T: Into<MapArg<types::Stream>>
     {
         let arg: Vec<types::Stream> = arg.into().into();
-        super::make_cmd(TermType::MAP, Some(arg), None, Some(self))
+        super::make_cmd(TermType::MAP, Some(arg), None, Some(self.cmd), self.errors)
     }
 }
 
-impl<O> Command<types::Stream, O>
+impl<O> Client<types::Stream, O>
     where O: ToJson + Clone
 {
-    pub fn map<T>(&self, arg: T) -> Command<types::Stream, ()>
+    pub fn map<T>(self, arg: T) -> Client<types::Stream, ()>
         where T: Into<MapArg<types::Stream>>
     {
         let arg: Vec<types::Stream> = arg.into().into();
-        super::make_cmd(TermType::MAP, Some(arg), None, Some(self))
+        super::make_cmd(TermType::MAP, Some(arg), None, Some(self.cmd), self.errors)
     }
 }
 
-impl<O> Command<types::Array, O>
+impl<O> Client<types::Array, O>
     where O: ToJson + Clone
 {
-    pub fn map<T>(&self, arg: T) -> Command<types::Array, ()>
+    pub fn map<T>(self, arg: T) -> Client<types::Array, ()>
         where T: Into<types::Array>
     {
-        super::make_cmd(TermType::MAP, Some(vec![arg.into()]), None, Some(self))
+        super::make_cmd(TermType::MAP, Some(vec![arg.into()]), None, Some(self.cmd), self.errors)
     }
 }
 

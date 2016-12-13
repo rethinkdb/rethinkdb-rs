@@ -14,17 +14,27 @@ pub mod run;
 
 use std::string::String as StdString;
 
-use ::types::{self, Command as Cmd};
+use errors::Error;
+use types::{self, Command as Cmd};
 use ql2::proto::{Term, Term_TermType as TermType};
 use serde_json::value::ToJson;
 
 include!(concat!(env!("OUT_DIR"), "/opts.rs"));
 
+#[derive(Debug)]
+pub struct Client<T, O> {
+    cmd: Command<T, O>,
+    errors: Option<Vec<Error>>,
+}
+
 /// Convenient type for use with maps
 pub type Arg = Command<types::Object, ()>;
 
 #[allow(non_upper_case_globals)]
-pub const r: Command<(), ()> = Command((), None);
+pub const r: Client<(), ()> = Client {
+    cmd: Command((), None),
+    errors: None,
+};
 
 #[derive(Debug, Clone)]
 pub struct Command<T, O>(T, Option<O>);
@@ -32,8 +42,9 @@ pub struct Command<T, O>(T, Option<O>);
 fn make_cmd<A, T, O, PT, PO>(typ: TermType,
                                  args: Option<Vec<A>>,
                                  opts: Option<O>,
-                                 cmd: Option<&Command<PT, PO>>)
--> Command<T, O>
+                                 cmd: Option<Command<PT, PO>>,
+                                 errors: Option<Vec<Error>>)
+-> Client<T, O>
 where A: types::DataType,
 T: types::DataType,
 O: ToJson + Clone,
@@ -42,7 +53,7 @@ PO: ToJson + Clone
 {
     let prev_cmd = match cmd {
         Some(cmd) => {
-            let cmd: Term = cmd.clone().into();
+            let cmd: Term = cmd.into();
             Some(cmd)
         },
         None => None,
@@ -53,7 +64,10 @@ PO: ToJson + Clone
             dt.with_args(arg.into());
         }
     }
-    Command(dt.into(), opts)
+    Client {
+        cmd: Command(dt.into(), opts),
+        errors: errors,
+    }
 }
 
 impl<T, O> From<Command<T, O>> for Term
