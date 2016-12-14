@@ -27,6 +27,17 @@ impl<O> Client<types::Stream, O>
     }
 }
 
+impl<O> Client<types::StreamSelection, O>
+    where O: ToJson + Clone
+{
+    pub fn map<T>(self, arg: T) -> Client<types::Stream, ()>
+        where T: Into<MapArg<types::Stream>>
+    {
+        let arg: Vec<types::Stream> = arg.into().into();
+        super::make_cmd(TermType::MAP, Some(arg), None, Some(self.cmd), self.errors)
+    }
+}
+
 impl<O> Client<types::Array, O>
     where O: ToJson + Clone
 {

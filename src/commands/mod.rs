@@ -28,7 +28,7 @@ pub struct Client<T, O> {
 }
 
 /// Convenient type for use with maps
-pub type Arg = Command<types::Object, ()>;
+pub type Arg = Client<types::Object, ()>;
 
 #[allow(non_upper_case_globals)]
 pub const r: Client<(), ()> = Client {

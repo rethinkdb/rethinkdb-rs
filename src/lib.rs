@@ -31,6 +31,7 @@ pub mod commands;
 pub use commands::r;
 pub use commands::run::{Run, RunWithConn};
 pub use ql2::{Result, types, conn, errors};
+pub use ql2::proto::Term;
 
 use conn::ConnectionOpts;
 use parking_lot::RwLock;

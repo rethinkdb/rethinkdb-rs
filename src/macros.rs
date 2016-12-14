@@ -9,7 +9,7 @@ macro_rules! NoArg {
 macro_rules! var {
     () => {{
         use ::protobuf::repeated::RepeatedField;
-        use ::commands::Command;
+        use ::commands::{Client, Command};
         use ::ql2::proto::{
             Term, Datum,
             Term_TermType as TT,
@@ -29,7 +29,10 @@ macro_rules! var {
         var.set_field_type(TT::VAR);
         let args = RepeatedField::from_vec(vec![datum]);
         var.set_args(args);
-        Command(From::from(var), None)
+        Client {
+            cmd: Command(From::from(var), None),
+            errors: None,
+        }
     }}
 }
 
@@ -82,4 +85,31 @@ macro_rules! set_opt {
             }
         }
     }
+}
+
+#[macro_export]
+macro_rules! obj {
+    ($( $key:ident: $val:expr ),* $(,)*) => {{
+        use ::std::collections::BTreeMap;
+        use $crate::Term;
+
+        let mut o = BTreeMap::new();
+        $(
+            let key = stringify!($key).to_string();
+            let val: Term = $val.into();
+            o.insert(key, val);
+         )*
+        let o: Term = o.into();
+        o
+    }}
+}
+
+#[macro_export]
+macro_rules! arr {
+    ($( $val:expr ),* $(,)*) => {{
+        use $crate::Term;
+
+        let v: Vec<Term> = vec![$( $val.into(), )*];
+        From::from(v)
+    }}
 }
