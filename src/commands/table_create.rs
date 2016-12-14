@@ -36,7 +36,7 @@ impl<T, P, R> Client<T, TableCreateOpts<P, R>>
     pub fn primary_key<K>(self, arg: K) -> Client<T, TableCreateOpts<K, R>>
         where K: PrimaryKeyArg
     {
-        let opts = self.cmd.1.expect("TableCreateOpts must be set during command construction");
+        let opts = opts!(self.cmd);
         let opts = TableCreateOpts {
             primary_key: arg,
             durability: opts.durability,
@@ -49,19 +49,24 @@ impl<T, P, R> Client<T, TableCreateOpts<P, R>>
         }
     }
 
-    pub fn durability(&mut self, arg: Durability) -> &mut Self {
-        set_opt!(self.cmd, durability(arg));
+    pub fn durability(mut self, arg: Durability) -> Self {
+        let mut opts = opts!(self.cmd);
+        opts.durability = arg;
+        self.cmd.1 = Some(opts);
         self
     }
-    pub fn shards(&mut self, arg: u8) -> &mut Self {
-        set_opt!(self.cmd, shards(arg));
+
+    pub fn shards(mut self, arg: u8) -> Self {
+        let mut opts = opts!(self.cmd);
+        opts.shards = arg;
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn replicas<A>(self, arg: A) -> Client<T, TableCreateOpts<P, A>>
         where A: ReplicaArg
     {
-        let opts = self.cmd.1.expect("TableCreateOpts must be set during command construction");
+        let opts = opts!(self.cmd);
         let opts = TableCreateOpts {
             primary_key: opts.primary_key,
             durability: opts.durability,

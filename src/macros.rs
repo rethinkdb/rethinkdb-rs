@@ -74,15 +74,18 @@ macro_rules! err {
     }}
 }
 
-macro_rules! set_opt {
-    ($opts:expr, $func:ident($arg:ident)) => {
-        match $opts.1 {
-            Some(ref mut opts) => {
-                opts.$func = $arg;
-            }
+macro_rules! opts {
+    ($cmd:expr) => {
+        match $cmd.1 {
+            Some(ref o) => {
+                o.clone()
+            },
             None => {
-                unreachable!();
-            }
+                let msg = "Command options are not set. This is a bug in the driver.";
+                //crit!(msg; "cmd" => "{:?}", $cmd);
+                crit!(msg);
+                panic!(msg);
+            },
         }
     }
 }
