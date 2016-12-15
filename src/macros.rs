@@ -78,16 +78,21 @@ macro_rules! err {
 macro_rules! obj {
     ($( $key:ident: $val:expr ),* $(,)*) => {{
         use ::std::collections::BTreeMap;
+
         use $crate::Term;
+        use $crate::commands::{Client, Command};
 
         let mut o = BTreeMap::new();
         $(
-            let key = stringify!($key).to_string();
+            let key = stringify!($key);
             let val: Term = $val.into();
             o.insert(key, val);
          )*
         let o: Term = o.into();
-        o
+        Client {
+            cmd: Command(o.into(), None),
+            errors: None,
+        }
     }}
 }
 

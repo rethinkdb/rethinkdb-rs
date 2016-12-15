@@ -4,9 +4,7 @@ pub mod result;
 
 use std::marker::PhantomData;
 use std::collections::BTreeMap;
-use std::result::Result as StdResult;
 
-use errors::*;
 use ::Pool;
 use ql2::{types, Encode};
 use ql2::proto::Term;
@@ -28,7 +26,7 @@ pub struct Query<S: Session, T: Deserialize> {
     resp: PhantomData<T>,
 }
 
-fn run<T, S, D, O>(client: Client<D, O>, pool: S) -> StdResult<Command<Query<S, T>, RunOpts>, Vec<Error>>
+fn run<T, S, D, O>(client: Client<D, O>, pool: S) -> Client<Query<S, T>, RunOpts>
     where S: Session,
           T: Deserialize + Send,
           D: types::DataType,
@@ -39,20 +37,21 @@ fn run<T, S, D, O>(client: Client<D, O>, pool: S) -> StdResult<Command<Query<S, 
         sess: pool,
         resp: PhantomData,
     };
-    match client.errors {
-        Some(errors) => Err(errors),
-        None => Ok(Command(query, Some(RunOpts::default()))),
+    Client {
+        cmd: Command(query, Some(RunOpts::default())),
+        errors: client.errors,
     }
 }
 
 pub trait Run {
-    fn run<T>(self) -> StdResult<Command<Query<Pool, T>, RunOpts>, Vec<Error>>
+    fn run<T>(self) -> Client<Query<Pool, T>, RunOpts>
         where T: Deserialize + Send;
 }
 
 pub trait RunWithConn {
-    fn run<S, T>(self, arg: S) -> StdResult<Command<Query<S, T>, RunOpts>, Vec<Error>>
-        where S: Session, T: Deserialize + Send;
+    fn run<S, T>(self, arg: S) -> Client<Query<S, T>, RunOpts>
+        where S: Session,
+              T: Deserialize + Send;
 }
 
 macro_rules! define {
@@ -60,7 +59,7 @@ macro_rules! define {
         impl<O> Run for Client<$typ, O>
             where O: ToJson + Clone
             {
-                fn run<T>(self) -> StdResult<Command<Query<Pool, T>, RunOpts>, Vec<Error>>
+                fn run<T>(self) -> Client<Query<Pool, T>, RunOpts>
                     where T: Deserialize + Send
                     {
                         run::<T, _, _, _>(self, Pool)
@@ -70,7 +69,7 @@ macro_rules! define {
         impl<O> RunWithConn for Client<$typ, O>
             where O: ToJson + Clone
             {
-                fn run<S, T>(self, arg: S) -> StdResult<Command<Query<S, T>, RunOpts>, Vec<Error>>
+                fn run<S, T>(self, arg: S) -> Client<Query<S, T>, RunOpts>
                     where S: Session, T: Deserialize + Send
                     {
                         run::<T, _, _, _>(self, arg)
@@ -120,98 +119,98 @@ impl Encode for RunOpts {
     }
 }
 
-impl<S, T> Command<Query<S, T>, RunOpts>
+impl<S, T> Client<Query<S, T>, RunOpts>
     where S: Session,
           T: Deserialize + Send,
 {
     pub fn read_mode(mut self, arg: ReadMode) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.read_mode = Some(arg);
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn time_format(mut self, arg: Format) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.time_format = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn profile(mut self, arg: bool) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.profile = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn durability(mut self, arg: Durability) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.durability = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn group_format(mut self, arg: Format) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.group_format = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn db(mut self, arg: &str) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.db = Some(r.db(arg).cmd);
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn array_limit(mut self, arg: u64) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.array_limit = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn binary_format(mut self, arg: Format) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.binary_format = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn min_batch_rows(mut self, arg: u32) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.min_batch_rows = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn max_batch_rows(mut self, arg: u64) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.max_batch_rows = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn max_batch_bytes(mut self, arg: u64) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.max_batch_bytes = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn max_batch_seconds(mut self, arg: f32) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.max_batch_seconds = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn first_batch_scaledown_factor(mut self, arg: u64) -> Self {
-        let mut opts = self.opts();
+        let mut opts = self.cmd.opts();
         opts.first_batch_scaledown_factor = arg;
-        self.1 = Some(opts);
+        self.cmd.1 = Some(opts);
         self
     }
 }

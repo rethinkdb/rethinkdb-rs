@@ -71,8 +71,8 @@ PO: ToJson + Clone
 }
 
 impl<T, O> From<Command<T, O>> for Term
-where T: types::DataType,
-O: ToJson + Clone
+    where T: types::DataType,
+          O: ToJson + Clone
 {
     fn from(t: Command<T, O>) -> Term {
         let term: Term = t.0.into();
@@ -82,6 +82,15 @@ O: ToJson + Clone
             cmd.with_opts(obj);
         }
         cmd.into()
+    }
+}
+
+impl<T, O> From<Client<T, O>> for Term
+    where T: types::DataType,
+          O: ToJson + Clone
+{
+    fn from(t: Client<T, O>) -> Term {
+        t.cmd.into()
     }
 }
 

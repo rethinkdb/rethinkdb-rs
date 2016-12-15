@@ -11,7 +11,7 @@ use conn::{
     Session,
 };
 use commands::{
-    Command, RunOpts,
+    Client, Command, RunOpts,
 };
 use commands::run::{
     Query, CHANNEL_SIZE,
@@ -36,7 +36,7 @@ impl<T> Iterator for Response<T>
     }
 }
 
-impl<S, T> IntoIterator for Command<Query<S, T>, RunOpts>
+impl<S, T> IntoIterator for Client<Query<S, T>, RunOpts>
     where S: 'static + Session + Send,
           T: 'static + Deserialize + Send,
 {
@@ -45,17 +45,34 @@ impl<S, T> IntoIterator for Command<Query<S, T>, RunOpts>
 
     fn into_iter(self) -> Response<T> {
         let (tx, rx) = mpsc::sync_channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
-        let sender = thread::Builder::new().name("reql_command_run".to_string());
-        let res = sender.spawn(move || {
-            if let Err(err) = request(self, tx.clone()) {
-                if let Err(err) = tx.send(err!(err)) {
-                    error!("Failed to send message: {:?}", err);
+        match self.errors {
+            Some(errors) => {
+                if !errors.is_empty() {
+                    for e in errors {
+                        let tx = tx.clone();
+                        if let Err(err) = tx.send(err!(e)) {
+                            error!("Failed to send message: {:?}", err);
+                        }
+                    }
+                } else {
+                    // This is a bug so we want to know when it happens.
+                    panic!("Expected at least one error but found 0. This is a bug.");
                 }
-            }
-        });
-        if let Err(err) = res {
-            error!("Failed to spawn a thread: {:?}", err);
-        };
+            },
+            None => {
+                let sender = thread::Builder::new().name("reql_command_run".to_string());
+                let res = sender.spawn(move || {
+                    if let Err(err) = request(self.cmd, tx.clone()) {
+                        if let Err(err) = tx.send(err!(err)) {
+                            error!("Failed to send message: {:?}", err);
+                        }
+                    }
+                });
+                if let Err(err) = res {
+                    error!("Failed to spawn a thread: {:?}", err);
+                };
+            },
+        }
         Response(rx)
     }
 }
