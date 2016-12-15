@@ -85,17 +85,17 @@ impl<O> Client<types::Db, O>
 impl<T> Client<T, TableOpts> {
     /// Sets read mode
     pub fn read_mode(mut self, arg: ReadMode) -> Self {
-        if let Some(ref mut opts) = self.cmd.1 {
-            opts.read_mode = arg;
-        }
+        let mut opts = self.cmd.opts();
+        opts.read_mode = arg;
+        self.cmd.1 = Some(opts);
         self
     }
 
     /// Sets identifier format
     pub fn identifier_format(mut self, arg: IdentifierFormat) -> Self {
-        if let Some(ref mut opts) = self.cmd.1 {
-            opts.identifier_format = arg;
-        }
+        let mut opts = self.cmd.opts();
+        opts.identifier_format = arg;
+        self.cmd.1 = Some(opts);
         self
     }
 }

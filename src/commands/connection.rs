@@ -24,82 +24,93 @@ lazy_static! {
 
 impl Client<(), ()>
 {
-    pub fn connection(self) -> Client<(), ConnectionOpts>
+    pub fn connection(self) -> Client<Config<Connection, Error>, ConnectionOpts>
     {
         let opts = ConnectionOpts::default();
+        let cfg = Config::default();
         Client {
-            cmd: Command((), Some(opts)),
+            cmd: Command(cfg, Some(opts)),
             errors: self.errors,
         }
     }
 }
 
-macro_rules! set_opt {
-    ($opts:expr, $func:ident($arg:ident)) => {
-        match $opts.1 {
-            Some(ref mut opts) => {
-                opts.$func($arg);
-            }
-            None => {
-                let mut opts = ConnectionOpts::default();
-                opts.$func($arg);
-                $opts.1 = Some(opts);
-            }
-        }
-    }
-}
-
-impl Client<(), ConnectionOpts>
+impl Client<Config<Connection, Error>, ConnectionOpts>
 {
-    pub fn servers(&mut self, servers: Vec<&'static str>) -> &mut Self {
-        set_opt!(self.cmd, set_servers(servers));
+    pub fn pool_config(mut self, arg: Config<Connection, Error>) -> Self {
+        self.cmd.0 = arg;
         self
     }
 
-    pub fn db(&mut self, db: &'static str) -> &mut Self {
-        set_opt!(self.cmd, set_db(db));
+    pub fn servers(mut self, arg: Vec<&'static str>) -> Self {
+        let mut opts = self.cmd.opts();
+        opts.set_servers(arg);
+        self.cmd.1 = Some(opts);
         self
     }
 
-    pub fn user(&mut self, user: &'static str) -> &mut Self {
-        set_opt!(self.cmd, set_user(user));
+    pub fn db(mut self, arg: &'static str) -> Self {
+        let mut opts = self.cmd.opts();
+        opts.set_db(arg);
+        self.cmd.1 = Some(opts);
         self
     }
 
-    pub fn password(&mut self, password: &'static str) -> &mut Self {
-        set_opt!(self.cmd, set_password(password));
+    pub fn user(mut self, arg: &'static str) -> Self {
+        let mut opts = self.cmd.opts();
+        opts.set_user(arg);
+        self.cmd.1 = Some(opts);
         self
     }
 
-    pub fn retries(&mut self, retries: u8) -> &mut Self {
-        set_opt!(self.cmd, set_retries(retries));
+    pub fn password(mut self, arg: &'static str) -> Self {
+        let mut opts = self.cmd.opts();
+        opts.set_password(arg);
+        self.cmd.1 = Some(opts);
         self
     }
 
-    pub fn tls(&mut self, tls: Option<TlsCfg>) -> &mut Self {
-        set_opt!(self.cmd, set_tls(tls));
+    pub fn retries(mut self, arg: u8) -> Self {
+        let mut opts = self.cmd.opts();
+        opts.set_retries(arg);
+        self.cmd.1 = Some(opts);
         self
     }
 
-    pub fn connect(&self) -> Result<Pool> {
-        match self.cmd.1.clone() {
-            Some(opts) => {
-                set_config(opts.clone());
-                let mut pools: Vec<r2d2::Pool<ConnectionManager>> = Vec::new();
-                for server in opts.servers() {
-                    let manager = ConnectionManager(server);
-                    let config = Config::default();
-                    let new_pool = r2d2::Pool::new(config, manager)?;
-                    pools.push(new_pool);
-                }
-                set_pool(pools);
-                Ok(Pool)
-            },
-            None => {
-                let msg = String::from("ConnectionOpts is unset");
-                return err!(DriverError::Other(msg));
-            },
+    pub fn tls(mut self, arg: Option<TlsCfg>) -> Self {
+        let mut opts = self.cmd.opts();
+        opts.set_tls(arg);
+        self.cmd.1 = Some(opts);
+        self
+    }
+
+    pub fn connect(self) -> Result<Pool> {
+        let opts = self.cmd.opts();
+        set_config(opts.clone());
+        let mut pools: Vec<r2d2::Pool<ConnectionManager>> = Vec::new();
+        for server in opts.servers() {
+            let manager = ConnectionManager(server);
+            let config = self.clone_pool_config();
+            let new_pool = r2d2::Pool::new(config, manager)?;
+            pools.push(new_pool);
         }
+        set_pool(pools);
+        Ok(Pool)
+    }
+
+    fn clone_pool_config(&self) -> Config<Connection, Error>
+    {
+        let ref cfg = self.cmd.0;
+        Config::builder()
+            .pool_size(cfg.pool_size())
+            .min_idle(cfg.min_idle())
+            .helper_threads(cfg.helper_threads())
+            .test_on_check_out(cfg.test_on_check_out())
+            .initialization_fail_fast(cfg.initialization_fail_fast())
+            .max_lifetime(cfg.max_lifetime())
+            .idle_timeout(cfg.idle_timeout())
+            .connection_timeout(cfg.connection_timeout())
+            .build()
     }
 }
 

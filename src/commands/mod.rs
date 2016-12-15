@@ -85,6 +85,15 @@ O: ToJson + Clone
     }
 }
 
+impl<T, O> Command<T, O>
+    where O: Clone,
+{
+    fn opts(&self) -> O {
+        let msg = "Command options is not set. This is a bug in the driver.";
+        self.1.clone().expect(msg)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct RunOpts {
     read_mode: Option<ReadMode>,

@@ -124,109 +124,94 @@ impl<S, T> Command<Query<S, T>, RunOpts>
     where S: Session,
           T: Deserialize + Send,
 {
-    pub fn read_mode(self, arg: ReadMode) -> Self {
-        let arg = Some(arg);
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
-        opts.read_mode = arg;
-        cmd.1 = Some(opts);
-        cmd
+    pub fn read_mode(mut self, arg: ReadMode) -> Self {
+        let mut opts = self.opts();
+        opts.read_mode = Some(arg);
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn time_format(self, arg: Format) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn time_format(mut self, arg: Format) -> Self {
+        let mut opts = self.opts();
         opts.time_format = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn profile(self, arg: bool) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn profile(mut self, arg: bool) -> Self {
+        let mut opts = self.opts();
         opts.profile = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn durability(self, arg: Durability) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn durability(mut self, arg: Durability) -> Self {
+        let mut opts = self.opts();
         opts.durability = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn group_format(self, arg: Format) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn group_format(mut self, arg: Format) -> Self {
+        let mut opts = self.opts();
         opts.group_format = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn db(self, arg: &str) -> Self {
-        let arg = Some(r.db(arg).cmd);
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
-        opts.db = arg;
-        cmd.1 = Some(opts);
-        cmd
+    pub fn db(mut self, arg: &str) -> Self {
+        let mut opts = self.opts();
+        opts.db = Some(r.db(arg).cmd);
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn array_limit(self, arg: u64) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn array_limit(mut self, arg: u64) -> Self {
+        let mut opts = self.opts();
         opts.array_limit = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn binary_format(self, arg: Format) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn binary_format(mut self, arg: Format) -> Self {
+        let mut opts = self.opts();
         opts.binary_format = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn min_batch_rows(self, arg: u32) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn min_batch_rows(mut self, arg: u32) -> Self {
+        let mut opts = self.opts();
         opts.min_batch_rows = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn max_batch_rows(self, arg: u64) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn max_batch_rows(mut self, arg: u64) -> Self {
+        let mut opts = self.opts();
         opts.max_batch_rows = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn max_batch_bytes(self, arg: u64) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn max_batch_bytes(mut self, arg: u64) -> Self {
+        let mut opts = self.opts();
         opts.max_batch_bytes = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn max_batch_seconds(self, arg: f32) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn max_batch_seconds(mut self, arg: f32) -> Self {
+        let mut opts = self.opts();
         opts.max_batch_seconds = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 
-    pub fn first_batch_scaledown_factor(self, arg: u64) -> Self {
-        let mut cmd = self;
-        let mut opts = opts!(cmd);
+    pub fn first_batch_scaledown_factor(mut self, arg: u64) -> Self {
+        let mut opts = self.opts();
         opts.first_batch_scaledown_factor = arg;
-        cmd.1 = Some(opts);
-        cmd
+        self.1 = Some(opts);
+        self
     }
 }

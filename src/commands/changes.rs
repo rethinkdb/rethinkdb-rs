@@ -119,7 +119,7 @@ impl<T, A> Client<T, ChangesOpts<A>>
         where B: SquashArg,
               ChangesOpts<B>: Default + ToJson + Clone
     {
-        let o = self.cmd.1.unwrap_or(Default::default());
+        let o = self.cmd.opts();
         let opts = ChangesOpts {
             squash: arg,
             changefeed_queue_size: o.changefeed_queue_size,
@@ -135,37 +135,37 @@ impl<T, A> Client<T, ChangesOpts<A>>
     }
 
     pub fn changefeed_queue_size(mut self, arg: u64) -> Self {
-        if let Some(ref mut opts) = self.cmd.1 {
-            opts.changefeed_queue_size = arg;
-        }
+        let mut opts = self.cmd.opts();
+        opts.changefeed_queue_size = arg;
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn include_initial(mut self, arg: bool) -> Self {
-        if let Some(ref mut opts) = self.cmd.1 {
-            opts.include_initial = arg;
-        }
+        let mut opts = self.cmd.opts();
+        opts.include_initial = arg;
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn include_states(mut self, arg: bool) -> Self {
-        if let Some(ref mut opts) = self.cmd.1 {
-            opts.include_states = arg;
-        }
+        let mut opts = self.cmd.opts();
+        opts.include_states = arg;
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn include_offsets(mut self, arg: bool) -> Self {
-        if let Some(ref mut opts) = self.cmd.1 {
-            opts.include_offsets = arg;
-        }
+        let mut opts = self.cmd.opts();
+        opts.include_offsets = arg;
+        self.cmd.1 = Some(opts);
         self
     }
 
     pub fn include_types(mut self, arg: bool) -> Self {
-        if let Some(ref mut opts) = self.cmd.1 {
-            opts.include_types = arg;
-        }
+        let mut opts = self.cmd.opts();
+        opts.include_types = arg;
+        self.cmd.1 = Some(opts);
         self
     }
 }

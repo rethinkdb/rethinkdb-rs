@@ -74,22 +74,6 @@ macro_rules! err {
     }}
 }
 
-macro_rules! opts {
-    ($cmd:expr) => {
-        match $cmd.1 {
-            Some(ref o) => {
-                o.clone()
-            },
-            None => {
-                let msg = "Command options are not set. This is a bug in the driver.";
-                //crit!(msg; "cmd" => "{:?}", $cmd);
-                crit!(msg);
-                panic!(msg);
-            },
-        }
-    }
-}
-
 #[macro_export]
 macro_rules! obj {
     ($( $key:ident: $val:expr ),* $(,)*) => {{

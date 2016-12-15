@@ -32,11 +32,13 @@ impl<O> Client<types::Db, O>
 impl<T, P, R> Client<T, TableCreateOpts<P, R>>
     where P: PrimaryKeyArg,
           R: ReplicaArg,
+          T: types::DataType,
+          TableCreateOpts<P, R>: ToJson,
 {
     pub fn primary_key<K>(self, arg: K) -> Client<T, TableCreateOpts<K, R>>
         where K: PrimaryKeyArg
     {
-        let opts = opts!(self.cmd);
+        let opts = self.cmd.opts();
         let opts = TableCreateOpts {
             primary_key: arg,
             durability: opts.durability,
@@ -50,14 +52,14 @@ impl<T, P, R> Client<T, TableCreateOpts<P, R>>
     }
 
     pub fn durability(mut self, arg: Durability) -> Self {
-        let mut opts = opts!(self.cmd);
+        let mut opts = self.cmd.opts();
         opts.durability = arg;
         self.cmd.1 = Some(opts);
         self
     }
 
     pub fn shards(mut self, arg: u8) -> Self {
-        let mut opts = opts!(self.cmd);
+        let mut opts = self.cmd.opts();
         opts.shards = arg;
         self.cmd.1 = Some(opts);
         self
@@ -66,7 +68,7 @@ impl<T, P, R> Client<T, TableCreateOpts<P, R>>
     pub fn replicas<A>(self, arg: A) -> Client<T, TableCreateOpts<P, A>>
         where A: ReplicaArg
     {
-        let opts = opts!(self.cmd);
+        let opts = self.cmd.opts();
         let opts = TableCreateOpts {
             primary_key: opts.primary_key,
             durability: opts.durability,
