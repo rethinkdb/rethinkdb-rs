@@ -19,8 +19,9 @@ impl<O> Client<types::StreamSelection, O>
 impl<O> Client<types::Object, O>
     where O: ToJson + Clone
 {
-    pub fn get_field<T>(self, arg: T) -> Client<types::Object, ()>
+    pub fn get_field<T, V>(self, arg: T) -> Client<V, ()>
         where T: Into<types::String>,
+              V: types::DataType,
     {
         super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into()]), None, Some(self.cmd), self.errors)
     }

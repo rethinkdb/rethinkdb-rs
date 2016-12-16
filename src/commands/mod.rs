@@ -94,6 +94,16 @@ impl<T, O> From<Client<T, O>> for Term
     }
 }
 
+impl<T> From<T> for Client<T, ()> {
+    fn from(t: T) -> Client<T, ()>
+    {
+        Client {
+            cmd: Command(t, None as Option<()>),
+            errors: None,
+        }
+    }
+}
+
 impl<T, O> Command<T, O>
     where O: Clone,
 {

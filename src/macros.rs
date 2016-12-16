@@ -80,7 +80,8 @@ macro_rules! obj {
         use ::std::collections::BTreeMap;
 
         use $crate::Term;
-        use $crate::commands::{Client, Command};
+        use $crate::commands::Client;
+        use $crate::types::Object;
 
         let mut o = BTreeMap::new();
         $(
@@ -88,11 +89,9 @@ macro_rules! obj {
             let val: Term = $val.into();
             o.insert(key, val);
          )*
-        let o: Term = o.into();
-        Client {
-            cmd: Command(o.into(), None),
-            errors: None,
-        }
+        let term: Term = o.into();
+        let object = Object::from(term);
+        Client::from(object)
     }}
 }
 
