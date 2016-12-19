@@ -24,93 +24,93 @@ lazy_static! {
 
 impl Client<(), ()>
 {
-    pub fn connection(self) -> Client<Config<Connection, Error>, ConnectionOpts>
+    pub fn connection(self) -> Client<ConnectionOpts, Vec<Server>>
     {
         let opts = ConnectionOpts::default();
-        let cfg = Config::default();
         Client {
-            cmd: Command(cfg, Some(opts)),
+            cmd: Command(opts, None),
             errors: self.errors,
         }
     }
 }
 
-impl Client<Config<Connection, Error>, ConnectionOpts>
-{
-    pub fn pool_config(mut self, arg: Config<Connection, Error>) -> Self {
-        self.cmd.0 = arg;
-        self
+#[derive(Debug)]
+pub struct Server {
+    host: &'static str,
+    cfg: Config<Connection, Error>,
+}
+
+impl Server {
+    pub fn new(arg: &'static str) -> Server {
+        Server {
+            host: arg,
+            cfg: Config::default(),
+        }
     }
 
-    pub fn servers(mut self, arg: Vec<&'static str>) -> Self {
-        let mut opts = self.cmd.opts();
-        opts.set_servers(arg);
-        self.cmd.1 = Some(opts);
+    pub fn config(mut self, arg: Config<Connection, Error>) -> Server {
+        self.cfg = arg;
+        self
+    }
+}
+
+impl Client<ConnectionOpts, Vec<Server>>
+{
+    pub fn servers(mut self, arg: Vec<Server>) -> Self {
+        let s: Vec<_> = arg.iter().map(|s| s.host).collect();
+        self.cmd.0.set_servers(s);
+        self.cmd.1 = Some(arg);
         self
     }
 
     pub fn db(mut self, arg: &'static str) -> Self {
-        let mut opts = self.cmd.opts();
-        opts.set_db(arg);
-        self.cmd.1 = Some(opts);
+        self.cmd.0.set_db(arg);
         self
     }
 
     pub fn user(mut self, arg: &'static str) -> Self {
-        let mut opts = self.cmd.opts();
-        opts.set_user(arg);
-        self.cmd.1 = Some(opts);
+        self.cmd.0.set_user(arg);
         self
     }
 
     pub fn password(mut self, arg: &'static str) -> Self {
-        let mut opts = self.cmd.opts();
-        opts.set_password(arg);
-        self.cmd.1 = Some(opts);
+        self.cmd.0.set_password(arg);
         self
     }
 
     pub fn retries(mut self, arg: u8) -> Self {
-        let mut opts = self.cmd.opts();
-        opts.set_retries(arg);
-        self.cmd.1 = Some(opts);
+        self.cmd.0.set_retries(arg);
         self
     }
 
     pub fn tls(mut self, arg: Option<TlsCfg>) -> Self {
-        let mut opts = self.cmd.opts();
-        opts.set_tls(arg);
-        self.cmd.1 = Some(opts);
+        self.cmd.0.set_tls(arg);
         self
     }
 
     pub fn connect(self) -> Result<Pool> {
-        let opts = self.cmd.opts();
-        set_config(opts.clone());
+        set_config(self.cmd.0);
         let mut pools: Vec<r2d2::Pool<ConnectionManager>> = Vec::new();
-        for server in opts.servers() {
-            let manager = ConnectionManager(server);
-            let config = self.clone_pool_config();
-            let new_pool = r2d2::Pool::new(config, manager)?;
-            pools.push(new_pool);
+        let servers = match self.cmd.1 {
+            Some(servers) => servers,
+            None => {
+                let server = Server {
+                    host: {
+                        let opts = ConnectionOpts::default();
+                        opts.servers()[0]
+                    },
+                    cfg: Config::default(),
+                };
+                vec![server]
+            },
+        };
+        for server in servers {
+            let manager = ConnectionManager(server.host);
+            let pool = r2d2::Pool::new(server.cfg, manager)?;
+            pools.push(pool);
         }
         set_pool(pools);
         Ok(Pool)
-    }
-
-    fn clone_pool_config(&self) -> Config<Connection, Error>
-    {
-        let ref cfg = self.cmd.0;
-        Config::builder()
-            .pool_size(cfg.pool_size())
-            .min_idle(cfg.min_idle())
-            .helper_threads(cfg.helper_threads())
-            .test_on_check_out(cfg.test_on_check_out())
-            .initialization_fail_fast(cfg.initialization_fail_fast())
-            .max_lifetime(cfg.max_lifetime())
-            .idle_timeout(cfg.idle_timeout())
-            .connection_timeout(cfg.connection_timeout())
-            .build()
     }
 }
 
