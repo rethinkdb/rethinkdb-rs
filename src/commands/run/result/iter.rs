@@ -1,10 +1,11 @@
 use std::iter::{IntoIterator, Iterator};
-use std::sync::mpsc::Receiver;
-use std::sync::mpsc;
+use std::sync::mpsc::{self, Receiver};
+use std::sync::Arc;
 use std::thread;
 
 use ql2::Encode;
 use ::Result;
+use errors::*;
 use conn::{
     ResponseValue,
     Request,
@@ -47,6 +48,18 @@ impl<S, T> IntoIterator for Client<Query<S, T>, RunOpts>
         let (tx, rx) = mpsc::sync_channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
         match self.errors {
             Some(errors) => {
+                let errors = match Arc::try_unwrap(errors) {
+                    Ok(errors) => errors,
+                    Err(_) => {
+                        let tx = tx.clone();
+                        let msg = String::from("Failed to unwrap Arc");
+                        let err = DriverError::Other(msg);
+                        if let Err(err) = tx.send(err!(err)) {
+                            error!("Failed to send message: {:?}", err);
+                        }
+                        return Response(rx);
+                    },
+                };
                 if !errors.is_empty() {
                     for e in errors {
                         let tx = tx.clone();

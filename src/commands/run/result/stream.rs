@@ -1,8 +1,10 @@
 use std::thread;
 
 use futures::sync::mpsc::{self, Receiver};
+use std::sync::Arc;
 use futures::{Future, Sink};
 use ::Result;
+use errors::*;
 use conn::{
     ResponseValue,
     Session,
@@ -28,6 +30,18 @@ impl<S, T> Client<Query<S, T>, RunOpts>
         let (tx, rx) = mpsc::channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
         match self.errors {
             Some(errors) => {
+                let errors = match Arc::try_unwrap(errors) {
+                    Ok(errors) => errors,
+                    Err(_) => {
+                        let tx = tx.clone();
+                        let msg = String::from("Failed to unwrap Arc");
+                        let err = DriverError::Other(msg);
+                        if let Err(err) = tx.send(err!(err)).wait() {
+                            error!("Failed to send message: {:?}", err);
+                        }
+                        return rx;
+                    },
+                };
                 if !errors.is_empty() {
                     for e in errors {
                         let tx = tx.clone();

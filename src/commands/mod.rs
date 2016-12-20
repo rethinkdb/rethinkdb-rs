@@ -13,6 +13,7 @@ pub mod rem;
 pub mod run;
 
 use std::string::String as StdString;
+use std::sync::Arc;
 
 use errors::Error;
 use types::{self, Command as Cmd};
@@ -21,10 +22,10 @@ use serde_json::value::ToJson;
 
 include!(concat!(env!("OUT_DIR"), "/opts.rs"));
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Client<T, O> {
     cmd: Command<T, O>,
-    errors: Option<Vec<Error>>,
+    errors: Option<Arc<Vec<Error>>>,
 }
 
 /// Convenient type for use with maps
@@ -43,7 +44,7 @@ fn make_cmd<A, T, O, PT, PO>(typ: TermType,
                                  args: Option<Vec<A>>,
                                  opts: Option<O>,
                                  cmd: Option<Command<PT, PO>>,
-                                 errors: Option<Vec<Error>>)
+                                 errors: Option<Arc<Vec<Error>>>)
 -> Client<T, O>
 where A: types::DataType,
 T: types::DataType,
