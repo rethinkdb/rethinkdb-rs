@@ -9,6 +9,8 @@ pub mod get_all;
 pub mod changes;
 pub mod map;
 pub mod get_field;
+pub mod has_fields;
+pub mod branch;
 pub mod rem;
 pub mod run;
 
@@ -46,7 +48,7 @@ fn make_cmd<A, T, O, PT, PO>(typ: TermType,
                                  cmd: Option<Command<PT, PO>>,
                                  errors: Option<Arc<Vec<Error>>>)
 -> Client<T, O>
-where A: types::DataType,
+where A: Into<Term>,
 T: types::DataType,
 O: ToJson + Clone,
 PT: types::DataType,
