@@ -2,8 +2,9 @@
 
 use ql2::types;
 use ql2::proto::Term_TermType as TermType;
-use super::Client;
+use ::Client;
 use serde_json::value::ToJson;
+use types::IntoString;
 
 macro_rules! define {
     ($name:ident returns $typ:ident) => {
@@ -11,9 +12,9 @@ macro_rules! define {
             where O: ToJson + Clone
             {
                 pub fn $name<T>(self, arg: T) -> Client<types::$typ, ()>
-                    where T: Into<types::String>
+                    where T: IntoString
                     {
-                        super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into()]), None, Some(self.cmd), self.errors)
+                        super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into_string()]), None, Some(self.cmd), self.errors)
                     }
             }
 
@@ -21,9 +22,9 @@ macro_rules! define {
             where O: ToJson + Clone
             {
                 pub fn $name<T>(self, arg: T) -> Client<types::$typ, ()>
-                    where T: Into<types::String>
+                    where T: IntoString
                     {
-                        super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into()]), None, Some(self.cmd), self.errors)
+                        super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into_string()]), None, Some(self.cmd), self.errors)
                     }
             }
 
@@ -31,9 +32,9 @@ macro_rules! define {
             where O: ToJson + Clone
             {
                 pub fn $name<T>(self, arg: T) -> Client<types::$typ, ()>
-                    where T: Into<types::String>
+                    where T: IntoString
                     {
-                        super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into()]), None, Some(self.cmd), self.errors)
+                        super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into_string()]), None, Some(self.cmd), self.errors)
                     }
             }
     }

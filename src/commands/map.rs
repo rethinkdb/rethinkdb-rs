@@ -2,7 +2,8 @@
 
 use ql2::types;
 use ql2::proto::{Term, Term_TermType as TermType};
-use super::{Client, Arg};
+use ::Client;
+use super::Arg;
 use serde_json::value::ToJson;
 
 impl<O> Client<types::Table, O>

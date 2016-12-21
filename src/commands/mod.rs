@@ -18,17 +18,16 @@ use std::string::String as StdString;
 use std::sync::Arc;
 
 use errors::Error;
-use types::{self, Command as Cmd};
-use ql2::proto::{Term, Term_TermType as TermType};
+use ::{Client, Command};
+use ql2::types;
+use ql2::proto::{Term,
+    Term_TermType as TermType,
+    Term_AssocPair as TermPair,
+};
 use serde_json::value::ToJson;
+use protobuf::repeated::RepeatedField;
 
 include!(concat!(env!("OUT_DIR"), "/opts.rs"));
-
-#[derive(Debug, Clone)]
-pub struct Client<T, O> {
-    cmd: Command<T, O>,
-    errors: Option<Arc<Vec<Error>>>,
-}
 
 /// Convenient type for use with maps
 pub type Arg = Client<types::Object, ()>;
@@ -38,9 +37,6 @@ pub const r: Client<(), ()> = Client {
     cmd: Command((), None),
     errors: None,
 };
-
-#[derive(Debug, Clone)]
-pub struct Command<T, O>(T, Option<O>);
 
 fn make_cmd<A, T, O, PT, PO>(typ: TermType,
                                  args: Option<Vec<A>>,
@@ -61,7 +57,7 @@ PO: ToJson + Clone
         },
         None => None,
     };
-    let mut dt = Cmd::new(typ, prev_cmd);
+    let mut dt = Command::new(typ, prev_cmd);
     if let Some(args) = args {
         for arg in args {
             dt.with_args(arg.into());
@@ -79,7 +75,7 @@ impl<T, O> From<Command<T, O>> for Term
 {
     fn from(t: Command<T, O>) -> Term {
         let term: Term = t.0.into();
-        let mut cmd: Cmd = term.into();
+        let mut cmd = Command(term, None);
         if let Some(opt) = t.1 {
             let obj = types::Object::from(opt);
             cmd.with_opts(obj);
@@ -107,8 +103,53 @@ impl<T> From<T> for Client<T, ()> {
     }
 }
 
+
+impl Command<Term, ()>
+{
+    pub fn new(cmd_type: TermType, prev_cmd: Option<Term>) -> Command<Term, ()> {
+        let mut term = Term::new();
+        term.set_field_type(cmd_type);
+        if let Some(cmd) = prev_cmd {
+            let args = RepeatedField::from_vec(vec![cmd]);
+            term.set_args(args);
+        }
+        Command(term, None)
+    }
+
+    pub fn with_args(&mut self, args: Term) -> &mut Self {
+        self.0.mut_args().push(args);
+        self
+    }
+
+    pub fn with_opts(&mut self, opts: types::Object) -> &mut Self {
+        let mut opts: Term = opts.into();
+        if opts.has_datum() {
+            let mut datum = opts.take_datum();
+            let pairs = datum.take_r_object().into_vec();
+            for mut pair in pairs {
+                if pair.has_key() {
+                    let mut term_pair = TermPair::new();
+                    term_pair.set_key(pair.take_key());
+                    let mut val = Term::new();
+                    val.set_field_type(TermType::DATUM);
+                    val.set_datum(pair.take_val());
+                    term_pair.set_val(val);
+                    self.0.mut_optargs().push(term_pair);
+                }
+            }
+        }
+        self
+    }
+
+    pub fn into<O>(self) -> O
+        where O: From<Term>
+    {
+        From::from(self.0)
+    }
+}
+
 impl<T, O> Command<T, O>
-    where O: Clone,
+    where O: Clone
 {
     fn opts(&self) -> O {
         let msg = "Command options is not set. This is a bug in the driver.";

@@ -27,16 +27,29 @@ extern crate futures;
 mod macros;
 
 pub mod commands;
+pub mod types;
 
 pub use commands::r;
 pub use commands::run::{Run, RunWithConn};
-pub use ql2::{Result, types, conn, errors};
+pub use ql2::{Result, conn, errors};
 pub use ql2::proto::Term;
+
+use std::sync::Arc;
 
 use conn::ConnectionOpts;
 use parking_lot::RwLock;
 use slog::Logger;
 use slog_scope::set_global_logger;
+use errors::Error;
+
+#[derive(Debug, Clone)]
+pub struct Command<T, O>(T, Option<O>);
+
+#[derive(Debug, Clone)]
+pub struct Client<T, O> {
+    cmd: Command<T, O>,
+    errors: Option<Arc<Vec<Error>>>,
+}
 
 #[derive(Debug, Clone, Copy)]
 pub struct Pool;

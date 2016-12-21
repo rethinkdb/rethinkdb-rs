@@ -3,15 +3,13 @@ use std::thread;
 use futures::sync::mpsc::{self, Receiver};
 use std::sync::Arc;
 use futures::{Future, Sink};
-use ::Result;
+use ::{Result, Client};
 use errors::*;
 use conn::{
     ResponseValue,
     Session,
 };
-use commands::{
-    Client, RunOpts,
-};
+use commands::RunOpts;
 use commands::run::{
     Query, CHANNEL_SIZE,
 };

@@ -3,7 +3,6 @@
 use std::net::TcpStream;
 
 use parking_lot::RwLock;
-use super::{Client, Command};
 use errors::*;
 use conn::{
     ConnectionOpts,
@@ -12,7 +11,7 @@ use conn::{
     TlsCfg,
     Session,
 };
-use ::{Result, set_config, config, Pool};
+use ::{Client, Command, Result, set_config, config, Pool};
 use r2d2::{self, ManageConnection, Config, PooledConnection as PConn};
 
 #[derive(Debug)]

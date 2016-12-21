@@ -56,15 +56,17 @@
 #![allow(dead_code)]
 
 use ql2::types;
+use types::IntoString;
 use ql2::proto::Term_TermType as TermType;
-use super::{Client, TableOpts, ReadMode, IdentifierFormat};
+use ::Client;
+use super::{TableOpts, ReadMode, IdentifierFormat};
 use serde_json::value::ToJson;
 
 impl Client<(), ()>
 {
     /// Return all documents in a table. [Read more](table/index.html)
     pub fn table<T>(self, arg: T) -> Client<types::Table, TableOpts>
-        where T: Into<types::String>
+        where T: IntoString
     {
             let config = ::config().read();
             super::r.db(config.db()).table(arg)
@@ -76,9 +78,9 @@ impl<O> Client<types::Db, O>
 {
     /// Return all documents in a table. [Read more](table/index.html)
     pub fn table<T>(self, arg: T) -> Client<types::Table, TableOpts>
-        where T: Into<types::String>
+        where T: IntoString
     {
-        super::make_cmd(TermType::TABLE, Some(vec![arg.into()]), Some(TableOpts::default()), Some(self.cmd), self.errors)
+        super::make_cmd(TermType::TABLE, Some(vec![arg.into_string()]), Some(TableOpts::default()), Some(self.cmd), self.errors)
     }
 }
 

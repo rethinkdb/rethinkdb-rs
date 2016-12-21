@@ -1,18 +1,20 @@
 #![allow(dead_code)]
 
 use ql2::types;
+use types::SecondaryKey;
 use ql2::proto::Term_TermType as TermType;
-use super::{Client, GetAllOpts};
+use ::Client;
+use super::GetAllOpts;
 use serde_json::value::ToJson;
 
 impl<O> Client<types::Table, O>
     where O: ToJson + Clone
 {
     pub fn get_all<T>(self, arg: T) -> Client<types::StreamSelection, GetAllOpts>
-        where T: Into<types::SecondaryKey>,
+        where T: SecondaryKey,
               GetAllOpts: ToJson + Clone
     {
-        super::make_cmd(TermType::GET_ALL, Some(vec![arg.into()]), None, Some(self.cmd), self.errors)
+        super::make_cmd(TermType::GET_ALL, Some(vec![arg.into_term()]), None, Some(self.cmd), self.errors)
     }
 }
 

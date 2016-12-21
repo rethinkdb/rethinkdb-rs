@@ -1,18 +1,20 @@
 #![allow(dead_code)]
 
 use ql2::types;
+use types::IntoString;
 use ql2::proto::Term_TermType as TermType;
+use ::{Client, Command};
 use super::{
-    Client, Command, TableCreateOpts,
-    ReplicaArg, PrimaryKeyArg,
     Durability,
+    TableCreateOpts,
+    ReplicaArg, PrimaryKeyArg,
 };
 use serde_json::value::ToJson;
 
 impl Client<(), ()>
 {
     pub fn table_create<T>(self, arg: T) -> Client<types::Object, TableCreateOpts<String, u64>>
-        where T: Into<types::String>
+        where T: IntoString
     {
             let config = ::config().read();
             super::r.db(config.db()).table_create(arg)
@@ -23,9 +25,9 @@ impl<O> Client<types::Db, O>
     where O: ToJson + Clone
 {
     pub fn table_create<T>(self, arg: T) -> Client<types::Object, TableCreateOpts<String, u64>>
-        where T: Into<types::String>
+        where T: IntoString
     {
-        super::make_cmd(TermType::TABLE_CREATE, Some(vec![arg.into()]), Some(TableCreateOpts::default()), Some(self.cmd), self.errors)
+        super::make_cmd(TermType::TABLE_CREATE, Some(vec![arg.into_string()]), Some(TableCreateOpts::default()), Some(self.cmd), self.errors)
     }
 }
 

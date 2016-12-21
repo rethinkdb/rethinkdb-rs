@@ -2,7 +2,7 @@
 
 use ql2::types;
 use ql2::proto::{Term, Term_TermType as TermType};
-use super::Client;
+use ::Client;
 use serde_json::value::ToJson;
 
 macro_rules! define {

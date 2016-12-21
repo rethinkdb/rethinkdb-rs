@@ -1,5 +1,5 @@
 macro_rules! Root {
-    () => {None as Option<::commands::Command<::ql2::types::Null, ()>>}
+    () => {None as Option<::Command<::ql2::types::Null, ()>>}
 }
 
 macro_rules! NoArg {
@@ -9,7 +9,7 @@ macro_rules! NoArg {
 macro_rules! var {
     () => {{
         use ::protobuf::repeated::RepeatedField;
-        use ::commands::{Client, Command};
+        use ::{Client, Command};
         use ::ql2::proto::{
             Term, Datum,
             Term_TermType as TT,
@@ -79,8 +79,7 @@ macro_rules! obj {
     ($( $key:ident: $val:expr ),* $(,)*) => {{
         use ::std::collections::BTreeMap;
 
-        use $crate::Term;
-        use $crate::commands::Client;
+        use $crate::{Term, Client};
         use $crate::types::Object;
 
         let mut o = BTreeMap::new();

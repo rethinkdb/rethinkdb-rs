@@ -4,16 +4,14 @@ use std::sync::Arc;
 use std::thread;
 
 use ql2::Encode;
-use ::Result;
+use ::{Result, Client, Command};
 use errors::*;
 use conn::{
     ResponseValue,
     Request,
     Session,
 };
-use commands::{
-    Client, Command, RunOpts,
-};
+use commands::RunOpts;
 use commands::run::{
     Query, CHANNEL_SIZE,
 };

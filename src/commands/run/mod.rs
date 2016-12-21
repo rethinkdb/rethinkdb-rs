@@ -5,12 +5,11 @@ pub mod result;
 use std::marker::PhantomData;
 use std::collections::BTreeMap;
 
-use ::Pool;
+use ::{Pool, Client, Command};
 use ql2::{types, Encode};
 use ql2::proto::Term;
 use super::{
-    r,
-    Client, Command, RunOpts,
+    r, RunOpts,
     ReadMode, Format, Durability,
 };
 use conn::Session;

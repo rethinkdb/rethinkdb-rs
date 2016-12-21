@@ -27,14 +27,15 @@
 #![allow(dead_code)]
 
 use ql2::types;
+use types::IntoString;
 use ql2::proto::Term_TermType as TermType;
-use super::Client;
+use ::Client;
 
 impl Client<(), ()> {
     /// Reference a database. [Read more](db/index.html)
     pub fn db<T>(self, arg: T) -> Client<types::Db, ()>
-        where T: Into<types::String>
+        where T: IntoString
     {
-        super::make_cmd(TermType::DB, Some(vec![arg.into()]), None, Root!(), self.errors)
+        super::make_cmd(TermType::DB, Some(vec![arg.into_string()]), None, Root!(), self.errors)
     }
 }

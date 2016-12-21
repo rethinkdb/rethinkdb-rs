@@ -87,7 +87,8 @@
 
 use ql2::types;
 use ql2::proto::Term_TermType as TermType;
-use super::{Client, Command, ChangesOpts, SquashArg};
+use ::{Client, Command};
+use super::{ChangesOpts, SquashArg};
 use serde_json::value::ToJson;
 
 macro_rules! define {
