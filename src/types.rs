@@ -1,11 +1,6 @@
 use ::Client;
 use ql2::types;
-use ql2::proto::{Term, Datum, Term_TermType as TermType, 
-    //Term_AssocPair as TermPair,
-    Datum_DatumType as DatumType,
-    //Datum_AssocPair as DatumPair,
-};
-//use protobuf::repeated::RepeatedField;
+use ql2::proto::Term;
 
 pub trait IntoArray {
     fn into_array(self) -> types::Array;
@@ -73,27 +68,22 @@ pub trait IntoString {
 
 impl IntoString for String {
     fn into_string(self) -> types::String {
-        let mut datum = Datum::new();
-        datum.set_field_type(DatumType::R_STR);
-        datum.set_r_str(self);
-        let mut term = Term::new();
-        term.set_field_type(TermType::DATUM);
-        term.set_datum(datum);
+        let term = Term::from_json(self);
         term.into()
     }
 }
 
 impl<'a> IntoString for &'a String {
     fn into_string(self) -> types::String {
-        let string = self.to_string();
-        string.into_string()
+        let term = Term::from_json(self);
+        term.into()
     }
 }
 
 impl<'a> IntoString for &'a str {
     fn into_string(self) -> types::String {
-        let string = self.to_string();
-        string.into_string()
+        let term = Term::from_json(self);
+        term.into()
     }
 }
 
