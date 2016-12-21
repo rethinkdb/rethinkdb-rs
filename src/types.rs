@@ -131,3 +131,7 @@ pub trait PrimaryKey {
 pub trait SecondaryKey {
     fn into_term(self) -> Term;
 }
+
+pub trait Sequence {
+    fn into_term(self) -> Term;
+}
