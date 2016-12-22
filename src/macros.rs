@@ -80,7 +80,7 @@ macro_rules! obj {
         use ::std::collections::BTreeMap;
 
         use $crate::{Term, Client};
-        use $crate::types::Object;
+        use $crate::types::data::Object;
 
         let mut o = BTreeMap::new();
         $(

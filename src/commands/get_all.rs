@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use ql2::types;
-use types::SecondaryKey;
+use types::IntoSecondaryKey;
 use ql2::proto::Term_TermType as TermType;
 use ::Client;
 use super::GetAllOpts;
@@ -11,10 +11,10 @@ impl<O> Client<types::Table, O>
     where O: ToJson + Clone
 {
     pub fn get_all<T>(self, arg: T) -> Client<types::StreamSelection, GetAllOpts>
-        where T: SecondaryKey,
+        where T: IntoSecondaryKey,
               GetAllOpts: ToJson + Clone
     {
-        super::make_cmd(TermType::GET_ALL, Some(vec![arg.into_term()]), None, Some(self.cmd), self.errors)
+        super::make_cmd(TermType::GET_ALL, Some(vec![arg.into_secondary_key()]), None, Some(self.cmd), self.errors)
     }
 }
 
