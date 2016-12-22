@@ -1,6 +1,6 @@
 use ql2::types;
 use ql2::proto::Term_TermType as TermType;
-use types::IntoPrimaryKey;
+use types::primary_key::IntoPrimaryKey;
 use ::Client;
 use serde_json::value::ToJson;
 

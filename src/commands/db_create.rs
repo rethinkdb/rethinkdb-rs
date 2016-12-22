@@ -3,7 +3,7 @@
 use ql2::types;
 use ql2::proto::Term_TermType as TermType;
 use ::Client;
-use types::IntoString;
+use types::string::IntoString;
 
 impl Client<(), ()> {
     /// Create a database.

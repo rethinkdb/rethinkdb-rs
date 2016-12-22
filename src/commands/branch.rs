@@ -1,7 +1,8 @@
 #![allow(dead_code)]
 
 use ql2::types;
-use types::{IntoBool, IntoTerm};
+use types::bool::IntoBool;
+use types::term::IntoTerm;
 use ql2::proto::{Term, Term_TermType as TermType};
 use ::Client;
 use serde_json::value::ToJson;

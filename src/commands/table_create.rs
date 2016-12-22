@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use ql2::types;
-use types::IntoString;
+use types::string::IntoString;
 use ql2::proto::Term_TermType as TermType;
 use ::{Client, Command};
 use super::{

@@ -4,7 +4,7 @@ use ql2::types;
 use ql2::proto::Term_TermType as TermType;
 use ::Client;
 use serde_json::value::ToJson;
-use types::IntoString;
+use types::string::IntoString;
 
 macro_rules! define {
     ($name:ident returns $typ:ident) => {
