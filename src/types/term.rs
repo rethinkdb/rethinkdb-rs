@@ -5,6 +5,12 @@ pub trait IntoTerm {
     fn into_term(self) -> Term;
 }
 
+impl<O> IntoTerm for Client<data::String, O> {
+    fn into_term(self) -> Term {
+        self.cmd.0.into()
+    }
+}
+
 impl IntoTerm for String {
     fn into_term(self) -> Term {
         Term::from_json(self)
