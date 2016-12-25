@@ -101,7 +101,7 @@ macro_rules! define {
                     where ChangesOpts<bool>: Default + ToJson + Clone
                     {
                         let opts: ChangesOpts<bool> = Default::default();
-                        super::make_cmd(TermType::CHANGES, NoArg!(), Some(opts), Some(self.cmd), self.errors)
+                        super::client(TermType::CHANGES, NoArg!(), Some(opts), self)
                     }
             }
     }
@@ -131,6 +131,7 @@ impl<T, A> Client<T, ChangesOpts<A>>
         };
         Client {
             cmd: Command(self.cmd.0, Some(opts)),
+            idx: self.idx,
             errors: self.errors,
         }
     }

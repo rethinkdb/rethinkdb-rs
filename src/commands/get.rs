@@ -11,6 +11,6 @@ impl<O> Client<types::Table, O>
     pub fn get<T>(self, arg: T) -> Client<types::ObjectSelection, ()>
         where T: IntoPrimaryKey
     {
-        super::make_cmd(TermType::GET, Some(vec![arg.into_primary_key()]), None, Some(self.cmd), self.errors)
+        super::client(TermType::GET, Some(vec![arg.into_primary_key()]), None, self)
     }
 }

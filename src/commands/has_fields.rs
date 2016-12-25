@@ -12,7 +12,7 @@ impl<O> Client<types::StreamSelection, O>
     pub fn has_fields<T>(self, arg: T) -> Client<types::Stream, ()>
         where T: IntoString
         {
-            super::make_cmd(TermType::HAS_FIELDS, Some(vec![arg.into_string()]), None, Some(self.cmd), self.errors)
+            super::client(TermType::HAS_FIELDS, Some(vec![arg.into_string()]), None, self)
         }
 }
 
@@ -22,7 +22,7 @@ impl<O> Client<types::Object, O>
     pub fn has_fields<T>(self, arg: T) -> Client<types::Bool, ()>
         where T: IntoString
         {
-            super::make_cmd(TermType::HAS_FIELDS, Some(vec![arg.into_string()]), None, Some(self.cmd), self.errors)
+            super::client(TermType::HAS_FIELDS, Some(vec![arg.into_string()]), None, self)
         }
 }
 
@@ -32,6 +32,6 @@ impl<O> Client<types::Array, O>
     pub fn has_fields<T>(self, arg: T) -> Client<types::Array, ()>
         where T: IntoString
         {
-            super::make_cmd(TermType::HAS_FIELDS, Some(vec![arg.into_string()]), None, Some(self.cmd), self.errors)
+            super::client(TermType::HAS_FIELDS, Some(vec![arg.into_string()]), None, self)
         }
 }

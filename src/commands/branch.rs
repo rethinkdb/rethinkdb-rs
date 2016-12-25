@@ -23,7 +23,7 @@ macro_rules! define {
                     args.push(a.1.into_term());
                 }
                 args.push(fallback.into_term());
-                super::make_cmd(TermType::BRANCH, Some(args), None, Root!(), self.errors)
+                super::root_client(TermType::BRANCH, Some(args), None, self)
             }
         }
 
@@ -48,7 +48,7 @@ macro_rules! define {
                 args.push(fallback.into_term());
                 let term: Term = args.into();
                 let array = types::Array::from(term);
-                super::make_cmd(TermType::BRANCH, Some(vec![array]), None, Some(self.cmd), self.errors)
+                super::root_client(TermType::BRANCH, Some(vec![array]), None, self)
             }
         }
     }

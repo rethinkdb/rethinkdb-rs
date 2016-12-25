@@ -6,6 +6,6 @@ use ::Client;
 
 impl Client<(), ()> {
     pub fn uuid(self) -> Client<types::String, ()> {
-        super::make_cmd(TermType::UUID, NoArg!(), None, Root!(), self.errors)
+        super::root_client(TermType::UUID, NoArg!(), None, self)
     }
 }

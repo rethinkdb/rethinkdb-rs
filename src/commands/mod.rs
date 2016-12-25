@@ -35,6 +35,7 @@ pub type Arg = Client<types::Object, ()>;
 #[allow(non_upper_case_globals)]
 pub const r: Client<(), ()> = Client {
     cmd: Command((), None),
+    idx: 0,
     errors: None,
 };
 
@@ -42,7 +43,8 @@ fn make_cmd<A, T, O, PT, PO>(typ: TermType,
                                  args: Option<Vec<A>>,
                                  opts: Option<O>,
                                  cmd: Option<Command<PT, PO>>,
-                                 errors: Option<Arc<Vec<Error>>>)
+                                 errors: Option<Arc<Vec<Error>>>,
+                                 idx: u32)
 -> Client<T, O>
 where A: Into<Term>,
 T: types::DataType,
@@ -65,8 +67,37 @@ PO: ToJson + Clone
     }
     Client {
         cmd: Command(dt.into(), opts),
+        idx: idx,
         errors: errors,
     }
+}
+
+fn client<A, T, O, PT, PO>(typ: TermType,
+                                 args: Option<Vec<A>>,
+                                 opts: Option<O>,
+                                 client: Client<PT, PO>)
+-> Client<T, O>
+where A: Into<Term>,
+T: types::DataType,
+O: ToJson + Clone,
+PT: types::DataType,
+PO: ToJson + Clone
+{
+    make_cmd(typ, args, opts, Some(client.cmd), client.errors, client.idx)
+}
+
+fn root_client<A, T, O, PT, PO>(typ: TermType,
+                                 args: Option<Vec<A>>,
+                                 opts: Option<O>,
+                                 client: Client<PT, PO>)
+-> Client<T, O>
+where A: Into<Term>,
+T: types::DataType,
+O: ToJson + Clone,
+//PT: types::DataType,
+PO: ToJson + Clone
+{
+    make_cmd(typ, args, opts, None as Option<Command<types::Null, ()>>, client.errors, client.idx)
 }
 
 impl<T, O> From<Command<T, O>> for Term
@@ -98,6 +129,7 @@ impl<T> From<T> for Client<T, ()> {
     {
         Client {
             cmd: Command(t, None as Option<()>),
+            idx: 0,
             errors: None,
         }
     }

@@ -10,6 +10,6 @@ impl Client<(), ()> {
     pub fn db_create<T>(self, arg: T) -> Client<types::Object, ()>
         where T: IntoString
     {
-        super::make_cmd(TermType::DB_CREATE, Some(vec![arg.into_string()]), None, Root!(), self.errors)
+        super::root_client(TermType::DB_CREATE, Some(vec![arg.into_string()]), None, self)
     }
 }

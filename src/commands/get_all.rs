@@ -14,7 +14,7 @@ impl<O> Client<types::Table, O>
         where T: IntoSecondaryKey,
               GetAllOpts: ToJson + Clone
     {
-        super::make_cmd(TermType::GET_ALL, Some(vec![arg.into_secondary_key()]), None, Some(self.cmd), self.errors)
+        super::client(TermType::GET_ALL, Some(vec![arg.into_secondary_key()]), None, self)
     }
 }
 

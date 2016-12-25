@@ -80,7 +80,7 @@ impl<O> Client<types::Db, O>
     pub fn table<T>(self, arg: T) -> Client<types::Table, TableOpts>
         where T: IntoString
     {
-        super::make_cmd(TermType::TABLE, Some(vec![arg.into_string()]), Some(TableOpts::default()), Some(self.cmd), self.errors)
+        super::client(TermType::TABLE, Some(vec![arg.into_string()]), Some(TableOpts::default()), self)
     }
 }
 

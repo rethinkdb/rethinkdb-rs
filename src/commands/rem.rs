@@ -12,6 +12,6 @@ impl<O> Client<types::Number, O>
     pub fn rem<T>(self, arg: T) -> Client<types::Number, ()>
         where T: IntoNumber
     {
-        super::make_cmd(TermType::MOD, Some(vec![arg.into_number()]), None, Some(self.cmd), self.errors)
+        super::root_client(TermType::MOD, Some(vec![arg.into_number()]), None, self)
     }
 }

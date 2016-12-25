@@ -14,7 +14,7 @@ macro_rules! define {
                 pub fn $name<T>(self, arg: T) -> Client<types::$typ, ()>
                     where T: IntoString
                     {
-                        super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into_string()]), None, Some(self.cmd), self.errors)
+                        super::client(TermType::GET_FIELD, Some(vec![arg.into_string()]), None, self)
                     }
             }
 
@@ -24,7 +24,7 @@ macro_rules! define {
                 pub fn $name<T>(self, arg: T) -> Client<types::$typ, ()>
                     where T: IntoString
                     {
-                        super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into_string()]), None, Some(self.cmd), self.errors)
+                        super::client(TermType::GET_FIELD, Some(vec![arg.into_string()]), None, self)
                     }
             }
 
@@ -34,7 +34,7 @@ macro_rules! define {
                 pub fn $name<T>(self, arg: T) -> Client<types::$typ, ()>
                     where T: IntoString
                     {
-                        super::make_cmd(TermType::GET_FIELD, Some(vec![arg.into_string()]), None, Some(self.cmd), self.errors)
+                        super::client(TermType::GET_FIELD, Some(vec![arg.into_string()]), None, self)
                     }
             }
     }

@@ -48,6 +48,7 @@ pub struct Command<T, O>(T, Option<O>);
 #[derive(Debug, Clone)]
 pub struct Client<T, O> {
     cmd: Command<T, O>,
+    idx: u32,
     errors: Option<Arc<Vec<Error>>>,
 }
 

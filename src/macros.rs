@@ -1,15 +1,11 @@
-macro_rules! Root {
-    () => {None as Option<::Command<::ql2::types::Null, ()>>}
-}
-
 macro_rules! NoArg {
     () => {None as Option<Vec<::ql2::types::Null>>}
 }
 
 macro_rules! var {
-    () => {{
-        use ::protobuf::repeated::RepeatedField;
+    ($idx:ident) => {{
         use ::{Client, Command};
+        use ::protobuf::repeated::RepeatedField;
         use ::ql2::proto::{
             Term, Datum,
             Term_TermType as TT,
@@ -19,7 +15,8 @@ macro_rules! var {
         // ID
         let mut id = Datum::new();
         id.set_field_type(DT::R_NUM);
-        id.set_r_num(1.0);
+        *$idx += 1;
+        id.set_r_num(*$idx as f64);
         // DATUM
         let mut datum = Term::new();
         datum.set_field_type(TT::DATUM);
@@ -31,13 +28,14 @@ macro_rules! var {
         var.set_args(args);
         Client {
             cmd: Command(From::from(var), None),
+            idx: *$idx,
             errors: None,
         }
     }}
 }
 
 macro_rules! func {
-    ($res:expr) => {{
+    ($res:expr, $idx:ident, $num_args:expr) => {{
         use ::protobuf::repeated::RepeatedField;
         use ::ql2::proto::{
             Term, Datum,
@@ -45,14 +43,19 @@ macro_rules! func {
             Datum_DatumType as DT,
         };
 
-        // ID
-        let mut id = Datum::new();
-        id.set_field_type(DT::R_NUM);
-        id.set_r_num(1.0);
+        // IDs
+        let mut ids = Vec::new();
+        for i in ($num_args as i32).abs().wrapping_neg()..0 {
+            let mut id = Datum::new();
+            id.set_field_type(DT::R_NUM);
+            let var_id = *$idx - (i.abs() as u32) + 1;
+            id.set_r_num(var_id as f64);
+            ids.push(id);
+        }
         // ARRAY
         let mut array = Datum::new();
         array.set_field_type(DT::R_ARRAY);
-        let args = RepeatedField::from_vec(vec![id]);
+        let args = RepeatedField::from_vec(ids);
         array.set_r_array(args);
         // DATUM
         let mut datum = Term::new();
@@ -98,8 +101,11 @@ macro_rules! obj {
 macro_rules! arr {
     ($( $val:expr ),* $(,)*) => {{
         use $crate::Term;
+        use $crate::types::data::Array;
 
         let v: Vec<Term> = vec![$( $val.into(), )*];
-        From::from(v)
+        let term: Term = v.into();
+        let array = Array::from(term);
+        Client::from(array)
     }}
 }

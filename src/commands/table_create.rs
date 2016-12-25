@@ -27,7 +27,7 @@ impl<O> Client<types::Db, O>
     pub fn table_create<T>(self, arg: T) -> Client<types::Object, TableCreateOpts<String, u64>>
         where T: IntoString
     {
-        super::make_cmd(TermType::TABLE_CREATE, Some(vec![arg.into_string()]), Some(TableCreateOpts::default()), Some(self.cmd), self.errors)
+        super::client(TermType::TABLE_CREATE, Some(vec![arg.into_string()]), Some(TableCreateOpts::default()), self)
     }
 }
 
@@ -49,6 +49,7 @@ impl<T, P, R> Client<T, TableCreateOpts<P, R>>
         };
         Client {
             cmd: Command(self.cmd.0, Some(opts)),
+            idx: self.idx,
             errors: self.errors,
         }
     }
@@ -79,6 +80,7 @@ impl<T, P, R> Client<T, TableCreateOpts<P, R>>
         };
         Client {
             cmd: Command(self.cmd.0, Some(opts)),
+            idx: self.idx,
             errors: self.errors,
         }
     }

@@ -28,6 +28,7 @@ impl Client<(), ()>
         let opts = ConnectionOpts::default();
         Client {
             cmd: Command(opts, None),
+            idx: 0,
             errors: self.errors,
         }
     }

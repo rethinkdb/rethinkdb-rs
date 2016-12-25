@@ -36,6 +36,6 @@ impl Client<(), ()> {
     pub fn db<T>(self, arg: T) -> Client<types::Db, ()>
         where T: IntoString
     {
-        super::make_cmd(TermType::DB, Some(vec![arg.into_string()]), None, Root!(), self.errors)
+        super::root_client(TermType::DB, Some(vec![arg.into_string()]), None, self)
     }
 }

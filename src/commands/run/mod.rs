@@ -38,6 +38,7 @@ fn run<T, S, D, O>(client: Client<D, O>, pool: S) -> Client<Query<S, T>, RunOpts
     };
     Client {
         cmd: Command(query, Some(RunOpts::default())),
+        idx: client.idx,
         errors: client.errors,
     }
 }
