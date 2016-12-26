@@ -35,7 +35,7 @@ macro_rules! var {
 }
 
 macro_rules! func {
-    ($res:expr, $idx:ident, $num_args:expr) => {{
+    ($f:expr, $( $v:expr ),* ) => {{
         use ::protobuf::repeated::RepeatedField;
         use ::ql2::proto::{
             Term, Datum,
@@ -45,13 +45,16 @@ macro_rules! func {
 
         // IDs
         let mut ids = Vec::new();
-        for i in ($num_args as i32).abs().wrapping_neg()..0 {
-            let mut id = Datum::new();
-            id.set_field_type(DT::R_NUM);
-            let var_id = *$idx - (i.abs() as u32) + 1;
-            id.set_r_num(var_id as f64);
-            ids.push(id);
-        }
+        let res = $f(
+            $({
+                let id = $v;
+                let term: Term = id.clone().into();
+                for t in term.get_args() {
+                    ids.push(t.get_datum().clone());
+                }
+                id
+            },)*
+        );
         // ARRAY
         let mut array = Datum::new();
         array.set_field_type(DT::R_ARRAY);
@@ -64,7 +67,7 @@ macro_rules! func {
         // FUNC
         let mut func = Term::new();
         func.set_field_type(TT::FUNC);
-        let args = RepeatedField::from_vec(vec![datum, $res]);
+        let args = RepeatedField::from_vec(vec![datum, res.into()]);
         func.set_args(args);
         func
     }}

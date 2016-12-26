@@ -32,9 +32,10 @@ macro_rules! merge {
     };
 }
 
-merge!{ Array for Array }
-merge!{ Selection for Array }
+merge!{ Selection for Object }
+merge!{ Object for Object }
 merge!{ Stream for Stream }
 merge!{ Selection for Stream }
 merge!{ Table for Stream }
-merge!{ Selection for Object }
+merge!{ Array for Array }
+merge!{ Selection for Array }

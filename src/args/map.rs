@@ -21,8 +21,7 @@ macro_rules! map {
             {
                 fn into_map_arg(self, idx: &mut u32) -> Vec<Term> {
                     let arg: Term = self.0.into();
-                    let res = self.1(var!(idx));
-                    let func = func!(res.into(), idx, 1);
+                    let func = func!(self.1, var!(idx));
                     vec![arg, func]
                 }
             }
@@ -33,9 +32,8 @@ macro_rules! map {
                   F: Fn(Arg) -> Client<T, O>,
             {
                 fn into_map_arg(self, idx: &mut u32) -> Vec<Term> {
-                    let res = self(var!(idx));
-                    let term = func!(res.into(), idx, 1);
-                    vec![term]
+                    let func = func!(self, var!(idx));
+                    vec![func]
                 }
             }
 
@@ -47,8 +45,7 @@ macro_rules! map {
             {
                 fn into_map_arg(self, idx: &mut u32) -> Vec<Term> {
                     let arg: Term = self.0.into();
-                    let res = self.1(var!(idx), var!(idx));
-                    let func = func!(res.into(), idx, 2);
+                    let func = func!(self.1, var!(idx), var!(idx));
                     vec![arg, func]
                 }
             }

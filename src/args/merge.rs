@@ -23,9 +23,8 @@ macro_rules! merge {
                   F: Fn(Arg) -> Client<T, O>,
             {
                 fn into_merge_arg(self, idx: &mut u32) -> Vec<Term> {
-                    let res = self(var!(idx));
-                    let term = func!(res.into(), idx, 1);
-                    vec![term]
+                    let func = func!(self, var!(idx));
+                    vec![func]
                 }
             }
 
@@ -37,16 +36,17 @@ macro_rules! merge {
             {
                 fn into_merge_arg(self, idx: &mut u32) -> Vec<Term> {
                     let arg: Term = self.0.into();
-                    let res = self.1(var!(idx), var!(idx));
-                    let func = func!(res.into(), idx, 2);
+                    let func = func!(self.1, var!(idx), var!(idx));
                     vec![arg, func]
                 }
             }
     };
 }
 
+merge!{ ObjectSelection for Object }
+merge!{ Object for Object }
+merge!{ Stream for Stream }
+merge!{ StreamSelection for Stream }
+merge!{ Table for Stream }
 merge!{ Array for Array }
 merge!{ ArraySelection for Array }
-merge!{ Stream for Stream }
-merge!{ Table for Stream }
-merge!{ StreamSelection for Stream }

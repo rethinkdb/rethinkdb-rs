@@ -72,3 +72,23 @@ pub fn set_logger(l: &Logger)
 {
     set_global_logger(l.clone());
 }
+
+pub enum Type {
+    String,
+    Number,
+    Array,
+    Object,
+    Binary,
+}
+
+impl Type {
+    pub fn to_string(self) -> String {
+        match self {
+            Type::String => "string".into(),
+            Type::Number => "number".into(),
+            Type::Array => "array".into(),
+            Type::Object => "object".into(),
+            Type::Binary => "binary".into(),
+        }
+    }
+}
