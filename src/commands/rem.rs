@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
-use ql2::types;
-use types::number::IntoNumber;
+use types;
+use args::number::IntoNumber;
 use ql2::proto::Term_TermType as TermType;
 use ::Client;
 use serde_json::value::ToJson;

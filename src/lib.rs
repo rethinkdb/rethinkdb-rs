@@ -27,11 +27,11 @@ extern crate futures;
 mod macros;
 
 pub mod commands;
-pub mod types;
+pub mod args;
 
 pub use commands::r;
 pub use commands::run::{Run, RunWithConn};
-pub use ql2::{Result, conn, errors};
+pub use ql2::{Result, types, conn, errors};
 pub use ql2::proto::Term;
 
 use std::sync::Arc;

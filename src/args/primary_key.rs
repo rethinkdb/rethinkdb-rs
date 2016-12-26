@@ -1,4 +1,4 @@
-use types::data;
+use types;
 use ::Client;
 use ql2::proto::Term;
 
@@ -6,7 +6,7 @@ pub trait IntoPrimaryKey {
     fn into_primary_key(self) -> Term;
 }
 
-impl<O> IntoPrimaryKey for Client<data::String, O> {
+impl<O> IntoPrimaryKey for Client<types::String, O> {
     fn into_primary_key(self) -> Term {
         self.cmd.0.into()
     }
@@ -30,7 +30,7 @@ impl<'a> IntoPrimaryKey for &'a str {
     }
 }
 
-impl<O> IntoPrimaryKey for Client<data::Number, O> {
+impl<O> IntoPrimaryKey for Client<types::Number, O> {
     fn into_primary_key(self) -> Term {
         self.cmd.0.into()
     }
@@ -72,7 +72,7 @@ impl IntoPrimaryKey for u64 {
     }
 }
 
-impl<O> IntoPrimaryKey for Client<data::Bool, O> {
+impl<O> IntoPrimaryKey for Client<types::Bool, O> {
     fn into_primary_key(self) -> Term {
         self.cmd.0.into()
     }

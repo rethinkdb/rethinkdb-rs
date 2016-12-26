@@ -1,6 +1,6 @@
-use types::data;
-use types::primary_key::IntoPrimaryKey;
+use types;
 use ::{Client, Term};
+use args::primary_key::IntoPrimaryKey;
 
 pub trait IntoSecondaryKey : IntoPrimaryKey where Self: Sized {
     fn into_secondary_key(self) -> Term {
@@ -8,7 +8,7 @@ pub trait IntoSecondaryKey : IntoPrimaryKey where Self: Sized {
     }
 }
 
-impl<O> IntoSecondaryKey for Client<data::String, O> {}
+impl<O> IntoSecondaryKey for Client<types::String, O> {}
 
 impl IntoSecondaryKey for String {}
 
@@ -16,7 +16,7 @@ impl<'a> IntoSecondaryKey for &'a String {}
 
 impl<'a> IntoSecondaryKey for &'a str {}
 
-impl<O> IntoSecondaryKey for Client<data::Number, O> {}
+impl<O> IntoSecondaryKey for Client<types::Number, O> {}
 
 impl IntoSecondaryKey for f32 {}
 
@@ -30,6 +30,6 @@ impl IntoSecondaryKey for i64 {}
 
 impl IntoSecondaryKey for u64 {}
 
-impl<O> IntoSecondaryKey for Client<data::Bool, O> {}
+impl<O> IntoSecondaryKey for Client<types::Bool, O> {}
 
 impl IntoSecondaryKey for bool {}

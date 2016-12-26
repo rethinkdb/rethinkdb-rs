@@ -24,5 +24,3 @@ pub mod secondary_key;
 pub mod sequence;
 pub mod term;
 pub mod map;
-
-pub use ql2::types as data;

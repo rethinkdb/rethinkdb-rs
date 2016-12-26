@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
-use ql2::types;
-use types::secondary_key::IntoSecondaryKey;
+use types;
+use args::secondary_key::IntoSecondaryKey;
 use ql2::proto::Term_TermType as TermType;
 use ::Client;
 use super::GetAllOpts;

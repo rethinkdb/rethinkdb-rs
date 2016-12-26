@@ -1,9 +1,9 @@
 #![allow(dead_code)]
 
-use ql2::types;
+use types;
 use ql2::proto::Term_TermType as TermType;
 use ::Client;
-use types::string::IntoString;
+use args::string::IntoString;
 
 impl Client<(), ()> {
     /// Create a database.

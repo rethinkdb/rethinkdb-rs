@@ -1,11 +1,11 @@
 use ::{Client, Term};
-use types::data;
+use types;
 
 pub trait IntoTerm {
     fn into_term(self) -> Term;
 }
 
-impl<O> IntoTerm for Client<data::String, O> {
+impl<O> IntoTerm for Client<types::String, O> {
     fn into_term(self) -> Term {
         self.cmd.0.into()
     }
@@ -29,7 +29,7 @@ impl<'a> IntoTerm for &'a str {
     }
 }
 
-impl<O> IntoTerm for Client<data::Number, O> {
+impl<O> IntoTerm for Client<types::Number, O> {
     fn into_term(self) -> Term {
         self.cmd.0.into()
     }
@@ -71,7 +71,7 @@ impl IntoTerm for u64 {
     }
 }
 
-impl<O> IntoTerm for Client<data::Bool, O> {
+impl<O> IntoTerm for Client<types::Bool, O> {
     fn into_term(self) -> Term {
         self.cmd.0.into()
     }

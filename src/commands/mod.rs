@@ -19,7 +19,7 @@ use std::sync::Arc;
 
 use errors::Error;
 use ::{Client, Command};
-use ql2::types;
+use types;
 use ql2::proto::{Term,
     Term_TermType as TermType,
     Term_AssocPair as TermPair,

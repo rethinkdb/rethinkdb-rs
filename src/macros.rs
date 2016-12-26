@@ -1,5 +1,5 @@
 macro_rules! NoArg {
-    () => {None as Option<Vec<::ql2::types::Null>>}
+    () => {None as Option<Vec<::types::Null>>}
 }
 
 macro_rules! var {
@@ -72,7 +72,7 @@ macro_rules! func {
 
 macro_rules! err {
     ($e:expr) => {{
-        let error = ::ql2::errors::Error::from($e);
+        let error = ::errors::Error::from($e);
         Err(error)
     }}
 }
@@ -83,7 +83,7 @@ macro_rules! obj {
         use ::std::collections::BTreeMap;
 
         use $crate::{Term, Client};
-        use $crate::types::data::Object;
+        use $crate::types::Object;
 
         let mut o = BTreeMap::new();
         $(
@@ -100,8 +100,8 @@ macro_rules! obj {
 #[macro_export]
 macro_rules! arr {
     ($( $val:expr ),* $(,)*) => {{
-        use $crate::Term;
-        use $crate::types::data::Array;
+        use $crate::{Term, Client};
+        use $crate::types::Array;
 
         let v: Vec<Term> = vec![$( $val.into(), )*];
         let term: Term = v.into();

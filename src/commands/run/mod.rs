@@ -6,7 +6,8 @@ use std::marker::PhantomData;
 use std::collections::BTreeMap;
 
 use ::{Pool, Client, Command};
-use ql2::{types, Encode};
+use types;
+use ql2::Encode;
 use ql2::proto::Term;
 use super::{
     r, RunOpts,

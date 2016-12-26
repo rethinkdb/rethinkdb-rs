@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
 use ::Client;
-use ql2::types;
-use types::map::{IntoRootMapArg, IntoMapArg};
+use types;
+use args::map::{IntoRootMapArg, IntoMapArg};
 use ql2::proto::{Term_TermType as TermType};
 use serde_json::value::ToJson;
 
