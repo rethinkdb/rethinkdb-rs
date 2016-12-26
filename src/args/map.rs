@@ -17,7 +17,7 @@ macro_rules! map {
             where T: types::DataType,
                   O: ToJson + Clone,
                   C: ToJson + Clone,
-                  F: Fn(Arg) -> Client<T, O>
+                  F: FnOnce(Arg) -> Client<T, O>
             {
                 fn into_map_arg(self, idx: &mut u32) -> Vec<Term> {
                     let arg: Term = self.0.into();
@@ -29,7 +29,7 @@ macro_rules! map {
         impl<F, T, O> IntoMapArg<types::$arg, types::$typ> for F
             where T: types::DataType,
                   O: ToJson + Clone,
-                  F: Fn(Arg) -> Client<T, O>,
+                  F: FnOnce(Arg) -> Client<T, O>,
             {
                 fn into_map_arg(self, idx: &mut u32) -> Vec<Term> {
                     let func = func!(self, var!(idx));
@@ -41,7 +41,7 @@ macro_rules! map {
             where T: types::DataType,
                   O: ToJson + Clone,
                   C: ToJson + Clone,
-                  F: Fn(Arg, Arg) -> Client<T, O>
+                  F: FnOnce(Arg, Arg) -> Client<T, O>
             {
                 fn into_map_arg(self, idx: &mut u32) -> Vec<Term> {
                     let arg: Term = self.0.into();
