@@ -8,6 +8,7 @@ pub mod get;
 pub mod get_all;
 pub mod changes;
 pub mod map;
+pub mod merge;
 pub mod get_field;
 pub mod has_fields;
 pub mod branch;
@@ -94,7 +95,6 @@ fn root_client<A, T, O, PT, PO>(typ: TermType,
 where A: Into<Term>,
 T: types::DataType,
 O: ToJson + Clone,
-//PT: types::DataType,
 PO: ToJson + Clone
 {
     make_cmd(typ, args, opts, None as Option<Command<types::Null, ()>>, client.errors, client.idx)
