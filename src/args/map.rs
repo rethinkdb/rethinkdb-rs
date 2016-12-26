@@ -56,6 +56,7 @@ macro_rules! map {
 }
 
 map!{ Array for Array }
+map!{ ArraySelection for Array }
 map!{ Stream for Stream }
 map!{ Table for Stream }
 map!{ StreamSelection for Stream }
