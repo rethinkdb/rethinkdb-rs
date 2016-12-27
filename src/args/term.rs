@@ -1,14 +1,8 @@
-use ::{Client, Term};
-use types;
+use {Client, Term, types};
+use serde_json::value::ToJson;
 
 pub trait IntoTerm {
     fn into_term(self) -> Term;
-}
-
-impl<O> IntoTerm for Client<types::String, O> {
-    fn into_term(self) -> Term {
-        self.cmd.0.into()
-    }
 }
 
 impl IntoTerm for String {
@@ -26,12 +20,6 @@ impl<'a> IntoTerm for &'a String {
 impl<'a> IntoTerm for &'a str {
     fn into_term(self) -> Term {
         Term::from_json(self)
-    }
-}
-
-impl<O> IntoTerm for Client<types::Number, O> {
-    fn into_term(self) -> Term {
-        self.cmd.0.into()
     }
 }
 
@@ -71,14 +59,23 @@ impl IntoTerm for u64 {
     }
 }
 
-impl<O> IntoTerm for Client<types::Bool, O> {
-    fn into_term(self) -> Term {
-        self.cmd.0.into()
-    }
-}
-
 impl IntoTerm for bool {
     fn into_term(self) -> Term {
         Term::from_json(self)
+    }
+}
+
+impl IntoTerm for Term {
+    fn into_term(self) -> Term {
+        self
+    }
+}
+
+impl<T, O> IntoTerm for Client<T, O>
+    where T: types::DataType,
+          O: ToJson + Clone
+{
+    fn into_term(self) -> Term {
+        self.into()
     }
 }

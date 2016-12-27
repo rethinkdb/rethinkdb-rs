@@ -26,6 +26,16 @@ impl<O> Client<types::Object, O>
         }
 }
 
+impl<O> Client<types::ObjectSelection, O>
+    where O: ToJson + Clone
+{
+    pub fn has_fields<T>(self, arg: T) -> Client<types::Bool, ()>
+        where T: IntoString
+        {
+            super::client(TermType::HAS_FIELDS, Some(vec![arg.into_string()]), None, self)
+        }
+}
+
 impl<O> Client<types::Array, O>
     where O: ToJson + Clone
 {

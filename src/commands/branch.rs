@@ -56,3 +56,6 @@ macro_rules! define {
 
 define! { string_branch returns String }
 define! { number_branch returns Number }
+define! { stream_branch returns Stream }
+define! { array_branch returns Array }
+define! { object_branch returns Object }
