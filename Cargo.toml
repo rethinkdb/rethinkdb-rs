@@ -1,7 +1,7 @@
 [package]
 name = "reql"
 description = "A native RethinkDB driver"
-version = "0.0.5"
+version = "0.0.6"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rust-rethinkdb/reql"
 documentation = "https://docs.rs/reql"
@@ -9,12 +9,10 @@ readme = "README.md"
 keywords = ["database", "rethinkdb", "reql", "driver"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
-build = "build.rs"
-
 [dependencies]
 ql2 = { path = "/home/enchanter/projects/ql2" }
 r2d2 = "0.7"
-protobuf = "1.0"
+protobuf = "1.1"
 slog = { version = "1.2", features = ["release_max_level_warn"] }
 slog-scope = "0.2"
 slog-term = "1.3"
@@ -28,10 +26,3 @@ serde_json = "0.8"
 quick-error = "1.1"
 futures = "0.1"
 rspec = "1.0.0-beta.3"
-
-[build-dependencies]
-skeptic = "0.6"
-serde_codegen = "0.8"
-
-[dev-dependencies]
-skeptic = "0.6"
