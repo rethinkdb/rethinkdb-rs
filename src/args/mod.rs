@@ -25,3 +25,4 @@ pub mod sequence;
 pub mod term;
 pub mod map;
 pub mod merge;
+pub mod filter;

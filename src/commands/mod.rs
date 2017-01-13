@@ -14,6 +14,7 @@ pub mod has_fields;
 pub mod branch;
 pub mod rem;
 pub mod coerce_to;
+pub mod filter;
 pub mod run;
 
 use std::string::String as StdString;
