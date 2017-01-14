@@ -25,4 +25,5 @@ serde = "0.8"
 serde_json = "0.8"
 quick-error = "1.1"
 futures = "0.1"
+reql-derive = { path = "./reql-derive" }
 rspec = "1.0.0-beta.3"

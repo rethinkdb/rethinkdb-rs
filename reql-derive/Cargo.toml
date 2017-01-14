@@ -1,0 +1,13 @@
+[package]
+name = "reql-derive"
+version = "0.1.0"
+authors = ["rushmorem <rushmore@webenchanter.com>"]
+
+[dependencies]
+syn = "0.10"
+quote = "0.3"
+#syn = { git = "https://github.com/dtolnay/syn" }
+#quote = { git = "https://github.com/dtolnay/quote" }
+
+[lib]
+proc-macro = true
