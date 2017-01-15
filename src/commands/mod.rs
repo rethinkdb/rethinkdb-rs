@@ -1,3 +1,6 @@
+// @TODO: remove this once https://github.com/dtolnay/syn/issues/76 is addressed
+#![allow(unused_imports)]
+
 mod db_list;
 pub use self::db_list::*;
 mod changes;
