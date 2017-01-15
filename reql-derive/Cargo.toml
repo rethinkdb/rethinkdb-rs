@@ -7,8 +7,6 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 syn = "0.10"
 quote = "0.3"
 case = "0.1"
-#syn = { git = "https://github.com/dtolnay/syn" }
-#quote = { git = "https://github.com/dtolnay/quote" }
 
 [lib]
 proc-macro = true

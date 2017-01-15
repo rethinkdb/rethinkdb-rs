@@ -10,7 +10,7 @@ keywords = ["database", "rethinkdb", "reql", "driver"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
-ql2 = { path = "/home/enchanter/projects/ql2" }
+ql2 = "1.1"
 r2d2 = "0.7"
 protobuf = "1.1"
 slog = { version = "1.2", features = ["release_max_level_warn"] }
