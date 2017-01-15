@@ -145,7 +145,6 @@ pub fn expand(ast: &MacroInput) -> Tokens {
     if let Some(ref name) = info.arg_name {
         let name = name.clone();
         let token = quote! {
-            use ::IntoArg;
             for arg in #name.into_arg() {
                 term.mut_args().push(arg);
             }
@@ -157,7 +156,6 @@ pub fn expand(ast: &MacroInput) -> Tokens {
         let left_arg = name.clone();
         let right_arg = info.right_arg.unwrap();
         let token = quote! {
-            use ::IntoArg;
             for arg in #left_arg.into_arg() {
                 term.mut_args().push(arg);
             }
@@ -170,7 +168,6 @@ pub fn expand(ast: &MacroInput) -> Tokens {
 
     if info.min_max_arg {
         let token = quote! {
-            use ::IntoArg;
             for arg in min.into_arg() {
                 term.mut_args().push(arg);
             }
