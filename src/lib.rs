@@ -7,9 +7,9 @@ extern crate serde_json;
 #[cfg(test)]
 mod tests;
 
-mod args;
-mod types;
 pub mod commands;
+mod types;
+mod args;
 
 use ql2::proto::Term;
 

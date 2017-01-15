@@ -2,6 +2,7 @@ extern crate proc_macro;
 extern crate syn;
 #[macro_use]
 extern crate quote;
+extern crate case;
 
 mod command;
 
@@ -14,13 +15,3 @@ pub fn derive_command(input: TokenStream) -> TokenStream {
     let command = command::expand(&ast);
     command.parse().unwrap()
 }
-
-/*
-fn to_titlecase(s: &str) -> String {
-    let mut c = s.chars();
-    match c.next() {
-        None => String::new(),
-        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
-    }
-}
-*/
