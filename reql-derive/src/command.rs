@@ -4,6 +4,7 @@ use syn::Body::{Struct, Enum};
 
 struct Info {
     arg_name: Option<Ident>,
+    min_max_arg: bool,
 }
 
 pub fn expand(ast: &MacroInput) -> Tokens {
@@ -12,16 +13,18 @@ pub fn expand(ast: &MacroInput) -> Tokens {
             if let &VariantData::Unit = data {
                 Info {
                     arg_name: None,
+                    min_max_arg: false,
                 }
             }
             else { panic!("only unit structs and enums are supported"); }
         }
         Enum(ref vars) => {
             let mut arg_name = None;
+            let mut min_max_arg = false;
 
             for var in vars.iter() {
                 let label = var.ident.to_string();
-                match &label {
+                match label.as_str() {
                     s if s.starts_with("Argname") => {
                         let name = s.trim_left_matches("Argname").to_lowercase();
                         if name.is_empty() {
@@ -29,6 +32,9 @@ pub fn expand(ast: &MacroInput) -> Tokens {
                         }
                         let name = Ident::new(name);
                         arg_name = Some(name);
+                    }
+                    "MinMaxArg" => {
+                        min_max_arg = true;
                     }
                     _ => {
                         let msg = format!("Enum {} has label {} which is unknown", ast.ident, label);
@@ -39,6 +45,7 @@ pub fn expand(ast: &MacroInput) -> Tokens {
 
             Info {
                 arg_name: arg_name,
+                min_max_arg: min_max_arg,
             }
         }
     };
@@ -70,10 +77,14 @@ pub fn expand(ast: &MacroInput) -> Tokens {
     let sig = match info.arg_name {
         Some(ref name) => {
             let name = name.clone();
-            quote! { fn #func <T: ::ToArg>(self, #name: T) -> ::Command }
+            quote! { fn #func<T: ::IntoArg>(self, #name: T) -> ::Command }
         }
         None => {
-            quote! { fn #func (self) -> ::Command }
+            if info.min_max_arg {
+                quote! { fn #func<T: ::IntoArg>(self, min: T, max: T) -> ::Command }
+            } else {
+                quote! { fn #func (self) -> ::Command }
+            }
         }
     };
 
@@ -102,8 +113,21 @@ pub fn expand(ast: &MacroInput) -> Tokens {
     if let Some(ref name) = info.arg_name {
         let name = name.clone();
         let token = quote! {
-            use ::ToArg;
-            for arg in #name.to_arg() {
+            use ::IntoArg;
+            for arg in #name.into_arg() {
+                term.mut_args().push(arg);
+            }
+        };
+        token.to_tokens(&mut tokens);
+    }
+
+    if info.min_max_arg {
+        let token = quote! {
+            use ::IntoArg;
+            for arg in min.into_arg() {
+                term.mut_args().push(arg);
+            }
+            for arg in max.into_arg() {
                 term.mut_args().push(arg);
             }
         };

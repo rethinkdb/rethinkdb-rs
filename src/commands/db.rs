@@ -4,5 +4,5 @@
 /// default database for the connection, specified in the `db` argument to `connect`.
 #[derive(Command)]
 enum _Db {
-    ArgnameDbName,
+    ArgnameName,
 }

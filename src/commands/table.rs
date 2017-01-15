@@ -1,2 +1,4 @@
 #[derive(Command)]
-struct _Table;
+enum _Table {
+    ArgnameName,
+}
