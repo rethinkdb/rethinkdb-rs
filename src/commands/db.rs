@@ -22,5 +22,5 @@ command! {
     /// * [table](trait.Table.html#tymethod.table)
     /// * [db_list](trait.DbList.html#tymethod.db_list)
 
-    #[db(args(T = "name"))]
+    #[command(db(args(T = "name")))]
 }

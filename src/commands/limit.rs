@@ -1,5 +1,5 @@
 command! {
     /// End the sequence after the given number of elements
 
-    #[limit(args(T = "n"))]
+    #[command(limit(args(T = "n")))]
 }

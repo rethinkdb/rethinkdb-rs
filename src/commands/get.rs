@@ -1,5 +1,5 @@
 command! {
     /// Get a document by primary key
 
-    #[get(args(T = "key"))]
+    #[command(get(args(T = "key")))]
 }

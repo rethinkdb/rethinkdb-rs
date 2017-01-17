@@ -1,5 +1,5 @@
 command! {
     /// Merge two or more sequences
 
-    #[union(args(T = "arg"))]
+    #[command(union(args(T = "arg")))]
 }

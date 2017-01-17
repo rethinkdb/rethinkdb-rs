@@ -1,5 +1,5 @@
 command! {
     /// Append a value to an array
 
-    #[append(args(T = "value"))]
+    #[command(append(args(T = "value")))]
 }
