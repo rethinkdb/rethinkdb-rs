@@ -1,4 +1,5 @@
-#[derive(Command)]
-enum _Prepend {
-    ArgnameValue,
+command! {
+    /// Prepend a value to an array
+
+    #[prepend(args(T = "value"))]
 }

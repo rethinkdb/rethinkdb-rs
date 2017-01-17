@@ -1,4 +1,5 @@
-#[derive(Command)]
-enum _TableDrop {
-    ArgnameName,
+command! {
+    /// Drop a table
+
+    #[table_drop(args(T = "name"))]
 }

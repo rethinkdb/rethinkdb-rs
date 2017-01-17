@@ -1,2 +1,5 @@
-#[derive(Command)]
-struct _Values;
+command! {
+    /// Return an array containing all of an object’s values
+
+    #[values]
+}

@@ -1,2 +1,5 @@
-#[derive(Command)]
-struct _DbList;
+command! {
+    /// List all database names in the system
+
+    #[db_list]
+}

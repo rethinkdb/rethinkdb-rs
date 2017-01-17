@@ -1,4 +1,5 @@
-#[derive(Command)]
-enum _Append {
-    ArgnameValue,
+command! {
+    /// Append a value to an array
+
+    #[append(args(T = "value"))]
 }

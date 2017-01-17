@@ -1,4 +1,5 @@
-#[derive(Command)]
-enum _Union {
-    ArgnameArg,
+command! {
+    /// Merge two or more sequences
+
+    #[union(args(T = "arg"))]
 }

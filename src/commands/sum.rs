@@ -1,2 +1,5 @@
-#[derive(Command)]
-struct _Sum;
+command! {
+    /// Sum all the elements of a sequence
+
+    #[sum]
+}

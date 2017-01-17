@@ -1,2 +1,5 @@
-#[derive(Command)]
-struct _Distinct;
+command! {
+    /// Remove duplicate elements from a sequence
+
+    #[distinct]
+}

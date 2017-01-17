@@ -1,2 +1,5 @@
-#[derive(Command)]
-struct _Min;
+command! {
+    /// Find the minimum element of a sequence
+
+    #[min]
+}

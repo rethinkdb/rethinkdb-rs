@@ -1,4 +1,5 @@
-#[derive(Command)]
-enum _Contains {
-    ArgnameArg,
+command! {
+    /// Check if a sequence contains all the specified values
+
+    #[contains(args(T = "arg"))]
 }

@@ -1,2 +1,5 @@
-#[derive(Command)]
-struct _IsEmpty;
+command! {
+    /// Test if a sequence is empty
+
+    #[is_empty]
+}

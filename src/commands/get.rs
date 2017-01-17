@@ -1,4 +1,5 @@
-#[derive(Command)]
-enum _Get {
-    ArgnameKey,
+command! {
+    /// Get a document by primary key
+
+    #[get(args(T = "key"))]
 }

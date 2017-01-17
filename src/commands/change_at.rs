@@ -1,5 +1,5 @@
-#[derive(Command)]
-enum _ChangeAt {
-    LeftargOffset,
-    RightargValue,
+command! {
+    /// Change a value in an array at a given index
+
+    #[change_at(args(O = "offset", V = "value"))]
 }

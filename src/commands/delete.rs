@@ -1,2 +1,5 @@
-#[derive(Command)]
-struct _Delete;
+command! {
+    /// Delete one or more documents from a table
+
+    #[delete]
+}

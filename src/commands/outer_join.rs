@@ -1,5 +1,5 @@
-#[derive(Command)]
-enum _OuterJoin {
-    LeftargOther,
-    RightargFunction,
+command! {
+    /// Return a left outer join of two sequences
+
+    #[outer_join(args(S = "sequence", F = "function"))]
 }

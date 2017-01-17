@@ -1,4 +1,5 @@
-#[derive(Command)]
-enum _Table {
-    ArgnameName,
+command! {
+    /// Return all documents in a table
+
+    #[table(args(T = "name"))]
 }

@@ -7,6 +7,23 @@ extern crate serde_json;
 #[cfg(test)]
 mod tests;
 
+macro_rules! commands {
+    ($($cmd:ident),* $(,)*) => {
+        $(
+            mod $cmd;
+            pub use self::$cmd::*;
+        )*
+    }
+}
+
+macro_rules! command {
+    ( $(#[$attr:meta])* ) => {
+        #[derive(Command)]
+        $(#[$attr])*
+        struct _Dummy;
+    }
+}
+
 pub mod commands;
 mod types;
 mod args;
