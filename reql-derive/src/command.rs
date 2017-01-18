@@ -1,6 +1,7 @@
+use std::collections::HashMap;
+
 use quote::{Tokens, ToTokens};
-use syn::{Ident, Attribute, MacroInput, VariantData};
-use syn::Body::{Struct, Enum};
+use syn::{Ident, Lit, MetaItem, NestedMetaItem, MacroInput};
 use case::CaseExt;
 
 pub struct Command {
@@ -36,71 +37,78 @@ impl Command {
         }
     }
 
-    fn command(&self) -> &Attribute {
+    fn command(&self) -> &MetaItem {
         let mut commands = self.ast.attrs.iter().filter(|attr| {
                 if let MetaItem::List(ref attr, _) = attr.value {
                     attr == "command"
                 } else {
                     false
                 }
-            });
-        let command = match commands.next() {
-            Some(ref command) => command,
-            None => panic!("command not defined"),
-        };
-        if commands.next().is_some() {
-            panic!("more than 1 command attributes found");
-        }
-        let command = match command.value {
+            })
+        .peekable();
+        let command = commands.peek().expect("command attribute not defined");
+        let mut meta_items = Vec::new();
+        match command.value {
             MetaItem::List(_, ref items) => {
                 if items.len() != 1 {
                     panic!("A command attribute must only carry one command.");
                 }
-                let command = items.next().as_ref().unwrap();
-                match command {
-                    MetaItem(ref command) => command,
-                    Literal(_) => panic!("A command attribute should not define commands as literals"),
+                for item in items {
+                    match *item {
+                        NestedMetaItem::MetaItem(ref command) => { meta_items.push(command); },
+                        NestedMetaItem::Literal(_) => { panic!("A command attribute should not define commands as literals"); },
+                    }
                 }
             }
-            _ => panic!("A command attribute must be defined as a list of items. That is `#[command(..)]`."),
+            _ => { panic!("A command attribute must be defined as a list of items. That is `#[command(..)]`."); },
         };
-        command
+        meta_items.iter().next().unwrap()
     }
 
     fn name(&self) -> &Ident {
-        match self.command() {
+        match *self.command() {
             MetaItem::Word(ref name) => name,
             MetaItem::List(ref name, _) => name,
-            NameValue(_) => panic!("A command must not be a name value pair"),
+            MetaItem::NameValue(..) => { panic!("A command must not be a name value pair"); },
         }
     }
 
-    fn value(&self) -> Option<&NestedMetaItem> {
-        match self.command() {
-            MetaItem::Word(_) => None,
-            MetaItem::List(_, ref value) => Some(value),
-            NameValue(_) => panic!("A command must not be a name value pair"),
+    fn value(&self) -> Vec<&NestedMetaItem> {
+        let mut value = Vec::new();
+        match *self.command() {
+            MetaItem::Word(_) => { },
+            MetaItem::List(_, ref items) => {
+                for item in items {
+                    value.push(item);
+                }
+            }
+            MetaItem::NameValue(..) => { panic!("A command must not be a name value pair"); },
         }
+        value
     }
 
     fn args(&self) -> Vec<(Ident, Ident)> {
         let mut args = Vec::new();
-        if let Some(MetaItem::List(ref name, ref value)) = self.value() {
-            if name == "args" {
-                match *value {
-                    NestedMetaItem::MetaItem(ref item) => {
-                        if let MetaItem::NameValue(ref typ, ref name) = item {
-                            match *name {
-                                Lit::Str(ref name, _) => {
-                                    args.push((typ.clone(), Ident::new(name)));
+        for item in self.value() {
+            if let NestedMetaItem::MetaItem(MetaItem::List(ref name, ref value)) = *item {
+                if name == "args" {
+                    for item in value {
+                        match *item {
+                            NestedMetaItem::MetaItem(ref item) => {
+                                if let MetaItem::NameValue(ref name, ref typ) = *item {
+                                    match *typ {
+                                        Lit::Str(ref typ, _) => {
+                                            args.push((name.clone(), Ident::new(typ.as_str())));
+                                        }
+                                        _ => { panic!("An arg name must be defined as a string"); },
+                                    };
+                                } else {
+                                    panic!("Args must be key value pairs");
                                 }
-                                _ => panic!("An arg name must be defined as a string"),
-                            };
-                        } else {
-                            panic!("Args must be key value pairs"),
+                            },
+                            NestedMetaItem::Literal(_) => { panic!("Args must not be literals"); },
                         }
-                    },
-                    Literal(_) => panic!("Args must not be literals"),
+                    }
                 }
             }
         }
@@ -108,7 +116,14 @@ impl Command {
     }
 
     fn title(&self) -> Tokens {
-        quote!()
+        let docs = self.docs();
+        for line in docs.as_str().lines() {
+            let doc = line.trim_left_matches("///").trim();
+            if !doc.is_empty() {
+                return quote!(#[doc=#doc]);
+            }
+        }
+        Tokens::new()
     }
 
     fn typ(&self) -> Tokens {
@@ -128,24 +143,51 @@ impl Command {
     }
 
     fn sig(&self) -> Tokens {
-        let func = self.name().clone();
+        let mut types = HashMap::new();
 
+        let func = self.name().clone();
         let mut generics = Tokens::new();
-        let mut args = Tokens::new();
+        let mut func_args = Tokens::new();
         let mut _where = Tokens::new();
 
-        for (typ, arg) in self.args {
+        let args = self.args();
+        if !args.is_empty() {
+            let mut gen = Vec::new();
+            let mut whe = Vec::new();
+
+            gen.push(quote!(<));
+            whe.push(quote!(where));
+
+            for (arg, typ) in args {
+                let typ_str = typ.to_string();
+                if let None = types.get(&typ_str) {
+                    gen.push(quote!(#typ));
+                    gen.push(quote!(,));
+                    whe.push(quote!(#typ: ::IntoArg));
+                    whe.push(quote!(,));
+                    types.insert(typ_str, ());
+                }
+                func_args.append_all(&[ quote!(, #arg: #typ) ]);
+            }
+
+            gen.pop();
+            whe.pop();
+
+            gen.push(quote!(>));
+
+            generics.append_all(gen);
+            _where.append_all(whe);
         }
 
         quote! {
-            fn #func<L, R>(self, #left_arg: L, #right_arg: R) -> ::Command where L: ::IntoArg, R: ::IntoArg
+            #func #generics (self #func_args) -> ::Command #_where
         }
     }
 
     fn body(&self) -> Tokens {
         let cmd_type = Ident::new(self.name().to_string().to_snake().to_uppercase());
         let mut args = Tokens::new();
-        for (_, arg) in self.args() {
+        for (arg, _) in self.args() {
             let token = quote! {
                 for arg in #arg.into_arg() {
                     term.mut_args().push(arg);
@@ -168,186 +210,4 @@ impl Command {
             }
         }
     }
-}
-
-pub fn expand(ast: &MacroInput) -> Tokens {
-    let info = match ast.body {
-        Struct(ref data) => {
-            if let &VariantData::Unit = data {
-                Info {
-                    arg_name: None,
-                    min_max_arg: false,
-                    left_arg: None,
-                    right_arg: None,
-                }
-            }
-            else { panic!("only unit structs and enums are supported"); }
-        }
-        Enum(ref vars) => {
-            let mut arg_name = None;
-            let mut min_max_arg = false;
-            let mut left_arg = None;
-            let mut right_arg = None;
-
-            for var in vars.iter() {
-                let label = var.ident.to_string();
-                match label.as_str() {
-                    s if s.starts_with("Argname") => {
-                        let name = s.trim_left_matches("Argname").to_snake();
-                        if name.is_empty() {
-                            panic!("`Argname` must be followed by the name of the argument eg. ArgnameDbName");
-                        }
-                        let name = Ident::new(name);
-                        arg_name = Some(name);
-                    }
-                    s if s.starts_with("Leftarg") => {
-                        let name = s.trim_left_matches("Leftarg").to_snake();
-                        if name.is_empty() {
-                            panic!("`Leftarg` must be followed by the name of the argument eg. LeftargDbName");
-                        }
-                        let name = Ident::new(name);
-                        left_arg = Some(name);
-                    }
-                    s if s.starts_with("Rightarg") => {
-                        let name = s.trim_left_matches("Rightarg").to_snake();
-                        if name.is_empty() {
-                            panic!("`Rightarg` must be followed by the name of the argument eg. RightargDbName");
-                        }
-                        let name = Ident::new(name);
-                        right_arg = Some(name);
-                    }
-                    "MinMaxArg" => {
-                        min_max_arg = true;
-                    }
-                    _ => {
-                        let msg = format!("Enum {} has label {} which is unknown", ast.ident, label);
-                        panic!(msg);
-                    }
-                }
-            }
-
-            Info {
-                arg_name: arg_name,
-                min_max_arg: min_max_arg,
-                left_arg: left_arg,
-                right_arg: right_arg,
-            }
-        }
-    };
-
-    // Extract name of command
-    let label = ast.ident.to_string();
-    let name = label.trim_left_matches("_");
-
-    // Create the identifiers
-    let typ = Ident::new(name);
-    let func = Ident::new(name.to_snake());
-    let cmd_type = Ident::new(name.to_snake().to_uppercase());
-
-    let mut tokens = Tokens::new();
-
-    // Declare the trait
-    let token = quote! { pub trait #typ };
-    token.to_tokens(&mut tokens);
-    tokens.append("{");
-
-    // Add documentation, if any
-    for attr in ast.attrs.iter() {
-        if attr.is_sugared_doc {
-            attr.to_tokens(&mut tokens);
-        }
-    }
-
-    // Finish defining the trait
-    let sig = match info.arg_name {
-        Some(ref name) => {
-            let name = name.clone();
-            quote! { fn #func<T>(self, #name: T) -> ::Command where T: ::IntoArg }
-        }
-        None => {
-            if info.min_max_arg {
-                quote! { fn #func<T>(self, min: T, max: T) -> ::Command where T: ::IntoArg }
-            } else {
-                if let Some(ref name) = info.left_arg {
-                    let left_arg = name.clone();
-                    let right_arg = info.right_arg.clone()
-                        .expect(&format!("{}: Rightarg can't be empty when Leftarg isn't", ast.ident));
-                    quote! { fn #func<L, R>(self, #left_arg: L, #right_arg: R) -> ::Command where L: ::IntoArg, R: ::IntoArg }
-                } else {
-                    quote! { fn #func (self) -> ::Command }
-                }
-            }
-        }
-    };
-
-    sig.clone().to_tokens(&mut tokens);
-    tokens.append(";");
-    tokens.append("}");
-
-    // Implement it
-    let token = quote! { impl #typ for ::Command };
-    token.to_tokens(&mut tokens);
-    tokens.append("{");
-
-    sig.to_tokens(&mut tokens);
-    tokens.append("{");
-
-    let token = quote! {
-        let mut term = ::ql2::proto::Term::new();
-        term.set_field_type(::ql2::proto::Term_TermType::#cmd_type);
-        if let Some(cmd) = self.term {
-            let args = ::protobuf::repeated::RepeatedField::from_vec(vec![cmd]);
-            term.set_args(args);
-        }
-    };
-    token.to_tokens(&mut tokens);
-
-    if let Some(ref name) = info.arg_name {
-        let name = name.clone();
-        let token = quote! {
-            for arg in #name.into_arg() {
-                term.mut_args().push(arg);
-            }
-        };
-        token.to_tokens(&mut tokens);
-    }
-
-    if let Some(ref name) = info.left_arg {
-        let left_arg = name.clone();
-        let right_arg = info.right_arg.unwrap();
-        let token = quote! {
-            for arg in #left_arg.into_arg() {
-                term.mut_args().push(arg);
-            }
-            for arg in #right_arg.into_arg() {
-                term.mut_args().push(arg);
-            }
-        };
-        token.to_tokens(&mut tokens);
-    }
-
-    if info.min_max_arg {
-        let token = quote! {
-            for arg in min.into_arg() {
-                term.mut_args().push(arg);
-            }
-            for arg in max.into_arg() {
-                term.mut_args().push(arg);
-            }
-        };
-        token.to_tokens(&mut tokens);
-    }
-
-    let token = quote! {
-        ::Command {
-            term: Some(term),
-            idx: self.idx + 1,
-        }
-    };
-    token.to_tokens(&mut tokens);
-
-    tokens.append("}");
-    tokens.append("}");
-
-    tokens
 }
