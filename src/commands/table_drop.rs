@@ -1,5 +1,5 @@
 command! {
     /// Drop a table
 
-    #[command(table_drop(args(T = "name")))]
+    #[command(table_drop(args(name = "T")))]
 }

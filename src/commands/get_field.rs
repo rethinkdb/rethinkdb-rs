@@ -1,5 +1,5 @@
 command! {
     /// Get a single field from an object
 
-    #[command(get_field(args(T = "field")))]
+    #[command(get_field(args(field = "T")))]
 }
