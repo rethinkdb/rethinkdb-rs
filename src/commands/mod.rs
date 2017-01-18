@@ -14,5 +14,8 @@ commands! {
     split,              upcase,             downcase,       add,            sub,                mul,
     div,                rem,                and,            or,             eq,                 ne,
     gt,                 ge,                 lt,             le,             not,                random,
-    round,              ceil,               floor,
+    round,              ceil,               floor,          now,            time,               epoch_time,
+    iso8601,            in_timezone,        timezone,       during,         date,               time_of_day,
+    year,               month,              day,            day_of_week,    day_of_year,        hours,
+    minutes,            seconds,
 }
