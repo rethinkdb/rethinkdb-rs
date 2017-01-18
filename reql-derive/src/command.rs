@@ -175,8 +175,9 @@ impl Command {
 
     fn body(&self) -> Tokens {
         let cmd = match self.name() {
-            name if name == "matches" => "match".to_string(),
-            name if name == "rem" => "mod".to_string(),
+            name if name == "match_" => "match".to_string(),
+            name if name == "mod_" => "mod".to_string(),
+            name if name == "do_" => "funcall".to_string(),
             name => name.to_string(),
         };
         let cmd_type = Ident::new(cmd.to_snake().to_uppercase());
