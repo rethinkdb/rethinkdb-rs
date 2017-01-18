@@ -174,7 +174,12 @@ impl Command {
     }
 
     fn body(&self) -> Tokens {
-        let cmd_type = Ident::new(self.name().to_string().to_snake().to_uppercase());
+        let cmd = match self.name() {
+            name if name == "matches" => "match".to_string(),
+            name if name == "rem" => "mod".to_string(),
+            name => name.to_string(),
+        };
+        let cmd_type = Ident::new(cmd.to_snake().to_uppercase());
         let mut args = Tokens::new();
         for (arg, _) in self.args() {
             let token = quote! {

@@ -10,5 +10,9 @@ commands! {
     max,                distinct,           contains,       pluck,          without,            merge,
     append,             prepend,            difference,     set_insert,     set_union,          set_intersection,
     set_difference,     get_field,          has_fields,     insert_at,      splice_at,          delete_at,
-    change_at,          keys,               values,         literal,
+    change_at,          keys,               values,         literal,        object,             matches,
+    split,              upcase,             downcase,       add,            sub,                mul,
+    div,                rem,                and,            or,             eq,                 ne,
+    gt,                 ge,                 lt,             le,             not,                random,
+    round,              ceil,               floor,
 }
