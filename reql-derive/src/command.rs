@@ -21,8 +21,18 @@ impl Command {
         let sig = self.sig();
         let body = self.body();
 
+        let mut note = Tokens::new();
+        if !docs.to_string().contains("```rust") {
+            let msg = format!("**Note:** This command is not yet fully documented. For more information and examples, please see [the equivalent command](https://rethinkdb.com/api/java/{}/) in the official Java driver documentation.", self.name());
+            note.append_all(&[quote!{
+                ///
+                #[doc=#msg]
+            }]);
+        }
+
         quote! {
             #docs
+            #note
             pub trait #typ {
                 fn #sig;
             }
@@ -169,7 +179,7 @@ impl Command {
         }
 
         quote! {
-            #func #generics (self #func_args) -> ::Command #_where
+            #func #generics (&self #func_args) -> ::Command #_where
         }
     }
 
@@ -194,8 +204,8 @@ impl Command {
         quote! {
             let mut term = ::ql2::proto::Term::new();
             term.set_field_type(::ql2::proto::Term_TermType::#cmd_type);
-            if let Some(cmd) = self.term {
-                let args = ::protobuf::repeated::RepeatedField::from_vec(vec![cmd]);
+            if let Some(ref cmd) = self.term {
+                let args = ::protobuf::repeated::RepeatedField::from_vec(vec![cmd.clone()]);
                 term.set_args(args);
             }
             #args
