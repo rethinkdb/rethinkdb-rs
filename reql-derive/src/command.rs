@@ -16,16 +16,14 @@ impl Command {
     }
 
     pub fn derive(&self) -> Tokens {
-        let title = self.title();
         let typ = self.typ();
         let docs = self.docs();
         let sig = self.sig();
         let body = self.body();
 
         quote! {
-            #title
+            #docs
             pub trait #typ {
-                #docs
                 fn #sig;
             }
 
@@ -115,17 +113,6 @@ impl Command {
         args
     }
 
-    fn title(&self) -> Tokens {
-        let docs = self.docs();
-        for line in docs.as_str().lines() {
-            let doc = line.trim_left_matches("///").trim();
-            if !doc.is_empty() {
-                return quote!(#[doc=#doc]);
-            }
-        }
-        Tokens::new()
-    }
-
     fn typ(&self) -> Tokens {
         let name = self.name().to_string().to_camel();
         let typ = Ident::new(name);
@@ -135,8 +122,10 @@ impl Command {
     fn docs(&self) -> Tokens {
         let mut docs = Tokens::new();
         for attr in self.ast.attrs.iter() {
-            if attr.is_sugared_doc {
-                attr.to_tokens(&mut docs);
+            if let MetaItem::NameValue(ref name, _) = attr.value {
+                if name == "doc" {
+                    attr.to_tokens(&mut docs);
+                }
             }
         }
         docs
