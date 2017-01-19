@@ -1,6 +1,8 @@
+use Command;
+
 /// Specify an optional argument to a ReQL command
 ///
-/// ## Example
+/// # Example
 ///
 /// Pass the `right_bound` optional argument to [between](trait.Between.html).
 ///
@@ -14,7 +16,7 @@
 ///
 /// To pass more than one optional argument, chain `opt_arg` once for each argument.
 ///
-/// ## Example
+/// # Example
 ///
 /// ```
 /// # use reql::commands::*;
@@ -27,12 +29,12 @@
 ///     .run::<Heroes>();
 /// ```
 pub trait OptArg {
-    fn opt_arg<T>(&self, option: &str, value: T) -> ::Command
+    fn opt_arg<T>(&self, option: &str, value: T) -> Command
         where T: ::IntoArg;
 }
 
-impl OptArg for ::Command {
-    fn opt_arg<T>(&self, option: &str, value: T) -> ::Command
+impl OptArg for Command {
+    fn opt_arg<T>(&self, option: &str, value: T) -> Command
         where T: ::IntoArg
     {
         let mut cmd = self.clone();

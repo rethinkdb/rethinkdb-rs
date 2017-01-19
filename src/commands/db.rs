@@ -4,7 +4,7 @@ command! {
     /// The `db` command is optional. If it is not present in a query, the query will run against the
     /// default database for the connection, specified in the `db` argument to `connect`.
     ///
-    /// ## Example
+    /// # Example
     ///
     /// Explicitly specify a database for a query.
     ///

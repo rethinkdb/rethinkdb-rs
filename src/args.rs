@@ -4,10 +4,7 @@ use ql2::proto::Term;
 
 impl IntoArg for Command {
     fn into_arg(self) -> Vec<Term> {
-        vec![self
-            .term
-            .unwrap_or_else(|| Term::new())
-        ]
+        vec![self.term.unwrap_or_else(|| Term::new())]
     }
 }
 

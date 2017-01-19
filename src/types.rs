@@ -1,3 +1,5 @@
+//! The ReQL data types
+
 use ql2::proto::{Term, Datum,
     Term_TermType as TermType,
     Datum_DatumType as DatumType,

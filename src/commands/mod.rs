@@ -14,7 +14,7 @@ commands! {
     max,                distinct,           contains,           pluck,              without,            merge,
     append,             prepend,            difference,         set_insert,         set_union,          set_intersection,
     set_difference,     get_field,          has_fields,         insert_at,          splice_at,          delete_at,
-    change_at,          keys,               values,             literal,            object,             match_,
+    change_at,          keys,               values,             literal,            opt_arg,            match_,
     split,              upcase,             downcase,           add,                sub,                mul,
     div,                mod_,               and,                or,                 eq,                 ne,
     gt,                 ge,                 lt,                 le,                 not,                random,
@@ -27,5 +27,5 @@ commands! {
     to_json,            http,               uuid,               circle,             distance,           fill,
     geojson,            to_geojson,         get_intersecting,   get_nearest,        includes,           intersects,
     line,               point,              polygon,            polygon_sub,        grant,              config,
-    rebalance,          reconfigure,        status,             wait,               opt_arg,
+    rebalance,          reconfigure,        status,             wait,
 }
