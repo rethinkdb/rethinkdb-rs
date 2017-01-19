@@ -11,16 +11,18 @@ command! {
     /// ```rust,norun
     /// # extern crate reql;
     /// # use reql::commands::*;
+    /// # use reql::commands::run::Dummy;
     /// # use reql::r;
+    /// # struct Heroes;
     /// # fn main() {
-    /// let marvel = r.db("heroes").table("marvel");
+    /// r.db("heroes").table("marvel").run::<Heros>();
     /// # }
     /// ```
-    ///
-    /// ## Related commands
-    /// 
-    /// * [table](trait.Table.html#tymethod.table)
-    /// * [db_list](trait.DbList.html#tymethod.db_list)
 
-    #[command(db(args(name = "T")))]
+    #[command(
+        db(
+            args(name = "T"),
+            related(table, db_list),
+        )
+    )]
 }

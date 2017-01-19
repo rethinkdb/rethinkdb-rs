@@ -20,19 +20,13 @@ impl Command {
         let docs = self.docs();
         let sig = self.sig();
         let body = self.body();
-
-        let mut note = Tokens::new();
-        if !docs.to_string().contains("```rust") {
-            let msg = format!("**Note:** This command is not yet fully documented. For more information and examples, please see [the equivalent command](https://rethinkdb.com/api/java/{}/) in the official Java driver documentation.", self.name());
-            note.append_all(&[quote!{
-                ///
-                #[doc=#msg]
-            }]);
-        }
+        let note = self.note();
+        let related = self.related();
 
         quote! {
             #docs
             #note
+            #related
             pub trait #typ {
                 fn #sig;
             }
@@ -43,6 +37,48 @@ impl Command {
                 }
             }
         }
+    }
+
+    fn note(&self) -> Tokens {
+        if self.docs().to_string().contains("```rust") {
+            return Tokens::new();
+        }
+
+        let msg = format!(r" **Note:** This command is not yet fully documented. For more information and examples, please see [the equivalent command](https://rethinkdb.com/api/java/{}/) in the official Java driver documentation.", self.name());
+
+        quote!{
+            #[doc=r""]
+            #[doc=#msg]
+        }
+    }
+
+    fn related(&self) -> Tokens {
+        let mut related = Tokens::new();
+        for item in self.value() {
+            if let NestedMetaItem::MetaItem(MetaItem::List(ref name, ref value)) = *item {
+                if name == "related" {
+                    related.append_all(&[quote!{
+                        ///
+                        /// ## Related commands
+                        ///
+                    }]);
+                    for item in value {
+                        match *item {
+                            NestedMetaItem::MetaItem(ref item) => {
+                                if let MetaItem::Word(ref cmd) = *item {
+                                    let item = format!(r" * [{}](trait.{}.html)", cmd, cmd.as_ref().to_camel());
+                                    related.append_all(&[quote!(#[doc=#item])]);
+                                } else {
+                                    panic!("Related commands must be identifiers");
+                                }
+                            },
+                            NestedMetaItem::Literal(_) => { panic!("Related commands must not be literals"); },
+                        }
+                    }
+                }
+            }
+        }
+        related
     }
 
     fn command(&self) -> &MetaItem {
@@ -184,13 +220,16 @@ impl Command {
     }
 
     fn body(&self) -> Tokens {
+        // Rename commands to term types
         let cmd = match self.name() {
             name if name == "match_" => "match".to_string(),
             name if name == "mod_" => "mod".to_string(),
             name if name == "do_" => "funcall".to_string(),
+            name if name == "js" => "javascript".to_string(),
+            name if name == "to_json" => "to_json_string".to_string(),
             name => name.to_string(),
         };
-        let cmd_type = Ident::new(cmd.to_snake().to_uppercase());
+        // Prepare args
         let mut args = Tokens::new();
         for (arg, _) in self.args() {
             let token = quote! {
@@ -200,10 +239,18 @@ impl Command {
             };
             token.to_tokens(&mut args);
         }
-
+        // Append command type
+        let mut typ = Tokens::new();
+        if cmd != "expr" {
+            let cmd_type = Ident::new(cmd.to_snake().to_uppercase());
+            typ.append_all(&[quote! {
+                term.set_field_type(::ql2::proto::Term_TermType::#cmd_type);
+            }]);
+        }
+        // Build the body
         quote! {
             let mut term = ::ql2::proto::Term::new();
-            term.set_field_type(::ql2::proto::Term_TermType::#cmd_type);
+            #typ
             if let Some(ref cmd) = self.term {
                 let args = ::protobuf::repeated::RepeatedField::from_vec(vec![cmd.clone()]);
                 term.set_args(args);
