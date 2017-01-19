@@ -172,8 +172,16 @@ impl Command {
                 if name == "doc" {
                     if let Lit::Str(ref doc_str, _) = *value {
                         if doc_str.contains("```reql") {
+                            let macro_use = if doc_str.contains("```reql,macros") {
+                                quote! {
+                                    /// # #[macro_use] extern crate reql;
+                                }
+                            } else {
+                                Tokens::new()
+                            };
                             let token = quote! {
                                 /// ```
+                                #macro_use
                                 /// # use reql::commands::*;
                                 /// # use reql::commands::run::Dummy;
                                 /// # use reql::r;
