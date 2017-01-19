@@ -8,10 +8,7 @@ command! {
     ///
     /// Explicitly specify a database for a query.
     ///
-    /// ```
-    /// # use reql::commands::*;
-    /// # use reql::commands::run::Dummy;
-    /// # use reql::r;
+    /// ```reql
     /// # struct Heroes;
     /// r.db("heroes").table("marvel").run::<Heroes>();
     /// ```

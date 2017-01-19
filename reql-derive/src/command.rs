@@ -40,7 +40,7 @@ impl Command {
     }
 
     fn note(&self) -> Tokens {
-        if self.docs().to_string().contains("```rust") {
+        if self.docs().to_string().contains("Example") {
             return Tokens::new();
         }
 
@@ -59,7 +59,7 @@ impl Command {
                 if name == "related" {
                     related.append_all(&[quote!{
                         ///
-                        /// ## Related commands
+                        /// # Related commands
                         ///
                     }]);
                     for item in value {
@@ -168,9 +168,21 @@ impl Command {
     fn docs(&self) -> Tokens {
         let mut docs = Tokens::new();
         for attr in self.ast.attrs.iter() {
-            if let MetaItem::NameValue(ref name, _) = attr.value {
+            if let MetaItem::NameValue(ref name, ref value) = attr.value {
                 if name == "doc" {
-                    attr.to_tokens(&mut docs);
+                    if let Lit::Str(ref doc_str, _) = *value {
+                        if doc_str.contains("```reql") {
+                            let token = quote! {
+                                /// ```
+                                /// # use reql::commands::*;
+                                /// # use reql::commands::run::Dummy;
+                                /// # use reql::r;
+                            };
+                            token.to_tokens(&mut docs);
+                        } else {
+                            attr.to_tokens(&mut docs);
+                        }
+                    }
                 }
             }
         }
