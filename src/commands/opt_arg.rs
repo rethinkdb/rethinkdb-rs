@@ -4,33 +4,27 @@
 ///
 /// Pass the `right_bound` optional argument to [between](trait.Between.html).
 ///
-/// ```rust,norun
-/// # extern crate reql;
+/// ```
 /// # use reql::commands::*;
 /// # use reql::commands::run::Dummy;
 /// # use reql::r;
-/// # struct Heros;
-/// # fn main() {
+/// # struct Heroes;
 /// r.table("marvel").between(10, 20).opt_arg("right_bound", "closed").run::<Heroes>();
-/// # }
 /// ```
 ///
 /// To pass more than one optional argument, chain `opt_arg` once for each argument.
 ///
 /// ## Example
 ///
-/// ```rust,norun
-/// # extern crate reql;
+/// ```
 /// # use reql::commands::*;
 /// # use reql::commands::run::Dummy;
 /// # use reql::r;
-/// # struct Heros;
-/// # fn main() {
+/// # struct Heroes;
 /// r.table("marvel").between(10, 20)
 ///     .opt_arg("right_bound", "closed")
 ///     .opt_arg("index", "power")
 ///     .run::<Heroes>();
-/// # }
 /// ```
 pub trait OptArg {
     fn opt_arg<T>(&self, option: &str, value: T) -> ::Command

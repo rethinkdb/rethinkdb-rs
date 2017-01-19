@@ -8,15 +8,12 @@ command! {
     ///
     /// Explicitly specify a database for a query.
     ///
-    /// ```rust,norun
-    /// # extern crate reql;
+    /// ```
     /// # use reql::commands::*;
     /// # use reql::commands::run::Dummy;
     /// # use reql::r;
     /// # struct Heroes;
-    /// # fn main() {
-    /// r.db("heroes").table("marvel").run::<Heros>();
-    /// # }
+    /// r.db("heroes").table("marvel").run::<Heroes>();
     /// ```
 
     #[command(
