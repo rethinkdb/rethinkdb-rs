@@ -6,6 +6,17 @@ use ql2::proto::{Term, Datum,
     Datum_AssocPair as DatumPair};
 use serde_json::value::{Value, ToJson};
 use protobuf::repeated::RepeatedField;
+use std::ops::Add;
+use commands::Add as AddCmd;
+use {Command, IntoArg};
+
+impl<'a> Add for &'a IntoArg {
+    type Output = Command;
+
+    fn add(self, other: &'a IntoArg) -> Command {
+        expr!(self).add((*other).into_arg())
+    }
+}
 
 pub trait FromJson {
     fn from_json<T: ToJson>(t: T) -> Term {
