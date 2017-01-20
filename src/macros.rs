@@ -38,10 +38,6 @@ macro_rules! command {
 /// r.branch(args!(x > 5, "big", "small")).run::<String>();
 /// # }
 /// ```
-///
-/// # Related commands
-///
-/// * [arr](macro.arr.html)
 #[macro_export]
 macro_rules! args {
     () => {};
