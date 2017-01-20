@@ -7,6 +7,7 @@ repository = "https://github.com/rust-rethinkdb/reql"
 documentation = "https://docs.rs/reql/*/reql/commands/"
 readme = "README.md"
 keywords = ["database", "rethinkdb", "reql", "driver"]
+categories = ["database"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
@@ -29,3 +30,6 @@ reql-derive = { path = "./reql-derive" }
 
 [dev-dependencies]
 rspec = "1.0.0-beta.3"
+
+[badges]
+travis-ci = { repository = "rust-rethinkdb/reql" }
