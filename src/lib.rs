@@ -47,14 +47,12 @@ pub use ql2::proto::{Term, Term_AssocPair as TermPair};
 #[derive(Debug, Clone)]
 pub struct Command {
     term: Term,
-    idx: u32,
 }
 
 lazy_static! {
     /// The top-level ReQL namespace
     pub static ref r: Command = Command {
         term: Term::new(),
-        idx: 0,
     };
 }
 
@@ -64,10 +62,9 @@ pub trait IntoArg {
 }
 
 impl Command {
-    pub fn new(term: Term, idx: u32) -> Command {
+    pub fn new(term: Term) -> Command {
         Command {
             term: term,
-            idx: idx,
         }
     }
 }
@@ -129,7 +126,7 @@ macro_rules! expr {
     }};
 
     ($( $val:expr ),* $(,)*) => {{
-        $crate::Command::new(arr!($($val),*), 0)
+        $crate::Command::new(arr!($($val),*))
     }};
 }
 

@@ -273,10 +273,7 @@ impl Command {
                 term.set_args(prev_cmd);
             }
             #args
-            ::Command {
-                term: term,
-                idx: self.idx + 1,
-            }
+            ::Command::new(term)
         }
     }
 }
