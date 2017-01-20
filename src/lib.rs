@@ -1,5 +1,7 @@
 //! A native RethinkDB driver written in Rust
 
+// `expr` macro recurses deeply
+
 // Currently can't set these within lazy_static
 // These are for `r`
 #![allow(non_upper_case_globals)]
@@ -61,6 +63,76 @@ pub trait IntoArg {
     fn into_arg(self) -> Vec<Term>;
 }
 
+impl Command {
+    pub fn new(term: Term, idx: u32) -> Command {
+        Command {
+            term: term,
+            idx: idx,
+        }
+    }
+}
+
+/// Construct a ReQL JSON object from a Rust expression
+///
+/// # Example
+///
+/// Objects wrapped with expr can then be manipulated by ReQL API functions.
+///
+/// ```
+/// # #[macro_use] extern crate reql;
+/// # use reql::commands::*;
+/// # use reql::commands::run::Dummy;
+/// # use reql::r;
+/// # struct Value;
+/// # fn main() {
+/// expr!(obj!{a: "b"}).merge(obj!{b: arr![1, 2, 3]}).run::<Value>();
+/// # }
+/// ```
+#[macro_export]
+macro_rules! expr {
+    () => {};
+
+    ( trace $left:tt && $right:tt $($tail:tt)* ) => {{
+        expr!( expr!($left).and($right) $($tail)*)
+    }};
+
+    ( trace $left:tt || $right:tt $($tail:tt)* ) => {{
+        expr!( expr!($left).or($right) $($tail)*)
+    }};
+
+    ( trace $left:tt == $right:tt $($tail:tt)* ) => {{
+        expr!( expr!($left).eq($right) $($tail)*)
+    }};
+
+    ( trace $left:tt != $right:tt $($tail:tt)* ) => {{
+        expr!( expr!($left).ne($right) $($tail)*)
+    }};
+
+    ( trace $left:tt > $right:tt $($tail:tt)* ) => {{
+        expr!( expr!($left).gt($right) $($tail)*)
+    }};
+
+    ( trace $left:tt >= $right:tt $($tail:tt)* ) => {{
+        expr!( expr!($left).ge($right) $($tail)*)
+    }};
+
+    ( trace $left:tt < $right:tt $($tail:tt)* ) => {{
+        expr!( expr!($left).lt($right) $($tail)*)
+    }};
+
+    ( trace $left:tt <= $right:tt $($tail:tt)* ) => {{
+        expr!( expr!($left).le($right) $($tail)*)
+    }};
+
+    ( trace ! $cond:tt $($tail:tt)* ) => {{
+        expr!( r.not($cond) $($tail)*)
+    }};
+
+    ($( $val:expr ),* $(,)*) => {{
+        $crate::Command::new(arr!($($val),*), 0)
+    }};
+}
+
 /// Splice an array of arguments into another term
 ///
 /// `args` is a macro that’s used to splice a number of arguments into another term. This is
@@ -91,35 +163,35 @@ pub trait IntoArg {
 #[macro_export]
 macro_rules! args {
     ( $left:tt && $right:tt, $($rest:expr),* $(,)* ) => {{
-        args!(r.expr($left).and($right), $($rest),*)
+        args!(expr!($left).and($right), $($rest),*)
     }};
 
     ( $left:tt || $right:tt, $($rest:expr),* $(,)* ) => {{
-        args!(r.expr($left).or($right), $($rest),*)
+        args!(expr!($left).or($right), $($rest),*)
     }};
 
     ( $left:tt == $right:tt, $($rest:expr),* $(,)* ) => {{
-        args!(r.expr($left).eq($right), $($rest),*)
+        args!(expr!($left).eq($right), $($rest),*)
     }};
 
     ( $left:tt != $right:tt, $($rest:expr),* $(,)* ) => {{
-        args!(r.expr($left).ne($right), $($rest),*)
+        args!(expr!($left).ne($right), $($rest),*)
     }};
 
     ( $left:tt > $right:tt, $($rest:expr),* $(,)* ) => {{
-        args!(r.expr($left).gt($right), $($rest),*)
+        args!(expr!($left).gt($right), $($rest),*)
     }};
 
     ( $left:tt >= $right:tt, $($rest:expr),* $(,)* ) => {{
-        args!(r.expr($left).ge($right), $($rest),*)
+        args!(expr!($left).ge($right), $($rest),*)
     }};
 
     ( $left:tt < $right:tt, $($rest:expr),* $(,)* ) => {{
-        args!(r.expr($left).lt($right), $($rest),*)
+        args!(expr!($left).lt($right), $($rest),*)
     }};
 
     ( $left:tt <= $right:tt, $($rest:expr),* $(,)* ) => {{
-        args!(r.expr($left).le($right), $($rest),*)
+        args!(expr!($left).le($right), $($rest),*)
     }};
 
     ( ! $cond:tt, $($rest:expr),* $(,)* ) => {{

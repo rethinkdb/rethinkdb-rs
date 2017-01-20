@@ -23,9 +23,9 @@ commands! {
     year,               month,              day,                day_of_week,        day_of_year,        hours,
     minutes,            seconds,            to_iso8601,         to_epoch_time,      wait,               binary,
     do_,                branch,             for_each,           range,              error,              default,
-    expr,               js,                 coerce_to,          type_of,            info,               json,
+    status,             js,                 coerce_to,          type_of,            info,               json,
     to_json,            http,               uuid,               circle,             distance,           fill,
     geojson,            to_geojson,         get_intersecting,   get_nearest,        includes,           intersects,
     line,               point,              polygon,            polygon_sub,        grant,              config,
-    rebalance,          reconfigure,        status,
+    rebalance,          reconfigure,
 }

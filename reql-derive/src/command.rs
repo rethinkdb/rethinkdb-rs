@@ -259,14 +259,7 @@ impl Command {
             };
             token.to_tokens(&mut args);
         }
-        // Append command type
-        let mut typ = Tokens::new();
-        if cmd != "expr" {
-            let cmd_type = Ident::new(cmd.to_snake().to_uppercase());
-            typ.append_all(&[quote! {
-                term.set_field_type(Term_TermType::#cmd_type);
-            }]);
-        }
+        let cmd_type = Ident::new(cmd.to_snake().to_uppercase());
         // Build the body
         quote! {
             use ::ql2::proto::Term;
@@ -274,7 +267,7 @@ impl Command {
             use ::ql2::proto::Term_TermType;
 
             let mut term = Term::new();
-            #typ
+            term.set_field_type(Term_TermType::#cmd_type);
             if self.term != Term::new() {
                 let prev_cmd = RepeatedField::from_vec(vec![self.term.clone()]);
                 term.set_args(prev_cmd);
