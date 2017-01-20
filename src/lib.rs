@@ -72,8 +72,7 @@ pub trait IntoArg {
 /// # use reql::commands::run::Dummy;
 /// # use reql::r;
 /// # fn main() {
-/// let (x, y) = (10, 5);
-/// r.branch(args!(x > y, "big", "small")).run::<String>();
+/// r.branch(args!(10 > 5, "big", "small")).run::<String>();
 /// # }
 /// ```
 ///
@@ -82,8 +81,40 @@ pub trait IntoArg {
 /// * [arr](macro.arr.html)
 #[macro_export]
 macro_rules! args {
-    ( $left:ident > $right:ident, $($rest:expr),* $(,)* ) => {{
+    ( $left:tt && $right:tt, $($rest:expr),* $(,)* ) => {{
+        args!(r.expr($left).and($right), $($rest),*)
+    }};
+
+    ( $left:tt || $right:tt, $($rest:expr),* $(,)* ) => {{
+        args!(r.expr($left).or($right), $($rest),*)
+    }};
+
+    ( $left:tt == $right:tt, $($rest:expr),* $(,)* ) => {{
+        args!(r.expr($left).eq($right), $($rest),*)
+    }};
+
+    ( $left:tt != $right:tt, $($rest:expr),* $(,)* ) => {{
+        args!(r.expr($left).ne($right), $($rest),*)
+    }};
+
+    ( $left:tt > $right:tt, $($rest:expr),* $(,)* ) => {{
         args!(r.expr($left).gt($right), $($rest),*)
+    }};
+
+    ( $left:tt >= $right:tt, $($rest:expr),* $(,)* ) => {{
+        args!(r.expr($left).ge($right), $($rest),*)
+    }};
+
+    ( $left:tt < $right:tt, $($rest:expr),* $(,)* ) => {{
+        args!(r.expr($left).lt($right), $($rest),*)
+    }};
+
+    ( $left:tt <= $right:tt, $($rest:expr),* $(,)* ) => {{
+        args!(r.expr($left).le($right), $($rest),*)
+    }};
+
+    ( ! $cond:tt, $($rest:expr),* $(,)* ) => {{
+        args!(r.not($cond), $($rest),*)
     }};
 
     ($( $val:expr ),* $(,)*) => {{
