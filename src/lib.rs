@@ -53,6 +53,44 @@ pub trait IntoArg {
     fn into_arg(self) -> Vec<Term>;
 }
 
+/// Splice an array of arguments into another term
+///
+/// `args` is a macro that’s used to splice a number of arguments into another term. This is
+/// useful when you want to call a variadic term such as [get_all](commands/trait.GetAll.html) with a set of arguments produced at
+/// runtime.
+///
+/// *Note* that args evaluates all its arguments before passing them into the parent term, even if
+/// the parent term otherwise allows lazy evaluation.
+///
+/// # Example
+///
+/// Get Alice and Bob from the table `people`.
+///
+/// ```
+/// # #[macro_use] extern crate reql;
+/// # use reql::commands::*;
+/// # use reql::commands::run::Dummy;
+/// # use reql::r;
+/// # fn main() {
+/// let (x, y) = (10, 5);
+/// r.branch(args!(x > y, "big", "small")).run::<String>();
+/// # }
+/// ```
+///
+/// # Related commands
+///
+/// * [arr](macro.arr.html)
+#[macro_export]
+macro_rules! args {
+    ( $left:ident > $right:ident, $($rest:expr),* $(,)* ) => {{
+        args!(r.expr($left).gt($right), $($rest),*)
+    }};
+
+    ($( $val:expr ),* $(,)*) => {{
+        arr!($($val),*)
+    }}
+}
+
 /// Take one or more values as arguments and return an array
 #[macro_export]
 macro_rules! arr {
