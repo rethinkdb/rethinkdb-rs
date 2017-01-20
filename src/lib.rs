@@ -56,7 +56,7 @@ pub trait IntoArg {
 /// Splice an array of arguments into another term
 ///
 /// `args` is a macro that’s used to splice a number of arguments into another term. This is
-/// useful when you want to call a variadic term such as [get_all](commands/trait.GetAll.html) with a set of arguments produced at
+/// useful when you want to call a variadic term such as [branch](commands/trait.Branch.html) with a set of arguments produced at
 /// runtime.
 ///
 /// *Note* that args evaluates all its arguments before passing them into the parent term, even if
@@ -72,7 +72,8 @@ pub trait IntoArg {
 /// # use reql::commands::run::Dummy;
 /// # use reql::r;
 /// # fn main() {
-/// r.branch(args!(10 > 5, "big", "small")).run::<String>();
+/// let x = 10;
+/// r.branch(args!(x > 5, "big", "small")).run::<String>();
 /// # }
 /// ```
 ///
@@ -119,7 +120,7 @@ macro_rules! args {
 
     ($( $val:expr ),* $(,)*) => {{
         arr!($($val),*)
-    }}
+    }};
 }
 
 /// Take one or more values as arguments and return an array
