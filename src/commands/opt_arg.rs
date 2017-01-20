@@ -38,19 +38,17 @@ impl OptArg for Command {
         where T: ::IntoArg
     {
         let mut cmd = self.clone();
-        if let Some(ref mut commands) = cmd.term {
-            // Squash the value into a single term
-            let mut term = ::ql2::proto::Term::new();
-            for arg in value.into_arg() {
-                term.mut_args().push(arg);
-            }
-            // Create a term pair to hold our option and value
-            let mut term_pair = ::ql2::proto::Term_AssocPair::new();
-            term_pair.set_key(option.into());
-            term_pair.set_val(term);
-            // Push it into our term
-            commands.mut_optargs().push(term_pair);
+        // Squash the value into a single term
+        let mut term = ::ql2::proto::Term::new();
+        for arg in value.into_arg() {
+            term.mut_args().push(arg);
         }
+        // Create a term pair to hold our option and value
+        let mut term_pair = ::ql2::proto::Term_AssocPair::new();
+        term_pair.set_key(option.into());
+        term_pair.set_val(term);
+        // Push it into our term
+        cmd.term.mut_optargs().push(term_pair);
         cmd
     }
 }

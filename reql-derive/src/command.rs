@@ -264,20 +264,24 @@ impl Command {
         if cmd != "expr" {
             let cmd_type = Ident::new(cmd.to_snake().to_uppercase());
             typ.append_all(&[quote! {
-                term.set_field_type(::ql2::proto::Term_TermType::#cmd_type);
+                term.set_field_type(Term_TermType::#cmd_type);
             }]);
         }
         // Build the body
         quote! {
-            let mut term = ::ql2::proto::Term::new();
+            use ::ql2::proto::Term;
+            use ::protobuf::repeated::RepeatedField;
+            use ::ql2::proto::Term_TermType;
+
+            let mut term = Term::new();
             #typ
-            if let Some(ref cmd) = self.term {
-                let args = ::protobuf::repeated::RepeatedField::from_vec(vec![cmd.clone()]);
-                term.set_args(args);
+            if self.term != Term::new() {
+                let prev_cmd = RepeatedField::from_vec(vec![self.term.clone()]);
+                term.set_args(prev_cmd);
             }
             #args
             ::Command {
-                term: Some(term),
+                term: term,
                 idx: self.idx + 1,
             }
         }
