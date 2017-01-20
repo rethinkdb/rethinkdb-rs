@@ -30,17 +30,17 @@ use Command;
 /// ```
 pub trait OptArg {
     fn opt_arg<T>(&self, option: &str, value: T) -> Command
-        where T: ::IntoArg;
+        where T: ::ToArg;
 }
 
 impl OptArg for Command {
     fn opt_arg<T>(&self, option: &str, value: T) -> Command
-        where T: ::IntoArg
+        where T: ::ToArg
     {
         let mut cmd = self.clone();
         // Squash the value into a single term
         let mut term = ::ql2::proto::Term::new();
-        for arg in value.into_arg() {
+        for arg in value.to_arg() {
             term.mut_args().push(arg);
         }
         // Create a term pair to hold our option and value

@@ -1,81 +1,81 @@
-use {IntoArg, Command};
+use {ToArg, Command};
 use types::FromJson;
 use ql2::proto::Term;
 
-impl IntoArg for Command {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for Command {
+    fn to_arg(&self) -> Vec<Term> {
         vec![self.term.clone()]
     }
 }
 
-impl IntoArg for String {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for String {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl<'a> IntoArg for &'a String {
-    fn into_arg(&self) -> Vec<Term> {
+impl<'a> ToArg for &'a String {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl<'a> IntoArg for &'a str {
-    fn into_arg(&self) -> Vec<Term> {
+impl<'a> ToArg for &'a str {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl IntoArg for f32 {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for f32 {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl IntoArg for i32 {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for i32 {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl IntoArg for u32 {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for u32 {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl IntoArg for f64 {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for f64 {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl IntoArg for i64 {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for i64 {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl IntoArg for u64 {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for u64 {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl IntoArg for bool {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for bool {
+    fn to_arg(&self) -> Vec<Term> {
         vec![Term::from_json(self)]
     }
 }
 
-impl IntoArg for Term {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for Term {
+    fn to_arg(&self) -> Vec<Term> {
         vec![self.clone()]
     }
 }
 
-impl IntoArg for Vec<Term> {
-    fn into_arg(&self) -> Vec<Term> {
+impl ToArg for Vec<Term> {
+    fn to_arg(&self) -> Vec<Term> {
         self.clone()
     }
 }

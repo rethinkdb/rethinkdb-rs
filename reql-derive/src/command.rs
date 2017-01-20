@@ -218,7 +218,7 @@ impl Command {
                 if let None = types.get(&typ_str) {
                     gen.push(quote!(#typ));
                     gen.push(quote!(,));
-                    whe.push(quote!(#typ: ::IntoArg));
+                    whe.push(quote!(#typ: ::ToArg));
                     whe.push(quote!(,));
                     types.insert(typ_str, ());
                 }
@@ -253,7 +253,7 @@ impl Command {
         let mut args = Tokens::new();
         for (arg, _) in self.args() {
             let token = quote! {
-                for arg in #arg.into_arg() {
+                for arg in #arg.to_arg() {
                     term.mut_args().push(arg);
                 }
             };

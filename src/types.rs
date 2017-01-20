@@ -8,13 +8,13 @@ use serde_json::value::{Value, ToJson};
 use protobuf::repeated::RepeatedField;
 use std::ops::Add;
 use commands::Add as AddCmd;
-use {Command, IntoArg};
+use {Command, ToArg};
 
-impl<'a> Add for &'a IntoArg {
+impl<'a> Add for &'a ToArg {
     type Output = Command;
 
-    fn add(self, other: &'a IntoArg) -> Command {
-        expr!(self).add((*other).into_arg())
+    fn add(self, other: &'a ToArg) -> Command {
+        expr!(self).add((*other).to_arg())
     }
 }
 
