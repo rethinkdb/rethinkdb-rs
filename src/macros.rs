@@ -36,7 +36,7 @@ macro_rules! command {
 ///
 /// The `expr` macro can also compile an if else statement down to a ReQL branch command.
 ///
-/// ```
+/// ```text
 /// # #[macro_use] extern crate reql;
 /// # use reql::commands::*;
 /// # use reql::commands::run::Dummy;
@@ -70,40 +70,40 @@ macro_rules! expr {
         expr!( r.branch(args!($($cond)*, $($body)*, $($($elif_cond)*, $($elif_body)*),* $($el_body)*)) $($tail)*)
     }};
 
-    ( trace $left:tt && $right:tt $($tail:tt)* ) => {{
-        expr!( expr!($left).and($right) $($tail)*)
+    ( trace $($left:tt)* && $($right:tt)* $($tail:tt)* ) => {{
+        expr!( expr!($($left)*).and($($right)*) $($tail)*)
     }};
 
-    ( trace $left:tt || $right:tt $($tail:tt)* ) => {{
-        expr!( expr!($left).or($right) $($tail)*)
+    ( trace $($left:tt)* || $($right:tt)* $($tail:tt)* ) => {{
+        expr!( expr!($($left)*).or($($right)*) $($tail)*)
     }};
 
-    ( trace $left:tt == $right:tt $($tail:tt)* ) => {{
-        expr!( expr!($left).eq($right) $($tail)*)
+    ( trace $($left:tt)* == $($right:tt)* $($tail:tt)* ) => {{
+        expr!( expr!($($left)*).eq($($right)*) $($tail)*)
     }};
 
-    ( trace $left:tt != $right:tt $($tail:tt)* ) => {{
-        expr!( expr!($left).ne($right) $($tail)*)
+    ( trace $($left:tt)* != $($right:tt)* $($tail:tt)* ) => {{
+        expr!( expr!($($left)*).ne($($right)*) $($tail)*)
     }};
 
-    ( trace $left:tt > $right:tt $($tail:tt)* ) => {{
-        expr!( expr!($left).gt($right) $($tail)*)
+    ( trace $($left:tt)* > $($right:tt)* $($tail:tt)* ) => {{
+        expr!( expr!($($left)*).gt($($right)*) $($tail)*)
     }};
 
-    ( trace $left:tt >= $right:tt $($tail:tt)* ) => {{
-        expr!( expr!($left).ge($right) $($tail)*)
+    ( trace $($left:tt)* >= $($right:tt)* $($tail:tt)* ) => {{
+        expr!( expr!($($left)*).ge($($right)*) $($tail)*)
     }};
 
-    ( trace $left:tt < $right:tt $($tail:tt)* ) => {{
-        expr!( expr!($left).lt($right) $($tail)*)
+    ( trace $($left:tt)* < $($right:tt)* $($tail:tt)* ) => {{
+        expr!( expr!($($left)*).lt($($right)*) $($tail)*)
     }};
 
-    ( trace $left:tt <= $right:tt $($tail:tt)* ) => {{
-        expr!( expr!($left).le($right) $($tail)*)
+    ( trace $($left:tt)* <= $($right:tt)* $($tail:tt)* ) => {{
+        expr!( expr!($($left)*).le($($right)*) $($tail)*)
     }};
 
-    ( trace ! $cond:tt $($tail:tt)* ) => {{
-        expr!( r.not($cond) $($tail)*)
+    ( trace ! $($cond:tt)* $($tail:tt)* ) => {{
+        expr!( r.not($($cond)*) $($tail)*)
     }};
 
     ($( $val:expr ),* $(,)*) => {{
@@ -131,7 +131,8 @@ macro_rules! expr {
 /// # use reql::r;
 /// # fn main() {
 /// let x = 10;
-/// r.branch(args!(x > 5, "big", "small")).run::<String>();
+//// r.branch(args!(x > 5, "big", "small")).run::<String>();
+/// r.branch(args!(r.table(x) > 5, "big", "small")).run::<String>();
 /// # }
 /// ```
 ///
@@ -140,44 +141,44 @@ macro_rules! expr {
 /// * [arr](macro.arr.html)
 #[macro_export]
 macro_rules! args {
-    (trace $left:tt && $right:tt, $($tail:tt)* ) => {{
-        args!(expr!($left).and($right), $($tail)*)
+    (trace $($left:tt)* && $($right:tt)*, $($tail:tt)* ) => {{
+        args!(expr!($($left)*).and($($right)*), $($tail)*)
     }};
 
-    (trace $left:tt || $right:tt, $($tail:tt)* ) => {{
-        args!(expr!($left).or($right), $($tail)*)
+    (trace $($left:tt)* || $($right:tt)*, $($tail:tt)* ) => {{
+        args!(expr!($($left)*).or($($right)*), $($tail)*)
     }};
 
-    (trace $left:tt == $right:tt, $($tail:tt)* ) => {{
-        args!(expr!($left).eq($right), $($tail)*)
+    (trace $($left:tt)* == $($right:tt)*, $($tail:tt)* ) => {{
+        args!(expr!($($left)*).eq($($right)*), $($tail)*)
     }};
 
-    (trace $left:tt != $right:tt, $($tail:tt)* ) => {{
-        args!(expr!($left).ne($right), $($tail)*)
+    (trace $($left:tt)* != $($right:tt)*, $($tail:tt)* ) => {{
+        args!(expr!($($left)*).ne($($right)*), $($tail)*)
     }};
 
-    (trace $left:tt > $right:tt, $($tail:tt)* ) => {{
+    (trace $left:block > $right:block, $($tail:tt)* ) => {{
         args!(expr!($left).gt($right), $($tail)*)
     }};
 
-    (trace $left:tt >= $right:tt, $($tail:tt)* ) => {{
-        args!(expr!($left).ge($right), $($tail)*)
+    (trace $($left:tt)* >= $($right:tt)*, $($tail:tt)* ) => {{
+        args!(expr!($($left)*).ge($($right)*), $($tail)*)
     }};
 
-    (trace $left:tt < $right:tt, $($tail:tt)* ) => {{
-        args!(expr!($left).lt($right), $($tail)*)
+    (trace $($left:tt)* < $($right:tt)*, $($tail:tt)* ) => {{
+        args!(expr!($($left)*).lt($($right)*), $($tail)*)
     }};
 
-    (trace $left:tt <= $right:tt, $($tail:tt)* ) => {{
-        args!(expr!($left).le($right), $($tail)*)
+    (trace $($left:tt)* <= $($right:tt)*, $($tail:tt)* ) => {{
+        args!(expr!($($left)*).le($($right)*), $($tail)*)
     }};
 
     (trace ! $cond:tt, $($tail:tt)* ) => {{
         args!(r.not($cond), $($tail)*)
     }};
 
-    (trace $left:tt + $right:tt, $($tail:tt)* ) => {{
-        args!(expr!($left).add($right), $($tail)*)
+    (trace $($left:tt)* + $($right:tt)*, $($tail:tt)* ) => {{
+        args!(expr!($($left)*).add($($right)*), $($tail)*)
     }};
 
     ($( $val:expr ),* $(,)*) => {{
@@ -205,7 +206,7 @@ macro_rules! arr {
 /// Create an object from a list of key-value pairs, where the keys must be strings
 #[macro_export]
 macro_rules! obj {
-    ($( $key:ident: $val:expr ),* $(,)*) => {{
+    ( $( $key:ident: $val:expr ),* $(,)*) => {{
         use $crate::ToArg;
         use $crate::Term;
         use $crate::TermPair;
