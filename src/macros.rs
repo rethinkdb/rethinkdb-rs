@@ -88,9 +88,7 @@ macro_rules! args {
         let mut object = Term::new();
         $(
             let mut term = Term::new();
-            for arg in args!($($val)+).to_arg() {
-                term.mut_args().push(arg);
-            }
+            term.mut_args().push(args!($($val)+).to_arg());
             let key = stringify!($key);
             let mut term_pair = TermPair::new();
             term_pair.set_key(key.into());
@@ -105,9 +103,7 @@ macro_rules! args {
 
         let mut term = Term::new();
         $(
-            for arg in $val.to_arg() {
-                term.mut_args().push(arg);
-            }
+            term.mut_args().push($val.to_arg());
         )*
         args!(args!(term), $($tail)*)
     }};
@@ -117,9 +113,7 @@ macro_rules! args {
 
         let mut term = Term::new();
         $(
-            for arg in $val.to_arg() {
-                term.mut_args().push(arg);
-            }
+            term.mut_args().push($val.to_arg());
         )*
         Command::new(term)
     }};

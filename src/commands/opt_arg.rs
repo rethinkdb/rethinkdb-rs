@@ -40,9 +40,7 @@ impl OptArg for Command {
         let mut cmd = self.clone();
         // Squash the value into a single term
         let mut term = ::ql2::proto::Term::new();
-        for arg in value.to_arg() {
-            term.mut_args().push(arg);
-        }
+        term.mut_args().push(value.to_arg());
         // Create a term pair to hold our option and value
         let mut term_pair = ::ql2::proto::Term_AssocPair::new();
         term_pair.set_key(option.into());

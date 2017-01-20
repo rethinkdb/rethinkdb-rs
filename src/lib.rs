@@ -43,7 +43,7 @@ lazy_static! {
 
 /// The argument that is passed to any ReQL command
 pub trait ToArg {
-    fn to_arg(&self) -> Vec<Term>;
+    fn to_arg(&self) -> Term;
 }
 
 impl Command {

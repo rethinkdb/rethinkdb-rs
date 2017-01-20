@@ -253,9 +253,7 @@ impl Command {
         let mut args = Tokens::new();
         for (arg, _) in self.args() {
             let token = quote! {
-                for arg in #arg.to_arg() {
-                    term.mut_args().push(arg);
-                }
+                term.mut_args().push(#arg.to_arg());
             };
             token.to_tokens(&mut args);
         }
