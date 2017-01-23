@@ -27,5 +27,5 @@ commands! {
     to_json,            http,               uuid,               circle,             distance,           fill,
     geojson,            to_geojson,         get_intersecting,   get_nearest,        includes,           intersects,
     line,               point,              polygon,            polygon_sub,        grant,              config,
-    rebalance,          reconfigure,
+    rebalance,          reconfigure,        expr,
 }

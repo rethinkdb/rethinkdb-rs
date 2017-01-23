@@ -20,6 +20,12 @@ impl ToArg for String {
     }
 }
 
+impl ToArg for char {
+    fn to_arg(&self) -> Term {
+        Term::from_json(self)
+    }
+}
+
 impl<'a> ToArg for &'a String {
     fn to_arg(&self) -> Term {
         Term::from_json(self)

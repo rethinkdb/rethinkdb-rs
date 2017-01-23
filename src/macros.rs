@@ -11,7 +11,7 @@ macro_rules! command {
     ( $(#[$attr:meta])* ) => {
         #[derive(Command)]
         $(#[$attr])*
-        struct _Dummy;
+        struct _DummyCommand;
     }
 }
 
@@ -40,81 +40,57 @@ macro_rules! command {
 /// ```
 #[macro_export]
 macro_rules! args {
-    () => {};
-
-    (trace $($left:tt)* && $($right:tt)*, $($tail:tt)* ) => {{
-        args!(args!($($left)*).and($($right)*), $($tail)*)
-    }};
-
-    (trace $($left:tt)* || $($right:tt)*, $($tail:tt)* ) => {{
-        args!(args!($($left)*).or($($right)*), $($tail)*)
-    }};
-
-    (trace $($left:tt)* == $($right:tt)*, $($tail:tt)* ) => {{
-        args!(args!($($left)*).eq($($right)*), $($tail)*)
-    }};
-
-    (trace $($left:tt)* != $($right:tt)*, $($tail:tt)* ) => {{
-        args!(args!($($left)*).ne($($right)*), $($tail)*)
-    }};
-
-    (trace $($left:tt)* > $($right:tt)*, $($tail:tt)* ) => {{
-        args!(args!($($left)*).gt($($right)*), $($tail)*)
-    }};
-
-    (trace $($left:tt)* >= $($right:tt)*, $($tail:tt)* ) => {{
-        args!(args!($($left)*).ge($($right)*), $($tail)*)
-    }};
-
-    (trace $($left:tt)* < $($right:tt)*, $($tail:tt)* ) => {{
-        args!(args!($($left)*).lt($($right)*), $($tail)*)
-    }};
-
-    (trace $($left:tt)* <= $($right:tt)*, $($tail:tt)* ) => {{
-        args!(args!($($left)*).le($($right)*), $($tail)*)
-    }};
-
-    (trace ! $cond:tt, $($tail:tt)* ) => {{
-        args!(r.not($cond), $($tail)*)
-    }};
-
-    (trace $($left:tt)* + $($right:tt)*, $($tail:tt)* ) => {{
-        args!(args!($($left)*).add($($right)*), $($tail)*)
-    }};
-
-    ( trace { $( $key:ident: $($val:tt)+ ),* } $(,)* $($tail:tt)* ) => {{
-        use $crate::{ToArg, Term, TermPair};
-
-        let mut object = Term::new();
-        $(
-            let mut term = Term::new();
-            term.mut_args().push(args!($($val)+).to_arg());
-            let key = stringify!($key);
-            let mut term_pair = TermPair::new();
-            term_pair.set_key(key.into());
-            term_pair.set_val(term);
-            object.mut_optargs().push(term_pair);
-         )*
-        args!(args!(object), $($tail)*)
-    }};
-
-    ( trace [ $( $val:expr ),* $(,)* ] $(,)* $($tail:tt)* ) => {{
-        use $crate::{ToArg, Term};
+    ( $($arg:expr),* $(,)* ) => {{
+        use $crate::{ToArg, Command, Term};
 
         let mut term = Term::new();
-        $(
-            term.mut_args().push($val.to_arg());
-        )*
-        args!(args!(term), $($tail)*)
-    }};
-
-    ($( $val:expr ),* $(,)*) => {{
-        use $crate::{ToArg, Term, Command};
-
-        let mut term = Term::new();
-        $(
-            term.mut_args().push($val.to_arg());
-        )*
+        __process_args!(term, $(($arg))*);
         Command::new(term)
+    }};
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __process_args {
+    ( $term:ident, ) => { };
+    
+    ( $term:ident, ({ $($key:ident; $($val:tt)+),* $(,)* }) ) => {{
+        $(
+            let key = stringify!($key);
+            let val = args!($($val)+);
+            let temp_pair = Command::create_term_pair(key, val);
+            $term.mut_optargs().push(temp_pair);
+         )*
+    }};
+    
+    ( $term:ident, ({ $($key:ident; $($val:tt)+),* $(,)* }) $($tail:tt)+ ) => {{
+        let mut arg = Term::new();
+        $(
+            let key = stringify!($key);
+            let val = args!($($val)+);
+            let temp_pair = Command::create_term_pair(key, val);
+            arg.mut_optargs().push(temp_pair);
+         )*
+        $term.mut_args().push(arg);
+        __process_args!($term, $($tail)*);
+    }};
+    
+    ( $term:ident, ([ $($val:expr),* $(,)* ]) $($tail:tt)* ) => {{
+        let mut arg = Term::new();
+        $(
+            arg.mut_args().push(args!($val).to_arg());
+        )*
+        $term.mut_args().push(arg);
+        __process_args!($term, $($tail)*);
+    }};
+    
+    ( $term:ident, (| $($arg:ident),* $(,)* | { $body:tt }) $($tail:tt)* ) => {{
+        unimplemented!();
+        __process_args!($term, $($tail)*);
+    }};
+    
+    ( $term:ident, ($arg:expr) $($tail:tt)* ) => {{
+        $term.mut_args().push($arg.to_arg());
+        __process_args!($term, $($tail)*);
     }};
 }
