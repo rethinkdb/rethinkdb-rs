@@ -1,5 +1,5 @@
 command! {
     /// Construct a geometry object of type Line
 
-    #[command(line(args(arg = "T")))]
+    #[command(line(args(args = "T")))]
 }

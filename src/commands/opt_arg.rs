@@ -28,20 +28,30 @@ use commands::Command;
 ///     .opt_arg("index", "power")
 ///     .run::<Heroes>();
 /// ```
+///
+/// The key is optional because some commands (eg. `error`) have optional arguments that
+/// that can only be specified via `opt_arg`. In such a case just pass in `None` as the key.
 pub trait OptArg {
-    fn opt_arg<T>(&self, option: &str, value: T) -> Command
-        where T: ::ToArg;
+    fn opt_arg<K, V>(&self, option: K, value: V) -> Command
+        where K: Into<Option<&str>>, V: ::ToArg;
 }
 
 impl OptArg for Command {
-    fn opt_arg<T>(&self, option: &str, value: T) -> Command
-        where T: ::ToArg
+    fn opt_arg<K, V>(&self, option: K, value: V) -> Command
+        where K: Into<Option<&str>>, V: ::ToArg
     {
         let mut cmd = self.clone();
         {
             let term = cmd.mut_term();
-            let temp_pair = Command::create_term_pair(option, value);
-            term.mut_optargs().push(temp_pair);
+            match option.into() {
+                Some(option) => {
+                    let temp_pair = Command::create_term_pair(option, value);
+                    term.mut_optargs().push(temp_pair);
+                }
+                None => {
+                    term.mut_args().push(value.to_arg());
+                }
+            }
         }
         cmd
     }

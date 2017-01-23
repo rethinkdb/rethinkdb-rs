@@ -1,5 +1,5 @@
 command! {
     /// Insert documents into a table
 
-    #[command(insert(args(document = "T")))]
+    #[command(insert(args(args = "T")))]
 }
