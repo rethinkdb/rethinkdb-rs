@@ -1,10 +1,11 @@
-use {ToArg, Command};
+use ToArg;
+use commands::Command;
 use types::FromJson;
 use ql2::proto::Term;
 
 impl ToArg for Command {
     fn to_arg(&self) -> Term {
-        self.term.clone()
+        self.term().clone()
     }
 }
 

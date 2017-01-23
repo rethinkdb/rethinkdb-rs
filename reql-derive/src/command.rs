@@ -31,7 +31,7 @@ impl Command {
                 fn #sig;
             }
 
-            impl #typ for ::Command {
+            impl #typ for ::commands::Command {
                 fn #sig {
                     #body
                 }
@@ -184,7 +184,6 @@ impl Command {
                                 #macro_use
                                 /// # use reql::commands::*;
                                 /// # use reql::commands::run::Dummy;
-                                /// # use reql::r;
                             };
                             token.to_tokens(&mut docs);
                         } else {
@@ -235,7 +234,7 @@ impl Command {
         }
 
         quote! {
-            #func #generics (&self #func_args) -> ::Command #_where
+            #func #generics (&self #func_args) -> ::commands::Command #_where
         }
     }
 
@@ -266,12 +265,12 @@ impl Command {
 
             let mut term = Term::new();
             term.set_field_type(Term_TermType::#cmd_type);
-            if self.term != Term::new() {
-                let prev_cmd = RepeatedField::from_vec(vec![self.term.clone()]);
+            if *self.term() != Term::new() {
+                let prev_cmd = RepeatedField::from_vec(vec![self.term().clone()]);
                 term.set_args(prev_cmd);
             }
             #args
-            let mut cmd = ::Command::new();
+            let mut cmd = ::commands::Command::new();
             cmd.set_term(term);
             cmd
         }

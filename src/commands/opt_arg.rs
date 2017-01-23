@@ -1,4 +1,4 @@
-use Command;
+use commands::Command;
 
 /// Specify an optional argument to a ReQL command
 ///
@@ -9,8 +9,8 @@ use Command;
 /// ```
 /// # use reql::commands::*;
 /// # use reql::commands::run::Dummy;
-/// # use reql::r;
 /// # struct Heroes;
+/// # let r = Command::new();
 /// r.table("marvel").between(10, 20).opt_arg("right_bound", "closed").run::<Heroes>();
 /// ```
 ///
@@ -21,8 +21,8 @@ use Command;
 /// ```
 /// # use reql::commands::*;
 /// # use reql::commands::run::Dummy;
-/// # use reql::r;
 /// # struct Heroes;
+/// # let r = Command::new();
 /// r.table("marvel").between(10, 20)
 ///     .opt_arg("right_bound", "closed")
 ///     .opt_arg("index", "power")
@@ -38,15 +38,11 @@ impl OptArg for Command {
         where T: ::ToArg
     {
         let mut cmd = self.clone();
-        // Squash the value into a single term
-        let mut term = ::ql2::proto::Term::new();
-        term.mut_args().push(value.to_arg());
-        // Create a term pair to hold our option and value
-        let mut term_pair = ::ql2::proto::Term_AssocPair::new();
-        term_pair.set_key(option.into());
-        term_pair.set_val(term);
-        // Push it into our term
-        cmd.term.mut_optargs().push(term_pair);
+        {
+            let term = cmd.mut_term();
+            let temp_pair = Command::create_term_pair(option, value);
+            term.mut_optargs().push(temp_pair);
+        }
         cmd
     }
 }

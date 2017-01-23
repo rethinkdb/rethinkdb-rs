@@ -1,4 +1,5 @@
-use {Command, ToArg};
+use ToArg;
+use commands::Command;
 
 /// Construct a ReQL JSON object from a native object
 pub trait Expr {

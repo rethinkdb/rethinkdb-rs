@@ -32,16 +32,17 @@ macro_rules! command {
 /// # #[macro_use] extern crate reql;
 /// # use reql::commands::*;
 /// # use reql::commands::run::Dummy;
-/// # use reql::r;
 /// # fn main() {
+/// # let r = Command::new();
 /// let x = 10;
-/// r.branch(args!(x > 5, "big", "small")).run::<String>();
+/// r.branch(args!(r.expr(x).gt(5), "big", "small")).run::<String>();
 /// # }
 /// ```
 #[macro_export]
 macro_rules! args {
     ( $($arg:tt)* ) => {{
-        use $crate::{ToArg, Command, Term};
+        use $crate::Term;
+        use $crate::commands::Command;
 
         let mut term = Term::new();
         __process_args!(term, $($arg)*);
@@ -96,11 +97,15 @@ macro_rules! __process_args {
     }};
     
     ( $term:ident,  $(,)* $arg:expr, $($tail:tt)+ ) => {{
+        #[allow(unused_imports)]
+        use $crate::ToArg;
         $term.mut_args().push($arg.to_arg());
         __process_args!($term, $($tail)+);
     }};
     
     ( $term:ident,  $(,)* $arg:expr $(,)* ) => {{
+        #[allow(unused_imports)]
+        use $crate::ToArg;
         $term.mut_args().push($arg.to_arg());
     }};
 }

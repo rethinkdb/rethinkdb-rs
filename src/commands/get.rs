@@ -9,6 +9,7 @@ command! {
     ///
     /// ```reql
     /// # struct Post;
+    /// # let r = Command::new();
     /// r.table("posts").get("a9849eef-7176-4411-935b-79a6e3c56a74").run::<Post>();
     /// ```
     ///
@@ -31,6 +32,7 @@ command! {
     ///
     /// ```reql
     /// # struct Hero;
+    /// # let r = Command::new();
     /// r.table("heroes").get(3).changes().run::<Hero>();
     /// ```
 
