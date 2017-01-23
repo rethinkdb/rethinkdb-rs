@@ -36,9 +36,7 @@ pub struct Command {
 
 lazy_static! {
     /// The top-level ReQL namespace
-    pub static ref r: Command = Command {
-        term: Term::new(),
-    };
+    pub static ref r: Command = Command::new();
 }
 
 /// The argument that is passed to any ReQL command
@@ -47,10 +45,27 @@ pub trait ToArg {
 }
 
 impl Command {
-    pub fn new(term: Term) -> Command {
+    /// Creates a new command
+    ///
+    /// This is typically called `r`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # extern crate reql;
+    /// # fn main() {
+    /// let r = reql::Command::new();
+    /// # }
+    /// ```
+    pub fn new() -> Command {
         Command {
-            term: term,
+            term: Term::new(),
         }
+    }
+
+    #[doc(hidden)]
+    pub fn set_term(&mut self, term: Term) {
+        self.term = term;
     }
 
     #[doc(hidden)]

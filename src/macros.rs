@@ -45,7 +45,9 @@ macro_rules! args {
 
         let mut term = Term::new();
         __process_args!(term, $($arg)*);
-        Command::new(term)
+        let mut cmd = Command::new();
+        cmd.set_term(term);
+        cmd
     }};
 }
 

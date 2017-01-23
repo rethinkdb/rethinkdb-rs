@@ -271,7 +271,9 @@ impl Command {
                 term.set_args(prev_cmd);
             }
             #args
-            ::Command::new(term)
+            let mut cmd = ::Command::new();
+            cmd.set_term(term);
+            cmd
         }
     }
 }
