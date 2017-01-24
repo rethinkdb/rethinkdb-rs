@@ -252,7 +252,7 @@ impl Command {
         let mut args = Tokens::new();
         for (arg, _) in self.args() {
             let token = quote! {
-                term.mut_args().push(#arg.to_arg());
+                cmd = ::commands::WithArgs::with_args(&cmd, #arg);
             };
             token.to_tokens(&mut args);
         }
@@ -269,9 +269,9 @@ impl Command {
                 let prev_cmd = RepeatedField::from_vec(vec![self.term().clone()]);
                 term.set_args(prev_cmd);
             }
-            #args
             let mut cmd = ::commands::Command::new();
             cmd.set_term(term);
+            #args
             cmd
         }
     }

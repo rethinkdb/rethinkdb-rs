@@ -1,5 +1,5 @@
 command! {
     /// Subtract two numbers
 
-    #[command(sub(args(arg = "T")))]
+    #[command(sub(args(args = "T")))]
 }

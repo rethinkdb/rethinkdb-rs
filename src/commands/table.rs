@@ -53,7 +53,7 @@ command! {
 
     #[command(
         table(
-            args(name = "T"),
+            args(args = "T"),
             related(filter, get),
         )
     )]

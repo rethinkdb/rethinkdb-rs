@@ -1,5 +1,5 @@
 command! {
     /// Create a table
 
-    #[command(table_create(args(name = "T")))]
+    #[command(table_create(args(args = "T")))]
 }

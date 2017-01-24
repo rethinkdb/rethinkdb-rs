@@ -1,5 +1,5 @@
 command! {
     /// Sort the sequence by document values of the given key(s)
 
-    #[command(order_by)]
+    #[command(order_by(args(args = "T")))]
 }

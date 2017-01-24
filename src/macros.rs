@@ -80,7 +80,7 @@ macro_rules! __process_args {
         __process_args!($term, $($tail)*);
     }};
     
-    ( $term:ident,  $(,)* [ $($val:tt),* ] $($tail:tt)* ) => {{
+    ( $term:ident,  $(,)* [ $($val:tt),* $(,)* ] $($tail:tt)* ) => {{
         let mut arg = Term::new();
         $(
             let mut val = Term::new();
