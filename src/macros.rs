@@ -40,12 +40,12 @@ macro_rules! command {
 /// ```
 #[macro_export]
 macro_rules! args {
-    ( $($arg:tt)* ) => {{
+    ( $($arg:tt)+ ) => {{
         use $crate::Term;
         use $crate::commands::Command;
 
         let mut term = Term::new();
-        __process_args!(term, $($arg)*);
+        __process_args!(term, $($arg)+);
         let mut cmd = Command::new();
         cmd.set_term(term);
         cmd

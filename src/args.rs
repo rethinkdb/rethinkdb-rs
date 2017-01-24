@@ -2,6 +2,7 @@ use ToArg;
 use commands::Command;
 use types::FromJson;
 use ql2::proto::Term;
+use serde_json::value::Value;
 
 impl ToArg for Command {
     fn to_arg(&self) -> Term {
@@ -76,6 +77,12 @@ impl ToArg for u64 {
 }
 
 impl ToArg for bool {
+    fn to_arg(&self) -> Term {
+        Term::from_json(self)
+    }
+}
+
+impl ToArg for Value {
     fn to_arg(&self) -> Term {
         Term::from_json(self)
     }
