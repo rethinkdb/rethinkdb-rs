@@ -57,22 +57,22 @@ macro_rules! args {
 macro_rules! __process_args {
     ( $term:ident, ) => { };
     
-    ( $term:ident,  $(,)* { $($key:ident: $($val:tt)+),* $(,)* } $(,)* ) => {{
+    ( $term:ident,  $(,)* { $($key:ident: $val:tt),* $(,)* } $(,)* ) => {{
         $(
             let key = stringify!($key);
             let mut val = Term::new();
-            __process_args!(val, $($val)+);
+            __process_args!(val, $val);
             let temp_pair = Command::create_term_pair(key, val);
             $term.mut_optargs().push(temp_pair);
          )*
     }};
     
-    ( $term:ident,  $(,)* { $($key:ident: $($val:tt)+),* $(,)* } $($tail:tt)* ) => {{
+    ( $term:ident,  $(,)* { $($key:ident: $val:tt),* $(,)* } $($tail:tt)* ) => {{
         let mut arg = Term::new();
         $(
             let key = stringify!($key);
             let mut val = Term::new();
-            __process_args!(val, $($val)+);
+            __process_args!(val, $val);
             let temp_pair = Command::create_term_pair(key, val);
             arg.mut_optargs().push(temp_pair);
          )*

@@ -7,11 +7,14 @@ use commands::Command;
 /// Pass the `right_bound` optional argument to [between](trait.Between.html).
 ///
 /// ```
+/// # #[macro_use] extern crate reql;
+/// # fn main() {
 /// # use reql::commands::*;
 /// # use reql::commands::run::Dummy;
 /// # struct Heroes;
 /// # let r = Command::new();
 /// r.table("marvel").between(args!(10, 20, {right_bound: "closed"})).run::<Heroes>();
+/// # }
 /// ```
 ///
 /// To pass more than one optional argument, chain `opt_arg` once for each argument.
@@ -19,6 +22,8 @@ use commands::Command;
 /// # Example
 ///
 /// ```
+/// # #[macro_use] extern crate reql;
+/// # fn main() {
 /// # use reql::commands::*;
 /// # use reql::commands::run::Dummy;
 /// # struct Heroes;
@@ -28,6 +33,7 @@ use commands::Command;
 ///     index: "power",
 /// }))
 /// .run::<Heroes>();
+/// # }
 /// ```
 ///
 /// The key is optional because some commands (eg. `error`) have optional arguments that
