@@ -9,22 +9,18 @@ command! {
     ///
     /// ```reql
     /// # struct Post;
-    /// # let r = Command::new();
-    /// r.table("posts").get("a9849eef-7176-4411-935b-79a6e3c56a74").run::<Post>();
+    /// r.table("posts").get("a9849eef-7176-4411-935b-79a6e3c56a74").run::<Post>(&conn);
     /// ```
     ///
     /// # Example
     ///
     /// Find a document and merge another document with it.
     ///
-    /// ```reql,macros
+    /// ```reql
     /// # struct Hero;
-    /// # fn main() {
-    /// # let r = Command::new();
-    /// r.table("heroes").get(3).merge(args!({
-    ///     powers: ["invisibility", "speed"],
-    /// })).run::<Hero>();
-    /// # }
+    /// r.table("heroes").get(3)
+    ///     .merge(args!({powers: ["invisibility", "speed"]}))
+    ///     .run::<Hero>(&conn);
     /// ```
     ///
     /// # Example
@@ -33,8 +29,7 @@ command! {
     ///
     /// ```reql
     /// # struct Hero;
-    /// # let r = Command::new();
-    /// r.table("heroes").get(3).changes().run::<Hero>();
+    /// r.table("heroes").get(3).changes().run::<Hero>(&conn);
     /// ```
 
     #[command(

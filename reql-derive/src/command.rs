@@ -167,23 +167,28 @@ impl Command {
 
     fn docs(&self) -> Tokens {
         let mut docs = Tokens::new();
+        let mut in_code_block = false;
         for attr in self.ast.attrs.iter() {
             if let MetaItem::NameValue(ref name, ref value) = attr.value {
                 if name == "doc" {
                     if let Lit::Str(ref doc_str, _) = *value {
                         if doc_str.contains("```reql") {
-                            let macro_use = if doc_str.contains("```reql,macros") {
-                                quote! {
-                                    /// # #[macro_use] extern crate reql;
-                                }
-                            } else {
-                                Tokens::new()
-                            };
+                            in_code_block = true;
                             let token = quote! {
                                 /// ```
-                                #macro_use
+                                /// # #[macro_use] extern crate reql;
                                 /// # use reql::commands::*;
                                 /// # use reql::commands::run::Dummy;
+                                /// # fn main() {
+                                /// # let r = Command::new();
+                                /// # let conn = ();
+                            };
+                            token.to_tokens(&mut docs);
+                        } else if doc_str.contains("```") && in_code_block {
+                            in_code_block = false;
+                            let token = quote! {
+                                /// # }
+                                /// ```
                             };
                             token.to_tokens(&mut docs);
                         } else {

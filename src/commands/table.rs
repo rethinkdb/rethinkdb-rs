@@ -10,8 +10,7 @@ command! {
     ///
     /// ```reql
     /// # struct Heroes;
-    /// # let r = Command::new();
-    /// r.table("marvel").run::<Heroes>();
+    /// r.table("marvel").run::<Heroes>(&conn);
     /// ```
     ///
     /// # Example
@@ -20,8 +19,7 @@ command! {
     ///
     /// ```reql
     /// # struct Heroes;
-    /// # let r = Command::new();
-    /// r.db("heroes").table("marvel").run::<Heroes>();
+    /// r.db("heroes").table("marvel").run::<Heroes>(&conn);
     /// ```
     ///
     /// There are two [opt_args](trait.OptArg.html) that may be specified.
@@ -43,12 +41,9 @@ command! {
     ///
     /// Allow potentially out-of-date data in exchange for faster reads.
     ///
-    /// ```reql,macros
-    /// # fn main() {
+    /// ```reql
     /// # struct Heroes;
-    /// # let r = Command::new();
-    /// r.db("heroes").table(args!("marvel", {read_mode: "outdated"})).run::<Heroes>();
-    /// # }
+    /// r.db("heroes").table(args!("marvel", {read_mode: "outdated"})).run::<Heroes>(&conn);
     /// ```
 
     #[command(

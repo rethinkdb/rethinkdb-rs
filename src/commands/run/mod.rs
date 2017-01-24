@@ -6,7 +6,7 @@ use commands::Command;
 ///
 /// Use this in examples and documentation where you don't want actual command execution to occur.
 pub trait Dummy {
-    fn run<T>(&self) { }
+    fn run<T>(&self, _conn: &()) { }
 }
 
 impl Dummy for Command { }

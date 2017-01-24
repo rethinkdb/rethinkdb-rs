@@ -20,7 +20,10 @@ use commands::Command;
 /// # use reql::commands::run::Dummy;
 /// # struct Heroe;
 /// # let r = Command::new();
-/// r.table("marvel").get_all().with_args(args!("man_of_steel", {index: "code_name"})).run::<Heroe>();
+/// # let conn = ();
+/// r.table("marvel").get_all()
+///     .with_args(args!("man_of_steel", {index: "code_name"}))
+///     .run::<Heroe>(&conn);
 /// # }
 /// ```
 pub trait WithArgs {

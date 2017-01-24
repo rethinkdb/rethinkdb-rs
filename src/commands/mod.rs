@@ -59,10 +59,12 @@ impl Command {
         }
     }
 
+    #[doc(hidden)]
     pub fn term(&self) -> &Term {
         &self.term
     }
 
+    #[doc(hidden)]
     pub fn mut_term(&mut self) -> &mut Term {
         &mut self.term
     }

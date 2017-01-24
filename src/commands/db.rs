@@ -10,8 +10,7 @@ command! {
     ///
     /// ```reql
     /// # struct Heroes;
-    /// # let r = Command::new();
-    /// r.db("heroes").table("marvel").run::<Heroes>();
+    /// r.db("heroes").table("marvel").run::<Heroes>(&conn);
     /// ```
 
     #[command(

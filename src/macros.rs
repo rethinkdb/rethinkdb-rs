@@ -33,9 +33,10 @@ macro_rules! command {
 /// # use reql::commands::*;
 /// # use reql::commands::run::Dummy;
 /// # fn main() {
+/// # let conn = ();
 /// # let r = Command::new();
 /// let x = 10;
-/// r.branch(args!(r.expr(x).gt(5), "big", "small")).run::<String>();
+/// r.branch(args!(r.expr(x).gt(5), "big", "small")).run::<String>(&conn);
 /// # }
 /// ```
 #[macro_export]
