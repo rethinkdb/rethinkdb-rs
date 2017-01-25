@@ -93,17 +93,17 @@ macro_rules! __process_args {
     }};
     
     ( $term:ident,  $(,)* | $($arg:ident),* $(,)* | { $($body:tt)+ } $($tail:tt)* ) => {{
-        unimplemented!();
+        //unimplemented!();
         __process_args!($term, $($tail)*);
     }};
     
     ( $term:ident,  $(,)* | $($arg:ident),* $(,)* | $body:expr, $($tail:tt)+ ) => {{
-        unimplemented!();
+        //unimplemented!();
         __process_args!($term, $($tail)+);
     }};
     
     ( $term:ident,  $(,)* | $($arg:ident),* $(,)* | $body:expr $(,)* ) => {{
-        unimplemented!();
+        //unimplemented!();
     }};
     
     ( $term:ident,  $(,)* $arg:expr, $($tail:tt)+ ) => {{
