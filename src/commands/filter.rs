@@ -43,7 +43,31 @@ command! {
     /// r.table("users").filter(args!(|user| user.get_field("age").eq(30))).run::<User>(&conn);
     /// ```
     ///
-    /// In this case, the function returns `true` if the field `age` is equal to 30.
+    /// In this case, the function returns `true` if the field `age` is equal to 30. Predicates to
+    /// `filter` are evaluated on the server, and must use ReQL expressions. Also, predicates must
+    /// evaluate document fields. They cannot evaluate [secondary
+    /// indexes](https://rethinkdb.com/docs/secondary-indexes/java/).
+    ///
+    /// # Example
+    ///
+    /// Get all users who are more than 18 years old.
+    ///
+    /// ```reql
+    /// # struct Users;
+    /// r.table("users").filter(args!(|user| user.get_field("age").gt(18))).run::<Users>(&conn);
+    /// ```
+    ///
+    /// # Example
+    ///
+    /// Get all users who are less than 18 years old and more than 13 years old.
+    ///
+    /// ```reql
+    /// # struct Users;
+    /// r.table("users").filter(args!(|user| {
+    ///     let age = user.get_field("age");
+    ///     age.lt(18).and(age.gt(13))
+    /// })).run::<Users>(&conn);
+    /// ```
 
     #[command(filter(args(args = "T")))]
 }

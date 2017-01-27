@@ -10,6 +10,8 @@ extern crate serde_json;
 extern crate lazy_static;
 #[macro_use]
 extern crate derive_error;
+extern crate r2d2;
+extern crate scram;
 
 #[cfg(test)]
 mod tests;
@@ -19,6 +21,7 @@ mod macros;
 mod types;
 mod args;
 pub mod commands;
+pub mod errors;
 
 #[doc(hidden)]
 pub use ql2::proto::Term;
