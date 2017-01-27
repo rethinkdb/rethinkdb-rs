@@ -24,7 +24,7 @@ byteorder = "1.0"
 bufstream = "0.1"
 serde = "0.8"
 serde_json = "0.8"
-derive-error = { path = "/home/enchanter/projects/derive-error" }
+derive-error = "0.0.2"
 futures = "0.1"
 scram = "0.1"
 reql-derive = { path = "./reql-derive" }
