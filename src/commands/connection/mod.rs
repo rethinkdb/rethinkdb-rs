@@ -13,7 +13,7 @@ pub trait Connect {
 impl Connect for Command {
     type Connection = Connection;
 
-    fn connect(&self, args: Args) -> Result<Connection>
+    fn connect(&self, _args: Args) -> Result<Connection>
     {
         Ok(Connection { })
     }

@@ -8,8 +8,10 @@ extern crate serde;
 extern crate serde_json;
 #[macro_use]
 extern crate derive_error;
+/*
 #[macro_use]
 extern crate serde_derive;
+*/
 extern crate scram;
 extern crate byteorder;
 extern crate bufstream;
