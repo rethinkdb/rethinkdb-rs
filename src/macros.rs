@@ -42,14 +42,17 @@ macro_rules! command {
 #[macro_export]
 macro_rules! args {
     ( $($arg:tt)+ ) => {{
-        use $crate::Term;
-        use $crate::commands::Command;
+        #[allow(unused_imports)]
+        use $crate::{ToArg, Term};
+        #[allow(unused_imports)]
+        use $crate::commands::Args;
 
-        let mut term = Term::new();
-        __process_args!(term, $($arg)+);
-        let mut cmd = Command::new();
-        cmd.set_term(term);
-        cmd
+        let mut args = Args::new();
+        {
+            let term = args.mut_term();
+            __process_args!(term, $($arg)+);
+        }
+        args
     }};
 }
 
@@ -63,7 +66,7 @@ macro_rules! __process_args {
             let key = stringify!($key);
             let mut val = Term::new();
             __process_args!(val, $val);
-            let temp_pair = Command::create_term_pair(key, val);
+            let temp_pair = Args::create_term_pair(key, val);
             $term.mut_optargs().push(temp_pair);
          )*
     }};
@@ -74,7 +77,7 @@ macro_rules! __process_args {
             let key = stringify!($key);
             let mut val = Term::new();
             __process_args!(val, $val);
-            let temp_pair = Command::create_term_pair(key, val);
+            let temp_pair = Args::create_term_pair(key, val);
             arg.mut_optargs().push(temp_pair);
          )*
         $term.mut_args().push(arg);
@@ -107,15 +110,11 @@ macro_rules! __process_args {
     }};
     
     ( $term:ident,  $(,)* $arg:expr, $($tail:tt)+ ) => {{
-        #[allow(unused_imports)]
-        use $crate::ToArg;
         $term.mut_args().push($arg.to_arg());
         __process_args!($term, $($tail)+);
     }};
     
     ( $term:ident,  $(,)* $arg:expr $(,)* ) => {{
-        #[allow(unused_imports)]
-        use $crate::ToArg;
         $term.mut_args().push($arg.to_arg());
     }};
 }

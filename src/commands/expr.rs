@@ -11,6 +11,8 @@ impl Expr for Command {
     fn expr<T>(&self, value: T) -> Command
         where T: ToArg
     {
-        args!(value)
+        let mut cmd = Command::new();
+        cmd.set_term(value.to_arg());
+        cmd
     }
 }

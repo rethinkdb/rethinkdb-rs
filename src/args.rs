@@ -1,10 +1,16 @@
 use ToArg;
-use commands::Command;
+use commands::{Command, Args};
 use types::FromJson;
 use ql2::proto::Term;
 use serde_json::value::Value;
 
 impl ToArg for Command {
+    fn to_arg(&self) -> Term {
+        self.term().clone()
+    }
+}
+
+impl ToArg for Args {
     fn to_arg(&self) -> Term {
         self.term().clone()
     }

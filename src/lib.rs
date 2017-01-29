@@ -7,10 +7,7 @@ extern crate protobuf;
 extern crate serde;
 extern crate serde_json;
 #[macro_use]
-extern crate lazy_static;
-#[macro_use]
 extern crate derive_error;
-extern crate r2d2;
 #[macro_use]
 extern crate serde_derive;
 extern crate scram;
@@ -25,7 +22,6 @@ mod tests;
 mod macros;
 mod types;
 mod args;
-mod conn;
 pub mod commands;
 pub mod errors;
 
@@ -39,6 +35,7 @@ use ql2::proto::{Datum,
     Datum_DatumType as DT,
 };
 
+/// The result of any ReQL command that can potentially return an error
 pub type Result<T> = ::std::result::Result<T, errors::Error>;
 
 /// The argument that is passed to any ReQL command
@@ -46,15 +43,23 @@ pub trait ToArg {
     fn to_arg(&self) -> Term;
 }
 
-pub trait IsDatum {
+/// A ReQL connection
+pub struct Connection {
+}
+
+/// Any object that can be used as a ReQL connection
+pub trait AsConnection {
+}
+
+trait IsDatum {
     fn is_datum(&self) -> bool;
 }
 
-pub trait IsEmpty {
+trait IsEmpty {
     fn is_empty(&self) -> bool;
 }
 
-pub trait Encode {
+trait Encode {
     fn encode(&self) -> String;
 }
 

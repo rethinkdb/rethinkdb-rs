@@ -27,7 +27,7 @@ commands! {
     to_json,            http,               uuid,               circle,             distance,           fill,
     geojson,            to_geojson,         get_intersecting,   get_nearest,        includes,           intersects,
     line,               point,              polygon,            polygon_sub,        grant,              config,
-    rebalance,          reconfigure,        with_args,
+    rebalance,          reconfigure,        with_args,          connection,
 }
 
 use ql2::proto::{Term, Term_AssocPair as TermPair};
@@ -48,13 +48,47 @@ impl Command {
     ///
     /// ```
     /// # extern crate reql;
-    /// # use reql::commands::Command;
+    /// # use reql::commands::*;
+    /// # use reql::commands::run::Dummy;
+    /// # struct Users;
     /// # fn main() {
+    /// # let conn = ();
     /// let r = Command::new();
+    /// r.table("users").run::<Users>(&conn);
     /// # }
     /// ```
     pub fn new() -> Command {
         Command {
+            term: Term::new(),
+        }
+    }
+
+    #[doc(hidden)]
+    pub fn term(&self) -> &Term {
+        &self.term
+    }
+
+    #[doc(hidden)]
+    pub fn mut_term(&mut self) -> &mut Term {
+        &mut self.term
+    }
+
+    #[doc(hidden)]
+    pub fn set_term(&mut self, term: Term) {
+        self.term = term;
+    }
+}
+
+/// The return type of the `args!()` macro
+#[derive(Debug, Clone)]
+pub struct Args {
+    term: Term,
+}
+
+impl Args {
+    #[doc(hidden)]
+    pub fn new() -> Args {
+        Args {
             term: Term::new(),
         }
     }

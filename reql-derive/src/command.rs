@@ -176,6 +176,8 @@ impl Command {
                             in_code_block = true;
                             let token = quote! {
                                 /// ```
+                                /// # #![allow(unused_imports)]
+                                /// # #![allow(unused_variables)]
                                 /// # #[macro_use] extern crate reql;
                                 /// # use reql::commands::*;
                                 /// # use reql::commands::run::Dummy;

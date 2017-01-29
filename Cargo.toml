@@ -7,18 +7,13 @@ repository = "https://github.com/rust-rethinkdb/reql"
 documentation = "https://docs.rs/reql/*/reql/commands/"
 readme = "README.md"
 keywords = ["database", "rethinkdb", "reql", "driver"]
-#categories = ["database"]
+categories = ["database"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
 ql2 = "1.1"
-r2d2 = "0.7"
 protobuf = "1.1"
 slog = { version = "1.2", features = ["release_max_level_warn"] }
-slog-scope = "0.2"
-slog-term = "1.3"
-lazy_static = "0.2"
-parking_lot = "0.3"
 #uuid = { version = "0.3", features = ["v4", "serde", "use_std"] }
 uuid = { path = "/home/enchanter/projects/uuid", features = ["v4", "serde", "use_std"] }
 byteorder = "1.0"
@@ -28,11 +23,12 @@ serde_json = "0.9"
 serde_derive = "0.9"
 derive-error = "0.0.2"
 futures = "0.1"
-scram = "0.1"
+scram = { git = "https://github.com/rushmorem/scram", branch = "update-ring" }
 reql-derive = { path = "./reql-derive" }
 
 [dev-dependencies]
 rspec = "1.0.0-beta.3"
+slog-term = "1.3"
 
-#[badges]
-#travis-ci = { repository = "rust-rethinkdb/reql" }
+[badges]
+travis-ci = { repository = "rust-rethinkdb/reql" }

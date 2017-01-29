@@ -3,7 +3,6 @@
 use std::io::Error as IoError;
 use std::str::Utf8Error;
 use std::sync::mpsc::SendError;
-use r2d2::{InitializationError, GetTimeout};
 use serde_json::error::Error as JsonError;
 use protobuf::ProtobufError;
 use serde_json::Value;
@@ -63,21 +62,11 @@ pub enum AvailabilityError {
 pub enum DriverError {
     #[error(msg_embedded, non_std, no_from)]
     Auth(String),
-    Connection(ConnectionError),
+    Io(IoError),
     Response(ResponseError),
     Json(JsonError),
     Protobuf(ProtobufError),
     Scram(ScramError),
-    #[error(msg_embedded, non_std, no_from)]
-    Other(String),
-}
-
-/// Connection related errors
-#[derive(Debug, Error)]
-pub enum ConnectionError {
-    Initialization(InitializationError),
-    Timeout(GetTimeout),
-    Io(IoError),
     #[error(msg_embedded, non_std, no_from)]
     Other(String),
 }
@@ -88,25 +77,6 @@ pub enum ResponseError {
     Parse(Utf8Error),
     #[error(non_std, no_from)]
     Db(Value),
-}
-
-/// Converts from r2d2 error
-impl From<InitializationError> for Error {
-    fn from(err: InitializationError) -> Error {
-        From::from(ConnectionError::Initialization(err))
-    }
-}
-
-impl From<GetTimeout> for Error {
-    fn from(err: GetTimeout) -> Error {
-        From::from(ConnectionError::Timeout(err))
-    }
-}
-
-impl From<ConnectionError> for Error {
-    fn from(err: ConnectionError) -> Error {
-        From::from(DriverError::Connection(err))
-    }
 }
 
 impl From<ResponseError> for Error {
@@ -124,7 +94,7 @@ impl From<AvailabilityError> for Error {
 /// Converts from IO error
 impl From<IoError> for Error {
     fn from(err: IoError) -> Error {
-        From::from(ConnectionError::Io(err))
+        From::from(DriverError::Io(err))
     }
 }
 
