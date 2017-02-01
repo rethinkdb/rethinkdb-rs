@@ -23,7 +23,9 @@ serde_json = "0.9"
 serde_derive = "0.9"
 derive-error = "0.0.3"
 futures = "0.1"
-scram = { git = "https://github.com/tomprogrammer/scram" }
+tokio-core = "0.1"
+tokio-proto = "0.1"
+scram = { git = "https://github.com/tomprogrammer/scram", rev = "426655b796a2b931a7d50a1a64bdacb8da32862e" }
 reql-derive = { path = "./reql-derive" }
 
 [dev-dependencies]
