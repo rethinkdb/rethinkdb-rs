@@ -14,8 +14,7 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 ql2 = "1.1"
 protobuf = "1.1"
 slog = { version = "1.2", features = ["release_max_level_warn"] }
-#uuid = { version = "0.3", features = ["v4", "serde", "use_std"] }
-uuid = { git = "https://github.com/rushmorem/uuid", branch = "update-serde", features = ["v4", "serde", "use_std"] }
+uuid = { version = "0.4", features = ["v4", "serde", "use_std"] }
 byteorder = "1.0"
 bufstream = "0.1"
 serde = "0.9"
@@ -25,12 +24,12 @@ derive-error = "0.0.3"
 futures = "0.1"
 tokio-core = "0.1"
 tokio-proto = "0.1"
-scram = { git = "https://github.com/tomprogrammer/scram", rev = "426655b796a2b931a7d50a1a64bdacb8da32862e" }
+scram = "0.1"
 reql-derive = { path = "./reql-derive" }
 
 [dev-dependencies]
 rspec = "1.0.0-beta.3"
-slog-term = "1.3"
+slog-term = "1.4"
 
 [badges]
 travis-ci = { repository = "rust-rethinkdb/reql" }
