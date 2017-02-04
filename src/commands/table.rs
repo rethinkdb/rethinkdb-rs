@@ -22,7 +22,7 @@ command! {
     /// r.db("heroes").table("marvel").run::<Heroes>(&conn);
     /// ```
     ///
-    /// There are two [opt_args](trait.OptArg.html) that may be specified.
+    /// There are two [args](../macro.args.html) that may be specified.
     ///
     /// * `read_mode`: One of three possible values affecting the consistency guarantee for the table
     /// read:
