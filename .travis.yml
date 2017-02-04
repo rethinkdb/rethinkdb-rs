@@ -3,6 +3,8 @@ language: rust
 rust:
 - nightly
 - beta
+- stable
+- 1.15.0
 
 addons:
   rethinkdb: '2.3.5'
