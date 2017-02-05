@@ -46,6 +46,13 @@ pub trait ToArg {
 
 /// Any object that can be used as a ReQL connection
 pub trait Connection {
+    /*
+    fn stream(&mut self) -> &mut TcpStream;
+    fn incr_token(&mut self) -> &mut Self;
+    fn token(&self) -> u64;
+    fn set_broken(&mut self, b: bool) -> &mut Self;
+    */
+    fn broken(&self) -> bool;
 }
 
 trait IsDatum {
