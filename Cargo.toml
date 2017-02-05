@@ -24,7 +24,6 @@ derive-error = "0.0.3"
 futures = "0.1"
 tokio-core = "0.1"
 tokio-proto = "0.1"
-scram = "0.1"
 reql-derive = { path = "./reql-derive" }
 
 [dev-dependencies]

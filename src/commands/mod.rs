@@ -27,7 +27,7 @@ commands! {
     to_json,            http,               uuid,               circle,             distance,           fill,
     geojson,            to_geojson,         get_intersecting,   get_nearest,        includes,           intersects,
     line,               point,              polygon,            polygon_sub,        grant,              config,
-    rebalance,          reconfigure,        with_args,          connection,
+    rebalance,          reconfigure,        with_args,
 }
 
 use ql2::proto::{Term, Term_AssocPair as TermPair};

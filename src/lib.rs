@@ -12,7 +12,6 @@ extern crate derive_error;
 #[macro_use]
 extern crate serde_derive;
 */
-extern crate scram;
 extern crate byteorder;
 extern crate bufstream;
 extern crate uuid;
@@ -45,12 +44,8 @@ pub trait ToArg {
     fn to_arg(&self) -> Term;
 }
 
-/// A ReQL connection
-pub struct Connection {
-}
-
 /// Any object that can be used as a ReQL connection
-pub trait AsConnection {
+pub trait Connection {
 }
 
 trait IsDatum {

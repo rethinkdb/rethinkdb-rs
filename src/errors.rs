@@ -6,7 +6,6 @@ use std::sync::mpsc::SendError;
 use serde_json::error::Error as JsonError;
 use protobuf::ProtobufError;
 use serde_json::Value;
-use scram::Error as ScramError;
 
 /// The most generic error message in ReQL
 #[derive(Debug, Error)]
@@ -66,7 +65,6 @@ pub enum DriverError {
     Response(ResponseError),
     Json(JsonError),
     Protobuf(ProtobufError),
-    Scram(ScramError),
     #[error(msg_embedded, non_std, no_from)]
     Other(String),
 }
@@ -115,12 +113,6 @@ impl From<JsonError> for Error {
 impl From<ProtobufError> for Error {
     fn from(err: ProtobufError) -> Error {
         From::from(DriverError::Protobuf(err))
-    }
-}
-
-impl From<ScramError> for Error {
-    fn from(err: ScramError) -> Error {
-        From::from(DriverError::Scram(err))
     }
 }
 
