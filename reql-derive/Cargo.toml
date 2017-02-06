@@ -1,6 +1,6 @@
 [package]
 name = "reql-derive"
-version = "0.1.0"
+version = "0.0.6-alpha1"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
