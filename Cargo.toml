@@ -13,10 +13,15 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 [badges]
 travis-ci = { repository = "rust-rethinkdb/reql" }
 
+[features]
+default = ["with_io"]
+with_io = ["reql-io"]
+
 [dependencies]
-ql2 = "1.1"
 protobuf = "1.1"
 slog = "1.5"
 serde_json = "0.9"
+ql2 = "1.1"
 derive-error = "0.0.3"
 reql-derive = "0.0.6-alpha1"
+reql-io = { version = "0.0.0", optional = true }
