@@ -10,17 +10,13 @@ keywords = ["database", "rethinkdb", "reql", "driver"]
 categories = ["database"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
+[badges]
+travis-ci = { repository = "rust-rethinkdb/reql" }
+
 [dependencies]
 ql2 = "1.1"
 protobuf = "1.1"
-slog = { version = "1.2", features = ["release_max_level_warn"] }
+slog = "1.5"
 serde_json = "0.9"
 derive-error = "0.0.3"
 reql-derive = { path = "./reql-derive" }
-
-[dev-dependencies]
-rspec = "1.0.0-beta.3"
-slog-term = "1.4"
-
-[badges]
-travis-ci = { repository = "rust-rethinkdb/reql" }

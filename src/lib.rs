@@ -8,9 +8,6 @@ extern crate serde_json;
 #[macro_use]
 extern crate derive_error;
 
-#[cfg(test)]
-mod tests;
-
 #[macro_use]
 mod macros;
 mod types;
