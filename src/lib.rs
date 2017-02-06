@@ -4,17 +4,9 @@
 extern crate reql_derive;
 extern crate ql2;
 extern crate protobuf;
-extern crate serde;
 extern crate serde_json;
 #[macro_use]
 extern crate derive_error;
-/*
-#[macro_use]
-extern crate serde_derive;
-*/
-extern crate byteorder;
-extern crate bufstream;
-extern crate uuid;
 
 #[cfg(test)]
 mod tests;

@@ -14,16 +14,8 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 ql2 = "1.1"
 protobuf = "1.1"
 slog = { version = "1.2", features = ["release_max_level_warn"] }
-uuid = { version = "0.4", features = ["v4", "serde", "use_std"] }
-byteorder = "1.0"
-bufstream = "0.1"
-serde = "0.9"
 serde_json = "0.9"
-serde_derive = "0.9"
 derive-error = "0.0.3"
-futures = "0.1"
-tokio-core = "0.1"
-tokio-proto = "0.1"
 reql-derive = { path = "./reql-derive" }
 
 [dev-dependencies]
