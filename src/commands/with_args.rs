@@ -14,16 +14,12 @@ use commands::Command;
 /// [get](trait.Get.html) when using a secondary index.
 ///
 /// ```
+/// # #![allow(unused_must_use)]
 /// # #[macro_use] extern crate reql;
 /// # fn main() {
 /// # use reql::commands::*;
-/// # use reql::commands::run::Dummy;
-/// # struct Heroe;
 /// # let r = Command::new();
-/// # let conn = ();
-/// r.table("marvel").get_all()
-///     .with_args(args!("man_of_steel", {index: "code_name"}))
-///     .run::<Heroe>(&conn);
+/// r.table("marvel").get_all().with_args(args!("man_of_steel", {index: "code_name"}));
 /// # }
 /// ```
 pub trait WithArgs {

@@ -1,7 +1,5 @@
 //! The ReQL command reference
 
-pub mod run;
-
 commands! {
     db_list,            changes,            db_create,          db_drop,            table_create,       table_drop,
     table_list,         index_create,       index_drop,         index_list,         index_rename,       index_status,
@@ -47,14 +45,12 @@ impl Command {
     /// # Example
     ///
     /// ```
+    /// # #![allow(unused_must_use)]
     /// # extern crate reql;
     /// # use reql::commands::*;
-    /// # use reql::commands::run::Dummy;
-    /// # struct Users;
     /// # fn main() {
-    /// # let conn = ();
     /// let r = Command::new();
-    /// r.table("users").run::<Users>(&conn);
+    /// r.table("users");
     /// # }
     /// ```
     pub fn new() -> Command {

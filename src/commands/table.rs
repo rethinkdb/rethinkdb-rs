@@ -9,8 +9,7 @@ command! {
     /// Return all documents in the table ‘marvel’ of the default database.
     ///
     /// ```reql
-    /// # struct Heroes;
-    /// r.table("marvel").run::<Heroes>(&conn);
+    /// r.table("marvel");
     /// ```
     ///
     /// # Example
@@ -18,8 +17,7 @@ command! {
     /// Return all documents in the table ‘marvel’ of the database ‘heroes’.
     ///
     /// ```reql
-    /// # struct Heroes;
-    /// r.db("heroes").table("marvel").run::<Heroes>(&conn);
+    /// r.db("heroes").table("marvel");
     /// ```
     ///
     /// There are two [args](../macro.args.html) that may be specified.
@@ -42,8 +40,7 @@ command! {
     /// Allow potentially out-of-date data in exchange for faster reads.
     ///
     /// ```reql
-    /// # struct Heroes;
-    /// r.db("heroes").table(args!("marvel", {read_mode: "outdated"})).run::<Heroes>(&conn);
+    /// r.db("heroes").table(args!("marvel", {read_mode: "outdated"}));
     /// ```
 
     #[command(

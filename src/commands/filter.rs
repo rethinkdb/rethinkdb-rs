@@ -27,8 +27,7 @@ command! {
     /// Get all users who are 30 years old.
     ///
     /// ```reql
-    /// # struct Users;
-    /// r.table("users").filter(args!({age: 30})).run::<Users>(&conn);
+    /// r.table("users").filter(args!({age: 30}));
     /// ```
     ///
     /// The predicate `{age: 30}` selects documents in the `users` table with an `age` field whose value
@@ -39,8 +38,7 @@ command! {
     /// way to write a predicate is to use a Rust closure that returns `true` or `false`.
     ///
     /// ```reql
-    /// # struct User;
-    /// r.table("users").filter(args!(|user| user.get_field("age").eq(30))).run::<User>(&conn);
+    /// r.table("users").filter(args!(|user| user.get_field("age").eq(30)));
     /// ```
     ///
     /// In this case, the function returns `true` if the field `age` is equal to 30. Predicates to
@@ -53,8 +51,7 @@ command! {
     /// Get all users who are more than 18 years old.
     ///
     /// ```reql
-    /// # struct Users;
-    /// r.table("users").filter(args!(|user| user.get_field("age").gt(18))).run::<Users>(&conn);
+    /// r.table("users").filter(args!(|user| user.get_field("age").gt(18)));
     /// ```
     ///
     /// # Example
@@ -62,11 +59,10 @@ command! {
     /// Get all users who are less than 18 years old and more than 13 years old.
     ///
     /// ```reql
-    /// # struct Users;
     /// r.table("users").filter(args!(|user| {
     ///     let age = user.get_field("age");
     ///     age.lt(18).and(age.gt(13))
-    /// })).run::<Users>(&conn);
+    /// }));
     /// ```
 
     #[command(filter(args(args = "T")))]

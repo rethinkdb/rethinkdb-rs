@@ -9,8 +9,7 @@ command! {
     /// Explicitly specify a database for a query.
     ///
     /// ```reql
-    /// # struct Heroes;
-    /// r.db("heroes").table("marvel").run::<Heroes>(&conn);
+    /// r.db("heroes").table("marvel");
     /// ```
 
     #[command(

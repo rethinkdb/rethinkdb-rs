@@ -178,12 +178,11 @@ impl Command {
                                 /// ```
                                 /// # #![allow(unused_imports)]
                                 /// # #![allow(unused_variables)]
+                                /// # #![allow(unused_must_use)]
                                 /// # #[macro_use] extern crate reql;
                                 /// # use reql::commands::*;
-                                /// # use reql::commands::run::Dummy;
                                 /// # fn main() {
                                 /// # let r = Command::new();
-                                /// # let conn = ();
                             };
                             token.to_tokens(&mut docs);
                         } else if doc_str.contains("```") && in_code_block {

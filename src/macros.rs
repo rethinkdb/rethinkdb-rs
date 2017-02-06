@@ -29,14 +29,13 @@ macro_rules! command {
 /// Get Alice and Bob from the table `people`.
 ///
 /// ```
+/// # #![allow(unused_must_use)]
 /// # #[macro_use] extern crate reql;
 /// # use reql::commands::*;
-/// # use reql::commands::run::Dummy;
 /// # fn main() {
-/// # let conn = ();
 /// # let r = Command::new();
 /// let x = 10;
-/// r.branch(args!(r.expr(x).gt(5), "big", "small")).run::<String>(&conn);
+/// r.branch(args!(r.expr(x).gt(5), "big", "small"));
 /// # }
 /// ```
 #[macro_export]
