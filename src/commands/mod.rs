@@ -28,6 +28,10 @@ commands! {
     rebalance,          reconfigure,        with_args,
 }
 
+#[cfg(feature = "with_io")]
+mod io;
+#[cfg(feature = "with_io")]
+pub use self::io::*;
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 
 /// The type returned by every error

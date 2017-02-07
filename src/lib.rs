@@ -8,7 +8,7 @@ extern crate serde_json;
 #[macro_use]
 extern crate derive_error;
 #[cfg(feature = "with_io")]
-pub extern crate reql_io as io;
+extern crate reql_io;
 
 #[macro_use]
 mod macros;
