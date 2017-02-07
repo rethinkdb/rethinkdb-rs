@@ -4,14 +4,14 @@ use commands::Command;
 ///
 /// Normally, you should use the `args!()` macro to pass arguments to a command that
 /// also takes optional arguments. If the command takes at least one argument, you
-/// don't need to call `with_args`. However, some commands like [get_all](trait.GetAll.html)
+/// don't need to call `with_args`. However, some commands like [error](trait.Error.html)
 /// and [delete](trait.Delete.html) do not have any required arguments but yet they have
 /// optional ones. That's when `with_args` comes in.
 ///
 /// # Example
 ///
-/// Secondary index keys are not guaranteed to be unique so we cannot query via
-/// [get](trait.Get.html) when using a secondary index.
+/// Delete all documents from the table `comments` without waiting for the operation to be flushed to
+/// disk.
 ///
 /// ```
 /// # #![allow(unused_must_use)]
@@ -19,7 +19,7 @@ use commands::Command;
 /// # fn main() {
 /// # use reql::commands::*;
 /// # let r = Command::new();
-/// r.table("marvel").get_all().with_args(args!("man_of_steel", {index: "code_name"}));
+/// r.table("comments").delete().with_args(args!({durability: "soft"}));
 /// # }
 /// ```
 pub trait WithArgs {
