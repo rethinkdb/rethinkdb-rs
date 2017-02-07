@@ -15,7 +15,7 @@ Add this crate to your dependencies section:-
 
 ```text
 [dependencies]
-reql = "0.0.5"
+reql = "0.0.6-alpha4"
 ```
 
 Import it in your `main.rs` or `lib.rs`:-
@@ -24,39 +24,30 @@ Import it in your `main.rs` or `lib.rs`:-
 extern crate reql;
 ```
 
-Create a connection pool and connect to your database server(s) in your `main` or similar function if creating a library:-
-
-```rust
-extern crate reql;
-
-use reql::r;
-
-fn main() {
-    r.connection().connect().expect("Failed to connect to the database server");
-}
-```
-
 Run ReQL commands:-
 
-```rust,ignore
+```rust
+#[macro_use]
 extern crate reql;
-extern crate futures;
 
-use reql::{r, Command};
-use futures::stream::Stream;
+use reql::commands::*;
+use reql::Result;
 
-fn print_users() -> Result<(), Error> {
-    let users = try!(r.table("users").run::<User>());
-    let response = users.for_each(|user| {
-        println!("{:?}", user);
-        Ok(())
-    });
-    for v in response.wait() {
-        // Do something with v
-    }
-}
-
-fn main() {
-    r.connection().connect().expect("Failed to connect to the database server");
+fn run() -> Result<()> {
+    // Create the client
+    let r = Command::new();
 }
 ```
+
+## License
+
+Licensed under either of
+* Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+* MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+at your option.
+
+### Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you shall be dual licensed as above, without any
+additional terms or conditions.
