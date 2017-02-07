@@ -23,5 +23,5 @@ slog = "1.5"
 serde_json = "0.9"
 ql2 = "1.1"
 derive-error = "0.0.3"
-reql-derive = "0.0.6-alpha1"
-reql-io = { version = "0.1", optional = true }
+reql-derive = { version = "0.0.6-alpha1", path = "./derive" }
+reql-io = { version = "0.1", path = "./io", optional = true }
