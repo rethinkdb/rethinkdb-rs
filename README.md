@@ -13,14 +13,15 @@ This is a [RethinkDB] driver written in [Rust].
 
 Add this crate to your dependencies section:-
 
-```text
+```toml
 [dependencies]
 reql = "0.0.6-alpha4"
 ```
 
 Import it in your `main.rs` or `lib.rs`:-
 
-```rust,ignore
+```rust
+#[macro_use]
 extern crate reql;
 ```
 
