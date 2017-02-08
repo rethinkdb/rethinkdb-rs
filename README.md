@@ -15,7 +15,7 @@ Add this crate to your dependencies section:-
 
 ```toml
 [dependencies]
-reql = "0.0.6-alpha5"
+reql = "0.0.6-alpha6"
 ```
 
 Import it in your `main.rs` or `lib.rs`:-
