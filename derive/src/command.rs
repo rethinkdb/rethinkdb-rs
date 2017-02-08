@@ -245,8 +245,9 @@ impl Command {
     }
 
     fn body(&self) -> Tokens {
+        let name = self.name();
         // Rename commands to term types
-        let cmd = match self.name() {
+        let cmd = match name {
             name if name == "match_" => "match".to_string(),
             name if name == "mod_" => "mod".to_string(),
             name if name == "do_" => "funcall".to_string(),
@@ -254,6 +255,8 @@ impl Command {
             name if name == "to_json" => "to_json_string".to_string(),
             name => name.to_string(),
         };
+        // Put quotations around the name of the command quote macro
+        let name = format!(r#""{}""#, name);
         // Prepare args
         let mut args = Tokens::new();
         for (arg, _) in self.args() {
@@ -269,13 +272,14 @@ impl Command {
             use ::protobuf::repeated::RepeatedField;
             use ::ql2::proto::Term_TermType;
 
+            let logger = self.logger.new(o!("command" => #name));
             let mut term = Term::new();
             term.set_field_type(Term_TermType::#cmd_type);
             if *self.term() != Term::new() {
                 let prev_cmd = RepeatedField::from_vec(vec![self.term().clone()]);
                 term.set_args(prev_cmd);
             }
-            let mut cmd = ::commands::Command::new();
+            let mut cmd = ::commands::Command::new().with_logger(logger);
             cmd.set_term(term);
             #args
             cmd
