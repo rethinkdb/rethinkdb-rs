@@ -1,6 +1,6 @@
-#[macro_use] extern crate reql;
-#[macro_use] extern crate slog;
 extern crate slog_term;
+#[macro_use] extern crate slog;
+#[macro_use] extern crate reql;
 
 use slog::DrainExt;
 use reql::Client;
