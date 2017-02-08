@@ -282,7 +282,6 @@ impl Command {
             let mut cmd = ::commands::Command::new().with_logger(logger);
             cmd.set_term(term);
             #args
-            info!(cmd.logger, "term has been built");
             debug!(cmd.logger, "{:?}", cmd.term());
             cmd
         }

@@ -3,15 +3,18 @@
 extern crate slog_term;
 
 use slog::DrainExt;
-use reql::commands::*;
+use reql::commands::{Command, Db, Table};
 
 fn main() {
     // Build an output drain
     let drain = slog_term::streamer().async().compact().build();
-    // Setup the logger
-    let logger = slog::Logger::root(drain.fuse(), o!("example" => "Logging"));
-    // Create a new ReQL client with logger
+
+    // Setup a logger
+    let logger = slog::Logger::root(drain.fuse(), o!());
+
+    // Create a new ReQL client with the logger
     let r = Command::new().with_logger(logger);
-    // Run command
+
+    // Run a command
     let _heroes = r.db("heroes").table(args!("marvel", {read_mode: "outdated"}));
 }

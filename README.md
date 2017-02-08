@@ -31,8 +31,8 @@ Run ReQL commands:-
 #[macro_use]
 extern crate reql;
 
-use reql::commands::*;
 use reql::Result;
+use reql::commands::Command;
 
 fn run() -> Result<()> {
     // Create the client
