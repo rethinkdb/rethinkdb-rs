@@ -15,7 +15,7 @@ Add this crate to your dependencies section:-
 
 ```toml
 [dependencies]
-reql = "0.0.6-alpha4"
+reql = "0.0.6-alpha5"
 ```
 
 Import it in your `main.rs` or `lib.rs`:-
@@ -28,15 +28,25 @@ extern crate reql;
 Run ReQL commands:-
 
 ```rust
-#[macro_use]
-extern crate reql;
+#[macro_use] extern crate reql;
+#[macro_use] extern crate slog;
+extern crate slog_term;
 
-use reql::Result;
-use reql::commands::Command;
+use slog::DrainExt;
+use reql::commands::{Command, Db, Table};
 
-fn run() -> Result<()> {
-    // Create the client
-    let r = Command::new();
+fn main() {
+    // Build an output drain
+    let drain = slog_term::streamer().async().compact().build();
+
+    // Setup a logger
+    let logger = slog::Logger::root(drain.fuse(), o!());
+
+    // Create a new ReQL client with the logger
+    let r = Command::new().with_logger(logger);
+
+    // Run a command
+    let _heroes = r.db("heroes").table(args!("marvel", {read_mode: "outdated"}));
 }
 ```
 
