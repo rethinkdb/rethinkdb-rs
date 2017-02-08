@@ -1,4 +1,4 @@
-use commands::Command;
+use Command;
 
 /// Specify optional arguments to a ReQL command
 ///
@@ -17,6 +17,7 @@ use commands::Command;
 /// # #![allow(unused_must_use)]
 /// # #[macro_use] extern crate reql;
 /// # fn main() {
+/// # use reql::Command;
 /// # use reql::commands::*;
 /// # let r = Command::new();
 /// r.table("comments").delete().with_args(args!({durability: "soft"}));

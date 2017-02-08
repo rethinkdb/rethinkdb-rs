@@ -1,5 +1,4 @@
-use {ToArg, Arg};
-use commands::{Command, Args};
+use {Command, ToArg, Arg, Args};
 use types::FromJson;
 use ql2::proto::Term;
 use serde_json::value::Value;

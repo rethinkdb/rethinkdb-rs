@@ -35,17 +35,9 @@ mod io;
 #[cfg(feature = "with_io")]
 pub use self::io::*;
 
+use {Args, Command};
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 use slog::Logger;
-
-/// The type returned by every error
-#[must_use = "command results are moved from one command to another so you must either catch a command's result using a let binding or chain the command all the way through"]
-#[derive(Debug, Clone)]
-pub struct Command {
-    term: Term,
-    query: String,
-    logger: Logger,
-}
 
 impl Command {
     /// Creates a new command
@@ -57,6 +49,7 @@ impl Command {
     /// ```
     /// # #![allow(unused_must_use)]
     /// # extern crate reql;
+    /// # use reql::Command;
     /// # use reql::commands::*;
     /// # fn main() {
     /// let r = Command::new();
@@ -96,13 +89,6 @@ impl Command {
     pub fn set_term(&mut self, term: Term) {
         self.term = term;
     }
-}
-
-/// The return type of the `args!()` macro
-#[derive(Debug, Clone)]
-pub struct Args {
-    term: Term,
-    string: String,
 }
 
 impl Args {

@@ -33,7 +33,8 @@ Run ReQL commands:-
 extern crate slog_term;
 
 use slog::DrainExt;
-use reql::commands::{Command, Db, Table};
+use reql::Command;
+use reql::commands::{Db, Table};
 
 fn main() {
     // Build an output drain

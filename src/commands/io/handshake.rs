@@ -5,7 +5,7 @@ use {Manager};
 
 use reql::{Result, Connection as ReqlConnection};
 use reql::errors::*;
-use reql::commands::Command;
+use reql::Command;
 
 use futures::sync::oneshot;
 use futures::{future, Future, Stream, Sink};

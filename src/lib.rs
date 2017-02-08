@@ -21,6 +21,13 @@ pub mod errors;
 #[doc(hidden)]
 pub use ql2::proto::Term;
 
+use std::net::SocketAddr;
+
+use errors::Error;
+
+use reql_io::r2d2;
+
+use slog::Logger;
 use protobuf::ProtobufEnum;
 use ql2::proto::{Datum,
     Term_TermType as TT,
@@ -29,11 +36,42 @@ use ql2::proto::{Datum,
 };
 
 /// The result of any ReQL command that can potentially return an error
-pub type Result<T> = ::std::result::Result<T, errors::Error>;
+pub type Result<T> = ::std::result::Result<T, Error>;
 
 pub struct Arg {
     string: String,
     term: Term,
+}
+
+pub struct Response<T>(T);
+pub struct Connection;
+
+#[derive(Debug)]
+pub struct Config(Vec<InnerConfig>);
+
+#[derive(Debug)]
+struct InnerConfig {
+    pool: r2d2::Config<Connection, Error>,
+    addresses: Vec<SocketAddr>,
+    db: &'static str,
+    user: &'static str,
+    password: &'static str,
+    retries: u8,
+    tls: Option<TlsCfg>,
+}
+
+#[derive(Debug, Clone)]
+struct TlsCfg {
+    ca_certs: &'static str,
+}
+
+/// The type returned by every error
+#[must_use = "command results are moved from one command to another so you must either catch a command's result using a let binding or chain the command all the way through"]
+#[derive(Debug, Clone)]
+pub struct Command {
+    term: Term,
+    query: String,
+    logger: Logger,
 }
 
 impl Arg {
@@ -41,6 +79,13 @@ impl Arg {
     pub fn term(self) -> Term {
         self.term
     }
+}
+
+/// The return type of the `args!()` macro
+#[derive(Debug, Clone)]
+pub struct Args {
+    term: Term,
+    string: String,
 }
 
 /// The argument that is passed to any ReQL command

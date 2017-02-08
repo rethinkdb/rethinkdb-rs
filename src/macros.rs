@@ -48,6 +48,7 @@ macro_rules! with_args {
 /// ```
 /// # #![allow(unused_must_use)]
 /// # #[macro_use] extern crate reql;
+/// # use reql::Command;
 /// # use reql::commands::*;
 /// # fn main() {
 /// # let r = Command::new();
@@ -59,9 +60,7 @@ macro_rules! with_args {
 macro_rules! args {
     ( $($arg:tt)+ ) => {{
         #[allow(unused_imports)]
-        use $crate::{ToArg, Term};
-        #[allow(unused_imports)]
-        use $crate::commands::Args;
+        use $crate::{ToArg, Args, Term};
 
         let mut args = Args::new();
         let string = stringify!($($arg)+);

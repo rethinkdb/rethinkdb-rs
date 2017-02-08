@@ -31,7 +31,7 @@ impl Command {
                 fn #sig;
             }
 
-            impl #typ for ::commands::Command {
+            impl #typ for ::Command {
                 fn #sig {
                     #body
                 }
@@ -180,6 +180,7 @@ impl Command {
                                 /// # #![allow(unused_variables)]
                                 /// # #![allow(unused_must_use)]
                                 /// # #[macro_use] extern crate reql;
+                                /// # use reql::Command;
                                 /// # use reql::commands::*;
                                 /// # fn main() {
                                 /// # let r = Command::new();
@@ -240,7 +241,7 @@ impl Command {
         }
 
         quote! {
-            #func #generics (&self #func_args) -> ::commands::Command #_where
+            #func #generics (&self #func_args) -> ::Command #_where
         }
     }
 
@@ -299,7 +300,7 @@ impl Command {
                 let prev_cmd = RepeatedField::from_vec(vec![self.term().clone()]);
                 term.set_args(prev_cmd);
             }
-            let mut cmd = ::commands::Command::new();
+            let mut cmd = ::Command::new();
             cmd.set_term(term);
             #args
             debug!(logger, "{}", cmd.query);
