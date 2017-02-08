@@ -30,12 +30,12 @@ Run ReQL commands:-
 ```rust
 #[macro_use] extern crate reql;
 
-use reql::Command;
+use reql::Client;
 use reql::commands::{Db, Table};
 
 fn main() {
     // Create a new ReQL client
-    let r = Command::new();
+    let r = Client::new();
     // Run a command
     let _heroes = r.db("heroes").table(args!("marvel", {read_mode: "outdated"}));
 }

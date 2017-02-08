@@ -13,7 +13,7 @@ use std::net::{IpAddr, Ipv4Addr, ToSocketAddrs, SocketAddr};
 
 use reql::{Result, Connection as ReqlConnection};
 use reql::errors::*;
-use reql::commands::Command;
+use reql::commands::Client;
 
 use futures::sync::oneshot;
 use futures::{future, Future, Stream, Sink};
@@ -99,7 +99,7 @@ impl ReqlConnection for Pool {
     }
 }
 
-impl Connect for Command {
+impl Connect for Client {
     type Connection = Pool;
 
     fn connect(&self, pairs: Vec<(Config, Opts)>, handle: &Handle) -> Result<Pool> {

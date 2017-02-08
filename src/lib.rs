@@ -78,7 +78,7 @@ struct TlsCfg {
 /// The type returned by every error
 #[must_use = "command results are moved from one command to another so you must either catch a command's result using a let binding or chain the command all the way through"]
 #[derive(Debug, Clone)]
-pub struct Command {
+pub struct Client {
     term: Term,
     query: String,
     logger: Logger,

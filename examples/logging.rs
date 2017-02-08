@@ -3,7 +3,7 @@
 extern crate slog_term;
 
 use slog::DrainExt;
-use reql::Command;
+use reql::Client;
 use reql::commands::{Db, Table};
 
 fn main() {
@@ -14,7 +14,7 @@ fn main() {
     let logger = slog::Logger::root(drain.fuse(), o!());
 
     // Create a new ReQL client with the logger
-    let r = Command::new().with_logger(logger);
+    let r = Client::new().with_logger(logger);
 
     // Run a command
     let _heroes = r.db("heroes").table(args!("marvel", {read_mode: "outdated"}));

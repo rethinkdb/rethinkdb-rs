@@ -35,11 +35,11 @@ mod io;
 #[cfg(feature = "with_io")]
 pub use self::io::*;
 
-use {Args, Command};
+use {Args, Client};
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 use slog::Logger;
 
-impl Command {
+impl Client {
     /// Creates a new command
     ///
     /// This is typically called `r`.
@@ -49,15 +49,15 @@ impl Command {
     /// ```
     /// # #![allow(unused_must_use)]
     /// # extern crate reql;
-    /// # use reql::Command;
+    /// # use reql::Client;
     /// # use reql::commands::*;
     /// # fn main() {
-    /// let r = Command::new();
+    /// let r = Client::new();
     /// r.table("users");
     /// # }
     /// ```
-    pub fn new() -> Command {
-        Command {
+    pub fn new() -> Client {
+        Client {
             term: Term::new(),
             query: String::from("r"),
             logger: Logger::root(::slog::Discard, o!()),
@@ -65,7 +65,7 @@ impl Command {
     }
 
     /// Sets a logger
-    pub fn with_logger(&self, logger: Logger) -> Command {
+    pub fn with_logger(&self, logger: Logger) -> Client {
         let mut cmd = self.clone();
         cmd.logger = logger;
         cmd

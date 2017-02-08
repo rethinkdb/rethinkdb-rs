@@ -1,9 +1,9 @@
-use {Command, ToArg, Arg, Args};
+use {Client, ToArg, Arg, Args};
 use types::FromJson;
 use ql2::proto::Term;
 use serde_json::value::Value;
 
-impl ToArg for Command {
+impl ToArg for Client {
     fn to_arg(&self) -> Arg {
         Arg {
             string: self.query.to_owned(),

@@ -1,4 +1,4 @@
-use Command;
+use Client;
 
 /// Specify optional arguments to a ReQL command
 ///
@@ -17,19 +17,19 @@ use Command;
 /// # #![allow(unused_must_use)]
 /// # #[macro_use] extern crate reql;
 /// # fn main() {
-/// # use reql::Command;
+/// # use reql::Client;
 /// # use reql::commands::*;
-/// # let r = Command::new();
+/// # let r = Client::new();
 /// r.table("comments").delete().with_args(args!({durability: "soft"}));
 /// # }
 /// ```
 pub trait WithArgs {
-    fn with_args<T>(&self, args: T) -> Command
+    fn with_args<T>(&self, args: T) -> Client
         where T: ::ToArg;
 }
 
-impl WithArgs for Command {
-    fn with_args<T>(&self, args: T) -> Command
+impl WithArgs for Client {
+    fn with_args<T>(&self, args: T) -> Client
         where T: ::ToArg
     {
         let args = args.to_arg();

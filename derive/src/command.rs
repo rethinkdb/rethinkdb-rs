@@ -31,7 +31,7 @@ impl Command {
                 fn #sig;
             }
 
-            impl #typ for ::Command {
+            impl #typ for ::Client {
                 fn #sig {
                     #body
                 }
@@ -180,10 +180,10 @@ impl Command {
                                 /// # #![allow(unused_variables)]
                                 /// # #![allow(unused_must_use)]
                                 /// # #[macro_use] extern crate reql;
-                                /// # use reql::Command;
+                                /// # use reql::Client;
                                 /// # use reql::commands::*;
                                 /// # fn main() {
-                                /// # let r = Command::new();
+                                /// # let r = Client::new();
                             };
                             token.to_tokens(&mut docs);
                         } else if doc_str.contains("```") && in_code_block {
@@ -241,7 +241,7 @@ impl Command {
         }
 
         quote! {
-            #func #generics (&self #func_args) -> ::Command #_where
+            #func #generics (&self #func_args) -> ::Client #_where
         }
     }
 
@@ -300,7 +300,7 @@ impl Command {
                 let prev_cmd = RepeatedField::from_vec(vec![self.term().clone()]);
                 term.set_args(prev_cmd);
             }
-            let mut cmd = ::Command::new();
+            let mut cmd = ::Client::new();
             cmd.set_term(term);
             #args
             debug!(logger, "{}", cmd.query);

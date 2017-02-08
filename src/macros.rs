@@ -48,10 +48,10 @@ macro_rules! with_args {
 /// ```
 /// # #![allow(unused_must_use)]
 /// # #[macro_use] extern crate reql;
-/// # use reql::Command;
+/// # use reql::Client;
 /// # use reql::commands::*;
 /// # fn main() {
-/// # let r = Command::new();
+/// # let r = Client::new();
 /// let x = 10;
 /// r.branch(args!(r.expr(x).gt(5), "big", "small"));
 /// # }
