@@ -255,13 +255,33 @@ impl Command {
             name if name == "to_json" => "to_json_string".to_string(),
             name => name.to_string(),
         };
-        // Put quotations around the name of the command quote macro
-        let name = format!(r#""{}""#, name);
+        let name = name.to_string();
         // Prepare args
         let mut args = Tokens::new();
-        for (arg, _) in self.args() {
+        let cmd_args = self.args();
+        if !cmd_args.is_empty() {
             let token = quote! {
-                cmd = ::commands::WithArgs::with_args(&cmd, #arg);
+                let mut params = Vec::new();
+            };
+            token.to_tokens(&mut args);
+
+            for (arg, _) in cmd_args {
+                let token = quote! {{
+                    let args = #arg.to_arg();
+                    with_args!(cmd, args);
+                    params.push(args.string);
+                }};
+                token.to_tokens(&mut args);
+            }
+
+            let token = quote! {
+                let args_str: String = params.join(", ");
+                cmd.query = format!("{}.{}({})", self.query, #name, args_str);
+            };
+            token.to_tokens(&mut args);
+        } else {
+            let token = quote! {
+                cmd.query = format!("{}.{}()", self.query, #name);
             };
             token.to_tokens(&mut args);
         }
@@ -279,11 +299,12 @@ impl Command {
                 let prev_cmd = RepeatedField::from_vec(vec![self.term().clone()]);
                 term.set_args(prev_cmd);
             }
-            let mut cmd = ::commands::Command::new().with_logger(logger);
+            let mut cmd = ::commands::Command::new();
             cmd.set_term(term);
             #args
-            debug!(cmd.logger, "{:?}", cmd.term());
-            cmd
+            debug!(logger, "{}", cmd.query);
+            debug!(logger, "{:?}", cmd.term);
+            cmd.with_logger(logger)
         }
     }
 }

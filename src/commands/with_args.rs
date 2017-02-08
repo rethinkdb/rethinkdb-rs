@@ -31,21 +31,13 @@ impl WithArgs for Command {
     fn with_args<T>(&self, args: T) -> Command
         where T: ::ToArg
     {
+        let args = args.to_arg();
         let mut cmd = self.clone();
-        {
-            let term = cmd.mut_term();
-            let mut tmp_args = args.to_arg();
-            if tmp_args.has_field_type() { // did not come from the args macro
-                term.mut_args().push(tmp_args);
-            } else { // came from the args macro
-                for arg in tmp_args.take_args().into_vec() {
-                    term.mut_args().push(arg);
-                }
-                for pair in tmp_args.take_optargs().into_vec() {
-                    term.mut_optargs().push(pair);
-                }
-            }
-        }
-        cmd
+        cmd.query += &format!(".with_args({})", args.string);
+        let logger = cmd.logger.new(o!("command" => "with_args"));
+        with_args!(cmd, args);
+        debug!(logger, "{}", cmd.query);
+        debug!(logger, "{:?}", cmd.term);
+        cmd.with_logger(logger)
     }
 }

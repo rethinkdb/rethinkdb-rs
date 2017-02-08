@@ -28,6 +28,8 @@ commands! {
     rebalance,          reconfigure,        with_args,
 }
 
+mod args;
+
 #[cfg(feature = "with_io")]
 mod io;
 #[cfg(feature = "with_io")]
@@ -41,6 +43,7 @@ use slog::Logger;
 #[derive(Debug, Clone)]
 pub struct Command {
     term: Term,
+    query: String,
     logger: Logger,
 }
 
@@ -63,6 +66,7 @@ impl Command {
     pub fn new() -> Command {
         Command {
             term: Term::new(),
+            query: String::from("r"),
             logger: Logger::root(::slog::Discard, o!()),
         }
     }
@@ -72,6 +76,10 @@ impl Command {
         let mut cmd = self.clone();
         cmd.logger = logger;
         cmd
+    }
+
+    pub fn query(&self) -> &str {
+        &self.query
     }
 
     #[doc(hidden)]
@@ -94,6 +102,7 @@ impl Command {
 #[derive(Debug, Clone)]
 pub struct Args {
     term: Term,
+    string: String,
 }
 
 impl Args {
@@ -101,6 +110,7 @@ impl Args {
     pub fn new() -> Args {
         Args {
             term: Term::new(),
+            string: String::new(),
         }
     }
 
@@ -120,9 +130,14 @@ impl Args {
     }
 
     #[doc(hidden)]
+    pub fn set_string(&mut self, string: String) {
+        self.string = string;
+    }
+
+    #[doc(hidden)]
     pub fn create_term_pair<T: ::ToArg>(key: &str, val: T) -> TermPair {
         let mut temp = Term::new();
-        temp.mut_args().push(val.to_arg());
+        temp.mut_args().push(val.to_arg().term);
         let mut temp_pair = TermPair::new();
         temp_pair.set_key(key.into());
         temp_pair.set_val(temp);

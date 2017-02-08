@@ -15,6 +15,23 @@ macro_rules! command {
     }
 }
 
+macro_rules! with_args {
+    ( $cmd:ident, $args:ident ) => {{
+        let term = $cmd.mut_term();
+        let mut tmp_args = $args.term;
+        if tmp_args.has_field_type() { // did not come from the args macro
+            term.mut_args().push(tmp_args);
+        } else { // came from the args macro
+            for arg in tmp_args.take_args().into_vec() {
+                term.mut_args().push(arg);
+            }
+            for pair in tmp_args.take_optargs().into_vec() {
+                term.mut_optargs().push(pair);
+            }
+        }
+    }}
+}
+
 /// Splice an array of arguments into another term
 ///
 /// `args` is a macro that’s used to splice a number of arguments into another term. This is
@@ -47,6 +64,8 @@ macro_rules! args {
         use $crate::commands::Args;
 
         let mut args = Args::new();
+        let string = stringify!($($arg)+);
+        args.set_string(format!("args!({})", string));
         {
             let term = args.mut_term();
             __process_args!(term, $($arg)+);
@@ -109,11 +128,11 @@ macro_rules! __process_args {
     }};
     
     ( $term:ident,  $(,)* $arg:expr, $($tail:tt)+ ) => {{
-        $term.mut_args().push($arg.to_arg());
+        $term.mut_args().push($arg.to_arg().term());
         __process_args!($term, $($tail)+);
     }};
     
     ( $term:ident,  $(,)* $arg:expr $(,)* ) => {{
-        $term.mut_args().push($arg.to_arg());
+        $term.mut_args().push($arg.to_arg().term());
     }};
 }

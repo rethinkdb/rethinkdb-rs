@@ -12,7 +12,12 @@ impl Expr for Command {
         where T: ToArg
     {
         let mut cmd = Command::new();
-        cmd.set_term(value.to_arg());
+        let logger = cmd.logger.new(o!("command" => "expr"));
+        let arg = value.to_arg();
+        cmd.set_term(arg.term);
+        cmd.query += &format!(".expr({})", arg.string);
+        debug!(logger, "{}", cmd.query);
+        debug!(logger, "{:?}", cmd.term);
         cmd
     }
 }

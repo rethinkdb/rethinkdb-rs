@@ -15,7 +15,6 @@ extern crate slog;
 #[macro_use]
 mod macros;
 mod types;
-mod args;
 pub mod commands;
 pub mod errors;
 
@@ -32,9 +31,21 @@ use ql2::proto::{Datum,
 /// The result of any ReQL command that can potentially return an error
 pub type Result<T> = ::std::result::Result<T, errors::Error>;
 
+pub struct Arg {
+    string: String,
+    term: Term,
+}
+
+impl Arg {
+    #[doc(hidden)]
+    pub fn term(self) -> Term {
+        self.term
+    }
+}
+
 /// The argument that is passed to any ReQL command
 pub trait ToArg {
-    fn to_arg(&self) -> Term;
+    fn to_arg(&self) -> Arg;
 }
 
 trait IsDatum {
