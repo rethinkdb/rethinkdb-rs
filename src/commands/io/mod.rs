@@ -1,8 +1,10 @@
+mod with_args;
+
 use std::net::SocketAddr;
 
 use Result;
-use commands::Args;
 use reql_io::r2d2;
+use reql_io::tokio_core::reactor::Handle;
 use errors::Error;
 
 pub struct Response<T>(T);
@@ -29,11 +31,10 @@ pub type Config = r2d2::Config<Connection, Error>;
 pub trait Connect {
     type Connection;
 
-    fn connect(&self, args: Vec<(Config, Opts)>) -> Result<Self::Connection>;
+    fn connect(&self, args: Vec<(Config, Opts)>, handle: &Handle) -> Result<Self::Connection>;
 }
 
 /// Run the query
 pub trait Run : Connect {
     fn run<T>(&self, conn: &Self::Connection) -> Response<T>;
-    fn run_with_args<T>(&self, conn: &Self::Connection, args: Args) -> Response<T>;
 }
