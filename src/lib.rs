@@ -25,6 +25,7 @@ use std::net::SocketAddr;
 
 use errors::Error;
 
+#[cfg(feature = "with_io")]
 use reql_io::r2d2;
 
 use slog::Logger;
@@ -38,14 +39,23 @@ use ql2::proto::{Datum,
 /// The result of any ReQL command that can potentially return an error
 pub type Result<T> = ::std::result::Result<T, Error>;
 
+/// The return type of `ToArg::to_arg`
+///
+/// It's not meant to be used directly.
 pub struct Arg {
     string: String,
     term: Term,
 }
 
+/// The response returned by the `run` command
 pub struct Response<T>(T);
+
+/// The ReQL connection returned by the `connect` command
+///
+/// Internally this is actually a connection pool.
 pub struct Connection;
 
+/// The configuration data for the `connect` command
 #[derive(Debug)]
 pub struct Config(Vec<InnerConfig>);
 
