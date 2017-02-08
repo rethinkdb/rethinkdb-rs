@@ -32,13 +32,16 @@ commands! {
 mod io;
 #[cfg(feature = "with_io")]
 pub use self::io::*;
+
 use ql2::proto::{Term, Term_AssocPair as TermPair};
+use slog::Logger;
 
 /// The type returned by every error
 #[must_use = "command results are moved from one command to another so you must either catch a command's result using a let binding or chain the command all the way through"]
 #[derive(Debug, Clone)]
 pub struct Command {
     term: Term,
+    logger: Logger,
 }
 
 impl Command {
@@ -60,7 +63,15 @@ impl Command {
     pub fn new() -> Command {
         Command {
             term: Term::new(),
+            logger: Logger::root(::slog::Discard, o!()),
         }
+    }
+
+    /// Sets a logger
+    pub fn with_logger(&self, logger: Logger) -> Command {
+        let mut cmd = self.clone();
+        cmd.logger = logger;
+        cmd
     }
 
     #[doc(hidden)]
