@@ -46,6 +46,7 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 pub struct Arg {
     string: String,
     term: Term,
+    pool: Option<Pool>,
 }
 
 /// The response returned by the `run` command
@@ -125,6 +126,7 @@ pub struct Client {
 pub struct Args {
     term: Term,
     string: String,
+    pool: Option<Pool>,
 }
 
 /// The argument that is passed to any ReQL command

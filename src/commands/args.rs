@@ -1,4 +1,4 @@
-use {Client, ToArg, Arg, Args};
+use {Client, Pool, ToArg, Arg, Args};
 use types::FromJson;
 use slog::Logger;
 use serde_json::value::Value;
@@ -9,6 +9,7 @@ impl ToArg for Client {
         Arg {
             string: self.query.to_owned(),
             term: self.term.clone(),
+            pool: None,
         }
     }
 }
@@ -18,6 +19,7 @@ impl ToArg for Args {
         Arg {
             string: self.string.to_owned(),
             term: self.term.clone(),
+            pool: self.pool.clone(),
         }
     }
 }
@@ -27,6 +29,7 @@ impl ToArg for Term {
         Arg {
             string: String::new(),
             term: self.clone(),
+            pool: None,
         }
     }
 }
@@ -36,6 +39,7 @@ impl ToArg for String {
         Arg {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -45,6 +49,7 @@ impl ToArg for char {
         Arg {
             string: format!("'{}'", self),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -54,6 +59,7 @@ impl<'a> ToArg for &'a String {
         Arg {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -63,6 +69,7 @@ impl<'a> ToArg for &'a str {
         Arg {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -72,6 +79,7 @@ impl ToArg for f32 {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -81,6 +89,7 @@ impl ToArg for i32 {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -90,6 +99,7 @@ impl ToArg for u32 {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -99,6 +109,7 @@ impl ToArg for f64 {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -108,6 +119,7 @@ impl ToArg for i64 {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -117,6 +129,7 @@ impl ToArg for u64 {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -126,6 +139,7 @@ impl ToArg for bool {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
+            pool: None,
         }
     }
 }
@@ -135,6 +149,18 @@ impl ToArg for Value {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
+            pool: None,
+        }
+    }
+}
+
+impl<'a> ToArg for &'a Pool {
+    fn to_arg(&self) -> Arg {
+        let pool = self.clone().clone();
+        Arg {
+            string: String::new(),
+            term: Term::new(),
+            pool: Some(pool),
         }
     }
 }
@@ -143,6 +169,11 @@ impl Arg {
     #[doc(hidden)]
     pub fn term(self) -> Term {
         self.term
+    }
+
+    #[doc(hidden)]
+    pub fn pool(self) -> Option<Pool> {
+        self.pool
     }
 }
 
@@ -204,6 +235,7 @@ impl Args {
         Args {
             term: Term::new(),
             string: String::new(),
+            pool: None,
         }
     }
 
@@ -220,6 +252,12 @@ impl Args {
     #[doc(hidden)]
     pub fn set_term(&mut self, term: Term) {
         self.term = term;
+    }
+
+    #[doc(hidden)]
+    pub fn add_arg(&mut self, arg: Arg) {
+        self.pool = arg.pool;
+        self.term.mut_args().push(arg.term);
     }
 
     #[doc(hidden)]
