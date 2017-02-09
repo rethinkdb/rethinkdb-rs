@@ -1,20 +1,23 @@
 mod with_args;
 mod connect;
+mod handshake;
 mod r2d2;
 
 use std::{io, error};
 
-use {Config, Connection, Result, Response};
+use {Config, Connection, Pool, ToArg, Result, Response};
 use reql_io::tokio_core::reactor::Handle;
 
 /// Create a new connection to the database server
 pub trait Connect {
-    fn connect(&self, cfg: Config, handle: &Handle) -> Result<Connection>;
+    fn connect(&self, cfg: Config, handle: &Handle) -> Result<Pool>;
 }
 
 /// Run the query
-pub trait Run {
-    fn run<T>(&self, conn: &Connection) -> Response<T>;
+pub trait Run<T>
+    where T: ToArg
+{
+    fn run<R>(&self, args: T) -> Response<R>;
 }
 
 fn io_error<T>(err: T) -> io::Error

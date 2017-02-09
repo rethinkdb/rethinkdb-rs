@@ -30,6 +30,10 @@ use errors::Error;
 use reql_io::r2d2;
 #[cfg(feature = "with_io")]
 use reql_io::tokio_core::reactor::Remote;
+#[cfg(feature = "with_io")]
+use reql_io::tokio_core::io::Framed;
+#[cfg(feature = "with_io")]
+use reql_io::tokio_core::net::TcpStream;
 
 use slog::Logger;
 
@@ -48,22 +52,32 @@ pub struct Arg {
 #[cfg(feature = "with_io")]
 pub struct Response<T>(T);
 
-/// The ReQL connection returned by the `connect` command
-///
-/// Internally this is actually a connection pool.
+/// The connection pool returned by the `connect` command
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-pub struct Connection(Vec<r2d2::Pool<ConnectionManager>>);
+pub struct Pool(Vec<r2d2::Pool<ConnectionManager>>);
 
+#[derive(Debug, Clone, Copy)]
 #[cfg(feature = "with_io")]
-#[derive(Debug, Clone)]
-struct InnerConnection;
+struct Codec;
+
+/// The underlying connection to each server
+#[cfg(feature = "with_io")]
+pub struct Connection {
+    id: u64,
+    broken: bool,
+    server: Server,
+    address: SocketAddr,
+    transport: Framed<TcpStream, Codec>,
+    logger: Logger,
+}
 
 #[cfg(feature = "with_io")]
 #[derive(Clone)]
 struct ConnectionManager {
-    opts: Opts,
+    server: Server,
     remote: Remote,
+    logger: Logger,
 }
 
 /// The configuration data for the `connect` command
@@ -71,13 +85,15 @@ struct ConnectionManager {
 #[derive(Debug)]
 pub struct Config(Vec<InnerConfig>);
 
+/// The database server we will be connecting to
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-struct Opts {
+pub struct Server {
+    name: String,
     addresses: Vec<SocketAddr>,
-    db: &'static str,
-    user: &'static str,
-    password: &'static str,
+    db: String,
+    user: String,
+    password: String,
     retries: u8,
     tls: Option<TlsCfg>,
 }
@@ -85,17 +101,17 @@ struct Opts {
 #[cfg(feature = "with_io")]
 #[derive(Debug)]
 struct InnerConfig {
-    pool: r2d2::Config<InnerConnection, Error>,
-    opts: Opts,
+    pool: r2d2::Config<Connection, Error>,
+    server: Server,
 }
 
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
 struct TlsCfg {
-    ca_certs: &'static str,
+    ca_certs: String,
 }
 
-/// The type returned by every error
+/// The database server client
 #[must_use]
 #[derive(Debug, Clone)]
 pub struct Client {

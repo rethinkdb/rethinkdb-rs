@@ -20,7 +20,7 @@ use futures::{future, Future, Stream, Sink};
 use tokio_core::reactor::{Handle, Remote};
 use tokio_core::io::{Io, Codec, Framed, EasyBuf};
 use tokio_core::net::TcpStream;
-use byteorder::{LittleEndian, /* WriteBytesExt, ReadBytesExt, */ ByteOrder};
+use byteorder::{LittleEndian, ByteOrder};
 use scram::{ClientFirst, ServerFirst, ServerFinal};
 
 #[derive(Debug, Clone)]
@@ -214,7 +214,7 @@ impl Connection {
         let handshake = transport
             // Send desired version to the server
             .send(version.as_ref().to_owned())
-            
+
             // Send client first message
             .and_then(|transport| {
                 let scram = try!(ClientFirst::new(opts.user, opts.password, None));
@@ -321,36 +321,34 @@ impl Codec for QueryCodec {
     }
 }
 
-/*
-   impl<T: Io + 'static> ClientProto<T> for Ql2Proto {
-   type Request = Vec<u8>;
-   type Response = Vec<u8>;
+impl<T: Io + 'static> ClientProto<T> for Ql2Proto {
+    type Request = Vec<u8>;
+    type Response = Vec<u8>;
 
-   type Transport = Framed<T, QueryCodec>;
-   type BindTransport = io::Result<Self::Transport>;
+    type Transport = Framed<T, QueryCodec>;
+    type BindTransport = io::Result<Self::Transport>;
 
-   fn bind_transport(&self, io: T) -> Self::BindTransport {
-   let transport = io.framed(QueryCodec);
+    fn bind_transport(&self, io: T) -> Self::BindTransport {
+        let transport = io.framed(QueryCodec);
 
-   let mut version = [0; 4];
-   LittleEndian::write_u32(&mut version, ql2::proto::VersionDummy_Version::V1_0 as u32);
+        let mut version = [0; 4];
+        LittleEndian::write_u32(&mut version, ql2::proto::VersionDummy_Version::V1_0 as u32);
 
-   let handshake = transport.send(version.as_ref().to_owned())
-   .and_then(|transport| transport.into_future().map_err(|(e, _)| e))
-   .and_then(|(res, transport)| {
-   match res {
-   Some(ref msg) => {
-   Ok(transport)
-   }
-   _ => {
-   let err = io::Error::new(io::ErrorKind::Other, "invalid handshake");
-   Err(err)
-   }
-   }
-   })
-   ;
+        let handshake = transport.send(version.as_ref().to_owned())
+            .and_then(|transport| transport.into_future().map_err(|(e, _)| e))
+            .and_then(|(res, transport)| {
+                match res {
+                    Some(ref msg) => {
+                        Ok(transport)
+                    }
+                    _ => {
+                        let err = io::Error::new(io::ErrorKind::Other, "invalid handshake");
+                        Err(err)
+                    }
+                }
+            })
+        ;
 
-   Box::new(handshake)
-   }
-   }
-   */
+        Box::new(handshake)
+    }
+}
