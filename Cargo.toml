@@ -12,6 +12,7 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [badges]
 travis-ci = { repository = "rust-rethinkdb/reql" }
+appveyor = { repository = "rust-rethinkdb/reql" }
 
 [features]
 default = ["with_io"]
