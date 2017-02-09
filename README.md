@@ -21,8 +21,7 @@ reql = "0.0.6-alpha7"
 Import it in your `main.rs` or `lib.rs`:-
 
 ```rust
-#[macro_use]
-extern crate reql;
+#[macro_use] extern crate reql;
 ```
 
 Run ReQL commands:-

@@ -166,6 +166,25 @@ impl<'a> ToArg for &'a Pool {
 }
 
 impl Arg {
+    /// Create a new command argument
+    ///
+    /// This is the return type of the `ToArg` trait. You need to
+    /// use `Arg::new` to create an argument when implementing that
+    /// trait for any additional types that you want to pass to ReQL
+    /// commands.
+    ///
+    /// ReQL commands are represented as `term`s so you must first
+    /// convert your argument to a term and pass it as `term` to this method.
+    /// For debugging and logging purposes, this method also requires that you
+    /// pass the string representation of your argument i.e. `as_str`.
+    pub fn new(term: Term, as_str: &str) -> Arg {
+        Arg {
+            string: as_str.into(),
+            term: term,
+            pool: None,
+        }
+    }
+
     #[doc(hidden)]
     pub fn term(self) -> Term {
         self.term

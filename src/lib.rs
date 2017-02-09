@@ -41,10 +41,7 @@ use slog::Logger;
 pub type Result<T> = ::std::result::Result<T, Error>;
 
 /// The return type of `ToArg::to_arg`
-///
-/// It's not meant to be used directly.
 #[derive(Debug, Clone)]
-#[doc(hidden)]
 pub struct Arg {
     string: String,
     term: Term,
