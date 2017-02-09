@@ -1,4 +1,4 @@
-//! The ReQL command reference
+//! The command reference
 
 commands! {
     db_list,            changes,            db_create,          db_drop,            table_create,       table_drop,

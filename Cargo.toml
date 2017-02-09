@@ -24,7 +24,7 @@ serde_json = "0.9"
 ql2 = "1.1"
 derive-error = "0.0.3"
 reql-derive = { version = "0.0.6-alpha4", path = "./derive" }
-reql-io = { version = "0.1", path = "./io", optional = true }
+reql-io = { version = "0.2", path = "./io", optional = true }
 
 [dev-dependencies]
 slog-term = "1.5"

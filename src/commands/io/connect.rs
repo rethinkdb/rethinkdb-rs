@@ -1,9 +1,9 @@
-use std::net::{SocketAddr, IpAddr, Ipv4Addr};
+use std::net::{ToSocketAddrs, SocketAddr, IpAddr, Ipv4Addr};
 use std::{fmt, io, result};
 
-use {Client, Config, Connection, InnerConfig, Pool, ConnectionManager, Result, Server};
+use {Client, Config, Connection, PoolConfig, Pool, ConnectionManager, Result, Server, Cluster, DataCentre};
 use super::{Connect, io_error};
-use errors::Error;
+use errors::*;
 use reql_io::r2d2;
 use reql_io::tokio_core::reactor::Handle;
 use reql_io::tokio_core::io::{Codec, EasyBuf};
@@ -17,17 +17,26 @@ impl Connect for Client {
         let mut pool = Pool(Vec::new());
         let remote = handle.remote();
         for c in cfg.0 {
-            let manager = ConnectionManager {
-                server: c.server,
-                remote: remote.clone(),
-                logger: logger.clone(),
-            };
-            match r2d2::Pool::new(c.pool, manager) {
-                Ok(p) => { pool.0.push(p); }
-                Err(err) => {
-                    return Err(From::from(io_error(err)));
+            let mut dc = DataCentre(Vec::new());
+            for pc in c.servers {
+                let logger = self.logger.new(o!(
+                        "cluster" => c.name.to_string(),
+                        "db" => c.db.to_string(),
+                        "user" => c.user.to_string(),
+                        ));
+                let manager = ConnectionManager {
+                    server: pc.server,
+                    remote: remote.clone(),
+                    logger: logger,
+                };
+                match r2d2::Pool::new(pc.pool, manager) {
+                    Ok(p) => { dc.0.push(p); }
+                    Err(err) => {
+                        return Err(From::from(io_error(err)));
+                    }
                 }
             }
+            pool.0.push(dc);
         }
         Ok(pool)
     }
@@ -38,29 +47,65 @@ impl Config {
         Config(Vec::new())
     }
 
-    pub fn add_server(&mut self, server: Server, pool: r2d2::Config<Connection, Error>) -> &mut Config {
-        let cfg = InnerConfig {
-            pool: pool,
-            server: server,
-        };
-        self.0.push(cfg);
-        self
+    pub fn add_cluster(&mut self, mut cluster: Cluster) -> Result<&mut Config> {
+        if cluster.servers.is_empty() {
+            let config = r2d2::Config::default();
+            cluster.add_server("localhost:28015", config)?;
+        }
+        self.0.push(cluster);
+        Ok(self)
     }
 }
 
-impl Server {
-    pub fn new(name: &str) -> Server {
-        let localhost = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
-        let address = SocketAddr::new(localhost, 28015);
-        Server {
+impl Cluster {
+    pub fn new(name: &str) -> Cluster {
+        Cluster {
             name: name.into(),
-            addresses: vec![address],
+            servers: Vec::new(),
             db: String::from("test"),
             user: String::from("admin"),
             password: String::new(),
             retries: 5,
             tls: None,
         }
+    }
+    /// Add a server to the cluster
+    pub fn add_server<T: ToSocketAddrs>(&mut self, server: T, config: r2d2::Config<Connection, Error>) -> Result<&mut Cluster> {
+        let mut addrs = Vec::new();
+        for addr in server.to_socket_addrs()? {
+            addrs.push(addr);
+        }
+        if addrs.is_empty() {
+            let error = DriverError::Other("no server addresses found".into());
+            return Err(From::from(error));
+        }
+        let server = Server(addrs);
+        let cfg = PoolConfig {
+            pool: config,
+            server: server,
+        };
+        self.servers.push(cfg);
+        Ok(self)
+    }
+    /// Sets database
+    pub fn set_db(&mut self, db: &str) -> &mut Cluster {
+        self.db = db.into();
+        self
+    }
+    /// Sets username
+    pub fn set_user(&mut self, user: &str) -> &mut Cluster {
+        self.user = user.into();
+        self
+    }
+    /// Sets password
+    pub fn set_password(&mut self, password: &str) -> &mut Cluster {
+        self.password = password.into();
+        self
+    }
+    /// Sets retries
+    pub fn set_retries(&mut self, retries: u8) -> &mut Cluster {
+        self.retries = retries;
+        self
     }
 }
 

@@ -1,4 +1,4 @@
-//! Error Reference
+//! The errors returned by this driver
 
 use std::io::Error as IoError;
 use std::str::Utf8Error;

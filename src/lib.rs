@@ -37,12 +37,14 @@ use reql_io::tokio_core::net::TcpStream;
 
 use slog::Logger;
 
-/// The result of any ReQL command that can potentially return an error
+/// The result of any command that can potentially return an error
 pub type Result<T> = ::std::result::Result<T, Error>;
 
 /// The return type of `ToArg::to_arg`
 ///
 /// It's not meant to be used directly.
+#[derive(Debug, Clone)]
+#[doc(hidden)]
 pub struct Arg {
     string: String,
     term: Term,
@@ -51,24 +53,25 @@ pub struct Arg {
 
 /// The response returned by the `run` command
 #[cfg(feature = "with_io")]
+#[derive(Debug, Clone)]
 pub struct Response<T>(T);
 
 /// The connection pool returned by the `connect` command
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-pub struct Pool(Vec<r2d2::Pool<ConnectionManager>>);
+pub struct Pool(Vec<DataCentre>);
 
-#[derive(Debug, Clone, Copy)]
 #[cfg(feature = "with_io")]
+#[derive(Debug, Clone, Copy)]
 struct Codec;
 
-/// The underlying connection to each server
+// The underlying connection to each server
 #[cfg(feature = "with_io")]
+#[doc(hidden)]
 pub struct Connection {
     id: u64,
     broken: bool,
     server: Server,
-    address: SocketAddr,
     transport: Framed<TcpStream, Codec>,
     logger: Logger,
 }
@@ -84,14 +87,22 @@ struct ConnectionManager {
 /// The configuration data for the `connect` command
 #[cfg(feature = "with_io")]
 #[derive(Debug)]
-pub struct Config(Vec<InnerConfig>);
+pub struct Config(Vec<Cluster>);
 
-/// The database server we will be connecting to
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-pub struct Server {
+struct DataCentre(Vec<r2d2::Pool<ConnectionManager>>);
+
+#[cfg(feature = "with_io")]
+#[derive(Debug, Clone)]
+struct Server(Vec<SocketAddr>);
+
+/// The database cluster we will be connecting to
+#[cfg(feature = "with_io")]
+#[derive(Debug)]
+pub struct Cluster {
     name: String,
-    addresses: Vec<SocketAddr>,
+    servers: Vec<PoolConfig>,
     db: String,
     user: String,
     password: String,
@@ -101,7 +112,7 @@ pub struct Server {
 
 #[cfg(feature = "with_io")]
 #[derive(Debug)]
-struct InnerConfig {
+struct PoolConfig {
     pool: r2d2::Config<Connection, Error>,
     server: Server,
 }
@@ -112,7 +123,7 @@ struct TlsCfg {
     ca_certs: String,
 }
 
-/// The database server client
+/// The database cluster client
 #[must_use]
 #[derive(Debug, Clone)]
 pub struct Client {
@@ -123,13 +134,14 @@ pub struct Client {
 
 /// The return type of the `args!()` macro
 #[derive(Debug, Clone)]
+#[doc(hidden)]
 pub struct Args {
     term: Term,
     string: String,
     pool: Option<Pool>,
 }
 
-/// The argument that is passed to any ReQL command
+/// The argument that is passed to any command
 pub trait ToArg {
     fn to_arg(&self) -> Arg;
 }

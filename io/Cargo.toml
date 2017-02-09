@@ -1,7 +1,7 @@
 [package]
 name = "reql-io"
 description = "ReQL IO implementation"
-version = "0.1.0"
+version = "0.2.0"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rust-rethinkdb/reql"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
@@ -12,3 +12,4 @@ byteorder = "1.0"
 scram = "0.1"
 tokio-core = "0.1"
 futures = "0.1"
+rand = "0.3"
