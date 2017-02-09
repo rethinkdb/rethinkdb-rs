@@ -28,6 +28,8 @@ use errors::Error;
 
 #[cfg(feature = "with_io")]
 use reql_io::r2d2;
+#[cfg(feature = "with_io")]
+use reql_io::tokio_core::reactor::Remote;
 
 use slog::Logger;
 
@@ -50,7 +52,19 @@ pub struct Response<T>(T);
 ///
 /// Internally this is actually a connection pool.
 #[cfg(feature = "with_io")]
-pub struct Connection;
+#[derive(Debug, Clone)]
+pub struct Connection(Vec<r2d2::Pool<ConnectionManager>>);
+
+#[cfg(feature = "with_io")]
+#[derive(Debug, Clone)]
+struct InnerConnection;
+
+#[cfg(feature = "with_io")]
+#[derive(Clone)]
+struct ConnectionManager {
+    opts: Opts,
+    remote: Remote,
+}
 
 /// The configuration data for the `connect` command
 #[cfg(feature = "with_io")]
@@ -58,15 +72,21 @@ pub struct Connection;
 pub struct Config(Vec<InnerConfig>);
 
 #[cfg(feature = "with_io")]
-#[derive(Debug)]
-struct InnerConfig {
-    pool: r2d2::Config<Connection, Error>,
+#[derive(Debug, Clone)]
+struct Opts {
     addresses: Vec<SocketAddr>,
     db: &'static str,
     user: &'static str,
     password: &'static str,
     retries: u8,
     tls: Option<TlsCfg>,
+}
+
+#[cfg(feature = "with_io")]
+#[derive(Debug)]
+struct InnerConfig {
+    pool: r2d2::Config<InnerConnection, Error>,
+    opts: Opts,
 }
 
 #[cfg(feature = "with_io")]
