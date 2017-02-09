@@ -21,6 +21,7 @@ pub mod errors;
 #[doc(hidden)]
 pub use ql2::proto::Term;
 
+#[cfg(feature = "with_io")]
 use std::net::SocketAddr;
 
 use errors::Error;
@@ -42,17 +43,21 @@ pub struct Arg {
 }
 
 /// The response returned by the `run` command
+#[cfg(feature = "with_io")]
 pub struct Response<T>(T);
 
 /// The ReQL connection returned by the `connect` command
 ///
 /// Internally this is actually a connection pool.
+#[cfg(feature = "with_io")]
 pub struct Connection;
 
 /// The configuration data for the `connect` command
+#[cfg(feature = "with_io")]
 #[derive(Debug)]
 pub struct Config(Vec<InnerConfig>);
 
+#[cfg(feature = "with_io")]
 #[derive(Debug)]
 struct InnerConfig {
     pool: r2d2::Config<Connection, Error>,
@@ -64,25 +69,19 @@ struct InnerConfig {
     tls: Option<TlsCfg>,
 }
 
+#[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
 struct TlsCfg {
     ca_certs: &'static str,
 }
 
 /// The type returned by every error
-#[must_use = "command results are moved from one command to another so you must either catch a command's result using a let binding or chain the command all the way through"]
+#[must_use]
 #[derive(Debug, Clone)]
 pub struct Client {
     term: Term,
     query: String,
     logger: Logger,
-}
-
-impl Arg {
-    #[doc(hidden)]
-    pub fn term(self) -> Term {
-        self.term
-    }
 }
 
 /// The return type of the `args!()` macro
