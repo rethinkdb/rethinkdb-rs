@@ -46,6 +46,7 @@ __Example:__ Return the user who has scored the fewest points.
 
 ```rb
 r.table('users').min('points').run(conn)
+```
 
 __Example:__ The same as above, but using a secondary index on the `points` field.
 
