@@ -32,5 +32,4 @@ reql-io = { version = "0.2", path = "./io", optional = true }
 slog-term = "1.5"
 
 [build-dependencies]
-tempdir = "0.3"
-mdbook = "0.0.14"
+scan_dir = "0.3"
