@@ -9,6 +9,7 @@ readme = "README.md"
 keywords = ["database", "rethinkdb", "reql", "driver"]
 categories = ["database"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
+build = "build/main.rs"
 
 [badges]
 travis-ci = { repository = "rust-rethinkdb/reql" }
@@ -29,3 +30,7 @@ reql-io = { version = "0.2", path = "./io", optional = true }
 
 [dev-dependencies]
 slog-term = "1.5"
+
+[build-dependencies]
+tempdir = "0.3"
+mdbook = "0.0.14"
