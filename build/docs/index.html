@@ -1,0 +1,48 @@
+---
+layout: documentation
+title: RethinkDB Documentation
+doc_index: true
+---
+<section class="docs-landing">
+    <section class="docs-intro">
+        <h2>What is RethinkDB?</h2>
+        <p>
+            RethinkDB makes building and scaling realtime apps dramatically easier.
+            Get started by installing the server, and jump into our getting started
+            guide to start building your first app in minutes.
+        </p>
+        <ul class="primary-docs">
+            <li class="quickstart">
+                <a href="/docs/quickstart/">
+                    <p>Quickstart</p>
+                </a>
+            </li>
+            <li class="install">
+                <a href="/docs/install/">
+                    <p>Install RethinkDB</p>
+                </a>
+            </li>
+            <li class="api">
+                <a href="/api/">
+                    <p>API reference</p>
+                </a>
+            </li>
+         </ul>
+    </section>
+    <section class="intro-video">
+        <h1>RethinkDB in two minutes</h1>
+        {% video qKPKsBNw604 %}<img src="/assets/images/videos/what-is-rethinkdb.png">{% endvideo %}
+    </section>
+    <section class="featured-articles">
+        <h1>Featured articles</h1>
+        <ul class="article-list">
+            {% for article in site.data.docs['docs-featured'] %}
+                <li>
+                    <h1><a href="{{ article.permalink }}">{{ article.title }}</a></h1>
+                    <p>{{ article.description }}</p>
+                </li>
+            {% endfor %}
+
+        </ul>
+    </section>
+</section>
