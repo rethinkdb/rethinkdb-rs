@@ -1,20 +1,3 @@
-macro_rules! commands {
-    ($($cmd:ident),* $(,)*) => {
-        $(
-            mod $cmd;
-            pub use self::$cmd::*;
-        )*
-    }
-}
-
-macro_rules! command {
-    ( $(#[$attr:meta])* ) => {
-        #[derive(Command)]
-        $(#[$attr])*
-        struct _DummyCommand;
-    }
-}
-
 macro_rules! with_args {
     ( $cmd:ident, $args:ident ) => {{
         let term = $cmd.mut_term();

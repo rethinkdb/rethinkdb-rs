@@ -1,7 +1,5 @@
 //! A native RethinkDB driver written in Rust
 
-#[macro_use]
-extern crate reql_derive;
 extern crate ql2;
 extern crate protobuf;
 extern crate serde_json;
