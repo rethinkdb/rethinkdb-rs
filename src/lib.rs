@@ -23,6 +23,8 @@ pub use ql2::proto::Term;
 
 #[cfg(feature = "with_io")]
 use std::net::SocketAddr;
+#[cfg(feature = "with_io")]
+use std::sync::Arc;
 
 use errors::Error;
 
@@ -30,8 +32,6 @@ use errors::Error;
 use reql_io::r2d2;
 #[cfg(feature = "with_io")]
 use reql_io::tokio_core::reactor::Remote;
-#[cfg(feature = "with_io")]
-use reql_io::tokio_core::io::Framed;
 #[cfg(feature = "with_io")]
 use reql_io::tokio_core::net::TcpStream;
 
@@ -58,10 +58,6 @@ pub struct Response<T>(T);
 #[derive(Debug, Clone)]
 pub struct Pool(Vec<DataCentre>);
 
-#[cfg(feature = "with_io")]
-#[derive(Debug, Clone, Copy)]
-struct Codec;
-
 // The underlying connection to each server
 #[cfg(feature = "with_io")]
 #[doc(hidden)]
@@ -69,7 +65,7 @@ pub struct Connection {
     id: u64,
     broken: bool,
     server: Server,
-    transport: Framed<TcpStream, Codec>,
+    stream: TcpStream,
     logger: Logger,
 }
 
@@ -81,10 +77,9 @@ struct ConnectionManager {
     logger: Logger,
 }
 
-/// The configuration data for the `connect` command
 #[cfg(feature = "with_io")]
 #[derive(Debug)]
-pub struct Config(Vec<Cluster>);
+struct ClusterConfig(Vec<Cluster>);
 
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
@@ -94,12 +89,19 @@ struct DataCentre(Vec<r2d2::Pool<ConnectionManager>>);
 #[derive(Debug, Clone)]
 struct Server(Vec<SocketAddr>);
 
-/// The database cluster we will be connecting to
 #[cfg(feature = "with_io")]
 #[derive(Debug)]
-pub struct Cluster {
-    name: String,
-    servers: Vec<PoolConfig>,
+struct Cluster(Vec<Server>);
+
+#[cfg(feature = "with_io")]
+#[derive(Debug, Clone)]
+struct TlsCfg {
+    ca_certs: String,
+}
+
+#[cfg(feature = "with_io")]
+#[derive(Debug)]
+struct Opts {
     db: String,
     user: String,
     password: String,
@@ -107,17 +109,12 @@ pub struct Cluster {
     tls: Option<TlsCfg>,
 }
 
-#[cfg(feature = "with_io")]
-#[derive(Debug)]
-struct PoolConfig {
-    pool: r2d2::Config<Connection, Error>,
-    server: Server,
-}
-
+/// The configuration data for the `connect` command
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-struct TlsCfg {
-    ca_certs: String,
+struct Config {
+    pool: Arc<r2d2::Config<Connection, Error>>,
+    servers: Vec<Server>,
 }
 
 /// The database cluster client

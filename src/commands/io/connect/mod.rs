@@ -1,7 +1,10 @@
+mod handshake;
+mod pool;
+
 use std::net::{ToSocketAddrs, SocketAddr, IpAddr, Ipv4Addr};
 use std::{fmt, io, result};
 
-use {Client, Config, Connection, PoolConfig, Pool, ConnectionManager, Result, Server, Cluster, DataCentre};
+use {Client, Config, Server, Connection, PoolConfig, Pool, ConnectionManager, Result, Cluster, DataCentre};
 use super::{Connect, io_error};
 use errors::*;
 use reql_io::r2d2;
@@ -10,12 +13,15 @@ use reql_io::tokio_core::io::{Codec, EasyBuf};
 use reql_io::byteorder::{LittleEndian, ByteOrder};
 
 impl Connect for Client {
-    fn connect(&self, cfg: Config, handle: &Handle) -> Result<Pool> {
+    fn connect(&self, config: Config, handle: &Handle) -> Result<Pool> {
+        unimplemented!();
+        /*
         let logger = self.logger.new(o!("command" => "connect"));
         let query = format!("{}.connect({:?}, &handle)", self.query, cfg);
         debug!(logger, "{}", query);
         let mut pool = Pool(Vec::new());
         let remote = handle.remote();
+        info!(logger, "creating connection pools...");
         for c in cfg.0 {
             let mut dc = DataCentre(Vec::new());
             for pc in c.servers {
@@ -38,7 +44,9 @@ impl Connect for Client {
             }
             pool.0.push(dc);
         }
+        info!(logger, "connection pools created successfully");
         Ok(pool)
+        */
     }
 }
 
@@ -115,6 +123,7 @@ impl fmt::Debug for ConnectionManager {
     }
 }
 
+/*
 impl Codec for ::Codec {
     type In = (u64, Vec<u8>);
     type Out = (u64, Vec<u8>);
@@ -155,3 +164,4 @@ impl Codec for ::Codec {
         Ok(())
     }
 }
+*/

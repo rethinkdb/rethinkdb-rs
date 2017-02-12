@@ -1,23 +1,40 @@
+use std::io;
+use std::sync::Arc;
+
 use reql_io::r2d2;
 use errors::Error;
 use super::io_error;
-use {ConnectionManager, Codec, Connection, Result};
-use reql_io::futures::sync::oneshot;
+use {Client, ConnectionManager, Connection, Result};
+use reql_io::futures::sync::mpsc;
 use reql_io::tokio_core::net::TcpStream;
 use reql_io::tokio_core::io::Io;
-use reql_io::futures::{Future, Stream};
+use reql_io::futures::{Future, Stream, Sink};
 
 impl r2d2::ManageConnection for ConnectionManager {
     type Connection = Connection;
     type Error = Error;
 
     fn connect(&self) -> Result<Connection> {
-        Connection::new(self.clone())
+        unimplemented!();
+        //Connection::new(self.clone())
     }
 
-    //fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
-    fn is_valid(&self, _: &mut Connection) -> Result<()> {
+    fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
         unimplemented!();
+        /*
+        conn.id += 1;
+        let request = "[1,1]".as_bytes().to_owned();
+        let response = "[1]".as_bytes().to_owned();
+        conn.inner.clone().transport
+            .send((conn.id, request))
+            .and_then(|t| t.into_future().map_err(|(e, _)| e))
+            .and_then(|(res, _)| {
+                match res {
+                    Some(ref msg) if msg == &(conn.id, response) => Ok(()),
+                    _ => Err(io_error("invalid response")),
+                }
+            }).wait().map_err(|e| From::from(e))
+        */
     }
 
     fn has_broken(&self, conn: &mut Connection) -> bool {
@@ -25,13 +42,14 @@ impl r2d2::ManageConnection for ConnectionManager {
     }
 }
 
+/*
 impl Connection {
     fn new(manager: ConnectionManager) -> Result<Connection> {
         let logger = manager.logger;
         let remote = manager.remote;
         let server = manager.server;
         let addresses = server.0.clone();
-        let (tx, rx) = oneshot::channel();
+        let (tx, rx) = mpsc::channel(1024);
 
         remote.spawn(move |handle| {
             for address in addresses {
@@ -93,14 +111,13 @@ impl Connection {
         ;
         */
 
-        let transport = stream.framed(Codec);
-
         Ok(Connection {
             id: 0,
             broken: false,
             server: server,
-            transport: transport,
+            stream: stream,
             logger: logger,
         })
     }
 }
+*/

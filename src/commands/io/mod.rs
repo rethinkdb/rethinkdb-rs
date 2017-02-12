@@ -1,6 +1,5 @@
 mod connect;
-mod handshake;
-mod r2d2;
+mod run;
 
 use std::{io, error};
 
@@ -9,7 +8,7 @@ use reql_io::tokio_core::reactor::Handle;
 
 /// Create a new connection to the database server
 pub trait Connect {
-    fn connect(&self, cfg: Config, handle: &Handle) -> Result<Pool>;
+    fn connect(&self, config: Config, handle: &Handle) -> Result<Pool>;
 }
 
 /// Run the query
@@ -20,7 +19,7 @@ pub trait Run<T>
 }
 
 fn io_error<T>(err: T) -> io::Error
-    where T: error::Error + Send + Sync + 'static
+    where T: Into<Box<error::Error + Send + Sync>>
 {
     io::Error::new(io::ErrorKind::Other, err)
 }
