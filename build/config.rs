@@ -2,16 +2,32 @@ use std::env;
 use std::path::PathBuf;
 use std::fs::File;
 use std::io::BufReader;
-use std::io::Read;
 
-use yaml_rust::{YamlLoader, Yaml};
+use serde_yaml as yaml;
 
 #[derive(Debug, Clone)]
 pub struct Config {
     pub docs_dir: PathBuf,
     pub cmds_src: PathBuf,
     pub version: String,
-    pub menu: Vec<Yaml>,
+    pub menu: Vec<Section>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct Menu {
+    section: Section,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Section {
+    pub name: String,
+    pub commands: Vec<Command>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Command {
+    pub name: String,
+    pub permalink: String,
 }
 
 impl Config {
@@ -29,15 +45,24 @@ impl Config {
             docs_dir: PathBuf::from(&docs_dir),
             cmds_src: PathBuf::from(&cmds_src),
             version: version,
-            menu: build_menu(&menu_file),
+            menu: build_menu(&menu_file).into_iter()
+                .map(|menu| menu.section)
+                .map(|mut section| {
+                    if section.name == "Accessing ReQL" {
+                        section.name = String::from("Accessing RQL");
+                    }
+                    section.name = section.name
+                        .replace(" ", "-")
+                        .to_lowercase();
+                    section
+                })
+            .collect(),
         }
     }
 }
 
-fn build_menu(menu_file: &str) -> Vec<Yaml> {
+fn build_menu(menu_file: &str) -> Vec<Menu> {
     let file = File::open(&menu_file).unwrap();
-    let mut buf = BufReader::new(file);
-    let mut yaml = String::new();
-    buf.read_to_string(&mut yaml).unwrap();
-    YamlLoader::load_from_str(&yaml).unwrap()
+    let buf = BufReader::new(file);
+    yaml::from_reader(buf).unwrap()
 }

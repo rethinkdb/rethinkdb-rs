@@ -32,5 +32,6 @@ reql-io = { version = "0.2", path = "./io", optional = true }
 slog-term = "1.5"
 
 [build-dependencies]
-scan_dir = "0.3"
-yaml-rust = "0.3"
+serde = "0.9"
+serde_derive = "0.9"
+serde_yaml = "0.6"
