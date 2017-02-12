@@ -33,3 +33,4 @@ slog-term = "1.5"
 
 [build-dependencies]
 scan_dir = "0.3"
+yaml-rust = "0.3"

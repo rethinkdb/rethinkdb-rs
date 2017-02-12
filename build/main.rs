@@ -1,4 +1,5 @@
 extern crate scan_dir;
+extern crate yaml_rust;
 
 mod config;
 
