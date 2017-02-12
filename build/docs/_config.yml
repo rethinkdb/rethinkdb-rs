@@ -1,0 +1,13 @@
+port: 4000
+markdown: kramdown
+kramdown:
+    input: GFM
+    syntax_highlighter: rouge
+    hard_wrap: false
+    toc_levels: '1'
+highlighter: rouge
+exclude: [Rakefile, node_modules, Gemfile, Gemfile.lock, README.md]
+
+# Version of RethinkDB this documentation applies to
+version: 2.3
+beta: false

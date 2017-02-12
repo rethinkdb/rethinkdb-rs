@@ -1,0 +1,374 @@
+- section:
+    name: Accessing ReQL
+    commands:
+        - name: r
+          permalink: r
+        - name: connect
+          permalink: connect
+        - name: repl
+          permalink: repl
+        - name: close
+          permalink: close
+        - name: reconnect
+          permalink: reconnect
+        - name: use
+          permalink: use
+        - name: run
+          permalink: run
+        - name: changes
+          permalink: changes
+        - name: noreply_wait
+          permalink: noreply_wait
+        - name: server
+          permalink: server
+        - name: em_run
+          permalink: em_run
+- section:
+    name: Cursors
+    commands:
+        - name: next
+          permalink: next
+        - name: each
+          permalink: each
+        - name: to_a
+          permalink: to_array
+        - name: close
+          permalink: close-cursor
+- section:
+    name: Manipulating databases
+    commands:
+        - name: db_create
+          permalink: db_create
+        - name: db_drop
+          permalink: db_drop
+        - name: db_list
+          permalink: db_list
+- section:
+    name: Manipulating tables
+    commands:
+        - name: table_create
+          permalink: table_create
+        - name: table_drop
+          permalink: table_drop
+        - name: table_list
+          permalink: table_list
+        - name: index_create
+          permalink: index_create
+        - name: index_drop
+          permalink: index_drop
+        - name: index_list
+          permalink: index_list
+        - name: index_rename
+          permalink: index_rename
+        - name: index_status
+          permalink: index_status
+        - name: index_wait
+          permalink: index_wait
+- section:
+    name: Writing data
+    commands:
+        - name: insert
+          permalink: insert
+        - name: update
+          permalink: update
+        - name: replace
+          permalink: replace
+        - name: delete
+          permalink: delete
+        - name: sync
+          permalink: sync
+- section:
+    name: Selecting data
+    commands:
+        - name: db
+          permalink: db
+        - name: table
+          permalink: table
+        - name: get
+          permalink: get
+        - name: get_all
+          permalink: get_all
+        - name: between
+          permalink: between
+        - name: filter
+          permalink: filter
+- section:
+    name: Joins
+    commands:
+        - name: inner_join
+          permalink: inner_join
+        - name: outer_join
+          permalink: outer_join
+        - name: eq_join
+          permalink: eq_join
+        - name: zip
+          permalink: zip
+- section:
+    name: Transformations
+    commands:
+        - name: map
+          permalink: map
+        - name: with_fields
+          permalink: with_fields
+        - name: concat_map
+          permalink: concat_map
+        - name: order_by
+          permalink: order_by
+        - name: skip
+          permalink: skip
+        - name: limit
+          permalink: limit
+        - name: slice
+          permalink: slice
+        - name: nth
+          permalink: nth
+        - name: offsets_of
+          permalink: offsets_of
+        - name: is_empty
+          permalink: is_empty
+        - name: union
+          permalink: union
+        - name: sample
+          permalink: sample
+- section:
+    name: Aggregation
+    commands:
+        - name: group
+          permalink: group
+        - name: ungroup
+          permalink: ungroup
+        - name: reduce
+          permalink: reduce
+        - name: fold
+          permalink: fold
+        - name: count
+          permalink: count
+        - name: sum
+          permalink: sum
+        - name: avg
+          permalink: avg
+        - name: min
+          permalink: min
+        - name: max
+          permalink: max
+        - name: distinct
+          permalink: distinct
+        - name: contains
+          permalink: contains
+- section:
+    name: Document manipulation
+    commands:
+        - name: pluck
+          permalink: pluck
+        - name: without
+          permalink: without
+        - name: merge
+          permalink: merge
+        - name: append
+          permalink: append
+        - name: prepend
+          permalink: prepend
+        - name: difference
+          permalink: difference
+        - name: set_insert
+          permalink: set_insert
+        - name: set_union
+          permalink: set_union
+        - name: set_intersection
+          permalink: set_intersection
+        - name: set_difference
+          permalink: set_difference
+        - name: "[] (bracket)"
+          permalink: bracket
+        - name: get_field
+          permalink: get_field
+        - name: has_fields
+          permalink: has_fields
+        - name: insert_at
+          permalink: insert_at
+        - name: splice_at
+          permalink: splice_at
+        - name: delete_at
+          permalink: delete_at
+        - name: change_at
+          permalink: change_at
+        - name: keys
+          permalink: keys
+        - name: values
+          permalink: values
+        - name: literal
+          permalink: literal
+        - name: object
+          permalink: object
+- section:
+    name: String manipulation
+    commands:
+        - name: match
+          permalink: match
+        - name: split
+          permalink: split
+        - name: upcase
+          permalink: upcase
+        - name: downcase
+          permalink: downcase
+- section:
+    name: Math and logic
+    commands:
+        - name: '+'
+          permalink: add
+        - name: '-'
+          permalink: sub
+        - name: '*'
+          permalink: mul
+        - name: '/'
+          permalink: div
+        - name: '%'
+          permalink: mod
+        - name: '&, and'
+          permalink: and
+        - name: '|, or'
+          permalink: or
+        - name: eq
+          permalink: eq
+        - name: ne
+          permalink: ne
+        - name: '>, gt'
+          permalink: gt
+        - name: '>=, ge'
+          permalink: ge
+        - name: '<, lt'
+          permalink: lt
+        - name: '<=, le'
+          permalink: le
+        - name: not
+          permalink: not
+        - name: random
+          permalink: random
+        - name: round
+          permalink: round
+        - name: ceil
+          permalink: ceil
+        - name: floor
+          permalink: floor
+- section:
+    name: Dates and times
+    commands:
+        - name: now
+          permalink: now
+        - name: time
+          permalink: time
+        - name: epoch_time
+          permalink: epoch_time
+        - name: iso8601
+          permalink: iso8601
+        - name: in_timezone
+          permalink: in_timezone
+        - name: timezone
+          permalink: timezone
+        - name: during
+          permalink: during
+        - name: date
+          permalink: date
+        - name: time_of_day
+          permalink: time_of_day
+        - name: year
+          permalink: year
+        - name: month
+          permalink: month
+        - name: day
+          permalink: day
+        - name: day_of_week
+          permalink: day_of_week
+        - name: day_of_year
+          permalink: day_of_year
+        - name: hours
+          permalink: hours
+        - name: minutes
+          permalink: minutes
+        - name: seconds
+          permalink: seconds
+        - name: to_iso8601
+          permalink: to_iso8601
+        - name: to_epoch_time
+          permalink: to_epoch_time
+- section:
+    name: Control structures
+    commands:
+        - name: args
+          permalink: args
+        - name: binary
+          permalink: binary
+        - name: do
+          permalink: do
+        - name: branch
+          permalink: branch
+        - name: for_each
+          permalink: for_each
+        - name: range
+          permalink: range
+        - name: error
+          permalink: error
+        - name: default
+          permalink: default
+        - name: expr
+          permalink: expr
+        - name: js
+          permalink: js
+        - name: coerce_to
+          permalink: coerce_to
+        - name: type_of
+          permalink: type_of
+        - name: info
+          permalink: info
+        - name: json
+          permalink: json
+        - name: to_json_string
+          permalink: to_json_string
+        - name: http
+          permalink: http
+        - name: uuid
+          permalink: uuid
+- section:
+    name: Geospatial commands
+    commands:
+        - name: circle
+          permalink: circle
+        - name: distance
+          permalink: distance
+        - name: fill
+          permalink: fill
+        - name: geojson
+          permalink: geojson
+        - name: to_geojson
+          permalink: to_geojson
+        - name: get_intersecting
+          permalink: get_intersecting
+        - name: get_nearest
+          permalink: get_nearest
+        - name: includes
+          permalink: includes
+        - name: intersects
+          permalink: intersects
+        - name: line
+          permalink: line
+        - name: point
+          permalink: point
+        - name: polygon
+          permalink: polygon
+        - name: polygon_sub
+          permalink: polygon_sub
+- section:
+    name: Administration
+    commands:
+      - name: grant
+        permalink: grant
+      - name: config
+        permalink: config
+      - name: rebalance
+        permalink: rebalance
+      - name: reconfigure
+        permalink: reconfigure
+      - name: status
+        permalink: status
+      - name: wait
+        permalink: wait

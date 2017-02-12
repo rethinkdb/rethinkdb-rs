@@ -30,7 +30,6 @@ Run ReQL commands:-
 #[macro_use] extern crate reql;
 
 use reql::Client;
-use reql::commands::{Db, Table};
 
 fn main() {
     // Create a new ReQL client

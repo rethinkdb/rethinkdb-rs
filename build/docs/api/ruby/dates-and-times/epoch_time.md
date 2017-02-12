@@ -1,0 +1,27 @@
+---
+layout: api-command
+language: Ruby
+permalink: api/ruby/epoch_time/
+command: epoch_time
+related_commands:
+    now: now/
+    time: time/
+    iso8601: iso8601/
+---
+
+# Command syntax #
+
+{% apibody %}
+r.epoch_time(number) &rarr; time
+{% endapibody %}
+
+# Description #
+
+Create a time object based on seconds since epoch. The first argument is a double and
+will be rounded to three decimal places (millisecond-precision).
+
+__Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
+
+```rb
+r.table("user").get("John").update(:birthdate => r.epoch_time(531360000)).run(conn)
+```

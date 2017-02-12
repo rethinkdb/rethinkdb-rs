@@ -1,0 +1,29 @@
+---
+layout: api-command
+language: Python
+permalink: api/python/set_union/
+command: set_union
+related_commands:
+    union: union/
+    difference: difference/
+    set_insert: set_insert/
+    set_intersection: set_intersection/
+    set_difference: set_difference/
+---
+
+# Command syntax #
+
+{% apibody %}
+array.set_union(array) &rarr; array
+{% endapibody %}
+
+# Description #
+
+Add a several values to an array and return it as a set (an array with distinct values).
+
+__Example:__ Retrieve Iron Man's equipment list with the addition of some new boots and an arc reactor.
+
+```py
+r.table('marvel').get('IronMan')['equipment'].set_union(['newBoots', 'arc_reactor']).run(conn)
+```
+

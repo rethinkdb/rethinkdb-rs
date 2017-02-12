@@ -1,0 +1,51 @@
+---
+layout: default
+active: api
+title: "ReQL command reference"
+body_class: api
+---
+<section class="documentation">
+    <div class="site-container">
+        <section class="docs-sidebar-left">
+            {% include docs/docs-search.html %}
+            {% include docs/api-navigation.html %}
+            <hr class="docs-nav-separator" />
+            <p class="back-to-top"><a href="#"><i class="up-arrow">&#9650;</i> Back to top</a></p>
+        </section>
+        <section class="api-command docs-article">
+            <header>
+                <h1 class="title">ReQL command: {{page.command}}</h1>
+            </header>
+            <section class="byline">
+                {% include docs/docs-switcher.html %}
+            </section>
+            {{content}}
+            {% if page.related_commands %}
+                <section class="related-commands">
+                    <h1>Related commands</h1>
+                    <ul>
+                        {% for related in page.related_commands %}
+                            <li><a href="../{{related[1]}}">{{related[0]}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endif %}
+            <section class="additional-help">
+                <h1>Get more help</h1>
+                <p>Couldn't find what you were looking for?</p>
+                <ul>
+                    <li class="stack-overflow"><strong>Ask a question</strong> on <a href="http://stackoverflow.com/questions/tagged/rethinkdb">Stack Overflow</a></li>
+                    <li class="irc"><strong>Talk to the team on IRC</strong> on <a href="irc://freenode.net/#rethinkdb">#rethinkdb@freenode.net</a> &mdash; via <a href="http://webchat.freenode.net/?channels=#rethinkdb">Webchat</a></li>
+                    <li class="twitter"><strong>Ping</strong> <a href="http://twitter.com/rethinkdb">@rethinkdb</a> on Twitter</li>
+                    <li class="github"><strong>Post an issue</strong> on the <a href="https://github.com/rethinkdb/docs/issues">documentation issue tracker</a> on GitHub</li>
+                </ul>
+            </section>
+{% infobox info %}
+__Contribute:__ [edit this page][] or [open an issue][]
+
+[edit this page]: https://github.com/rethinkdb/docs/blob/master{{page.path | remove_first: 'docs' }}
+[open an issue]: https://github.com/rethinkdb/docs/issues
+{% endinfobox %}
+        </div>
+    </div>
+</section>
