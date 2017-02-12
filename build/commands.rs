@@ -34,11 +34,13 @@ impl Commands {
             // AUTO GENERATED
             // Edit in `build/commands.rs` instead
 
+            /*
             mod args;
             #[cfg(feature = "with_io")]
             mod io;
             #[cfg(feature = "with_io")]
             pub use self::io::*;
+            */
 
             use {{Client, ToArg}};
             use ql2::proto::Term;

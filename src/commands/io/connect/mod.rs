@@ -4,7 +4,7 @@ mod pool;
 use std::net::{ToSocketAddrs, SocketAddr, IpAddr, Ipv4Addr};
 use std::{fmt, io, result};
 
-use {Client, Config, Server, Connection, PoolConfig, Pool, ConnectionManager, Result, Cluster, DataCentre};
+use {Client, Config, Server, Connection, ToArg, Pool, ConnectionManager, Result, Cluster, DataCentre};
 use super::{Connect, io_error};
 use errors::*;
 use reql_io::r2d2;
@@ -13,7 +13,7 @@ use reql_io::tokio_core::io::{Codec, EasyBuf};
 use reql_io::byteorder::{LittleEndian, ByteOrder};
 
 impl Connect for Client {
-    fn connect(&self, config: Config, handle: &Handle) -> Result<Pool> {
+    fn connect<T: ToArg>(&self, args: T) -> Result<Pool> {
         unimplemented!();
         /*
         let logger = self.logger.new(o!("command" => "connect"));

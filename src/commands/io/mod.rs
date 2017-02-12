@@ -8,7 +8,7 @@ use reql_io::tokio_core::reactor::Handle;
 
 /// Create a new connection to the database server
 pub trait Connect {
-    fn connect(&self, config: Config, handle: &Handle) -> Result<Pool>;
+    fn connect<T: ToArg>(&self, args: T) -> Result<Pool>;
 }
 
 /// Run the query
