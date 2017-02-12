@@ -119,19 +119,83 @@ impl Command {
             panic!(format!("command file is empty: {:?}", self));
         }
 
-        let no_args = format!("{}()", self.menu.name);
-        self.tokens = if docs.contains(&no_args) {
+        let (no_args, docs) = self.gen_docs(docs);
+        self.tokens = if no_args {
             format!(r#"
+                {1}
                 pub fn {0}(&self) -> Client {{
                     cmd("{0}")
                 }}
-            "#, name)
+            "#, name, docs)
         } else {
             format!(r#"
+                {1}
                 pub fn {0}<T: ToArg>(&self, args: T) -> Client {{
                     cmd_with_args("{0}", args)
                 }}
-            "#, name)
+            "#, name, docs)
         };
+    }
+
+    fn gen_docs(&self, mut docs: String) -> (bool, String) {
+        let mut no_args = false;
+        let cmd = format!("{}()", self.menu.name);
+
+        let mut doc_block = false;
+        let mut parse = false;
+        let mut img = String::new();
+        let mut title = String::new();
+        let mut next_line = String::new();
+
+        docs = docs.lines()
+            // If the command is documented with no args
+            // we won't give it args
+            .map(|line| {
+                if line.contains(&cmd) {
+                    no_args = true;
+                }
+                line
+            })
+            // We will only consider docs after the description
+            .filter(|line| {
+                if !doc_block {
+                    if line.starts_with("# Description #") {
+                        doc_block = true;
+                    }
+                    return false;
+                }
+                if !parse {
+                    if line.trim().is_empty() {
+                        return false;
+                    }
+                    if line.starts_with("<img src=") {
+                        img = line.replace("/assets/images/", "https://rethinkdb.com/assets/images/");
+                        return false;
+                    }
+                    if let Some(i) = line.find('.') {
+                        let (t, n) = line.split_at(i);
+                        title = t.to_owned();
+                        next_line = n.trim_left_matches('.').trim().to_owned();
+                        parse = true;
+                        return false;
+                    }
+                    parse = true;
+                }
+                true
+            })
+            .map(|line| {
+                // Indent commands so they come out nice
+                format!("                /// {}\n", line)
+            })
+        .collect();
+
+        let docs = format!("/// {}
+            ///
+            /// {}
+            ///
+            /// {}
+            {}", title, img, next_line, docs);
+
+        (no_args, docs)
     }
 }
