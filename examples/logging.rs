@@ -4,7 +4,6 @@ extern crate slog_term;
 
 use slog::DrainExt;
 use reql::Client;
-use reql::commands::{Db, Table};
 
 fn main() {
     // Build an output drain

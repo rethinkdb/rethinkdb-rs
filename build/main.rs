@@ -1,17 +1,26 @@
+extern crate syn;
 extern crate serde;
 extern crate serde_yaml;
+extern crate proc_macro;
+#[macro_use] extern crate quote;
 #[macro_use] extern crate serde_derive;
 
 mod config;
+mod commands;
 
 use config::Config;
+use commands::{Commands, Command};
 
 fn main() {
     let cfg = Config::new();
-    for section in cfg.menu {
-        for command in section.commands {
-            let path = format!("{}/{}/{}.md", cfg.docs_dir.display(), section.name, command.permalink);
-            println!("cargo:rerun-if-changed={}", path);
-        }
+    let mut commands = Commands::new();
+
+    for item in cfg.menu {
+        let dir = format!("{}/{}", cfg.docs_dir.display(), item.section);
+        let cmd = Command::new(&dir, item);
+        commands.add_command(&cmd);
+        println!("cargo:rerun-if-changed={}", cmd.src.display());
     }
+
+    commands.generate(&cfg.cmds_src);
 }

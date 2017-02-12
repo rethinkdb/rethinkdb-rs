@@ -1,3 +1,0 @@
-command! {
-    #[command(ceil)]
-}
