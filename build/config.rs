@@ -45,17 +45,29 @@ impl Config {
         let version = env::var("CARGO_PKG_VERSION").unwrap();
 
         let menu = build_menu(&menu_file).into_iter()
+            // We are only interested in actual commands
+            // that are contained in the sections
             .map(|menu| menu.section)
+            // Rename sections
             .map(|mut section| {
-                if section.name == "Accessing ReQL" {
-                    section.name = String::from("Accessing RQL");
+                let sections = vec![
+                    ("Geospatial commands", "Geospatial"),
+                    ("Accessing ReQL", "Accessing RQL"),
+                ];
+                for (old, new) in sections {
+                    if section.name == old {
+                        section.name = new.to_owned();
+                    }
                 }
+                section
+            })
+            // Match filesystem formating of section directories
+            .map(|mut section| {
                 section.name = section.name
                     .replace(" ", "-")
                     .to_lowercase();
                 section
-            })
-        ;
+            });
 
         let mut commands = Vec::new();
         for section in menu {
@@ -77,7 +89,7 @@ impl Config {
             })
         // Drop blacklisted commands
         .filter(|command| {
-            let blacklist = vec!["r", "use"];
+            let blacklist = vec!["r", "use", "row"];
             for cmd in blacklist {
                 if cmd == command.permalink {
                     return false;
@@ -111,6 +123,16 @@ impl Config {
             for (cmd, typ) in types {
                 if cmd == command.permalink {
                     command.typ = Some(typ.into());
+                }
+            }
+            command
+        })
+        // Commands in different sections
+        .map(|mut command| {
+            let menu = vec![("changes", "manipulating-tables")];
+            for (cmd, section) in menu {
+                if cmd == command.permalink {
+                    command.section = section.to_owned();
                 }
             }
             command
