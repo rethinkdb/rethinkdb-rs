@@ -28,16 +28,14 @@ impl Commands {
     }
 
     fn header() -> String {
-        let cmd = Self::cmd();
-        let cmd_with_args = Self::cmd_with_args();
-
         format!(r#"
             // AUTO GENERATED
-            // Manually changes made to this file will be overwritten by the build script.
+            // Manual changes made to this file will be overwritten by the build script.
             // Edit `build/commands.rs` instead...
 
-            /*
+            mod util;
             mod args;
+            /*
             #[cfg(feature = "with_io")]
             mod io;
             #[cfg(feature = "with_io")]
@@ -45,12 +43,9 @@ impl Commands {
             */
 
             use {{Client, ToArg}};
-            use ql2::proto::Term;
-            use protobuf::repeated::RepeatedField;
-            use ql2::proto::Term_TermType;
-            {}
-            {}
-        "#, cmd, cmd_with_args)
+            use slog::Logger;
+            use ql2::proto::Term_TermType as Type;
+        "#)
     }
 
     pub fn add_command(&mut self, cmd: &Command) {
@@ -64,6 +59,50 @@ impl Commands {
         let src = format!(r#"
             {}
             impl Client {{
+
+                /// Create a new ReQL client
+                ///
+                /// By convention, the variable binding holding a ReQL client is called `r`.
+                ///
+                /// __Example__: Create your client.
+                ///
+                /// ```reql
+                /// let r = Client::new();
+                /// ```
+
+                pub fn new() -> Client {{
+                    util::new_client()
+                }}
+
+                /// Override the current logger
+                ///
+                /// Logging is very useful for tracking down bugs. The logger is typically
+                /// set up when creating a client. We provide it as a separate method so you
+                /// can activate or deactivate logging whenever you want. For example you
+                /// can log only a single command or a few ones by activating a logger just
+                /// before the first command you want to log and then deactivating soon after
+                /// the last command you want to log.
+                ///
+                /// __Example__: Override the default client logger.
+                ///
+                /// ```reql
+                /// # extern crate slog_term;
+                /// # #[macro_use] extern crate slog;
+                /// # use slog::DrainExt;
+                /// # let drain = slog_term::streamer().async().compact().build();
+                /// # let logger = slog::Logger::root(drain.fuse(), o!());
+                /// let r = Client::new().with_logger(logger);
+                /// ```
+                ///
+                /// See
+                /// [examples/logging.rs](https://github.com/rust-rethinkdb/reql/blob/master/examples/logging.rs)
+                /// for an example of setting up an [slog](https://docs.rs/slog) `logger`.
+
+                pub fn with_logger(&self, logger: Logger) -> Client {{
+                    let mut cmd = self.clone();
+                    cmd.logger = logger;
+                    cmd
+                }}
                 {}
             }}
         "#, header, commands);
@@ -71,22 +110,6 @@ impl Commands {
         let mut file = File::create(path).unwrap();
         file.write_all(src.as_bytes()).unwrap();
         file.sync_all().unwrap();
-    }
-
-    fn cmd() -> String {
-        format!(r#"
-            fn cmd(name: &str) -> Client {{
-                unimplemented!();
-            }}
-        "#)
-    }
-
-    fn cmd_with_args() -> String {
-        format!(r#"
-            fn cmd_with_args<T: ToArg>(name: &str, args: T) -> Client {{
-                unimplemented!();
-            }}
-        "#)
     }
 }
 
@@ -112,6 +135,14 @@ impl Command {
             &self.menu.permalink
         };
         
+        let cmd = if let Some(ref cmd) = self.menu.typ {
+            cmd
+        } else {
+            &self.menu.permalink
+        };
+
+        let typ = format!("Type::{}", cmd.to_uppercase());
+        
         let mut docs = String::new();
         let mut file = File::open(&self.src).unwrap();
         if file.read_to_string(&mut docs).unwrap() == 0 {
@@ -121,18 +152,18 @@ impl Command {
         let (no_args, docs) = self.gen_docs(docs);
         self.tokens = if no_args {
             format!(r#"
-                {1}
-                pub fn {0}(&self) -> Client {{
-                    cmd("{0}")
+                {docs}
+                pub fn {name}(&self) -> Client {{
+                    util::make_cmd::<Client>(self, "{name}", {typ}, None)
                 }}
-            "#, name, docs)
+            "#, docs=docs, name=name, typ=typ)
         } else {
             format!(r#"
-                {1}
-                pub fn {0}<T: ToArg>(&self, args: T) -> Client {{
-                    cmd_with_args("{0}", args)
+                {docs}
+                pub fn {name}<T: ToArg>(&self, args: T) -> Client {{
+                    util::make_cmd(self, "{name}", {typ}, Some(args))
                 }}
-            "#, name, docs)
+            "#, docs=docs, name=name, typ=typ)
         };
     }
 
@@ -154,7 +185,7 @@ impl Command {
                 if line.contains(&cmd) {
                     no_args = true;
                 }
-                self.cleanup(line)
+                self.fixup(line)
             })
             // We will only consider docs after the description
             .filter(|line| {
@@ -207,12 +238,10 @@ impl Command {
         (no_args, doc_str)
     }
 
-    fn cleanup(&self, commands: &str) -> String {
+    fn fixup(&self, commands: &str) -> String {
         commands.lines()
             .map(|line| {
                 line.replace("/assets/images/", "https://rethinkdb.com/assets/images/")
-                    .replace("```js", "```rust,norun")
-                    .replace("var r = require('rethinkdb');", "let r = Client::new();")
             })
             .collect()
     }

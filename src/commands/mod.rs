@@ -1,11 +1,12 @@
 
             
             // AUTO GENERATED
-            // Manually changes made to this file will be overwritten by the build script.
+            // Manual changes made to this file will be overwritten by the build script.
             // Edit `build/commands.rs` instead...
 
-            /*
+            mod util;
             mod args;
+            /*
             #[cfg(feature = "with_io")]
             mod io;
             #[cfg(feature = "with_io")]
@@ -13,36 +14,55 @@
             */
 
             use {Client, ToArg};
-            use ql2::proto::Term;
-            use protobuf::repeated::RepeatedField;
-            use ql2::proto::Term_TermType;
-            
-            fn cmd(name: &str) -> Client {
-                unimplemented!();
-            }
-        
-            
-            fn cmd_with_args<T: ToArg>(name: &str, args: T) -> Client {
-                unimplemented!();
-            }
-        
+            use slog::Logger;
+            use ql2::proto::Term_TermType as Type;
         
             impl Client {
-                
-                /// The top-level ReQL namespace
-///
-/// 
-/// __Example:__ Set up your top-level namespace.
-/// 
-/// ```rust,norun
-/// let r = Client::new();
-/// ```
 
-                pub fn new<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("new", args)
+                /// Create a new ReQL client
+                ///
+                /// By convention, the variable binding holding a ReQL client is called `r`.
+                ///
+                /// __Example__: Create your client.
+                ///
+                /// ```reql
+                /// let r = Client::new();
+                /// ```
+
+                pub fn new() -> Client {
+                    util::new_client()
                 }
-            
 
+                /// Override the current logger
+                ///
+                /// Logging is very useful for tracking down bugs. The logger is typically
+                /// set up when creating a client. We provide it as a separate method so you
+                /// can activate or deactivate logging whenever you want. For example you
+                /// can log only a single command or a few ones by activating a logger just
+                /// before the first command you want to log and then deactivating soon after
+                /// the last command you want to log.
+                ///
+                /// __Example__: Override the default client logger.
+                ///
+                /// ```reql
+                /// # extern crate slog_term;
+                /// # #[macro_use] extern crate slog;
+                /// # use slog::DrainExt;
+                /// # let drain = slog_term::streamer().async().compact().build();
+                /// # let logger = slog::Logger::root(drain.fuse(), o!());
+                /// let r = Client::new().with_logger(logger);
+                /// ```
+                ///
+                /// See
+                /// [examples/logging.rs](https://github.com/rust-rethinkdb/reql/blob/master/examples/logging.rs)
+                /// for an example of setting up an [slog](https://docs.rs/slog) `logger`.
+
+                pub fn with_logger(&self, logger: Logger) -> Client {
+                    let mut cmd = self.clone();
+                    cmd.logger = logger;
+                    cmd
+                }
+                
                 /// Create a new connection to the database server
 ///
 /// <img src="https://rethinkdb.com/assets/images/docs/api_illustrations/connect_javascript.png" class="api_command_illustration" />
@@ -66,7 +86,7 @@
 /// 
 /// The returned connection object will have two properties on it containing the connection's port and address:
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.clientPort;
 /// conn.clientAddress;
 /// ```
@@ -85,7 +105,7 @@
 /// 
 /// __Example:__ Open a connection using the default host and port, specifying the default database.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.connect({
 ///     db: 'marvel'
 /// }, function(err, conn) {
@@ -95,13 +115,13 @@
 /// 
 /// If no callback is provided, a promise will be returned.
 /// 
-/// ```rust,norun
+/// ```js
 /// var promise = r.connect({db: 'marvel'});
 /// ```
 /// 
 /// __Example:__ Open a new connection to the database.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.connect({
 ///     host: 'localhost',
 ///     port: 28015,
@@ -113,7 +133,7 @@
 /// 
 /// Alternatively, you can use promises.
 /// 
-/// ```rust,norun
+/// ```js
 /// var p = r.connect({
 ///     host: 'localhost',
 ///     port: 28015,
@@ -128,7 +148,7 @@
 /// 
 /// __Example:__ Open a new connection to the database, specifying a user/password combination for authentication.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.connect({
 ///     host: 'localhost',
 ///     port: 28015,
@@ -142,7 +162,7 @@
 /// 
 /// __Example:__ Open a new connection to the database using an SSL proxy.
 /// 
-/// ```rust,norun
+/// ```js
 /// var fs = require('fs');
 /// fs.readFile('/path/to/cert', function (err, caCert) {
 ///     if (!err) {
@@ -164,7 +184,7 @@
 /// ```
 
                 pub fn connect<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("connect", args)
+                    util::make_cmd(self, "connect", Type::CONNECT, Some(args))
                 }
             
 
@@ -179,7 +199,7 @@
 /// 
 /// __Example:__ Close an open connection, waiting for noreply writes to finish.
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.close(function(err) { if (err) throw err; })
 /// ```
 /// 
@@ -187,7 +207,7 @@
 /// 
 /// Alternatively, you can use promises.
 /// 
-/// ```rust,norun
+/// ```js
 /// p = conn.close();
 /// p.then(function() {
 ///     // `conn` is now closed
@@ -198,13 +218,13 @@
 /// 
 /// __Example:__ Close an open connection immediately.
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
 /// ```
 /// 
 /// Alternatively, you can use promises.
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.close({noreplyWait: false}).then(function() {
 ///     // conn is now closed
 /// }).error(function(err) { 
@@ -213,7 +233,7 @@
 /// ```
 
                 pub fn close(&self) -> Client {
-                    cmd("close")
+                    util::make_cmd::<Client>(self, "close", Type::CLOSE, None)
                 }
             
 
@@ -229,7 +249,7 @@
 /// 
 /// __Example:__ Cancel outstanding requests/queries that are no longer needed.
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.reconnect({noreplyWait: false}, function(error, connection) { ... })
 /// ```
 /// 
@@ -237,7 +257,7 @@
 /// 
 /// Alternatively, you can use promises.
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.reconnect({noreplyWait: false}).then(function(conn) {
 ///     // the outstanding queries were canceled and conn is now available again
 /// }).error(function(errror) {
@@ -246,7 +266,7 @@
 /// ```
 
                 pub fn reconnect<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("reconnect", args)
+                    util::make_cmd(self, "reconnect", Type::RECONNECT, Some(args))
                 }
             
 
@@ -286,7 +306,7 @@
 /// __Example:__ Run a query on the connection `conn` and log each row in
 /// the result to the console.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').run(conn, function(err, cursor) {
 ///     cursor.each(console.log);
 /// })
@@ -295,7 +315,7 @@
 /// __Example:__ Run a query on the connection `conn` and retrieve all the rows in an
 /// array.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').run(conn, function(err, cursor) {
 ///     if (err) {
 ///         // process error
@@ -315,7 +335,7 @@
 /// 
 /// Alternatively, you can use promises.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').run(conn).then(function(cursor) {
 ///     return cursor.toArray()
 /// }).then(function(results) {
@@ -332,7 +352,7 @@
 /// for individual tables will supercede this global setting for all
 /// tables in the query.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').run(conn, {readMode: 'outdated'}, function (err, cursor) {
 ///     ...
 /// });
@@ -342,7 +362,7 @@
 /// can set `noreply` to true in the options. In this case `run` will
 /// return immediately.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').run(conn, {noreply: true}, function (err, cursor) {
 ///     ...
 /// });
@@ -352,7 +372,7 @@
 /// written to disk (overriding the table's default settings), you can set
 /// `durability` to `'hard'` or `'soft'` in the options.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel')
 ///     .insert({ superhero: 'Iron Man', superpower: 'Arc Reactor' })
 ///     .run(conn, {noreply: true, durability: 'soft'}, function (err, cursor) {
@@ -366,7 +386,7 @@
 /// with two fields (`epoch_time` and `$reql_type$`) instead of a native date
 /// object.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.now().run(conn, {timeFormat: "raw"}, function (err, result) {
 ///     ...
 /// });
@@ -374,7 +394,7 @@
 /// 
 /// __Example:__ Specify the database to use for the query.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').run(conn, {db: 'heroes'}).then(function(cursor) {
 ///     return cursor.toArray()
 /// }).then(function(results) {
@@ -386,13 +406,13 @@
 /// 
 /// This is equivalent to using the `db` command to specify the database:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('heroes').table('marvel').run(conn) ...
 /// ```
 /// 
 /// __Example:__ Change the batching parameters for this query.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').run(conn, {
 ///     maxBatchRows: 16,
 ///     maxBatchBytes: 2048
@@ -400,7 +420,7 @@
 /// ```
 
                 pub fn run<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("run", args)
+                    util::make_cmd(self, "run", Type::RUN, Some(args))
                 }
             
 
@@ -434,7 +454,7 @@
 /// 
 /// Changefeed notifications take the form of a two-field object:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     "old_val": <document before change>,
 ///     "new_val": <document after change>
@@ -443,7 +463,7 @@
 /// 
 /// When `includeTypes` is `true`, there will be three fields:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     "old_val": <document before change>,
 ///     "new_val": <document after change>,
@@ -467,7 +487,7 @@
 /// 
 /// Start monitoring the changefeed in one client:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').changes().run(conn, function(err, cursor) {
 ///   cursor.each(console.log);
 /// });
@@ -476,7 +496,7 @@
 /// As these queries are performed in a second client, the first
 /// client would receive and print the following objects:
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games').insert({id: 1}).run(conn, callback);
 /// {old_val: null, new_val: {id: 1}}
 /// 
@@ -496,7 +516,7 @@
 /// 
 /// __Example:__ Return all the changes that increase a player's score.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('test').changes().filter(
 ///   r.row('new_val')('score').gt(r.row('old_val')('score'))
 /// ).run(conn, callback)
@@ -504,19 +524,19 @@
 /// 
 /// __Example:__ Return all the changes to a specific player's score that increase it past 10.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('test').get(1).filter(r.row('score').gt(10)).changes().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Return all the inserts on a table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('test').changes().filter(r.row('old_val').eq(null)).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Return all the changes to game 1, with state notifications and initial values.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').get(1).changes({includeInitial: true, includeStates: true}).run(conn, callback);
 /// // Result returned on changefeed
 /// {state: 'initializing'}
@@ -534,7 +554,7 @@
 /// 
 /// __Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').orderBy(
 ///     { index: r.desc('score') }
 /// ).limit(10).changes().run(conn, callback);
@@ -542,7 +562,7 @@
 /// 
 /// __Example:__ Maintain the state of an array based on a changefeed.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('data').changes(
 ///     {includeInitial: true, includeOffsets: true}
 /// ).run(conn, function (err, change) {
@@ -561,7 +581,7 @@
 /// [ast]: https://github.com/rethinkdb/horizon/blob/next/client/src/ast.js
 
                 pub fn changes(&self) -> Client {
-                    cmd("changes")
+                    util::make_cmd::<Client>(self, "changes", Type::CHANGES, None)
                 }
             
 
@@ -577,7 +597,7 @@
 /// __Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
 /// wait until the server has processed them.
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.noreplyWait(function(err) { ... })
 /// ```
 /// 
@@ -585,7 +605,7 @@
 /// 
 /// Alternatively, you can use promises.
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.noreplyWait().then(function() {
 ///     // all queries have been processed
 /// }).error(function(err) {
@@ -595,7 +615,7 @@
 /// 
 
                 pub fn noreply_wait(&self) -> Client {
-                    cmd("noreply_wait")
+                    util::make_cmd::<Client>(self, "noreply_wait", Type::NOREPLY_WAIT, None)
                 }
             
 
@@ -612,7 +632,7 @@
 /// 
 /// __Example:__ Return server information.
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.server(callback);
 /// 
 /// // Result passed to callback
@@ -626,7 +646,7 @@
 /// If no callback is provided, a promise will be returned.
 
                 pub fn server(&self) -> Client {
-                    cmd("server")
+                    util::make_cmd::<Client>(self, "server", Type::SERVER, None)
                 }
             
 
@@ -647,7 +667,7 @@
 /// __Example:__ Monitor the connection state with events.
 /// 
 /// 
-/// ```rust,norun
+/// ```js
 /// r.connect({}, function(err, conn) {
 ///     if (err) throw err;
 /// 
@@ -665,7 +685,7 @@
 /// 
 /// __Example:__ As in Node, `on` is a synonym for `addListener`.
 /// 
-/// ```rust,norun
+/// ```js
 /// conn.on('close', function() {
 ///     cleanup();
 /// });
@@ -674,7 +694,7 @@
 /// 
 
                 pub fn event_emitter<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("event_emitter", args)
+                    util::make_cmd(self, "event_emitter", Type::EVENT_EMITTER, Some(args))
                 }
             
 
@@ -697,7 +717,7 @@
 /// 
 /// __Example:__ Create a database named 'superheroes'.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.dbCreate('superheroes').run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -717,7 +737,7 @@
 /// 
 
                 pub fn db_create<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("db_create", args)
+                    util::make_cmd(self, "db_create", Type::DB_CREATE, Some(args))
                 }
             
 
@@ -738,7 +758,7 @@
 /// 
 /// __Example:__ Drop a database named 'superheroes'.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.dbDrop('superheroes').run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -758,7 +778,7 @@
 /// 
 
                 pub fn db_drop<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("db_drop", args)
+                    util::make_cmd(self, "db_drop", Type::DB_DROP, Some(args))
                 }
             
 
@@ -769,12 +789,12 @@
 /// 
 /// __Example:__ List all databases.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.dbList().run(conn, callback)
 /// ```
 
                 pub fn db_list(&self) -> Client {
-                    cmd("db_list")
+                    util::make_cmd::<Client>(self, "db_list", Type::DB_LIST, None)
                 }
             
 
@@ -818,7 +838,7 @@
 /// 
 /// __Example:__ Create a table named 'dc_universe' with the default settings.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.db('heroes').tableCreate('dc_universe').run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -850,20 +870,20 @@
 /// 
 /// __Example:__ Create a table named 'dc_universe' using the field 'name' as primary key.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Create a table set up for two shards and three replicas per shard. This requires three available servers.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn, callback);
 /// ```
 /// 
 /// Read [Sharding and replication](/docs/sharding-and-replication/) for a complete discussion of the subject, including advanced topics.
 
                 pub fn table_create<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("table_create", args)
+                    util::make_cmd(self, "table_create", Type::TABLE_CREATE, Some(args))
                 }
             
 
@@ -883,7 +903,7 @@
 /// 
 /// __Example:__ Drop a table named 'dc_universe'.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.db('test').tableDrop('dc_universe').run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -916,7 +936,7 @@
 /// 
 
                 pub fn table_drop<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("table_drop", args)
+                    util::make_cmd(self, "table_drop", Type::TABLE_DROP, Some(args))
                 }
             
 
@@ -927,13 +947,13 @@
 /// 
 /// __Example:__ List all tables of the 'test' database.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('test').tableList().run(conn, callback)
 /// ```
 /// 
 
                 pub fn table_list(&self) -> Client {
-                    cmd("table_list")
+                    util::make_cmd::<Client>(self, "table_list", Type::TABLE_LIST, None)
                 }
             
 
@@ -960,13 +980,13 @@
 /// 
 /// __Example:__ Create a simple index based on the field `postId`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('comments').indexCreate('postId').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create a geospatial index based on the field `location`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('places').indexCreate('location', {geo: true}).run(conn, callback)
 /// ```
 /// 
@@ -974,32 +994,32 @@
 /// 
 /// __Example:__ Create a simple index based on the nested field `author > name`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('comments').indexCreate('authorName', r.row("author")("name")).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Create a compound index based on the fields `postId` and `date`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('comments').indexCreate('postAndDate', [r.row("postId"), r.row("date")]).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create a multi index based on the field `authors`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').indexCreate('authors', {multi: true}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create a geospatial multi index based on the field `towers`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('networks').indexCreate('towers', {multi: true, geo: true}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create an index based on an arbitrary expression.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').indexCreate('authors', function(doc) {
 ///     return r.branch(
 ///         doc.hasFields("updatedAt"),
@@ -1011,7 +1031,7 @@
 /// 
 /// __Example:__ Create a new secondary index based on an existing one.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').indexStatus('authors').nth(0)('function').run(conn, function (func) {
 ///     r.table('newPosts').indexCreate('authors', func).run(conn, callback);
 /// });
@@ -1019,7 +1039,7 @@
 /// 
 /// __Example:__ Rebuild an outdated secondary index on a table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').indexStatus('oldIndex').nth(0).do(function(oldIndex) {
 ///   return r.table('posts').indexCreate('newIndex', oldIndex("function")).do(function() {
 ///     return r.table('posts').indexWait('newIndex').do(function() {
@@ -1030,7 +1050,7 @@
 /// ```
 
                 pub fn index_create<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("index_create", args)
+                    util::make_cmd(self, "index_create", Type::INDEX_CREATE, Some(args))
                 }
             
 
@@ -1039,14 +1059,14 @@
 /// 
 /// __Example:__ Drop a secondary index named 'code_name'.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('dc').indexDrop('code_name').run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn index_drop<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("index_drop", args)
+                    util::make_cmd(self, "index_drop", Type::INDEX_DROP, Some(args))
                 }
             
 
@@ -1055,13 +1075,13 @@
 /// 
 /// __Example:__ List the available secondary indexes for this table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').indexList().run(conn, callback)
 /// ```
 /// 
 
                 pub fn index_list(&self) -> Client {
-                    cmd("index_list")
+                    util::make_cmd::<Client>(self, "index_list", Type::INDEX_LIST, None)
                 }
             
 
@@ -1076,12 +1096,12 @@
 /// 
 /// __Example:__ Rename an index on the comments table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('comments').indexRename('postId', 'messageId').run(conn, callback)
 /// ```
 
                 pub fn index_rename<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("index_rename", args)
+                    util::make_cmd(self, "index_rename", Type::INDEX_RENAME, Some(args))
                 }
             
 
@@ -1091,7 +1111,7 @@
 /// 
 /// The result is an array where for each index, there will be an object like this one:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     index: <indexName>,
 ///     ready: true,
@@ -1104,7 +1124,7 @@
 /// 
 /// or this one:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     index: <indexName>,
 ///     ready: false,
@@ -1122,19 +1142,19 @@
 /// 
 /// __Example:__ Get the status of all the indexes on `test`:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('test').indexStatus().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Get the status of the `timestamp` index:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('test').indexStatus('timestamp').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Save the binary representation of the index:
 /// 
-/// ```rust,norun
+/// ```js
 /// var func;
 /// r.table('test').indexStatus('timestamp').run(conn, function (err, res) {
 ///     func = res[0].function;
@@ -1142,7 +1162,7 @@
 /// ```
 
                 pub fn index_status(&self) -> Client {
-                    cmd("index_status")
+                    util::make_cmd::<Client>(self, "index_status", Type::INDEX_STATUS, None)
                 }
             
 
@@ -1152,7 +1172,7 @@
 /// 
 /// The result is an array containing one object for each table index:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     index: <indexName>,
 ///     ready: true,
@@ -1167,18 +1187,18 @@
 /// 
 /// __Example:__ Wait for all indexes on the table `test` to be ready:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('test').indexWait().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Wait for the index `timestamp` to be ready:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('test').indexWait('timestamp').run(conn, callback)
 /// ```
 
                 pub fn index_wait(&self) -> Client {
-                    cmd("index_wait")
+                    util::make_cmd::<Client>(self, "index_wait", Type::INDEX_WAIT, None)
                 }
             
 
@@ -1223,7 +1243,7 @@
 /// 
 /// __Example:__ Insert a document into the table `posts`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").insert({
 ///     id: 1,
 ///     title: "Lorem ipsum",
@@ -1235,7 +1255,7 @@
 /// 
 /// The result will be:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1250,7 +1270,7 @@
 /// __Example:__ Insert a document without a defined primary key into the table `posts` where the
 /// primary key is `id`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").insert({
 ///     title: "Lorem ipsum",
 ///     content: "Dolor sit amet"
@@ -1259,7 +1279,7 @@
 /// 
 /// RethinkDB will generate a primary key and return it in `generated_keys`.
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1275,13 +1295,13 @@
 /// 
 /// Retrieve the document you just inserted with:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get("dd782b64-70a7-43e4-b65e-dd14ae61d947").run(conn, callback)
 /// ```
 /// 
 /// And you will get back:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     id: "dd782b64-70a7-43e4-b65e-dd14ae61d947",
 ///     title: "Lorem ipsum",
@@ -1292,7 +1312,7 @@
 /// 
 /// __Example:__ Insert multiple documents into the table `users`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").insert([
 ///     {id: "william", email: "william@rethinkdb.com"},
 ///     {id: "lara", email: "lara@rethinkdb.com"}
@@ -1302,7 +1322,7 @@
 /// 
 /// __Example:__ Insert a document into the table `users`, replacing the document if it already exists.  
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").insert(
 ///     {id: "william", email: "william@rethinkdb.com"},
 ///     {conflict: "replace"}
@@ -1311,14 +1331,14 @@
 /// 
 /// __Example:__ Copy the documents from `posts` to `postsBackup`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("postsBackup").insert(r.table("posts")).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Get back a copy of the inserted document (with its generated primary key).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").insert(
 ///     {title: "Lorem ipsum", content: "Dolor sit amet"},
 ///     {returnChanges: true}
@@ -1327,7 +1347,7 @@
 /// 
 /// The result will be
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1353,7 +1373,7 @@
 /// 
 /// __Example:__ Provide a resolution function that concatenates memo content in case of conflict.
 /// 
-/// ```rust,norun
+/// ```js
 /// // assume newMemos is a list of memo documents to insert
 /// r.table('memos').insert(newMemos, {conflict: function(id, oldDoc, newDoc) {
 ///     return newDoc.merge(
@@ -1363,7 +1383,7 @@
 /// ```
 
                 pub fn insert<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("insert", args)
+                    util::make_cmd(self, "insert", Type::INSERT, Some(args))
                 }
             
 
@@ -1397,19 +1417,19 @@
 /// 
 /// __Example:__ Update the status of the post with `id` of `1` to `published`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).update({status: "published"}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Update the status of all posts to `published`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").update({status: "published"}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Update the status of all the posts written by William.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").filter({author: "William"}).update({status: "published"}).run(conn, callback)
 /// ```
 /// 
@@ -1420,7 +1440,7 @@
 /// __Example:__ Increment the field `view` of the post with `id` of `1`.
 /// This query will throw an error if the field `views` doesn't exist.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).update({
 ///     views: r.row("views").add(1)
 /// }).run(conn, callback)
@@ -1429,7 +1449,7 @@
 /// __Example:__ Increment the field `view` of the post with `id` of `1`.
 /// If the field `views` does not exist, it will be set to `0`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).update({
 ///     views: r.row("views").add(1).default(0)
 /// }).run(conn, callback)
@@ -1438,7 +1458,7 @@
 /// __Example:__ Perform a conditional update.  
 /// If the post has more than 100 views, set the `type` of a post to `hot`, else set it to `normal`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).update(function(post) {
 ///     return r.branch(
 ///         post("views").gt(100),
@@ -1450,7 +1470,7 @@
 /// 
 /// __Example:__ Update the field `numComments` with the result of a sub-query. Because this update is not atomic, you must pass the `nonAtomic` flag.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).update({
 ///     numComments: r.table("comments").filter({idPost: 1}).count()
 /// }, {
@@ -1466,7 +1486,7 @@
 /// 
 /// __Example:__ Update the field `numComments` with a random value between 0 and 100. This update cannot be proven deterministic because of `r.js` (and in fact is not), so you must pass the `nonAtomic` flag.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).update({
 ///     num_comments: r.js("Math.floor(Math.random()*100)")
 /// }, {
@@ -1476,13 +1496,13 @@
 /// 
 /// __Example:__ Update the status of the post with `id` of `1` using soft durability.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).update({status: "published"}, {durability: "soft"}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Increment the field `views` and return the values of the document before and after the update operation.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).update({
 ///     views: r.row("views").add(1)
 /// }, {
@@ -1492,7 +1512,7 @@
 /// 
 /// The result will now include a `changes` field:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1528,7 +1548,7 @@
 /// 
 /// [nf]: /docs/nested-fields/javascript
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 /// 	id: 10001,
 /// 	name: "Bob Smith",
@@ -1566,7 +1586,7 @@
 /// 
 /// __Example:__ Update Bob Smith's cell phone number.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").get(10001).update(
 ///     {contact: {phone: {cell: "408-555-4242"}}}
 /// ).run(conn, callback)
@@ -1574,7 +1594,7 @@
 /// 
 /// __Example:__ Add another note to Bob Smith's record.
 /// 
-/// ```rust,norun
+/// ```js
 /// var newNote = {
 ///     date: r.now(),
 ///     from: "Inigo Montoya",
@@ -1589,7 +1609,7 @@
 /// 
 /// [default]: /api/javascript/default/
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").get(10001).update(
 ///     {notes: r.row("notes").default([]).append(newNote)}
 /// ).run(conn, callback)
@@ -1597,7 +1617,7 @@
 /// 
 /// __Example:__ Send a note to every user with an ICQ number.
 /// 
-/// ```rust,norun
+/// ```js
 /// var icqNote = {
 ///     date: r.now(),
 ///     from: "Admin",
@@ -1614,14 +1634,14 @@
 /// 
 /// [literal]: /api/javascript/literal/
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').get(10001).update(
 ///     {contact: {im: r.literal({aim: "themoosemeister"})}}
 /// ).run(conn, callback)
 /// ```
 
                 pub fn update<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("update", args)
+                    util::make_cmd(self, "update", Type::UPDATE, Some(args))
                 }
             
 
@@ -1678,7 +1698,7 @@
 /// 
 /// __Example:__ Replace the document with the primary key `1`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).replace({
 ///     id: 1,
 ///     title: "Lorem ipsum",
@@ -1689,7 +1709,7 @@
 /// 
 /// __Example:__ Remove the field `status` from all posts.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").replace(function(post) {
 ///     return post.without("status")
 /// }).run(conn, callback)
@@ -1697,7 +1717,7 @@
 /// 
 /// __Example:__ Remove all the fields that are not `id`, `title` or `content`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").replace(function(post) {
 ///     return post.pluck("id", "title", "content")
 /// }).run(conn, callback)
@@ -1705,7 +1725,7 @@
 /// 
 /// __Example:__ Replace the document with the primary key `1` using soft durability.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).replace({
 ///     id: 1,
 ///     title: "Lorem ipsum",
@@ -1719,7 +1739,7 @@
 /// __Example:__ Replace the document with the primary key `1` and return the values of the document before
 /// and after the replace operation.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").get(1).replace({
 ///     id: 1,
 ///     title: "Lorem ipsum",
@@ -1732,7 +1752,7 @@
 /// 
 /// The result will have two fields `old_val` and `new_val`.
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1761,7 +1781,7 @@
 /// ```
 
                 pub fn replace<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("replace", args)
+                    util::make_cmd(self, "replace", Type::REPLACE, Some(args))
                 }
             
 
@@ -1797,34 +1817,34 @@
 /// 
 /// __Example:__ Delete a single document from the table `comments`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Delete all documents from the table `comments`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("comments").delete().run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Delete all comments where the field `idPost` is `3`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("comments").filter({idPost: 3}).delete().run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Delete a single document from the table `comments` and return its value.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete({returnChanges: true}).run(conn, callback)
 /// ```
 /// 
 /// The result look like:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     deleted: 1,
 ///     errors: 0,
@@ -1850,12 +1870,12 @@
 /// __Example:__ Delete all documents from the table `comments` without waiting for the
 /// operation to be flushed to disk.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("comments").delete({durability: "soft"}).run(conn, callback)
 /// ```
 
                 pub fn delete(&self) -> Client {
-                    cmd("delete")
+                    util::make_cmd::<Client>(self, "delete", Type::DELETE, None)
                 }
             
 
@@ -1872,14 +1892,14 @@
 /// __Example:__ After having updated multiple heroes with soft durability, we now want to wait
 /// until these changes are persisted.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').sync().run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn sync(&self) -> Client {
-                    cmd("sync")
+                    util::make_cmd::<Client>(self, "sync", Type::SYNC, None)
                 }
             
 
@@ -1890,13 +1910,13 @@
 /// 
 /// __Example:__ Explicitly specify a database for a query.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('heroes').table('marvel').run(conn, callback)
 /// ```
 /// 
 
                 pub fn db<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("db", args)
+                    util::make_cmd(self, "db", Type::DB, Some(args))
                 }
             
 
@@ -1907,13 +1927,13 @@
 /// 
 /// __Example:__ Return all documents in the table 'marvel' of the default database.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Return all documents in the table 'marvel' of the database 'heroes'.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('heroes').table('marvel').run(conn, callback)
 /// ```
 /// 
@@ -1927,12 +1947,12 @@
 /// 
 /// __Example:__ Allow potentially out-of-date data in exchange for faster reads.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('heroes').table('marvel', {readMode: 'outdated'}).run(conn, callback)
 /// ```
 
                 pub fn table<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("table", args)
+                    util::make_cmd(self, "table", Type::TABLE, Some(args))
                 }
             
 
@@ -1943,13 +1963,13 @@
 /// 
 /// __Example:__ Find a document by UUID.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Find a document and merge another document with it.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('heroes').get(3).merge(
 ///     { powers: ['invisibility', 'speed'] }
 /// ).run(conn, callback);
@@ -1957,12 +1977,12 @@
 /// 
 /// ___Example:__ Subscribe to a document's [changefeed](/docs/changefeeds/javascript).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('heroes').get(3).changes().run(conn, callback);
 /// ```
 
                 pub fn get<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("get", args)
+                    util::make_cmd(self, "get", Type::GET, Some(args))
                 }
             
 
@@ -1971,19 +1991,19 @@
 /// 
 /// __Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/javascript/get/) when using a secondary index.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Without an index argument, we default to the primary index. While `get` will either return the document or `null` when no document with such a primary key value exists, this will return either a one or zero length stream.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('dc').getAll('superman').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ You can get multiple documents in a single call to `get_all`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('dc').getAll('superman', 'ant man').run(conn, callback)
 /// ```
 /// 
@@ -1993,7 +2013,7 @@
 /// 
 /// __Example:__ You can use [args](/api/javascript/args/) with `getAll` to retrieve multiple documents whose keys are in a list. This uses `getAll` to get a list of female superheroes, coerces that to an array, and then gets a list of villains who have those superheroes as enemies.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.do(
 ///     r.table('heroes').getAll('f', {index: 'gender'})('id').coerceTo('array'),
 ///     function(heroines) {
@@ -2007,7 +2027,7 @@
 /// Secondary indexes can be used in extremely powerful ways with `getAll` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 
                 pub fn get_all<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("get_all", args)
+                    util::make_cmd(self, "get_all", Type::GET_ALL, Some(args))
                 }
             
 
@@ -2032,44 +2052,44 @@
 /// 
 /// __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open interval).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').between(10, 20).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Find all users with primary key >= 10 and <= 20 (an interval closed on both sides).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').between(10, 20, {rightBound: 'closed'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Find all users with primary key < 20.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').between(r.minval, 20).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Find all users with primary key > 10.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').between(10, r.maxval, {leftBound: 'open'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Between can be used on secondary indexes too. Just pass an optional index argument giving the secondary index to query.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('dc').between('dark_knight', 'man_of_steel', {index: 'code_name'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Get all users whose full name is between "John Smith" and "Wade Welles."
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").between(["Smith", "John"], ["Welles", "Wade"],
 ///   {index: "full_name"}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Get the top 10 ranked teams in order.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("teams").orderBy({index: "rank"}).between(1, 11).run(conn, callback);
 /// ```
 /// 
@@ -2077,7 +2097,7 @@
 /// 
 /// __Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams ranked in the top 10.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("teams").between(1, 11, {index: "rank"}).changes().run(conn, callback);
 /// ```
 /// 
@@ -2090,7 +2110,7 @@
 /// {% endinfobox %}
 
                 pub fn between<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("between", args)
+                    util::make_cmd(self, "between", Type::BETWEEN, Some(args))
                 }
             
 
@@ -2114,7 +2134,7 @@
 /// __Example:__ Get all users who are 30 years old.
 /// 
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter({age: 30}).run(conn, callback);
 /// ```
 /// 
@@ -2124,13 +2144,13 @@
 /// 
 /// While the `{field: value}` style of predicate is useful for exact matches, a more general way to write a predicate is to use the [row](/api/javascript/row) command with a comparison operator such as [eq](/api/javascript/eq) or [gt](/api/javascript/gt), or to use an anonymous function that returns `true` or `false`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(r.row("age").eq(30)).run(conn, callback);
 /// ```
 /// 
 /// In this case, the predicate `r.row("age").eq(30)` returns `true` if the field `age` is equal to 30. You can write this predicate as an anonymous function instead:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function (user) {
 ///     return user("age").eq(30);
 /// }).run(conn, callback);
@@ -2142,14 +2162,14 @@
 /// 
 /// __Example:__ Get all users who are more than 18 years old.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(r.row("age").gt(18)).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Get all users who are less than 18 years old and more than 13 years old.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(
 ///     r.row("age").lt(18).and(r.row("age").gt(13))
 /// ).run(conn, callback);
@@ -2158,7 +2178,7 @@
 /// 
 /// __Example:__ Get all users who are more than 18 years old or have their parental consent.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(
 ///     r.row("age").ge(18).or(r.row("hasParentalConsent"))
 /// ).run(conn, callback);
@@ -2169,7 +2189,7 @@
 /// __Example:__ Retrieve all users who subscribed between January 1st, 2012
 /// (included) and January 1st, 2013 (excluded).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function (user) {
 ///     return user("subscriptionDate").during(
 ///         r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z'));
@@ -2178,7 +2198,7 @@
 /// 
 /// __Example:__ Retrieve all users who have a gmail account (whose field `email` ends with `@gmail.com`).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function (user) {
 ///     return user("email").match("@gmail.com$");
 /// }).run(conn, callback);
@@ -2188,7 +2208,7 @@
 /// 
 /// Given this schema for the `users` table:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     name: String
 ///     placesVisited: [String]
@@ -2197,7 +2217,7 @@
 /// 
 /// Retrieve all users whose field `placesVisited` contains `France`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function(user) {
 ///     return user("placesVisited").contains("France")
 /// }).run( conn, callback)
@@ -2207,7 +2227,7 @@
 /// 
 /// Given this schema for the `users` table:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     id: String
 ///     name: {
@@ -2222,7 +2242,7 @@
 /// "Adama"), with any middle name.
 /// 
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter({
 ///     name: {
 ///         first: "William",
@@ -2236,7 +2256,7 @@
 /// Retrieve all users named "William Adama" (first name "William", last name
 /// "Adama"), and who do not have a middle name.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(r.literal({
 ///     name: {
 ///         first: "William",
@@ -2247,7 +2267,7 @@
 /// 
 /// You may rewrite these with anonymous functions.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function(user) {
 ///     return user("name")("first").eq("William")
 ///         .and(user("name")("last").eq("Adama"));
@@ -2267,7 +2287,7 @@
 /// 
 /// __Example:__ Get all users less than 18 years old or whose `age` field is missing.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(
 ///     r.row("age").lt(18), {default: true}
 /// ).run(conn, callback);
@@ -2276,7 +2296,7 @@
 /// __Example:__ Get all users more than 18 years old. Throw an error if a
 /// document is missing the field `age`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(
 ///     r.row("age").gt(18), {default: r.error()}
 /// ).run(conn, callback);
@@ -2284,7 +2304,7 @@
 /// 
 /// __Example:__ Get all users who have given their phone number (all the documents whose field `phoneNumber` exists and is not `null`).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function (user) {
 ///     return user.hasFields('phoneNumber');
 /// }).run(conn, callback);
@@ -2292,7 +2312,7 @@
 /// 
 /// __Example:__ Get all users with an "editor" role or an "admin" privilege.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function (user) {
 ///     return (user('role').eq('editor').default(false).
 ///         or(user('privilege').eq('admin').default(false)));
@@ -2302,7 +2322,7 @@
 /// Instead of using the `default` optional argument to `filter`, we have to use default values on the fields within the `or` clause. Why? If the field on the left side of the `or` clause is missing from a document&mdash;in this case, if the user doesn't have a `role` field&mdash;the predicate will generate an error, and will return `false` (or the value the `default` argument is set to) without evaluating the right side of the `or`. By using `.default(false)` on the fields, each side of the `or` will evaluate to either the field's value or `false` if the field doesn't exist.
 
                 pub fn filter<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("filter", args)
+                    util::make_cmd(self, "filter", Type::FILTER, Some(args))
                 }
             
 
@@ -2317,7 +2337,7 @@
 /// 
 /// __Example:__ Return a list of all matchups between Marvel and DC heroes in which the DC hero could beat the Marvel hero in a fight.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').innerJoin(r.table('dc'), function(marvelRow, dcRow) {
 ///     return marvelRow('strength').lt(dcRow('strength'))
 /// }).zip().run(conn, callback)
@@ -2328,7 +2348,7 @@
 /// (Compare this to an [outerJoin](/api/javascript/outer_join) with the same inputs and predicate, which would return a list of *all* Marvel heroes along with any DC heroes with a higher strength.)
 
                 pub fn inner_join<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("inner_join", args)
+                    util::make_cmd(self, "inner_join", Type::INNER_JOIN, Some(args))
                 }
             
 
@@ -2344,7 +2364,7 @@
 /// 
 /// __Example:__ Return a list of all Marvel heroes, paired with any DC heroes who could beat them in a fight.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
 ///     return marvelRow('strength').lt(dcRow('strength'))
 /// }).run(conn, callback)
@@ -2353,7 +2373,7 @@
 /// (Compare this to an [innerJoin](/api/javascript/inner_join) with the same inputs and predicate, which would return a list only of the matchups in which the DC hero has the higher strength.)
 
                 pub fn outer_join<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("outer_join", args)
+                    util::make_cmd(self, "outer_join", Type::OUTER_JOIN, Some(args))
                 }
             
 
@@ -2370,7 +2390,7 @@
 /// 
 /// Suppose the players table contains these documents:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     { id: 1, player: 'George', gameId: 1 },
 ///     { id: 2, player: 'Agatha', gameId: 3 },
@@ -2383,7 +2403,7 @@
 /// 
 /// The games table contains these documents:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     { id: 1, field: 'Little Delving' },
 ///     { id: 2, field: 'Rushock Bog' },
@@ -2395,13 +2415,13 @@
 /// 
 /// Join these tables using `gameId` on the player table and `id` on the games table:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
 /// ```
 /// 
 /// This will return a result set such as the following:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     {
 ///         "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
@@ -2419,7 +2439,7 @@
 /// 
 /// What you likely want is the result of using `zip` with that. For clarity, we'll use `without` to drop the `id` field from the games table (it conflicts with the `id` field for the players and it's redundant anyway), and we'll order it by the games.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').eqJoin('gameId', r.table('games')).without({right: "id"}).zip().orderBy('gameId').run(conn, callback)
 /// 
 /// [
@@ -2436,13 +2456,13 @@
 /// 
 /// __Example:__ Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').eqJoin('cityId', r.table('arenas'), {index: 'cityId'}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Use a nested key as the join field. Suppose the documents in the players table were structured like this:
 /// 
-/// ```rust,norun
+/// ```js
 /// { id: 1, player: 'George', game: {id: 1} },
 /// { id: 2, player: 'Agatha', game: {id: 3} },
 /// ...
@@ -2450,7 +2470,7 @@
 /// 
 /// Simply specify the field using the `row` command instead of a string.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').eqJoin(r.row('game')('id'), r.table('games')).without({right: 'id'}).zip()
 /// 
 /// [
@@ -2462,7 +2482,7 @@
 /// 
 /// __Example:__ Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').eqJoin(function (player) {
 ///     return player('favorites').nth(0)
 /// }, r.table('games')).without([{left: ['favorites', 'gameId', 'id']}, {right: 'id'}]).zip()
@@ -2470,7 +2490,7 @@
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 /// 	{ "field": "Rushock Bog", "name": "Fred" },
 /// 	{ "field": "Little Delving", "name": "George" },
@@ -2479,7 +2499,7 @@
 /// ```
 
                 pub fn eq_join<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("eq_join", args)
+                    util::make_cmd(self, "eq_join", Type::EQ_JOIN, Some(args))
                 }
             
 
@@ -2488,7 +2508,7 @@
 /// 
 /// __Example:__ 'zips up' the sequence by merging the left and right fields produced by a join.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc'))
 ///     .zip().run(conn, callback)
 /// ```
@@ -2496,7 +2516,7 @@
 /// 
 
                 pub fn zip(&self) -> Client {
-                    cmd("zip")
+                    util::make_cmd::<Client>(self, "zip", Type::ZIP, None)
                 }
             
 
@@ -2509,7 +2529,7 @@
 /// 
 /// __Example:__ Return the first five squares.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([1, 2, 3, 4, 5]).map(function (val) {
 ///     return val.mul(val);
 /// }).run(conn, callback);
@@ -2519,7 +2539,7 @@
 /// 
 /// __Example:__ Sum the elements of three sequences.
 /// 
-/// ```rust,norun
+/// ```js
 /// var sequence1 = [100, 200, 300, 400];
 /// var sequence2 = [10, 20, 30, 40];
 /// var sequence3 = [1, 2, 3, 4];
@@ -2534,7 +2554,7 @@
 /// 
 /// This example renames the field `id` to `userId` when retrieving documents from the table `users`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').map(function (doc) {
 ///     return doc.merge({userId: doc('id')}).without('id');
 /// }).run(conn, callback);
@@ -2542,7 +2562,7 @@
 /// 
 /// Note that in this case, [row](/api/javascript/row) may be used as an alternative to writing an anonymous function, as it returns the same value as the function parameter receives:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').map(
 ///     r.row.merge({userId: r.row('id')}).without('id');
 /// }).run(conn, callback);
@@ -2551,14 +2571,14 @@
 /// 
 /// __Example:__ Assign every superhero an archenemy.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('heroes').map(r.table('villains'), function (hero, villain) {
 ///     return hero.merge({villain: villain});
 /// }).run(conn, callback);
 /// ```
 
                 pub fn map<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("map", args)
+                    util::make_cmd(self, "map", Type::MAP, Some(args))
                 }
             
 
@@ -2571,7 +2591,7 @@
 /// 
 /// Existing table structure:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     { 'id': 1, 'user': 'bob', 'email': 'bob@foo.com', 'posts': [ 1, 4, 5 ] },
 ///     { 'id': 2, 'user': 'george', 'email': 'george@foo.com' },
@@ -2581,7 +2601,7 @@
 /// 
 /// Command and output:
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('users').withFields('id', 'user', 'posts').run(conn, callback)
 /// // Result passed to callback
 /// [
@@ -2592,12 +2612,12 @@
 /// 
 /// __Example:__ Use the [nested field syntax](/docs/nested-fields/) to get a list of users with cell phone numbers in their contacts.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn, callback)
 /// ```
 
                 pub fn with_fields<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("with_fields", args)
+                    util::make_cmd(self, "with_fields", Type::WITH_FIELDS, Some(args))
                 }
             
 
@@ -2606,25 +2626,25 @@
 /// 
 /// `concatMap` works in a similar fashion to [map](/api/javascript/map/), applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([1, 2, 3]).map(function(x) { return [x, x.mul(2)] }).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// [[1, 2], [2, 4], [3, 6]]
 /// ```
 /// 
 /// Whereas `concatMap` with the same mapping function would merge those sequences into one:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([1, 2, 3]).concatMap(function(x) { return [x, x.mul(2)] }).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// [1, 2, 2, 4, 3, 6]
 /// ```
 /// 
@@ -2632,7 +2652,7 @@
 /// 
 /// __Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The field "defeatedMonsters" is an array of one or more monster names.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').concatMap(function(hero) {
 ///     return hero('defeatedMonsters')
 /// }).run(conn, callback)
@@ -2640,7 +2660,7 @@
 /// 
 /// __Example:__ Simulate an [eqJoin](/api/javascript/eq_join/) using `concatMap`. (This is how ReQL joins are implemented internally.)
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").concatMap(function(post) {
 /// 	return r.table("comments").getAll(
 /// 		post("id"),
@@ -2652,7 +2672,7 @@
 /// ```
 
                 pub fn concat_map<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("concat_map", args)
+                    util::make_cmd(self, "concat_map", Type::CONCAT_MAP, Some(args))
                 }
             
 
@@ -2674,7 +2694,7 @@
 /// 
 /// __Example:__ Order all the posts using the index `date`.   
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').orderBy({index: 'date'}).run(conn, callback);
 /// ```
 /// 
@@ -2682,32 +2702,32 @@
 /// 
 /// The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').indexCreate('date').run(conn, callback);
 /// ```
 /// 
 /// You can also select a descending ordering:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').orderBy({index: r.desc('date')}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Order a sequence without an index.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').get(1)('comments').orderBy('date').run(conn, callback);
 /// ```
 /// 
 /// You can also select a descending ordering:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').get(1)('comments').orderBy(r.desc('date')).run(conn, callback);
 /// ```
 /// 
 /// If you're doing ad-hoc analysis and know your table won't have more then 100,000
 /// elements (or you've changed the setting of the `array_limit` option for [run](/api/javascript/run)) you can run `orderBy` without an index:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('small_table').orderBy('date').run(conn, callback);
 /// ```
 /// 
@@ -2716,13 +2736,13 @@
 /// 
 /// Order by date and title.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').orderBy({index: 'dateAndTitle'}).run(conn, callback);
 /// ```
 /// 
 /// The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').indexCreate('dateAndTitle', [r.row('date'), r.row('title')]).run(conn, callback);
 /// ```
 /// 
@@ -2732,7 +2752,7 @@
 /// __Example:__ If you have a sequence with fewer documents than the `arrayLimit`, you can order it
 /// by multiple fields without an index.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('small_table').orderBy('date', r.desc('title')).run(conn, callback);
 /// ```
 /// 
@@ -2740,25 +2760,25 @@
 /// precedence. The following query orders posts by date, and if multiple
 /// posts were published on the same date, they will be ordered by title.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('post').orderBy('title', {index: 'date'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to sort on fields from subdocuments. (You can also create indexes on nested fields using this syntax with `indexCreate`.)
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('user').orderBy(r.row('group')('id')).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ You can efficiently order data on arbitrary expressions using indexes.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').orderBy({index: 'votes'}).run(conn, callback);
 /// ```
 /// 
 /// The index must have been previously created with [indexCreate](/api/javascript/index_create/).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').indexCreate('votes', function(post) {
 ///     return post('upvotes').sub(post('downvotes'))
 /// }).run(conn, callback);
@@ -2766,7 +2786,7 @@
 /// 
 /// __Example:__ If you have a sequence with fewer documents than the `arrayLimit`, you can order it with an arbitrary function directly.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('small_table').orderBy(function(doc) {
 ///     return doc('upvotes').sub(doc('downvotes'))
 /// }).run(conn, callback);
@@ -2774,7 +2794,7 @@
 /// 
 /// You can also select a descending ordering:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('small_table').orderBy(r.desc(function(doc) {
 ///     return doc('upvotes').sub(doc('downvotes'))
 /// })).run(conn, callback);
@@ -2782,14 +2802,14 @@
 /// 
 /// __Example:__ Ordering after a `between` command can be done as long as the same index is being used.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').between(r.time(2013, 1, 1, '+00:00'), r.time(2013, 1, 1, '+00:00'), {index: 'date'})
 ///     .orderBy({index: 'date'}).run(conn, callback);
 /// ```
 /// 
 
                 pub fn order_by<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("order_by", args)
+                    util::make_cmd(self, "order_by", Type::ORDER_BY, Some(args))
                 }
             
 
@@ -2798,12 +2818,12 @@
 /// 
 /// __Example:__ Here in conjunction with [orderBy](/api/javascript/order_by/) we choose to ignore the most successful heroes.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').orderBy('successMetric').skip(10).run(conn, callback)
 /// ```
 
                 pub fn skip<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("skip", args)
+                    util::make_cmd(self, "skip", Type::SKIP, Some(args))
                 }
             
 
@@ -2812,14 +2832,14 @@
 /// 
 /// __Example:__ Only so many can fit in our Pantheon of heroes.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn limit<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("limit", args)
+                    util::make_cmd(self, "limit", Type::LIMIT, Some(args))
                 }
             
 
@@ -2840,25 +2860,25 @@
 /// 
 /// __Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return all but the top three players who have a red flag.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').filter({flag: 'red'}).orderBy(r.desc('score')).slice(3).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').orderBy('ticket').slice(x, y, {right_bound: 'closed'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the elements of an array from the second through two from the end (that is, not including the last two).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn, callback);
 /// // Result passed to callback
 /// [2,3]
@@ -2866,14 +2886,14 @@
 /// 
 /// __Example:__ Return the third through fifth characters of a string.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("rutabaga").slice(2,5).run(conn, callback);
 /// // Result passed to callback
 /// "tab"
 /// ```
 
                 pub fn slice<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("slice", args)
+                    util::make_cmd(self, "slice", Type::SLICE, Some(args))
                 }
             
 
@@ -2884,25 +2904,25 @@
 /// 
 /// __Example:__ Select the second element in the array.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([1,2,3]).nth(1).run(conn, callback)
 /// r.expr([1,2,3])(1).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Select the bronze medalist from the competitors.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').orderBy({index: r.desc('score')}).nth(3).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Select the last place competitor.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').orderBy({index: r.desc('score')}).nth(-1).run(conn, callback)
 /// ```
 
                 pub fn nth<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("nth", args)
+                    util::make_cmd(self, "nth", Type::NTH, Some(args))
                 }
             
 
@@ -2913,20 +2933,20 @@
 /// 
 /// __Example:__ Find the position of the letter 'c'.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(['a','b','c']).offsetsOf('c').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Find the popularity ranking of invisible heroes.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').union(r.table('dc')).orderBy('popularity').offsetsOf(
 ///     r.row('superpowers').contains('invisibility')
 /// ).run(conn, callback)
 /// ```
 
                 pub fn offsets_of<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("offsets_of", args)
+                    util::make_cmd(self, "offsets_of", Type::OFFSETS_OF, Some(args))
                 }
             
 
@@ -2935,12 +2955,12 @@
 /// 
 /// __Example:__ Are there any documents in the marvel table?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').isEmpty().run(conn, callback)
 /// ```
 
                 pub fn is_empty(&self) -> Client {
-                    cmd("is_empty")
+                    util::make_cmd::<Client>(self, "is_empty", Type::IS_EMPTY, None)
                 }
             
 
@@ -2956,13 +2976,13 @@
 /// 
 /// __Example:__ Construct a stream of all heroes.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').union(r.table('dc')).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Combine four arrays into one.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([1, 2]).union([3, 4], [5, 6], [7, 8, 9]).run(conn, callback)
 /// // Result passed to callback
 /// [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -2970,7 +2990,7 @@
 /// 
 /// __Example:__ Create a [changefeed][cf] from the first example.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').union(r.table('dc')).changes().run(conn, callback);
 /// ```
 /// 
@@ -2980,14 +3000,14 @@
 /// 
 /// __Example:__ Merge-sort the tables of heroes, ordered by name.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').order_by('name').union(
 ///     r.table('dc').order_by('name'), {interleave: 'name'}
 /// ).run(conn, callback);
 /// ```
 
                 pub fn union<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("union", args)
+                    util::make_cmd(self, "union", Type::UNION, Some(args))
                 }
             
 
@@ -3000,12 +3020,12 @@
 /// 
 /// __Example:__ Select 3 random heroes.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').sample(3).run(conn, callback)
 /// ```
 
                 pub fn sample<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("sample", args)
+                    util::make_cmd(self, "sample", Type::SAMPLE, Some(args))
                 }
             
 
@@ -3017,7 +3037,7 @@
 /// 
 /// Suppose that the table `games` has the following data:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     {id: 2, player: "Bob", points: 15, type: "ranked"},
 ///     {id: 5, player: "Alice", points: 7, type: "free"},
@@ -3028,7 +3048,7 @@
 /// 
 /// __Example:__ Group games by player.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games').group('player').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -3057,7 +3077,7 @@
 /// 
 /// __Example:__ What is each player's best game?
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games').group('player').max('points').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -3078,7 +3098,7 @@
 /// 
 /// __Example:__ What is the maximum number of points scored by each player?
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games').group('player').max('points')('points').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -3099,7 +3119,7 @@
 /// __Example:__ What is the maximum number of points scored by each
 /// player for each game type?
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games').group('player', 'type').max('points')('points').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -3125,7 +3145,7 @@
 /// player for each game type?
 /// 
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games')
 ///     .group(function(game) {
 ///         return game.pluck('player', 'type')
@@ -3152,7 +3172,7 @@
 /// 
 /// __Example:__ How many matches have been played this year by month?
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('matches').group(
 ///       [r.row('date').year(), r.row('date').month()]
 ///   ).count().run(conn, callback)
@@ -3183,7 +3203,7 @@
 /// __Example:__ What is the maximum number of points scored by game type?
 /// 
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games').group({index:'type'}).max('points')('points').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -3203,7 +3223,7 @@
 /// 
 /// Suppose that the table `games2` has the following data:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     { id: 1, matches: {'a': [1, 2, 3], 'b': [4, 5, 6]} },
 ///     { id: 2, matches: {'b': [100], 'c': [7, 8, 9]} },
@@ -3213,7 +3233,7 @@
 /// 
 /// Using the `multi` option we can group data by match A, B or C.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games2').group(r.row('matches').keys(), {multi: true}).run(conn, callback);
 /// // Result passed to callback
 /// [
@@ -3236,7 +3256,7 @@
 /// 
 /// __Example:__ Use [map](/api/javascript/map) and [sum](/api/javascript/sum) to get the total points scored for each match.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games2').group(r.row('matches').keys(), {multi: true}).ungroup().map(
 ///     function (doc) {
 ///         return { match: doc('group'), total: doc('reduction').sum(
@@ -3265,7 +3285,7 @@
 /// 
 /// __Example:__ Ungrouping grouped data.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games').group('player').max('points')('points').ungroup().run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -3287,7 +3307,7 @@
 /// __Example:__ What is the maximum number of points scored by each
 /// player, with the highest scorers first?
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games')
 ///    .group('player').max('points')('points')
 ///    .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
@@ -3317,7 +3337,7 @@
 /// 
 /// __Example:__ Get back the raw `GROUPED_DATA` pseudotype.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games').group('player').avg('points').run(conn, {groupFormat:'raw'}, callback)
 /// 
 /// // Result passed to callback
@@ -3332,7 +3352,7 @@
 /// 
 /// Not passing the `group_format` flag would return:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     {
 ///         group: "Alice":
@@ -3365,7 +3385,7 @@
 /// 
 /// __Example:__ Efficient operation.
 /// 
-/// ```rust,norun
+/// ```js
 /// // r.table('games').group('player').typeOf().run(conn, callback)
 /// // Returns "GROUPED_STREAM"
 /// r.table('games').group('player').min('points').run(conn, callback) // EFFICIENT
@@ -3373,7 +3393,7 @@
 /// 
 /// __Example:__ Inefficient operation.
 /// 
-/// ```rust,norun
+/// ```js
 /// // r.table('games').group('player').orderBy('score').typeOf().run(conn, callback)
 /// // Returns "GROUPED_DATA"
 /// r.table('games').group('player').orderBy('score').nth(0).run(conn, callback) // INEFFICIENT
@@ -3394,7 +3414,7 @@
 /// __Example:__ What is the maximum number of points scored by each
 /// player in free games?
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('games').filter( r.row('type').eq('free'))
 ///     .group('player').max('points')('points')
 ///     .run(conn, callback)
@@ -3414,7 +3434,7 @@
 /// 
 /// __Example:__ What is each player's highest even and odd score?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games')
 ///     .group('name', function(game) {
 ///         return game('points').mod(2)
@@ -3438,7 +3458,7 @@
 /// ```
 
                 pub fn group(&self) -> Client {
-                    cmd("group")
+                    util::make_cmd::<Client>(self, "group", Type::GROUP, None)
                 }
             
 
@@ -3457,7 +3477,7 @@
 /// 
 /// Suppose that the table `games` has the following data:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     {id: 2, player: "Bob", points: 15, type: "ranked"},
 ///     {id: 5, player: "Alice", points: 7, type: "free"},
@@ -3469,7 +3489,7 @@
 /// __Example:__ What is the maximum number of points scored by each
 /// player, with the highest scorers first?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games')
 ///    .group('player').max('points')('points')
 ///    .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
@@ -3479,7 +3499,7 @@
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     {
 ///         group: "Bob",
@@ -3494,13 +3514,13 @@
 /// 
 /// __Example:__ Select one random player and all their games.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').group('player').ungroup().sample(1).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     {
 ///         group: "Bob",
@@ -3517,13 +3537,13 @@
 /// Note that if you didn't call `ungroup`, you would instead select one
 /// random game from each player:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').group('player').sample(1).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     {
 ///         group: "Alice",
@@ -3548,13 +3568,13 @@
 /// 
 /// Result:
 /// 
-/// ```rust,norunon
+/// ```json
 /// 2
 /// ```
 /// 
 /// __Example:__ Types!
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').group('player').typeOf().run(conn, callback) // Returns "GROUPED_STREAM"
 /// r.table('games').group('player').ungroup().typeOf().run(conn, callback) // Returns "ARRAY"
 /// r.table('games').group('player').avg('points').run(conn, callback) // Returns "GROUPED_DATA"
@@ -3562,7 +3582,7 @@
 /// ```
 
                 pub fn ungroup(&self) -> Client {
-                    cmd("ungroup")
+                    util::make_cmd::<Client>(self, "ungroup", Type::UNGROUP, None)
                 }
             
 
@@ -3587,7 +3607,7 @@
 /// 
 /// __Example:__ Return the number of documents in the table `posts`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").map(function(doc) {
 ///     return 1;
 /// }).reduce(function(left, right) {
@@ -3602,7 +3622,7 @@
 /// comments.  
 /// Return the number of comments for all posts.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").map(function(doc) {
 ///     return doc("comments").count();
 /// }).reduce(function(left, right) {
@@ -3616,7 +3636,7 @@
 /// comments.  
 /// Return the maximum number comments per post.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").map(function(doc) {
 ///     return doc("comments").count();
 /// }).reduce(function(left, right) {
@@ -3631,7 +3651,7 @@
 /// A shorter way to execute this query is to use [max](/api/javascript/max).
 
                 pub fn reduce<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("reduce", args)
+                    util::make_cmd(self, "reduce", Type::REDUCE, Some(args))
                 }
             
 
@@ -3671,7 +3691,7 @@
 /// 
 /// __Example:__ Concatenate words from a list.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('words').orderBy('id').fold('', function (acc, word) {
 ///     return acc.add(r.branch(acc.eq(''), '', ', ')).add(word);
 /// }).run(conn, callback);
@@ -3681,7 +3701,7 @@
 /// 
 /// __Example:__ Return every other row in a table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('even_things').fold(0, function(acc, row) {
 ///     return acc.add(1);
 /// }, {emit:
@@ -3695,7 +3715,7 @@
 /// 
 /// __Example:__ Compute a five-day running average for a weight tracker.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('tracker').filter({name: 'bob'}).orderBy('date')('weight').fold(
 ///     [],
 ///     function (acc, row) { return r.expr([row]).add(acc).limit(5); },
@@ -3708,7 +3728,7 @@
 /// ```
 
                 pub fn fold<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("fold", args)
+                    util::make_cmd(self, "fold", Type::FOLD, Some(args))
                 }
             
 
@@ -3719,25 +3739,25 @@
 /// 
 /// __Example:__ Count the number of users.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').count().run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Count the number of 18 year old users.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users')('age').count(18).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Count the number of users over 18.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users')('age').count(function(age) { 
 ///     return age.gt(18)
 /// }).run(conn, callback);
 /// ```
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').count(function(user) {
 ///     return user('age').gt(18)
 /// }).run(conn, callback)
@@ -3745,14 +3765,14 @@
 /// 
 /// __Example:__ Return the length of a Unicode string.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("こんにちは").count().run(conn, callback);
 /// // Result passed to callback
 /// 5
 /// ```
 
                 pub fn count(&self) -> Client {
-                    cmd("count")
+                    util::make_cmd::<Client>(self, "count", Type::COUNT, None)
                 }
             
 
@@ -3770,27 +3790,27 @@
 /// 
 /// __Example:__ What's 3 + 5 + 7?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([3, 5, 7]).sum().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ How many points have been scored across all games?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').sum('points').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ How many points have been scored across all games,
 /// counting bonus points?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').sum(function(game) {
 ///     return game('points').add(game('bonus_points'))
 /// }).run(conn, callback)
 /// ```
 
                 pub fn sum(&self) -> Client {
-                    cmd("sum")
+                    util::make_cmd::<Client>(self, "sum", Type::SUM, None)
                 }
             
 
@@ -3809,20 +3829,20 @@
 /// 
 /// __Example:__ What's the average of 3, 5, and 7?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([3, 5, 7]).avg().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ What's the average number of points scored in a game?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').avg('points').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ What's the average number of points scored in a game,
 /// counting bonus points?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').avg(function(game) {
 ///     return game('points').add(game('bonus_points'))
 /// }).run(conn, callback)
@@ -3832,12 +3852,12 @@
 /// (But return `null` instead of raising an error if there are no games where
 /// points have been scored.)
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('games').avg('points').default(null).run(conn, callback)
 /// ```
 
                 pub fn avg(&self) -> Client {
-                    cmd("avg")
+                    util::make_cmd::<Client>(self, "avg", Type::AVG, None)
                 }
             
 
@@ -3856,25 +3876,25 @@
 /// 
 /// __Example:__ Return the minimum value in the list `[3, 5, 7]`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([3, 5, 7]).min().run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the fewest points.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').min('points').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ The same as above, but using a secondary index on the `points` field.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').min({index: 'points'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the fewest points, adding in bonus points from a separate field using a function.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').min(function(user) {
 ///     return user('points').add(user('bonusPoints'));
 /// }).run(conn, callback);
@@ -3882,18 +3902,18 @@
 /// 
 /// __Example:__ Return the smallest number of points any user has ever scored. This returns the value of that `points` field, not a document.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').min('points')('points').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the fewest points, but add a default `null` return value to prevent an error if no user has ever scored points.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').min('points').default(null).run(conn, callback);
 /// ```
 
                 pub fn min(&self) -> Client {
-                    cmd("min")
+                    util::make_cmd::<Client>(self, "min", Type::MIN, None)
                 }
             
 
@@ -3912,25 +3932,25 @@
 /// 
 /// __Example:__ Return the maximum value in the list `[3, 5, 7]`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([3, 5, 7]).max().run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the most points.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').max('points').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ The same as above, but using a secondary index on the `points` field.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').max({index: 'points'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the most points, adding in bonus points from a separate field using a function.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').max(function(user) {
 ///     return user('points').add(user('bonusPoints'));
 /// }).run(conn, callback);
@@ -3938,18 +3958,18 @@
 /// 
 /// __Example:__ Return the highest number of points any user has ever scored. This returns the value of that `points` field, not a document.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').max('points')('points').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the most points, but add a default `null` return value to prevent an error if no user has ever scored points.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').max('points').default(null).run(conn, callback);
 /// ```
 
                 pub fn max(&self) -> Client {
-                    cmd("max")
+                    util::make_cmd::<Client>(self, "max", Type::MAX, None)
                 }
             
 
@@ -3964,7 +3984,7 @@
 /// 
 /// __Example:__ Which unique villains have been vanquished by Marvel heroes?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').concatMap(function(hero) {
 ///     return hero('villainList')
 /// }).distinct().run(conn, callback)
@@ -3972,20 +3992,20 @@
 /// 
 /// __Example:__ Topics in a table of messages have a secondary index on them, and more than one message can have the same topic. What are the unique topics in the table?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('messages').distinct({index: 'topics'}).run(conn, callback)
 /// ```
 /// 
 /// The above structure is functionally identical to:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('messages')('topics').distinct().run(conn, callback)
 /// ```
 /// 
 /// However, the first form (passing the index as an argument to `distinct`) is faster, and won't run into array limit issues since it's returning a stream.
 
                 pub fn distinct(&self) -> Client {
-                    cmd("distinct")
+                    util::make_cmd::<Client>(self, "distinct", Type::DISTINCT, None)
                 }
             
 
@@ -4001,13 +4021,13 @@
 /// 
 /// __Example:__ Has Iron Man ever fought Superman?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Has Iron Man ever defeated Superman in battle?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('ironman')('battles').contains(function (battle) {
 ///     return battle('winner').eq('ironman').and(battle('loser').eq('superman'));
 /// }).run(conn, callback);
@@ -4015,7 +4035,7 @@
 /// 
 /// __Example:__ Return all heroes who have fought _both_ Loki and the Hulk.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').filter(function (hero) {
 ///   return hero('opponents').contains('loki', 'hulk');
 /// }).run(conn, callback);
@@ -4023,14 +4043,14 @@
 /// 
 /// __Example:__ Use `contains` with a predicate function to simulate an `or`. Return the Marvel superheroes who live in Detroit, Chicago or Hoboken.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').filter(function(hero) {
 ///     return r.expr(['Detroit', 'Chicago', 'Hoboken']).contains(hero('city'))
 /// }).run(conn, callback);
 /// ```
 
                 pub fn contains<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("contains", args)
+                    util::make_cmd(self, "contains", Type::CONTAINS, Some(args))
                 }
             
 
@@ -4041,35 +4061,35 @@
 /// __Example:__ We just need information about IronMan's reactor and not the rest of the
 /// document.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan').pluck('reactorState', 'reactorPower').run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ For the hero beauty contest we only care about certain qualities.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').pluck('beauty', 'muscleTone', 'charm').run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Pluck can also be used on nested objects.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').pluck({'abilities' : {'damage' : true, 'mana_cost' : true}, 'weapons' : true}).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ The nested syntax can quickly become overly verbose so there's a shorthand for it.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').pluck({'abilities' : ['damage', 'mana_cost']}, 'weapons').run(conn, callback)
 /// ```
 /// 
 /// For more information read the [nested field documentation](/docs/nested-fields/).
 
                 pub fn pluck<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("pluck", args)
+                    util::make_cmd(self, "pluck", Type::PLUCK, Some(args))
                 }
             
 
@@ -4080,34 +4100,34 @@
 /// __Example:__ Since we don't need it for this computation we'll save bandwidth and leave
 /// out the list of IronMan's romantic conquests.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Without their prized weapons, our enemies will quickly be vanquished.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('enemies').without('weapons').run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Nested objects can be used to remove the damage subfield from the weapons and abilities fields.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').without({'weapons' : {'damage' : true}, 'abilities' : {'damage' : true}}).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ The nested syntax can quickly become overly verbose so there's a shorthand for it.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').without({'weapons':'damage', 'abilities':'damage'}).run(conn, callback)
 /// ```
 /// 
 
                 pub fn without<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("without", args)
+                    util::make_cmd(self, "without", Type::WITHOUT, Some(args))
                 }
             
 
@@ -4118,7 +4138,7 @@
 /// 
 /// __Example:__ Equip Thor for battle.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('thor').merge(
 ///     r.table('equipment').get('hammer'),
 ///     r.table('equipment').get('pimento_sandwich')
@@ -4127,7 +4147,7 @@
 /// 
 /// __Example:__ Equip every hero for battle, using a subquery function to retrieve their weapons.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').merge(function (hero) {
 ///     return { weapons: r.table('weapons').get(hero('weaponId')) };
 /// }).run(conn, callback)
@@ -4137,7 +4157,7 @@
 /// 
 /// Note that the sequence being merged&mdash;in this example, the comments&mdash;must be coerced from a selection to an array. Without `coerceTo` the operation will throw an error ("Expected type DATUM but found SELECTION").
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').merge(function (post) {
 ///     return {
 ///         comments: r.table('comments').getAll(post('id'),
@@ -4148,7 +4168,7 @@
 /// 
 /// __Example:__ Merge can be used recursively to modify object within objects.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
 ///     {weapons : {spectacular_graviton_beam : {dmg : 10}}}).run(conn, callback)
 /// ```
@@ -4156,7 +4176,7 @@
 /// 
 /// __Example:__ To replace a nested object with another object you can use the literal keyword.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
 ///     {weapons : r.literal({repulsor_rays : {dmg : 3, cooldown : 0}})}).run(conn, callback)
 /// ```
@@ -4164,14 +4184,14 @@
 /// 
 /// __Example:__ Literal can be used to remove keys from an object as well.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
 ///     {weapons : {spectacular_graviton_beam : r.literal()}}).run(conn, callback)
 /// ```
 /// 
 
                 pub fn merge<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("merge", args)
+                    util::make_cmd(self, "merge", Type::MERGE, Some(args))
                 }
             
 
@@ -4180,14 +4200,14 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan')('equipment').append('newBoots').run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn append<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("append", args)
+                    util::make_cmd(self, "append", Type::APPEND, Some(args))
                 }
             
 
@@ -4196,14 +4216,14 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan')('equipment').prepend('newBoots').run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn prepend<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("prepend", args)
+                    util::make_cmd(self, "prepend", Type::PREPEND, Some(args))
                 }
             
 
@@ -4212,7 +4232,7 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list without boots.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan')('equipment')
 ///   .difference(['Boots'])
 ///   .run(conn, callback)
@@ -4220,7 +4240,7 @@
 /// 
 /// __Example:__ Remove Iron Man's boots from his equipment.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan')
 ///   .update({
 ///     equipment: r.row('equipment').difference(['Boots'])
@@ -4231,7 +4251,7 @@
 /// 
 
                 pub fn difference<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("difference", args)
+                    util::make_cmd(self, "difference", Type::DIFFERENCE, Some(args))
                 }
             
 
@@ -4240,14 +4260,14 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan')('equipment').setInsert('newBoots').run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn set_insert<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("set_insert", args)
+                    util::make_cmd(self, "set_insert", Type::SET_INSERT, Some(args))
                 }
             
 
@@ -4256,13 +4276,13 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots and an arc reactor.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan')('equipment').setUnion(['newBoots', 'arc_reactor']).run(conn, callback)
 /// ```
 /// 
 
                 pub fn set_union<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("set_union", args)
+                    util::make_cmd(self, "set_union", Type::SET_UNION, Some(args))
                 }
             
 
@@ -4272,13 +4292,13 @@
 /// 
 /// __Example:__ Check which pieces of equipment Iron Man has from a fixed list.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan')('equipment').setIntersection(['newBoots', 'arc_reactor']).run(conn, callback)
 /// ```
 /// 
 
                 pub fn set_intersection<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("set_intersection", args)
+                    util::make_cmd(self, "set_intersection", Type::SET_INTERSECTION, Some(args))
                 }
             
 
@@ -4288,14 +4308,14 @@
 /// 
 /// __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed list.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_reactor']).run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn set_difference<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("set_difference", args)
+                    util::make_cmd(self, "set_difference", Type::SET_DIFFERENCE, Some(args))
                 }
             
 
@@ -4306,7 +4326,7 @@
 /// 
 /// __Example:__ What was Iron Man's first appearance in a comic?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan')('firstAppearance').run(conn, callback)
 /// ```
 /// 
@@ -4316,14 +4336,14 @@
 /// 
 /// __Example:__ Get the fourth element in a sequence. (The first element is position `0`, so the fourth element is position `3`.)
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([10, 20, 30, 40, 50])(3)
 /// 
 /// 40
 /// ```
 
                 pub fn bracket<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("bracket", args)
+                    util::make_cmd(self, "bracket", Type::BRACKET, Some(args))
                 }
             
 
@@ -4335,12 +4355,12 @@
 /// 
 /// __Example:__ What was Iron Man's first appearance in a comic?
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan').getField('firstAppearance').run(conn, callback)
 /// ```
 
                 pub fn get_field<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("get_field", args)
+                    util::make_cmd(self, "get_field", Type::GET_FIELD, Some(args))
                 }
             
 
@@ -4353,13 +4373,13 @@
 /// 
 /// __Example:__ Return the players who have won games.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').hasFields('games_won').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Return the players who have *not* won games. To do this, use `hasFields` with [not](/api/javascript/not), wrapped with [filter](/api/javascript/filter).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').filter(
 ///     r.row.hasFields('games_won').not()
 /// ).run(conn, callback)
@@ -4367,7 +4387,7 @@
 /// 
 /// __Example:__ Test if a specific player has won any games.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').get('b5ec9714-837e-400c-aa74-dbd35c9a7c4c'
 ///     ).hasFields('games_won').run(conn, callback)
 /// ```
@@ -4378,7 +4398,7 @@
 /// 
 /// __Example:__ In the `players` table, the `games_won` field contains one or more fields for kinds of games won:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     games_won: {
 ///         playoffs: 2,
@@ -4389,19 +4409,19 @@
 /// 
 /// Return players who have the "championships" field.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').hasFields({'games_won': {'championships': true}}).run(conn, callback)
 /// ```
 /// 
 /// Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See [pluck](/api/javascript/pluck) for more details on this.)
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').hasFields({'games_won': 'championships'}
 ///     ).run(conn, callback)
 /// ```
 
                 pub fn has_fields<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("has_fields", args)
+                    util::make_cmd(self, "has_fields", Type::HAS_FIELDS, Some(args))
                 }
             
 
@@ -4412,14 +4432,14 @@
 /// 
 /// __Example:__ Hulk decides to join the avengers.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(["Iron Man", "Spider-Man"]).insertAt(1, "Hulk").run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn insert_at<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("insert_at", args)
+                    util::make_cmd(self, "insert_at", Type::INSERT_AT, Some(args))
                 }
             
 
@@ -4430,13 +4450,13 @@
 /// 
 /// __Example:__ Hulk and Thor decide to join the avengers.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(["Iron Man", "Spider-Man"]).spliceAt(1, ["Hulk", "Thor"]).run(conn, callback)
 /// ```
 /// 
 
                 pub fn splice_at<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("splice_at", args)
+                    util::make_cmd(self, "splice_at", Type::SPLICE_AT, Some(args))
                 }
             
 
@@ -4453,7 +4473,7 @@
 /// 
 /// __Example:__ Delete the second element of an array.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r(['a','b','c','d','e','f']).deleteAt(1).run(conn, callback)
 /// // result passed to callback
 /// ['a', 'c', 'd', 'e', 'f']
@@ -4461,7 +4481,7 @@
 /// 
 /// __Example:__ Delete the second and third elements of an array.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r(['a','b','c','d','e','f']).deleteAt(1,3).run(conn, callback)
 /// // result passed to callback
 /// ['a', 'd', 'e', 'f']
@@ -4469,7 +4489,7 @@
 /// 
 /// __Example:__ Delete the next-to-last element of an array.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r(['a','b','c','d','e','f']).deleteAt(-2).run(conn, callback)
 /// // result passed to callback
 /// ['a', 'b', 'c', 'd', 'f']
@@ -4479,7 +4499,7 @@
 /// 
 /// Given a post document such as:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     id: '4cf47834-b6f9-438f-9dec-74087e84eb63',
 ///     title: 'Post title',
@@ -4493,14 +4513,14 @@
 /// 
 /// The second comment can be deleted by using `update` and `deleteAt` together.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').get('4cf47834-b6f9-438f-9dec-74087e84eb63').update({
 ///     comments: r.row('comments').deleteAt(1)
 /// }).run(conn, callback)
 /// ```
 
                 pub fn delete_at<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("delete_at", args)
+                    util::make_cmd(self, "delete_at", Type::DELETE_AT, Some(args))
                 }
             
 
@@ -4511,12 +4531,12 @@
 /// 
 /// __Example:__ Bruce Banner hulks out.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
 /// ```
 
                 pub fn change_at<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("change_at", args)
+                    util::make_cmd(self, "change_at", Type::CHANGE_AT, Some(args))
                 }
             
 
@@ -4527,7 +4547,7 @@
 /// 
 /// __Example:__ Get all the keys from a table row.
 /// 
-/// ```rust,norun
+/// ```js
 /// // row: { id: 1, mail: "fred@example.com", name: "fred" }
 /// 
 /// r.table('users').get(1).keys().run(conn, callback);
@@ -4536,7 +4556,7 @@
 /// ```
 
                 pub fn keys(&self) -> Client {
-                    cmd("keys")
+                    util::make_cmd::<Client>(self, "keys", Type::KEYS, None)
                 }
             
 
@@ -4547,7 +4567,7 @@
 /// 
 /// __Example:__ Get all of the values from a table row.
 /// 
-/// ```rust,norun
+/// ```js
 /// // row: { id: 1, mail: "fred@example.com", name: "fred" }
 /// 
 /// r.table('users').get(1).values().run(conn, callback);
@@ -4556,7 +4576,7 @@
 /// ```
 
                 pub fn values(&self) -> Client {
-                    cmd("values")
+                    util::make_cmd::<Client>(self, "values", Type::VALUES, None)
                 }
             
 
@@ -4567,7 +4587,7 @@
 /// 
 /// Assume your users table has this structure:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     {
 ///         "id": 1,
@@ -4583,7 +4603,7 @@
 /// 
 /// Using `update` to modify the `data` field will normally merge the nested documents:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -4602,7 +4622,7 @@
 /// 
 /// __Example:__ Replace one nested document with another rather than merging the fields.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -4618,7 +4638,7 @@
 /// 
 /// __Example:__ Use `literal` to remove a field from a document.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').get(1).merge({ data: r.literal() }).run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -4629,7 +4649,7 @@
 /// ```
 
                 pub fn literal(&self) -> Client {
-                    cmd("literal")
+                    util::make_cmd::<Client>(self, "literal", Type::LITERAL, None)
                 }
             
 
@@ -4642,18 +4662,18 @@
 /// 
 /// __Example:__ Create a simple object.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// {data: ["foo", "bar"], id: 5}
 /// ```
 
                 pub fn object<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("object", args)
+                    util::make_cmd(self, "object", Type::OBJECT, Some(args))
                 }
             
 
@@ -4681,7 +4701,7 @@
 /// [filter](/api/javascript/filter/), you can just use the result of `match` for the predicate.
 /// 
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("^A")
 /// }).run(conn, callback)
@@ -4689,14 +4709,14 @@
 /// 
 /// __Example:__ Get all users whose name ends with "n".
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("n$")
 /// }).run(conn, callback)
 /// ```
 /// __Example:__ Get all users whose name has "li" in it
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("li")
 /// }).run(conn, callback)
@@ -4704,7 +4724,7 @@
 /// 
 /// __Example:__ Get all users whose name is "John" with a case-insensitive search.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("(?i)^john$")
 /// }).run(conn, callback)
@@ -4712,7 +4732,7 @@
 /// 
 /// __Example:__ Get all users whose name is composed of only characters between "a" and "z".
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("(?i)^[a-z]+$")
 /// }).run(conn, callback)
@@ -4720,7 +4740,7 @@
 /// 
 /// __Example:__ Get all users where the zipcode is a string of 5 digits.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function(doc){
 ///     return doc('zipcode').match("\\d{5}")
 /// }).run(conn, callback)
@@ -4729,13 +4749,13 @@
 /// 
 /// __Example:__ Retrieve the domain of a basic email
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("name@domain.com").match(".*@(.*)").run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     start: 0,
 ///     end: 20,
@@ -4752,7 +4772,7 @@
 /// 
 /// You can then retrieve only the domain with the [\(\)](/api/javascript/get_field) selector and [nth](/api/javascript/nth).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("name@domain.com").match(".*@(.*)")("groups").nth(0)("str").run(conn, callback)
 /// ```
 /// 
@@ -4761,12 +4781,12 @@
 /// 
 /// __Example:__ Fail to parse out the domain and returns `null`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("name[at]domain.com").match(".*@(.*)").run(conn, callback)
 /// ```
 
                 pub fn match_<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("match_", args)
+                    util::make_cmd(self, "match_", Type::MATCH, Some(args))
                 }
             
 
@@ -4786,67 +4806,67 @@
 /// 
 /// __Example:__ Split on whitespace.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("foo  bar bax").split().run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// ["foo", "bar", "bax"]
 /// ```
 /// 
 /// __Example:__ Split the entries in a CSV file.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("12,37,,22,").split(",").run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// ["12", "37", "", "22", ""]
 /// ```
 /// 
 /// __Example:__ Split a string into characters.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("mlucy").split("").run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// ["m", "l", "u", "c", "y"]
 /// ```
 /// 
 /// __Example:__ Split the entries in a CSV file, but only at most 3
 /// times.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("12,37,,22,").split(",", 3).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// ["12", "37", "", "22,"]
 /// ```
 /// 
 /// __Example:__ Split on whitespace at most once (i.e. get the first word).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("foo  bar bax").split(null, 1).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// ["foo", "bar bax"]
 /// ```
 
                 pub fn split(&self) -> Client {
-                    cmd("split")
+                    util::make_cmd::<Client>(self, "split", Type::SPLIT, None)
                 }
             
 
@@ -4855,20 +4875,20 @@
 /// 
 /// __Example:__
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// "SENTENCE ABOUT LATEX."
 /// ```
 /// 
 /// __Note:__ `upcase` and `downcase` only affect ASCII characters.
 
                 pub fn upcase(&self) -> Client {
-                    cmd("upcase")
+                    util::make_cmd::<Client>(self, "upcase", Type::UPCASE, None)
                 }
             
 
@@ -4877,20 +4897,20 @@
 /// 
 /// __Example:__
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```rust,norun
+/// ```js
 /// "sentence about latex."
 /// ```
 /// 
 /// __Note:__ `upcase` and `downcase` only affect ASCII characters.
 
                 pub fn downcase(&self) -> Client {
-                    cmd("downcase")
+                    util::make_cmd::<Client>(self, "downcase", Type::DOWNCASE, None)
                 }
             
 
@@ -4901,7 +4921,7 @@
 /// 
 /// __Example:__ It's as easy as 2 + 2 = 4.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.expr(2).add(2).run(conn, callback)
 /// // result passed to callback
 /// 4
@@ -4909,7 +4929,7 @@
 /// 
 /// __Example:__ Concatenate strings.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.expr("foo").add("bar", "baz").run(conn, callback)
 /// // result passed to callback
 /// "foobarbaz"
@@ -4918,7 +4938,7 @@
 /// 
 /// __Example:__ Concatenate arrays.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.expr(["foo", "bar"]).add(["buzz"]).run(conn, callback)
 /// // result passed to callback
 /// [ "foo", "bar", "buzz" ]
@@ -4927,13 +4947,13 @@
 /// 
 /// __Example:__ Create a date one year from now.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.now().add(365*24*60*60).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Use [args](/api/javascript/args) with `add` to sum multiple values.
 /// 
-/// ```rust,norun
+/// ```js
 /// > vals = [10, 20, 30];
 /// > r.add(r.args(vals)).run(conn, callback);
 /// // result passed to callback
@@ -4942,7 +4962,7 @@
 /// 
 /// __Example:__ Concatenate an array of strings with `args`.
 /// 
-/// ```rust,norun
+/// ```js
 /// > vals = ['foo', 'bar', 'buzz'];
 /// > r.add(r.args(vals)).run(conn, callback);
 /// // result passed to callback
@@ -4950,7 +4970,7 @@
 /// ```
 
                 pub fn add<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("add", args)
+                    util::make_cmd(self, "add", Type::ADD, Some(args))
                 }
             
 
@@ -4959,24 +4979,24 @@
 /// 
 /// __Example:__ It's as easy as 2 - 2 = 0.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(2).sub(2).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create a date one year ago today.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.now().sub(365*24*60*60)
 /// ```
 /// 
 /// __Example:__ Retrieve how many seconds elapsed between today and `date`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.now().sub(date)
 /// ```
 
                 pub fn sub<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("sub", args)
+                    util::make_cmd(self, "sub", Type::SUB, Some(args))
                 }
             
 
@@ -4985,19 +5005,19 @@
 /// 
 /// __Example:__ It's as easy as 2 * 2 = 4.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(2).mul(2).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Arrays can be multiplied by numbers as well.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(["This", "is", "the", "song", "that", "never", "ends."]).mul(100).run(conn, callback)
 /// ```
 /// 
 
                 pub fn mul<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("mul", args)
+                    util::make_cmd(self, "mul", Type::MUL, Some(args))
                 }
             
 
@@ -5006,19 +5026,19 @@
 /// 
 /// __Example:__ It's as easy as 2 / 2 = 1.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(2).div(2).run(conn, callback)
 /// ```
 /// 
 
                 pub fn div<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("div", args)
+                    util::make_cmd(self, "div", Type::DIV, Some(args))
                 }
             
 
                 
                 pub fn mod_<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("mod_", args)
+                    util::make_cmd(self, "mod_", Type::MOD, Some(args))
                 }
             
 
@@ -5031,7 +5051,7 @@
 /// 
 /// __Example:__ Return whether both `a` and `b` evaluate to true.
 /// 
-/// ```rust,norun
+/// ```js
 /// var a = true, b = false;
 /// r.expr(a).and(b).run(conn, callback);
 /// // result passed to callback
@@ -5040,7 +5060,7 @@
 /// 
 /// __Example:__ Return whether all of `x`, `y` and `z` evaluate to true.
 /// 
-/// ```rust,norun
+/// ```js
 /// var x = true, y = true, z = true;
 /// r.and(x, y, z).run(conn, callback);
 /// // result passed to callback
@@ -5048,7 +5068,7 @@
 /// ```
 
                 pub fn and<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("and", args)
+                    util::make_cmd(self, "and", Type::AND, Some(args))
                 }
             
 
@@ -5061,7 +5081,7 @@
 /// 
 /// __Example:__ Return whether either `a` or `b` evaluate to true.
 /// 
-/// ```rust,norun
+/// ```js
 /// var a = true, b = false;
 /// r.expr(a).or(b).run(conn, callback);
 /// // result passed to callback
@@ -5070,7 +5090,7 @@
 /// 
 /// __Example:__ Return whether any of `x`, `y` or `z` evaluate to true.
 /// 
-/// ```rust,norun
+/// ```js
 /// var x = false, y = false, z = false;
 /// r.or(x, y, z).run(conn, callback);
 /// // result passed to callback
@@ -5079,7 +5099,7 @@
 /// 
 /// __Note:__ When using `or` inside a `filter` predicate to test the values of fields that may not exist on the documents being tested, you should use the `default` command with those fields so they explicitly return `false`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').filter(
 ///     r.row('category').default('foo').eq('article').
 ///     or(r.row('genre').default('foo').eq('mystery'))
@@ -5087,7 +5107,7 @@
 /// ```
 
                 pub fn or<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("or", args)
+                    util::make_cmd(self, "or", Type::OR, Some(args))
                 }
             
 
@@ -5096,18 +5116,18 @@
 /// 
 /// __Example:__ See if a user's `role` field is set to `administrator`. 
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').get(1)('role').eq('administrator').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ See if three variables contain equal values.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.eq(a, b, c).run(conn, callback);
 /// ```
 
                 pub fn eq<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("eq", args)
+                    util::make_cmd(self, "eq", Type::EQ, Some(args))
                 }
             
 
@@ -5116,18 +5136,18 @@
 /// 
 /// __Example:__ See if a user's `role` field is not set to `administrator`. 
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').get(1)('role').ne('administrator').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ See if three variables do not contain equal values.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.ne(a, b, c).run(conn, callback);
 /// ```
 
                 pub fn ne<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("ne", args)
+                    util::make_cmd(self, "ne", Type::NE, Some(args))
                 }
             
 
@@ -5136,25 +5156,25 @@
 /// 
 /// __Example:__ Test if a player has scored more than 10 points.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').get(1)('score').gt(10).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Test if variables are ordered from lowest to highest, with no values being equal to one another.
 /// 
-/// ```rust,norun
+/// ```js
 /// var a = 10, b = 20, c = 15;
 /// r.gt(a, b, c).run(conn, callback);
 /// ```
 /// 
 /// This is the equivalent of the following:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.gt(a, b).and(r.gt(b, c)).run(conn, callback);
 /// ```
 
                 pub fn gt<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("gt", args)
+                    util::make_cmd(self, "gt", Type::GT, Some(args))
                 }
             
 
@@ -5163,25 +5183,25 @@
 /// 
 /// __Example:__ Test if a player has scored 10 points or more.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').get(1)('score').ge(10).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Test if variables are ordered from lowest to highest.
 /// 
-/// ```rust,norun
+/// ```js
 /// var a = 10, b = 20, c = 15;
 /// r.ge(a, b, c).run(conn, callback);
 /// ```
 /// 
 /// This is the equivalent of the following:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.ge(a, b).and(r.ge(b, c)).run(conn, callback);
 /// ```
 
                 pub fn ge<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("ge", args)
+                    util::make_cmd(self, "ge", Type::GE, Some(args))
                 }
             
 
@@ -5190,25 +5210,25 @@
 /// 
 /// __Example:__ Test if a player has scored less than 10 points.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').get(1)('score').lt(10).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Test if variables are ordered from highest to lowest, with no values being equal to one another.
 /// 
-/// ```rust,norun
+/// ```js
 /// var a = 20, b = 10,c = 15;
 /// r.lt(a, b, c).run(conn, callback);
 /// ```
 /// 
 /// This is the equivalent of the following:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.lt(a, b).and(r.lt(b, c)).run(conn, callback);
 /// ```
 
                 pub fn lt<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("lt", args)
+                    util::make_cmd(self, "lt", Type::LT, Some(args))
                 }
             
 
@@ -5217,25 +5237,25 @@
 /// 
 /// __Example:__ Test if a player has scored 10 points or less.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').get(1)('score').le(10).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Test if variables are ordered from highest to lowest.
 /// 
-/// ```rust,norun
+/// ```js
 /// var a = 20, b = 10, c = 15;
 /// r.le(a, b, c).run(conn, callback);
 /// ```
 /// 
 /// This is the equivalent of the following:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.le(a, b).and(r.le(b, c)).run(conn, callback);
 /// ```
 
                 pub fn le<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("le", args)
+                    util::make_cmd(self, "le", Type::LE, Some(args))
                 }
             
 
@@ -5246,7 +5266,7 @@
 /// 
 /// __Example:__ Not true is false.
 /// 
-/// ```rust,norun
+/// ```js
 /// r(true).not().run(conn, callback)
 /// r.not(true).run(conn, callback)
 /// ```
@@ -5255,7 +5275,7 @@
 /// 
 /// __Example:__ Return all the users that do not have a "flag" field.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function(user) {
 ///     return user.hasFields('flag').not()
 /// }).run(conn, callback)
@@ -5263,14 +5283,14 @@
 /// 
 /// __Example:__ As above, but prefix-style.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').filter(function(user) {
 ///     return r.not(user.hasFields('flag'))
 /// }).run(conn, callback)
 /// ```
 
                 pub fn not(&self) -> Client {
-                    cmd("not")
+                    util::make_cmd::<Client>(self, "not", Type::NOT, None)
                 }
             
 
@@ -5287,14 +5307,14 @@
 /// 
 /// __Example:__ Generate a random number in the range `[0,1)`
 /// 
-/// ```rust,norun
+/// ```js
 /// r.random().run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Generate a random integer in the range `[0,100)`
 /// 
-/// ```rust,norun
+/// ```js
 /// r.random(100).run(conn, callback)
 /// r.random(0, 100).run(conn, callback)
 /// ```
@@ -5302,13 +5322,13 @@
 /// 
 /// __Example:__ Generate a random number in the range `(-2.24,1.59]`
 /// 
-/// ```rust,norun
+/// ```js
 /// r.random(1.59, -2.24, {float: true}).run(conn, callback)
 /// ```
 /// 
 
                 pub fn random(&self) -> Client {
-                    cmd("random")
+                    util::make_cmd::<Client>(self, "random", Type::RANDOM, None)
                 }
             
 
@@ -5322,7 +5342,7 @@
 /// 
 /// __Example:__ Round 12.345 to the nearest integer.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.round(12.345).run(conn, callback);
 /// // Result passed to callback
 /// 12.0
@@ -5332,7 +5352,7 @@
 /// 
 /// __Example:__ Round -12.345 to the nearest integer.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(-12.345).round().run(conn, callback);
 /// // Result passed to callback
 /// -12.0
@@ -5340,12 +5360,12 @@
 /// 
 /// __Example:__ Return Iron Man's weight, rounded to the nearest integer.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('superheroes').get('ironman')('weight').round().run(conn, callback);
 /// ```
 
                 pub fn round(&self) -> Client {
-                    cmd("round")
+                    util::make_cmd::<Client>(self, "round", Type::ROUND, None)
                 }
             
 
@@ -5354,7 +5374,7 @@
 /// 
 /// __Example:__ Return the ceiling of 12.345.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.ceil(12.345).run(conn, callback);
 /// // Result passed to callback
 /// 13.0
@@ -5364,7 +5384,7 @@
 /// 
 /// __Example:__ Return the ceiling of -12.345.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(-12.345).ceil().run(conn, callback);
 /// // Result passed to callback
 /// -12.0
@@ -5372,12 +5392,12 @@
 /// 
 /// __Example:__ Return Iron Man's weight, rounded up with `ceil`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('superheroes').get('ironman')('weight').ceil().run(conn, callback);
 /// ```
 
                 pub fn ceil(&self) -> Client {
-                    cmd("ceil")
+                    util::make_cmd::<Client>(self, "ceil", Type::CEIL, None)
                 }
             
 
@@ -5386,7 +5406,7 @@
 /// 
 /// __Example:__ Return the floor of 12.345.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.floor(12.345).run(conn, callback);
 /// // Result passed to callback
 /// 12.0
@@ -5396,7 +5416,7 @@
 /// 
 /// __Example:__ Return the floor of -12.345.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(-12.345).floor().run(conn, callback);
 /// // Result passed to callback
 /// -13.0
@@ -5404,12 +5424,12 @@
 /// 
 /// __Example:__ Return Iron Man's weight, rounded down with `floor`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('superheroes').get('ironman')('weight').floor().run(conn, callback);
 /// ```
 
                 pub fn floor(&self) -> Client {
-                    cmd("floor")
+                    util::make_cmd::<Client>(self, "floor", Type::FLOOR, None)
                 }
             
 
@@ -5420,7 +5440,7 @@
 /// 
 /// __Example:__ Add a new user with the time at which he subscribed.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").insert({
 ///     name: "John",
 ///     subscription_date: r.now()
@@ -5429,7 +5449,7 @@
 /// 
 
                 pub fn now(&self) -> Client {
-                    cmd("now")
+                    util::make_cmd::<Client>(self, "now", Type::NOW, None)
                 }
             
 
@@ -5450,12 +5470,12 @@
 /// 
 /// __Example:__ Update the birthdate of the user "John" to November 3rd, 1986 UTC.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')}).run(conn, callback)
 /// ```
 
                 pub fn time<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("time", args)
+                    util::make_cmd(self, "time", Type::TIME, Some(args))
                 }
             
 
@@ -5467,12 +5487,12 @@
 /// 
 /// __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("user").get("John").update({birthdate: r.epochTime(531360000)}).run(conn, callback)
 /// ```
 
                 pub fn epoch_time<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("epoch_time", args)
+                    util::make_cmd(self, "epoch_time", Type::EPOCH_TIME, Some(args))
                 }
             
 
@@ -5485,14 +5505,14 @@
 /// 
 /// __Example:__ Update the time of John's birth.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("user").get("John").update({birth: r.ISO8601('1986-11-03T08:30:00-07:00')}).run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn iso8601<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("iso8601", args)
+                    util::make_cmd(self, "iso8601", Type::ISO8601, Some(args))
                 }
             
 
@@ -5503,14 +5523,14 @@
 /// 
 /// __Example:__ Hour of the day in San Francisco (UTC/GMT -8, without daylight saving time).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.now().inTimezone('-08:00').hours().run(conn, callback)
 /// ```
 /// 
 /// 
 
                 pub fn in_timezone<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("in_timezone", args)
+                    util::make_cmd(self, "in_timezone", Type::IN_TIMEZONE, Some(args))
                 }
             
 
@@ -5519,7 +5539,7 @@
 /// 
 /// __Example:__ Return all the users in the "-07:00" timezone.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter( function(user) {
 ///     return user("subscriptionDate").timezone().eq("-07:00")
 /// })
@@ -5528,7 +5548,7 @@
 /// 
 
                 pub fn timezone(&self) -> Client {
-                    cmd("timezone")
+                    util::make_cmd::<Client>(self, "timezone", Type::TIMEZONE, None)
                 }
             
 
@@ -5540,7 +5560,7 @@
 /// __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 /// (inclusive) and December 10th, 2013 (exclusive).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").filter(
 ///     r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
 /// ).run(conn, callback)
@@ -5550,7 +5570,7 @@
 /// __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 /// (exclusive) and December 10th, 2013 (inclusive).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").filter(
 ///   r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"), {leftBound: "open", rightBound: "closed"})
 /// ).run(conn, callback)
@@ -5558,7 +5578,7 @@
 /// 
 
                 pub fn during<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("during", args)
+                    util::make_cmd(self, "during", Type::DURING, Some(args))
                 }
             
 
@@ -5569,7 +5589,7 @@
 /// 
 /// __Example:__ Retrieve all the users whose birthday is today.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function(user) {
 ///     return user("birthdate").date().eq(r.now().date())
 /// }).run(conn, callback)
@@ -5579,7 +5599,7 @@
 /// 
 /// Note that the [now][] command always returns UTC time, so the comparison may fail if `user("birthdate")` isn't also in UTC. You can use the [inTimezone][itz] command to adjust for this:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function(user) {
 ///     return user("birthdate").date().eq(r.now().inTimezone("-08:00").date())
 /// }).run(conn, callback)
@@ -5589,7 +5609,7 @@
 /// [itz]: /api/javascript/in_timezone/
 
                 pub fn date(&self) -> Client {
-                    cmd("date")
+                    util::make_cmd::<Client>(self, "date", Type::DATE, None)
                 }
             
 
@@ -5598,7 +5618,7 @@
 /// 
 /// __Example:__ Retrieve posts that were submitted before noon.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").filter(
 ///     r.row("date").timeOfDay().le(12*60*60)
 /// ).run(conn, callback)
@@ -5608,7 +5628,7 @@
 /// 
 
                 pub fn time_of_day(&self) -> Client {
-                    cmd("time_of_day")
+                    util::make_cmd::<Client>(self, "time_of_day", Type::TIME_OF_DAY, None)
                 }
             
 
@@ -5617,14 +5637,14 @@
 /// 
 /// __Example:__ Retrieve all the users born in 1986.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function(user) {
 ///     return user("birthdate").year().eq(1986)
 /// }).run(conn, callback)
 /// ```
 
                 pub fn year(&self) -> Client {
-                    cmd("year")
+                    util::make_cmd::<Client>(self, "year", Type::YEAR, None)
                 }
             
 
@@ -5635,7 +5655,7 @@
 /// 
 /// __Example:__ Retrieve all the users who were born in November.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(
 ///     r.row("birthdate").month().eq(11)
 /// )
@@ -5644,7 +5664,7 @@
 /// 
 /// __Example:__ Retrieve all the users who were born in November.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(
 ///     r.row("birthdate").month().eq(r.november)
 /// )
@@ -5652,7 +5672,7 @@
 /// 
 
                 pub fn month(&self) -> Client {
-                    cmd("month")
+                    util::make_cmd::<Client>(self, "month", Type::MONTH, None)
                 }
             
 
@@ -5661,7 +5681,7 @@
 /// 
 /// __Example:__ Return the users born on the 24th of any month.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(
 ///     r.row("birthdate").day().eq(24)
 /// ).run(conn, callback)
@@ -5670,7 +5690,7 @@
 /// 
 
                 pub fn day(&self) -> Client {
-                    cmd("day")
+                    util::make_cmd::<Client>(self, "day", Type::DAY, None)
                 }
             
 
@@ -5681,13 +5701,13 @@
 /// 
 /// __Example:__ Return today's day of week.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.now().dayOfWeek().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Retrieve all the users who were born on a Tuesday.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(
 ///     r.row("birthdate").dayOfWeek().eq(r.tuesday)
 /// )
@@ -5695,7 +5715,7 @@
 /// 
 
                 pub fn day_of_week(&self) -> Client {
-                    cmd("day_of_week")
+                    util::make_cmd::<Client>(self, "day_of_week", Type::DAY_OF_WEEK, None)
                 }
             
 
@@ -5704,7 +5724,7 @@
 /// 
 /// __Example:__ Retrieve all the users who were born the first day of a year.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(
 ///     r.row("birthdate").dayOfYear().eq(1)
 /// )
@@ -5713,7 +5733,7 @@
 /// 
 
                 pub fn day_of_year(&self) -> Client {
-                    cmd("day_of_year")
+                    util::make_cmd::<Client>(self, "day_of_year", Type::DAY_OF_YEAR, None)
                 }
             
 
@@ -5722,7 +5742,7 @@
 /// 
 /// __Example:__ Return all the posts submitted after midnight and before 4am.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").filter(function(post) {
 ///     return post("date").hours().lt(4)
 /// })
@@ -5730,7 +5750,7 @@
 /// 
 
                 pub fn hours(&self) -> Client {
-                    cmd("hours")
+                    util::make_cmd::<Client>(self, "hours", Type::HOURS, None)
                 }
             
 
@@ -5739,7 +5759,7 @@
 /// 
 /// __Example:__ Return all the posts submitted during the first 10 minutes of every hour.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").filter(function(post) {
 ///     return post("date").minutes().lt(10)
 /// })
@@ -5748,7 +5768,7 @@
 /// 
 
                 pub fn minutes(&self) -> Client {
-                    cmd("minutes")
+                    util::make_cmd::<Client>(self, "minutes", Type::MINUTES, None)
                 }
             
 
@@ -5759,7 +5779,7 @@
 /// 
 /// __Example:__ Return the post submitted during the first 30 seconds of every minute.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").filter(function(post) {
 ///     return post("date").seconds().lt(30)
 /// })
@@ -5767,7 +5787,7 @@
 /// 
 
                 pub fn seconds(&self) -> Client {
-                    cmd("seconds")
+                    util::make_cmd::<Client>(self, "seconds", Type::SECONDS, None)
                 }
             
 
@@ -5776,7 +5796,7 @@
 /// 
 /// __Example:__ Return the current ISO 8601 time.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.now().toISO8601().run(conn, callback)
 /// // Result passed to callback
 /// "2015-04-20T18:37:52.690+00:00"
@@ -5784,7 +5804,7 @@
 /// 
 
                 pub fn to_iso8601(&self) -> Client {
-                    cmd("to_iso8601")
+                    util::make_cmd::<Client>(self, "to_iso8601", Type::TO_ISO8601, None)
                 }
             
 
@@ -5793,14 +5813,14 @@
 /// 
 /// __Example:__ Return the current time in seconds since the Unix Epoch with millisecond-precision.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.now().toEpochTime()
 /// ```
 /// 
 /// 
 
                 pub fn to_epoch_time(&self) -> Client {
-                    cmd("to_epoch_time")
+                    util::make_cmd::<Client>(self, "to_epoch_time", Type::TO_EPOCH_TIME, None)
                 }
             
 
@@ -5821,7 +5841,7 @@
 /// 
 /// __Example:__ Save an avatar image to a existing user record.
 /// 
-/// ```rust,norun
+/// ```js
 /// var fs = require('fs');
 /// fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
 ///     if (err) {
@@ -5837,7 +5857,7 @@
 /// 
 /// __Example:__ Get the size of an existing avatar image.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('users').get(100)('avatar').count().run(conn, callback);
 /// // result returned to callback
 /// 14156
@@ -5846,7 +5866,7 @@
 /// Read more details about RethinkDB's binary object support: [Storing binary objects](/docs/storing-binary/).
 
                 pub fn binary<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("binary", args)
+                    util::make_cmd(self, "binary", Type::BINARY, Some(args))
                 }
             
 
@@ -5859,7 +5879,7 @@
 /// 
 /// __Example:__ Compute a golfer's net score for a game.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do(
 ///     function (player) {
 ///         return player('gross_score').sub(player('course_handicap'));
@@ -5869,7 +5889,7 @@
 /// 
 /// __Example:__ Return the best scoring player in a two-player golf match.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.do(r.table('players').get(id1), r.table('players').get(id2),
 ///     function (player1, player2) {
 ///         return r.branch(player1('gross_score').lt(player2('gross_score')),
@@ -5882,7 +5902,7 @@
 /// 
 /// __Example:__ Take different actions based on the result of a ReQL [insert](/api/javascript/insert) command.
 /// 
-/// ```rust,norun
+/// ```js
 /// var newData = {
 ///     id: 100,
 ///     name: 'Agatha',
@@ -5899,7 +5919,7 @@
 /// ```
 
                 pub fn do_<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("do_", args)
+                    util::make_cmd(self, "do_", Type::FUNCALL, Some(args))
                 }
             
 
@@ -5918,7 +5938,7 @@
 /// 
 /// is the equivalent of the JavaScript statement
 /// 
-/// ```rust,norun
+/// ```js
 /// if (test1) {
 ///     return val1;
 /// } else if (test2) {
@@ -5930,7 +5950,7 @@
 /// 
 /// __Example:__ Test the value of x.
 /// 
-/// ```rust,norun
+/// ```js
 /// var x = 10;
 /// r.branch(r.expr(x).gt(5), 'big', 'small').run(conn, callback);
 /// // Result passed to callback
@@ -5939,7 +5959,7 @@
 /// 
 /// __Example:__ As above, infix-style.
 /// 
-/// ```rust,norun
+/// ```js
 /// var x = 10;
 /// r.expr(x).gt(5).branch('big', 'small').run(conn, callback);
 /// // Result passed to callback
@@ -5948,7 +5968,7 @@
 /// 
 /// __Example:__ Categorize heroes by victory counts.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').map(
 ///     r.branch(
 ///         r.row('victories').gt(100),
@@ -5962,7 +5982,7 @@
 /// 
 /// If the documents in the table `marvel` are:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     { name: "Iron Man", victories: 214 },
 ///     { name: "Jubilee", victories: 49 },
@@ -5972,7 +5992,7 @@
 /// 
 /// The results will be:
 /// 
-/// ```rust,norun
+/// ```js
 /// [
 ///     "Iron Man is a superhero",
 ///     "Jubilee is a hero",
@@ -5981,7 +6001,7 @@
 /// ```
 
                 pub fn branch<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("branch", args)
+                    util::make_cmd(self, "branch", Type::BRANCH, Some(args))
                 }
             
 
@@ -5990,14 +6010,14 @@
 /// 
 /// __Example:__ Now that our heroes have defeated their villains, we can safely remove them from the villain table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').forEach(function(hero) {
 ///     return r.table('villains').get(hero('villainDefeated')).delete()
 /// }).run(conn, callback)
 /// ```
 
                 pub fn for_each<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("for_each", args)
+                    util::make_cmd(self, "for_each", Type::FOR_EACH, Some(args))
                 }
             
 
@@ -6016,7 +6036,7 @@
 /// 
 /// __Example:__ Return a four-element range of `[0, 1, 2, 3]`.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.range(4).run(conn, callback)
 /// // result returned to callback
 /// [0, 1, 2, 3]
@@ -6026,7 +6046,7 @@
 /// 
 /// You can also use the [limit](/api/javascript/limit) command with the no-argument variant to achieve the same result in this case:
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.range().limit(4).run(conn, callback)
 /// // result returned to callback
 /// [0, 1, 2, 3]
@@ -6034,14 +6054,14 @@
 /// 
 /// __Example:__ Return a range from -5 through 5.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.range(-5, 6).run(conn, callback)
 /// // result returned to callback
 /// [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 /// ```
 
                 pub fn range(&self) -> Client {
-                    cmd("range")
+                    util::make_cmd::<Client>(self, "range", Type::RANGE, None)
                 }
             
 
@@ -6052,7 +6072,7 @@
 /// 
 /// __Example:__ Iron Man can't possibly have lost a battle:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').get('IronMan').do(function(ironman) {
 ///     return r.branch(ironman('victories').lt(ironman('battles')),
 ///         r.error('impossible code path'),
@@ -6063,7 +6083,7 @@
 /// 
 
                 pub fn error<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("error", args)
+                    util::make_cmd(self, "error", Type::ERROR, Some(args))
                 }
             
 
@@ -6076,7 +6096,7 @@
 /// In the case where the author field is missing or `null`, we want to retrieve the string
 /// `Anonymous`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").map(function (post) {
 ///     return {
 ///         title: post("title"),
@@ -6089,7 +6109,7 @@
 /// 
 /// We can rewrite the previous query with `r.branch` too.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").map(function (post) {
 ///     return r.branch(
 ///         post.hasFields("author"),
@@ -6108,7 +6128,7 @@
 /// __Example:__ The `default` command can also be used to filter documents. Retrieve all our users who are not grown-ups or whose age is unknown
 /// (i.e., the field `age` is missing or equals `null`).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function (user) {
 ///     return user("age").lt(18).default(true)
 /// }).run(conn, callback);
@@ -6117,7 +6137,7 @@
 /// One more way to write the previous query is to set the age to be `-1` when the
 /// field is missing.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function (user) {
 ///     return user("age").default(-1).lt(18)
 /// }).run(conn, callback);
@@ -6125,7 +6145,7 @@
 /// 
 /// This can be accomplished with [hasFields](/api/javascript/has_fields/) rather than `default`.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function (user) {
 ///     return user.hasFields("age").not().or(user("age").lt(18))
 /// }).run(conn, callback);
@@ -6133,7 +6153,7 @@
 /// 
 /// The body of every [filter](/api/javascript/filter/) is wrapped in an implicit `.default(false)`. You can overwrite the value `false` with the `default` option.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("users").filter(function (user) {
 ///     return user("age").lt(18)
 /// }, {default: true} ).run(conn, callback);
@@ -6141,7 +6161,7 @@
 /// 
 /// __Example:__ The function form of `default` receives the error message as its argument.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table("posts").map(function (post) {
 ///     return {
 ///         title: post("title"),
@@ -6155,7 +6175,7 @@
 /// This particular example simply returns the error message, so it isn't very useful. But it would be possible to change the default value based on the specific error message thrown.
 
                 pub fn default<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("default", args)
+                    util::make_cmd(self, "default", Type::DEFAULT, Some(args))
                 }
             
 
@@ -6166,20 +6186,20 @@
 /// 
 /// __Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ In JavaScript, you can also do this with just r.
 /// 
-/// ```rust,norun
+/// ```js
 /// r({a: 'b'}).merge({b: [1,2,3]}).run(conn, callback)
 /// ```
 /// 
 
                 pub fn expr<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("expr", args)
+                    util::make_cmd(self, "expr", Type::EXPR, Some(args))
                 }
             
 
@@ -6194,13 +6214,13 @@
 /// 
 /// __Example:__ Concatenate two strings using JavaScript.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.js("'str1' + 'str2'").run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Select all documents where the 'magazines' field is greater than 5 by running JavaScript on the server.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').filter(
 ///     r.js('(function (row) { return row.magazines.length > 5; })')
 /// ).run(conn, callback)
@@ -6209,13 +6229,13 @@
 /// 
 /// __Example:__ You may also specify a timeout in seconds (defaults to 5).
 /// 
-/// ```rust,norun
+/// ```js
 /// r.js('while(true) {}', {timeout:1.3}).run(conn, callback)
 /// ```
 /// 
 
                 pub fn js<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("js", args)
+                    util::make_cmd(self, "js", Type::JAVASCRIPT, Some(args))
                 }
             
 
@@ -6230,7 +6250,7 @@
 /// 
 /// __Example:__ Coerce a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').map(function (post) {
 ///     return post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
 /// }).run(conn, callback)
@@ -6239,7 +6259,7 @@
 /// __Example:__ Coerce an array of key-value pairs into an object.
 /// 
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([['name', 'Ironman'], ['victories', 2000]]).coerceTo('object').run(conn, callback)
 /// ```
 /// 
@@ -6247,12 +6267,12 @@
 /// 
 /// __Example:__ Coerce a number to a string.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr(1).coerceTo('string').run(conn, callback)
 /// ```
 
                 pub fn coerce_to<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("coerce_to", args)
+                    util::make_cmd(self, "coerce_to", Type::COERCE_TO, Some(args))
                 }
             
 
@@ -6287,14 +6307,14 @@
 /// 
 /// __Example:__ Get the type of a string.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr("foo").typeOf().run(conn, callback);
 /// // Result passed to callback
 /// "STRING"
 /// ```
 
                 pub fn type_of(&self) -> Client {
-                    cmd("type_of")
+                    util::make_cmd::<Client>(self, "type_of", Type::TYPE_OF, None)
                 }
             
 
@@ -6303,12 +6323,12 @@
 /// 
 /// __Example:__ Get information about a table such as primary key, or cache size.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('marvel').info().run(conn, callback)
 /// ```
 
                 pub fn info(&self) -> Client {
-                    cmd("info")
+                    util::make_cmd::<Client>(self, "info", Type::INFO, None)
                 }
             
 
@@ -6317,12 +6337,12 @@
 /// 
 /// __Example:__ Send an array to the server.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.json("[1,2,3]").run(conn, callback)
 /// ```
 
                 pub fn json<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("json", args)
+                    util::make_cmd(self, "json", Type::JSON, Some(args))
                 }
             
 
@@ -6333,14 +6353,14 @@
 /// 
 /// __Example:__ Get a ReQL document as a JSON string.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('hero').get(1).toJSON()
 /// // result returned to callback
 /// '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
 /// ```
 
                 pub fn to_json<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("to_json", args)
+                    util::make_cmd(self, "to_json", Type::TO_JSON_STRING, Some(args))
                 }
             
 
@@ -6351,7 +6371,7 @@
 /// 
 /// __Example:__ Perform an HTTP `GET` and store the result in a table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn, callback)
 /// ```
 /// 
@@ -6393,7 +6413,7 @@
 /// 
 /// __Example:__ Perform multiple requests with different parameters.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.expr([1, 2, 3]).map(function(i) {
 ///     return r.http('http://httpbin.org/get', { params: { user: i } });
 /// }).run(conn, callback)
@@ -6401,7 +6421,7 @@
 /// 
 /// __Example:__ Perform a `PUT` request for each item in a table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('data').map(function(row) {
 ///     return r.http('http://httpbin.org/put', { method: 'PUT', data: row });
 /// }).run(conn, callback)
@@ -6411,7 +6431,7 @@
 /// 
 /// Using form-encoded data:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.http('http://httpbin.org/post',
 ///        { method: 'POST', data: { player: 'Bob', game: 'tic tac toe' } })
 /// .run(conn, callback)
@@ -6419,7 +6439,7 @@
 /// 
 /// Using JSON data:
 /// 
-/// ```rust,norun
+/// ```js
 /// r.http('http://httpbin.org/post',
 ///        { method: 'POST',
 ///          data: r.expr(value).coerceTo('string'),
@@ -6441,7 +6461,7 @@
 /// 
 /// __Example:__ Perform a GitHub search and collect up to 3 pages of results.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.http("https://api.github.com/search/code?q=addClass+user:mozilla",
 ///        { page: 'link-next', pageLimit: 3 }
 /// ).run(conn, callback)
@@ -6449,7 +6469,7 @@
 /// 
 /// As a function, `page` takes one parameter, an object of the format:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     params: object // the URL parameters used in the last request
 ///     header: object // the HTTP headers of the last response as key/value pairs
@@ -6459,7 +6479,7 @@
 /// 
 /// The `header` field will be a parsed version of the header with fields lowercased, like so:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     'content-length': '1024',
 ///     'content-type': 'application/json',
@@ -6473,7 +6493,7 @@
 /// 
 /// The `page` function may return a string corresponding to the next URL to request, `null` indicating that there is no more to get, or an object of the format:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     url: string // the next URL to request, or null for no more pages
 ///     params: object // new URL parameters to use, will be merged with the previous request's params
@@ -6482,7 +6502,7 @@
 /// 
 /// __Example:__ Perform depagination with a custom `page` function.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.http('example.com/pages',
 ///        { page: function(info) { return info('body')('meta')('next').default(null); },
 ///          pageLimit: 5 })
@@ -6494,7 +6514,7 @@
 /// See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
 
                 pub fn http<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("http", args)
+                    util::make_cmd(self, "http", Type::HTTP, Some(args))
                 }
             
 
@@ -6509,7 +6529,7 @@
 /// 
 /// __Example:__ Generate a UUID.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.uuid().run(conn, callback)
 /// // result returned to callback
 /// "27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
@@ -6517,14 +6537,14 @@
 /// 
 /// __Example:__ Generate a UUID based on a string.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.uuid("slava@example.com").run(conn, callback)
 /// // Result passed to callback
 /// "90691cbc-b5ea-5826-ae98-951e30fc3b2d"
 /// ```
 
                 pub fn uuid(&self) -> Client {
-                    cmd("uuid")
+                    util::make_cmd::<Client>(self, "uuid", Type::UUID, None)
                 }
             
 
@@ -6546,7 +6566,7 @@
 /// 
 /// __Example:__ Define a circle.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('geo').insert({
 ///     id: 300,
 ///     name: 'Hayes Valley',
@@ -6555,7 +6575,7 @@
 /// ```
 
                 pub fn circle<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("circle", args)
+                    util::make_cmd(self, "circle", Type::CIRCLE, Some(args))
                 }
             
 
@@ -6574,7 +6594,7 @@
 /// 
 /// __Example:__ Compute the distance between two points on the Earth in kilometers.
 /// 
-/// ```rust,norun
+/// ```js
 /// var point1 = r.point(-122.423246,37.779388);
 /// var point2 = r.point(-117.220406,32.719464);
 /// r.distance(point1, point2, {unit: 'km'}).run(conn, callback);
@@ -6583,7 +6603,7 @@
 /// ```
 
                 pub fn distance<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("distance", args)
+                    util::make_cmd(self, "distance", Type::DISTANCE, Some(args))
                 }
             
 
@@ -6599,7 +6619,7 @@
 /// 
 /// __Example:__ Create a line object and then convert it to a polygon.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('geo').insert({
 ///     id: 201,
 ///     rectangle: r.line(
@@ -6616,7 +6636,7 @@
 /// ```
 
                 pub fn fill(&self) -> Client {
-                    cmd("fill")
+                    util::make_cmd::<Client>(self, "fill", Type::FILL, None)
                 }
             
 
@@ -6631,7 +6651,7 @@
 /// 
 /// __Example:__ Convert a GeoJSON object to a ReQL geometry object.
 /// 
-/// ```rust,norun
+/// ```js
 /// var geoJson = {
 ///     'type': 'Point',
 ///     'coordinates': [ -122.423246, 37.779388 ]
@@ -6644,7 +6664,7 @@
 /// ```
 
                 pub fn geojson<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("geojson", args)
+                    util::make_cmd(self, "geojson", Type::GEOJSON, Some(args))
                 }
             
 
@@ -6655,7 +6675,7 @@
 /// 
 /// __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('geo').get('sfo')('location').toGeojson.run(conn, callback);
 /// // result passed to callback
 /// {
@@ -6665,7 +6685,7 @@
 /// ```
 
                 pub fn to_geojson(&self) -> Client {
-                    cmd("to_geojson")
+                    util::make_cmd::<Client>(self, "to_geojson", Type::TO_GEOJSON, None)
                 }
             
 
@@ -6676,13 +6696,13 @@
 /// 
 /// __Example:__ Which of the locations in a list of parks intersect `circle1`?
 /// 
-/// ```rust,norun
+/// ```js
 /// var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 /// r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 /// ```
 
                 pub fn get_intersecting<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("get_intersecting", args)
+                    util::make_cmd(self, "get_intersecting", Type::GET_INTERSECTING, Some(args))
                 }
             
 
@@ -6700,7 +6720,7 @@
 /// 
 /// __Example:__ Return a list of the closest 25 enemy hideouts to the secret base.
 /// 
-/// ```rust,norun
+/// ```js
 /// var secretBase = r.point(-122.422876,37.777128);
 /// r.table('hideouts').getNearest(secretBase,
 ///     {index: 'location', maxResults: 25}
@@ -6717,7 +6737,7 @@
 /// {% endinfobox %}
 
                 pub fn get_nearest<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("get_nearest", args)
+                    util::make_cmd(self, "get_nearest", Type::GET_NEAREST, Some(args))
                 }
             
 
@@ -6729,7 +6749,7 @@
 /// 
 /// __Example:__ Is `point2` included within a 2000-meter circle around `point1`?
 /// 
-/// ```rust,norun
+/// ```js
 /// var point1 = r.point(-117.220406,32.719464);
 /// var point2 = r.point(-117.206201,32.725186);
 /// r.circle(point1, 2000).includes(point2).run(conn, callback);
@@ -6739,7 +6759,7 @@
 /// 
 /// __Example:__ Which of the locations in a list of parks include `circle1`?
 /// 
-/// ```rust,norun
+/// ```js
 /// var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 /// r.table('parks')('area').includes(circle1).run(conn, callback);
 /// ```
@@ -6750,14 +6770,14 @@
 /// 
 /// __Example:__ Rewrite the previous example with `getIntersecting`.
 /// 
-/// ```rust,norun
+/// ```js
 /// var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 /// r.table('parks').getIntersecting(circle1, {index: 'area'})('area').
 ///     includes(circle1).run(conn, callback);
 /// ```
 
                 pub fn includes<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("includes", args)
+                    util::make_cmd(self, "includes", Type::INCLUDES, Some(args))
                 }
             
 
@@ -6768,7 +6788,7 @@
 /// 
 /// __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 /// 
-/// ```rust,norun
+/// ```js
 /// var point1 = r.point(-117.220406,32.719464);
 /// var point2 = r.point(-117.206201,32.725186);
 /// r.circle(point1, 2000).intersects(point2).run(conn, callback);
@@ -6778,7 +6798,7 @@
 /// 
 /// __Example:__ Which of the locations in a list of parks intersect `circle1`?
 /// 
-/// ```rust,norun
+/// ```js
 /// var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 /// r.table('parks')('area').intersects(circle1).run(conn, callback);
 /// ```
@@ -6788,7 +6808,7 @@
 /// {% endinfobox %}
 
                 pub fn intersects<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("intersects", args)
+                    util::make_cmd(self, "intersects", Type::INTERSECTS, Some(args))
                 }
             
 
@@ -6806,7 +6826,7 @@
 /// 
 /// __Example:__ Define a line.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('geo').insert({
 ///     id: 101,
 ///     route: r.line([-122.423246,37.779388], [-121.886420,37.329898])
@@ -6817,7 +6837,7 @@
 /// 
 /// You can use the [args](/api/javascript/args) command to pass an array of Point objects (or latitude-longitude pairs) to `line`.
 /// 
-/// ```rust,norun
+/// ```js
 /// var route = [
 ///     [-122.423246,37.779388],
 ///     [-121.886420,37.329898]
@@ -6829,7 +6849,7 @@
 /// ```
 
                 pub fn line<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("line", args)
+                    util::make_cmd(self, "line", Type::LINE, Some(args))
                 }
             
 
@@ -6840,7 +6860,7 @@
 /// 
 /// __Example:__ Define a point.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('geo').insert({
 ///     id: 1,
 ///     name: 'San Francisco',
@@ -6849,7 +6869,7 @@
 /// ```
 
                 pub fn point<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("point", args)
+                    util::make_cmd(self, "point", Type::POINT, Some(args))
                 }
             
 
@@ -6870,7 +6890,7 @@
 /// 
 /// __Example:__ Define a polygon.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('geo').insert({
 ///     id: 101,
 ///     rectangle: r.polygon(
@@ -6886,7 +6906,7 @@
 /// 
 /// You can use the [args](/api/javascript/args) command to pass an array of Point objects (or latitude-longitude pairs) to `polygon`.
 /// 
-/// ```rust,norun
+/// ```js
 /// var vertices = [
 ///     [-122.423246,37.779388],
 ///     [-122.423246,37.329898],
@@ -6900,7 +6920,7 @@
 /// ```
 
                 pub fn polygon<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("polygon", args)
+                    util::make_cmd(self, "polygon", Type::POLYGON, Some(args))
                 }
             
 
@@ -6912,7 +6932,7 @@
 /// 
 /// __Example:__ Define a polygon with a hole punched in it.
 /// 
-/// ```rust,norun
+/// ```js
 /// var outerPolygon = r.polygon(
 ///     [-122.4,37.7],
 ///     [-122.4,37.3],
@@ -6929,7 +6949,7 @@
 /// ```
 
                 pub fn polygon_sub<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("polygon_sub", args)
+                    util::make_cmd(self, "polygon_sub", Type::POLYGON_SUB, Some(args))
                 }
             
 
@@ -6950,7 +6970,7 @@
 /// 
 /// The `grant` command returns an object of the following form:
 /// 
-/// ```rust,norunon
+/// ```json
 /// {
 ///     "granted": 1,
 ///     "permissions_changes": [
@@ -6975,7 +6995,7 @@
 /// 
 /// __Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('users').grant('chatapp', {read: true, write: true}).run(conn, callback);
 /// 
 /// // Result passed to callback
@@ -6991,7 +7011,7 @@
 /// 
 /// __Example:__ Deny write permissions from the `chatapp` account for the `admin` table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('users').table('admin').grant('chatapp', {write: false}).run(conn, callback);
 /// ```
 /// 
@@ -6999,7 +7019,7 @@
 /// 
 /// __Example:__ Delete a table-level permission for the `chatapp` account.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.db('users').table('admin').grant('chatapp', {write: null}).run(conn, callback);
 /// ```
 /// 
@@ -7007,7 +7027,7 @@
 /// 
 /// __Example:__ Grant `chatapp` the ability to use HTTP connections.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.grant('chatapp', {connect: true}).run(conn, callback);
 /// ```
 /// 
@@ -7016,12 +7036,12 @@
 /// 
 /// __Example:__ Grant a `monitor` account read-only access to all databases.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.grant('monitor', {read: true}).run(conn, callback);
 /// ```
 
                 pub fn grant(&self) -> Client {
-                    cmd("grant")
+                    util::make_cmd::<Client>(self, "grant", Type::GRANT, None)
                 }
             
 
@@ -7032,7 +7052,7 @@
 /// 
 /// __Example:__ Get the configuration for the `users` table.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('users').config().run(conn, callback);
 /// ```
 /// 
@@ -7040,7 +7060,7 @@
 /// 
 /// Example return:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///     "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
 ///     "name": "users",
@@ -7066,12 +7086,12 @@
 /// 
 /// __Example:__ Change the write acknowledgement requirement of the `users` table.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('users').config().update({write_acks: 'single'}).run(conn, callback);
 /// ```
 
                 pub fn config(&self) -> Client {
-                    cmd("config")
+                    util::make_cmd::<Client>(self, "config", Type::CONFIG, None)
                 }
             
 
@@ -7103,7 +7123,7 @@
 /// 
 /// __Example:__ Rebalance a table.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('superheroes').rebalance().run(conn, callback);
 /// ```
 /// 
@@ -7111,7 +7131,7 @@
 /// 
 /// Example return:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///   "rebalanced": 1,
 ///   "status_changes": [
@@ -7185,7 +7205,7 @@
 /// ```
 
                 pub fn rebalance(&self) -> Client {
-                    cmd("rebalance")
+                    util::make_cmd::<Client>(self, "rebalance", Type::REBALANCE, None)
                 }
             
 
@@ -7224,7 +7244,7 @@
 /// 
 /// __Example:__ Reconfigure a table.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
 /// ```
 /// 
@@ -7232,7 +7252,7 @@
 /// 
 /// Example return:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///   "reconfigured": 1,
 ///   "config_changes": [
@@ -7285,7 +7305,7 @@
 /// 
 /// __Example:__ Reconfigure a table, specifying replicas by server tags.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('superheroes').reconfigure({shards: 2, replicas: {wooster: 1, wayne: 1}, primaryReplicaTag: 'wooster'}).run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -7370,14 +7390,14 @@
 /// 
 /// __Example:__ Perform an emergency repair on a table.
 /// 
-/// ```rust,norun
+/// ```js
 /// r.table('superheroes').reconfigure(
 ///   {emergencyRepair: "unsafe_rollback"}
 /// ).run(conn, callback);
 /// ```
 
                 pub fn reconfigure<T: ToArg>(&self, args: T) -> Client {
-                    cmd_with_args("reconfigure", args)
+                    util::make_cmd(self, "reconfigure", Type::RECONFIGURE, Some(args))
                 }
             
 
@@ -7396,7 +7416,7 @@
 /// 
 /// __Example:__ Get a table's status.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('superheroes').status().run(conn, callback);
 /// ```
 /// 
@@ -7404,7 +7424,7 @@
 /// 
 /// Example return:
 /// 
-/// ```rust,norun
+/// ```js
 /// {
 ///   "db": "database",
 ///   "id": "5cb35225-81b2-4cec-9eef-bfad15481265",
@@ -7439,7 +7459,7 @@
 /// ```
 
                 pub fn status(&self) -> Client {
-                    cmd("status")
+                    util::make_cmd::<Client>(self, "status", Type::STATUS, None)
                 }
             
 
@@ -7461,14 +7481,14 @@
 /// 
 /// __Example:__ Wait on a table to be ready.
 /// 
-/// ```rust,norun
+/// ```js
 /// > r.table('superheroes').wait().run(conn, callback);
 /// // Result passed to callback
 /// { "ready": 1 }
 /// ```
 
                 pub fn wait(&self) -> Client {
-                    cmd("wait")
+                    util::make_cmd::<Client>(self, "wait", Type::WAIT, None)
                 }
             
             }

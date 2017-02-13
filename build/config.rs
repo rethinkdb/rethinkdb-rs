@@ -89,7 +89,7 @@ impl Config {
             })
         // Drop blacklisted commands
         .filter(|command| {
-            let blacklist = vec!["args", "use", "row"];
+            let blacklist = vec!["r", "args", "use", "row"];
             for cmd in blacklist {
                 if cmd == command.permalink {
                     return false;
@@ -109,7 +109,7 @@ impl Config {
         })
         // Rename commands
         .map(|mut command| {
-            let names = vec![("to_json_string", "to_json"), ("r", "new")];
+            let names = vec![("to_json_string", "to_json")];
             for (old, new) in names {
                 if old == command.permalink {
                     command.method = Some(new.into());

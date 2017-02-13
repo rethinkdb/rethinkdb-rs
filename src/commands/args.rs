@@ -196,58 +196,6 @@ impl Arg {
     }
 }
 
-impl Client {
-    /// Creates a new command
-    ///
-    /// This is typically called `r`.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// # #![allow(unused_must_use)]
-    /// # extern crate reql;
-    /// # use reql::Client;
-    /// # use reql::commands::*;
-    /// # fn main() {
-    /// let r = Client::new();
-    /// r.table("users");
-    /// # }
-    /// ```
-    pub fn new() -> Client {
-        Client {
-            term: Term::new(),
-            query: String::from("r"),
-            logger: Logger::root(::slog::Discard, o!()),
-        }
-    }
-
-    /// Sets a logger
-    pub fn with_logger(&self, logger: Logger) -> Client {
-        let mut cmd = self.clone();
-        cmd.logger = logger;
-        cmd
-    }
-
-    pub fn query(&self) -> &str {
-        &self.query
-    }
-
-    #[doc(hidden)]
-    pub fn term(&self) -> &Term {
-        &self.term
-    }
-
-    #[doc(hidden)]
-    pub fn mut_term(&mut self) -> &mut Term {
-        &mut self.term
-    }
-
-    #[doc(hidden)]
-    pub fn set_term(&mut self, term: Term) {
-        self.term = term;
-    }
-}
-
 impl Args {
     #[doc(hidden)]
     pub fn new() -> Args {

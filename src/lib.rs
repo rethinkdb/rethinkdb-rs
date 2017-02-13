@@ -13,7 +13,7 @@ extern crate slog;
 #[macro_use]
 mod macros;
 mod types;
-pub mod commands;
+mod commands;
 pub mod errors;
 
 #[doc(hidden)]
