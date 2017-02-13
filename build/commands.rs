@@ -8,6 +8,7 @@ use config;
 pub struct Commands {
     header: String,
     commands: Vec<String>,
+    menu: Vec<config::Command>,
 }
 
 #[derive(Debug, Clone)]
@@ -18,10 +19,11 @@ pub struct Command {
 }
 
 impl Commands {
-    pub fn new() -> Commands {
+    pub fn new(menu: &[config::Command]) -> Commands {
         Commands {
             header: Self::header(),
             commands: Vec::new(),
+            menu: menu.to_owned(),
         }
     }
 
@@ -152,7 +154,7 @@ impl Command {
                 if line.contains(&cmd) {
                     no_args = true;
                 }
-                line.replace("/assets/images/", "https://rethinkdb.com/assets/images/")
+                self.cleanup(line)
             })
             // We will only consider docs after the description
             .filter(|line| {
@@ -203,5 +205,15 @@ impl Command {
         }
 
         (no_args, doc_str)
+    }
+
+    fn cleanup(&self, commands: &str) -> String {
+        commands.lines()
+            .map(|line| {
+                line.replace("/assets/images/", "https://rethinkdb.com/assets/images/")
+                    .replace("```js", "```rust,norun")
+                    .replace("var r = require('rethinkdb');", "let r = Client::new();")
+            })
+            .collect()
     }
 }

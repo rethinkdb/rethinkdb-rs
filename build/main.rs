@@ -1,3 +1,4 @@
+extern crate regex;
 extern crate serde;
 extern crate serde_yaml;
 #[macro_use] extern crate serde_derive;
@@ -10,7 +11,7 @@ use commands::{Commands, Command};
 
 fn main() {
     let cfg = Config::new();
-    let mut commands = Commands::new();
+    let mut commands = Commands::new(&cfg.menu);
 
     for item in cfg.menu {
         let dir = format!("{}/{}", cfg.docs_dir.display(), item.section);
