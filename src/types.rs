@@ -1,10 +1,7 @@
 //! The ReQL data types
 
-use ql2::proto::{Term, Datum,
-    Term_TermType as TermType,
-    Term_AssocPair as TermPair,
-    Datum_DatumType as DatumType,
-    Datum_AssocPair as DatumPair};
+use ql2::proto::{Term, Datum, Term_TermType as TermType, Term_AssocPair as TermPair,
+                 Datum_DatumType as DatumType, Datum_AssocPair as DatumPair};
 use serde_json::value::{Value, ToJson};
 use protobuf::repeated::RepeatedField;
 use protobuf::ProtobufEnum;
@@ -53,7 +50,7 @@ pub trait FromJson {
                                 obj.set_val(Term::from_json(arg).take_datum());
                                 obj
                             })
-                        .collect();
+                            .collect();
                         let obj = RepeatedField::from_vec(args);
                         datum.set_r_object(obj);
                     }
@@ -75,7 +72,7 @@ pub trait FromJson {
     }
 }
 
-impl FromJson for Term { }
+impl FromJson for Term {}
 
 trait IsDatum {
     fn is_datum(&self) -> bool;
@@ -116,18 +113,10 @@ impl Encode for Vec<TermPair> {
 impl Encode for Datum {
     fn encode(&self) -> String {
         match self.get_field_type() {
-            DatumType::R_NULL => {
-                String::from("null")
-            },
-            DatumType::R_BOOL => {
-                format!("{}", self.get_r_bool())
-            },
-            DatumType::R_NUM => {
-                format!("{}", self.get_r_num())
-            },
-            DatumType::R_STR => {
-                format!("\"{}\"", self.get_r_str())
-            },
+            DatumType::R_NULL => String::from("null"),
+            DatumType::R_BOOL => format!("{}", self.get_r_bool()),
+            DatumType::R_NUM => format!("{}", self.get_r_num()),
+            DatumType::R_STR => format!("\"{}\"", self.get_r_str()),
             DatumType::R_ARRAY => {
                 let mut args = format!("[{},[", TermType::MAKE_ARRAY.value());
                 for term in self.get_r_array() {
@@ -136,7 +125,7 @@ impl Encode for Datum {
                 args = args.trim_right_matches(",").to_string();
                 args.push_str("]]");
                 args
-            },
+            }
             DatumType::R_OBJECT => {
                 let mut args = String::from("{");
                 for term in self.get_r_object() {
@@ -145,10 +134,10 @@ impl Encode for Datum {
                 args = args.trim_right_matches(",").to_string();
                 args.push_str("}");
                 args
-            },
+            }
             DatumType::R_JSON => {
                 unimplemented!();
-            },
+            }
         }
     }
 }

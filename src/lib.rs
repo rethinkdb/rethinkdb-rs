@@ -81,7 +81,7 @@ struct ClusterConfig(Vec<Cluster>);
 
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-struct DataCentre(/* Vec<r2d2::Pool<ConnectionManager>> */);
+struct DataCentre();
 
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]

@@ -36,7 +36,7 @@ pub struct Command {
 
 impl Config {
     pub fn new() -> Config {
-        let lang = "java";
+        let lang = "javascript";
 
         let root_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
         let docs_dir = format!("{}/build/docs/api/{}", root_dir, lang);
@@ -89,7 +89,7 @@ impl Config {
             })
         // Drop blacklisted commands
         .filter(|command| {
-            let blacklist = vec!["r", "use", "row"];
+            let blacklist = vec!["args", "use", "row"];
             for cmd in blacklist {
                 if cmd == command.permalink {
                     return false;
@@ -107,12 +107,12 @@ impl Config {
             }
             command
         })
-        // Shorten commands
+        // Rename commands
         .map(|mut command| {
-            let names = vec![("to_json_string", "to_json")];
-            for (long, short) in names {
-                if long == command.permalink {
-                    command.method = Some(short.into());
+            let names = vec![("to_json_string", "to_json"), ("r", "new")];
+            for (old, new) in names {
+                if old == command.permalink {
+                    command.method = Some(new.into());
                 }
             }
             command

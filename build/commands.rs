@@ -3,7 +3,6 @@ use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
 use config;
-use unindent::unindent;
 
 #[derive(Debug, Clone)]
 pub struct Commands {
@@ -32,7 +31,8 @@ impl Commands {
 
         format!(r#"
             // AUTO GENERATED
-            // Edit in `build/commands.rs` instead
+            // Manually changes made to this file will be overwritten by the build script.
+            // Edit `build/commands.rs` instead...
 
             /*
             mod args;
@@ -46,9 +46,7 @@ impl Commands {
             use ql2::proto::Term;
             use protobuf::repeated::RepeatedField;
             use ql2::proto::Term_TermType;
-
             {}
-            
             {}
         "#, cmd, cmd_with_args)
     }
@@ -63,14 +61,13 @@ impl Commands {
 
         let src = format!(r#"
             {}
-
             impl Client {{
                 {}
             }}
         "#, header, commands);
 
         let mut file = File::create(path).unwrap();
-        file.write_all(unindent(&src).as_bytes()).unwrap();
+        file.write_all(src.as_bytes()).unwrap();
         file.sync_all().unwrap();
     }
 
@@ -143,8 +140,9 @@ impl Command {
 
         let mut doc_block = false;
         let mut parse = false;
+        let mut doc_str = String::new();
         let mut img = String::new();
-        let mut title = String::new();
+        // The sentence following the title
         let mut next_line = String::new();
 
         docs = docs.lines()
@@ -154,7 +152,7 @@ impl Command {
                 if line.contains(&cmd) {
                     no_args = true;
                 }
-                line
+                line.replace("/assets/images/", "https://rethinkdb.com/assets/images/")
             })
             // We will only consider docs after the description
             .filter(|line| {
@@ -169,33 +167,41 @@ impl Command {
                         return false;
                     }
                     if line.starts_with("<img src=") {
-                        img = line.replace("/assets/images/", "https://rethinkdb.com/assets/images/");
+                        img = line.to_owned();
                         return false;
                     }
                     if let Some(i) = line.find('.') {
                         let (t, n) = line.split_at(i);
-                        title = t.to_owned();
+                        doc_str.push_str(&format!("/// {}\n", t));
                         next_line = n.trim_left_matches('.').trim().to_owned();
                         parse = true;
                         return false;
+                    } else {
+                        doc_str.push_str(&format!("/// {}\n", line));
+                        return false;
                     }
-                    parse = true;
                 }
                 true
             })
             .map(|line| {
                 // Indent commands so they come out nice
-                format!("                /// {}\n", line)
+                format!("/// {}\n", line)
             })
         .collect();
 
-        let docs = format!("/// {}
-            ///
-            /// {}
-            ///
-            /// {}
-            {}", title, img, next_line, docs);
+        if !img.is_empty() {
+            doc_str.push_str(&format!("///\n/// {}\n", img));
+        }
 
-        (no_args, docs)
+        if !next_line.is_empty() {
+            doc_str.push_str(&format!("///\n/// {}\n", next_line));
+        }
+
+        if !docs.is_empty() {
+            doc_str.push_str("///\n");
+            doc_str.push_str(&docs);
+        }
+
+        (no_args, doc_str)
     }
 }
