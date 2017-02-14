@@ -170,14 +170,6 @@ impl Command {
             panic!(format!("command file is empty: {:?}", self));
         }
 
-        let docs = format!(r#"
-            ```javascript
-                var a = 5 + 5;
-            ```
-        "#);
-        println!("{:?}", graves(docs.as_bytes()));
-        panic!("got the graves...");
-
         let (no_args, docs) = self.gen_docs(docs);
         self.tokens = if name == "connect" {
             format!(r#"

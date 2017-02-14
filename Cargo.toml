@@ -1,10 +1,10 @@
 [package]
 name = "reql"
 description = "A native RethinkDB driver"
-version = "0.0.6-alpha7"
+version = "0.0.6-alpha8"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rust-rethinkdb/reql"
-documentation = "https://docs.rs/reql"
+documentation = "https://docs.rs/reql/*/reql/struct.Client.html"
 readme = "README.md"
 keywords = ["database", "rethinkdb", "reql", "driver"]
 categories = ["database"]

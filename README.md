@@ -5,7 +5,7 @@ This is a [RethinkDB] driver written in [Rust].
 [RethinkDB]: https://www.rethinkdb.com
 [Rust]: https://www.rust-lang.org
 
-[![Build Status](https://travis-ci.org/rust-rethinkdb/reql.svg?branch=master)](https://travis-ci.org/rust-rethinkdb/reql) [![Build status](https://ci.appveyor.com/api/projects/status/cp8tmb9xxjw0kfgj?svg=true)](https://ci.appveyor.com/project/rushmorem/reql) [![Latest Version](https://img.shields.io/crates/v/reql.svg)](https://crates.io/crates/reql) [![Docs](https://docs.rs/reql/badge.svg)](https://docs.rs/reql)
+[![Build Status](https://travis-ci.org/rust-rethinkdb/reql.svg?branch=master)](https://travis-ci.org/rust-rethinkdb/reql) [![Build status](https://ci.appveyor.com/api/projects/status/cp8tmb9xxjw0kfgj?svg=true)](https://ci.appveyor.com/project/rushmorem/reql) [![Latest Version](https://img.shields.io/crates/v/reql.svg)](https://crates.io/crates/reql) [![Docs](https://docs.rs/reql/badge.svg)](https://docs.rs/reql/*/reql/struct.Client.html)
 
 *Note:* While this driver is already usable in the current state, the API is not yet stable and many commands are not yet implemented. I recommend you pin to specific versions if you have to code against it. Also kindly submit an issue or pull request if the command you want is missing.
 
@@ -15,7 +15,7 @@ Add this crate to your dependencies section:-
 
 ```toml
 [dependencies]
-reql = "0.0.6-alpha7"
+reql = "0.0.6-alpha8"
 ```
 
 Import it in your `main.rs` or `lib.rs`:-
