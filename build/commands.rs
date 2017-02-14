@@ -41,8 +41,6 @@ impl Commands {
             use {{Client, ToArg, Result}};
             use slog::Logger;
             use ql2::proto::Term_TermType as Type;
-            #[cfg(feature = "with_io")]
-            use reql_io::serde::Deserialize;
         "#)
     }
 
@@ -56,7 +54,7 @@ impl Commands {
 
         let src = format!(r#"
             {}
-            impl<A: ToArg> Client<A> {{
+            impl Client {{
 
                 /// Create a new ReQL client
                 ///
@@ -68,8 +66,8 @@ impl Commands {
                 /// let r = Client::new();
                 /// ```
 
-                pub fn new() -> Client<A> {{
-                    util::new_client::<A>()
+                pub fn new() -> Client {{
+                    util::new_client()
                 }}
 
                 /// Override the current logger
@@ -96,7 +94,7 @@ impl Commands {
                 ///
                 /// [examples/logging.rs]: https://github.com/rust-rethinkdb/reql/blob/master/examples/logging.rs
 
-                pub fn with_logger(&self, logger: Logger) -> Client<A> {{
+                pub fn with_logger(&self, logger: Logger) -> Client {{
                     util::with_logger(self, logger)
                 }}
                 {}
@@ -150,7 +148,7 @@ impl Command {
             format!(r#"
                 {}
                 #[cfg(feature = "with_io")]
-                pub fn connect(&self, args: A) -> Result<Pool> {{
+                pub fn connect<T: ToArg>(&self, args: T) -> Result<Pool> {{
                     util::connect(self, args)
                 }}
             "#, docs)
@@ -158,28 +156,28 @@ impl Command {
             format!(r#"
                 {}
                 #[cfg(feature = "with_io")]
-                pub fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>> {{
+                pub fn run<T: ToArg>(&self, args: T) -> Result<Response> {{
                     util::run(self, args)
                 }}
             "#, docs)
         } else if name == "expr" {
             format!(r#"
                 {}
-                pub fn expr(&self, args: A) -> Client<A> {{
+                pub fn expr<T: ToArg>(&self, args: T) -> Client {{
                     util::make_cmd(self, "expr", None, Some(args))
                 }}
             "#, docs)
         } else if no_args {
             format!(r#"
                 {docs}
-                pub fn {name}(&self) -> Client<A> {{
-                    util::make_cmd::<A>(self, "{name}", Some({typ}), None)
+                pub fn {name}(&self) -> Client {{
+                    util::make_cmd::<Client>(self, "{name}", Some({typ}), None)
                 }}
             "#, docs=docs, name=name, typ=typ)
         } else {
             format!(r#"
                 {docs}
-                pub fn {name}(&self, args: A) -> Client<A> {{
+                pub fn {name}<T: ToArg>(&self, args: T) -> Client {{
                     util::make_cmd(self, "{name}", Some({typ}), Some(args))
                 }}
             "#, docs=docs, name=name, typ=typ)

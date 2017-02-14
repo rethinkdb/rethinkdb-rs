@@ -49,7 +49,7 @@ pub struct Arg {
 /// The response returned by the `run` command
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-pub struct Response<T>(T);
+pub struct Response;
 
 /// The connection pool returned by the `connect` command
 #[cfg(feature = "with_io")]
@@ -118,11 +118,10 @@ struct Config {
 /// The database cluster client
 #[must_use]
 #[derive(Debug, Clone)]
-pub struct Client<A: ToArg> {
+pub struct Client {
     term: Term,
     query: String,
     logger: Logger,
-    phantom: ::std::marker::PhantomData<A>,
 }
 
 /// The return type of the `args!()` macro

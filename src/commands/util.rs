@@ -3,7 +3,6 @@ use ql2::proto::Term;
 use protobuf::repeated::RepeatedField;
 use ql2::proto::Term_TermType;
 #[cfg(feature = "with_io")]
-use reql_io::serde::Deserialize;
 
 // #[cfg(feature = "with_io")]
 // mod io;
@@ -11,20 +10,19 @@ use reql_io::serde::Deserialize;
 // pub use self::io::*;
 //
 
-pub fn new_client<A: ToArg>() -> Client<A> {
+pub fn new_client() -> Client {
     Client {
         term: Term::new(),
         query: String::from("r"),
         logger: slog::Logger::root(slog::Discard, o!()),
-        phantom: ::std::marker::PhantomData,
     }
 }
 
-pub fn make_cmd<A: ToArg>(client: &Client<A>,
+pub fn make_cmd<A: ToArg>(client: &Client,
                           name: &'static str,
                           cmd_type: Option<Term_TermType>,
                           args: Option<A>)
-                          -> Client<A> {
+                          -> Client {
     let logger = client.logger.new(o!("command" => name));
     let mut term = Term::new();
     if let Some(cmd_type) = cmd_type {
@@ -51,20 +49,16 @@ pub fn make_cmd<A: ToArg>(client: &Client<A>,
     cmd.with_logger(logger)
 }
 
-pub fn with_logger<A: ToArg>(client: &Client<A>, logger: slog::Logger) -> Client<A> {
-    // let mut cmd: () = client.clone();
-    //
-    // cmd.logger = logger;
-    // cmd
-    //
-
-    Client::new()
+pub fn with_logger(client: &Client, logger: slog::Logger) -> Client {
+    let mut cmd = client.clone();
+    cmd.logger = logger;
+    cmd
 }
 
-pub fn connect<A: ToArg>(client: &Client<A>, args: A) -> Result<Pool> {
+pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Pool> {
     unimplemented!();
 }
 
-pub fn run<A: ToArg, T: Deserialize>(client: &Client<A>, args: A) -> Result<Response<T>> {
+pub fn run<A: ToArg>(client: &Client, args: A) -> Result<Response> {
     unimplemented!();
 }
