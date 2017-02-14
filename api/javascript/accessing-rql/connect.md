@@ -43,7 +43,7 @@ If the connection cannot be established, a `ReqlDriverError` will be passed to t
 
 The returned connection object will have two properties on it containing the connection's port and address:
 
-```js
+```javascript
 conn.clientPort;
 conn.clientAddress;
 ```
@@ -62,7 +62,7 @@ Alternatively, you may use RethinkDB's built-in [TLS support][tls].
 
 __Example:__ Open a connection using the default host and port, specifying the default database.
 
-```js
+```javascript
 r.connect({
     db: 'marvel'
 }, function(err, conn) {
@@ -72,13 +72,13 @@ r.connect({
 
 If no callback is provided, a promise will be returned.
 
-```js
+```javascript
 var promise = r.connect({db: 'marvel'});
 ```
 
 __Example:__ Open a new connection to the database.
 
-```js
+```javascript
 r.connect({
     host: 'localhost',
     port: 28015,
@@ -90,7 +90,7 @@ r.connect({
 
 Alternatively, you can use promises.
 
-```js
+```javascript
 var p = r.connect({
     host: 'localhost',
     port: 28015,
@@ -105,7 +105,7 @@ p.then(function(conn) {
 
 __Example:__ Open a new connection to the database, specifying a user/password combination for authentication.
 
-```js
+```javascript
 r.connect({
     host: 'localhost',
     port: 28015,
@@ -119,7 +119,7 @@ r.connect({
 
 __Example:__ Open a new connection to the database using an SSL proxy.
 
-```js
+```javascript
 var fs = require('fs');
 fs.readFile('/path/to/cert', function (err, caCert) {
     if (!err) {

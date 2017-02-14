@@ -27,7 +27,7 @@ The `close` command can optionally take a callback, which will receive an error 
 
 __Example:__ Close a cursor.
 
-```js
+```javascript
 cursor.close(function (err) {
     if (err) {
         console.log("An error occurred on cursor close");
@@ -37,7 +37,7 @@ cursor.close(function (err) {
 
 __Example:__ Close a cursor and execute a function upon close.
 
-```js
+```javascript
 cursor.close()
     .then(function () {
         console.log("The cursor has been closed");

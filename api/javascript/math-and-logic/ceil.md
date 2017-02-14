@@ -23,7 +23,7 @@ Rounds the given value up, returning the smallest integer value greater than or 
 
 __Example:__ Return the ceiling of 12.345.
 
-```js
+```javascript
 r.ceil(12.345).run(conn, callback);
 // Result passed to callback
 13.0
@@ -33,7 +33,7 @@ The `ceil` command can also be chained after an expression.
 
 __Example:__ Return the ceiling of -12.345.
 
-```js
+```javascript
 r.expr(-12.345).ceil().run(conn, callback);
 // Result passed to callback
 -12.0
@@ -41,6 +41,6 @@ r.expr(-12.345).ceil().run(conn, callback);
 
 __Example:__ Return Iron Man's weight, rounded up with `ceil`.
 
-```js
+```javascript
 r.table('superheroes').get('ironman')('weight').ceil().run(conn, callback);
 ```

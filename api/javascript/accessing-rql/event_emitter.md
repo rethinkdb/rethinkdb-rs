@@ -51,7 +51,7 @@ Four events are emitted: `connect`, `close`, `timeout` and `error`.
 __Example:__ Monitor the connection state with events.
 
 
-```js
+```javascript
 r.connect({}, function(err, conn) {
     if (err) throw err;
 
@@ -69,7 +69,7 @@ r.connect({}, function(err, conn) {
 
 __Example:__ As in Node, `on` is a synonym for `addListener`.
 
-```js
+```javascript
 conn.on('close', function() {
     cleanup();
 });

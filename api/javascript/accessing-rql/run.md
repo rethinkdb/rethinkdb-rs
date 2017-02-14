@@ -54,7 +54,7 @@ If no callback is provided, a promise will be returned.
 __Example:__ Run a query on the connection `conn` and log each row in
 the result to the console.
 
-```js
+```javascript
 r.table('marvel').run(conn, function(err, cursor) {
     cursor.each(console.log);
 })
@@ -63,7 +63,7 @@ r.table('marvel').run(conn, function(err, cursor) {
 __Example:__ Run a query on the connection `conn` and retrieve all the rows in an
 array.
 
-```js
+```javascript
 r.table('marvel').run(conn, function(err, cursor) {
     if (err) {
         // process error
@@ -83,7 +83,7 @@ r.table('marvel').run(conn, function(err, cursor) {
 
 Alternatively, you can use promises.
 
-```js
+```javascript
 r.table('marvel').run(conn).then(function(cursor) {
     return cursor.toArray()
 }).then(function(results) {
@@ -100,7 +100,7 @@ pass a flag allowing out of date data in an options object. Settings
 for individual tables will supercede this global setting for all
 tables in the query.
 
-```js
+```javascript
 r.table('marvel').run(conn, {readMode: 'outdated'}, function (err, cursor) {
     ...
 });
@@ -110,7 +110,7 @@ __Example:__ If you just want to send a write and forget about it, you
 can set `noreply` to true in the options. In this case `run` will
 return immediately.
 
-```js
+```javascript
 r.table('marvel').run(conn, {noreply: true}, function (err, cursor) {
     ...
 });
@@ -120,7 +120,7 @@ __Example:__ If you want to specify whether to wait for a write to be
 written to disk (overriding the table's default settings), you can set
 `durability` to `'hard'` or `'soft'` in the options.
 
-```js
+```javascript
 r.table('marvel')
     .insert({ superhero: 'Iron Man', superpower: 'Arc Reactor' })
     .run(conn, {noreply: true, durability: 'soft'}, function (err, cursor) {
@@ -134,7 +134,7 @@ native date object, you can pass a `time_format` flag to prevent it
 with two fields (`epoch_time` and `$reql_type$`) instead of a native date
 object.
 
-```js
+```javascript
 r.now().run(conn, {timeFormat: "raw"}, function (err, result) {
     ...
 });
@@ -142,7 +142,7 @@ r.now().run(conn, {timeFormat: "raw"}, function (err, result) {
 
 __Example:__ Specify the database to use for the query.
 
-```js
+```javascript
 r.table('marvel').run(conn, {db: 'heroes'}).then(function(cursor) {
     return cursor.toArray()
 }).then(function(results) {
@@ -154,13 +154,13 @@ r.table('marvel').run(conn, {db: 'heroes'}).then(function(cursor) {
 
 This is equivalent to using the `db` command to specify the database:
 
-```js
+```javascript
 r.db('heroes').table('marvel').run(conn) ...
 ```
 
 __Example:__ Change the batching parameters for this query.
 
-```js
+```javascript
 r.table('marvel').run(conn, {
     maxBatchRows: 16,
     maxBatchBytes: 2048

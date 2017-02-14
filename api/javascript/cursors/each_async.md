@@ -22,13 +22,13 @@ Lazily iterate over a cursor, array, or feed one element at a time. `eachAsync` 
 
 The first, required function passed to `eachAsync` takes either one or two functions as arguments. The first is a callback to process each row as it is emitted; the second is an optional callback which will be executed when all row processing is completed.
 
-```js
+```javascript
 function(rowProcess[, final])
 ```
 
 The `rowProcess` callback receives the row as its first argument; it may also take an optional second argument, which is a callback function to be executed after each row has been processed.
 
-```js
+```javascript
 function(row[, rowFinished])
 ```
 
@@ -40,7 +40,7 @@ If you provide a `final` callback, it will always be executed when row processin
 
 To summarize all of the above in code:
 
-```js
+```javascript
 // process each row asynchronously
 cursor.eachAsync(function (row) {
     doSomethingWith(row);
@@ -64,7 +64,7 @@ cursor.eachAsync(function (row, rowFinished) {
 
 __Example:__ Process all the elements in a stream, using `then` and `catch` for handling the end of the stream and any errors. Note that iteration may be stopped in the first callback (`rowProcess`) by returning any non-Promise value.
 
-```js
+```javascript
 cursor.eachAsync(function (row) {
     var ok = processRowData(row);
     if (!ok) {
@@ -79,7 +79,7 @@ cursor.eachAsync(function (row) {
 
 __Example:__ As above, but using the `rowFinished` and `final` callbacks rather than the Promise returned from `eachAsync`.
 
-```js
+```javascript
 cursor.eachAsync(
     function (row, rowFinished) {
         var ok = processRowData(row);

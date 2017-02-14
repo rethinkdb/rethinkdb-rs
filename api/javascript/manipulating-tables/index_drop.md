@@ -24,7 +24,7 @@ Delete a previously created secondary index of this table.
 
 __Example:__ Drop a secondary index named 'code_name'.
 
-```js
+```javascript
 r.table('dc').indexDrop('code_name').run(conn, callback)
 ```
 

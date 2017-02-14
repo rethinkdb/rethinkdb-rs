@@ -36,7 +36,7 @@ Optional arguments available with `circle` are:
 
 __Example:__ Define a circle.
 
-```js
+```javascript
 r.table('geo').insert({
     id: 300,
     name: 'Hayes Valley',

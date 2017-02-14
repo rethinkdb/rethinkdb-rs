@@ -29,7 +29,7 @@ The return value is an object providing information about the table's shards, re
 
 __Example:__ Get a table's status.
 
-```js
+```javascript
 > r.table('superheroes').status().run(conn, callback);
 ```
 
@@ -37,7 +37,7 @@ __Example:__ Get a table's status.
 
 Example return:
 
-```js
+```javascript
 {
   "db": "database",
   "id": "5cb35225-81b2-4cec-9eef-bfad15481265",

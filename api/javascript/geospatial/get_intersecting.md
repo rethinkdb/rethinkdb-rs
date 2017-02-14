@@ -24,7 +24,7 @@ The `index` argument is mandatory. This command returns the same results as `tab
 
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 
-```js
+```javascript
 var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 ```

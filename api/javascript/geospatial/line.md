@@ -31,7 +31,7 @@ Longitude (&minus;180 to 180) and latitude (&minus;90 to 90) of vertices are plo
 
 __Example:__ Define a line.
 
-```js
+```javascript
 r.table('geo').insert({
     id: 101,
     route: r.line([-122.423246,37.779388], [-121.886420,37.329898])
@@ -42,7 +42,7 @@ __Example:__ Define a line using an array of points.
 
 You can use the [args](/api/javascript/args) command to pass an array of Point objects (or latitude-longitude pairs) to `line`.
 
-```js
+```javascript
 var route = [
     [-122.423246,37.779388],
     [-121.886420,37.329898]

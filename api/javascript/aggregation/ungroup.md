@@ -31,7 +31,7 @@ data explorer.
 
 Suppose that the table `games` has the following data:
 
-```js
+```javascript
 [
     {id: 2, player: "Bob", points: 15, type: "ranked"},
     {id: 5, player: "Alice", points: 7, type: "free"},
@@ -43,7 +43,7 @@ Suppose that the table `games` has the following data:
 __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
-```js
+```javascript
 r.table('games')
    .group('player').max('points')('points')
    .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
@@ -53,7 +53,7 @@ r.table('games')
 
 Result:
 
-```js
+```javascript
 [
     {
         group: "Bob",
@@ -68,13 +68,13 @@ Result:
 
 __Example:__ Select one random player and all their games.
 
-```js
+```javascript
 r.table('games').group('player').ungroup().sample(1).run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 [
     {
         group: "Bob",
@@ -91,13 +91,13 @@ Result:
 Note that if you didn't call `ungroup`, you would instead select one
 random game from each player:
 
-```js
+```javascript
 r.table('games').group('player').sample(1).run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 [
     {
         group: "Alice",
@@ -128,7 +128,7 @@ Result:
 
 __Example:__ Types!
 
-```js
+```javascript
 r.table('games').group('player').typeOf().run(conn, callback) // Returns "GROUPED_STREAM"
 r.table('games').group('player').ungroup().typeOf().run(conn, callback) // Returns "ARRAY"
 r.table('games').group('player').avg('points').run(conn, callback) // Returns "GROUPED_DATA"

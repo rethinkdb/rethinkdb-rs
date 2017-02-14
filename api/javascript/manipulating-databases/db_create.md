@@ -36,7 +36,7 @@ Note: Only alphanumeric characters and underscores are valid for the database na
 
 __Example:__ Create a database named 'superheroes'.
 
-```js
+```javascript
 > r.dbCreate('superheroes').run(conn, callback);
 // Result passed to callback
 {

@@ -23,7 +23,7 @@ Return the day of the year of a time object as a number between 1 and 366 (follo
 
 __Example:__ Retrieve all the users who were born the first day of a year.
 
-```js
+```javascript
 r.table("users").filter(
     r.row("birthdate").dayOfYear().eq(1)
 )

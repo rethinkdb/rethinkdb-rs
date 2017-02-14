@@ -25,7 +25,7 @@ Add a several values to an array and return it as a set (an array with distinct 
 
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots and an arc reactor.
 
-```js
+```javascript
 r.table('marvel').get('IronMan')('equipment').setUnion(['newBoots', 'arc_reactor']).run(conn, callback)
 ```
 

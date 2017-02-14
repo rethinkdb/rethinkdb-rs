@@ -23,7 +23,7 @@ Use `polygon2` to "punch out" a hole in `polygon1`. `polygon2` must be completel
 
 __Example:__ Define a polygon with a hole punched in it.
 
-```js
+```javascript
 var outerPolygon = r.polygon(
     [-122.4,37.7],
     [-122.4,37.3],

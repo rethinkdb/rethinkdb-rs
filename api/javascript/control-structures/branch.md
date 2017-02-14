@@ -27,13 +27,13 @@ The `branch` command takes 2n+1 arguments: pairs of conditional expressions and 
 
 You may call `branch` infix style on the first test. (See the second example for an illustration.)
 
-```
+```javascript
 r.branch(test1, val1, test2, val2, elseval)
 ```
 
 is the equivalent of the JavaScript statement
 
-```js
+```javascript
 if (test1) {
     return val1;
 } else if (test2) {
@@ -45,7 +45,7 @@ if (test1) {
 
 __Example:__ Test the value of x.
 
-```js
+```javascript
 var x = 10;
 r.branch(r.expr(x).gt(5), 'big', 'small').run(conn, callback);
 // Result passed to callback
@@ -54,7 +54,7 @@ r.branch(r.expr(x).gt(5), 'big', 'small').run(conn, callback);
 
 __Example:__ As above, infix-style.
 
-```js
+```javascript
 var x = 10;
 r.expr(x).gt(5).branch('big', 'small').run(conn, callback);
 // Result passed to callback
@@ -63,7 +63,7 @@ r.expr(x).gt(5).branch('big', 'small').run(conn, callback);
 
 __Example:__ Categorize heroes by victory counts.
 
-```js
+```javascript
 r.table('marvel').map(
     r.branch(
         r.row('victories').gt(100),
@@ -77,7 +77,7 @@ r.table('marvel').map(
 
 If the documents in the table `marvel` are:
 
-```js
+```javascript
 [
     { name: "Iron Man", victories: 214 },
     { name: "Jubilee", victories: 49 },
@@ -87,7 +87,7 @@ If the documents in the table `marvel` are:
 
 The results will be:
 
-```js
+```javascript
 [
     "Iron Man is a superhero",
     "Jubilee is a hero",

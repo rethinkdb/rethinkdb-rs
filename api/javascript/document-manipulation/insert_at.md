@@ -24,7 +24,7 @@ Insert a value in to an array at a given index. Returns the modified array.
 
 __Example:__ Hulk decides to join the avengers.
 
-```js
+```javascript
 r.expr(["Iron Man", "Spider-Man"]).insertAt(1, "Hulk").run(conn, callback)
 ```
 

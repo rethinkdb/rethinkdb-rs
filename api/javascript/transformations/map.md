@@ -31,7 +31,7 @@ Note that `map` can only be applied to sequences, not single values. If you wish
 
 __Example:__ Return the first five squares.
 
-```js
+```javascript
 r.expr([1, 2, 3, 4, 5]).map(function (val) {
     return val.mul(val);
 }).run(conn, callback);
@@ -41,7 +41,7 @@ r.expr([1, 2, 3, 4, 5]).map(function (val) {
 
 __Example:__ Sum the elements of three sequences.
 
-```js
+```javascript
 var sequence1 = [100, 200, 300, 400];
 var sequence2 = [10, 20, 30, 40];
 var sequence3 = [1, 2, 3, 4];
@@ -56,7 +56,7 @@ __Example:__ Rename a field when retrieving documents using `map` and [merge](/a
 
 This example renames the field `id` to `userId` when retrieving documents from the table `users`.
 
-```js
+```javascript
 r.table('users').map(function (doc) {
     return doc.merge({userId: doc('id')}).without('id');
 }).run(conn, callback);
@@ -64,7 +64,7 @@ r.table('users').map(function (doc) {
 
 Note that in this case, [row](/api/javascript/row) may be used as an alternative to writing an anonymous function, as it returns the same value as the function parameter receives:
 
-```js
+```javascript
 r.table('users').map(
     r.row.merge({userId: r.row('id')}).without('id');
 }).run(conn, callback);
@@ -73,7 +73,7 @@ r.table('users').map(
 
 __Example:__ Assign every superhero an archenemy.
 
-```js
+```javascript
 r.table('heroes').map(r.table('villains'), function (hero, villain) {
     return hero.merge({villain: villain});
 }).run(conn, callback);

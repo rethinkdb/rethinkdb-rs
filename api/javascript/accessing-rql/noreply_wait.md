@@ -29,7 +29,7 @@ If no callback is provided, a promise will be returned.
 __Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
 wait until the server has processed them.
 
-```js
+```javascript
 conn.noreplyWait(function(err) { ... })
 ```
 
@@ -37,7 +37,7 @@ conn.noreplyWait(function(err) { ... })
 
 Alternatively, you can use promises.
 
-```js
+```javascript
 conn.noreplyWait().then(function() {
     // all queries have been processed
 }).error(function(err) {

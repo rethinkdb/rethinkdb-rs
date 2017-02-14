@@ -29,7 +29,7 @@ Calling `next` the first time on a cursor provides the first element of the curs
 
 __Example:__ Retrieve the next element.
 
-```js
+```javascript
 cursor.next(function(err, row) {
     if (err) throw err;
     processRow(row);
@@ -43,7 +43,7 @@ __Note:__ The canonical way to retrieve all the results is to use [each](../each
 __Example:__ You can retrieve all the elements of a cursor with the `next`
 command using recursion.
 
-```js
+```javascript
 query.run( conn, function(err, cursor) {
     if (err) throw err;
 
@@ -71,7 +71,7 @@ __Example:__ With `next`, not all results have to be retrieved from a cursor
 -- to stop retrieving results, break out of the recursive function. For example, this
 recursive function will stop retrieving results when the `checkRow` function returns true:
 
-```js
+```javascript
 query.run( conn, function(err, cursor) {
     if (err) throw err;
 
@@ -104,7 +104,7 @@ query.run( conn, function(err, cursor) {
 __Example:__ You can retrieve all the elements of a cursor with the `next`
 command using recursion and promises.
 
-```js
+```javascript
 query.run(conn).then(function(cursor) {
     var errorHandler = function(err) {
         if (((err.name === "ReqlDriverError") && err.message === "No more rows in the cursor.")) {

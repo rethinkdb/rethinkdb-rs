@@ -24,13 +24,13 @@ Uppercases a string.
 
 __Example:__
 
-```js
+```javascript
 r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 "SENTENCE ABOUT LATEX."
 ```
 

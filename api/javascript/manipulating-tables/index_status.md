@@ -24,7 +24,7 @@ of all indexes on this table if no indexes are specified.
 
 The result is an array where for each index, there will be an object like this one:
 
-```js
+```javascript
 {
     index: <indexName>,
     ready: true,
@@ -37,7 +37,7 @@ The result is an array where for each index, there will be an object like this o
 
 or this one:
 
-```js
+```javascript
 {
     index: <indexName>,
     ready: false,
@@ -55,19 +55,19 @@ The `function` field is a binary object containing an opaque representation of t
 
 __Example:__ Get the status of all the indexes on `test`:
 
-```js
+```javascript
 r.table('test').indexStatus().run(conn, callback)
 ```
 
 __Example:__ Get the status of the `timestamp` index:
 
-```js
+```javascript
 r.table('test').indexStatus('timestamp').run(conn, callback)
 ```
 
 __Example:__ Save the binary representation of the index:
 
-```js
+```javascript
 var func;
 r.table('test').indexStatus('timestamp').run(conn, function (err, res) {
     func = res[0].function;

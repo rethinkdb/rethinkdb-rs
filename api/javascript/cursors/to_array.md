@@ -32,7 +32,7 @@ information on feeds.
 __Example:__ For small result sets it may be more convenient to process them at once as
 an array.
 
-```js
+```javascript
 cursor.toArray(function(err, results) {
     if (err) throw err;
     processResults(results);
@@ -43,7 +43,7 @@ cursor.toArray(function(err, results) {
 
 The equivalent query with the `each` command would be:
 
-```js
+```javascript
 var results = []
 cursor.each(function(err, row) {
     if (err) throw err;
@@ -56,7 +56,7 @@ cursor.each(function(err, row) {
 
 An equivalent query using promises.
 
-```js
+```javascript
 cursor.toArray().then(function(results) {
     processResults(results);
 }).error(console.log);

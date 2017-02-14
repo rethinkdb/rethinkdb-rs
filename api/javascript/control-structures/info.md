@@ -21,6 +21,6 @@ Get information about a ReQL value.
 
 __Example:__ Get information about a table such as primary key, or cache size.
 
-```js
+```javascript
 r.table('marvel').info().run(conn, callback)
 ```

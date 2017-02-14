@@ -24,7 +24,7 @@ Return a new time object only based on the day, month and year (ie. the same day
 
 __Example:__ Retrieve all the users whose birthday is today.
 
-```js
+```javascript
 r.table("users").filter(function(user) {
     return user("birthdate").date().eq(r.now().date())
 }).run(conn, callback)
@@ -34,7 +34,7 @@ r.table("users").filter(function(user) {
 
 Note that the [now][] command always returns UTC time, so the comparison may fail if `user("birthdate")` isn't also in UTC. You can use the [inTimezone][itz] command to adjust for this:
 
-```js
+```javascript
 r.table("users").filter(function(user) {
     return user("birthdate").date().eq(r.now().inTimezone("-08:00").date())
 }).run(conn, callback)

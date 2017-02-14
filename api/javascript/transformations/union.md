@@ -30,13 +30,13 @@ The optional `interleave` argument controls how the sequences will be merged:
 
 __Example:__ Construct a stream of all heroes.
 
-```js
+```javascript
 r.table('marvel').union(r.table('dc')).run(conn, callback);
 ```
 
 __Example:__ Combine four arrays into one.
 
-```js
+```javascript
 r.expr([1, 2]).union([3, 4], [5, 6], [7, 8, 9]).run(conn, callback)
 // Result passed to callback
 [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -44,7 +44,7 @@ r.expr([1, 2]).union([3, 4], [5, 6], [7, 8, 9]).run(conn, callback)
 
 __Example:__ Create a [changefeed][cf] from the first example.
 
-```js
+```javascript
 r.table('marvel').union(r.table('dc')).changes().run(conn, callback);
 ```
 
@@ -54,7 +54,7 @@ Now, when any heroes are added, modified or deleted from either table, a change 
 
 __Example:__ Merge-sort the tables of heroes, ordered by name.
 
-```js
+```javascript
 r.table('marvel').order_by('name').union(
     r.table('dc').order_by('name'), {interleave: 'name'}
 ).run(conn, callback);

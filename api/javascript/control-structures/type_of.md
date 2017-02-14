@@ -46,7 +46,7 @@ Read the article on [ReQL data types](/docs/data-types/) for a more detailed dis
 
 __Example:__ Get the type of a string.
 
-```js
+```javascript
 r.expr("foo").typeOf().run(conn, callback);
 // Result passed to callback
 "STRING"

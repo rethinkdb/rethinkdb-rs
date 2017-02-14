@@ -24,7 +24,7 @@ indexes on this table to be ready if no indexes are specified.
 
 The result is an array containing one object for each table index:
 
-```js
+```javascript
 {
     index: <indexName>,
     ready: true,
@@ -39,12 +39,12 @@ See the [indexStatus](/api/javascript/index_status) documentation for a descript
 
 __Example:__ Wait for all indexes on the table `test` to be ready:
 
-```js
+```javascript
 r.table('test').indexWait().run(conn, callback)
 ```
 
 __Example:__ Wait for the index `timestamp` to be ready:
 
-```js
+```javascript
 r.table('test').indexWait('timestamp').run(conn, callback)
 ```

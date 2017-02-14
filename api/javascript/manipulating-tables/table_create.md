@@ -57,7 +57,7 @@ Tables will be available for writing when the command returns.
 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
-```js
+```javascript
 > r.db('heroes').tableCreate('dc_universe').run(conn, callback);
 // Result passed to callback
 {
@@ -89,13 +89,13 @@ __Example:__ Create a table named 'dc_universe' with the default settings.
 
 __Example:__ Create a table named 'dc_universe' using the field 'name' as primary key.
 
-```js
+```javascript
 r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn, callback);
 ```
 
 __Example:__ Create a table set up for two shards and three replicas per shard. This requires three available servers.
 
-```js
+```javascript
 r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn, callback);
 ```
 

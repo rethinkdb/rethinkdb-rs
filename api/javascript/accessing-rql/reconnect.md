@@ -30,7 +30,7 @@ A noreply query is executed by passing the `noreply` option to the [run](/api/ja
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
-```js
+```javascript
 conn.reconnect({noreplyWait: false}, function(error, connection) { ... })
 ```
 
@@ -38,7 +38,7 @@ conn.reconnect({noreplyWait: false}, function(error, connection) { ... })
 
 Alternatively, you can use promises.
 
-```js
+```javascript
 conn.reconnect({noreplyWait: false}).then(function(conn) {
     // the outstanding queries were canceled and conn is now available again
 }).error(function(errror) {

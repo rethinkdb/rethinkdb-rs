@@ -34,7 +34,7 @@ If the last point does not specify the same coordinates as the first point, `pol
 
 __Example:__ Define a polygon.
 
-```js
+```javascript
 r.table('geo').insert({
     id: 101,
     rectangle: r.polygon(
@@ -50,7 +50,7 @@ __Example:__ Define a polygon using an array of vertices.
 
 You can use the [args](/api/javascript/args) command to pass an array of Point objects (or latitude-longitude pairs) to `polygon`.
 
-```js
+```javascript
 var vertices = [
     [-122.423246,37.779388],
     [-122.423246,37.329898],

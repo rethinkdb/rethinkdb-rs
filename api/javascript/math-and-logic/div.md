@@ -25,7 +25,7 @@ Divide two numbers.
 
 __Example:__ It's as easy as 2 / 2 = 1.
 
-```js
+```javascript
 r.expr(2).div(2).run(conn, callback)
 ```
 

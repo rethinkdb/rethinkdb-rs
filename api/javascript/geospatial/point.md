@@ -23,7 +23,7 @@ Construct a geometry object of type Point. The point is specified by two floatin
 
 __Example:__ Define a point.
 
-```js
+```javascript
 r.table('geo').insert({
     id: 1,
     name: 'San Francisco',

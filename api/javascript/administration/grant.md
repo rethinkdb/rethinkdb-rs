@@ -47,6 +47,7 @@ The `grant` command returns an object of the following form:
             "old_val": { original permissions }
         }
     ]
+}
 ```
 
 The `granted` field will always be `1`, and the `permissions_changes` list will have one object, describing the new permissions values and the old values they were changed from (which may be `null`).
@@ -63,7 +64,7 @@ For a full description of permissions, read [Permissions and user accounts][pa].
 
 __Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
 
-```js
+```javascript
 r.db('users').grant('chatapp', {read: true, write: true}).run(conn, callback);
 
 // Result passed to callback
@@ -79,7 +80,7 @@ r.db('users').grant('chatapp', {read: true, write: true}).run(conn, callback);
 
 __Example:__ Deny write permissions from the `chatapp` account for the `admin` table.
 
-```js
+```javascript
 r.db('users').table('admin').grant('chatapp', {write: false}).run(conn, callback);
 ```
 
@@ -87,7 +88,7 @@ This will override the `write: true` permissions granted in the first example, b
 
 __Example:__ Delete a table-level permission for the `chatapp` account.
 
-```js
+```javascript
 r.db('users').table('admin').grant('chatapp', {write: null}).run(conn, callback);
 ```
 
@@ -95,7 +96,7 @@ By specifying `null`, the table scope `write` permission is removed, and will ag
 
 __Example:__ Grant `chatapp` the ability to use HTTP connections.
 
-```js
+```javascript
 r.grant('chatapp', {connect: true}).run(conn, callback);
 ```
 
@@ -104,6 +105,6 @@ This grant can only be given on a global level.
 
 __Example:__ Grant a `monitor` account read-only access to all databases.
 
-```js
+```javascript
 r.grant('monitor', {read: true}).run(conn, callback);
 ```

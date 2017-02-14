@@ -27,6 +27,6 @@ Skip a number of elements from the head of the sequence.
 
 __Example:__ Here in conjunction with [orderBy](/api/javascript/order_by/) we choose to ignore the most successful heroes.
 
-```js
+```javascript
 r.table('marvel').orderBy('successMetric').skip(10).run(conn, callback)
 ```
