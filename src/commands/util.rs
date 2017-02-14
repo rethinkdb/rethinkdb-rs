@@ -55,6 +55,17 @@ pub fn with_logger(client: &Client, logger: slog::Logger) -> Client {
     cmd
 }
 
+pub fn with_args<A: ToArg>(client: &Client, args: A) -> Client {
+    let args = args.to_arg();
+    let mut cmd = client.clone();
+    cmd.query += &format!(".with_args({})", args.string);
+    let logger = cmd.logger.new(o!("command" => "with_args"));
+    with_args!(cmd, args);
+    debug!(logger, "{}", cmd.query);
+    debug!(logger, "{:?}", cmd.term);
+    cmd.with_logger(logger)
+}
+
 pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Pool> {
     unimplemented!();
 }

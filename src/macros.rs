@@ -31,7 +31,6 @@ macro_rules! with_args {
 /// # #![allow(unused_must_use)]
 /// # #[macro_use] extern crate reql;
 /// # use reql::Client;
-/// # use reql::commands::*;
 /// # fn main() {
 /// # let r = Client::new();
 /// let x = 10;

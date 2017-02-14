@@ -97,6 +97,31 @@ impl Commands {
                 pub fn with_logger(&self, logger: Logger) -> Client {{
                     util::with_logger(self, logger)
                 }}
+
+                /// Specify optional arguments to a ReQL command
+                ///
+                /// Normally, you should use the `args!()` macro to pass arguments to a command that
+                /// also takes optional arguments. If the command takes at least one argument, you
+                /// don't need to call `with_args`. However, some commands like [delete](struct.Client.html#method.delete)
+                /// do not have any required arguments but yet they have optional ones. That's when `with_args` comes in.
+                ///
+                /// __Example__: Delete all documents from the table `comments` without waiting for the operation to be flushed to
+                /// disk.
+                ///
+                /// ```rust
+                /// # #![allow(unused_must_use)]
+                /// # #[macro_use] extern crate reql;
+                /// # fn main() {{
+                /// # use reql::Client;
+                /// # let r = Client::new();
+                /// r.table("comments").delete().with_args(args!({{durability: "soft"}}));
+                /// # }}
+                /// ```
+
+                pub fn with_args<T: ToArg>(&self, args: T) -> Client {{
+                    util::with_args(self, args)
+                }}
+
                 {}
             }}
         "#, header, commands);
