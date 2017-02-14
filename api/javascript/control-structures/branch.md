@@ -27,7 +27,7 @@ The `branch` command takes 2n+1 arguments: pairs of conditional expressions and 
 
 You may call `branch` infix style on the first test. (See the second example for an illustration.)
 
-```
+```js
 r.branch(test1, val1, test2, val2, elseval)
 ```
 

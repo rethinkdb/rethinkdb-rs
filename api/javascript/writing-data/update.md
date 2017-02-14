@@ -120,7 +120,7 @@ r.table("posts").get(1).update({
 
 If you forget to specify the `nonAtomic` flag, you will get a `ReqlRuntimeError`:
 
-```
+```text
 ReqlRuntimeError: Could not prove function deterministic.  Maybe you want to use the non_atomic flag? 
 ```
 

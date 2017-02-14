@@ -47,6 +47,7 @@ The `grant` command returns an object of the following form:
             "old_val": { original permissions }
         }
     ]
+}
 ```
 
 The `granted` field will always be `1`, and the `permissions_changes` list will have one object, describing the new permissions values and the old values they were changed from (which may be `null`).

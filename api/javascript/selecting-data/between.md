@@ -29,7 +29,9 @@ You may also use the special constants `r.minval` and `r.maxval` for boundaries,
 
 If you use arrays as indexes (compound indexes), they will be sorted using [lexicographical order][lo]. Take the following range as an example:
 
-	[[1, "c"] ... [5, "e"]]
+```text
+[[1, "c"] ... [5, "e"]]
+```
 
 This range includes all compound keys:
 
