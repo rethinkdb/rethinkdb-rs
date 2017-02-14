@@ -36,7 +36,7 @@ Versions of RethinkDB prior to 2.3 allowed `wait` to be called without a table o
 
 __Example:__ Wait on a table to be ready.
 
-```js
+```javascript
 > r.table('superheroes').wait().run(conn, callback);
 // Result passed to callback
 { "ready": 1 }

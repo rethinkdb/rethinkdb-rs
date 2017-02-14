@@ -36,20 +36,20 @@ Returns `0` when called on an empty sequence.
 
 __Example:__ What's 3 + 5 + 7?
 
-```js
+```javascript
 r.expr([3, 5, 7]).sum().run(conn, callback)
 ```
 
 __Example:__ How many points have been scored across all games?
 
-```js
+```javascript
 r.table('games').sum('points').run(conn, callback)
 ```
 
 __Example:__ How many points have been scored across all games,
 counting bonus points?
 
-```js
+```javascript
 r.table('games').sum(function(game) {
     return game('points').add(game('bonus_points'))
 }).run(conn, callback)

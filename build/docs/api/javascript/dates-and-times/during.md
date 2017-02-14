@@ -27,7 +27,7 @@ By default, this is inclusive of the start time and exclusive of the end time. S
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 (inclusive) and December 10th, 2013 (exclusive).
 
-```js
+```javascript
 r.table("posts").filter(
     r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
 ).run(conn, callback)
@@ -37,7 +37,7 @@ r.table("posts").filter(
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 (exclusive) and December 10th, 2013 (inclusive).
 
-```js
+```javascript
 r.table("posts").filter(
   r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"), {leftBound: "open", rightBound: "closed"})
 ).run(conn, callback)

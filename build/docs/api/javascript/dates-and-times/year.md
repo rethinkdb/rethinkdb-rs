@@ -23,7 +23,7 @@ Return the year of a time object.
 
 __Example:__ Retrieve all the users born in 1986.
 
-```js
+```javascript
 r.table("users").filter(function(user) {
     return user("birthdate").year().eq(1986)
 }).run(conn, callback)

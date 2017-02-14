@@ -30,14 +30,14 @@ Note: The last argument given will always be the 'open' side of the range, but w
 
 __Example:__ Generate a random number in the range `[0,1)`
 
-```js
+```javascript
 r.random().run(conn, callback)
 ```
 
 
 __Example:__ Generate a random integer in the range `[0,100)`
 
-```js
+```javascript
 r.random(100).run(conn, callback)
 r.random(0, 100).run(conn, callback)
 ```
@@ -45,7 +45,7 @@ r.random(0, 100).run(conn, callback)
 
 __Example:__ Generate a random number in the range `(-2.24,1.59]`
 
-```js
+```javascript
 r.random(1.59, -2.24, {float: true}).run(conn, callback)
 ```
 

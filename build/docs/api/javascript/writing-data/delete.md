@@ -62,34 +62,34 @@ RethinkDB write operations will only throw exceptions if errors occur before any
 
 __Example:__ Delete a single document from the table `comments`.
 
-```js
+```javascript
 r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn, callback)
 ```
 
 
 __Example:__ Delete all documents from the table `comments`.
 
-```js
+```javascript
 r.table("comments").delete().run(conn, callback)
 ```
 
 
 __Example:__ Delete all comments where the field `idPost` is `3`.
 
-```js
+```javascript
 r.table("comments").filter({idPost: 3}).delete().run(conn, callback)
 ```
 
 
 __Example:__ Delete a single document from the table `comments` and return its value.
 
-```js
+```javascript
 r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete({returnChanges: true}).run(conn, callback)
 ```
 
 The result look like:
 
-```js
+```javascript
 {
     deleted: 1,
     errors: 0,
@@ -115,6 +115,6 @@ The result look like:
 __Example:__ Delete all documents from the table `comments` without waiting for the
 operation to be flushed to disk.
 
-```js
+```javascript
 r.table("comments").delete({durability: "soft"}).run(conn, callback)
 ```

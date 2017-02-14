@@ -24,7 +24,7 @@ RethinkDB's UUIDs are standards-compliant. Without the optional argument, a vers
 
 __Example:__ Generate a UUID.
 
-```js
+```javascript
 > r.uuid().run(conn, callback)
 // result returned to callback
 "27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
@@ -32,7 +32,7 @@ __Example:__ Generate a UUID.
 
 __Example:__ Generate a UUID based on a string.
 
-```js
+```javascript
 > r.uuid("slava@example.com").run(conn, callback)
 // Result passed to callback
 "90691cbc-b5ea-5826-ae98-951e30fc3b2d"

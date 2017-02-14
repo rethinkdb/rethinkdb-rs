@@ -25,6 +25,6 @@ will be rounded to three decimal places (millisecond-precision).
 
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 
-```js
+```javascript
 r.table("user").get("John").update({birthdate: r.epochTime(531360000)}).run(conn, callback)
 ```

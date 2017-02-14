@@ -23,7 +23,7 @@ Return the seconds in a time object as a number between 0 and 59.999 (double pre
 
 __Example:__ Return the post submitted during the first 30 seconds of every minute.
 
-```js
+```javascript
 r.table("posts").filter(function(post) {
     return post("date").seconds().lt(30)
 })

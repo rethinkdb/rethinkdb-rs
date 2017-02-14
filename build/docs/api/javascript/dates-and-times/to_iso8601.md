@@ -23,7 +23,7 @@ Convert a time object to a string in ISO 8601 format.
 
 __Example:__ Return the current ISO 8601 time.
 
-```js
+```javascript
 r.now().toISO8601().run(conn, callback)
 // Result passed to callback
 "2015-04-20T18:37:52.690+00:00"

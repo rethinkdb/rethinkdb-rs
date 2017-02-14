@@ -62,7 +62,7 @@ RethinkDB write operations will only throw exceptions if errors occur before any
 
 __Example:__ Insert a document into the table `posts`.
 
-```js
+```javascript
 r.table("posts").insert({
     id: 1,
     title: "Lorem ipsum",
@@ -74,7 +74,7 @@ r.table("posts").insert({
 
 The result will be:
 
-```js
+```javascript
 {
     deleted: 0,
     errors: 0,
@@ -89,7 +89,7 @@ The result will be:
 __Example:__ Insert a document without a defined primary key into the table `posts` where the
 primary key is `id`.
 
-```js
+```javascript
 r.table("posts").insert({
     title: "Lorem ipsum",
     content: "Dolor sit amet"
@@ -98,7 +98,7 @@ r.table("posts").insert({
 
 RethinkDB will generate a primary key and return it in `generated_keys`.
 
-```js
+```javascript
 {
     deleted: 0,
     errors: 0,
@@ -114,13 +114,13 @@ RethinkDB will generate a primary key and return it in `generated_keys`.
 
 Retrieve the document you just inserted with:
 
-```js
+```javascript
 r.table("posts").get("dd782b64-70a7-43e4-b65e-dd14ae61d947").run(conn, callback)
 ```
 
 And you will get back:
 
-```js
+```javascript
 {
     id: "dd782b64-70a7-43e4-b65e-dd14ae61d947",
     title: "Lorem ipsum",
@@ -131,7 +131,7 @@ And you will get back:
 
 __Example:__ Insert multiple documents into the table `users`.
 
-```js
+```javascript
 r.table("users").insert([
     {id: "william", email: "william@rethinkdb.com"},
     {id: "lara", email: "lara@rethinkdb.com"}
@@ -141,7 +141,7 @@ r.table("users").insert([
 
 __Example:__ Insert a document into the table `users`, replacing the document if it already exists.  
 
-```js
+```javascript
 r.table("users").insert(
     {id: "william", email: "william@rethinkdb.com"},
     {conflict: "replace"}
@@ -150,14 +150,14 @@ r.table("users").insert(
 
 __Example:__ Copy the documents from `posts` to `postsBackup`.
 
-```js
+```javascript
 r.table("postsBackup").insert(r.table("posts")).run(conn, callback)
 ```
 
 
 __Example:__ Get back a copy of the inserted document (with its generated primary key).
 
-```js
+```javascript
 r.table("posts").insert(
     {title: "Lorem ipsum", content: "Dolor sit amet"},
     {returnChanges: true}
@@ -166,7 +166,7 @@ r.table("posts").insert(
 
 The result will be
 
-```js
+```javascript
 {
     deleted: 0,
     errors: 0,
@@ -192,7 +192,7 @@ The result will be
 
 __Example:__ Provide a resolution function that concatenates memo content in case of conflict.
 
-```js
+```javascript
 // assume newMemos is a list of memo documents to insert
 r.table('memos').insert(newMemos, {conflict: function(id, oldDoc, newDoc) {
     return newDoc.merge(

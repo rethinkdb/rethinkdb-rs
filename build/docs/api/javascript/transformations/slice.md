@@ -45,25 +45,25 @@ With a string, `slice` behaves similarly, with the indexes referring to Unicode 
 
 __Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
-```js
+```javascript
 r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback);
 ```
 
 __Example:__ Return all but the top three players who have a red flag.
 
-```js
+```javascript
 r.table('players').filter({flag: 'red'}).orderBy(r.desc('score')).slice(3).run(conn, callback);
 ```
 
 __Example:__ Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
 
-```js
+```javascript
 r.table('users').orderBy('ticket').slice(x, y, {right_bound: 'closed'}).run(conn, callback);
 ```
 
 __Example:__ Return the elements of an array from the second through two from the end (that is, not including the last two).
 
-```js
+```javascript
 r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn, callback);
 // Result passed to callback
 [2,3]
@@ -71,7 +71,7 @@ r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn, callback);
 
 __Example:__ Return the third through fifth characters of a string.
 
-```js
+```javascript
 r.expr("rutabaga").slice(2,5).run(conn, callback);
 // Result passed to callback
 "tab"

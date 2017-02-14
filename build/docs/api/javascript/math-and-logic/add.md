@@ -36,7 +36,7 @@ The `add` command can be called in either prefix or infix form; both forms are e
 
 __Example:__ It's as easy as 2 + 2 = 4.
 
-```js
+```javascript
 > r.expr(2).add(2).run(conn, callback)
 // result passed to callback
 4
@@ -44,7 +44,7 @@ __Example:__ It's as easy as 2 + 2 = 4.
 
 __Example:__ Concatenate strings.
 
-```js
+```javascript
 > r.expr("foo").add("bar", "baz").run(conn, callback)
 // result passed to callback
 "foobarbaz"
@@ -53,7 +53,7 @@ __Example:__ Concatenate strings.
 
 __Example:__ Concatenate arrays.
 
-```js
+```javascript
 > r.expr(["foo", "bar"]).add(["buzz"]).run(conn, callback)
 // result passed to callback
 [ "foo", "bar", "buzz" ]
@@ -62,13 +62,13 @@ __Example:__ Concatenate arrays.
 
 __Example:__ Create a date one year from now.
 
-```js
+```javascript
 r.now().add(365*24*60*60).run(conn, callback)
 ```
 
 __Example:__ Use [args](/api/javascript/args) with `add` to sum multiple values.
 
-```js
+```javascript
 > vals = [10, 20, 30];
 > r.add(r.args(vals)).run(conn, callback);
 // result passed to callback
@@ -77,7 +77,7 @@ __Example:__ Use [args](/api/javascript/args) with `add` to sum multiple values.
 
 __Example:__ Concatenate an array of strings with `args`.
 
-```js
+```javascript
 > vals = ['foo', 'bar', 'buzz'];
 > r.add(r.args(vals)).run(conn, callback);
 // result passed to callback

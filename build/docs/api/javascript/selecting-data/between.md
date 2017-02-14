@@ -29,7 +29,9 @@ You may also use the special constants `r.minval` and `r.maxval` for boundaries,
 
 If you use arrays as indexes (compound indexes), they will be sorted using [lexicographical order][lo]. Take the following range as an example:
 
-	[[1, "c"] ... [5, "e"]]
+```text
+[[1, "c"] ... [5, "e"]]
+```
 
 This range includes all compound keys:
 
@@ -41,44 +43,44 @@ This range includes all compound keys:
 
 __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open interval).
 
-```js
+```javascript
 r.table('marvel').between(10, 20).run(conn, callback);
 ```
 
 __Example:__ Find all users with primary key >= 10 and <= 20 (an interval closed on both sides).
 
-```js
+```javascript
 r.table('marvel').between(10, 20, {rightBound: 'closed'}).run(conn, callback);
 ```
 
 __Example:__ Find all users with primary key < 20.
 
-```js
+```javascript
 r.table('marvel').between(r.minval, 20).run(conn, callback);
 ```
 
 __Example:__ Find all users with primary key > 10.
 
-```js
+```javascript
 r.table('marvel').between(10, r.maxval, {leftBound: 'open'}).run(conn, callback);
 ```
 
 __Example:__ Between can be used on secondary indexes too. Just pass an optional index argument giving the secondary index to query.
 
-```js
+```javascript
 r.table('dc').between('dark_knight', 'man_of_steel', {index: 'code_name'}).run(conn, callback);
 ```
 
 __Example:__ Get all users whose full name is between "John Smith" and "Wade Welles."
 
-```js
+```javascript
 r.table("users").between(["Smith", "John"], ["Welles", "Wade"],
   {index: "full_name"}).run(conn, callback);
 ```
 
 __Example:__ Get the top 10 ranked teams in order.
 
-```js
+```javascript
 r.table("teams").orderBy({index: "rank"}).between(1, 11).run(conn, callback);
 ```
 
@@ -86,7 +88,7 @@ __Note:__ When `between` is chained after [orderBy](/api/javascript/order_by), b
 
 __Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams ranked in the top 10.
 
-```js
+```javascript
 r.table("teams").between(1, 11, {index: "rank"}).changes().run(conn, callback);
 ```
 

@@ -36,25 +36,25 @@ When `count` is called on a sequence with a predicate value or function, it retu
 
 __Example:__ Count the number of users.
 
-```js
+```javascript
 r.table('users').count().run(conn, callback);
 ```
 
 __Example:__ Count the number of 18 year old users.
 
-```js
+```javascript
 r.table('users')('age').count(18).run(conn, callback);
 ```
 
 __Example:__ Count the number of users over 18.
 
-```js
+```javascript
 r.table('users')('age').count(function(age) { 
     return age.gt(18)
 }).run(conn, callback);
 ```
 
-```js
+```javascript
 r.table('users').count(function(user) {
     return user('age').gt(18)
 }).run(conn, callback)
@@ -62,7 +62,7 @@ r.table('users').count(function(user) {
 
 __Example:__ Return the length of a Unicode string.
 
-```js
+```javascript
 r.expr("こんにちは").count().run(conn, callback);
 // Result passed to callback
 5

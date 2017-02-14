@@ -35,7 +35,7 @@ With the `multi` flag single documents can be assigned to multiple groups, simil
 
 Suppose that the table `games` has the following data:
 
-```js
+```javascript
 [
     {id: 2, player: "Bob", points: 15, type: "ranked"},
     {id: 5, player: "Alice", points: 7, type: "free"},
@@ -46,7 +46,7 @@ Suppose that the table `games` has the following data:
 
 __Example:__ Group games by player.
 
-```js
+```javascript
 > r.table('games').group('player').run(conn, callback)
 
 // Result passed to callback
@@ -75,7 +75,7 @@ sub-streams, producing grouped data.
 
 __Example:__ What is each player's best game?
 
-```js
+```javascript
 > r.table('games').group('player').max('points').run(conn, callback)
 
 // Result passed to callback
@@ -96,7 +96,7 @@ producing more grouped data.
 
 __Example:__ What is the maximum number of points scored by each player?
 
-```js
+```javascript
 > r.table('games').group('player').max('points')('points').run(conn, callback)
 
 // Result passed to callback
@@ -117,7 +117,7 @@ You can also group by more than one field.
 __Example:__ What is the maximum number of points scored by each
 player for each game type?
 
-```js
+```javascript
 > r.table('games').group('player', 'type').max('points')('points').run(conn, callback)
 
 // Result passed to callback
@@ -143,7 +143,7 @@ __Example:__ What is the maximum number of points scored by each
 player for each game type?
 
 
-```js
+```javascript
 > r.table('games')
     .group(function(game) {
         return game.pluck('player', 'type')
@@ -170,7 +170,7 @@ Using a function, you can also group by date on a ReQL [date field](/docs/dates-
 
 __Example:__ How many matches have been played this year by month?
 
-```js
+```javascript
 > r.table('matches').group(
       [r.row('date').year(), r.row('date').month()]
   ).count().run(conn, callback)
@@ -201,7 +201,7 @@ You can also group on an index (primary key or secondary).
 __Example:__ What is the maximum number of points scored by game type?
 
 
-```js
+```javascript
 > r.table('games').group({index:'type'}).max('points')('points').run(conn, callback)
 
 // Result passed to callback
@@ -221,7 +221,7 @@ __Example:__ What is the maximum number of points scored by game type?
 
 Suppose that the table `games2` has the following data:
 
-```js
+```javascript
 [
     { id: 1, matches: {'a': [1, 2, 3], 'b': [4, 5, 6]} },
     { id: 2, matches: {'b': [100], 'c': [7, 8, 9]} },
@@ -231,7 +231,7 @@ Suppose that the table `games2` has the following data:
 
 Using the `multi` option we can group data by match A, B or C.
 
-```js
+```javascript
 r.table('games2').group(r.row('matches').keys(), {multi: true}).run(conn, callback);
 // Result passed to callback
 [
@@ -254,7 +254,7 @@ r.table('games2').group(r.row('matches').keys(), {multi: true}).run(conn, callba
 
 __Example:__ Use [map](/api/javascript/map) and [sum](/api/javascript/sum) to get the total points scored for each match.
 
-```js
+```javascript
 r.table('games2').group(r.row('matches').keys(), {multi: true}).ungroup().map(
     function (doc) {
         return { match: doc('group'), total: doc('reduction').sum(
@@ -283,7 +283,7 @@ grouped data into an array of objects representing the groups.
 
 __Example:__ Ungrouping grouped data.
 
-```js
+```javascript
 > r.table('games').group('player').max('points')('points').ungroup().run(conn, callback)
 
 // Result passed to callback
@@ -305,7 +305,7 @@ grouped data into a table.
 __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
-```js
+```javascript
 > r.table('games')
    .group('player').max('points')('points')
    .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
@@ -335,7 +335,7 @@ argument to `run`:
 
 __Example:__ Get back the raw `GROUPED_DATA` pseudotype.
 
-```js
+```javascript
 > r.table('games').group('player').avg('points').run(conn, {groupFormat:'raw'}, callback)
 
 // Result passed to callback
@@ -350,7 +350,7 @@ __Example:__ Get back the raw `GROUPED_DATA` pseudotype.
 
 Not passing the `group_format` flag would return:
 
-```js
+```javascript
 [
     {
         group: "Alice":
@@ -383,7 +383,7 @@ query.  Below are efficient and inefficient examples.
 
 __Example:__ Efficient operation.
 
-```js
+```javascript
 // r.table('games').group('player').typeOf().run(conn, callback)
 // Returns "GROUPED_STREAM"
 r.table('games').group('player').min('points').run(conn, callback) // EFFICIENT
@@ -391,7 +391,7 @@ r.table('games').group('player').min('points').run(conn, callback) // EFFICIENT
 
 __Example:__ Inefficient operation.
 
-```js
+```javascript
 // r.table('games').group('player').orderBy('score').typeOf().run(conn, callback)
 // Returns "GROUPED_DATA"
 r.table('games').group('player').orderBy('score').nth(0).run(conn, callback) // INEFFICIENT
@@ -412,7 +412,7 @@ would fail for tables with more than 100,000 rows without changing the `arrayLim
 __Example:__ What is the maximum number of points scored by each
 player in free games?
 
-```js
+```javascript
 > r.table('games').filter( r.row('type').eq('free'))
     .group('player').max('points')('points')
     .run(conn, callback)
@@ -432,7 +432,7 @@ player in free games?
 
 __Example:__ What is each player's highest even and odd score?
 
-```js
+```javascript
 r.table('games')
     .group('name', function(game) {
         return game('points').mod(2)

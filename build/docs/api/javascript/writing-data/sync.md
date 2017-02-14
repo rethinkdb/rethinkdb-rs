@@ -28,7 +28,7 @@ If successful, the operation returns an object: `{synced: 1}`.
 __Example:__ After having updated multiple heroes with soft durability, we now want to wait
 until these changes are persisted.
 
-```js
+```javascript
 r.table('marvel').sync().run(conn, callback)
 ```
 

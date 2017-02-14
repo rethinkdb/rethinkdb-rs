@@ -43,7 +43,7 @@ See the [status](/api/javascript/status) command for an explanation of the objec
 
 __Example:__ Rebalance a table.
 
-```js
+```javascript
 > r.table('superheroes').rebalance().run(conn, callback);
 ```
 
@@ -51,7 +51,7 @@ __Example:__ Rebalance a table.
 
 Example return:
 
-```js
+```javascript
 {
   "rebalanced": 1,
   "status_changes": [

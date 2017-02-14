@@ -53,7 +53,7 @@ Read [Sharding and replication](/docs/sharding-and-replication/) for a complete 
 
 __Example:__ Reconfigure a table.
 
-```js
+```javascript
 > r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
 ```
 
@@ -61,7 +61,7 @@ __Example:__ Reconfigure a table.
 
 Example return:
 
-```js
+```javascript
 {
   "reconfigured": 1,
   "config_changes": [
@@ -114,7 +114,7 @@ Example return:
 
 __Example:__ Reconfigure a table, specifying replicas by server tags.
 
-```js
+```javascript
 > r.table('superheroes').reconfigure({shards: 2, replicas: {wooster: 1, wayne: 1}, primaryReplicaTag: 'wooster'}).run(conn, callback);
 // Result passed to callback
 {
@@ -199,7 +199,7 @@ __Note:__ `emergencyRepair` may only be used on individual tables, not on databa
 
 __Example:__ Perform an emergency repair on a table.
 
-```js
+```javascript
 r.table('superheroes').reconfigure(
   {emergencyRepair: "unsafe_rollback"}
 ).run(conn, callback);

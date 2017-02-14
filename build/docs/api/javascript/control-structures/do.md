@@ -29,7 +29,7 @@ Arguments passed to the `do` function must be basic data types, and cannot be st
 
 __Example:__ Compute a golfer's net score for a game.
 
-```js
+```javascript
 r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do(
     function (player) {
         return player('gross_score').sub(player('course_handicap'));
@@ -39,7 +39,7 @@ r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do(
 
 __Example:__ Return the best scoring player in a two-player golf match.
 
-```js
+```javascript
 r.do(r.table('players').get(id1), r.table('players').get(id2),
     function (player1, player2) {
         return r.branch(player1('gross_score').lt(player2('gross_score')),
@@ -52,7 +52,7 @@ Note that `branch`, the ReQL conditional command, must be used instead of `if`. 
 
 __Example:__ Take different actions based on the result of a ReQL [insert](/api/javascript/insert) command.
 
-```js
+```javascript
 var newData = {
     id: 100,
     name: 'Agatha',

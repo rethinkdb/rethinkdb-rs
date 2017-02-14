@@ -35,61 +35,61 @@ single-character strings.
 
 __Example:__ Split on whitespace.
 
-```js
+```javascript
 r.expr("foo  bar bax").split().run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 ["foo", "bar", "bax"]
 ```
 
 __Example:__ Split the entries in a CSV file.
 
-```js
+```javascript
 r.expr("12,37,,22,").split(",").run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 ["12", "37", "", "22", ""]
 ```
 
 __Example:__ Split a string into characters.
 
-```js
+```javascript
 r.expr("mlucy").split("").run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 ["m", "l", "u", "c", "y"]
 ```
 
 __Example:__ Split the entries in a CSV file, but only at most 3
 times.
 
-```js
+```javascript
 r.expr("12,37,,22,").split(",", 3).run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 ["12", "37", "", "22,"]
 ```
 
 __Example:__ Split on whitespace at most once (i.e. get the first word).
 
-```js
+```javascript
 r.expr("foo  bar bax").split(null, 1).run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 ["foo", "bar bax"]
 ```

@@ -55,7 +55,7 @@ finalEmit(accumulator | base) &rarr; array
 
 __Example:__ Concatenate words from a list.
 
-```js
+```javascript
 r.table('words').orderBy('id').fold('', function (acc, word) {
     return acc.add(r.branch(acc.eq(''), '', ', ')).add(word);
 }).run(conn, callback);
@@ -65,7 +65,7 @@ r.table('words').orderBy('id').fold('', function (acc, word) {
 
 __Example:__ Return every other row in a table.
 
-```js
+```javascript
 r.table('even_things').fold(0, function(acc, row) {
     return acc.add(1);
 }, {emit:
@@ -79,7 +79,7 @@ The first function increments the accumulator each time it's called, starting at
 
 __Example:__ Compute a five-day running average for a weight tracker.
 
-```js
+```javascript
 r.table('tracker').filter({name: 'bob'}).orderBy('date')('weight').fold(
     [],
     function (acc, row) { return r.expr([row]).add(acc).limit(5); },

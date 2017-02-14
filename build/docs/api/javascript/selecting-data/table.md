@@ -23,13 +23,13 @@ Return all documents in a table. Other commands may be chained after `table` to 
 
 __Example:__ Return all documents in the table 'marvel' of the default database.
 
-```js
+```javascript
 r.table('marvel').run(conn, callback)
 ```
 
 __Example:__ Return all documents in the table 'marvel' of the database 'heroes'.
 
-```js
+```javascript
 r.db('heroes').table('marvel').run(conn, callback)
 ```
 
@@ -43,6 +43,6 @@ There are two optional arguments.
 
 __Example:__ Allow potentially out-of-date data in exchange for faster reads.
 
-```js
+```javascript
 r.db('heroes').table('marvel', {readMode: 'outdated'}).run(conn, callback)
 ```

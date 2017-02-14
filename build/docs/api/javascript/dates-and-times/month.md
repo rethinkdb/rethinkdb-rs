@@ -24,7 +24,7 @@ Return the month of a time object as a number between 1 and 12. For your conveni
 
 __Example:__ Retrieve all the users who were born in November.
 
-```js
+```javascript
 r.table("users").filter(
     r.row("birthdate").month().eq(11)
 )
@@ -33,7 +33,7 @@ r.table("users").filter(
 
 __Example:__ Retrieve all the users who were born in November.
 
-```js
+```javascript
 r.table("users").filter(
     r.row("birthdate").month().eq(r.november)
 )

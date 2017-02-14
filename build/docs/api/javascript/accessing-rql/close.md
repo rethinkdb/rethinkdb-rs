@@ -28,7 +28,7 @@ A noreply query is executed by passing the `noreply` option to the [run](/api/ja
 
 __Example:__ Close an open connection, waiting for noreply writes to finish.
 
-```js
+```javascript
 conn.close(function(err) { if (err) throw err; })
 ```
 
@@ -36,7 +36,7 @@ conn.close(function(err) { if (err) throw err; })
 
 Alternatively, you can use promises.
 
-```js
+```javascript
 p = conn.close();
 p.then(function() {
     // `conn` is now closed
@@ -47,13 +47,13 @@ p.then(function() {
 
 __Example:__ Close an open connection immediately.
 
-```js
+```javascript
 conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
 ```
 
 Alternatively, you can use promises.
 
-```js
+```javascript
 conn.close({noreplyWait: false}).then(function() {
     // conn is now closed
 }).error(function(err) { 

@@ -81,7 +81,7 @@ RethinkDB write operations will only throw exceptions if errors occur before any
 
 __Example:__ Replace the document with the primary key `1`.
 
-```js
+```javascript
 r.table("posts").get(1).replace({
     id: 1,
     title: "Lorem ipsum",
@@ -92,7 +92,7 @@ r.table("posts").get(1).replace({
 
 __Example:__ Remove the field `status` from all posts.
 
-```js
+```javascript
 r.table("posts").replace(function(post) {
     return post.without("status")
 }).run(conn, callback)
@@ -100,7 +100,7 @@ r.table("posts").replace(function(post) {
 
 __Example:__ Remove all the fields that are not `id`, `title` or `content`.
 
-```js
+```javascript
 r.table("posts").replace(function(post) {
     return post.pluck("id", "title", "content")
 }).run(conn, callback)
@@ -108,7 +108,7 @@ r.table("posts").replace(function(post) {
 
 __Example:__ Replace the document with the primary key `1` using soft durability.
 
-```js
+```javascript
 r.table("posts").get(1).replace({
     id: 1,
     title: "Lorem ipsum",
@@ -122,7 +122,7 @@ r.table("posts").get(1).replace({
 __Example:__ Replace the document with the primary key `1` and return the values of the document before
 and after the replace operation.
 
-```js
+```javascript
 r.table("posts").get(1).replace({
     id: 1,
     title: "Lorem ipsum",
@@ -135,7 +135,7 @@ r.table("posts").get(1).replace({
 
 The result will have two fields `old_val` and `new_val`.
 
-```js
+```javascript
 {
     deleted: 0,
     errors: 0,

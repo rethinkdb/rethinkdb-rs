@@ -32,7 +32,7 @@ Only a limited subset of ReQL commands may be chained after `binary`:
 
 __Example:__ Save an avatar image to a existing user record.
 
-```js
+```javascript
 var fs = require('fs');
 fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
     if (err) {
@@ -48,7 +48,7 @@ fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
 
 __Example:__ Get the size of an existing avatar image.
 
-```js
+```javascript
 r.table('users').get(100)('avatar').count().run(conn, callback);
 // result returned to callback
 14156

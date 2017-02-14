@@ -29,7 +29,7 @@ The `server` command returns either two or three fields:
 
 __Example:__ Return server information.
 
-```js
+```javascript
 conn.server(callback);
 
 // Result passed to callback

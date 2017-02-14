@@ -20,7 +20,7 @@ The top-level ReQL namespace.
 
 __Example:__ Set up your top-level namespace.
 
-```js
+```javascript
 var r = require('rethinkdb');
 ```
 
@@ -52,7 +52,7 @@ If the connection cannot be established, a `ReqlDriverError` will be passed to t
 
 __Example:__ Open a connection using the default host and port, specifying the default database.
 
-```js
+```javascript
 r.connect({
     db: 'marvel'
 }, function(err, conn) {
@@ -62,7 +62,7 @@ r.connect({
 
 If no callback is provided, a promise will be returned.
 
-```js
+```javascript
 var promise = r.connect({db: 'marvel'});
 ```
 
@@ -79,7 +79,7 @@ Close an open connection. If no callback is provided, a promise will be returned
 
 __Example:__ Close an open connection, waiting for noreply writes to finish.
 
-```js
+```javascript
 conn.close(function(err) { if (err) throw err; })
 ```
 
@@ -96,7 +96,7 @@ Close and reopen a connection. If no callback is provided, a promise will be ret
 
 __Example:__ Cancel outstanding requests/queries that are no longer needed.
 
-```js
+```javascript
 conn.reconnect({noreplyWait: false}, function(error, connection) { ... })
 ```
 
@@ -113,7 +113,7 @@ Change the default database on this connection.
 __Example:__ Change the default database so that we don't need to
 specify the database when referencing a table.
 
-```js
+```javascript
 conn.use('marvel')
 r.table('heroes').run(conn, ...) // refers to r.db('marvel').table('heroes')
 ```
@@ -133,7 +133,7 @@ result, or a cursor, depending on the query.
 __Example:__ Run a query on the connection `conn` and log each row in
 the result to the console.
 
-```js
+```javascript
 r.table('marvel').run(conn, function(err, cursor) {
     cursor.each(console.log);
 })
@@ -154,7 +154,7 @@ __Example:__ Subscribe to the changes on a table.
 
 Start monitoring the changefeed in one client:
 
-```js
+```javascript
 r.table('games').changes().run(conn, function(err, cursor) {
   cursor.each(console.log);
 });
@@ -163,7 +163,7 @@ r.table('games').changes().run(conn, function(err, cursor) {
 As these queries are performed in a second client, the first
 client would receive and print the following objects:
 
-```js
+```javascript
 > r.table('games').insert({id: 1}).run(conn, callback);
 {old_val: null, new_val: {id: 1}}
 
@@ -197,7 +197,7 @@ If no callback is provided, a promise will be returned.
 __Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
 wait until the server has processed them.
 
-```js
+```javascript
 conn.noreplyWait(function(err) { ... })
 ```
 
@@ -214,7 +214,7 @@ Return information about the server being used by a connection.
 
 __Example:__ Return server information.
 
-```js
+```javascript
 conn.server(callback);
 
 // Result passed to callback
@@ -246,7 +246,7 @@ Connections implement the same interface as Node's [EventEmitter][ee]. This allo
 
 __Example:__ Monitor the connection state with events.
 
-```js
+```javascript
 r.connect({}, function(err, conn) {
     if (err) throw err;
 
@@ -281,7 +281,7 @@ Get the next element in the cursor.
 
 __Example:__ Retrieve the next element.
 
-```js
+```javascript
 cursor.next(function(err, row) {
     if (err) throw err;
     processRow(row);
@@ -304,7 +304,7 @@ returns `false`).
 
 __Example:__ Let's process all the elements!
 
-```js
+```javascript
 cursor.each(function(err, row) {
     if (err) throw err;
     processRow(row);
@@ -323,7 +323,7 @@ Lazily iterate over a cursor, array, or feed one element at a time. `eachAsync` 
 
 __Example:__ Process all the elements in a stream, using `then` and `catch` for handling the end of the stream and any errors. Note that iteration may be stopped in the first callback (`rowProcess`) by returning any non-Promise value.
 
-```js
+```javascript
 cursor.eachAsync(function (row) {
     var ok = processRowData(row);
     if (!ok) {
@@ -352,7 +352,7 @@ Retrieve all results and pass them as an array to the given callback.
 __Example:__ For small result sets it may be more convenient to process them at once as
 an array.
 
-```js
+```javascript
 cursor.toArray(function(err, results) {
     if (err) throw err;
     processResults(results);
@@ -372,7 +372,7 @@ Close a cursor. Closing a cursor cancels the corresponding query and frees the m
 
 __Example:__ Close a cursor.
 
-```js
+```javascript
 cursor.close(function (err) {
     if (err) {
         console.log("An error occurred on cursor close");
@@ -399,7 +399,7 @@ Cursors and feeds implement the same interface as Node's [EventEmitter](http://n
 
 __Example:__ Broadcast all messages with [socket.io](http://socket.io).
 
-```js
+```javascript
 r.table("messages").orderBy({index: "date"}).run(conn, function(err, cursor) {
     if (err) {
         // Handle error
@@ -432,7 +432,7 @@ relational databases.
 
 __Example:__ Create a database named 'superheroes'.
 
-```js
+```javascript
 > r.dbCreate('superheroes').run(conn, callback);
 // Result passed to callback
 {
@@ -461,7 +461,7 @@ Drop a database. The database, all its tables, and corresponding data will be de
 
 __Example:__ Drop a database named 'superheroes'.
 
-```js
+```javascript
 > r.dbDrop('superheroes').run(conn, callback);
 // Result passed to callback
 {
@@ -491,7 +491,7 @@ List all database names in the system. The result is a list of strings.
 
 __Example:__ List all databases.
 
-```js
+```javascript
 r.dbList().run(conn, callback)
 ```
 
@@ -512,7 +512,7 @@ Create a table. A RethinkDB table is a collection of JSON documents.
 
 __Example:__ Create a table named 'dc_universe' with the default settings.
 
-```js
+```javascript
 > r.db('heroes').tableCreate('dc_universe').run(conn, callback);
 // Result passed to callback
 {
@@ -554,7 +554,7 @@ Drop a table from a database. The table and all its data will be deleted.
 
 __Example:__ Drop a table named 'dc_universe'.
 
-```js
+```javascript
 > r.db('test').tableDrop('dc_universe').run(conn, callback);
 // Result passed to callback
 {
@@ -596,7 +596,7 @@ List all table names in a database. The result is a list of strings.
 
 __Example:__ List all tables of the 'test' database.
 
-```js
+```javascript
 r.db('test').tableList().run(conn, callback)
 ```
 
@@ -612,7 +612,7 @@ Create a new secondary index on a table. Secondary indexes improve the speed of 
 
 __Example:__ Create a simple index based on the field `postId`.
 
-```js
+```javascript
 r.table('comments').indexCreate('postId').run(conn, callback)
 ```
 
@@ -628,7 +628,7 @@ Delete a previously created secondary index of this table.
 
 __Example:__ Drop a secondary index named 'code_name'.
 
-```js
+```javascript
 r.table('dc').indexDrop('code_name').run(conn, callback)
 ```
 
@@ -644,7 +644,7 @@ List all the secondary indexes of this table.
 
 __Example:__ List the available secondary indexes for this table.
 
-```js
+```javascript
 r.table('marvel').indexList().run(conn, callback)
 ```
 
@@ -660,7 +660,7 @@ Rename an existing secondary index on a table. If the optional argument `overwri
 
 __Example:__ Rename an index on the comments table.
 
-```js
+```javascript
 r.table('comments').indexRename('postId', 'messageId').run(conn, callback)
 ```
 
@@ -677,7 +677,7 @@ of all indexes on this table if no indexes are specified.
 
 __Example:__ Get the status of all the indexes on `test`:
 
-```js
+```javascript
 r.table('test').indexStatus().run(conn, callback)
 ```
 
@@ -694,7 +694,7 @@ indexes on this table to be ready if no indexes are specified.
 
 __Example:__ Wait for all indexes on the table `test` to be ready:
 
-```js
+```javascript
 r.table('test').indexWait().run(conn, callback)
 ```
 
@@ -715,7 +715,7 @@ documents.
 
 __Example:__ Insert a document into the table `posts`.
 
-```js
+```javascript
 r.table("posts").insert({
     id: 1,
     title: "Lorem ipsum",
@@ -740,7 +740,7 @@ Update JSON documents in a table. Accepts a JSON document, a ReQL expression, or
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
-```js
+```javascript
 r.table("posts").get(1).update({status: "published"}).run(conn, callback)
 ```
 
@@ -763,7 +763,7 @@ have the same primary key as the original document.
 
 __Example:__ Replace the document with the primary key `1`.
 
-```js
+```javascript
 r.table("posts").get(1).replace({
     id: 1,
     title: "Lorem ipsum",
@@ -789,7 +789,7 @@ Delete one or more documents from a table.
 
 __Example:__ Delete a single document from the table `comments`.
 
-```js
+```javascript
 r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn, callback)
 ```
 
@@ -809,7 +809,7 @@ until all previous writes to the table are persisted.
 __Example:__ After having updated multiple heroes with soft durability, we now want to wait
 until these changes are persisted.
 
-```js
+```javascript
 r.table('marvel').sync().run(conn, callback)
 ```
 
@@ -829,7 +829,7 @@ Reference a database.
 
 __Example:__ Explicitly specify a database for a query.
 
-```js
+```javascript
 r.db('heroes').table('marvel').run(conn, callback)
 ```
 
@@ -845,7 +845,7 @@ Return all documents in a table. Other commands may be chained after `table` to 
 
 __Example:__ Return all documents in the table 'marvel' of the default database.
 
-```js
+```javascript
 r.table('marvel').run(conn, callback)
 ```
 
@@ -861,7 +861,7 @@ Get a document by primary key.
 
 __Example:__ Find a document by UUID.
 
-```js
+```javascript
 r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn, callback);
 ```
 
@@ -877,7 +877,7 @@ Get all documents where the given value matches the value of the requested index
 
 __Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/javascript/get/) when using a secondary index.
 
-```js
+```javascript
 r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn, callback)
 ```
 
@@ -894,7 +894,7 @@ Get all documents between two keys. Accepts three optional arguments: `index`, `
 
 __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open interval).
 
-```js
+```javascript
 r.table('marvel').between(10, 20).run(conn, callback);
 ```
 
@@ -912,7 +912,7 @@ Return all the elements in a sequence for which the given predicate is true. The
 
 __Example:__ Get all users who are 30 years old.
 
-```js
+```javascript
 r.table('users').filter({age: 30}).run(conn, callback);
 ```
 
@@ -935,7 +935,7 @@ Returns an inner join of two sequences.
 
 __Example:__ Return a list of all matchups between Marvel and DC heroes in which the DC hero could beat the Marvel hero in a fight.
 
-```js
+```javascript
 r.table('marvel').innerJoin(r.table('dc'), function(marvelRow, dcRow) {
     return marvelRow('strength').lt(dcRow('strength'))
 }).zip().run(conn, callback)
@@ -954,7 +954,7 @@ Returns a left outer join of two sequences. The returned sequence represents a u
 
 __Example:__ Return a list of all Marvel heroes, paired with any DC heroes who could beat them in a fight.
 
-```js
+```javascript
 r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
     return marvelRow('strength').lt(dcRow('strength'))
 }).run(conn, callback)
@@ -977,13 +977,13 @@ __Example:__ Match players with the games they've played against one another.
 
 Join these tables using `gameId` on the player table and `id` on the games table:
 
-```js
+```javascript
 r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
 ```
 
 This will return a result set such as the following:
 
-```js
+```javascript
 [
     {
         "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
@@ -1010,7 +1010,7 @@ Used to 'zip' up the result of a join by merging the 'right' fields into 'left' 
 
 __Example:__ 'zips up' the sequence by merging the left and right fields produced by a join.
 
-```js
+```javascript
 r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc'))
     .zip().run(conn, callback)
 ```
@@ -1034,7 +1034,7 @@ Transform each element of one or more sequences by applying a mapping function t
 
 __Example:__ Return the first five squares.
 
-```js
+```javascript
 r.expr([1, 2, 3, 4, 5]).map(function (val) {
     return val.mul(val);
 }).run(conn, callback);
@@ -1057,7 +1057,7 @@ __Example:__ Get a list of users and their posts, excluding any users who have n
 
 Existing table structure:
 
-```js
+```javascript
 [
     { 'id': 1, 'user': 'bob', 'email': 'bob@foo.com', 'posts': [ 1, 4, 5 ] },
     { 'id': 2, 'user': 'george', 'email': 'george@foo.com' },
@@ -1067,7 +1067,7 @@ Existing table structure:
 
 Command and output:
 
-```js
+```javascript
 > r.table('users').withFields('id', 'user', 'posts').run(conn, callback)
 // Result passed to callback
 [
@@ -1089,7 +1089,7 @@ Concatenate one or more elements into a single sequence using a mapping function
 
 __Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The field "defeatedMonsters" is an array of one or more monster names.
 
-```js
+```javascript
 r.table('marvel').concatMap(function(hero) {
     return hero('defeatedMonsters')
 }).run(conn, callback)
@@ -1111,7 +1111,7 @@ the ordering, wrap the attribute with either `r.asc` or `r.desc`
 
 __Example:__ Order all the posts using the index `date`.
 
-```js
+```javascript
 r.table('posts').orderBy({index: 'date'}).run(conn, callback);
 ```
 
@@ -1128,7 +1128,7 @@ Skip a number of elements from the head of the sequence.
 
 __Example:__ Here in conjunction with [orderBy](/api/javascript/order_by/) we choose to ignore the most successful heroes.
 
-```js
+```javascript
 r.table('marvel').orderBy('successMetric').skip(10).run(conn, callback)
 ```
 
@@ -1145,7 +1145,7 @@ End the sequence after the given number of elements.
 
 __Example:__ Only so many can fit in our Pantheon of heroes.
 
-```js
+```javascript
 r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
 ```
 
@@ -1165,7 +1165,7 @@ Return the elements of a sequence within the specified range.
 
 __Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 
-```js
+```javascript
 r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback);
 ```
 
@@ -1182,7 +1182,7 @@ Get the *nth* element of a sequence, counting from zero. If the argument is nega
 
 __Example:__ Select the second element in the array.
 
-```js
+```javascript
 r.expr([1,2,3]).nth(1).run(conn, callback)
 r.expr([1,2,3])(1).run(conn, callback)
 ```
@@ -1199,7 +1199,7 @@ Get the indexes of an element in a sequence. If the argument is a predicate, get
 
 __Example:__ Find the position of the letter 'c'.
 
-```js
+```javascript
 r.expr(['a','b','c']).offsetsOf('c').run(conn, callback)
 ```
 
@@ -1215,7 +1215,7 @@ Test if a sequence is empty.
 
 __Example:__ Are there any documents in the marvel table?
 
-```js
+```javascript
 r.table('marvel').isEmpty().run(conn, callback)
 ```
 
@@ -1234,7 +1234,7 @@ Merge two or more sequences.
 
 __Example:__ Construct a stream of all heroes.
 
-```js
+```javascript
 r.table('marvel').union(r.table('dc')).run(conn, callback);
 ```
 
@@ -1252,7 +1252,7 @@ Select a given number of elements from a sequence with uniform random distributi
 
 __Example:__ Select 3 random heroes.
 
-```js
+```javascript
 r.table('marvel').sample(3).run(conn, callback)
 ```
 
@@ -1274,7 +1274,7 @@ fields or functions provided.
 
 __Example:__ Group games by player.
 
-```js
+```javascript
 > r.table('games').group('player').run(conn, callback)
 
 // Result passed to callback
@@ -1314,7 +1314,7 @@ the value of their reduction.
 __Example:__ What is the maximum number of points scored by each
 player, with the highest scorers first?
 
-```js
+```javascript
 r.table('games')
    .group('player').max('points')('points')
    .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
@@ -1333,7 +1333,7 @@ Produce a single value from a sequence through repeated application of a reducti
 
 __Example:__ Return the number of documents in the table `posts`.
 
-```js
+```javascript
 r.table("posts").map(function(doc) {
     return 1;
 }).reduce(function(left, right) {
@@ -1356,7 +1356,7 @@ Apply a function to a sequence in order, maintaining state via an accumulator. T
 
 __Example:__ Concatenate words from a list.
 
-```js
+```javascript
 r.table('words').orderBy('id').fold('', function (acc, word) {
     return acc.add(r.branch(acc.eq(''), '', ', ')).add(word);
 }).run(conn, callback);
@@ -1380,7 +1380,7 @@ Counts the number of elements in a sequence or key/value pairs in an object, or 
 
 __Example:__ Count the number of users.
 
-```js
+```javascript
 r.table('users').count().run(conn, callback);
 ```
 
@@ -1402,7 +1402,7 @@ results, skipping elements of the sequence where that function returns
 
 __Example:__ What's 3 + 5 + 7?
 
-```js
+```javascript
 r.expr([3, 5, 7]).sum().run(conn, callback)
 ```
 
@@ -1424,7 +1424,7 @@ function returns `null` or a non-existence error.
 
 __Example:__ What's the average of 3, 5, and 7?
 
-```js
+```javascript
 r.expr([3, 5, 7]).avg().run(conn, callback)
 ```
 
@@ -1443,7 +1443,7 @@ Finds the minimum element of a sequence.
 
 __Example:__ Return the minimum value in the list `[3, 5, 7]`.
 
-```js
+```javascript
 r.expr([3, 5, 7]).min().run(conn, callback);
 ```
 
@@ -1462,7 +1462,7 @@ Finds the maximum element of a sequence.
 
 __Example:__ Return the maximum value in the list `[3, 5, 7]`.
 
-```js
+```javascript
 r.expr([3, 5, 7]).max().run(conn, callback);
 ```
 
@@ -1481,7 +1481,7 @@ Removes duplicates from elements in a sequence.
 
 __Example:__ Which unique villains have been vanquished by Marvel heroes?
 
-```js
+```javascript
 r.table('marvel').concatMap(function(hero) {
     return hero('villainList')
 }).distinct().run(conn, callback)
@@ -1503,7 +1503,7 @@ where that predicate returns `true`.
 
 __Example:__ Has Iron Man ever fought Superman?
 
-```js
+```javascript
 r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, callback);
 ```
 
@@ -1523,7 +1523,7 @@ Returns the currently visited document.
 
 __Example:__ Get all users whose age is greater than 5.
 
-```js
+```javascript
 r.table('users').filter(r.row('age').gt(5)).run(conn, callback)
 ```
 
@@ -1544,7 +1544,7 @@ Plucks out one or more attributes from either an object or a sequence of objects
 __Example:__ We just need information about IronMan's reactor and not the rest of the
 document.
 
-```js
+```javascript
 r.table('marvel').get('IronMan').pluck('reactorState', 'reactorPower').run(conn, callback)
 ```
 
@@ -1565,7 +1565,7 @@ the specified paths removed.
 __Example:__ Since we don't need it for this computation we'll save bandwidth and leave
 out the list of IronMan's romantic conquests.
 
-```js
+```javascript
 r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn, callback)
 ```
 
@@ -1584,7 +1584,7 @@ Merge two or more objects together to construct a new object with properties fro
 
 __Example:__ Equip Thor for battle.
 
-```js
+```javascript
 r.table('marvel').get('thor').merge(
     r.table('equipment').get('hammer'),
     r.table('equipment').get('pimento_sandwich')
@@ -1603,7 +1603,7 @@ Append a value to an array.
 
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 
-```js
+```javascript
 r.table('marvel').get('IronMan')('equipment').append('newBoots').run(conn, callback)
 ```
 
@@ -1619,7 +1619,7 @@ Prepend a value to an array.
 
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 
-```js
+```javascript
 r.table('marvel').get('IronMan')('equipment').prepend('newBoots').run(conn, callback)
 ```
 
@@ -1635,7 +1635,7 @@ Remove the elements of one array from another array.
 
 __Example:__ Retrieve Iron Man's equipment list without boots.
 
-```js
+```javascript
 r.table('marvel').get('IronMan')('equipment')
   .difference(['Boots'])
   .run(conn, callback)
@@ -1653,7 +1653,7 @@ Add a value to an array and return it as a set (an array with distinct values).
 
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 
-```js
+```javascript
 r.table('marvel').get('IronMan')('equipment').setInsert('newBoots').run(conn, callback)
 ```
 
@@ -1669,7 +1669,7 @@ Add a several values to an array and return it as a set (an array with distinct 
 
 __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots and an arc reactor.
 
-```js
+```javascript
 r.table('marvel').get('IronMan')('equipment').setUnion(['newBoots', 'arc_reactor']).run(conn, callback)
 ```
 
@@ -1686,7 +1686,7 @@ distinct values).
 
 __Example:__ Check which pieces of equipment Iron Man has from a fixed list.
 
-```js
+```javascript
 r.table('marvel').get('IronMan')('equipment').setIntersection(['newBoots', 'arc_reactor']).run(conn, callback)
 ```
 
@@ -1703,7 +1703,7 @@ distinct values).
 
 __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed list.
 
-```js
+```javascript
 r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_reactor']).run(conn, callback)
 ```
 
@@ -1722,7 +1722,7 @@ Get a single field from an object. If called on a sequence, gets that field from
 
 __Example:__ What was Iron Man's first appearance in a comic?
 
-```js
+```javascript
 r.table('marvel').get('IronMan')('firstAppearance').run(conn, callback)
 ```
 
@@ -1741,7 +1741,7 @@ object in the sequence, skipping objects that lack it.
 
 __Example:__ What was Iron Man's first appearance in a comic?
 
-```js
+```javascript
 r.table('marvel').get('IronMan').getField('firstAppearance').run(conn, callback)
 ```
 
@@ -1759,7 +1759,7 @@ Test if an object has one or more fields. An object has a field if it has that k
 
 __Example:__ Return the players who have won games.
 
-```js
+```javascript
 r.table('players').hasFields('games_won').run(conn, callback)
 ```
 
@@ -1775,7 +1775,7 @@ Insert a value in to an array at a given index. Returns the modified array.
 
 __Example:__ Hulk decides to join the avengers.
 
-```js
+```javascript
 r.expr(["Iron Man", "Spider-Man"]).insertAt(1, "Hulk").run(conn, callback)
 ```
 
@@ -1791,7 +1791,7 @@ Insert several values in to an array at a given index. Returns the modified arra
 
 __Example:__ Hulk and Thor decide to join the avengers.
 
-```js
+```javascript
 r.expr(["Iron Man", "Spider-Man"]).spliceAt(1, ["Hulk", "Thor"]).run(conn, callback)
 ```
 
@@ -1807,7 +1807,7 @@ Remove one or more elements from an array at a given index. Returns the modified
 
 __Example:__ Delete the second element of an array.
 
-```js
+```javascript
 > r(['a','b','c','d','e','f']).deleteAt(1).run(conn, callback)
 // result passed to callback
 ['a', 'c', 'd', 'e', 'f']
@@ -1825,7 +1825,7 @@ Change a value in an array at a given index. Returns the modified array.
 
 __Example:__ Bruce Banner hulks out.
 
-```js
+```javascript
 r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
 ```
 
@@ -1842,7 +1842,7 @@ Return an array containing all of an object's keys. Note that the keys will be s
 
 __Example:__ Get all the keys from a table row.
 
-```js
+```javascript
 // row: { id: 1, mail: "fred@example.com", name: "fred" }
 
 r.table('users').get(1).keys().run(conn, callback);
@@ -1863,7 +1863,7 @@ Return an array containing all of an object's values. `values()` guarantees the 
 
 __Example:__ Get all of the values from a table row.
 
-```js
+```javascript
 // row: { id: 1, mail: "fred@example.com", name: "fred" }
 
 r.table('users').get(1).values().run(conn, callback);
@@ -1883,7 +1883,7 @@ Replace an object in a field instead of merging it with an existing object in a 
 
 __Example:__ Replace one nested document with another rather than merging the fields.
 
-```js
+```javascript
 r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)
 
 // Result passed to callback
@@ -1911,13 +1911,13 @@ be strings.  `r.object(A, B, C, D)` is equivalent to
 
 __Example:__ Create a simple object.
 
-```js
+```javascript
 r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 {data: ["foo", "bar"], id: 5}
 ```
 
@@ -1945,7 +1945,7 @@ If no match is found, returns `null`.
 __Example:__ Get all users whose name starts with "A". Because `null` evaluates to `false` in
 [filter](/api/javascript/filter/), you can just use the result of `match` for the predicate.
 
-```js
+```javascript
 r.table('users').filter(function(doc){
     return doc('name').match("^A")
 }).run(conn, callback)
@@ -1968,13 +1968,13 @@ while still specifying `max_splits`.)
 
 __Example:__ Split on whitespace.
 
-```js
+```javascript
 r.expr("foo  bar bax").split().run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 ["foo", "bar", "bax"]
 ```
 
@@ -1990,13 +1990,13 @@ Uppercases a string.
 
 __Example:__
 
-```js
+```javascript
 r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 "SENTENCE ABOUT LATEX."
 ```
 
@@ -2014,13 +2014,13 @@ Lowercases a string.
 
 __Example:__
 
-```js
+```javascript
 r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 ```
 
 Result:
 
-```js
+```javascript
 "sentence about latex."
 ```
 
@@ -2043,7 +2043,7 @@ Sum two or more numbers, or concatenate two or more strings or arrays.
 
 __Example:__ It's as easy as 2 + 2 = 4.
 
-```js
+```javascript
 > r.expr(2).add(2).run(conn, callback)
 // result passed to callback
 4
@@ -2063,7 +2063,7 @@ Subtract two numbers.
 
 __Example:__ It's as easy as 2 - 2 = 0.
 
-```js
+```javascript
 r.expr(2).sub(2).run(conn, callback)
 ```
 
@@ -2080,7 +2080,7 @@ Multiply two numbers, or make a periodic array.
 
 __Example:__ It's as easy as 2 * 2 = 4.
 
-```js
+```javascript
 r.expr(2).mul(2).run(conn, callback)
 ```
 
@@ -2096,7 +2096,7 @@ Divide two numbers.
 
 __Example:__ It's as easy as 2 / 2 = 1.
 
-```js
+```javascript
 r.expr(2).div(2).run(conn, callback)
 ```
 
@@ -2112,7 +2112,7 @@ number.mod(number) &rarr; number
 
 __Example:__ It's as easy as 2 % 2 = 0.
 
-```js
+```javascript
 r.expr(2).mod(2).run(conn, callback)
 ```
 
@@ -2129,7 +2129,7 @@ Compute the logical "and" of one or more values.
 
 __Example:__ Return whether both `a` and `b` evaluate to true.
 
-```js
+```javascript
 var a = true, b = false;
 r.expr(a).and(b).run(conn, callback);
 // result passed to callback
@@ -2149,7 +2149,7 @@ Compute the logical "or" of one or more values.
 
 __Example:__ Return whether either `a` or `b` evaluate to true.
 
-```js
+```javascript
 var a = true, b = false;
 r.expr(a).or(b).run(conn, callback);
 // result passed to callback
@@ -2168,7 +2168,7 @@ Test if two or more values are equal.
 
 __Example:__ See if a user's `role` field is set to `administrator`.
 
-```js
+```javascript
 r.table('users').get(1)('role').eq('administrator').run(conn, callback);
 ```
 
@@ -2184,7 +2184,7 @@ Test if two or more values are not equal.
 
 __Example:__ See if a user's `role` field is not set to `administrator`.
 
-```js
+```javascript
 r.table('users').get(1)('role').ne('administrator').run(conn, callback);
 ```
 
@@ -2200,7 +2200,7 @@ Compare values, testing if the left-hand value is greater than the right-hand.
 
 __Example:__ Test if a player has scored more than 10 points.
 
-```js
+```javascript
 r.table('players').get(1)('score').gt(10).run(conn, callback);
 ```
 
@@ -2216,7 +2216,7 @@ Compare values, testing if the left-hand value is greater than or equal to the r
 
 __Example:__ Test if a player has scored 10 points or more.
 
-```js
+```javascript
 r.table('players').get(1)('score').ge(10).run(conn, callback);
 ```
 
@@ -2232,7 +2232,7 @@ Compare values, testing if the left-hand value is less than the right-hand.
 
 __Example:__ Test if a player has scored less than 10 points.
 
-```js
+```javascript
 r.table('players').get(1)('score').lt(10).run(conn, callback);
 ```
 
@@ -2248,7 +2248,7 @@ Compare values, testing if the left-hand value is less than or equal to the righ
 
 __Example:__ Test if a player has scored 10 points or less.
 
-```js
+```javascript
 r.table('players').get(1)('score').le(10).run(conn, callback);
 ```
 
@@ -2265,7 +2265,7 @@ Compute the logical inverse (not) of an expression.
 
 __Example:__ Not true is false.
 
-```js
+```javascript
 r(true).not().run(conn, callback)
 r.not(true).run(conn, callback)
 ```
@@ -2286,7 +2286,7 @@ Generate a random number between given (or implied) bounds. `random` takes zero,
 
 __Example:__ Generate a random number in the range `[0,1)`
 
-```js
+```javascript
 r.random().run(conn, callback)
 ```
 
@@ -2303,7 +2303,7 @@ Rounds the given value to the nearest whole integer.
 
 __Example:__ Round 12.345 to the nearest integer.
 
-```js
+```javascript
 r.round(12.345).run(conn, callback);
 // Result passed to callback
 12.0
@@ -2324,7 +2324,7 @@ Rounds the given value up, returning the smallest integer value greater than or 
 
 __Example:__ Return the ceiling of 12.345.
 
-```js
+```javascript
 r.ceil(12.345).run(conn, callback);
 // Result passed to callback
 13.0
@@ -2345,7 +2345,7 @@ Rounds the given value down, returning the largest integer value less than or eq
 
 __Example:__ Return the floor of 12.345.
 
-```js
+```javascript
 r.floor(12.345).run(conn, callback);
 // Result passed to callback
 12.0
@@ -2369,7 +2369,7 @@ Return a time object representing the current time in UTC. The command now() is 
 
 __Example:__ Add a new user with the time at which he subscribed.
 
-```js
+```javascript
 r.table("users").insert({
     name: "John",
     subscription_date: r.now()
@@ -2389,7 +2389,7 @@ Create a time object for a specific time.
 
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986 UTC.
 
-```js
+```javascript
 r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')}).run(conn, callback)
 ```
 
@@ -2406,7 +2406,7 @@ will be rounded to three decimal places (millisecond-precision).
 
 __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 
-```js
+```javascript
 r.table("user").get("John").update({birthdate: r.epochTime(531360000)}).run(conn, callback)
 ```
 
@@ -2422,7 +2422,7 @@ Create a time object based on an ISO 8601 date-time string (e.g. '2013-01-01T01:
 
 __Example:__ Update the time of John's birth.
 
-```js
+```javascript
 r.table("user").get("John").update({birth: r.ISO8601('1986-11-03T08:30:00-07:00')}).run(conn, callback)
 ```
 
@@ -2438,7 +2438,7 @@ Return a new time object with a different timezone. While the time stays the sam
 
 __Example:__ Hour of the day in San Francisco (UTC/GMT -8, without daylight saving time).
 
-```js
+```javascript
 r.now().inTimezone('-08:00').hours().run(conn, callback)
 ```
 
@@ -2454,7 +2454,7 @@ Return the timezone of the time object.
 
 __Example:__ Return all the users in the "-07:00" timezone.
 
-```js
+```javascript
 r.table("users").filter( function(user) {
     return user("subscriptionDate").timezone().eq("-07:00")
 })
@@ -2473,7 +2473,7 @@ Return whether a time is between two other times.
 __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 (inclusive) and December 10th, 2013 (exclusive).
 
-```js
+```javascript
 r.table("posts").filter(
     r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
 ).run(conn, callback)
@@ -2491,7 +2491,7 @@ Return a new time object only based on the day, month and year (ie. the same day
 
 __Example:__ Retrieve all the users whose birthday is today.
 
-```js
+```javascript
 r.table("users").filter(function(user) {
     return user("birthdate").date().eq(r.now().date())
 }).run(conn, callback)
@@ -2509,7 +2509,7 @@ Return the number of seconds elapsed since the beginning of the day stored in th
 
 __Example:__ Retrieve posts that were submitted before noon.
 
-```js
+```javascript
 r.table("posts").filter(
     r.row("date").timeOfDay().le(12*60*60)
 ).run(conn, callback)
@@ -2527,7 +2527,7 @@ Return the year of a time object.
 
 __Example:__ Retrieve all the users born in 1986.
 
-```js
+```javascript
 r.table("users").filter(function(user) {
     return user("birthdate").year().eq(1986)
 }).run(conn, callback)
@@ -2545,7 +2545,7 @@ Return the month of a time object as a number between 1 and 12. For your conveni
 
 __Example:__ Retrieve all the users who were born in November.
 
-```js
+```javascript
 r.table("users").filter(
     r.row("birthdate").month().eq(11)
 )
@@ -2563,7 +2563,7 @@ Return the day of a time object as a number between 1 and 31.
 
 __Example:__ Return the users born on the 24th of any month.
 
-```js
+```javascript
 r.table("users").filter(
     r.row("birthdate").day().eq(24)
 ).run(conn, callback)
@@ -2581,7 +2581,7 @@ Return the day of week of a time object as a number between 1 and 7 (following I
 
 __Example:__ Return today's day of week.
 
-```js
+```javascript
 r.now().dayOfWeek().run(conn, callback)
 ```
 
@@ -2597,7 +2597,7 @@ Return the day of the year of a time object as a number between 1 and 366 (follo
 
 __Example:__ Retrieve all the users who were born the first day of a year.
 
-```js
+```javascript
 r.table("users").filter(
     r.row("birthdate").dayOfYear().eq(1)
 )
@@ -2615,7 +2615,7 @@ Return the hour in a time object as a number between 0 and 23.
 
 __Example:__ Return all the posts submitted after midnight and before 4am.
 
-```js
+```javascript
 r.table("posts").filter(function(post) {
     return post("date").hours().lt(4)
 })
@@ -2633,7 +2633,7 @@ Return the minute in a time object as a number between 0 and 59.
 
 __Example:__ Return all the posts submitted during the first 10 minutes of every hour.
 
-```js
+```javascript
 r.table("posts").filter(function(post) {
     return post("date").minutes().lt(10)
 })
@@ -2651,7 +2651,7 @@ Return the seconds in a time object as a number between 0 and 59.999 (double pre
 
 __Example:__ Return the post submitted during the first 30 seconds of every minute.
 
-```js
+```javascript
 r.table("posts").filter(function(post) {
     return post("date").seconds().lt(30)
 })
@@ -2669,7 +2669,7 @@ Convert a time object to a string in ISO 8601 format.
 
 __Example:__ Return the current ISO 8601 time.
 
-```js
+```javascript
 r.now().toISO8601().run(conn, callback)
 // Result passed to callback
 "2015-04-20T18:37:52.690+00:00"
@@ -2687,7 +2687,7 @@ Convert a time object to its epoch time.
 
 __Example:__ Return the current time in seconds since the Unix Epoch with millisecond-precision.
 
-```js
+```javascript
 r.now().toEpochTime()
 ```
 
@@ -2709,7 +2709,7 @@ term such as [getAll](/api/javascript/get_all/) with a set of arguments produced
 
 __Example:__ Get Alice and Bob from the table `people`.
 
-```js
+```javascript
 r.table('people').getAll('Alice', 'Bob').run(conn, callback)
 // or
 r.table('people').getAll(r.args(['Alice', 'Bob'])).run(conn, callback)
@@ -2727,7 +2727,7 @@ Encapsulate binary data within a query.
 
 __Example:__ Save an avatar image to a existing user record.
 
-```js
+```javascript
 var fs = require('fs');
 fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
     if (err) {
@@ -2756,7 +2756,7 @@ Call an anonymous function using return values from other ReQL commands or queri
 
 __Example:__ Compute a golfer's net score for a game.
 
-```js
+```javascript
 r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do(
     function (player) {
         return player('gross_score').sub(player('course_handicap'));
@@ -2779,7 +2779,7 @@ The `branch` command takes 2n+1 arguments: pairs of conditional expressions and 
 
 __Example:__ Test the value of x.
 
-```js
+```javascript
 var x = 10;
 r.branch(r.expr(x).gt(5), 'big', 'small').run(conn, callback);
 // Result passed to callback
@@ -2798,7 +2798,7 @@ Loop over a sequence, evaluating the given write query for each element.
 
 __Example:__ Now that our heroes have defeated their villains, we can safely remove them from the villain table.
 
-```js
+```javascript
 r.table('marvel').forEach(function(hero) {
     return r.table('villains').get(hero('villainDefeated')).delete()
 }).run(conn, callback)
@@ -2817,7 +2817,7 @@ Generate a stream of sequential integers in a specified range.
 
 __Example:__ Return a four-element range of `[0, 1, 2, 3]`.
 
-```js
+```javascript
 > r.range(4).run(conn, callback)
 // result returned to callback
 [0, 1, 2, 3]
@@ -2835,7 +2835,7 @@ Throw a runtime error. If called with no arguments inside the second argument to
 
 __Example:__ Iron Man can't possibly have lost a battle:
 
-```js
+```javascript
 r.table('marvel').get('IronMan').do(function(ironman) {
     return r.branch(ironman('victories').lt(ironman('battles')),
         r.error('impossible code path'),
@@ -2858,7 +2858,7 @@ __Example:__ Retrieve the titles and authors of the table `posts`.
 In the case where the author field is missing or `null`, we want to retrieve the string
 `Anonymous`.
 
-```js
+```javascript
 r.table("posts").map(function (post) {
     return {
         title: post("title"),
@@ -2879,7 +2879,7 @@ Construct a ReQL JSON object from a native object.
 
 __Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 
-```js
+```javascript
 r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)
 ```
 
@@ -2895,7 +2895,7 @@ Create a javascript expression.
 
 __Example:__ Concatenate two strings using JavaScript.
 
-```js
+```javascript
 r.js("'str1' + 'str2'").run(conn, callback)
 ```
 
@@ -2918,7 +2918,7 @@ Convert a value of one type into another.
 
 __Example:__ Coerce a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 
-```js
+```javascript
 r.table('posts').map(function (post) {
     return post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
 }).run(conn, callback)
@@ -2936,7 +2936,7 @@ Gets the type of a ReQL query's return value.
 
 __Example:__ Get the type of a string.
 
-```js
+```javascript
 r.expr("foo").typeOf().run(conn, callback);
 // Result passed to callback
 "STRING"
@@ -2955,7 +2955,7 @@ Get information about a ReQL value.
 
 __Example:__ Get information about a table such as primary key, or cache size.
 
-```js
+```javascript
 r.table('marvel').info().run(conn, callback)
 ```
 
@@ -2971,7 +2971,7 @@ Parse a JSON string on the server.
 
 __Example:__ Send an array to the server.
 
-```js
+```javascript
 r.json("[1,2,3]").run(conn, callback)
 ```
 
@@ -2988,7 +2988,7 @@ Convert a ReQL value or object to a JSON string. You may use either `toJsonStrin
 
 __Example:__ Get a ReQL document as a JSON string.
 
-```js
+```javascript
 > r.table('hero').get(1).toJSON()
 // result returned to callback
 '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
@@ -3007,7 +3007,7 @@ Retrieve data from the specified URL over HTTP.  The return type depends on the 
 
 __Example:__ Perform an HTTP `GET` and store the result in a table.
 
-```js
+```javascript
 r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn, callback)
 ```
 
@@ -3023,7 +3023,7 @@ Return a UUID (universally unique identifier), a string that can be used as a un
 
 __Example:__ Generate a UUID.
 
-```js
+```javascript
 > r.uuid().run(conn, callback)
 // result returned to callback
 "27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
@@ -3046,7 +3046,7 @@ Construct a circular line or polygon. A circle in RethinkDB is a polygon or line
 
 __Example:__ Define a circle.
 
-```js
+```javascript
 r.table('geo').insert({
     id: 300,
     name: 'Hayes Valley',
@@ -3067,7 +3067,7 @@ Compute the distance between a point and another geometry object. At least one o
 
 __Example:__ Compute the distance between two points on the Earth in kilometers.
 
-```js
+```javascript
 var point1 = r.point(-122.423246,37.779388);
 var point2 = r.point(-117.220406,32.719464);
 r.distance(point1, point2, {unit: 'km'}).run(conn, callback);
@@ -3087,7 +3087,7 @@ Convert a Line object into a Polygon object. If the last point does not specify 
 
 __Example:__ Create a line object and then convert it to a polygon.
 
-```js
+```javascript
 r.table('geo').insert({
     id: 201,
     rectangle: r.line(
@@ -3115,7 +3115,7 @@ Convert a [GeoJSON](http://geojson.org) object to a ReQL geometry object.
 
 __Example:__ Convert a GeoJSON object to a ReQL geometry object.
 
-```js
+```javascript
 var geoJson = {
     'type': 'Point',
     'coordinates': [ -122.423246, 37.779388 ]
@@ -3139,7 +3139,7 @@ Convert a ReQL geometry object to a [GeoJSON](http://geojson.org) object.
 
 __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 
-```js
+```javascript
 r.table('geo').get('sfo')('location').toGeojson.run(conn, callback);
 // result passed to callback
 {
@@ -3160,7 +3160,7 @@ Get all documents where the given geometry object intersects the geometry object
 
 __Example:__ Which of the locations in a list of parks intersect `circle1`?
 
-```js
+```javascript
 var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 ```
@@ -3177,7 +3177,7 @@ Return a list of documents closest to a specified point based on a geospatial in
 
 __Example:__ Return a list of the closest 25 enemy hideouts to the secret base.
 
-```js
+```javascript
 var secretBase = r.point(-122.422876,37.777128);
 r.table('hideouts').getNearest(secretBase,
     {index: 'location', maxResults: 25}
@@ -3197,7 +3197,7 @@ Tests whether a geometry object is completely contained within another. When app
 
 __Example:__ Is `point2` included within a 2000-meter circle around `point1`?
 
-```js
+```javascript
 var point1 = r.point(-117.220406,32.719464);
 var point2 = r.point(-117.206201,32.725186);
 r.circle(point1, 2000).includes(point2).run(conn, callback);
@@ -3220,7 +3220,7 @@ Tests whether two geometry objects intersect with one another. When applied to a
 
 __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 
-```js
+```javascript
 var point1 = r.point(-117.220406,32.719464);
 var point2 = r.point(-117.206201,32.725186);
 r.circle(point1, 2000).intersects(point2).run(conn, callback);
@@ -3244,7 +3244,7 @@ Construct a geometry object of type Line. The line can be specified in one of tw
 
 __Example:__ Define a line.
 
-```js
+```javascript
 r.table('geo').insert({
     id: 101,
     route: r.line([-122.423246,37.779388], [-121.886420,37.329898])
@@ -3263,7 +3263,7 @@ Construct a geometry object of type Point. The point is specified by two floatin
 
 __Example:__ Define a point.
 
-```js
+```javascript
 r.table('geo').insert({
     id: 1,
     name: 'San Francisco',
@@ -3287,7 +3287,7 @@ Construct a geometry object of type Polygon. The Polygon can be specified in one
 
 __Example:__ Define a polygon.
 
-```js
+```javascript
 r.table('geo').insert({
     id: 101,
     rectangle: r.polygon(
@@ -3311,7 +3311,7 @@ Use `polygon2` to "punch out" a hole in `polygon1`. `polygon2` must be completel
 
 __Example:__ Define a polygon with a hole punched in it.
 
-```js
+```javascript
 var outerPolygon = r.polygon(
     [-122.4,37.7],
     [-122.4,37.3],
@@ -3345,7 +3345,7 @@ Grant or deny access permissions for a user account, globally or on a per-databa
 
 __Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
 
-```js
+```javascript
 r.db('users').grant('chatapp', {read: true, write: true}).run(conn, callback);
 
 // Result passed to callback
@@ -3372,7 +3372,7 @@ Query (read and/or update) the configurations for individual tables or databases
 
 __Example:__ Get the configuration for the `users` table.
 
-```js
+```javascript
 > r.table('users').config().run(conn, callback);
 ```
 
@@ -3389,7 +3389,7 @@ Rebalances the shards of a table. When called on a database, all the tables in t
 
 __Example:__ Rebalance a table.
 
-```js
+```javascript
 > r.table('superheroes').rebalance().run(conn, callback);
 ```
 
@@ -3407,7 +3407,7 @@ Reconfigure a table's sharding and replication.
 
 __Example:__ Reconfigure a table.
 
-```js
+```javascript
 > r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
 ```
 
@@ -3423,7 +3423,7 @@ Return the status of a table.
 
 __Example:__ Get a table's status.
 
-```js
+```javascript
 > r.table('superheroes').status().run(conn, callback);
 ```
 
@@ -3441,7 +3441,7 @@ Wait for a table or all the tables in a database to be ready. A table may be tem
 
 __Example:__ Wait on a table to be ready.
 
-```js
+```javascript
 > r.table('superheroes').wait().run(conn, callback);
 // Result passed to callback
 { "ready": 1 }

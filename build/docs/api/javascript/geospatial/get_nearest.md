@@ -31,7 +31,7 @@ The return value will be an array of two-item objects with the keys `dist` and `
 
 __Example:__ Return a list of the closest 25 enemy hideouts to the secret base.
 
-```js
+```javascript
 var secretBase = r.point(-122.422876,37.777128);
 r.table('hideouts').getNearest(secretBase,
     {index: 'location', maxResults: 25}

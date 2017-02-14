@@ -48,7 +48,7 @@ If the table becomes unavailable, the changefeed will be disconnected, and a run
 
 Changefeed notifications take the form of a two-field object:
 
-```js
+```javascript
 {
     "old_val": <document before change>,
     "new_val": <document after change>
@@ -57,7 +57,7 @@ Changefeed notifications take the form of a two-field object:
 
 When `includeTypes` is `true`, there will be three fields:
 
-```js
+```javascript
 {
     "old_val": <document before change>,
     "new_val": <document after change>,
@@ -81,7 +81,7 @@ __Example:__ Subscribe to the changes on a table.
 
 Start monitoring the changefeed in one client:
 
-```js
+```javascript
 r.table('games').changes().run(conn, function(err, cursor) {
   cursor.each(console.log);
 });
@@ -90,7 +90,7 @@ r.table('games').changes().run(conn, function(err, cursor) {
 As these queries are performed in a second client, the first
 client would receive and print the following objects:
 
-```js
+```javascript
 > r.table('games').insert({id: 1}).run(conn, callback);
 {old_val: null, new_val: {id: 1}}
 
@@ -110,7 +110,7 @@ ReqlRuntimeError: Changefeed aborted (table unavailable)
 
 __Example:__ Return all the changes that increase a player's score.
 
-```js
+```javascript
 r.table('test').changes().filter(
   r.row('new_val')('score').gt(r.row('old_val')('score'))
 ).run(conn, callback)
@@ -118,19 +118,19 @@ r.table('test').changes().filter(
 
 __Example:__ Return all the changes to a specific player's score that increase it past 10.
 
-```js
+```javascript
 r.table('test').get(1).filter(r.row('score').gt(10)).changes().run(conn, callback)
 ```
 
 __Example:__ Return all the inserts on a table.
 
-```js
+```javascript
 r.table('test').changes().filter(r.row('old_val').eq(null)).run(conn, callback)
 ```
 
 __Example:__ Return all the changes to game 1, with state notifications and initial values.
 
-```js
+```javascript
 r.table('games').get(1).changes({includeInitial: true, includeStates: true}).run(conn, callback);
 // Result returned on changefeed
 {state: 'initializing'}
@@ -148,7 +148,7 @@ r.table('games').get(1).changes({includeInitial: true, includeStates: true}).run
 
 __Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
 
-```js
+```javascript
 r.table('games').orderBy(
     { index: r.desc('score') }
 ).limit(10).changes().run(conn, callback);
@@ -156,7 +156,7 @@ r.table('games').orderBy(
 
 __Example:__ Maintain the state of an array based on a changefeed.
 
-```js
+```javascript
 r.table('data').changes(
     {includeInitial: true, includeOffsets: true}
 ).run(conn, function (err, change) {

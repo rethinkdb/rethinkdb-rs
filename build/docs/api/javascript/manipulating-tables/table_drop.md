@@ -32,7 +32,7 @@ If the given table does not exist in the database, the command throws `ReqlRunti
 
 __Example:__ Drop a table named 'dc_universe'.
 
-```js
+```javascript
 > r.db('test').tableDrop('dc_universe').run(conn, callback);
 // Result passed to callback
 {

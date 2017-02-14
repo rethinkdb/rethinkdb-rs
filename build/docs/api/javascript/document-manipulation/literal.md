@@ -22,7 +22,7 @@ Replace an object in a field instead of merging it with an existing object in a 
 
 Assume your users table has this structure:
 
-```js
+```javascript
 [
     {
         "id": 1,
@@ -38,7 +38,7 @@ Assume your users table has this structure:
 
 Using `update` to modify the `data` field will normally merge the nested documents:
 
-```js
+```javascript
 r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn, callback)
 
 // Result passed to callback
@@ -57,7 +57,7 @@ That will preserve `city` and other existing fields. But to replace the entire `
 
 __Example:__ Replace one nested document with another rather than merging the fields.
 
-```js
+```javascript
 r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)
 
 // Result passed to callback
@@ -73,7 +73,7 @@ r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }
 
 __Example:__ Use `literal` to remove a field from a document.
 
-```js
+```javascript
 r.table('users').get(1).merge({ data: r.literal() }).run(conn, callback)
 
 // Result passed to callback

@@ -30,13 +30,13 @@ Values and predicates may be mixed freely in the argument list.
 
 __Example:__ Has Iron Man ever fought Superman?
 
-```js
+```javascript
 r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, callback);
 ```
 
 __Example:__ Has Iron Man ever defeated Superman in battle?
 
-```js
+```javascript
 r.table('marvel').get('ironman')('battles').contains(function (battle) {
     return battle('winner').eq('ironman').and(battle('loser').eq('superman'));
 }).run(conn, callback);
@@ -44,7 +44,7 @@ r.table('marvel').get('ironman')('battles').contains(function (battle) {
 
 __Example:__ Return all heroes who have fought _both_ Loki and the Hulk.
 
-```js
+```javascript
 r.table('marvel').filter(function (hero) {
   return hero('opponents').contains('loki', 'hulk');
 }).run(conn, callback);
@@ -52,7 +52,7 @@ r.table('marvel').filter(function (hero) {
 
 __Example:__ Use `contains` with a predicate function to simulate an `or`. Return the Marvel superheroes who live in Detroit, Chicago or Hoboken.
 
-```js
+```javascript
 r.table('marvel').filter(function(hero) {
     return r.expr(['Detroit', 'Chicago', 'Hoboken']).contains(hero('city'))
 }).run(conn, callback);

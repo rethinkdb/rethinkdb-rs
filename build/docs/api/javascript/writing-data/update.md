@@ -57,19 +57,19 @@ RethinkDB write operations will only throw exceptions if errors occur before any
 
 __Example:__ Update the status of the post with `id` of `1` to `published`.
 
-```js
+```javascript
 r.table("posts").get(1).update({status: "published"}).run(conn, callback)
 ```
 
 __Example:__ Update the status of all posts to `published`.
 
-```js
+```javascript
 r.table("posts").update({status: "published"}).run(conn, callback)
 ```
 
 __Example:__ Update the status of all the posts written by William.
 
-```js
+```javascript
 r.table("posts").filter({author: "William"}).update({status: "published"}).run(conn, callback)
 ```
 
@@ -80,7 +80,7 @@ Note that `filter`, `getAll` and similar operations do _not_ execute in an atomi
 __Example:__ Increment the field `view` of the post with `id` of `1`.
 This query will throw an error if the field `views` doesn't exist.
 
-```js
+```javascript
 r.table("posts").get(1).update({
     views: r.row("views").add(1)
 }).run(conn, callback)
@@ -89,7 +89,7 @@ r.table("posts").get(1).update({
 __Example:__ Increment the field `view` of the post with `id` of `1`.
 If the field `views` does not exist, it will be set to `0`.
 
-```js
+```javascript
 r.table("posts").get(1).update({
     views: r.row("views").add(1).default(0)
 }).run(conn, callback)
@@ -98,7 +98,7 @@ r.table("posts").get(1).update({
 __Example:__ Perform a conditional update.  
 If the post has more than 100 views, set the `type` of a post to `hot`, else set it to `normal`.
 
-```js
+```javascript
 r.table("posts").get(1).update(function(post) {
     return r.branch(
         post("views").gt(100),
@@ -110,7 +110,7 @@ r.table("posts").get(1).update(function(post) {
 
 __Example:__ Update the field `numComments` with the result of a sub-query. Because this update is not atomic, you must pass the `nonAtomic` flag.
 
-```js
+```javascript
 r.table("posts").get(1).update({
     numComments: r.table("comments").filter({idPost: 1}).count()
 }, {
@@ -120,13 +120,13 @@ r.table("posts").get(1).update({
 
 If you forget to specify the `nonAtomic` flag, you will get a `ReqlRuntimeError`:
 
-```
+```text
 ReqlRuntimeError: Could not prove function deterministic.  Maybe you want to use the non_atomic flag? 
 ```
 
 __Example:__ Update the field `numComments` with a random value between 0 and 100. This update cannot be proven deterministic because of `r.js` (and in fact is not), so you must pass the `nonAtomic` flag.
 
-```js
+```javascript
 r.table("posts").get(1).update({
     num_comments: r.js("Math.floor(Math.random()*100)")
 }, {
@@ -136,13 +136,13 @@ r.table("posts").get(1).update({
 
 __Example:__ Update the status of the post with `id` of `1` using soft durability.
 
-```js
+```javascript
 r.table("posts").get(1).update({status: "published"}, {durability: "soft"}).run(conn, callback)
 ```
 
 __Example:__ Increment the field `views` and return the values of the document before and after the update operation.
 
-```js
+```javascript
 r.table("posts").get(1).update({
     views: r.row("views").add(1)
 }, {
@@ -152,7 +152,7 @@ r.table("posts").get(1).update({
 
 The result will now include a `changes` field:
 
-```js
+```javascript
 {
     deleted: 0,
     errors: 0,
@@ -188,7 +188,7 @@ The `update` command supports RethinkDB's [nested field][nf] syntax to update su
 
 [nf]: /docs/nested-fields/javascript
 
-```js
+```javascript
 {
 	id: 10001,
 	name: "Bob Smith",
@@ -226,7 +226,7 @@ The `update` command supports RethinkDB's [nested field][nf] syntax to update su
 
 __Example:__ Update Bob Smith's cell phone number.
 
-```js
+```javascript
 r.table("users").get(10001).update(
     {contact: {phone: {cell: "408-555-4242"}}}
 ).run(conn, callback)
@@ -234,7 +234,7 @@ r.table("users").get(10001).update(
 
 __Example:__ Add another note to Bob Smith's record.
 
-```js
+```javascript
 var newNote = {
     date: r.now(),
     from: "Inigo Montoya",
@@ -249,7 +249,7 @@ This will fail if the `notes` field does not exist in the document. To perform t
 
 [default]: /api/javascript/default/
 
-```js
+```javascript
 r.table("users").get(10001).update(
     {notes: r.row("notes").default([]).append(newNote)}
 ).run(conn, callback)
@@ -257,7 +257,7 @@ r.table("users").get(10001).update(
 
 __Example:__ Send a note to every user with an ICQ number.
 
-```js
+```javascript
 var icqNote = {
     date: r.now(),
     from: "Admin",
@@ -274,7 +274,7 @@ __Example:__ Replace all of Bob's IM records. Normally, `update` will merge nest
 
 [literal]: /api/javascript/literal/
 
-```js
+```javascript
 r.table('users').get(10001).update(
     {contact: {im: r.literal({aim: "themoosemeister"})}}
 ).run(conn, callback)

@@ -28,7 +28,7 @@ __Example:__ Get a list of users and their posts, excluding any users who have n
 
 Existing table structure:
 
-```js
+```javascript
 [
     { 'id': 1, 'user': 'bob', 'email': 'bob@foo.com', 'posts': [ 1, 4, 5 ] },
     { 'id': 2, 'user': 'george', 'email': 'george@foo.com' },
@@ -38,7 +38,7 @@ Existing table structure:
 
 Command and output:
 
-```js
+```javascript
 > r.table('users').withFields('id', 'user', 'posts').run(conn, callback)
 // Result passed to callback
 [
@@ -49,6 +49,6 @@ Command and output:
 
 __Example:__ Use the [nested field syntax](/docs/nested-fields/) to get a list of users with cell phone numbers in their contacts.
 
-```js
+```javascript
 r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn, callback)
 ```

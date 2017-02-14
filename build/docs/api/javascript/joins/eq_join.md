@@ -34,7 +34,7 @@ The results from `eqJoin` are, by default, not ordered. The optional `ordered: t
 
 Suppose the players table contains these documents:
 
-```js
+```javascript
 [
     { id: 1, player: 'George', gameId: 1 },
     { id: 2, player: 'Agatha', gameId: 3 },
@@ -47,7 +47,7 @@ Suppose the players table contains these documents:
 
 The games table contains these documents:
 
-```js
+```javascript
 [
     { id: 1, field: 'Little Delving' },
     { id: 2, field: 'Rushock Bog' },
@@ -59,13 +59,13 @@ __Example:__ Match players with the games they've played against one another.
 
 Join these tables using `gameId` on the player table and `id` on the games table:
 
-```js
+```javascript
 r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
 ```
 
 This will return a result set such as the following:
 
-```js
+```javascript
 [
     {
         "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
@@ -83,7 +83,7 @@ This will return a result set such as the following:
 
 What you likely want is the result of using `zip` with that. For clarity, we'll use `without` to drop the `id` field from the games table (it conflicts with the `id` field for the players and it's redundant anyway), and we'll order it by the games.
 
-```js
+```javascript
 r.table('players').eqJoin('gameId', r.table('games')).without({right: "id"}).zip().orderBy('gameId').run(conn, callback)
 
 [
@@ -100,13 +100,13 @@ For more information, see [Table joins in RethinkDB](/docs/table-joins/).
 
 __Example:__ Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
 
-```js
+```javascript
 r.table('players').eqJoin('cityId', r.table('arenas'), {index: 'cityId'}).run(conn, callback)
 ```
 
 __Example:__ Use a nested key as the join field. Suppose the documents in the players table were structured like this:
 
-```js
+```javascript
 { id: 1, player: 'George', game: {id: 1} },
 { id: 2, player: 'Agatha', game: {id: 3} },
 ...
@@ -114,7 +114,7 @@ __Example:__ Use a nested key as the join field. Suppose the documents in the pl
 
 Simply specify the field using the `row` command instead of a string.
 
-```js
+```javascript
 r.table('players').eqJoin(r.row('game')('id'), r.table('games')).without({right: 'id'}).zip()
 
 [
@@ -126,7 +126,7 @@ r.table('players').eqJoin(r.row('game')('id'), r.table('games')).without({right:
 
 __Example:__ Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
 
-```js
+```javascript
 r.table('players').eqJoin(function (player) {
     return player('favorites').nth(0)
 }, r.table('games')).without([{left: ['favorites', 'gameId', 'id']}, {right: 'id'}]).zip()
@@ -134,7 +134,7 @@ r.table('players').eqJoin(function (player) {
 
 Result:
 
-```js
+```javascript
 [
 	{ "field": "Rushock Bog", "name": "Fred" },
 	{ "field": "Little Delving", "name": "George" },
