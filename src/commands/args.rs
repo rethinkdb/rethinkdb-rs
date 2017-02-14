@@ -4,7 +4,7 @@ use slog::Logger;
 use serde_json::value::Value;
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 
-impl ToArg for Client {
+impl<A: ToArg> ToArg for Client<A> {
     fn to_arg(&self) -> Arg {
         Arg {
             string: self.query.to_owned(),

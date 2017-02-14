@@ -35,16 +35,14 @@ impl Commands {
 
             mod util;
             mod args;
-            /*
-            #[cfg(feature = "with_io")]
-            mod io;
-            #[cfg(feature = "with_io")]
-            pub use self::io::*;
-            */
 
-            use {{Client, ToArg}};
+            #[cfg(feature = "with_io")]
+            use {{Pool, Response}};
+            use {{Client, ToArg, Result}};
             use slog::Logger;
             use ql2::proto::Term_TermType as Type;
+            #[cfg(feature = "with_io")]
+            use reql_io::serde::Deserialize;
         "#)
     }
 
@@ -58,7 +56,7 @@ impl Commands {
 
         let src = format!(r#"
             {}
-            impl Client {{
+            impl<A: ToArg> Client<A> {{
 
                 /// Create a new ReQL client
                 ///
@@ -70,8 +68,8 @@ impl Commands {
                 /// let r = Client::new();
                 /// ```
 
-                pub fn new() -> Client {{
-                    util::new_client()
+                pub fn new() -> Client<A> {{
+                    util::new_client::<A>()
                 }}
 
                 /// Override the current logger
@@ -94,14 +92,12 @@ impl Commands {
                 /// let r = Client::new().with_logger(logger);
                 /// ```
                 ///
-                /// See
-                /// [examples/logging.rs](https://github.com/rust-rethinkdb/reql/blob/master/examples/logging.rs)
-                /// for an example of setting up an [slog](https://docs.rs/slog) `logger`.
+                /// See [examples/logging.rs] for an example of setting up an [slog](https://docs.rs/slog) `logger`.
+                ///
+                /// [examples/logging.rs]: https://github.com/rust-rethinkdb/reql/blob/master/examples/logging.rs
 
-                pub fn with_logger(&self, logger: Logger) -> Client {{
-                    let mut cmd = self.clone();
-                    cmd.logger = logger;
-                    cmd
+                pub fn with_logger(&self, logger: Logger) -> Client<A> {{
+                    util::with_logger(self, logger)
                 }}
                 {}
             }}
@@ -150,18 +146,41 @@ impl Command {
         }
 
         let (no_args, docs) = self.gen_docs(docs);
-        self.tokens = if no_args {
+        self.tokens = if name == "connect" {
+            format!(r#"
+                {}
+                #[cfg(feature = "with_io")]
+                pub fn connect(&self, args: A) -> Result<Pool> {{
+                    util::connect(self, args)
+                }}
+            "#, docs)
+        } else if name == "run" {
+            format!(r#"
+                {}
+                #[cfg(feature = "with_io")]
+                pub fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>> {{
+                    util::run(self, args)
+                }}
+            "#, docs)
+        } else if name == "expr" {
+            format!(r#"
+                {}
+                pub fn expr(&self, args: A) -> Client<A> {{
+                    util::make_cmd(self, "expr", None, Some(args))
+                }}
+            "#, docs)
+        } else if no_args {
             format!(r#"
                 {docs}
-                pub fn {name}(&self) -> Client {{
-                    util::make_cmd::<Client>(self, "{name}", {typ}, None)
+                pub fn {name}(&self) -> Client<A> {{
+                    util::make_cmd::<A>(self, "{name}", Some({typ}), None)
                 }}
             "#, docs=docs, name=name, typ=typ)
         } else {
             format!(r#"
                 {docs}
-                pub fn {name}<T: ToArg>(&self, args: T) -> Client {{
-                    util::make_cmd(self, "{name}", {typ}, Some(args))
+                pub fn {name}(&self, args: A) -> Client<A> {{
+                    util::make_cmd(self, "{name}", Some({typ}), Some(args))
                 }}
             "#, docs=docs, name=name, typ=typ)
         };
@@ -187,14 +206,9 @@ impl Command {
                 }
                 self.fixup(line)
             })
-            // We will only consider docs after the description
             .filter(|line| {
-                if !doc_block {
-                    if line.starts_with("# Description #") {
-                        doc_block = true;
-                    }
-                    return false;
-                }
+                // If we haven't started parsing yet, ignore empty lines
+                // and grab any image we find
                 if !parse {
                     if line.trim().is_empty() {
                         return false;
@@ -203,6 +217,16 @@ impl Command {
                         img = line.to_owned();
                         return false;
                     }
+                }
+                // We will only consider docs after the description
+                if !doc_block {
+                    if line.starts_with("# Description #") {
+                        doc_block = true;
+                    }
+                    return false;
+                }
+                // Grab the title and start parsing
+                if !parse {
                     if let Some(i) = line.find('.') {
                         let (t, n) = line.split_at(i);
                         doc_str.push_str(&format!("/// {}\n", t));
@@ -241,7 +265,7 @@ impl Command {
     fn fixup(&self, commands: &str) -> String {
         commands.lines()
             .map(|line| {
-                line.replace("/assets/images/", "https://rethinkdb.com/assets/images/")
+                line.replace("/assets/images/docs/", "https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/")
             })
             .collect()
     }

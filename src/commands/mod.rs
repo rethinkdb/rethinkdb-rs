@@ -6,18 +6,16 @@
 
             mod util;
             mod args;
-            /*
-            #[cfg(feature = "with_io")]
-            mod io;
-            #[cfg(feature = "with_io")]
-            pub use self::io::*;
-            */
 
-            use {Client, ToArg};
+            #[cfg(feature = "with_io")]
+            use {Pool, Response};
+            use {Client, ToArg, Result};
             use slog::Logger;
             use ql2::proto::Term_TermType as Type;
+            #[cfg(feature = "with_io")]
+            use reql_io::serde::Deserialize;
         
-            impl Client {
+            impl<A: ToArg> Client<A> {
 
                 /// Create a new ReQL client
                 ///
@@ -29,8 +27,8 @@
                 /// let r = Client::new();
                 /// ```
 
-                pub fn new() -> Client {
-                    util::new_client()
+                pub fn new() -> Client<A> {
+                    util::new_client::<A>()
                 }
 
                 /// Override the current logger
@@ -53,19 +51,17 @@
                 /// let r = Client::new().with_logger(logger);
                 /// ```
                 ///
-                /// See
-                /// [examples/logging.rs](https://github.com/rust-rethinkdb/reql/blob/master/examples/logging.rs)
-                /// for an example of setting up an [slog](https://docs.rs/slog) `logger`.
+                /// See [examples/logging.rs] for an example of setting up an [slog](https://docs.rs/slog) `logger`.
+                ///
+                /// [examples/logging.rs]: https://github.com/rust-rethinkdb/reql/blob/master/examples/logging.rs
 
-                pub fn with_logger(&self, logger: Logger) -> Client {
-                    let mut cmd = self.clone();
-                    cmd.logger = logger;
-                    cmd
+                pub fn with_logger(&self, logger: Logger) -> Client<A> {
+                    util::with_logger(self, logger)
                 }
                 
                 /// Create a new connection to the database server
 ///
-/// <img src="https://rethinkdb.com/assets/images/docs/api_illustrations/connect_javascript.png" class="api_command_illustration" />
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/connect_javascript.png" class="api_command_illustration" />
 ///
 /// Accepts the following
 ///
@@ -183,94 +179,15 @@
 /// });
 /// ```
 
-                pub fn connect<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "connect", Type::CONNECT, Some(args))
-                }
-            
-
-                /// Close an open connection
-///
-/// If no callback is provided, a promise will be returned.
-///
-/// 
-/// Closing a connection normally waits until all outstanding requests have finished and then frees any open resources associated with the connection. By passing `false` to the `noreply_wait` optional argument, the connection will be closed immediately, possibly aborting any outstanding noreply writes.
-/// 
-/// A noreply query is executed by passing the `noreply` option to the [run](/api/javascript/run/) command, indicating that `run()` should not wait for the query to complete before returning. You may also explicitly wait for a noreply query to complete by using the [noreplyWait](/api/javascript/noreply_wait) command.
-/// 
-/// __Example:__ Close an open connection, waiting for noreply writes to finish.
-/// 
-/// ```js
-/// conn.close(function(err) { if (err) throw err; })
-/// ```
-/// 
-/// <!-- stop -->
-/// 
-/// Alternatively, you can use promises.
-/// 
-/// ```js
-/// p = conn.close();
-/// p.then(function() {
-///     // `conn` is now closed
-/// }).error(function(err) {
-///     // process the error
-/// })
-/// ```
-/// 
-/// __Example:__ Close an open connection immediately.
-/// 
-/// ```js
-/// conn.close({noreplyWait: false}, function(err) { if (err) throw err; })
-/// ```
-/// 
-/// Alternatively, you can use promises.
-/// 
-/// ```js
-/// conn.close({noreplyWait: false}).then(function() {
-///     // conn is now closed
-/// }).error(function(err) { 
-///     // process the error
-/// })
-/// ```
-
-                pub fn close(&self) -> Client {
-                    util::make_cmd::<Client>(self, "close", Type::CLOSE, None)
-                }
-            
-
-                /// Close and reopen a connection
-///
-/// If no callback is provided, a promise will be returned.
-///
-/// 
-/// 
-/// Closing a connection normally waits until all outstanding requests have finished and then frees any open resources associated with the connection. By passing `false` to the `noreply_wait` optional argument, the connection will be closed immediately, possibly aborting any outstanding noreply writes.
-/// 
-/// A noreply query is executed by passing the `noreply` option to the [run](/api/javascript/run/) command, indicating that `run()` should not wait for the query to complete before returning. You may also explicitly wait for a noreply query to complete by using the [noreplyWait](/api/javascript/noreply_wait) command.
-/// 
-/// __Example:__ Cancel outstanding requests/queries that are no longer needed.
-/// 
-/// ```js
-/// conn.reconnect({noreplyWait: false}, function(error, connection) { ... })
-/// ```
-/// 
-/// <!-- stop -->
-/// 
-/// Alternatively, you can use promises.
-/// 
-/// ```js
-/// conn.reconnect({noreplyWait: false}).then(function(conn) {
-///     // the outstanding queries were canceled and conn is now available again
-/// }).error(function(errror) {
-///     // process the error
-/// })
-/// ```
-
-                pub fn reconnect<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "reconnect", Type::RECONNECT, Some(args))
+                #[cfg(feature = "with_io")]
+                pub fn connect(&self, args: A) -> Result<Pool> {
+                    util::connect(self, args)
                 }
             
 
                 /// Run a query on a connection
+///
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/run.png" class="api_command_illustration" />
 ///
 /// The callback will get either an error, a single JSON
 ///
@@ -419,8 +336,9 @@
 /// }, callback);
 /// ```
 
-                pub fn run<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "run", Type::RUN, Some(args))
+                #[cfg(feature = "with_io")]
+                pub fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>> {
+                    util::run(self, args)
                 }
             
 
@@ -580,121 +498,8 @@
 /// 
 /// [ast]: https://github.com/rethinkdb/horizon/blob/next/client/src/ast.js
 
-                pub fn changes(&self) -> Client {
-                    util::make_cmd::<Client>(self, "changes", Type::CHANGES, None)
-                }
-            
-
-                /// `noreplyWait` ensures that previous queries with the `noreply` flag have been processed by the server
-///
-/// Note that this guarantee only applies to queries run on the given connection.
-///
-/// 
-/// If no callback is provided, a promise will be returned.
-/// 
-/// <!-- break -->
-/// 
-/// __Example:__ We have previously run queries with the `noreply` argument set to `true`. Now
-/// wait until the server has processed them.
-/// 
-/// ```js
-/// conn.noreplyWait(function(err) { ... })
-/// ```
-/// 
-/// <!-- stop -->
-/// 
-/// Alternatively, you can use promises.
-/// 
-/// ```js
-/// conn.noreplyWait().then(function() {
-///     // all queries have been processed
-/// }).error(function(err) {
-///     // process error
-/// })
-/// ```
-/// 
-
-                pub fn noreply_wait(&self) -> Client {
-                    util::make_cmd::<Client>(self, "noreply_wait", Type::NOREPLY_WAIT, None)
-                }
-            
-
-                /// Return information about the server being used by a connection
-///
-/// 
-/// The `server` command returns either two or three fields:
-/// 
-/// * `id`: the UUID of the server the client is connected to.
-/// * `proxy`: a boolean indicating whether the server is a [RethinkDB proxy node][rp].
-/// * `name`: the server name. If `proxy` is `true`, this field will not be returned.
-/// 
-/// [rp]: /docs/sharding-and-replication/#running-a-proxy-node
-/// 
-/// __Example:__ Return server information.
-/// 
-/// ```js
-/// conn.server(callback);
-/// 
-/// // Result passed to callback
-/// {
-///     "id": "404bef53-4b2c-433f-9184-bc3f7bda4a15",
-///     "name": "amadeus",
-///     "proxy": false
-/// }
-/// ```
-/// 
-/// If no callback is provided, a promise will be returned.
-
-                pub fn server(&self) -> Client {
-                    util::make_cmd::<Client>(self, "server", Type::SERVER, None)
-                }
-            
-
-                /// Connections implement the same interface as Node's [EventEmitter][ee]
-///
-/// This allows you to listen for changes in connection state.
-///
-/// 
-/// [ee]: http://nodejs.org/api/events.html#events_class_events_eventemitter
-/// 
-/// Four events are emitted: `connect`, `close`, `timeout` and `error`.
-/// 
-/// - `connect`: a successful connection to the server.
-/// - `close`: the connection has been closed, either through an error or by calling `connection.close()`.
-/// - `timeout`: the underlying socket has timed out.
-/// - `error`: a protocol-level error has occurred. (This will *not* be sent on a query error; those are returned to callbacks/promises.)
-/// 
-/// __Example:__ Monitor the connection state with events.
-/// 
-/// 
-/// ```js
-/// r.connect({}, function(err, conn) {
-///     if (err) throw err;
-/// 
-///     conn.addListener('error', function(e) {
-///         processNetworkError(e);
-///     });
-/// 
-///     conn.addListener('close', function() {
-///         cleanup();
-///     });
-/// 
-///     runQueries(conn);
-/// });
-/// ```
-/// 
-/// __Example:__ As in Node, `on` is a synonym for `addListener`.
-/// 
-/// ```js
-/// conn.on('close', function() {
-///     cleanup();
-/// });
-/// conn.close();
-/// ```
-/// 
-
-                pub fn event_emitter<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "event_emitter", Type::EVENT_EMITTER, Some(args))
+                pub fn changes(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "changes", Some(Type::CHANGES), None)
                 }
             
 
@@ -736,8 +541,8 @@
 /// 
 /// 
 
-                pub fn db_create<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "db_create", Type::DB_CREATE, Some(args))
+                pub fn db_create(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "db_create", Some(Type::DB_CREATE), Some(args))
                 }
             
 
@@ -777,8 +582,8 @@
 /// ```
 /// 
 
-                pub fn db_drop<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "db_drop", Type::DB_DROP, Some(args))
+                pub fn db_drop(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "db_drop", Some(Type::DB_DROP), Some(args))
                 }
             
 
@@ -793,14 +598,14 @@
 /// r.dbList().run(conn, callback)
 /// ```
 
-                pub fn db_list(&self) -> Client {
-                    util::make_cmd::<Client>(self, "db_list", Type::DB_LIST, None)
+                pub fn db_list(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "db_list", Some(Type::DB_LIST), None)
                 }
             
 
                 /// Create a table
 ///
-/// <img src="https://rethinkdb.com/assets/images/docs/api_illustrations/table_create_javascript.png" class="api_command_illustration" />
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/table_create_javascript.png" class="api_command_illustration" />
 ///
 /// A RethinkDB table is a collection of JSON documents.
 ///
@@ -882,8 +687,8 @@
 /// 
 /// Read [Sharding and replication](/docs/sharding-and-replication/) for a complete discussion of the subject, including advanced topics.
 
-                pub fn table_create<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "table_create", Type::TABLE_CREATE, Some(args))
+                pub fn table_create(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "table_create", Some(Type::TABLE_CREATE), Some(args))
                 }
             
 
@@ -935,8 +740,8 @@
 /// 
 /// 
 
-                pub fn table_drop<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "table_drop", Type::TABLE_DROP, Some(args))
+                pub fn table_drop(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "table_drop", Some(Type::TABLE_DROP), Some(args))
                 }
             
 
@@ -952,8 +757,8 @@
 /// ```
 /// 
 
-                pub fn table_list(&self) -> Client {
-                    util::make_cmd::<Client>(self, "table_list", Type::TABLE_LIST, None)
+                pub fn table_list(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "table_list", Some(Type::TABLE_LIST), None)
                 }
             
 
@@ -1049,8 +854,8 @@
 /// })
 /// ```
 
-                pub fn index_create<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "index_create", Type::INDEX_CREATE, Some(args))
+                pub fn index_create(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "index_create", Some(Type::INDEX_CREATE), Some(args))
                 }
             
 
@@ -1065,8 +870,8 @@
 /// 
 /// 
 
-                pub fn index_drop<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "index_drop", Type::INDEX_DROP, Some(args))
+                pub fn index_drop(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "index_drop", Some(Type::INDEX_DROP), Some(args))
                 }
             
 
@@ -1080,8 +885,8 @@
 /// ```
 /// 
 
-                pub fn index_list(&self) -> Client {
-                    util::make_cmd::<Client>(self, "index_list", Type::INDEX_LIST, None)
+                pub fn index_list(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "index_list", Some(Type::INDEX_LIST), None)
                 }
             
 
@@ -1100,8 +905,8 @@
 /// r.table('comments').indexRename('postId', 'messageId').run(conn, callback)
 /// ```
 
-                pub fn index_rename<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "index_rename", Type::INDEX_RENAME, Some(args))
+                pub fn index_rename(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "index_rename", Some(Type::INDEX_RENAME), Some(args))
                 }
             
 
@@ -1161,8 +966,8 @@
 /// });
 /// ```
 
-                pub fn index_status(&self) -> Client {
-                    util::make_cmd::<Client>(self, "index_status", Type::INDEX_STATUS, None)
+                pub fn index_status(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "index_status", Some(Type::INDEX_STATUS), None)
                 }
             
 
@@ -1197,14 +1002,14 @@
 /// r.table('test').indexWait('timestamp').run(conn, callback)
 /// ```
 
-                pub fn index_wait(&self) -> Client {
-                    util::make_cmd::<Client>(self, "index_wait", Type::INDEX_WAIT, None)
+                pub fn index_wait(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "index_wait", Some(Type::INDEX_WAIT), None)
                 }
             
 
                 /// Insert documents into a table
 ///
-/// <img src="https://rethinkdb.com/assets/images/docs/api_illustrations/insert_javascript.png" class="api_command_illustration" />
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/insert_javascript.png" class="api_command_illustration" />
 ///
 /// Accepts a single document or an array of
 ///
@@ -1382,8 +1187,8 @@
 /// }}).run(conn, callback)
 /// ```
 
-                pub fn insert<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "insert", Type::INSERT, Some(args))
+                pub fn insert(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "insert", Some(Type::INSERT), Some(args))
                 }
             
 
@@ -1640,12 +1445,14 @@
 /// ).run(conn, callback)
 /// ```
 
-                pub fn update<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "update", Type::UPDATE, Some(args))
+                pub fn update(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "update", Some(Type::UPDATE), Some(args))
                 }
             
 
                 /// Replace documents in a table
+///
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/replace.png" class="api_command_illustration" />
 ///
 /// Accepts a JSON document or a ReQL expression,
 ///
@@ -1780,12 +1587,14 @@
 /// }
 /// ```
 
-                pub fn replace<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "replace", Type::REPLACE, Some(args))
+                pub fn replace(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "replace", Some(Type::REPLACE), Some(args))
                 }
             
 
                 /// Delete one or more documents from a table
+///
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/delete-vector.png" class="api_command_illustration" />
 ///
 /// 
 /// The optional arguments are:
@@ -1874,8 +1683,8 @@
 /// r.table("comments").delete({durability: "soft"}).run(conn, callback)
 /// ```
 
-                pub fn delete(&self) -> Client {
-                    util::make_cmd::<Client>(self, "delete", Type::DELETE, None)
+                pub fn delete(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "delete", Some(Type::DELETE), None)
                 }
             
 
@@ -1898,8 +1707,8 @@
 /// 
 /// 
 
-                pub fn sync(&self) -> Client {
-                    util::make_cmd::<Client>(self, "sync", Type::SYNC, None)
+                pub fn sync(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "sync", Some(Type::SYNC), None)
                 }
             
 
@@ -1915,8 +1724,8 @@
 /// ```
 /// 
 
-                pub fn db<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "db", Type::DB, Some(args))
+                pub fn db(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "db", Some(Type::DB), Some(args))
                 }
             
 
@@ -1951,8 +1760,8 @@
 /// r.db('heroes').table('marvel', {readMode: 'outdated'}).run(conn, callback)
 /// ```
 
-                pub fn table<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "table", Type::TABLE, Some(args))
+                pub fn table(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "table", Some(Type::TABLE), Some(args))
                 }
             
 
@@ -1981,12 +1790,14 @@
 /// r.table('heroes').get(3).changes().run(conn, callback);
 /// ```
 
-                pub fn get<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "get", Type::GET, Some(args))
+                pub fn get(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "get", Some(Type::GET), Some(args))
                 }
             
 
                 /// Get all documents where the given value matches the value of the requested index
+///
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/get-all.png" class="api_command_illustration" />
 ///
 /// 
 /// __Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/javascript/get/) when using a secondary index.
@@ -2026,8 +1837,8 @@
 /// 
 /// Secondary indexes can be used in extremely powerful ways with `getAll` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 
-                pub fn get_all<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "get_all", Type::GET_ALL, Some(args))
+                pub fn get_all(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "get_all", Some(Type::GET_ALL), Some(args))
                 }
             
 
@@ -2109,8 +1920,8 @@
 /// RethinkDB uses byte-wise ordering for `between` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
 /// {% endinfobox %}
 
-                pub fn between<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "between", Type::BETWEEN, Some(args))
+                pub fn between(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "between", Some(Type::BETWEEN), Some(args))
                 }
             
 
@@ -2321,8 +2132,8 @@
 /// 
 /// Instead of using the `default` optional argument to `filter`, we have to use default values on the fields within the `or` clause. Why? If the field on the left side of the `or` clause is missing from a document&mdash;in this case, if the user doesn't have a `role` field&mdash;the predicate will generate an error, and will return `false` (or the value the `default` argument is set to) without evaluating the right side of the `or`. By using `.default(false)` on the fields, each side of the `or` will evaluate to either the field's value or `false` if the field doesn't exist.
 
-                pub fn filter<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "filter", Type::FILTER, Some(args))
+                pub fn filter(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "filter", Some(Type::FILTER), Some(args))
                 }
             
 
@@ -2347,8 +2158,8 @@
 /// 
 /// (Compare this to an [outerJoin](/api/javascript/outer_join) with the same inputs and predicate, which would return a list of *all* Marvel heroes along with any DC heroes with a higher strength.)
 
-                pub fn inner_join<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "inner_join", Type::INNER_JOIN, Some(args))
+                pub fn inner_join(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "inner_join", Some(Type::INNER_JOIN), Some(args))
                 }
             
 
@@ -2372,14 +2183,14 @@
 /// 
 /// (Compare this to an [innerJoin](/api/javascript/inner_join) with the same inputs and predicate, which would return a list only of the matchups in which the DC hero has the higher strength.)
 
-                pub fn outer_join<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "outer_join", Type::OUTER_JOIN, Some(args))
+                pub fn outer_join(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "outer_join", Some(Type::OUTER_JOIN), Some(args))
                 }
             
 
-                /// <img alt="Data Modeling Illustration" class="api_command_illustration" src="https://rethinkdb
+                /// <img alt="Data Modeling Illustration" class="api_command_illustration" src="https://raw
 ///
-/// com/assets/images/docs/api_illustrations/table-joins.png" />
+/// githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/table-joins.png" />
 ///
 /// 
 /// Join tables using a field or function on the left-hand sequence matching primary keys or secondary indexes on the right-hand table. `eqJoin` is more efficient than other ReQL join types, and operates much faster. Documents in the result set consist of pairs of left-hand and right-hand documents, matched when the field on the left-hand side exists and is non-null and an entry with that field's value exists in the specified index on the right-hand side.
@@ -2498,8 +2309,8 @@
 /// ]
 /// ```
 
-                pub fn eq_join<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "eq_join", Type::EQ_JOIN, Some(args))
+                pub fn eq_join(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "eq_join", Some(Type::EQ_JOIN), Some(args))
                 }
             
 
@@ -2515,8 +2326,8 @@
 /// 
 /// 
 
-                pub fn zip(&self) -> Client {
-                    util::make_cmd::<Client>(self, "zip", Type::ZIP, None)
+                pub fn zip(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "zip", Some(Type::ZIP), None)
                 }
             
 
@@ -2577,8 +2388,8 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn map<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "map", Type::MAP, Some(args))
+                pub fn map(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "map", Some(Type::MAP), Some(args))
                 }
             
 
@@ -2616,8 +2427,8 @@
 /// r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn, callback)
 /// ```
 
-                pub fn with_fields<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "with_fields", Type::WITH_FIELDS, Some(args))
+                pub fn with_fields(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "with_fields", Some(Type::WITH_FIELDS), Some(args))
                 }
             
 
@@ -2671,8 +2482,8 @@
 /// }).run(conn, callback)
 /// ```
 
-                pub fn concat_map<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "concat_map", Type::CONCAT_MAP, Some(args))
+                pub fn concat_map(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "concat_map", Some(Type::CONCAT_MAP), Some(args))
                 }
             
 
@@ -2808,8 +2619,8 @@
 /// ```
 /// 
 
-                pub fn order_by<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "order_by", Type::ORDER_BY, Some(args))
+                pub fn order_by(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "order_by", Some(Type::ORDER_BY), Some(args))
                 }
             
 
@@ -2822,8 +2633,8 @@
 /// r.table('marvel').orderBy('successMetric').skip(10).run(conn, callback)
 /// ```
 
-                pub fn skip<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "skip", Type::SKIP, Some(args))
+                pub fn skip(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "skip", Some(Type::SKIP), Some(args))
                 }
             
 
@@ -2838,8 +2649,8 @@
 /// 
 /// 
 
-                pub fn limit<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "limit", Type::LIMIT, Some(args))
+                pub fn limit(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "limit", Some(Type::LIMIT), Some(args))
                 }
             
 
@@ -2892,8 +2703,8 @@
 /// "tab"
 /// ```
 
-                pub fn slice<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "slice", Type::SLICE, Some(args))
+                pub fn slice(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "slice", Some(Type::SLICE), Some(args))
                 }
             
 
@@ -2921,8 +2732,8 @@
 /// r.table('players').orderBy({index: r.desc('score')}).nth(-1).run(conn, callback)
 /// ```
 
-                pub fn nth<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "nth", Type::NTH, Some(args))
+                pub fn nth(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "nth", Some(Type::NTH), Some(args))
                 }
             
 
@@ -2945,8 +2756,8 @@
 /// ).run(conn, callback)
 /// ```
 
-                pub fn offsets_of<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "offsets_of", Type::OFFSETS_OF, Some(args))
+                pub fn offsets_of(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "offsets_of", Some(Type::OFFSETS_OF), Some(args))
                 }
             
 
@@ -2959,8 +2770,8 @@
 /// r.table('marvel').isEmpty().run(conn, callback)
 /// ```
 
-                pub fn is_empty(&self) -> Client {
-                    util::make_cmd::<Client>(self, "is_empty", Type::IS_EMPTY, None)
+                pub fn is_empty(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "is_empty", Some(Type::IS_EMPTY), None)
                 }
             
 
@@ -3006,8 +2817,8 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn union<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "union", Type::UNION, Some(args))
+                pub fn union(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "union", Some(Type::UNION), Some(args))
                 }
             
 
@@ -3024,13 +2835,15 @@
 /// r.table('marvel').sample(3).run(conn, callback)
 /// ```
 
-                pub fn sample<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "sample", Type::SAMPLE, Some(args))
+                pub fn sample(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "sample", Some(Type::SAMPLE), Some(args))
                 }
             
 
                 /// Takes a stream and partitions it into multiple groups based on the
 /// fields or functions provided
+///
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/group.png" class="api_command_illustration" />
 ///
 /// 
 /// With the `multi` flag single documents can be assigned to multiple groups, similar to the behavior of [multi-indexes](/docs/secondary-indexes/javascript). When `multi` is `true` and the grouping value is an array, documents will be placed in each group that corresponds to the elements of the array. If the array is empty the row will be ignored.
@@ -3457,8 +3270,8 @@
 /// ]
 /// ```
 
-                pub fn group(&self) -> Client {
-                    util::make_cmd::<Client>(self, "group", Type::GROUP, None)
+                pub fn group(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "group", Some(Type::GROUP), None)
                 }
             
 
@@ -3581,8 +3394,8 @@
 /// r.table('games').group('player').avg('points').ungroup().run(conn, callback) // Returns "ARRAY"
 /// ```
 
-                pub fn ungroup(&self) -> Client {
-                    util::make_cmd::<Client>(self, "ungroup", Type::UNGROUP, None)
+                pub fn ungroup(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "ungroup", Some(Type::UNGROUP), None)
                 }
             
 
@@ -3650,8 +3463,8 @@
 /// 
 /// A shorter way to execute this query is to use [max](/api/javascript/max).
 
-                pub fn reduce<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "reduce", Type::REDUCE, Some(args))
+                pub fn reduce(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "reduce", Some(Type::REDUCE), Some(args))
                 }
             
 
@@ -3727,8 +3540,8 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn fold<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "fold", Type::FOLD, Some(args))
+                pub fn fold(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "fold", Some(Type::FOLD), Some(args))
                 }
             
 
@@ -3771,8 +3584,8 @@
 /// 5
 /// ```
 
-                pub fn count(&self) -> Client {
-                    util::make_cmd::<Client>(self, "count", Type::COUNT, None)
+                pub fn count(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "count", Some(Type::COUNT), None)
                 }
             
 
@@ -3809,8 +3622,8 @@
 /// }).run(conn, callback)
 /// ```
 
-                pub fn sum(&self) -> Client {
-                    util::make_cmd::<Client>(self, "sum", Type::SUM, None)
+                pub fn sum(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "sum", Some(Type::SUM), None)
                 }
             
 
@@ -3856,8 +3669,8 @@
 /// r.table('games').avg('points').default(null).run(conn, callback)
 /// ```
 
-                pub fn avg(&self) -> Client {
-                    util::make_cmd::<Client>(self, "avg", Type::AVG, None)
+                pub fn avg(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "avg", Some(Type::AVG), None)
                 }
             
 
@@ -3912,8 +3725,8 @@
 /// r.table('users').min('points').default(null).run(conn, callback);
 /// ```
 
-                pub fn min(&self) -> Client {
-                    util::make_cmd::<Client>(self, "min", Type::MIN, None)
+                pub fn min(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "min", Some(Type::MIN), None)
                 }
             
 
@@ -3968,8 +3781,8 @@
 /// r.table('users').max('points').default(null).run(conn, callback);
 /// ```
 
-                pub fn max(&self) -> Client {
-                    util::make_cmd::<Client>(self, "max", Type::MAX, None)
+                pub fn max(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "max", Some(Type::MAX), None)
                 }
             
 
@@ -4004,8 +3817,8 @@
 /// 
 /// However, the first form (passing the index as an argument to `distinct`) is faster, and won't run into array limit issues since it's returning a stream.
 
-                pub fn distinct(&self) -> Client {
-                    util::make_cmd::<Client>(self, "distinct", Type::DISTINCT, None)
+                pub fn distinct(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "distinct", Some(Type::DISTINCT), None)
                 }
             
 
@@ -4049,13 +3862,15 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn contains<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "contains", Type::CONTAINS, Some(args))
+                pub fn contains(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "contains", Some(Type::CONTAINS), Some(args))
                 }
             
 
                 /// Plucks out one or more attributes from either an object or a sequence of objects
 /// (projection)
+///
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/pluck.png" class="api_command_illustration" />
 ///
 /// 
 /// __Example:__ We just need information about IronMan's reactor and not the rest of the
@@ -4088,8 +3903,8 @@
 /// 
 /// For more information read the [nested field documentation](/docs/nested-fields/).
 
-                pub fn pluck<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "pluck", Type::PLUCK, Some(args))
+                pub fn pluck(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "pluck", Some(Type::PLUCK), Some(args))
                 }
             
 
@@ -4126,8 +3941,8 @@
 /// ```
 /// 
 
-                pub fn without<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "without", Type::WITHOUT, Some(args))
+                pub fn without(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "without", Some(Type::WITHOUT), Some(args))
                 }
             
 
@@ -4190,8 +4005,8 @@
 /// ```
 /// 
 
-                pub fn merge<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "merge", Type::MERGE, Some(args))
+                pub fn merge(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "merge", Some(Type::MERGE), Some(args))
                 }
             
 
@@ -4206,8 +4021,8 @@
 /// 
 /// 
 
-                pub fn append<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "append", Type::APPEND, Some(args))
+                pub fn append(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "append", Some(Type::APPEND), Some(args))
                 }
             
 
@@ -4222,8 +4037,8 @@
 /// 
 /// 
 
-                pub fn prepend<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "prepend", Type::PREPEND, Some(args))
+                pub fn prepend(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "prepend", Some(Type::PREPEND), Some(args))
                 }
             
 
@@ -4250,8 +4065,8 @@
 /// 
 /// 
 
-                pub fn difference<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "difference", Type::DIFFERENCE, Some(args))
+                pub fn difference(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "difference", Some(Type::DIFFERENCE), Some(args))
                 }
             
 
@@ -4266,8 +4081,8 @@
 /// 
 /// 
 
-                pub fn set_insert<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "set_insert", Type::SET_INSERT, Some(args))
+                pub fn set_insert(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "set_insert", Some(Type::SET_INSERT), Some(args))
                 }
             
 
@@ -4281,8 +4096,8 @@
 /// ```
 /// 
 
-                pub fn set_union<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "set_union", Type::SET_UNION, Some(args))
+                pub fn set_union(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "set_union", Some(Type::SET_UNION), Some(args))
                 }
             
 
@@ -4297,8 +4112,8 @@
 /// ```
 /// 
 
-                pub fn set_intersection<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "set_intersection", Type::SET_INTERSECTION, Some(args))
+                pub fn set_intersection(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "set_intersection", Some(Type::SET_INTERSECTION), Some(args))
                 }
             
 
@@ -4314,8 +4129,8 @@
 /// 
 /// 
 
-                pub fn set_difference<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "set_difference", Type::SET_DIFFERENCE, Some(args))
+                pub fn set_difference(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "set_difference", Some(Type::SET_DIFFERENCE), Some(args))
                 }
             
 
@@ -4342,8 +4157,8 @@
 /// 40
 /// ```
 
-                pub fn bracket<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "bracket", Type::BRACKET, Some(args))
+                pub fn bracket(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "bracket", Some(Type::BRACKET), Some(args))
                 }
             
 
@@ -4359,8 +4174,8 @@
 /// r.table('marvel').get('IronMan').getField('firstAppearance').run(conn, callback)
 /// ```
 
-                pub fn get_field<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "get_field", Type::GET_FIELD, Some(args))
+                pub fn get_field(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "get_field", Some(Type::GET_FIELD), Some(args))
                 }
             
 
@@ -4420,8 +4235,8 @@
 ///     ).run(conn, callback)
 /// ```
 
-                pub fn has_fields<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "has_fields", Type::HAS_FIELDS, Some(args))
+                pub fn has_fields(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "has_fields", Some(Type::HAS_FIELDS), Some(args))
                 }
             
 
@@ -4438,8 +4253,8 @@
 /// 
 /// 
 
-                pub fn insert_at<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "insert_at", Type::INSERT_AT, Some(args))
+                pub fn insert_at(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "insert_at", Some(Type::INSERT_AT), Some(args))
                 }
             
 
@@ -4455,8 +4270,8 @@
 /// ```
 /// 
 
-                pub fn splice_at<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "splice_at", Type::SPLICE_AT, Some(args))
+                pub fn splice_at(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "splice_at", Some(Type::SPLICE_AT), Some(args))
                 }
             
 
@@ -4519,8 +4334,8 @@
 /// }).run(conn, callback)
 /// ```
 
-                pub fn delete_at<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "delete_at", Type::DELETE_AT, Some(args))
+                pub fn delete_at(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "delete_at", Some(Type::DELETE_AT), Some(args))
                 }
             
 
@@ -4535,8 +4350,8 @@
 /// r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
 /// ```
 
-                pub fn change_at<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "change_at", Type::CHANGE_AT, Some(args))
+                pub fn change_at(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "change_at", Some(Type::CHANGE_AT), Some(args))
                 }
             
 
@@ -4555,8 +4370,8 @@
 /// [ "id", "mail", "name" ]
 /// ```
 
-                pub fn keys(&self) -> Client {
-                    util::make_cmd::<Client>(self, "keys", Type::KEYS, None)
+                pub fn keys(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "keys", Some(Type::KEYS), None)
                 }
             
 
@@ -4575,8 +4390,8 @@
 /// [ 1, "fred@example.com", "fred" ]
 /// ```
 
-                pub fn values(&self) -> Client {
-                    util::make_cmd::<Client>(self, "values", Type::VALUES, None)
+                pub fn values(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "values", Some(Type::VALUES), None)
                 }
             
 
@@ -4648,36 +4463,14 @@
 /// }
 /// ```
 
-                pub fn literal(&self) -> Client {
-                    util::make_cmd::<Client>(self, "literal", Type::LITERAL, None)
-                }
-            
-
-                /// Creates an object from a list of key-value pairs, where the keys must
-/// be strings
-///
-/// `r.object(A, B, C, D)` is equivalent to
-///
-/// `r.expr([[A, B], [C, D]]).coerceTo('OBJECT')`.
-/// 
-/// __Example:__ Create a simple object.
-/// 
-/// ```js
-/// r.object('id', 5, 'data', ['foo', 'bar']).run(conn, callback)
-/// ```
-/// 
-/// Result:
-/// 
-/// ```js
-/// {data: ["foo", "bar"], id: 5}
-/// ```
-
-                pub fn object<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "object", Type::OBJECT, Some(args))
+                pub fn literal(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "literal", Some(Type::LITERAL), None)
                 }
             
 
                 /// Matches against a regular expression
+///
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/match.png" class="api_command_illustration" />
 ///
 /// If there is a match, returns an object with the fields:
 ///
@@ -4785,12 +4578,14 @@
 /// r.expr("name[at]domain.com").match(".*@(.*)").run(conn, callback)
 /// ```
 
-                pub fn match_<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "match_", Type::MATCH, Some(args))
+                pub fn match_(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "match_", Some(Type::MATCH), Some(args))
                 }
             
 
                 /// Splits a string into substrings
+///
+/// <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/split.png" class="api_command_illustration" />
 ///
 /// Splits on whitespace when called
 ///
@@ -4865,8 +4660,8 @@
 /// ["foo", "bar bax"]
 /// ```
 
-                pub fn split(&self) -> Client {
-                    util::make_cmd::<Client>(self, "split", Type::SPLIT, None)
+                pub fn split(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "split", Some(Type::SPLIT), None)
                 }
             
 
@@ -4887,8 +4682,8 @@
 /// 
 /// __Note:__ `upcase` and `downcase` only affect ASCII characters.
 
-                pub fn upcase(&self) -> Client {
-                    util::make_cmd::<Client>(self, "upcase", Type::UPCASE, None)
+                pub fn upcase(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "upcase", Some(Type::UPCASE), None)
                 }
             
 
@@ -4909,8 +4704,8 @@
 /// 
 /// __Note:__ `upcase` and `downcase` only affect ASCII characters.
 
-                pub fn downcase(&self) -> Client {
-                    util::make_cmd::<Client>(self, "downcase", Type::DOWNCASE, None)
+                pub fn downcase(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "downcase", Some(Type::DOWNCASE), None)
                 }
             
 
@@ -4969,8 +4764,8 @@
 /// "foobarbuzz"
 /// ```
 
-                pub fn add<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "add", Type::ADD, Some(args))
+                pub fn add(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "add", Some(Type::ADD), Some(args))
                 }
             
 
@@ -4995,8 +4790,8 @@
 /// r.now().sub(date)
 /// ```
 
-                pub fn sub<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "sub", Type::SUB, Some(args))
+                pub fn sub(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "sub", Some(Type::SUB), Some(args))
                 }
             
 
@@ -5016,8 +4811,8 @@
 /// ```
 /// 
 
-                pub fn mul<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "mul", Type::MUL, Some(args))
+                pub fn mul(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "mul", Some(Type::MUL), Some(args))
                 }
             
 
@@ -5031,14 +4826,14 @@
 /// ```
 /// 
 
-                pub fn div<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "div", Type::DIV, Some(args))
+                pub fn div(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "div", Some(Type::DIV), Some(args))
                 }
             
 
                 
-                pub fn mod_<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "mod_", Type::MOD, Some(args))
+                pub fn mod_(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "mod_", Some(Type::MOD), Some(args))
                 }
             
 
@@ -5067,8 +4862,8 @@
 /// true
 /// ```
 
-                pub fn and<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "and", Type::AND, Some(args))
+                pub fn and(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "and", Some(Type::AND), Some(args))
                 }
             
 
@@ -5106,8 +4901,8 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn or<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "or", Type::OR, Some(args))
+                pub fn or(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "or", Some(Type::OR), Some(args))
                 }
             
 
@@ -5126,8 +4921,8 @@
 /// r.eq(a, b, c).run(conn, callback);
 /// ```
 
-                pub fn eq<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "eq", Type::EQ, Some(args))
+                pub fn eq(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "eq", Some(Type::EQ), Some(args))
                 }
             
 
@@ -5146,8 +4941,8 @@
 /// r.ne(a, b, c).run(conn, callback);
 /// ```
 
-                pub fn ne<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "ne", Type::NE, Some(args))
+                pub fn ne(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "ne", Some(Type::NE), Some(args))
                 }
             
 
@@ -5173,8 +4968,8 @@
 /// r.gt(a, b).and(r.gt(b, c)).run(conn, callback);
 /// ```
 
-                pub fn gt<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "gt", Type::GT, Some(args))
+                pub fn gt(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "gt", Some(Type::GT), Some(args))
                 }
             
 
@@ -5200,8 +4995,8 @@
 /// r.ge(a, b).and(r.ge(b, c)).run(conn, callback);
 /// ```
 
-                pub fn ge<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "ge", Type::GE, Some(args))
+                pub fn ge(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "ge", Some(Type::GE), Some(args))
                 }
             
 
@@ -5227,8 +5022,8 @@
 /// r.lt(a, b).and(r.lt(b, c)).run(conn, callback);
 /// ```
 
-                pub fn lt<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "lt", Type::LT, Some(args))
+                pub fn lt(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "lt", Some(Type::LT), Some(args))
                 }
             
 
@@ -5254,8 +5049,8 @@
 /// r.le(a, b).and(r.le(b, c)).run(conn, callback);
 /// ```
 
-                pub fn le<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "le", Type::LE, Some(args))
+                pub fn le(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "le", Some(Type::LE), Some(args))
                 }
             
 
@@ -5289,8 +5084,8 @@
 /// }).run(conn, callback)
 /// ```
 
-                pub fn not(&self) -> Client {
-                    util::make_cmd::<Client>(self, "not", Type::NOT, None)
+                pub fn not(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "not", Some(Type::NOT), None)
                 }
             
 
@@ -5327,8 +5122,8 @@
 /// ```
 /// 
 
-                pub fn random(&self) -> Client {
-                    util::make_cmd::<Client>(self, "random", Type::RANDOM, None)
+                pub fn random(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "random", Some(Type::RANDOM), None)
                 }
             
 
@@ -5364,8 +5159,8 @@
 /// r.table('superheroes').get('ironman')('weight').round().run(conn, callback);
 /// ```
 
-                pub fn round(&self) -> Client {
-                    util::make_cmd::<Client>(self, "round", Type::ROUND, None)
+                pub fn round(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "round", Some(Type::ROUND), None)
                 }
             
 
@@ -5396,8 +5191,8 @@
 /// r.table('superheroes').get('ironman')('weight').ceil().run(conn, callback);
 /// ```
 
-                pub fn ceil(&self) -> Client {
-                    util::make_cmd::<Client>(self, "ceil", Type::CEIL, None)
+                pub fn ceil(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "ceil", Some(Type::CEIL), None)
                 }
             
 
@@ -5428,8 +5223,8 @@
 /// r.table('superheroes').get('ironman')('weight').floor().run(conn, callback);
 /// ```
 
-                pub fn floor(&self) -> Client {
-                    util::make_cmd::<Client>(self, "floor", Type::FLOOR, None)
+                pub fn floor(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "floor", Some(Type::FLOOR), None)
                 }
             
 
@@ -5448,8 +5243,8 @@
 /// ```
 /// 
 
-                pub fn now(&self) -> Client {
-                    util::make_cmd::<Client>(self, "now", Type::NOW, None)
+                pub fn now(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "now", Some(Type::NOW), None)
                 }
             
 
@@ -5474,8 +5269,8 @@
 /// r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')}).run(conn, callback)
 /// ```
 
-                pub fn time<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "time", Type::TIME, Some(args))
+                pub fn time(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "time", Some(Type::TIME), Some(args))
                 }
             
 
@@ -5491,8 +5286,8 @@
 /// r.table("user").get("John").update({birthdate: r.epochTime(531360000)}).run(conn, callback)
 /// ```
 
-                pub fn epoch_time<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "epoch_time", Type::EPOCH_TIME, Some(args))
+                pub fn epoch_time(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "epoch_time", Some(Type::EPOCH_TIME), Some(args))
                 }
             
 
@@ -5511,8 +5306,8 @@
 /// 
 /// 
 
-                pub fn iso8601<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "iso8601", Type::ISO8601, Some(args))
+                pub fn iso8601(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "iso8601", Some(Type::ISO8601), Some(args))
                 }
             
 
@@ -5529,8 +5324,8 @@
 /// 
 /// 
 
-                pub fn in_timezone<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "in_timezone", Type::IN_TIMEZONE, Some(args))
+                pub fn in_timezone(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "in_timezone", Some(Type::IN_TIMEZONE), Some(args))
                 }
             
 
@@ -5547,8 +5342,8 @@
 /// 
 /// 
 
-                pub fn timezone(&self) -> Client {
-                    util::make_cmd::<Client>(self, "timezone", Type::TIMEZONE, None)
+                pub fn timezone(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "timezone", Some(Type::TIMEZONE), None)
                 }
             
 
@@ -5577,8 +5372,8 @@
 /// ```
 /// 
 
-                pub fn during<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "during", Type::DURING, Some(args))
+                pub fn during(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "during", Some(Type::DURING), Some(args))
                 }
             
 
@@ -5608,8 +5403,8 @@
 /// [now]: /api/javascript/now/
 /// [itz]: /api/javascript/in_timezone/
 
-                pub fn date(&self) -> Client {
-                    util::make_cmd::<Client>(self, "date", Type::DATE, None)
+                pub fn date(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "date", Some(Type::DATE), None)
                 }
             
 
@@ -5627,8 +5422,8 @@
 /// 
 /// 
 
-                pub fn time_of_day(&self) -> Client {
-                    util::make_cmd::<Client>(self, "time_of_day", Type::TIME_OF_DAY, None)
+                pub fn time_of_day(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "time_of_day", Some(Type::TIME_OF_DAY), None)
                 }
             
 
@@ -5643,8 +5438,8 @@
 /// }).run(conn, callback)
 /// ```
 
-                pub fn year(&self) -> Client {
-                    util::make_cmd::<Client>(self, "year", Type::YEAR, None)
+                pub fn year(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "year", Some(Type::YEAR), None)
                 }
             
 
@@ -5671,8 +5466,8 @@
 /// ```
 /// 
 
-                pub fn month(&self) -> Client {
-                    util::make_cmd::<Client>(self, "month", Type::MONTH, None)
+                pub fn month(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "month", Some(Type::MONTH), None)
                 }
             
 
@@ -5689,8 +5484,8 @@
 /// 
 /// 
 
-                pub fn day(&self) -> Client {
-                    util::make_cmd::<Client>(self, "day", Type::DAY, None)
+                pub fn day(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "day", Some(Type::DAY), None)
                 }
             
 
@@ -5714,8 +5509,8 @@
 /// ```
 /// 
 
-                pub fn day_of_week(&self) -> Client {
-                    util::make_cmd::<Client>(self, "day_of_week", Type::DAY_OF_WEEK, None)
+                pub fn day_of_week(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "day_of_week", Some(Type::DAY_OF_WEEK), None)
                 }
             
 
@@ -5732,8 +5527,8 @@
 /// 
 /// 
 
-                pub fn day_of_year(&self) -> Client {
-                    util::make_cmd::<Client>(self, "day_of_year", Type::DAY_OF_YEAR, None)
+                pub fn day_of_year(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "day_of_year", Some(Type::DAY_OF_YEAR), None)
                 }
             
 
@@ -5749,8 +5544,8 @@
 /// ```
 /// 
 
-                pub fn hours(&self) -> Client {
-                    util::make_cmd::<Client>(self, "hours", Type::HOURS, None)
+                pub fn hours(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "hours", Some(Type::HOURS), None)
                 }
             
 
@@ -5767,8 +5562,8 @@
 /// 
 /// 
 
-                pub fn minutes(&self) -> Client {
-                    util::make_cmd::<Client>(self, "minutes", Type::MINUTES, None)
+                pub fn minutes(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "minutes", Some(Type::MINUTES), None)
                 }
             
 
@@ -5786,8 +5581,8 @@
 /// ```
 /// 
 
-                pub fn seconds(&self) -> Client {
-                    util::make_cmd::<Client>(self, "seconds", Type::SECONDS, None)
+                pub fn seconds(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "seconds", Some(Type::SECONDS), None)
                 }
             
 
@@ -5803,8 +5598,8 @@
 /// ```
 /// 
 
-                pub fn to_iso8601(&self) -> Client {
-                    util::make_cmd::<Client>(self, "to_iso8601", Type::TO_ISO8601, None)
+                pub fn to_iso8601(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "to_iso8601", Some(Type::TO_ISO8601), None)
                 }
             
 
@@ -5819,8 +5614,8 @@
 /// 
 /// 
 
-                pub fn to_epoch_time(&self) -> Client {
-                    util::make_cmd::<Client>(self, "to_epoch_time", Type::TO_EPOCH_TIME, None)
+                pub fn to_epoch_time(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "to_epoch_time", Some(Type::TO_EPOCH_TIME), None)
                 }
             
 
@@ -5865,8 +5660,8 @@
 /// 
 /// Read more details about RethinkDB's binary object support: [Storing binary objects](/docs/storing-binary/).
 
-                pub fn binary<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "binary", Type::BINARY, Some(args))
+                pub fn binary(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "binary", Some(Type::BINARY), Some(args))
                 }
             
 
@@ -5918,8 +5713,8 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn do_<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "do_", Type::FUNCALL, Some(args))
+                pub fn do_(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "do_", Some(Type::FUNCALL), Some(args))
                 }
             
 
@@ -6000,8 +5795,8 @@
 /// ]
 /// ```
 
-                pub fn branch<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "branch", Type::BRANCH, Some(args))
+                pub fn branch(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "branch", Some(Type::BRANCH), Some(args))
                 }
             
 
@@ -6016,8 +5811,8 @@
 /// }).run(conn, callback)
 /// ```
 
-                pub fn for_each<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "for_each", Type::FOR_EACH, Some(args))
+                pub fn for_each(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "for_each", Some(Type::FOR_EACH), Some(args))
                 }
             
 
@@ -6060,8 +5855,8 @@
 /// [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
 /// ```
 
-                pub fn range(&self) -> Client {
-                    util::make_cmd::<Client>(self, "range", Type::RANGE, None)
+                pub fn range(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "range", Some(Type::RANGE), None)
                 }
             
 
@@ -6082,8 +5877,8 @@
 /// 
 /// 
 
-                pub fn error<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "error", Type::ERROR, Some(args))
+                pub fn error(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "error", Some(Type::ERROR), Some(args))
                 }
             
 
@@ -6174,8 +5969,8 @@
 /// 
 /// This particular example simply returns the error message, so it isn't very useful. But it would be possible to change the default value based on the specific error message thrown.
 
-                pub fn default<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "default", Type::DEFAULT, Some(args))
+                pub fn default(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "default", Some(Type::DEFAULT), Some(args))
                 }
             
 
@@ -6198,8 +5993,8 @@
 /// ```
 /// 
 
-                pub fn expr<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "expr", Type::EXPR, Some(args))
+                pub fn expr(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "expr", None, Some(args))
                 }
             
 
@@ -6234,8 +6029,8 @@
 /// ```
 /// 
 
-                pub fn js<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "js", Type::JAVASCRIPT, Some(args))
+                pub fn js(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "js", Some(Type::JAVASCRIPT), Some(args))
                 }
             
 
@@ -6271,8 +6066,8 @@
 /// r.expr(1).coerceTo('string').run(conn, callback)
 /// ```
 
-                pub fn coerce_to<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "coerce_to", Type::COERCE_TO, Some(args))
+                pub fn coerce_to(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "coerce_to", Some(Type::COERCE_TO), Some(args))
                 }
             
 
@@ -6313,8 +6108,8 @@
 /// "STRING"
 /// ```
 
-                pub fn type_of(&self) -> Client {
-                    util::make_cmd::<Client>(self, "type_of", Type::TYPE_OF, None)
+                pub fn type_of(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "type_of", Some(Type::TYPE_OF), None)
                 }
             
 
@@ -6327,8 +6122,8 @@
 /// r.table('marvel').info().run(conn, callback)
 /// ```
 
-                pub fn info(&self) -> Client {
-                    util::make_cmd::<Client>(self, "info", Type::INFO, None)
+                pub fn info(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "info", Some(Type::INFO), None)
                 }
             
 
@@ -6341,8 +6136,8 @@
 /// r.json("[1,2,3]").run(conn, callback)
 /// ```
 
-                pub fn json<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "json", Type::JSON, Some(args))
+                pub fn json(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "json", Some(Type::JSON), Some(args))
                 }
             
 
@@ -6359,8 +6154,8 @@
 /// '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
 /// ```
 
-                pub fn to_json<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "to_json", Type::TO_JSON_STRING, Some(args))
+                pub fn to_json(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "to_json", Some(Type::TO_JSON_STRING), Some(args))
                 }
             
 
@@ -6513,8 +6308,8 @@
 /// 
 /// See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
 
-                pub fn http<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "http", Type::HTTP, Some(args))
+                pub fn http(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "http", Some(Type::HTTP), Some(args))
                 }
             
 
@@ -6543,8 +6338,8 @@
 /// "90691cbc-b5ea-5826-ae98-951e30fc3b2d"
 /// ```
 
-                pub fn uuid(&self) -> Client {
-                    util::make_cmd::<Client>(self, "uuid", Type::UUID, None)
+                pub fn uuid(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "uuid", Some(Type::UUID), None)
                 }
             
 
@@ -6574,8 +6369,8 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn circle<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "circle", Type::CIRCLE, Some(args))
+                pub fn circle(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "circle", Some(Type::CIRCLE), Some(args))
                 }
             
 
@@ -6602,8 +6397,8 @@
 /// 734.1252496021841
 /// ```
 
-                pub fn distance<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "distance", Type::DISTANCE, Some(args))
+                pub fn distance(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "distance", Some(Type::DISTANCE), Some(args))
                 }
             
 
@@ -6635,8 +6430,8 @@
 /// }, {nonAtomic: true}).run(conn, callback);
 /// ```
 
-                pub fn fill(&self) -> Client {
-                    util::make_cmd::<Client>(self, "fill", Type::FILL, None)
+                pub fn fill(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "fill", Some(Type::FILL), None)
                 }
             
 
@@ -6663,8 +6458,8 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn geojson<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "geojson", Type::GEOJSON, Some(args))
+                pub fn geojson(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "geojson", Some(Type::GEOJSON), Some(args))
                 }
             
 
@@ -6684,8 +6479,8 @@
 /// }
 /// ```
 
-                pub fn to_geojson(&self) -> Client {
-                    util::make_cmd::<Client>(self, "to_geojson", Type::TO_GEOJSON, None)
+                pub fn to_geojson(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "to_geojson", Some(Type::TO_GEOJSON), None)
                 }
             
 
@@ -6701,8 +6496,8 @@
 /// r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 /// ```
 
-                pub fn get_intersecting<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "get_intersecting", Type::GET_INTERSECTING, Some(args))
+                pub fn get_intersecting(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "get_intersecting", Some(Type::GET_INTERSECTING), Some(args))
                 }
             
 
@@ -6736,8 +6531,8 @@
 /// [c]:  /api/javascript/circle/
 /// {% endinfobox %}
 
-                pub fn get_nearest<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "get_nearest", Type::GET_NEAREST, Some(args))
+                pub fn get_nearest(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "get_nearest", Some(Type::GET_NEAREST), Some(args))
                 }
             
 
@@ -6776,8 +6571,8 @@
 ///     includes(circle1).run(conn, callback);
 /// ```
 
-                pub fn includes<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "includes", Type::INCLUDES, Some(args))
+                pub fn includes(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "includes", Some(Type::INCLUDES), Some(args))
                 }
             
 
@@ -6807,8 +6602,8 @@
 /// The `intersects` command cannot take advantage of a geospatial [secondary index](/docs/secondary-indexes/javascript). If you're working with large data sets, you should consider using an index and the [getIntersecting](/api/javascript/get_intersecting) command instead of `intersects`.
 /// {% endinfobox %}
 
-                pub fn intersects<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "intersects", Type::INTERSECTS, Some(args))
+                pub fn intersects(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "intersects", Some(Type::INTERSECTS), Some(args))
                 }
             
 
@@ -6848,8 +6643,8 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn line<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "line", Type::LINE, Some(args))
+                pub fn line(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "line", Some(Type::LINE), Some(args))
                 }
             
 
@@ -6868,8 +6663,8 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn point<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "point", Type::POINT, Some(args))
+                pub fn point(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "point", Some(Type::POINT), Some(args))
                 }
             
 
@@ -6919,8 +6714,8 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn polygon<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "polygon", Type::POLYGON, Some(args))
+                pub fn polygon(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "polygon", Some(Type::POLYGON), Some(args))
                 }
             
 
@@ -6948,8 +6743,8 @@
 /// outerPolygon.polygonSub(innerPolygon).run(conn, callback);
 /// ```
 
-                pub fn polygon_sub<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "polygon_sub", Type::POLYGON_SUB, Some(args))
+                pub fn polygon_sub(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "polygon_sub", Some(Type::POLYGON_SUB), Some(args))
                 }
             
 
@@ -7040,8 +6835,8 @@
 /// r.grant('monitor', {read: true}).run(conn, callback);
 /// ```
 
-                pub fn grant(&self) -> Client {
-                    util::make_cmd::<Client>(self, "grant", Type::GRANT, None)
+                pub fn grant(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "grant", Some(Type::GRANT), None)
                 }
             
 
@@ -7090,8 +6885,8 @@
 /// > r.table('users').config().update({write_acks: 'single'}).run(conn, callback);
 /// ```
 
-                pub fn config(&self) -> Client {
-                    util::make_cmd::<Client>(self, "config", Type::CONFIG, None)
+                pub fn config(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "config", Some(Type::CONFIG), None)
                 }
             
 
@@ -7204,8 +6999,8 @@
 /// }
 /// ```
 
-                pub fn rebalance(&self) -> Client {
-                    util::make_cmd::<Client>(self, "rebalance", Type::REBALANCE, None)
+                pub fn rebalance(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "rebalance", Some(Type::REBALANCE), None)
                 }
             
 
@@ -7396,8 +7191,8 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn reconfigure<T: ToArg>(&self, args: T) -> Client {
-                    util::make_cmd(self, "reconfigure", Type::RECONFIGURE, Some(args))
+                pub fn reconfigure(&self, args: A) -> Client<A> {
+                    util::make_cmd(self, "reconfigure", Some(Type::RECONFIGURE), Some(args))
                 }
             
 
@@ -7458,8 +7253,8 @@
 /// }
 /// ```
 
-                pub fn status(&self) -> Client {
-                    util::make_cmd::<Client>(self, "status", Type::STATUS, None)
+                pub fn status(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "status", Some(Type::STATUS), None)
                 }
             
 
@@ -7487,8 +7282,8 @@
 /// { "ready": 1 }
 /// ```
 
-                pub fn wait(&self) -> Client {
-                    util::make_cmd::<Client>(self, "wait", Type::WAIT, None)
+                pub fn wait(&self) -> Client<A> {
+                    util::make_cmd::<A>(self, "wait", Some(Type::WAIT), None)
                 }
             
             }

@@ -118,10 +118,11 @@ struct Config {
 /// The database cluster client
 #[must_use]
 #[derive(Debug, Clone)]
-pub struct Client {
+pub struct Client<A: ToArg> {
     term: Term,
     query: String,
     logger: Logger,
+    phantom: ::std::marker::PhantomData<A>,
 }
 
 /// The return type of the `args!()` macro

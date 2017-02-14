@@ -89,7 +89,10 @@ impl Config {
             })
         // Drop blacklisted commands
         .filter(|command| {
-            let blacklist = vec!["r", "args", "use", "row"];
+            let blacklist = vec![
+                "r", "args", "use", "row", "opt_arg", "array", "object", "close", "reconnect",
+                "noreply_wait", "server", "event_emitter",
+            ];
             for cmd in blacklist {
                 if cmd == command.permalink {
                     return false;

@@ -4,3 +4,4 @@ pub extern crate tokio_core;
 pub extern crate byteorder;
 pub extern crate futures;
 pub extern crate rand;
+pub extern crate serde;
