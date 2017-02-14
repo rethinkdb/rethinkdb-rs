@@ -4,6 +4,8 @@ use std::path::{Path, PathBuf};
 
 use config;
 
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/build/parsers.rs"));
+
 #[derive(Debug, Clone)]
 pub struct Commands {
     header: String,
@@ -167,6 +169,8 @@ impl Command {
         if file.read_to_string(&mut docs).unwrap() == 0 {
             panic!(format!("command file is empty: {:?}", self));
         }
+        println!("{:?}", graves(docs.as_bytes()));
+        panic!("got the graves...");
 
         let (no_args, docs) = self.gen_docs(docs);
         self.tokens = if name == "connect" {
