@@ -105,7 +105,7 @@
 /// 
 /// The returned connection object will have two properties on it containing the connection's port and address:
 /// 
-/// ```js
+/// ```javascript
 /// conn.clientPort;
 /// conn.clientAddress;
 /// ```
@@ -124,7 +124,7 @@
 /// 
 /// __Example:__ Open a connection using the default host and port, specifying the default database.
 /// 
-/// ```js
+/// ```javascript
 /// r.connect({
 ///     db: 'marvel'
 /// }, function(err, conn) {
@@ -134,13 +134,13 @@
 /// 
 /// If no callback is provided, a promise will be returned.
 /// 
-/// ```js
+/// ```javascript
 /// var promise = r.connect({db: 'marvel'});
 /// ```
 /// 
 /// __Example:__ Open a new connection to the database.
 /// 
-/// ```js
+/// ```javascript
 /// r.connect({
 ///     host: 'localhost',
 ///     port: 28015,
@@ -152,7 +152,7 @@
 /// 
 /// Alternatively, you can use promises.
 /// 
-/// ```js
+/// ```javascript
 /// var p = r.connect({
 ///     host: 'localhost',
 ///     port: 28015,
@@ -167,7 +167,7 @@
 /// 
 /// __Example:__ Open a new connection to the database, specifying a user/password combination for authentication.
 /// 
-/// ```js
+/// ```javascript
 /// r.connect({
 ///     host: 'localhost',
 ///     port: 28015,
@@ -181,7 +181,7 @@
 /// 
 /// __Example:__ Open a new connection to the database using an SSL proxy.
 /// 
-/// ```js
+/// ```javascript
 /// var fs = require('fs');
 /// fs.readFile('/path/to/cert', function (err, caCert) {
 ///     if (!err) {
@@ -246,7 +246,7 @@
 /// __Example:__ Run a query on the connection `conn` and log each row in
 /// the result to the console.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').run(conn, function(err, cursor) {
 ///     cursor.each(console.log);
 /// })
@@ -255,7 +255,7 @@
 /// __Example:__ Run a query on the connection `conn` and retrieve all the rows in an
 /// array.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').run(conn, function(err, cursor) {
 ///     if (err) {
 ///         // process error
@@ -275,7 +275,7 @@
 /// 
 /// Alternatively, you can use promises.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').run(conn).then(function(cursor) {
 ///     return cursor.toArray()
 /// }).then(function(results) {
@@ -292,7 +292,7 @@
 /// for individual tables will supercede this global setting for all
 /// tables in the query.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').run(conn, {readMode: 'outdated'}, function (err, cursor) {
 ///     ...
 /// });
@@ -302,7 +302,7 @@
 /// can set `noreply` to true in the options. In this case `run` will
 /// return immediately.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').run(conn, {noreply: true}, function (err, cursor) {
 ///     ...
 /// });
@@ -312,7 +312,7 @@
 /// written to disk (overriding the table's default settings), you can set
 /// `durability` to `'hard'` or `'soft'` in the options.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel')
 ///     .insert({ superhero: 'Iron Man', superpower: 'Arc Reactor' })
 ///     .run(conn, {noreply: true, durability: 'soft'}, function (err, cursor) {
@@ -326,7 +326,7 @@
 /// with two fields (`epoch_time` and `$reql_type$`) instead of a native date
 /// object.
 /// 
-/// ```js
+/// ```javascript
 /// r.now().run(conn, {timeFormat: "raw"}, function (err, result) {
 ///     ...
 /// });
@@ -334,7 +334,7 @@
 /// 
 /// __Example:__ Specify the database to use for the query.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').run(conn, {db: 'heroes'}).then(function(cursor) {
 ///     return cursor.toArray()
 /// }).then(function(results) {
@@ -346,13 +346,13 @@
 /// 
 /// This is equivalent to using the `db` command to specify the database:
 /// 
-/// ```js
+/// ```javascript
 /// r.db('heroes').table('marvel').run(conn) ...
 /// ```
 /// 
 /// __Example:__ Change the batching parameters for this query.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').run(conn, {
 ///     maxBatchRows: 16,
 ///     maxBatchBytes: 2048
@@ -395,7 +395,7 @@
 /// 
 /// Changefeed notifications take the form of a two-field object:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     "old_val": <document before change>,
 ///     "new_val": <document after change>
@@ -404,7 +404,7 @@
 /// 
 /// When `includeTypes` is `true`, there will be three fields:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     "old_val": <document before change>,
 ///     "new_val": <document after change>,
@@ -428,7 +428,7 @@
 /// 
 /// Start monitoring the changefeed in one client:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').changes().run(conn, function(err, cursor) {
 ///   cursor.each(console.log);
 /// });
@@ -437,7 +437,7 @@
 /// As these queries are performed in a second client, the first
 /// client would receive and print the following objects:
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games').insert({id: 1}).run(conn, callback);
 /// {old_val: null, new_val: {id: 1}}
 /// 
@@ -457,7 +457,7 @@
 /// 
 /// __Example:__ Return all the changes that increase a player's score.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('test').changes().filter(
 ///   r.row('new_val')('score').gt(r.row('old_val')('score'))
 /// ).run(conn, callback)
@@ -465,19 +465,19 @@
 /// 
 /// __Example:__ Return all the changes to a specific player's score that increase it past 10.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('test').get(1).filter(r.row('score').gt(10)).changes().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Return all the inserts on a table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('test').changes().filter(r.row('old_val').eq(null)).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Return all the changes to game 1, with state notifications and initial values.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').get(1).changes({includeInitial: true, includeStates: true}).run(conn, callback);
 /// // Result returned on changefeed
 /// {state: 'initializing'}
@@ -495,7 +495,7 @@
 /// 
 /// __Example:__ Return all the changes to the top 10 games. This assumes the presence of a `score` secondary index on the `games` table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').orderBy(
 ///     { index: r.desc('score') }
 /// ).limit(10).changes().run(conn, callback);
@@ -503,7 +503,7 @@
 /// 
 /// __Example:__ Maintain the state of an array based on a changefeed.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('data').changes(
 ///     {includeInitial: true, includeOffsets: true}
 /// ).run(conn, function (err, change) {
@@ -545,7 +545,7 @@
 /// 
 /// __Example:__ Create a database named 'superheroes'.
 /// 
-/// ```js
+/// ```javascript
 /// > r.dbCreate('superheroes').run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -586,7 +586,7 @@
 /// 
 /// __Example:__ Drop a database named 'superheroes'.
 /// 
-/// ```js
+/// ```javascript
 /// > r.dbDrop('superheroes').run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -617,7 +617,7 @@
 /// 
 /// __Example:__ List all databases.
 /// 
-/// ```js
+/// ```javascript
 /// r.dbList().run(conn, callback)
 /// ```
 
@@ -666,7 +666,7 @@
 /// 
 /// __Example:__ Create a table named 'dc_universe' with the default settings.
 /// 
-/// ```js
+/// ```javascript
 /// > r.db('heroes').tableCreate('dc_universe').run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -698,13 +698,13 @@
 /// 
 /// __Example:__ Create a table named 'dc_universe' using the field 'name' as primary key.
 /// 
-/// ```js
+/// ```javascript
 /// r.db('test').tableCreate('dc_universe', {primaryKey: 'name'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Create a table set up for two shards and three replicas per shard. This requires three available servers.
 /// 
-/// ```js
+/// ```javascript
 /// r.db('test').tableCreate('dc_universe', {shards: 2, replicas: 3}).run(conn, callback);
 /// ```
 /// 
@@ -731,7 +731,7 @@
 /// 
 /// __Example:__ Drop a table named 'dc_universe'.
 /// 
-/// ```js
+/// ```javascript
 /// > r.db('test').tableDrop('dc_universe').run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -775,7 +775,7 @@
 /// 
 /// __Example:__ List all tables of the 'test' database.
 /// 
-/// ```js
+/// ```javascript
 /// r.db('test').tableList().run(conn, callback)
 /// ```
 /// 
@@ -808,13 +808,13 @@
 /// 
 /// __Example:__ Create a simple index based on the field `postId`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('comments').indexCreate('postId').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create a geospatial index based on the field `location`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('places').indexCreate('location', {geo: true}).run(conn, callback)
 /// ```
 /// 
@@ -822,32 +822,32 @@
 /// 
 /// __Example:__ Create a simple index based on the nested field `author > name`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('comments').indexCreate('authorName', r.row("author")("name")).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Create a compound index based on the fields `postId` and `date`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('comments').indexCreate('postAndDate', [r.row("postId"), r.row("date")]).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create a multi index based on the field `authors`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').indexCreate('authors', {multi: true}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create a geospatial multi index based on the field `towers`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('networks').indexCreate('towers', {multi: true, geo: true}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create an index based on an arbitrary expression.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').indexCreate('authors', function(doc) {
 ///     return r.branch(
 ///         doc.hasFields("updatedAt"),
@@ -859,7 +859,7 @@
 /// 
 /// __Example:__ Create a new secondary index based on an existing one.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').indexStatus('authors').nth(0)('function').run(conn, function (func) {
 ///     r.table('newPosts').indexCreate('authors', func).run(conn, callback);
 /// });
@@ -867,7 +867,7 @@
 /// 
 /// __Example:__ Rebuild an outdated secondary index on a table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').indexStatus('oldIndex').nth(0).do(function(oldIndex) {
 ///   return r.table('posts').indexCreate('newIndex', oldIndex("function")).do(function() {
 ///     return r.table('posts').indexWait('newIndex').do(function() {
@@ -887,7 +887,7 @@
 /// 
 /// __Example:__ Drop a secondary index named 'code_name'.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('dc').indexDrop('code_name').run(conn, callback)
 /// ```
 /// 
@@ -903,7 +903,7 @@
 /// 
 /// __Example:__ List the available secondary indexes for this table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').indexList().run(conn, callback)
 /// ```
 /// 
@@ -924,7 +924,7 @@
 /// 
 /// __Example:__ Rename an index on the comments table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('comments').indexRename('postId', 'messageId').run(conn, callback)
 /// ```
 
@@ -939,7 +939,7 @@
 /// 
 /// The result is an array where for each index, there will be an object like this one:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     index: <indexName>,
 ///     ready: true,
@@ -952,7 +952,7 @@
 /// 
 /// or this one:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     index: <indexName>,
 ///     ready: false,
@@ -970,19 +970,19 @@
 /// 
 /// __Example:__ Get the status of all the indexes on `test`:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('test').indexStatus().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Get the status of the `timestamp` index:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('test').indexStatus('timestamp').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Save the binary representation of the index:
 /// 
-/// ```js
+/// ```javascript
 /// var func;
 /// r.table('test').indexStatus('timestamp').run(conn, function (err, res) {
 ///     func = res[0].function;
@@ -1000,7 +1000,7 @@
 /// 
 /// The result is an array containing one object for each table index:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     index: <indexName>,
 ///     ready: true,
@@ -1015,13 +1015,13 @@
 /// 
 /// __Example:__ Wait for all indexes on the table `test` to be ready:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('test').indexWait().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Wait for the index `timestamp` to be ready:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('test').indexWait('timestamp').run(conn, callback)
 /// ```
 
@@ -1071,7 +1071,7 @@
 /// 
 /// __Example:__ Insert a document into the table `posts`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").insert({
 ///     id: 1,
 ///     title: "Lorem ipsum",
@@ -1083,7 +1083,7 @@
 /// 
 /// The result will be:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1098,7 +1098,7 @@
 /// __Example:__ Insert a document without a defined primary key into the table `posts` where the
 /// primary key is `id`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").insert({
 ///     title: "Lorem ipsum",
 ///     content: "Dolor sit amet"
@@ -1107,7 +1107,7 @@
 /// 
 /// RethinkDB will generate a primary key and return it in `generated_keys`.
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1123,13 +1123,13 @@
 /// 
 /// Retrieve the document you just inserted with:
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get("dd782b64-70a7-43e4-b65e-dd14ae61d947").run(conn, callback)
 /// ```
 /// 
 /// And you will get back:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     id: "dd782b64-70a7-43e4-b65e-dd14ae61d947",
 ///     title: "Lorem ipsum",
@@ -1140,7 +1140,7 @@
 /// 
 /// __Example:__ Insert multiple documents into the table `users`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").insert([
 ///     {id: "william", email: "william@rethinkdb.com"},
 ///     {id: "lara", email: "lara@rethinkdb.com"}
@@ -1150,7 +1150,7 @@
 /// 
 /// __Example:__ Insert a document into the table `users`, replacing the document if it already exists.  
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").insert(
 ///     {id: "william", email: "william@rethinkdb.com"},
 ///     {conflict: "replace"}
@@ -1159,14 +1159,14 @@
 /// 
 /// __Example:__ Copy the documents from `posts` to `postsBackup`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("postsBackup").insert(r.table("posts")).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Get back a copy of the inserted document (with its generated primary key).
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").insert(
 ///     {title: "Lorem ipsum", content: "Dolor sit amet"},
 ///     {returnChanges: true}
@@ -1175,7 +1175,7 @@
 /// 
 /// The result will be
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1201,7 +1201,7 @@
 /// 
 /// __Example:__ Provide a resolution function that concatenates memo content in case of conflict.
 /// 
-/// ```js
+/// ```javascript
 /// // assume newMemos is a list of memo documents to insert
 /// r.table('memos').insert(newMemos, {conflict: function(id, oldDoc, newDoc) {
 ///     return newDoc.merge(
@@ -1245,19 +1245,19 @@
 /// 
 /// __Example:__ Update the status of the post with `id` of `1` to `published`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).update({status: "published"}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Update the status of all posts to `published`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").update({status: "published"}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Update the status of all the posts written by William.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").filter({author: "William"}).update({status: "published"}).run(conn, callback)
 /// ```
 /// 
@@ -1268,7 +1268,7 @@
 /// __Example:__ Increment the field `view` of the post with `id` of `1`.
 /// This query will throw an error if the field `views` doesn't exist.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).update({
 ///     views: r.row("views").add(1)
 /// }).run(conn, callback)
@@ -1277,7 +1277,7 @@
 /// __Example:__ Increment the field `view` of the post with `id` of `1`.
 /// If the field `views` does not exist, it will be set to `0`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).update({
 ///     views: r.row("views").add(1).default(0)
 /// }).run(conn, callback)
@@ -1286,7 +1286,7 @@
 /// __Example:__ Perform a conditional update.  
 /// If the post has more than 100 views, set the `type` of a post to `hot`, else set it to `normal`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).update(function(post) {
 ///     return r.branch(
 ///         post("views").gt(100),
@@ -1298,7 +1298,7 @@
 /// 
 /// __Example:__ Update the field `numComments` with the result of a sub-query. Because this update is not atomic, you must pass the `nonAtomic` flag.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).update({
 ///     numComments: r.table("comments").filter({idPost: 1}).count()
 /// }, {
@@ -1308,13 +1308,13 @@
 /// 
 /// If you forget to specify the `nonAtomic` flag, you will get a `ReqlRuntimeError`:
 /// 
-/// ```
+/// ```text
 /// ReqlRuntimeError: Could not prove function deterministic.  Maybe you want to use the non_atomic flag? 
 /// ```
 /// 
 /// __Example:__ Update the field `numComments` with a random value between 0 and 100. This update cannot be proven deterministic because of `r.js` (and in fact is not), so you must pass the `nonAtomic` flag.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).update({
 ///     num_comments: r.js("Math.floor(Math.random()*100)")
 /// }, {
@@ -1324,13 +1324,13 @@
 /// 
 /// __Example:__ Update the status of the post with `id` of `1` using soft durability.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).update({status: "published"}, {durability: "soft"}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Increment the field `views` and return the values of the document before and after the update operation.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).update({
 ///     views: r.row("views").add(1)
 /// }, {
@@ -1340,7 +1340,7 @@
 /// 
 /// The result will now include a `changes` field:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1376,7 +1376,7 @@
 /// 
 /// [nf]: /docs/nested-fields/javascript
 /// 
-/// ```js
+/// ```javascript
 /// {
 /// 	id: 10001,
 /// 	name: "Bob Smith",
@@ -1414,7 +1414,7 @@
 /// 
 /// __Example:__ Update Bob Smith's cell phone number.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").get(10001).update(
 ///     {contact: {phone: {cell: "408-555-4242"}}}
 /// ).run(conn, callback)
@@ -1422,7 +1422,7 @@
 /// 
 /// __Example:__ Add another note to Bob Smith's record.
 /// 
-/// ```js
+/// ```javascript
 /// var newNote = {
 ///     date: r.now(),
 ///     from: "Inigo Montoya",
@@ -1437,7 +1437,7 @@
 /// 
 /// [default]: /api/javascript/default/
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").get(10001).update(
 ///     {notes: r.row("notes").default([]).append(newNote)}
 /// ).run(conn, callback)
@@ -1445,7 +1445,7 @@
 /// 
 /// __Example:__ Send a note to every user with an ICQ number.
 /// 
-/// ```js
+/// ```javascript
 /// var icqNote = {
 ///     date: r.now(),
 ///     from: "Admin",
@@ -1462,7 +1462,7 @@
 /// 
 /// [literal]: /api/javascript/literal/
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').get(10001).update(
 ///     {contact: {im: r.literal({aim: "themoosemeister"})}}
 /// ).run(conn, callback)
@@ -1528,7 +1528,7 @@
 /// 
 /// __Example:__ Replace the document with the primary key `1`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).replace({
 ///     id: 1,
 ///     title: "Lorem ipsum",
@@ -1539,7 +1539,7 @@
 /// 
 /// __Example:__ Remove the field `status` from all posts.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").replace(function(post) {
 ///     return post.without("status")
 /// }).run(conn, callback)
@@ -1547,7 +1547,7 @@
 /// 
 /// __Example:__ Remove all the fields that are not `id`, `title` or `content`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").replace(function(post) {
 ///     return post.pluck("id", "title", "content")
 /// }).run(conn, callback)
@@ -1555,7 +1555,7 @@
 /// 
 /// __Example:__ Replace the document with the primary key `1` using soft durability.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).replace({
 ///     id: 1,
 ///     title: "Lorem ipsum",
@@ -1569,7 +1569,7 @@
 /// __Example:__ Replace the document with the primary key `1` and return the values of the document before
 /// and after the replace operation.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").get(1).replace({
 ///     id: 1,
 ///     title: "Lorem ipsum",
@@ -1582,7 +1582,7 @@
 /// 
 /// The result will have two fields `old_val` and `new_val`.
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     deleted: 0,
 ///     errors: 0,
@@ -1649,34 +1649,34 @@
 /// 
 /// __Example:__ Delete a single document from the table `comments`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete().run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Delete all documents from the table `comments`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("comments").delete().run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Delete all comments where the field `idPost` is `3`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("comments").filter({idPost: 3}).delete().run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Delete a single document from the table `comments` and return its value.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("comments").get("7eab9e63-73f1-4f33-8ce4-95cbea626f59").delete({returnChanges: true}).run(conn, callback)
 /// ```
 /// 
 /// The result look like:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     deleted: 1,
 ///     errors: 0,
@@ -1702,7 +1702,7 @@
 /// __Example:__ Delete all documents from the table `comments` without waiting for the
 /// operation to be flushed to disk.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("comments").delete({durability: "soft"}).run(conn, callback)
 /// ```
 
@@ -1724,7 +1724,7 @@
 /// __Example:__ After having updated multiple heroes with soft durability, we now want to wait
 /// until these changes are persisted.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').sync().run(conn, callback)
 /// ```
 /// 
@@ -1742,7 +1742,7 @@
 /// 
 /// __Example:__ Explicitly specify a database for a query.
 /// 
-/// ```js
+/// ```javascript
 /// r.db('heroes').table('marvel').run(conn, callback)
 /// ```
 /// 
@@ -1759,13 +1759,13 @@
 /// 
 /// __Example:__ Return all documents in the table 'marvel' of the default database.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Return all documents in the table 'marvel' of the database 'heroes'.
 /// 
-/// ```js
+/// ```javascript
 /// r.db('heroes').table('marvel').run(conn, callback)
 /// ```
 /// 
@@ -1779,7 +1779,7 @@
 /// 
 /// __Example:__ Allow potentially out-of-date data in exchange for faster reads.
 /// 
-/// ```js
+/// ```javascript
 /// r.db('heroes').table('marvel', {readMode: 'outdated'}).run(conn, callback)
 /// ```
 
@@ -1795,13 +1795,13 @@
 /// 
 /// __Example:__ Find a document by UUID.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').get('a9849eef-7176-4411-935b-79a6e3c56a74').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Find a document and merge another document with it.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('heroes').get(3).merge(
 ///     { powers: ['invisibility', 'speed'] }
 /// ).run(conn, callback);
@@ -1809,7 +1809,7 @@
 /// 
 /// ___Example:__ Subscribe to a document's [changefeed](/docs/changefeeds/javascript).
 /// 
-/// ```js
+/// ```javascript
 /// r.table('heroes').get(3).changes().run(conn, callback);
 /// ```
 
@@ -1825,19 +1825,19 @@
 /// 
 /// __Example:__ Secondary index keys are not guaranteed to be unique so we cannot query via [get](/api/javascript/get/) when using a secondary index.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').getAll('man_of_steel', {index:'code_name'}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Without an index argument, we default to the primary index. While `get` will either return the document or `null` when no document with such a primary key value exists, this will return either a one or zero length stream.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('dc').getAll('superman').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ You can get multiple documents in a single call to `get_all`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('dc').getAll('superman', 'ant man').run(conn, callback)
 /// ```
 /// 
@@ -1847,7 +1847,7 @@
 /// 
 /// __Example:__ You can use [args](/api/javascript/args/) with `getAll` to retrieve multiple documents whose keys are in a list. This uses `getAll` to get a list of female superheroes, coerces that to an array, and then gets a list of villains who have those superheroes as enemies.
 /// 
-/// ```js
+/// ```javascript
 /// r.do(
 ///     r.table('heroes').getAll('f', {index: 'gender'})('id').coerceTo('array'),
 ///     function(heroines) {
@@ -1874,7 +1874,9 @@
 /// 
 /// If you use arrays as indexes (compound indexes), they will be sorted using [lexicographical order][lo]. Take the following range as an example:
 /// 
-/// 	[[1, "c"] ... [5, "e"]]
+/// ```text
+/// [[1, "c"] ... [5, "e"]]
+/// ```
 /// 
 /// This range includes all compound keys:
 /// 
@@ -1886,44 +1888,44 @@
 /// 
 /// __Example:__ Find all users with primary key >= 10 and < 20 (a normal half-open interval).
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').between(10, 20).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Find all users with primary key >= 10 and <= 20 (an interval closed on both sides).
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').between(10, 20, {rightBound: 'closed'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Find all users with primary key < 20.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').between(r.minval, 20).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Find all users with primary key > 10.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').between(10, r.maxval, {leftBound: 'open'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Between can be used on secondary indexes too. Just pass an optional index argument giving the secondary index to query.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('dc').between('dark_knight', 'man_of_steel', {index: 'code_name'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Get all users whose full name is between "John Smith" and "Wade Welles."
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").between(["Smith", "John"], ["Welles", "Wade"],
 ///   {index: "full_name"}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Get the top 10 ranked teams in order.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("teams").orderBy({index: "rank"}).between(1, 11).run(conn, callback);
 /// ```
 /// 
@@ -1931,7 +1933,7 @@
 /// 
 /// __Example:__ Subscribe to a [changefeed](/docs/changefeeds/javascript) of teams ranked in the top 10.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("teams").between(1, 11, {index: "rank"}).changes().run(conn, callback);
 /// ```
 /// 
@@ -1968,7 +1970,7 @@
 /// __Example:__ Get all users who are 30 years old.
 /// 
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter({age: 30}).run(conn, callback);
 /// ```
 /// 
@@ -1978,13 +1980,13 @@
 /// 
 /// While the `{field: value}` style of predicate is useful for exact matches, a more general way to write a predicate is to use the [row](/api/javascript/row) command with a comparison operator such as [eq](/api/javascript/eq) or [gt](/api/javascript/gt), or to use an anonymous function that returns `true` or `false`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(r.row("age").eq(30)).run(conn, callback);
 /// ```
 /// 
 /// In this case, the predicate `r.row("age").eq(30)` returns `true` if the field `age` is equal to 30. You can write this predicate as an anonymous function instead:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function (user) {
 ///     return user("age").eq(30);
 /// }).run(conn, callback);
@@ -1996,14 +1998,14 @@
 /// 
 /// __Example:__ Get all users who are more than 18 years old.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(r.row("age").gt(18)).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Get all users who are less than 18 years old and more than 13 years old.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(
 ///     r.row("age").lt(18).and(r.row("age").gt(13))
 /// ).run(conn, callback);
@@ -2012,7 +2014,7 @@
 /// 
 /// __Example:__ Get all users who are more than 18 years old or have their parental consent.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(
 ///     r.row("age").ge(18).or(r.row("hasParentalConsent"))
 /// ).run(conn, callback);
@@ -2023,7 +2025,7 @@
 /// __Example:__ Retrieve all users who subscribed between January 1st, 2012
 /// (included) and January 1st, 2013 (excluded).
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function (user) {
 ///     return user("subscriptionDate").during(
 ///         r.time(2012, 1, 1, 'Z'), r.time(2013, 1, 1, 'Z'));
@@ -2032,7 +2034,7 @@
 /// 
 /// __Example:__ Retrieve all users who have a gmail account (whose field `email` ends with `@gmail.com`).
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function (user) {
 ///     return user("email").match("@gmail.com$");
 /// }).run(conn, callback);
@@ -2042,7 +2044,7 @@
 /// 
 /// Given this schema for the `users` table:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     name: String
 ///     placesVisited: [String]
@@ -2051,7 +2053,7 @@
 /// 
 /// Retrieve all users whose field `placesVisited` contains `France`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function(user) {
 ///     return user("placesVisited").contains("France")
 /// }).run( conn, callback)
@@ -2061,7 +2063,7 @@
 /// 
 /// Given this schema for the `users` table:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     id: String
 ///     name: {
@@ -2076,7 +2078,7 @@
 /// "Adama"), with any middle name.
 /// 
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter({
 ///     name: {
 ///         first: "William",
@@ -2090,7 +2092,7 @@
 /// Retrieve all users named "William Adama" (first name "William", last name
 /// "Adama"), and who do not have a middle name.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(r.literal({
 ///     name: {
 ///         first: "William",
@@ -2101,7 +2103,7 @@
 /// 
 /// You may rewrite these with anonymous functions.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function(user) {
 ///     return user("name")("first").eq("William")
 ///         .and(user("name")("last").eq("Adama"));
@@ -2121,7 +2123,7 @@
 /// 
 /// __Example:__ Get all users less than 18 years old or whose `age` field is missing.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(
 ///     r.row("age").lt(18), {default: true}
 /// ).run(conn, callback);
@@ -2130,7 +2132,7 @@
 /// __Example:__ Get all users more than 18 years old. Throw an error if a
 /// document is missing the field `age`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(
 ///     r.row("age").gt(18), {default: r.error()}
 /// ).run(conn, callback);
@@ -2138,7 +2140,7 @@
 /// 
 /// __Example:__ Get all users who have given their phone number (all the documents whose field `phoneNumber` exists and is not `null`).
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function (user) {
 ///     return user.hasFields('phoneNumber');
 /// }).run(conn, callback);
@@ -2146,7 +2148,7 @@
 /// 
 /// __Example:__ Get all users with an "editor" role or an "admin" privilege.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function (user) {
 ///     return (user('role').eq('editor').default(false).
 ///         or(user('privilege').eq('admin').default(false)));
@@ -2171,7 +2173,7 @@
 /// 
 /// __Example:__ Return a list of all matchups between Marvel and DC heroes in which the DC hero could beat the Marvel hero in a fight.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').innerJoin(r.table('dc'), function(marvelRow, dcRow) {
 ///     return marvelRow('strength').lt(dcRow('strength'))
 /// }).zip().run(conn, callback)
@@ -2198,7 +2200,7 @@
 /// 
 /// __Example:__ Return a list of all Marvel heroes, paired with any DC heroes who could beat them in a fight.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').outerJoin(r.table('dc'), function(marvelRow, dcRow) {
 ///     return marvelRow('strength').lt(dcRow('strength'))
 /// }).run(conn, callback)
@@ -2224,7 +2226,7 @@
 /// 
 /// Suppose the players table contains these documents:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     { id: 1, player: 'George', gameId: 1 },
 ///     { id: 2, player: 'Agatha', gameId: 3 },
@@ -2237,7 +2239,7 @@
 /// 
 /// The games table contains these documents:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     { id: 1, field: 'Little Delving' },
 ///     { id: 2, field: 'Rushock Bog' },
@@ -2249,13 +2251,13 @@
 /// 
 /// Join these tables using `gameId` on the player table and `id` on the games table:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').eqJoin('gameId', r.table('games')).run(conn, callback)
 /// ```
 /// 
 /// This will return a result set such as the following:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     {
 ///         "left" : { "gameId" : 3, "id" : 2, "player" : "Agatha" },
@@ -2273,7 +2275,7 @@
 /// 
 /// What you likely want is the result of using `zip` with that. For clarity, we'll use `without` to drop the `id` field from the games table (it conflicts with the `id` field for the players and it's redundant anyway), and we'll order it by the games.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').eqJoin('gameId', r.table('games')).without({right: "id"}).zip().orderBy('gameId').run(conn, callback)
 /// 
 /// [
@@ -2290,13 +2292,13 @@
 /// 
 /// __Example:__ Use a secondary index on the right table rather than the primary key. If players have a secondary index on their cities, we can get a list of arenas with players in the same area.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').eqJoin('cityId', r.table('arenas'), {index: 'cityId'}).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Use a nested key as the join field. Suppose the documents in the players table were structured like this:
 /// 
-/// ```js
+/// ```javascript
 /// { id: 1, player: 'George', game: {id: 1} },
 /// { id: 2, player: 'Agatha', game: {id: 3} },
 /// ...
@@ -2304,7 +2306,7 @@
 /// 
 /// Simply specify the field using the `row` command instead of a string.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').eqJoin(r.row('game')('id'), r.table('games')).without({right: 'id'}).zip()
 /// 
 /// [
@@ -2316,7 +2318,7 @@
 /// 
 /// __Example:__ Use a function instead of a field to join on a more complicated expression. Suppose the players have lists of favorite games ranked in order in a field such as `favorites: [3, 2, 1]`. Get a list of players and their top favorite:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').eqJoin(function (player) {
 ///     return player('favorites').nth(0)
 /// }, r.table('games')).without([{left: ['favorites', 'gameId', 'id']}, {right: 'id'}]).zip()
@@ -2324,7 +2326,7 @@
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// [
 /// 	{ "field": "Rushock Bog", "name": "Fred" },
 /// 	{ "field": "Little Delving", "name": "George" },
@@ -2342,7 +2344,7 @@
 /// 
 /// __Example:__ 'zips up' the sequence by merging the left and right fields produced by a join.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').eqJoin('main_dc_collaborator', r.table('dc'))
 ///     .zip().run(conn, callback)
 /// ```
@@ -2363,7 +2365,7 @@
 /// 
 /// __Example:__ Return the first five squares.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([1, 2, 3, 4, 5]).map(function (val) {
 ///     return val.mul(val);
 /// }).run(conn, callback);
@@ -2373,7 +2375,7 @@
 /// 
 /// __Example:__ Sum the elements of three sequences.
 /// 
-/// ```js
+/// ```javascript
 /// var sequence1 = [100, 200, 300, 400];
 /// var sequence2 = [10, 20, 30, 40];
 /// var sequence3 = [1, 2, 3, 4];
@@ -2388,7 +2390,7 @@
 /// 
 /// This example renames the field `id` to `userId` when retrieving documents from the table `users`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').map(function (doc) {
 ///     return doc.merge({userId: doc('id')}).without('id');
 /// }).run(conn, callback);
@@ -2396,7 +2398,7 @@
 /// 
 /// Note that in this case, [row](/api/javascript/row) may be used as an alternative to writing an anonymous function, as it returns the same value as the function parameter receives:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').map(
 ///     r.row.merge({userId: r.row('id')}).without('id');
 /// }).run(conn, callback);
@@ -2405,7 +2407,7 @@
 /// 
 /// __Example:__ Assign every superhero an archenemy.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('heroes').map(r.table('villains'), function (hero, villain) {
 ///     return hero.merge({villain: villain});
 /// }).run(conn, callback);
@@ -2425,7 +2427,7 @@
 /// 
 /// Existing table structure:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     { 'id': 1, 'user': 'bob', 'email': 'bob@foo.com', 'posts': [ 1, 4, 5 ] },
 ///     { 'id': 2, 'user': 'george', 'email': 'george@foo.com' },
@@ -2435,7 +2437,7 @@
 /// 
 /// Command and output:
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('users').withFields('id', 'user', 'posts').run(conn, callback)
 /// // Result passed to callback
 /// [
@@ -2446,7 +2448,7 @@
 /// 
 /// __Example:__ Use the [nested field syntax](/docs/nested-fields/) to get a list of users with cell phone numbers in their contacts.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn, callback)
 /// ```
 
@@ -2460,25 +2462,25 @@
 /// 
 /// `concatMap` works in a similar fashion to [map](/api/javascript/map/), applying the given function to each element in a sequence, but it will always return a single sequence. If the mapping function returns a sequence, `map` would produce a sequence of sequences:
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([1, 2, 3]).map(function(x) { return [x, x.mul(2)] }).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// [[1, 2], [2, 4], [3, 6]]
 /// ```
 /// 
 /// Whereas `concatMap` with the same mapping function would merge those sequences into one:
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([1, 2, 3]).concatMap(function(x) { return [x, x.mul(2)] }).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// [1, 2, 2, 4, 3, 6]
 /// ```
 /// 
@@ -2486,7 +2488,7 @@
 /// 
 /// __Example:__ Construct a sequence of all monsters defeated by Marvel heroes. The field "defeatedMonsters" is an array of one or more monster names.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').concatMap(function(hero) {
 ///     return hero('defeatedMonsters')
 /// }).run(conn, callback)
@@ -2494,7 +2496,7 @@
 /// 
 /// __Example:__ Simulate an [eqJoin](/api/javascript/eq_join/) using `concatMap`. (This is how ReQL joins are implemented internally.)
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").concatMap(function(post) {
 /// 	return r.table("comments").getAll(
 /// 		post("id"),
@@ -2528,7 +2530,7 @@
 /// 
 /// __Example:__ Order all the posts using the index `date`.   
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').orderBy({index: 'date'}).run(conn, callback);
 /// ```
 /// 
@@ -2536,32 +2538,32 @@
 /// 
 /// The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').indexCreate('date').run(conn, callback);
 /// ```
 /// 
 /// You can also select a descending ordering:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').orderBy({index: r.desc('date')}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Order a sequence without an index.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').get(1)('comments').orderBy('date').run(conn, callback);
 /// ```
 /// 
 /// You can also select a descending ordering:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').get(1)('comments').orderBy(r.desc('date')).run(conn, callback);
 /// ```
 /// 
 /// If you're doing ad-hoc analysis and know your table won't have more then 100,000
 /// elements (or you've changed the setting of the `array_limit` option for [run](/api/javascript/run)) you can run `orderBy` without an index:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('small_table').orderBy('date').run(conn, callback);
 /// ```
 /// 
@@ -2570,13 +2572,13 @@
 /// 
 /// Order by date and title.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').orderBy({index: 'dateAndTitle'}).run(conn, callback);
 /// ```
 /// 
 /// The index must either be the primary key or have been previously created with [indexCreate](/api/javascript/index_create/).
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').indexCreate('dateAndTitle', [r.row('date'), r.row('title')]).run(conn, callback);
 /// ```
 /// 
@@ -2586,7 +2588,7 @@
 /// __Example:__ If you have a sequence with fewer documents than the `arrayLimit`, you can order it
 /// by multiple fields without an index.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('small_table').orderBy('date', r.desc('title')).run(conn, callback);
 /// ```
 /// 
@@ -2594,25 +2596,25 @@
 /// precedence. The following query orders posts by date, and if multiple
 /// posts were published on the same date, they will be ordered by title.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('post').orderBy('title', {index: 'date'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Use [nested field](/docs/cookbook/javascript/#filtering-based-on-nested-fields) syntax to sort on fields from subdocuments. (You can also create indexes on nested fields using this syntax with `indexCreate`.)
 /// 
-/// ```js
+/// ```javascript
 /// r.table('user').orderBy(r.row('group')('id')).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ You can efficiently order data on arbitrary expressions using indexes.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').orderBy({index: 'votes'}).run(conn, callback);
 /// ```
 /// 
 /// The index must have been previously created with [indexCreate](/api/javascript/index_create/).
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').indexCreate('votes', function(post) {
 ///     return post('upvotes').sub(post('downvotes'))
 /// }).run(conn, callback);
@@ -2620,7 +2622,7 @@
 /// 
 /// __Example:__ If you have a sequence with fewer documents than the `arrayLimit`, you can order it with an arbitrary function directly.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('small_table').orderBy(function(doc) {
 ///     return doc('upvotes').sub(doc('downvotes'))
 /// }).run(conn, callback);
@@ -2628,7 +2630,7 @@
 /// 
 /// You can also select a descending ordering:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('small_table').orderBy(r.desc(function(doc) {
 ///     return doc('upvotes').sub(doc('downvotes'))
 /// })).run(conn, callback);
@@ -2636,7 +2638,7 @@
 /// 
 /// __Example:__ Ordering after a `between` command can be done as long as the same index is being used.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').between(r.time(2013, 1, 1, '+00:00'), r.time(2013, 1, 1, '+00:00'), {index: 'date'})
 ///     .orderBy({index: 'date'}).run(conn, callback);
 /// ```
@@ -2652,7 +2654,7 @@
 /// 
 /// __Example:__ Here in conjunction with [orderBy](/api/javascript/order_by/) we choose to ignore the most successful heroes.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').orderBy('successMetric').skip(10).run(conn, callback)
 /// ```
 
@@ -2666,7 +2668,7 @@
 /// 
 /// __Example:__ Only so many can fit in our Pantheon of heroes.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').orderBy('belovedness').limit(10).run(conn, callback)
 /// ```
 /// 
@@ -2694,25 +2696,25 @@
 /// 
 /// __Example:__ Return the fourth, fifth and sixth youngest players. (The youngest player is at index 0, so those are elements 3&ndash;5.)
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').orderBy({index: 'age'}).slice(3,6).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return all but the top three players who have a red flag.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').filter({flag: 'red'}).orderBy(r.desc('score')).slice(3).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return holders of tickets `X` through `Y`, assuming tickets are numbered sequentially. We want to include ticket `Y`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').orderBy('ticket').slice(x, y, {right_bound: 'closed'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the elements of an array from the second through two from the end (that is, not including the last two).
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([0,1,2,3,4,5]).slice(2,-2).run(conn, callback);
 /// // Result passed to callback
 /// [2,3]
@@ -2720,7 +2722,7 @@
 /// 
 /// __Example:__ Return the third through fifth characters of a string.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("rutabaga").slice(2,5).run(conn, callback);
 /// // Result passed to callback
 /// "tab"
@@ -2738,20 +2740,20 @@
 /// 
 /// __Example:__ Select the second element in the array.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([1,2,3]).nth(1).run(conn, callback)
 /// r.expr([1,2,3])(1).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Select the bronze medalist from the competitors.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').orderBy({index: r.desc('score')}).nth(3).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Select the last place competitor.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').orderBy({index: r.desc('score')}).nth(-1).run(conn, callback)
 /// ```
 
@@ -2767,13 +2769,13 @@
 /// 
 /// __Example:__ Find the position of the letter 'c'.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(['a','b','c']).offsetsOf('c').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Find the popularity ranking of invisible heroes.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').union(r.table('dc')).orderBy('popularity').offsetsOf(
 ///     r.row('superpowers').contains('invisibility')
 /// ).run(conn, callback)
@@ -2789,7 +2791,7 @@
 /// 
 /// __Example:__ Are there any documents in the marvel table?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').isEmpty().run(conn, callback)
 /// ```
 
@@ -2810,13 +2812,13 @@
 /// 
 /// __Example:__ Construct a stream of all heroes.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').union(r.table('dc')).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Combine four arrays into one.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([1, 2]).union([3, 4], [5, 6], [7, 8, 9]).run(conn, callback)
 /// // Result passed to callback
 /// [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -2824,7 +2826,7 @@
 /// 
 /// __Example:__ Create a [changefeed][cf] from the first example.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').union(r.table('dc')).changes().run(conn, callback);
 /// ```
 /// 
@@ -2834,7 +2836,7 @@
 /// 
 /// __Example:__ Merge-sort the tables of heroes, ordered by name.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').order_by('name').union(
 ///     r.table('dc').order_by('name'), {interleave: 'name'}
 /// ).run(conn, callback);
@@ -2854,7 +2856,7 @@
 /// 
 /// __Example:__ Select 3 random heroes.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').sample(3).run(conn, callback)
 /// ```
 
@@ -2873,7 +2875,7 @@
 /// 
 /// Suppose that the table `games` has the following data:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     {id: 2, player: "Bob", points: 15, type: "ranked"},
 ///     {id: 5, player: "Alice", points: 7, type: "free"},
@@ -2884,7 +2886,7 @@
 /// 
 /// __Example:__ Group games by player.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games').group('player').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -2913,7 +2915,7 @@
 /// 
 /// __Example:__ What is each player's best game?
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games').group('player').max('points').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -2934,7 +2936,7 @@
 /// 
 /// __Example:__ What is the maximum number of points scored by each player?
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games').group('player').max('points')('points').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -2955,7 +2957,7 @@
 /// __Example:__ What is the maximum number of points scored by each
 /// player for each game type?
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games').group('player', 'type').max('points')('points').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -2981,7 +2983,7 @@
 /// player for each game type?
 /// 
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games')
 ///     .group(function(game) {
 ///         return game.pluck('player', 'type')
@@ -3008,7 +3010,7 @@
 /// 
 /// __Example:__ How many matches have been played this year by month?
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('matches').group(
 ///       [r.row('date').year(), r.row('date').month()]
 ///   ).count().run(conn, callback)
@@ -3039,7 +3041,7 @@
 /// __Example:__ What is the maximum number of points scored by game type?
 /// 
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games').group({index:'type'}).max('points')('points').run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -3059,7 +3061,7 @@
 /// 
 /// Suppose that the table `games2` has the following data:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     { id: 1, matches: {'a': [1, 2, 3], 'b': [4, 5, 6]} },
 ///     { id: 2, matches: {'b': [100], 'c': [7, 8, 9]} },
@@ -3069,7 +3071,7 @@
 /// 
 /// Using the `multi` option we can group data by match A, B or C.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games2').group(r.row('matches').keys(), {multi: true}).run(conn, callback);
 /// // Result passed to callback
 /// [
@@ -3092,7 +3094,7 @@
 /// 
 /// __Example:__ Use [map](/api/javascript/map) and [sum](/api/javascript/sum) to get the total points scored for each match.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games2').group(r.row('matches').keys(), {multi: true}).ungroup().map(
 ///     function (doc) {
 ///         return { match: doc('group'), total: doc('reduction').sum(
@@ -3121,7 +3123,7 @@
 /// 
 /// __Example:__ Ungrouping grouped data.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games').group('player').max('points')('points').ungroup().run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -3143,7 +3145,7 @@
 /// __Example:__ What is the maximum number of points scored by each
 /// player, with the highest scorers first?
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games')
 ///    .group('player').max('points')('points')
 ///    .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
@@ -3173,7 +3175,7 @@
 /// 
 /// __Example:__ Get back the raw `GROUPED_DATA` pseudotype.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games').group('player').avg('points').run(conn, {groupFormat:'raw'}, callback)
 /// 
 /// // Result passed to callback
@@ -3188,7 +3190,7 @@
 /// 
 /// Not passing the `group_format` flag would return:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     {
 ///         group: "Alice":
@@ -3221,7 +3223,7 @@
 /// 
 /// __Example:__ Efficient operation.
 /// 
-/// ```js
+/// ```javascript
 /// // r.table('games').group('player').typeOf().run(conn, callback)
 /// // Returns "GROUPED_STREAM"
 /// r.table('games').group('player').min('points').run(conn, callback) // EFFICIENT
@@ -3229,7 +3231,7 @@
 /// 
 /// __Example:__ Inefficient operation.
 /// 
-/// ```js
+/// ```javascript
 /// // r.table('games').group('player').orderBy('score').typeOf().run(conn, callback)
 /// // Returns "GROUPED_DATA"
 /// r.table('games').group('player').orderBy('score').nth(0).run(conn, callback) // INEFFICIENT
@@ -3250,7 +3252,7 @@
 /// __Example:__ What is the maximum number of points scored by each
 /// player in free games?
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('games').filter( r.row('type').eq('free'))
 ///     .group('player').max('points')('points')
 ///     .run(conn, callback)
@@ -3270,7 +3272,7 @@
 /// 
 /// __Example:__ What is each player's highest even and odd score?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games')
 ///     .group('name', function(game) {
 ///         return game('points').mod(2)
@@ -3313,7 +3315,7 @@
 /// 
 /// Suppose that the table `games` has the following data:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     {id: 2, player: "Bob", points: 15, type: "ranked"},
 ///     {id: 5, player: "Alice", points: 7, type: "free"},
@@ -3325,7 +3327,7 @@
 /// __Example:__ What is the maximum number of points scored by each
 /// player, with the highest scorers first?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games')
 ///    .group('player').max('points')('points')
 ///    .ungroup().orderBy(r.desc('reduction')).run(conn, callback)
@@ -3335,7 +3337,7 @@
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     {
 ///         group: "Bob",
@@ -3350,13 +3352,13 @@
 /// 
 /// __Example:__ Select one random player and all their games.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').group('player').ungroup().sample(1).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     {
 ///         group: "Bob",
@@ -3373,13 +3375,13 @@
 /// Note that if you didn't call `ungroup`, you would instead select one
 /// random game from each player:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').group('player').sample(1).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     {
 ///         group: "Alice",
@@ -3410,7 +3412,7 @@
 /// 
 /// __Example:__ Types!
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').group('player').typeOf().run(conn, callback) // Returns "GROUPED_STREAM"
 /// r.table('games').group('player').ungroup().typeOf().run(conn, callback) // Returns "ARRAY"
 /// r.table('games').group('player').avg('points').run(conn, callback) // Returns "GROUPED_DATA"
@@ -3443,7 +3445,7 @@
 /// 
 /// __Example:__ Return the number of documents in the table `posts`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").map(function(doc) {
 ///     return 1;
 /// }).reduce(function(left, right) {
@@ -3458,7 +3460,7 @@
 /// comments.  
 /// Return the number of comments for all posts.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").map(function(doc) {
 ///     return doc("comments").count();
 /// }).reduce(function(left, right) {
@@ -3472,7 +3474,7 @@
 /// comments.  
 /// Return the maximum number comments per post.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").map(function(doc) {
 ///     return doc("comments").count();
 /// }).reduce(function(left, right) {
@@ -3527,7 +3529,7 @@
 /// 
 /// __Example:__ Concatenate words from a list.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('words').orderBy('id').fold('', function (acc, word) {
 ///     return acc.add(r.branch(acc.eq(''), '', ', ')).add(word);
 /// }).run(conn, callback);
@@ -3537,7 +3539,7 @@
 /// 
 /// __Example:__ Return every other row in a table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('even_things').fold(0, function(acc, row) {
 ///     return acc.add(1);
 /// }, {emit:
@@ -3551,7 +3553,7 @@
 /// 
 /// __Example:__ Compute a five-day running average for a weight tracker.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('tracker').filter({name: 'bob'}).orderBy('date')('weight').fold(
 ///     [],
 ///     function (acc, row) { return r.expr([row]).add(acc).limit(5); },
@@ -3575,25 +3577,25 @@
 /// 
 /// __Example:__ Count the number of users.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').count().run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Count the number of 18 year old users.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users')('age').count(18).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Count the number of users over 18.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users')('age').count(function(age) { 
 ///     return age.gt(18)
 /// }).run(conn, callback);
 /// ```
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').count(function(user) {
 ///     return user('age').gt(18)
 /// }).run(conn, callback)
@@ -3601,7 +3603,7 @@
 /// 
 /// __Example:__ Return the length of a Unicode string.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("こんにちは").count().run(conn, callback);
 /// // Result passed to callback
 /// 5
@@ -3626,20 +3628,20 @@
 /// 
 /// __Example:__ What's 3 + 5 + 7?
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([3, 5, 7]).sum().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ How many points have been scored across all games?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').sum('points').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ How many points have been scored across all games,
 /// counting bonus points?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').sum(function(game) {
 ///     return game('points').add(game('bonus_points'))
 /// }).run(conn, callback)
@@ -3665,20 +3667,20 @@
 /// 
 /// __Example:__ What's the average of 3, 5, and 7?
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([3, 5, 7]).avg().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ What's the average number of points scored in a game?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').avg('points').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ What's the average number of points scored in a game,
 /// counting bonus points?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').avg(function(game) {
 ///     return game('points').add(game('bonus_points'))
 /// }).run(conn, callback)
@@ -3688,7 +3690,7 @@
 /// (But return `null` instead of raising an error if there are no games where
 /// points have been scored.)
 /// 
-/// ```js
+/// ```javascript
 /// r.table('games').avg('points').default(null).run(conn, callback)
 /// ```
 
@@ -3712,25 +3714,25 @@
 /// 
 /// __Example:__ Return the minimum value in the list `[3, 5, 7]`.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([3, 5, 7]).min().run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the fewest points.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').min('points').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ The same as above, but using a secondary index on the `points` field.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').min({index: 'points'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the fewest points, adding in bonus points from a separate field using a function.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').min(function(user) {
 ///     return user('points').add(user('bonusPoints'));
 /// }).run(conn, callback);
@@ -3738,13 +3740,13 @@
 /// 
 /// __Example:__ Return the smallest number of points any user has ever scored. This returns the value of that `points` field, not a document.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').min('points')('points').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the fewest points, but add a default `null` return value to prevent an error if no user has ever scored points.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').min('points').default(null).run(conn, callback);
 /// ```
 
@@ -3768,25 +3770,25 @@
 /// 
 /// __Example:__ Return the maximum value in the list `[3, 5, 7]`.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([3, 5, 7]).max().run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the most points.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').max('points').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ The same as above, but using a secondary index on the `points` field.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').max({index: 'points'}).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the most points, adding in bonus points from a separate field using a function.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').max(function(user) {
 ///     return user('points').add(user('bonusPoints'));
 /// }).run(conn, callback);
@@ -3794,13 +3796,13 @@
 /// 
 /// __Example:__ Return the highest number of points any user has ever scored. This returns the value of that `points` field, not a document.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').max('points')('points').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Return the user who has scored the most points, but add a default `null` return value to prevent an error if no user has ever scored points.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').max('points').default(null).run(conn, callback);
 /// ```
 
@@ -3820,7 +3822,7 @@
 /// 
 /// __Example:__ Which unique villains have been vanquished by Marvel heroes?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').concatMap(function(hero) {
 ///     return hero('villainList')
 /// }).distinct().run(conn, callback)
@@ -3828,13 +3830,13 @@
 /// 
 /// __Example:__ Topics in a table of messages have a secondary index on them, and more than one message can have the same topic. What are the unique topics in the table?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('messages').distinct({index: 'topics'}).run(conn, callback)
 /// ```
 /// 
 /// The above structure is functionally identical to:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('messages')('topics').distinct().run(conn, callback)
 /// ```
 /// 
@@ -3857,13 +3859,13 @@
 /// 
 /// __Example:__ Has Iron Man ever fought Superman?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('ironman')('opponents').contains('superman').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Has Iron Man ever defeated Superman in battle?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('ironman')('battles').contains(function (battle) {
 ///     return battle('winner').eq('ironman').and(battle('loser').eq('superman'));
 /// }).run(conn, callback);
@@ -3871,7 +3873,7 @@
 /// 
 /// __Example:__ Return all heroes who have fought _both_ Loki and the Hulk.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').filter(function (hero) {
 ///   return hero('opponents').contains('loki', 'hulk');
 /// }).run(conn, callback);
@@ -3879,7 +3881,7 @@
 /// 
 /// __Example:__ Use `contains` with a predicate function to simulate an `or`. Return the Marvel superheroes who live in Detroit, Chicago or Hoboken.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').filter(function(hero) {
 ///     return r.expr(['Detroit', 'Chicago', 'Hoboken']).contains(hero('city'))
 /// }).run(conn, callback);
@@ -3899,28 +3901,28 @@
 /// __Example:__ We just need information about IronMan's reactor and not the rest of the
 /// document.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan').pluck('reactorState', 'reactorPower').run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ For the hero beauty contest we only care about certain qualities.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').pluck('beauty', 'muscleTone', 'charm').run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Pluck can also be used on nested objects.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').pluck({'abilities' : {'damage' : true, 'mana_cost' : true}, 'weapons' : true}).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ The nested syntax can quickly become overly verbose so there's a shorthand for it.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').pluck({'abilities' : ['damage', 'mana_cost']}, 'weapons').run(conn, callback)
 /// ```
 /// 
@@ -3938,28 +3940,28 @@
 /// __Example:__ Since we don't need it for this computation we'll save bandwidth and leave
 /// out the list of IronMan's romantic conquests.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan').without('personalVictoriesList').run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Without their prized weapons, our enemies will quickly be vanquished.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('enemies').without('weapons').run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Nested objects can be used to remove the damage subfield from the weapons and abilities fields.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').without({'weapons' : {'damage' : true}, 'abilities' : {'damage' : true}}).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ The nested syntax can quickly become overly verbose so there's a shorthand for it.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').without({'weapons':'damage', 'abilities':'damage'}).run(conn, callback)
 /// ```
 /// 
@@ -3976,7 +3978,7 @@
 /// 
 /// __Example:__ Equip Thor for battle.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('thor').merge(
 ///     r.table('equipment').get('hammer'),
 ///     r.table('equipment').get('pimento_sandwich')
@@ -3985,7 +3987,7 @@
 /// 
 /// __Example:__ Equip every hero for battle, using a subquery function to retrieve their weapons.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').merge(function (hero) {
 ///     return { weapons: r.table('weapons').get(hero('weaponId')) };
 /// }).run(conn, callback)
@@ -3995,7 +3997,7 @@
 /// 
 /// Note that the sequence being merged&mdash;in this example, the comments&mdash;must be coerced from a selection to an array. Without `coerceTo` the operation will throw an error ("Expected type DATUM but found SELECTION").
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').merge(function (post) {
 ///     return {
 ///         comments: r.table('comments').getAll(post('id'),
@@ -4006,7 +4008,7 @@
 /// 
 /// __Example:__ Merge can be used recursively to modify object within objects.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
 ///     {weapons : {spectacular_graviton_beam : {dmg : 10}}}).run(conn, callback)
 /// ```
@@ -4014,7 +4016,7 @@
 /// 
 /// __Example:__ To replace a nested object with another object you can use the literal keyword.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
 ///     {weapons : r.literal({repulsor_rays : {dmg : 3, cooldown : 0}})}).run(conn, callback)
 /// ```
@@ -4022,7 +4024,7 @@
 /// 
 /// __Example:__ Literal can be used to remove keys from an object as well.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr({weapons : {spectacular_graviton_beam : {dmg : 10, cooldown : 20}}}).merge(
 ///     {weapons : {spectacular_graviton_beam : r.literal()}}).run(conn, callback)
 /// ```
@@ -4038,7 +4040,7 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan')('equipment').append('newBoots').run(conn, callback)
 /// ```
 /// 
@@ -4054,7 +4056,7 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan')('equipment').prepend('newBoots').run(conn, callback)
 /// ```
 /// 
@@ -4070,7 +4072,7 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list without boots.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan')('equipment')
 ///   .difference(['Boots'])
 ///   .run(conn, callback)
@@ -4078,7 +4080,7 @@
 /// 
 /// __Example:__ Remove Iron Man's boots from his equipment.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan')
 ///   .update({
 ///     equipment: r.row('equipment').difference(['Boots'])
@@ -4098,7 +4100,7 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan')('equipment').setInsert('newBoots').run(conn, callback)
 /// ```
 /// 
@@ -4114,7 +4116,7 @@
 /// 
 /// __Example:__ Retrieve Iron Man's equipment list with the addition of some new boots and an arc reactor.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan')('equipment').setUnion(['newBoots', 'arc_reactor']).run(conn, callback)
 /// ```
 /// 
@@ -4130,7 +4132,7 @@
 /// 
 /// __Example:__ Check which pieces of equipment Iron Man has from a fixed list.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan')('equipment').setIntersection(['newBoots', 'arc_reactor']).run(conn, callback)
 /// ```
 /// 
@@ -4146,7 +4148,7 @@
 /// 
 /// __Example:__ Check which pieces of equipment Iron Man has, excluding a fixed list.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan')('equipment').setDifference(['newBoots', 'arc_reactor']).run(conn, callback)
 /// ```
 /// 
@@ -4164,7 +4166,7 @@
 /// 
 /// __Example:__ What was Iron Man's first appearance in a comic?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan')('firstAppearance').run(conn, callback)
 /// ```
 /// 
@@ -4174,7 +4176,7 @@
 /// 
 /// __Example:__ Get the fourth element in a sequence. (The first element is position `0`, so the fourth element is position `3`.)
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([10, 20, 30, 40, 50])(3)
 /// 
 /// 40
@@ -4193,7 +4195,7 @@
 /// 
 /// __Example:__ What was Iron Man's first appearance in a comic?
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan').getField('firstAppearance').run(conn, callback)
 /// ```
 
@@ -4211,13 +4213,13 @@
 /// 
 /// __Example:__ Return the players who have won games.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').hasFields('games_won').run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Return the players who have *not* won games. To do this, use `hasFields` with [not](/api/javascript/not), wrapped with [filter](/api/javascript/filter).
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').filter(
 ///     r.row.hasFields('games_won').not()
 /// ).run(conn, callback)
@@ -4225,7 +4227,7 @@
 /// 
 /// __Example:__ Test if a specific player has won any games.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').get('b5ec9714-837e-400c-aa74-dbd35c9a7c4c'
 ///     ).hasFields('games_won').run(conn, callback)
 /// ```
@@ -4236,7 +4238,7 @@
 /// 
 /// __Example:__ In the `players` table, the `games_won` field contains one or more fields for kinds of games won:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     games_won: {
 ///         playoffs: 2,
@@ -4247,13 +4249,13 @@
 /// 
 /// Return players who have the "championships" field.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').hasFields({'games_won': {'championships': true}}).run(conn, callback)
 /// ```
 /// 
 /// Note that `true` in the example above is testing for the existence of `championships` as a field, not testing to see if the value of the `championships` field is set to `true`. There's a more convenient shorthand form available. (See [pluck](/api/javascript/pluck) for more details on this.)
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').hasFields({'games_won': 'championships'}
 ///     ).run(conn, callback)
 /// ```
@@ -4270,7 +4272,7 @@
 /// 
 /// __Example:__ Hulk decides to join the avengers.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(["Iron Man", "Spider-Man"]).insertAt(1, "Hulk").run(conn, callback)
 /// ```
 /// 
@@ -4288,7 +4290,7 @@
 /// 
 /// __Example:__ Hulk and Thor decide to join the avengers.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(["Iron Man", "Spider-Man"]).spliceAt(1, ["Hulk", "Thor"]).run(conn, callback)
 /// ```
 /// 
@@ -4311,7 +4313,7 @@
 /// 
 /// __Example:__ Delete the second element of an array.
 /// 
-/// ```js
+/// ```javascript
 /// > r(['a','b','c','d','e','f']).deleteAt(1).run(conn, callback)
 /// // result passed to callback
 /// ['a', 'c', 'd', 'e', 'f']
@@ -4319,7 +4321,7 @@
 /// 
 /// __Example:__ Delete the second and third elements of an array.
 /// 
-/// ```js
+/// ```javascript
 /// > r(['a','b','c','d','e','f']).deleteAt(1,3).run(conn, callback)
 /// // result passed to callback
 /// ['a', 'd', 'e', 'f']
@@ -4327,7 +4329,7 @@
 /// 
 /// __Example:__ Delete the next-to-last element of an array.
 /// 
-/// ```js
+/// ```javascript
 /// > r(['a','b','c','d','e','f']).deleteAt(-2).run(conn, callback)
 /// // result passed to callback
 /// ['a', 'b', 'c', 'd', 'f']
@@ -4337,7 +4339,7 @@
 /// 
 /// Given a post document such as:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     id: '4cf47834-b6f9-438f-9dec-74087e84eb63',
 ///     title: 'Post title',
@@ -4351,7 +4353,7 @@
 /// 
 /// The second comment can be deleted by using `update` and `deleteAt` together.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').get('4cf47834-b6f9-438f-9dec-74087e84eb63').update({
 ///     comments: r.row('comments').deleteAt(1)
 /// }).run(conn, callback)
@@ -4369,7 +4371,7 @@
 /// 
 /// __Example:__ Bruce Banner hulks out.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
 /// ```
 
@@ -4385,7 +4387,7 @@
 /// 
 /// __Example:__ Get all the keys from a table row.
 /// 
-/// ```js
+/// ```javascript
 /// // row: { id: 1, mail: "fred@example.com", name: "fred" }
 /// 
 /// r.table('users').get(1).keys().run(conn, callback);
@@ -4405,7 +4407,7 @@
 /// 
 /// __Example:__ Get all of the values from a table row.
 /// 
-/// ```js
+/// ```javascript
 /// // row: { id: 1, mail: "fred@example.com", name: "fred" }
 /// 
 /// r.table('users').get(1).values().run(conn, callback);
@@ -4425,7 +4427,7 @@
 /// 
 /// Assume your users table has this structure:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     {
 ///         "id": 1,
@@ -4441,7 +4443,7 @@
 /// 
 /// Using `update` to modify the `data` field will normally merge the nested documents:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').get(1).update({ data: { age: 19, job: 'Engineer' } }).run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -4460,7 +4462,7 @@
 /// 
 /// __Example:__ Replace one nested document with another rather than merging the fields.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').get(1).update({ data: r.literal({ age: 19, job: 'Engineer' }) }).run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -4476,7 +4478,7 @@
 /// 
 /// __Example:__ Use `literal` to remove a field from a document.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').get(1).merge({ data: r.literal() }).run(conn, callback)
 /// 
 /// // Result passed to callback
@@ -4517,7 +4519,7 @@
 /// [filter](/api/javascript/filter/), you can just use the result of `match` for the predicate.
 /// 
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("^A")
 /// }).run(conn, callback)
@@ -4525,14 +4527,14 @@
 /// 
 /// __Example:__ Get all users whose name ends with "n".
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("n$")
 /// }).run(conn, callback)
 /// ```
 /// __Example:__ Get all users whose name has "li" in it
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("li")
 /// }).run(conn, callback)
@@ -4540,7 +4542,7 @@
 /// 
 /// __Example:__ Get all users whose name is "John" with a case-insensitive search.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("(?i)^john$")
 /// }).run(conn, callback)
@@ -4548,7 +4550,7 @@
 /// 
 /// __Example:__ Get all users whose name is composed of only characters between "a" and "z".
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function(doc){
 ///     return doc('name').match("(?i)^[a-z]+$")
 /// }).run(conn, callback)
@@ -4556,7 +4558,7 @@
 /// 
 /// __Example:__ Get all users where the zipcode is a string of 5 digits.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function(doc){
 ///     return doc('zipcode').match("\\d{5}")
 /// }).run(conn, callback)
@@ -4565,13 +4567,13 @@
 /// 
 /// __Example:__ Retrieve the domain of a basic email
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("name@domain.com").match(".*@(.*)").run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     start: 0,
 ///     end: 20,
@@ -4588,7 +4590,7 @@
 /// 
 /// You can then retrieve only the domain with the [\(\)](/api/javascript/get_field) selector and [nth](/api/javascript/nth).
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("name@domain.com").match(".*@(.*)")("groups").nth(0)("str").run(conn, callback)
 /// ```
 /// 
@@ -4597,7 +4599,7 @@
 /// 
 /// __Example:__ Fail to parse out the domain and returns `null`.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("name[at]domain.com").match(".*@(.*)").run(conn, callback)
 /// ```
 
@@ -4624,62 +4626,62 @@
 /// 
 /// __Example:__ Split on whitespace.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("foo  bar bax").split().run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// ["foo", "bar", "bax"]
 /// ```
 /// 
 /// __Example:__ Split the entries in a CSV file.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("12,37,,22,").split(",").run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// ["12", "37", "", "22", ""]
 /// ```
 /// 
 /// __Example:__ Split a string into characters.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("mlucy").split("").run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// ["m", "l", "u", "c", "y"]
 /// ```
 /// 
 /// __Example:__ Split the entries in a CSV file, but only at most 3
 /// times.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("12,37,,22,").split(",", 3).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// ["12", "37", "", "22,"]
 /// ```
 /// 
 /// __Example:__ Split on whitespace at most once (i.e. get the first word).
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("foo  bar bax").split(null, 1).run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// ["foo", "bar bax"]
 /// ```
 
@@ -4693,13 +4695,13 @@
 /// 
 /// __Example:__
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("Sentence about LaTeX.").upcase().run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// "SENTENCE ABOUT LATEX."
 /// ```
 /// 
@@ -4715,13 +4717,13 @@
 /// 
 /// __Example:__
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("Sentence about LaTeX.").downcase().run(conn, callback)
 /// ```
 /// 
 /// Result:
 /// 
-/// ```js
+/// ```javascript
 /// "sentence about latex."
 /// ```
 /// 
@@ -4739,7 +4741,7 @@
 /// 
 /// __Example:__ It's as easy as 2 + 2 = 4.
 /// 
-/// ```js
+/// ```javascript
 /// > r.expr(2).add(2).run(conn, callback)
 /// // result passed to callback
 /// 4
@@ -4747,7 +4749,7 @@
 /// 
 /// __Example:__ Concatenate strings.
 /// 
-/// ```js
+/// ```javascript
 /// > r.expr("foo").add("bar", "baz").run(conn, callback)
 /// // result passed to callback
 /// "foobarbaz"
@@ -4756,7 +4758,7 @@
 /// 
 /// __Example:__ Concatenate arrays.
 /// 
-/// ```js
+/// ```javascript
 /// > r.expr(["foo", "bar"]).add(["buzz"]).run(conn, callback)
 /// // result passed to callback
 /// [ "foo", "bar", "buzz" ]
@@ -4765,13 +4767,13 @@
 /// 
 /// __Example:__ Create a date one year from now.
 /// 
-/// ```js
+/// ```javascript
 /// r.now().add(365*24*60*60).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Use [args](/api/javascript/args) with `add` to sum multiple values.
 /// 
-/// ```js
+/// ```javascript
 /// > vals = [10, 20, 30];
 /// > r.add(r.args(vals)).run(conn, callback);
 /// // result passed to callback
@@ -4780,7 +4782,7 @@
 /// 
 /// __Example:__ Concatenate an array of strings with `args`.
 /// 
-/// ```js
+/// ```javascript
 /// > vals = ['foo', 'bar', 'buzz'];
 /// > r.add(r.args(vals)).run(conn, callback);
 /// // result passed to callback
@@ -4797,19 +4799,19 @@
 /// 
 /// __Example:__ It's as easy as 2 - 2 = 0.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(2).sub(2).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Create a date one year ago today.
 /// 
-/// ```js
+/// ```javascript
 /// r.now().sub(365*24*60*60)
 /// ```
 /// 
 /// __Example:__ Retrieve how many seconds elapsed between today and `date`.
 /// 
-/// ```js
+/// ```javascript
 /// r.now().sub(date)
 /// ```
 
@@ -4823,13 +4825,13 @@
 /// 
 /// __Example:__ It's as easy as 2 * 2 = 4.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(2).mul(2).run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Arrays can be multiplied by numbers as well.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(["This", "is", "the", "song", "that", "never", "ends."]).mul(100).run(conn, callback)
 /// ```
 /// 
@@ -4844,7 +4846,7 @@
 /// 
 /// __Example:__ It's as easy as 2 / 2 = 1.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(2).div(2).run(conn, callback)
 /// ```
 /// 
@@ -4869,7 +4871,7 @@
 /// 
 /// __Example:__ Return whether both `a` and `b` evaluate to true.
 /// 
-/// ```js
+/// ```javascript
 /// var a = true, b = false;
 /// r.expr(a).and(b).run(conn, callback);
 /// // result passed to callback
@@ -4878,7 +4880,7 @@
 /// 
 /// __Example:__ Return whether all of `x`, `y` and `z` evaluate to true.
 /// 
-/// ```js
+/// ```javascript
 /// var x = true, y = true, z = true;
 /// r.and(x, y, z).run(conn, callback);
 /// // result passed to callback
@@ -4899,7 +4901,7 @@
 /// 
 /// __Example:__ Return whether either `a` or `b` evaluate to true.
 /// 
-/// ```js
+/// ```javascript
 /// var a = true, b = false;
 /// r.expr(a).or(b).run(conn, callback);
 /// // result passed to callback
@@ -4908,7 +4910,7 @@
 /// 
 /// __Example:__ Return whether any of `x`, `y` or `z` evaluate to true.
 /// 
-/// ```js
+/// ```javascript
 /// var x = false, y = false, z = false;
 /// r.or(x, y, z).run(conn, callback);
 /// // result passed to callback
@@ -4917,7 +4919,7 @@
 /// 
 /// __Note:__ When using `or` inside a `filter` predicate to test the values of fields that may not exist on the documents being tested, you should use the `default` command with those fields so they explicitly return `false`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').filter(
 ///     r.row('category').default('foo').eq('article').
 ///     or(r.row('genre').default('foo').eq('mystery'))
@@ -4934,13 +4936,13 @@
 /// 
 /// __Example:__ See if a user's `role` field is set to `administrator`. 
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').get(1)('role').eq('administrator').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ See if three variables contain equal values.
 /// 
-/// ```js
+/// ```javascript
 /// r.eq(a, b, c).run(conn, callback);
 /// ```
 
@@ -4954,13 +4956,13 @@
 /// 
 /// __Example:__ See if a user's `role` field is not set to `administrator`. 
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').get(1)('role').ne('administrator').run(conn, callback);
 /// ```
 /// 
 /// __Example:__ See if three variables do not contain equal values.
 /// 
-/// ```js
+/// ```javascript
 /// r.ne(a, b, c).run(conn, callback);
 /// ```
 
@@ -4974,20 +4976,20 @@
 /// 
 /// __Example:__ Test if a player has scored more than 10 points.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').get(1)('score').gt(10).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Test if variables are ordered from lowest to highest, with no values being equal to one another.
 /// 
-/// ```js
+/// ```javascript
 /// var a = 10, b = 20, c = 15;
 /// r.gt(a, b, c).run(conn, callback);
 /// ```
 /// 
 /// This is the equivalent of the following:
 /// 
-/// ```js
+/// ```javascript
 /// r.gt(a, b).and(r.gt(b, c)).run(conn, callback);
 /// ```
 
@@ -5001,20 +5003,20 @@
 /// 
 /// __Example:__ Test if a player has scored 10 points or more.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').get(1)('score').ge(10).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Test if variables are ordered from lowest to highest.
 /// 
-/// ```js
+/// ```javascript
 /// var a = 10, b = 20, c = 15;
 /// r.ge(a, b, c).run(conn, callback);
 /// ```
 /// 
 /// This is the equivalent of the following:
 /// 
-/// ```js
+/// ```javascript
 /// r.ge(a, b).and(r.ge(b, c)).run(conn, callback);
 /// ```
 
@@ -5028,20 +5030,20 @@
 /// 
 /// __Example:__ Test if a player has scored less than 10 points.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').get(1)('score').lt(10).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Test if variables are ordered from highest to lowest, with no values being equal to one another.
 /// 
-/// ```js
+/// ```javascript
 /// var a = 20, b = 10,c = 15;
 /// r.lt(a, b, c).run(conn, callback);
 /// ```
 /// 
 /// This is the equivalent of the following:
 /// 
-/// ```js
+/// ```javascript
 /// r.lt(a, b).and(r.lt(b, c)).run(conn, callback);
 /// ```
 
@@ -5055,20 +5057,20 @@
 /// 
 /// __Example:__ Test if a player has scored 10 points or less.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').get(1)('score').le(10).run(conn, callback);
 /// ```
 /// 
 /// __Example:__ Test if variables are ordered from highest to lowest.
 /// 
-/// ```js
+/// ```javascript
 /// var a = 20, b = 10, c = 15;
 /// r.le(a, b, c).run(conn, callback);
 /// ```
 /// 
 /// This is the equivalent of the following:
 /// 
-/// ```js
+/// ```javascript
 /// r.le(a, b).and(r.le(b, c)).run(conn, callback);
 /// ```
 
@@ -5084,7 +5086,7 @@
 /// 
 /// __Example:__ Not true is false.
 /// 
-/// ```js
+/// ```javascript
 /// r(true).not().run(conn, callback)
 /// r.not(true).run(conn, callback)
 /// ```
@@ -5093,7 +5095,7 @@
 /// 
 /// __Example:__ Return all the users that do not have a "flag" field.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function(user) {
 ///     return user.hasFields('flag').not()
 /// }).run(conn, callback)
@@ -5101,7 +5103,7 @@
 /// 
 /// __Example:__ As above, but prefix-style.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').filter(function(user) {
 ///     return r.not(user.hasFields('flag'))
 /// }).run(conn, callback)
@@ -5125,14 +5127,14 @@
 /// 
 /// __Example:__ Generate a random number in the range `[0,1)`
 /// 
-/// ```js
+/// ```javascript
 /// r.random().run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ Generate a random integer in the range `[0,100)`
 /// 
-/// ```js
+/// ```javascript
 /// r.random(100).run(conn, callback)
 /// r.random(0, 100).run(conn, callback)
 /// ```
@@ -5140,7 +5142,7 @@
 /// 
 /// __Example:__ Generate a random number in the range `(-2.24,1.59]`
 /// 
-/// ```js
+/// ```javascript
 /// r.random(1.59, -2.24, {float: true}).run(conn, callback)
 /// ```
 /// 
@@ -5160,7 +5162,7 @@
 /// 
 /// __Example:__ Round 12.345 to the nearest integer.
 /// 
-/// ```js
+/// ```javascript
 /// r.round(12.345).run(conn, callback);
 /// // Result passed to callback
 /// 12.0
@@ -5170,7 +5172,7 @@
 /// 
 /// __Example:__ Round -12.345 to the nearest integer.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(-12.345).round().run(conn, callback);
 /// // Result passed to callback
 /// -12.0
@@ -5178,7 +5180,7 @@
 /// 
 /// __Example:__ Return Iron Man's weight, rounded to the nearest integer.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('superheroes').get('ironman')('weight').round().run(conn, callback);
 /// ```
 
@@ -5192,7 +5194,7 @@
 /// 
 /// __Example:__ Return the ceiling of 12.345.
 /// 
-/// ```js
+/// ```javascript
 /// r.ceil(12.345).run(conn, callback);
 /// // Result passed to callback
 /// 13.0
@@ -5202,7 +5204,7 @@
 /// 
 /// __Example:__ Return the ceiling of -12.345.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(-12.345).ceil().run(conn, callback);
 /// // Result passed to callback
 /// -12.0
@@ -5210,7 +5212,7 @@
 /// 
 /// __Example:__ Return Iron Man's weight, rounded up with `ceil`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('superheroes').get('ironman')('weight').ceil().run(conn, callback);
 /// ```
 
@@ -5224,7 +5226,7 @@
 /// 
 /// __Example:__ Return the floor of 12.345.
 /// 
-/// ```js
+/// ```javascript
 /// r.floor(12.345).run(conn, callback);
 /// // Result passed to callback
 /// 12.0
@@ -5234,7 +5236,7 @@
 /// 
 /// __Example:__ Return the floor of -12.345.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(-12.345).floor().run(conn, callback);
 /// // Result passed to callback
 /// -13.0
@@ -5242,7 +5244,7 @@
 /// 
 /// __Example:__ Return Iron Man's weight, rounded down with `floor`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('superheroes').get('ironman')('weight').floor().run(conn, callback);
 /// ```
 
@@ -5258,7 +5260,7 @@
 /// 
 /// __Example:__ Add a new user with the time at which he subscribed.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").insert({
 ///     name: "John",
 ///     subscription_date: r.now()
@@ -5288,7 +5290,7 @@
 /// 
 /// __Example:__ Update the birthdate of the user "John" to November 3rd, 1986 UTC.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')}).run(conn, callback)
 /// ```
 
@@ -5305,7 +5307,7 @@
 /// 
 /// __Example:__ Update the birthdate of the user "John" to November 3rd, 1986.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("user").get("John").update({birthdate: r.epochTime(531360000)}).run(conn, callback)
 /// ```
 
@@ -5323,7 +5325,7 @@
 /// 
 /// __Example:__ Update the time of John's birth.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("user").get("John").update({birth: r.ISO8601('1986-11-03T08:30:00-07:00')}).run(conn, callback)
 /// ```
 /// 
@@ -5341,7 +5343,7 @@
 /// 
 /// __Example:__ Hour of the day in San Francisco (UTC/GMT -8, without daylight saving time).
 /// 
-/// ```js
+/// ```javascript
 /// r.now().inTimezone('-08:00').hours().run(conn, callback)
 /// ```
 /// 
@@ -5357,7 +5359,7 @@
 /// 
 /// __Example:__ Return all the users in the "-07:00" timezone.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter( function(user) {
 ///     return user("subscriptionDate").timezone().eq("-07:00")
 /// })
@@ -5378,7 +5380,7 @@
 /// __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 /// (inclusive) and December 10th, 2013 (exclusive).
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").filter(
 ///     r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"))
 /// ).run(conn, callback)
@@ -5388,7 +5390,7 @@
 /// __Example:__ Retrieve all the posts that were posted between December 1st, 2013
 /// (exclusive) and December 10th, 2013 (inclusive).
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").filter(
 ///   r.row('date').during(r.time(2013, 12, 1, "Z"), r.time(2013, 12, 10, "Z"), {leftBound: "open", rightBound: "closed"})
 /// ).run(conn, callback)
@@ -5407,7 +5409,7 @@
 /// 
 /// __Example:__ Retrieve all the users whose birthday is today.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function(user) {
 ///     return user("birthdate").date().eq(r.now().date())
 /// }).run(conn, callback)
@@ -5417,7 +5419,7 @@
 /// 
 /// Note that the [now][] command always returns UTC time, so the comparison may fail if `user("birthdate")` isn't also in UTC. You can use the [inTimezone][itz] command to adjust for this:
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function(user) {
 ///     return user("birthdate").date().eq(r.now().inTimezone("-08:00").date())
 /// }).run(conn, callback)
@@ -5436,7 +5438,7 @@
 /// 
 /// __Example:__ Retrieve posts that were submitted before noon.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").filter(
 ///     r.row("date").timeOfDay().le(12*60*60)
 /// ).run(conn, callback)
@@ -5455,7 +5457,7 @@
 /// 
 /// __Example:__ Retrieve all the users born in 1986.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function(user) {
 ///     return user("birthdate").year().eq(1986)
 /// }).run(conn, callback)
@@ -5473,7 +5475,7 @@
 /// 
 /// __Example:__ Retrieve all the users who were born in November.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(
 ///     r.row("birthdate").month().eq(11)
 /// )
@@ -5482,7 +5484,7 @@
 /// 
 /// __Example:__ Retrieve all the users who were born in November.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(
 ///     r.row("birthdate").month().eq(r.november)
 /// )
@@ -5499,7 +5501,7 @@
 /// 
 /// __Example:__ Return the users born on the 24th of any month.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(
 ///     r.row("birthdate").day().eq(24)
 /// ).run(conn, callback)
@@ -5519,13 +5521,13 @@
 /// 
 /// __Example:__ Return today's day of week.
 /// 
-/// ```js
+/// ```javascript
 /// r.now().dayOfWeek().run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Retrieve all the users who were born on a Tuesday.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(
 ///     r.row("birthdate").dayOfWeek().eq(r.tuesday)
 /// )
@@ -5542,7 +5544,7 @@
 /// 
 /// __Example:__ Retrieve all the users who were born the first day of a year.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(
 ///     r.row("birthdate").dayOfYear().eq(1)
 /// )
@@ -5560,7 +5562,7 @@
 /// 
 /// __Example:__ Return all the posts submitted after midnight and before 4am.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").filter(function(post) {
 ///     return post("date").hours().lt(4)
 /// })
@@ -5577,7 +5579,7 @@
 /// 
 /// __Example:__ Return all the posts submitted during the first 10 minutes of every hour.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").filter(function(post) {
 ///     return post("date").minutes().lt(10)
 /// })
@@ -5597,7 +5599,7 @@
 /// 
 /// __Example:__ Return the post submitted during the first 30 seconds of every minute.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").filter(function(post) {
 ///     return post("date").seconds().lt(30)
 /// })
@@ -5614,7 +5616,7 @@
 /// 
 /// __Example:__ Return the current ISO 8601 time.
 /// 
-/// ```js
+/// ```javascript
 /// r.now().toISO8601().run(conn, callback)
 /// // Result passed to callback
 /// "2015-04-20T18:37:52.690+00:00"
@@ -5631,7 +5633,7 @@
 /// 
 /// __Example:__ Return the current time in seconds since the Unix Epoch with millisecond-precision.
 /// 
-/// ```js
+/// ```javascript
 /// r.now().toEpochTime()
 /// ```
 /// 
@@ -5659,7 +5661,7 @@
 /// 
 /// __Example:__ Save an avatar image to a existing user record.
 /// 
-/// ```js
+/// ```javascript
 /// var fs = require('fs');
 /// fs.readFile('./defaultAvatar.png', function (err, avatarImage) {
 ///     if (err) {
@@ -5675,7 +5677,7 @@
 /// 
 /// __Example:__ Get the size of an existing avatar image.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('users').get(100)('avatar').count().run(conn, callback);
 /// // result returned to callback
 /// 14156
@@ -5697,7 +5699,7 @@
 /// 
 /// __Example:__ Compute a golfer's net score for a game.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('players').get('f19b5f16-ef14-468f-bd48-e194761df255').do(
 ///     function (player) {
 ///         return player('gross_score').sub(player('course_handicap'));
@@ -5707,7 +5709,7 @@
 /// 
 /// __Example:__ Return the best scoring player in a two-player golf match.
 /// 
-/// ```js
+/// ```javascript
 /// r.do(r.table('players').get(id1), r.table('players').get(id2),
 ///     function (player1, player2) {
 ///         return r.branch(player1('gross_score').lt(player2('gross_score')),
@@ -5720,7 +5722,7 @@
 /// 
 /// __Example:__ Take different actions based on the result of a ReQL [insert](/api/javascript/insert) command.
 /// 
-/// ```js
+/// ```javascript
 /// var newData = {
 ///     id: 100,
 ///     name: 'Agatha',
@@ -5750,13 +5752,13 @@
 /// 
 /// You may call `branch` infix style on the first test. (See the second example for an illustration.)
 /// 
-/// ```
+/// ```javascript
 /// r.branch(test1, val1, test2, val2, elseval)
 /// ```
 /// 
 /// is the equivalent of the JavaScript statement
 /// 
-/// ```js
+/// ```javascript
 /// if (test1) {
 ///     return val1;
 /// } else if (test2) {
@@ -5768,7 +5770,7 @@
 /// 
 /// __Example:__ Test the value of x.
 /// 
-/// ```js
+/// ```javascript
 /// var x = 10;
 /// r.branch(r.expr(x).gt(5), 'big', 'small').run(conn, callback);
 /// // Result passed to callback
@@ -5777,7 +5779,7 @@
 /// 
 /// __Example:__ As above, infix-style.
 /// 
-/// ```js
+/// ```javascript
 /// var x = 10;
 /// r.expr(x).gt(5).branch('big', 'small').run(conn, callback);
 /// // Result passed to callback
@@ -5786,7 +5788,7 @@
 /// 
 /// __Example:__ Categorize heroes by victory counts.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').map(
 ///     r.branch(
 ///         r.row('victories').gt(100),
@@ -5800,7 +5802,7 @@
 /// 
 /// If the documents in the table `marvel` are:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     { name: "Iron Man", victories: 214 },
 ///     { name: "Jubilee", victories: 49 },
@@ -5810,7 +5812,7 @@
 /// 
 /// The results will be:
 /// 
-/// ```js
+/// ```javascript
 /// [
 ///     "Iron Man is a superhero",
 ///     "Jubilee is a hero",
@@ -5828,7 +5830,7 @@
 /// 
 /// __Example:__ Now that our heroes have defeated their villains, we can safely remove them from the villain table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').forEach(function(hero) {
 ///     return r.table('villains').get(hero('villainDefeated')).delete()
 /// }).run(conn, callback)
@@ -5854,7 +5856,7 @@
 /// 
 /// __Example:__ Return a four-element range of `[0, 1, 2, 3]`.
 /// 
-/// ```js
+/// ```javascript
 /// > r.range(4).run(conn, callback)
 /// // result returned to callback
 /// [0, 1, 2, 3]
@@ -5864,7 +5866,7 @@
 /// 
 /// You can also use the [limit](/api/javascript/limit) command with the no-argument variant to achieve the same result in this case:
 /// 
-/// ```js
+/// ```javascript
 /// > r.range().limit(4).run(conn, callback)
 /// // result returned to callback
 /// [0, 1, 2, 3]
@@ -5872,7 +5874,7 @@
 /// 
 /// __Example:__ Return a range from -5 through 5.
 /// 
-/// ```js
+/// ```javascript
 /// > r.range(-5, 6).run(conn, callback)
 /// // result returned to callback
 /// [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
@@ -5890,7 +5892,7 @@
 /// 
 /// __Example:__ Iron Man can't possibly have lost a battle:
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').get('IronMan').do(function(ironman) {
 ///     return r.branch(ironman('victories').lt(ironman('battles')),
 ///         r.error('impossible code path'),
@@ -5914,7 +5916,7 @@
 /// In the case where the author field is missing or `null`, we want to retrieve the string
 /// `Anonymous`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").map(function (post) {
 ///     return {
 ///         title: post("title"),
@@ -5927,7 +5929,7 @@
 /// 
 /// We can rewrite the previous query with `r.branch` too.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").map(function (post) {
 ///     return r.branch(
 ///         post.hasFields("author"),
@@ -5946,7 +5948,7 @@
 /// __Example:__ The `default` command can also be used to filter documents. Retrieve all our users who are not grown-ups or whose age is unknown
 /// (i.e., the field `age` is missing or equals `null`).
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function (user) {
 ///     return user("age").lt(18).default(true)
 /// }).run(conn, callback);
@@ -5955,7 +5957,7 @@
 /// One more way to write the previous query is to set the age to be `-1` when the
 /// field is missing.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function (user) {
 ///     return user("age").default(-1).lt(18)
 /// }).run(conn, callback);
@@ -5963,7 +5965,7 @@
 /// 
 /// This can be accomplished with [hasFields](/api/javascript/has_fields/) rather than `default`.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function (user) {
 ///     return user.hasFields("age").not().or(user("age").lt(18))
 /// }).run(conn, callback);
@@ -5971,7 +5973,7 @@
 /// 
 /// The body of every [filter](/api/javascript/filter/) is wrapped in an implicit `.default(false)`. You can overwrite the value `false` with the `default` option.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("users").filter(function (user) {
 ///     return user("age").lt(18)
 /// }, {default: true} ).run(conn, callback);
@@ -5979,7 +5981,7 @@
 /// 
 /// __Example:__ The function form of `default` receives the error message as its argument.
 /// 
-/// ```js
+/// ```javascript
 /// r.table("posts").map(function (post) {
 ///     return {
 ///         title: post("title"),
@@ -6004,14 +6006,14 @@
 /// 
 /// __Example:__ Objects wrapped with `expr` can then be manipulated by ReQL API functions.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr({a:'b'}).merge({b:[1,2,3]}).run(conn, callback)
 /// ```
 /// 
 /// 
 /// __Example:__ In JavaScript, you can also do this with just r.
 /// 
-/// ```js
+/// ```javascript
 /// r({a: 'b'}).merge({b: [1,2,3]}).run(conn, callback)
 /// ```
 /// 
@@ -6032,13 +6034,13 @@
 /// 
 /// __Example:__ Concatenate two strings using JavaScript.
 /// 
-/// ```js
+/// ```javascript
 /// r.js("'str1' + 'str2'").run(conn, callback)
 /// ```
 /// 
 /// __Example:__ Select all documents where the 'magazines' field is greater than 5 by running JavaScript on the server.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').filter(
 ///     r.js('(function (row) { return row.magazines.length > 5; })')
 /// ).run(conn, callback)
@@ -6047,7 +6049,7 @@
 /// 
 /// __Example:__ You may also specify a timeout in seconds (defaults to 5).
 /// 
-/// ```js
+/// ```javascript
 /// r.js('while(true) {}', {timeout:1.3}).run(conn, callback)
 /// ```
 /// 
@@ -6068,7 +6070,7 @@
 /// 
 /// __Example:__ Coerce a stream to an array to store its output in a field. (A stream cannot be stored in a field directly.)
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').map(function (post) {
 ///     return post.merge({ comments: r.table('comments').getAll(post('id'), {index: 'postId'}).coerceTo('array')});
 /// }).run(conn, callback)
@@ -6077,7 +6079,7 @@
 /// __Example:__ Coerce an array of key-value pairs into an object.
 /// 
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([['name', 'Ironman'], ['victories', 2000]]).coerceTo('object').run(conn, callback)
 /// ```
 /// 
@@ -6085,7 +6087,7 @@
 /// 
 /// __Example:__ Coerce a number to a string.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr(1).coerceTo('string').run(conn, callback)
 /// ```
 
@@ -6125,7 +6127,7 @@
 /// 
 /// __Example:__ Get the type of a string.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr("foo").typeOf().run(conn, callback);
 /// // Result passed to callback
 /// "STRING"
@@ -6141,7 +6143,7 @@
 /// 
 /// __Example:__ Get information about a table such as primary key, or cache size.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('marvel').info().run(conn, callback)
 /// ```
 
@@ -6155,7 +6157,7 @@
 /// 
 /// __Example:__ Send an array to the server.
 /// 
-/// ```js
+/// ```javascript
 /// r.json("[1,2,3]").run(conn, callback)
 /// ```
 
@@ -6171,7 +6173,7 @@
 /// 
 /// __Example:__ Get a ReQL document as a JSON string.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('hero').get(1).toJSON()
 /// // result returned to callback
 /// '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
@@ -6189,7 +6191,7 @@
 /// 
 /// __Example:__ Perform an HTTP `GET` and store the result in a table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('posts').insert(r.http('http://httpbin.org/get')).run(conn, callback)
 /// ```
 /// 
@@ -6231,7 +6233,7 @@
 /// 
 /// __Example:__ Perform multiple requests with different parameters.
 /// 
-/// ```js
+/// ```javascript
 /// r.expr([1, 2, 3]).map(function(i) {
 ///     return r.http('http://httpbin.org/get', { params: { user: i } });
 /// }).run(conn, callback)
@@ -6239,7 +6241,7 @@
 /// 
 /// __Example:__ Perform a `PUT` request for each item in a table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('data').map(function(row) {
 ///     return r.http('http://httpbin.org/put', { method: 'PUT', data: row });
 /// }).run(conn, callback)
@@ -6249,7 +6251,7 @@
 /// 
 /// Using form-encoded data:
 /// 
-/// ```js
+/// ```javascript
 /// r.http('http://httpbin.org/post',
 ///        { method: 'POST', data: { player: 'Bob', game: 'tic tac toe' } })
 /// .run(conn, callback)
@@ -6257,7 +6259,7 @@
 /// 
 /// Using JSON data:
 /// 
-/// ```js
+/// ```javascript
 /// r.http('http://httpbin.org/post',
 ///        { method: 'POST',
 ///          data: r.expr(value).coerceTo('string'),
@@ -6279,7 +6281,7 @@
 /// 
 /// __Example:__ Perform a GitHub search and collect up to 3 pages of results.
 /// 
-/// ```js
+/// ```javascript
 /// r.http("https://api.github.com/search/code?q=addClass+user:mozilla",
 ///        { page: 'link-next', pageLimit: 3 }
 /// ).run(conn, callback)
@@ -6287,7 +6289,7 @@
 /// 
 /// As a function, `page` takes one parameter, an object of the format:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     params: object // the URL parameters used in the last request
 ///     header: object // the HTTP headers of the last response as key/value pairs
@@ -6297,7 +6299,7 @@
 /// 
 /// The `header` field will be a parsed version of the header with fields lowercased, like so:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     'content-length': '1024',
 ///     'content-type': 'application/json',
@@ -6311,7 +6313,7 @@
 /// 
 /// The `page` function may return a string corresponding to the next URL to request, `null` indicating that there is no more to get, or an object of the format:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     url: string // the next URL to request, or null for no more pages
 ///     params: object // new URL parameters to use, will be merged with the previous request's params
@@ -6320,7 +6322,7 @@
 /// 
 /// __Example:__ Perform depagination with a custom `page` function.
 /// 
-/// ```js
+/// ```javascript
 /// r.http('example.com/pages',
 ///        { page: function(info) { return info('body')('meta')('next').default(null); },
 ///          pageLimit: 5 })
@@ -6347,7 +6349,7 @@
 /// 
 /// __Example:__ Generate a UUID.
 /// 
-/// ```js
+/// ```javascript
 /// > r.uuid().run(conn, callback)
 /// // result returned to callback
 /// "27961a0e-f4e8-4eb3-bf95-c5203e1d87b9"
@@ -6355,7 +6357,7 @@
 /// 
 /// __Example:__ Generate a UUID based on a string.
 /// 
-/// ```js
+/// ```javascript
 /// > r.uuid("slava@example.com").run(conn, callback)
 /// // Result passed to callback
 /// "90691cbc-b5ea-5826-ae98-951e30fc3b2d"
@@ -6384,7 +6386,7 @@
 /// 
 /// __Example:__ Define a circle.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('geo').insert({
 ///     id: 300,
 ///     name: 'Hayes Valley',
@@ -6412,7 +6414,7 @@
 /// 
 /// __Example:__ Compute the distance between two points on the Earth in kilometers.
 /// 
-/// ```js
+/// ```javascript
 /// var point1 = r.point(-122.423246,37.779388);
 /// var point2 = r.point(-117.220406,32.719464);
 /// r.distance(point1, point2, {unit: 'km'}).run(conn, callback);
@@ -6437,7 +6439,7 @@
 /// 
 /// __Example:__ Create a line object and then convert it to a polygon.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('geo').insert({
 ///     id: 201,
 ///     rectangle: r.line(
@@ -6469,7 +6471,7 @@
 /// 
 /// __Example:__ Convert a GeoJSON object to a ReQL geometry object.
 /// 
-/// ```js
+/// ```javascript
 /// var geoJson = {
 ///     'type': 'Point',
 ///     'coordinates': [ -122.423246, 37.779388 ]
@@ -6493,7 +6495,7 @@
 /// 
 /// __Example:__ Convert a ReQL geometry object to a GeoJSON object.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('geo').get('sfo')('location').toGeojson.run(conn, callback);
 /// // result passed to callback
 /// {
@@ -6514,7 +6516,7 @@
 /// 
 /// __Example:__ Which of the locations in a list of parks intersect `circle1`?
 /// 
-/// ```js
+/// ```javascript
 /// var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 /// r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 /// ```
@@ -6538,7 +6540,7 @@
 /// 
 /// __Example:__ Return a list of the closest 25 enemy hideouts to the secret base.
 /// 
-/// ```js
+/// ```javascript
 /// var secretBase = r.point(-122.422876,37.777128);
 /// r.table('hideouts').getNearest(secretBase,
 ///     {index: 'location', maxResults: 25}
@@ -6567,7 +6569,7 @@
 /// 
 /// __Example:__ Is `point2` included within a 2000-meter circle around `point1`?
 /// 
-/// ```js
+/// ```javascript
 /// var point1 = r.point(-117.220406,32.719464);
 /// var point2 = r.point(-117.206201,32.725186);
 /// r.circle(point1, 2000).includes(point2).run(conn, callback);
@@ -6577,7 +6579,7 @@
 /// 
 /// __Example:__ Which of the locations in a list of parks include `circle1`?
 /// 
-/// ```js
+/// ```javascript
 /// var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 /// r.table('parks')('area').includes(circle1).run(conn, callback);
 /// ```
@@ -6588,7 +6590,7 @@
 /// 
 /// __Example:__ Rewrite the previous example with `getIntersecting`.
 /// 
-/// ```js
+/// ```javascript
 /// var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 /// r.table('parks').getIntersecting(circle1, {index: 'area'})('area').
 ///     includes(circle1).run(conn, callback);
@@ -6606,7 +6608,7 @@
 /// 
 /// __Example:__ Is `point2` within a 2000-meter circle around `point1`?
 /// 
-/// ```js
+/// ```javascript
 /// var point1 = r.point(-117.220406,32.719464);
 /// var point2 = r.point(-117.206201,32.725186);
 /// r.circle(point1, 2000).intersects(point2).run(conn, callback);
@@ -6616,7 +6618,7 @@
 /// 
 /// __Example:__ Which of the locations in a list of parks intersect `circle1`?
 /// 
-/// ```js
+/// ```javascript
 /// var circle1 = r.circle([-117.220406,32.719464], 10, {unit: 'mi'});
 /// r.table('parks')('area').intersects(circle1).run(conn, callback);
 /// ```
@@ -6644,7 +6646,7 @@
 /// 
 /// __Example:__ Define a line.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('geo').insert({
 ///     id: 101,
 ///     route: r.line([-122.423246,37.779388], [-121.886420,37.329898])
@@ -6655,7 +6657,7 @@
 /// 
 /// You can use the [args](/api/javascript/args) command to pass an array of Point objects (or latitude-longitude pairs) to `line`.
 /// 
-/// ```js
+/// ```javascript
 /// var route = [
 ///     [-122.423246,37.779388],
 ///     [-121.886420,37.329898]
@@ -6678,7 +6680,7 @@
 /// 
 /// __Example:__ Define a point.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('geo').insert({
 ///     id: 1,
 ///     name: 'San Francisco',
@@ -6708,7 +6710,7 @@
 /// 
 /// __Example:__ Define a polygon.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('geo').insert({
 ///     id: 101,
 ///     rectangle: r.polygon(
@@ -6724,7 +6726,7 @@
 /// 
 /// You can use the [args](/api/javascript/args) command to pass an array of Point objects (or latitude-longitude pairs) to `polygon`.
 /// 
-/// ```js
+/// ```javascript
 /// var vertices = [
 ///     [-122.423246,37.779388],
 ///     [-122.423246,37.329898],
@@ -6750,7 +6752,7 @@
 /// 
 /// __Example:__ Define a polygon with a hole punched in it.
 /// 
-/// ```js
+/// ```javascript
 /// var outerPolygon = r.polygon(
 ///     [-122.4,37.7],
 ///     [-122.4,37.3],
@@ -6797,6 +6799,7 @@
 ///             "old_val": { original permissions }
 ///         }
 ///     ]
+/// }
 /// ```
 /// 
 /// The `granted` field will always be `1`, and the `permissions_changes` list will have one object, describing the new permissions values and the old values they were changed from (which may be `null`).
@@ -6813,7 +6816,7 @@
 /// 
 /// __Example:__ Grant the `chatapp` user account read and write permissions on the `users` database.
 /// 
-/// ```js
+/// ```javascript
 /// r.db('users').grant('chatapp', {read: true, write: true}).run(conn, callback);
 /// 
 /// // Result passed to callback
@@ -6829,7 +6832,7 @@
 /// 
 /// __Example:__ Deny write permissions from the `chatapp` account for the `admin` table.
 /// 
-/// ```js
+/// ```javascript
 /// r.db('users').table('admin').grant('chatapp', {write: false}).run(conn, callback);
 /// ```
 /// 
@@ -6837,7 +6840,7 @@
 /// 
 /// __Example:__ Delete a table-level permission for the `chatapp` account.
 /// 
-/// ```js
+/// ```javascript
 /// r.db('users').table('admin').grant('chatapp', {write: null}).run(conn, callback);
 /// ```
 /// 
@@ -6845,7 +6848,7 @@
 /// 
 /// __Example:__ Grant `chatapp` the ability to use HTTP connections.
 /// 
-/// ```js
+/// ```javascript
 /// r.grant('chatapp', {connect: true}).run(conn, callback);
 /// ```
 /// 
@@ -6854,7 +6857,7 @@
 /// 
 /// __Example:__ Grant a `monitor` account read-only access to all databases.
 /// 
-/// ```js
+/// ```javascript
 /// r.grant('monitor', {read: true}).run(conn, callback);
 /// ```
 
@@ -6870,7 +6873,7 @@
 /// 
 /// __Example:__ Get the configuration for the `users` table.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('users').config().run(conn, callback);
 /// ```
 /// 
@@ -6878,7 +6881,7 @@
 /// 
 /// Example return:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///     "id": "31c92680-f70c-4a4b-a49e-b238eb12c023",
 ///     "name": "users",
@@ -6904,7 +6907,7 @@
 /// 
 /// __Example:__ Change the write acknowledgement requirement of the `users` table.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('users').config().update({write_acks: 'single'}).run(conn, callback);
 /// ```
 
@@ -6941,7 +6944,7 @@
 /// 
 /// __Example:__ Rebalance a table.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('superheroes').rebalance().run(conn, callback);
 /// ```
 /// 
@@ -6949,7 +6952,7 @@
 /// 
 /// Example return:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///   "rebalanced": 1,
 ///   "status_changes": [
@@ -7062,7 +7065,7 @@
 /// 
 /// __Example:__ Reconfigure a table.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('superheroes').reconfigure({shards: 2, replicas: 1}).run(conn, callback);
 /// ```
 /// 
@@ -7070,7 +7073,7 @@
 /// 
 /// Example return:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///   "reconfigured": 1,
 ///   "config_changes": [
@@ -7123,7 +7126,7 @@
 /// 
 /// __Example:__ Reconfigure a table, specifying replicas by server tags.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('superheroes').reconfigure({shards: 2, replicas: {wooster: 1, wayne: 1}, primaryReplicaTag: 'wooster'}).run(conn, callback);
 /// // Result passed to callback
 /// {
@@ -7208,7 +7211,7 @@
 /// 
 /// __Example:__ Perform an emergency repair on a table.
 /// 
-/// ```js
+/// ```javascript
 /// r.table('superheroes').reconfigure(
 ///   {emergencyRepair: "unsafe_rollback"}
 /// ).run(conn, callback);
@@ -7234,7 +7237,7 @@
 /// 
 /// __Example:__ Get a table's status.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('superheroes').status().run(conn, callback);
 /// ```
 /// 
@@ -7242,7 +7245,7 @@
 /// 
 /// Example return:
 /// 
-/// ```js
+/// ```javascript
 /// {
 ///   "db": "database",
 ///   "id": "5cb35225-81b2-4cec-9eef-bfad15481265",
@@ -7299,7 +7302,7 @@
 /// 
 /// __Example:__ Wait on a table to be ready.
 /// 
-/// ```js
+/// ```javascript
 /// > r.table('superheroes').wait().run(conn, callback);
 /// // Result passed to callback
 /// { "ready": 1 }
