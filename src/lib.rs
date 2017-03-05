@@ -16,6 +16,7 @@ mod types;
 mod commands;
 pub mod errors;
 
+// Needed by the `args` macro
 #[doc(hidden)]
 pub use ql2::proto::Term;
 
@@ -39,11 +40,11 @@ use slog::Logger;
 pub type Result<T> = ::std::result::Result<T, Error>;
 
 /// The return type of `ToArg::to_arg`
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Arg {
     string: String,
     term: Term,
-    pool: Option<Pool>,
+    pool: Option<&'static Pool>,
 }
 
 /// The response returned by the `run` command
@@ -51,15 +52,9 @@ pub struct Arg {
 #[derive(Debug, Clone)]
 pub struct Response;
 
-/// The connection pool returned by the `connect` command
 #[cfg(feature = "with_io")]
-#[derive(Debug, Clone)]
-pub struct Pool(Vec<DataCentre>);
-
-// The underlying connection to each server
-#[cfg(feature = "with_io")]
-#[doc(hidden)]
-pub struct Connection {
+//#[doc(hidden)]
+struct Connection {
     id: u64,
     broken: bool,
     server: Server,
@@ -75,30 +70,28 @@ struct ConnectionManager {
     logger: Logger,
 }
 
+/// The connection pool returned by the `connect` command
 #[cfg(feature = "with_io")]
 #[derive(Debug)]
-struct ClusterConfig(Vec<Cluster>);
-
-#[cfg(feature = "with_io")]
-#[derive(Debug, Clone)]
-struct DataCentre();
-
-#[cfg(feature = "with_io")]
-#[derive(Debug, Clone)]
-struct Server(Vec<SocketAddr>);
+pub struct Pool(::std::sync::RwLock<InnerPool>);
 
 #[cfg(feature = "with_io")]
 #[derive(Debug)]
-struct Cluster(Vec<Server>);
-
-#[cfg(feature = "with_io")]
-#[derive(Debug, Clone)]
-struct TlsCfg {
-    ca_certs: String,
+struct InnerPool {
+    cluster: Vec<Server>,
+    conn: r2d2::Config<Connection, Error>,
+    opts: Opts,
 }
 
 #[cfg(feature = "with_io")]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
+struct Server {
+    addresses: Vec<SocketAddr>,
+    latency: u32,
+}
+
+#[cfg(feature = "with_io")]
+#[derive(Debug, Clone)]
 struct Opts {
     db: String,
     user: String,
@@ -107,12 +100,10 @@ struct Opts {
     tls: Option<TlsCfg>,
 }
 
-/// The configuration data for the `connect` command
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-struct Config {
-    pool: Arc<r2d2::Config<Connection, Error>>,
-    servers: Vec<Server>,
+struct TlsCfg {
+    ca_certs: String,
 }
 
 /// The database cluster client
@@ -125,12 +116,12 @@ pub struct Client {
 }
 
 /// The return type of the `args!()` macro
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 #[doc(hidden)]
 pub struct Args {
     term: Term,
     string: String,
-    pool: Option<Pool>,
+    pool: Option<&'static Pool>,
 }
 
 /// The argument that is passed to any command

@@ -4,7 +4,7 @@ mod pool;
 use std::net::{ToSocketAddrs, SocketAddr, IpAddr, Ipv4Addr};
 use std::{fmt, io, result};
 
-use {Client, Config, Server, Connection, ToArg, Pool, ConnectionManager, Result, Cluster, DataCentre};
+use {Client, Config, Server, Connection, ToArg, Pool, ConnectionManager, Result, Cluster};
 use super::{Connect, io_error};
 use errors::*;
 use reql_io::r2d2;

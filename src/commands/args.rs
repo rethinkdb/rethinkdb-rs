@@ -19,7 +19,7 @@ impl ToArg for Args {
         Arg {
             string: self.string.to_owned(),
             term: self.term.clone(),
-            pool: self.pool.clone(),
+            pool: self.pool,
         }
     }
 }
@@ -154,13 +154,13 @@ impl ToArg for Value {
     }
 }
 
-impl<'a> ToArg for &'a Pool {
+impl ToArg for &'static Pool {
     fn to_arg(&self) -> Arg {
-        let pool = self.clone().clone();
+        //let pool = self.clone().clone();
         Arg {
             string: String::new(),
             term: Term::new(),
-            pool: Some(pool),
+            pool: Some(self),
         }
     }
 }
@@ -191,7 +191,7 @@ impl Arg {
     }
 
     #[doc(hidden)]
-    pub fn pool(self) -> Option<Pool> {
+    pub fn pool(self) -> Option<&'static Pool> {
         self.pool
     }
 }
