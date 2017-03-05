@@ -26,6 +26,7 @@ serde_json = "0.9"
 ql2 = "1.1"
 derive-error = "0.0.3"
 reql-io = { version = "0.2", path = "./io", optional = true }
+proc-macro-hack = "0.3"
 
 [dev-dependencies]
 slog-term = "1.5"
