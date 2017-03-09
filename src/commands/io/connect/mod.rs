@@ -4,8 +4,8 @@ mod pool;
 use std::net::{ToSocketAddrs, SocketAddr, IpAddr, Ipv4Addr};
 use std::{fmt, io, result};
 
-use {Client, Config, Server, Connection, ToArg, Pool, ConnectionManager, Result, Cluster};
-use super::{Connect, io_error};
+use {Client, Server, Connection, ToArg, Pool, ConnectionManager, Result};
+use super::io_error;
 use errors::*;
 use reql_io::r2d2;
 use reql_io::tokio_core::reactor::Handle;
@@ -14,8 +14,6 @@ use reql_io::byteorder::{LittleEndian, ByteOrder};
 
 impl Connect for Client {
     fn connect<T: ToArg>(&self, args: T) -> Result<Pool> {
-        unimplemented!();
-        /*
         let logger = self.logger.new(o!("command" => "connect"));
         let query = format!("{}.connect({:?}, &handle)", self.query, cfg);
         debug!(logger, "{}", query);
@@ -46,7 +44,6 @@ impl Connect for Client {
         }
         info!(logger, "connection pools created successfully");
         Ok(pool)
-        */
     }
 }
 
@@ -123,7 +120,6 @@ impl fmt::Debug for ConnectionManager {
     }
 }
 
-/*
 impl Codec for ::Codec {
     type In = (u64, Vec<u8>);
     type Out = (u64, Vec<u8>);
@@ -164,4 +160,3 @@ impl Codec for ::Codec {
         Ok(())
     }
 }
-*/

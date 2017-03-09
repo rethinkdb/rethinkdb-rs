@@ -6,6 +6,9 @@ extern crate serde_json;
 #[macro_use]
 extern crate derive_error;
 #[cfg(feature = "with_io")]
+#[macro_use]
+extern crate lazy_static;
+#[cfg(feature = "with_io")]
 extern crate reql_io;
 #[macro_use]
 extern crate slog;
@@ -32,7 +35,8 @@ use reql_io::r2d2;
 #[cfg(feature = "with_io")]
 use reql_io::tokio_core::reactor::Remote;
 #[cfg(feature = "with_io")]
-use reql_io::tokio_core::net::TcpStream;
+//use reql_io::tokio_core::net::TcpStream;
+use std::net::TcpStream;
 
 use slog::Logger;
 
@@ -40,11 +44,11 @@ use slog::Logger;
 pub type Result<T> = ::std::result::Result<T, Error>;
 
 /// The return type of `ToArg::to_arg`
-#[derive(Debug)]
 pub struct Arg {
     string: String,
     term: Term,
     pool: Option<&'static Pool>,
+    remote: Option<Remote>,
 }
 
 /// The response returned by the `run` command
@@ -53,7 +57,6 @@ pub struct Arg {
 pub struct Response;
 
 #[cfg(feature = "with_io")]
-//#[doc(hidden)]
 struct Connection {
     id: u64,
     broken: bool,
@@ -64,24 +67,21 @@ struct Connection {
 
 #[cfg(feature = "with_io")]
 #[derive(Clone)]
-struct ConnectionManager {
-    server: Server,
-    remote: Remote,
+struct Config {
+    cluster: Vec<Server>,
+    opts: Opts,
+    remote: Option<Remote>,
     logger: Logger,
 }
 
+#[cfg(feature = "with_io")]
+#[derive(Debug, Clone, Copy)]
+struct ConnectionManager;
+
 /// The connection pool returned by the `connect` command
 #[cfg(feature = "with_io")]
-#[derive(Debug)]
-pub struct Pool(::std::sync::RwLock<InnerPool>);
-
-#[cfg(feature = "with_io")]
-#[derive(Debug)]
-struct InnerPool {
-    cluster: Vec<Server>,
-    conn: r2d2::Config<Connection, Error>,
-    opts: Opts,
-}
+#[derive(Debug, Clone)]
+pub struct Pool(r2d2::Pool<ConnectionManager>);
 
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
@@ -116,12 +116,12 @@ pub struct Client {
 }
 
 /// The return type of the `args!()` macro
-#[derive(Debug)]
 #[doc(hidden)]
 pub struct Args {
     term: Term,
     string: String,
     pool: Option<&'static Pool>,
+    remote: Option<Remote>,
 }
 
 /// The argument that is passed to any command

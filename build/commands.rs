@@ -35,6 +35,8 @@ impl Commands {
             // Manual changes made to this file will be overwritten by the build script.
             // Edit `build/commands.rs` instead...
 
+            #[cfg(feature = "with_io")]
+            mod io;
             mod util;
             mod args;
 
@@ -176,7 +178,7 @@ impl Command {
                 {}
                 #[cfg(feature = "with_io")]
                 pub fn connect<T: ToArg>(&self, args: T) -> Result<Pool> {{
-                    util::connect(self, args)
+                    io::connect(self, args)
                 }}
             "#, docs)
         } else if name == "run" {
@@ -184,7 +186,7 @@ impl Command {
                 {}
                 #[cfg(feature = "with_io")]
                 pub fn run<T: ToArg>(&self, args: T) -> Result<Response> {{
-                    util::run(self, args)
+                    io::run(self, args)
                 }}
             "#, docs)
         } else if name == "expr" {

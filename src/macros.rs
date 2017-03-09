@@ -39,6 +39,8 @@ macro_rules! with_args {
 /// ```
 #[macro_export]
 macro_rules! args {
+    ( ) => {{ $crate::Term::new() }};
+
     ( $($arg:tt)+ ) => {{
         #[allow(unused_imports)]
         use $crate::{ToArg, Args, Term};

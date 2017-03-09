@@ -3,6 +3,8 @@ use types::FromJson;
 use slog::Logger;
 use serde_json::value::Value;
 use ql2::proto::{Term, Term_AssocPair as TermPair};
+#[cfg(feature = "with_io")]
+use reql_io::tokio_core::reactor::Remote;
 
 impl ToArg for Client {
     fn to_arg(&self) -> Arg {
@@ -10,6 +12,7 @@ impl ToArg for Client {
             string: self.query.to_owned(),
             term: self.term.clone(),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -20,6 +23,7 @@ impl ToArg for Args {
             string: self.string.to_owned(),
             term: self.term.clone(),
             pool: self.pool,
+            remote: self.remote.clone(),
         }
     }
 }
@@ -30,6 +34,7 @@ impl ToArg for Term {
             string: String::new(),
             term: self.clone(),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -40,6 +45,7 @@ impl ToArg for String {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -50,6 +56,7 @@ impl ToArg for char {
             string: format!("'{}'", self),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -60,6 +67,7 @@ impl<'a> ToArg for &'a String {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -70,6 +78,7 @@ impl<'a> ToArg for &'a str {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -80,6 +89,7 @@ impl ToArg for f32 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -90,6 +100,7 @@ impl ToArg for i32 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -100,6 +111,7 @@ impl ToArg for u32 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -110,6 +122,7 @@ impl ToArg for f64 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -120,6 +133,7 @@ impl ToArg for i64 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -130,6 +144,7 @@ impl ToArg for u64 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -140,6 +155,7 @@ impl ToArg for bool {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
@@ -150,17 +166,31 @@ impl ToArg for Value {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
+            remote: None,
         }
     }
 }
 
+#[cfg(feature = "with_io")]
 impl ToArg for &'static Pool {
     fn to_arg(&self) -> Arg {
-        //let pool = self.clone().clone();
         Arg {
             string: String::new(),
             term: Term::new(),
             pool: Some(self),
+            remote: None,
+        }
+    }
+}
+
+#[cfg(feature = "with_io")]
+impl ToArg for Remote {
+    fn to_arg(&self) -> Arg {
+        Arg {
+            string: String::from("core.remote()"),
+            term: Term::new(),
+            pool: None,
+            remote: Some(self.clone()),
         }
     }
 }
@@ -182,6 +212,7 @@ impl Arg {
             string: as_str.into(),
             term: term,
             pool: None,
+            remote: None,
         }
     }
 
@@ -203,6 +234,7 @@ impl Args {
             term: Term::new(),
             string: String::new(),
             pool: None,
+            remote: None,
         }
     }
 
@@ -224,6 +256,7 @@ impl Args {
     #[doc(hidden)]
     pub fn add_arg(&mut self, arg: Arg) {
         self.pool = arg.pool;
+        self.remote = arg.remote;
         self.term.mut_args().push(arg.term);
     }
 

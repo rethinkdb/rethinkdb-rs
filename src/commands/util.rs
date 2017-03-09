@@ -2,13 +2,6 @@ use {Client, Result, Pool, Response, ToArg, slog};
 use ql2::proto::Term;
 use protobuf::repeated::RepeatedField;
 use ql2::proto::Term_TermType;
-#[cfg(feature = "with_io")]
-
-// #[cfg(feature = "with_io")]
-// mod io;
-// #[cfg(feature = "with_io")]
-// pub use self::io::*;
-//
 
 pub fn new_client() -> Client {
     Client {
@@ -64,12 +57,4 @@ pub fn with_args<A: ToArg>(client: &Client, args: A) -> Client {
     debug!(logger, "{}", cmd.query);
     debug!(logger, "{:?}", cmd.term);
     cmd.with_logger(logger)
-}
-
-pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Pool> {
-    unimplemented!();
-}
-
-pub fn run<A: ToArg>(client: &Client, args: A) -> Result<Response> {
-    unimplemented!();
 }

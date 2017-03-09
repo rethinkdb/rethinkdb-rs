@@ -17,7 +17,7 @@ appveyor = { repository = "rust-rethinkdb/reql" }
 
 [features]
 default = ["with_io"]
-with_io = ["reql-io"]
+with_io = ["reql-io", "lazy_static"]
 
 [dependencies]
 protobuf = "1.1"
@@ -25,8 +25,9 @@ slog = "1.5"
 serde_json = "0.9"
 ql2 = "1.1"
 derive-error = "0.0.3"
-reql-io = { version = "0.2", path = "./io", optional = true }
 proc-macro-hack = "0.3"
+reql-io = { version = "0.3", path = "./io", optional = true }
+lazy_static = { version = "0.2", optional = true }
 
 [dev-dependencies]
 slog-term = "1.5"
