@@ -33,9 +33,10 @@ use errors::Error;
 #[cfg(feature = "with_io")]
 use reql_io::r2d2;
 #[cfg(feature = "with_io")]
+use std::time::Duration;
+#[cfg(feature = "with_io")]
 use reql_io::tokio_core::reactor::Remote;
 #[cfg(feature = "with_io")]
-//use reql_io::tokio_core::net::TcpStream;
 use std::net::TcpStream;
 
 use slog::Logger;
@@ -84,10 +85,10 @@ struct ConnectionManager;
 pub struct Pool(r2d2::Pool<ConnectionManager>);
 
 #[cfg(feature = "with_io")]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq)]
 struct Server {
     addresses: Vec<SocketAddr>,
-    latency: u32,
+    latency: Duration,
 }
 
 #[cfg(feature = "with_io")]

@@ -3,6 +3,9 @@ mod pool;
 
 use std::{io, error};
 use std::net::ToSocketAddrs;
+use std::net::TcpStream;
+use std::time::{Duration, Instant};
+use std::cmp::Ordering;
 
 use {Client, Config, ConnectionManager, Server, Result, Pool, Opts, Response, ToArg};
 use ql2::proto::{Term, Datum};
@@ -21,6 +24,8 @@ pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Pool> {
     let query = format!("{}.connect({})", client.query, arg.string);
     debug!(logger, "{}", query);
     Config::init(arg.term, arg.remote, logger.clone())?;
+    // Keep servers upto date
+    Config::update();
     info!(logger, "creating connection pool...");
     let config = r2d2::Config::default();
     let r2d2 = r2d2::Pool::new(config, ConnectionManager).map_err(|err| io_error(err))?;
@@ -71,6 +76,24 @@ fn find_datum(mut term: Term) -> Vec<Datum> {
     res
 }
 
+impl Ord for Server {
+    fn cmp(&self, other: &Server) -> Ordering {
+        self.latency.cmp(&other.latency)
+    }
+}
+
+impl PartialOrd for Server {
+    fn partial_cmp(&self, other: &Server) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialEq for Server {
+    fn eq(&self, other: &Server) -> bool {
+        self.latency == other.latency
+    }
+}
+
 impl Config {
     fn init(mut term: Term, remote: Option<Remote>, logger: Logger) -> Result<()> {
         let mut cluster = Vec::new();
@@ -89,14 +112,17 @@ impl Config {
         }
 
         if hosts.is_empty() {
-            hosts.push("localhost:28015".into());
+            hosts.push("localhost".into());
         }
 
         for host in hosts {
-            let addresses = host.to_socket_addrs()?;
+            let addresses = host.to_socket_addrs().or_else(|_| {
+                    let host = format!("{}:{}", host, 28015);
+                    host.to_socket_addrs()
+                })?;
             cluster.push(Server {
                 addresses: addresses.collect(),
-                latency: 0,
+                latency: Duration::from_millis(u64::max_value()),
             });
         }
 
@@ -109,6 +135,22 @@ impl Config {
         });
 
         Ok(())
+    }
+
+    fn update() {
+        let mut config = Self::get();
+        for mut server in config.cluster.iter_mut() {
+            for address in server.addresses.iter() {
+                let start = Instant::now();
+                if let Ok(_) = TcpStream::connect(address) {
+                    server.latency = start.elapsed();
+                    break;
+                }
+            }
+        }
+        config.cluster.sort();
+        let mut cfg = CONFIG.write();
+        *cfg = Some(config);
     }
 
     pub fn get() -> Config {
