@@ -125,5 +125,5 @@ pub struct Args {
 
 /// The argument that is passed to any command
 pub trait ToArg {
-    fn to_arg(&self) -> Arg;
+    fn to_arg(self) -> Arg;
 }
