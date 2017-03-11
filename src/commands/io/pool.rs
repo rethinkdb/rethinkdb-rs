@@ -4,20 +4,20 @@ use std::sync::Arc;
 use reql_io::r2d2;
 use errors::Error;
 use super::io_error;
-use {Client, ConnectionManager, Config, Opts, Connection, Result};
+use {Client, SessionManager, Config, Opts, Session, Result};
 use std::net::TcpStream;
 use reql_io::tokio_core::io::Io;
 use reql_io::futures::{Future, Stream, Sink};
 
-impl r2d2::ManageConnection for ConnectionManager {
-    type Connection = Connection;
+impl r2d2::ManageConnection for SessionManager {
+    type Connection = Session;
     type Error = Error;
 
-    fn connect(&self) -> Result<Connection> {
-        Connection::new()
+    fn connect(&self) -> Result<Session> {
+        Session::new()
     }
 
-    fn is_valid(&self, mut conn: &mut Connection) -> Result<()> {
+    fn is_valid(&self, mut conn: &mut Session) -> Result<()> {
         Ok(())
         // conn.is_valid()
         /*
@@ -36,13 +36,13 @@ impl r2d2::ManageConnection for ConnectionManager {
         */
     }
 
-    fn has_broken(&self, conn: &mut Connection) -> bool {
+    fn has_broken(&self, conn: &mut Session) -> bool {
         conn.broken
     }
 }
 
-impl Connection {
-    fn new() -> Result<Connection> {
+impl Session {
+    fn new() -> Result<Session> {
         let cfg = Config::get();
         let logger = cfg.logger;
         //let remote = cfg.remote;
@@ -61,7 +61,7 @@ impl Connection {
                                 ));
                         debug!(logger, "connected successfully");
 
-                        let mut conn = Connection {
+                        let mut conn = Session {
                             id: 0,
                             broken: false,
                             server: server,

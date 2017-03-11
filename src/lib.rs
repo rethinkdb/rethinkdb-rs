@@ -37,6 +37,8 @@ use std::time::Duration;
 #[cfg(feature = "with_io")]
 use reql_io::tokio_core::reactor::Remote;
 #[cfg(feature = "with_io")]
+use reql_io::uuid::Uuid;
+#[cfg(feature = "with_io")]
 use std::net::TcpStream;
 
 use slog::Logger;
@@ -48,7 +50,7 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 pub struct Arg {
     string: String,
     term: Term,
-    pool: Option<&'static Pool>,
+    pool: Option<&'static Connection>,
     remote: Option<Remote>,
 }
 
@@ -58,7 +60,7 @@ pub struct Arg {
 pub struct Response;
 
 #[cfg(feature = "with_io")]
-struct Connection {
+struct Session {
     id: u64,
     broken: bool,
     server: Server,
@@ -77,12 +79,12 @@ struct Config {
 
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone, Copy)]
-struct ConnectionManager;
+struct SessionManager;
 
 /// The connection pool returned by the `connect` command
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-pub struct Pool(r2d2::Pool<ConnectionManager>);
+pub struct Connection(r2d2::Pool<SessionManager>);
 
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone, Eq)]
@@ -121,7 +123,7 @@ pub struct Client {
 pub struct Args {
     term: Term,
     string: String,
-    pool: Option<&'static Pool>,
+    pool: Option<&'static Connection>,
     remote: Option<Remote>,
 }
 

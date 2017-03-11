@@ -1,4 +1,4 @@
-use {Client, Result, Pool, Response, ToArg, slog};
+use {Client, Result, Connection, Response, ToArg, slog};
 use ql2::proto::Term;
 use protobuf::repeated::RepeatedField;
 use ql2::proto::Term_TermType;

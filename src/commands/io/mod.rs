@@ -7,7 +7,7 @@ use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use std::cmp::Ordering;
 
-use {Client, Config, ConnectionManager, Server, Result, Pool, Opts, Response, ToArg};
+use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, ToArg};
 use ql2::proto::{Term, Datum};
 use reql_io::r2d2;
 use reql_io::parking_lot::RwLock;
@@ -18,7 +18,7 @@ lazy_static! {
     static ref CONFIG: RwLock<Option<Config>> = RwLock::new(None);
 }
 
-pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Pool> {
+pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Connection> {
     let arg = args.to_arg();
     let logger = client.logger.new(o!("command" => "connect"));
     let query = format!("{}.connect({})", client.query, arg.string);
@@ -28,9 +28,9 @@ pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Pool> {
     Config::update();
     info!(logger, "creating connection pool...");
     let config = r2d2::Config::default();
-    let r2d2 = r2d2::Pool::new(config, ConnectionManager).map_err(|err| io_error(err))?;
+    let r2d2 = r2d2::Pool::new(config, SessionManager).map_err(|err| io_error(err))?;
     info!(logger, "connection pool created successfully");
-    Ok(Pool(r2d2))
+    Ok(Connection(r2d2))
 }
 
 pub fn run<A: ToArg>(client: &Client, args: A) -> Result<Response> {

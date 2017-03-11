@@ -1,6 +1,6 @@
-use {Connection, Result, Opts};
+use {Session, Result, Opts};
 
-impl Connection {
+impl Session {
     pub fn handshake(&mut self, opts: &Opts) -> Result<()> {
         // Send desired version to the server
         let _ = self.stream
@@ -37,7 +37,7 @@ impl Connection {
             }
         }
         let msg = format!("Unexpected response from server: {:?}", resp);
-        error!(ConnectionError::Other(msg))
+        error!(SessionError::Other(msg))
     }
 }
 
@@ -45,7 +45,7 @@ fn parse_server_version(stream: &TcpStream) -> Result<()> {
     let resp = parse_server_response(stream)?;
     let info: ServerInfo = from_str(&resp)?;
     if !info.success {
-        return error!(ConnectionError::Other(resp.to_string()));
+        return error!(SessionError::Other(resp.to_string()));
     };
     Ok(())
 }
@@ -63,13 +63,13 @@ fn parse_server_response(stream: &TcpStream) -> Result<String> {
 
     if resp.is_empty() {
         let msg = String::from("unable to connect for an unknown reason");
-        return error!(ConnectionError::Other(msg));
+        return error!(SessionError::Other(msg));
     };
 
     let resp = str::from_utf8(&resp)?.to_string();
     // If it's not a JSON object it's an error
     if !resp.starts_with("{") {
-        return error!(ConnectionError::Other(resp));
+        return error!(SessionError::Other(resp));
     };
     Ok(resp)
 }

@@ -1,4 +1,4 @@
-use {Client, Pool, ToArg, Arg, Args};
+use {Client, Connection, ToArg, Arg, Args};
 use types::FromJson;
 use slog::Logger;
 use serde_json::value::Value;
@@ -172,7 +172,7 @@ impl ToArg for Value {
 }
 
 #[cfg(feature = "with_io")]
-impl ToArg for &'static Pool {
+impl ToArg for &'static Connection {
     fn to_arg(&self) -> Arg {
         Arg {
             string: String::new(),
@@ -222,7 +222,7 @@ impl Arg {
     }
 
     #[doc(hidden)]
-    pub fn pool(self) -> Option<&'static Pool> {
+    pub fn pool(self) -> Option<&'static Connection> {
         self.pool
     }
 }

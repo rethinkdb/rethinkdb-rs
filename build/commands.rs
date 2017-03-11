@@ -41,7 +41,7 @@ impl Commands {
             mod args;
 
             #[cfg(feature = "with_io")]
-            use {{Pool, Response}};
+            use {{Connection, Response}};
             use {{Client, ToArg, Result}};
             use slog::Logger;
             use ql2::proto::Term_TermType as Type;
@@ -177,7 +177,7 @@ impl Command {
             format!(r#"
                 {}
                 #[cfg(feature = "with_io")]
-                pub fn connect<T: ToArg>(&self, args: T) -> Result<Pool> {{
+                pub fn connect<T: ToArg>(&self, args: T) -> Result<Connection> {{
                     io::connect(self, args)
                 }}
             "#, docs)

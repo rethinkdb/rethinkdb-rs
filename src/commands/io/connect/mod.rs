@@ -4,7 +4,7 @@ mod pool;
 use std::net::{ToSocketAddrs, SocketAddr, IpAddr, Ipv4Addr};
 use std::{fmt, io, result};
 
-use {Client, Server, Connection, ToArg, Pool, ConnectionManager, Result};
+use {Client, Server, Session, ToArg, Connection, SessionManager, Result};
 use super::io_error;
 use errors::*;
 use reql_io::r2d2;
@@ -13,11 +13,11 @@ use reql_io::tokio_core::io::{Codec, EasyBuf};
 use reql_io::byteorder::{LittleEndian, ByteOrder};
 
 impl Connect for Client {
-    fn connect<T: ToArg>(&self, args: T) -> Result<Pool> {
+    fn connect<T: ToArg>(&self, args: T) -> Result<Connection> {
         let logger = self.logger.new(o!("command" => "connect"));
         let query = format!("{}.connect({:?}, &handle)", self.query, cfg);
         debug!(logger, "{}", query);
-        let mut pool = Pool(Vec::new());
+        let mut pool = Connection(Vec::new());
         let remote = handle.remote();
         info!(logger, "creating connection pools...");
         for c in cfg.0 {
@@ -28,7 +28,7 @@ impl Connect for Client {
                         "db" => c.db.to_string(),
                         "user" => c.user.to_string(),
                         ));
-                let manager = ConnectionManager {
+                let manager = SessionManager {
                     server: pc.server,
                     remote: remote.clone(),
                     logger: logger,
@@ -75,7 +75,7 @@ impl Cluster {
         }
     }
     /// Add a server to the cluster
-    pub fn add_server<T: ToSocketAddrs>(&mut self, server: T, config: r2d2::Config<Connection, Error>) -> Result<&mut Cluster> {
+    pub fn add_server<T: ToSocketAddrs>(&mut self, server: T, config: r2d2::Config<Session, Error>) -> Result<&mut Cluster> {
         let mut addrs = Vec::new();
         for addr in server.to_socket_addrs()? {
             addrs.push(addr);
@@ -114,7 +114,7 @@ impl Cluster {
     }
 }
 
-impl fmt::Debug for ConnectionManager {
+impl fmt::Debug for SessionManager {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> result::Result<(), fmt::Error> {
         self.server.fmt(formatter)
     }
