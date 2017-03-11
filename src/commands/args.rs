@@ -176,7 +176,7 @@ impl ToArg for &'static Connection {
         Arg {
             string: String::new(),
             term: Term::new(),
-            pool: Some(self),
+            pool: Some(*self),
             remote: None,
         }
     }
@@ -221,7 +221,7 @@ impl Arg {
     }
 
     #[doc(hidden)]
-    pub fn pool(self) -> Option<&'static Connection> {
+    pub fn pool(self) -> Option<Connection> {
         self.pool
     }
 }
