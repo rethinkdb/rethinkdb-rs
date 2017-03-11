@@ -1,6 +1,5 @@
 use {Client, Connection, ToArg, Arg, Args};
 use types::FromJson;
-use slog::Logger;
 use serde_json::value::Value;
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 #[cfg(feature = "with_io")]

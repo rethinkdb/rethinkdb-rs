@@ -10,27 +10,32 @@ use std::cmp::Ordering;
 use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, ToArg};
 use ql2::proto::{Term, Datum};
 use reql_io::r2d2;
+use reql_io::ordermap::OrderMap;
+use reql_io::uuid::Uuid;
 use reql_io::parking_lot::RwLock;
 use reql_io::tokio_core::reactor::Remote;
 use slog::Logger;
 
 lazy_static! {
-    static ref CONFIG: RwLock<Option<Config>> = RwLock::new(None);
+    static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
+    static ref POOL: RwLock<OrderMap<Connection, r2d2::Pool<SessionManager>>> = RwLock::new(OrderMap::new());
 }
 
 pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Connection> {
+    let conn = Connection(Uuid::new_v4());
     let arg = args.to_arg();
     let logger = client.logger.new(o!("command" => "connect"));
     let query = format!("{}.connect({})", client.query, arg.string);
     debug!(logger, "{}", query);
-    Config::init(arg.term, arg.remote, logger.clone())?;
-    // Keep servers upto date
-    Config::update();
     info!(logger, "creating connection pool...");
+    conn.set_config(arg.term, arg.remote, logger.clone())?;
+    conn.maintain();
     let config = r2d2::Config::default();
-    let r2d2 = r2d2::Pool::new(config, SessionManager).map_err(|err| io_error(err))?;
+    let session = SessionManager(conn);
+    let r2d2 = r2d2::Pool::new(config, session).map_err(|err| io_error(err))?;
+    conn.set_pool(r2d2);
     info!(logger, "connection pool created successfully");
-    Ok(Connection(r2d2))
+    Ok(conn)
 }
 
 pub fn run<A: ToArg>(client: &Client, args: A) -> Result<Response> {
@@ -94,8 +99,8 @@ impl PartialEq for Server {
     }
 }
 
-impl Config {
-    fn init(mut term: Term, remote: Option<Remote>, logger: Logger) -> Result<()> {
+impl Connection {
+    fn set_config(&self, mut term: Term, remote: Option<Remote>, logger: Logger) -> Result<()> {
         let mut cluster = Vec::new();
         let mut hosts = Vec::new();
         let mut opts = Opts::default();
@@ -126,8 +131,7 @@ impl Config {
             });
         }
 
-        let mut cfg = CONFIG.write();
-        *cfg = Some(Config {
+        CONFIG.write().insert(*self, Config {
             cluster: cluster,
             opts: opts,
             remote: remote,
@@ -137,8 +141,8 @@ impl Config {
         Ok(())
     }
 
-    fn update() {
-        let mut config = Self::get();
+    fn maintain(&self) {
+        let mut config = self.config();
         for mut server in config.cluster.iter_mut() {
             for address in server.addresses.iter() {
                 let start = Instant::now();
@@ -149,14 +153,14 @@ impl Config {
             }
         }
         config.cluster.sort();
-        let mut cfg = CONFIG.write();
-        *cfg = Some(config);
+        CONFIG.write().insert(*self, config);
     }
 
-    pub fn get() -> Config {
-        if let Some(ref cfg) = *CONFIG.read() {
-            return cfg.clone();
-        }
-        panic!("Config must be initialised before calling Config::get()");
+    fn config(&self) -> Config {
+        CONFIG.read().get(self).unwrap().clone()
+    }
+
+    fn set_pool(&self, pool: r2d2::Pool<SessionManager>) {
+        POOL.write().insert(*self, pool);
     }
 }

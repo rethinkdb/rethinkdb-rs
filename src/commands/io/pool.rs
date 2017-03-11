@@ -4,7 +4,7 @@ use std::sync::Arc;
 use reql_io::r2d2;
 use errors::Error;
 use super::io_error;
-use {Client, SessionManager, Config, Opts, Session, Result};
+use {Client, SessionManager, Connection, Config, Opts, Session, Result};
 use std::net::TcpStream;
 use reql_io::tokio_core::io::Io;
 use reql_io::futures::{Future, Stream, Sink};
@@ -14,7 +14,7 @@ impl r2d2::ManageConnection for SessionManager {
     type Error = Error;
 
     fn connect(&self) -> Result<Session> {
-        Session::new()
+        Session::new(self.0)
     }
 
     fn is_valid(&self, mut conn: &mut Session) -> Result<()> {
@@ -42,8 +42,8 @@ impl r2d2::ManageConnection for SessionManager {
 }
 
 impl Session {
-    fn new() -> Result<Session> {
-        let cfg = Config::get();
+    fn new(conn: Connection) -> Result<Session> {
+        let cfg = conn.config();
         let logger = cfg.logger;
         //let remote = cfg.remote;
         let servers = cfg.cluster;

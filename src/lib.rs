@@ -25,13 +25,9 @@ pub use ql2::proto::Term;
 
 #[cfg(feature = "with_io")]
 use std::net::SocketAddr;
-#[cfg(feature = "with_io")]
-use std::sync::Arc;
 
 use errors::Error;
 
-#[cfg(feature = "with_io")]
-use reql_io::r2d2;
 #[cfg(feature = "with_io")]
 use std::time::Duration;
 #[cfg(feature = "with_io")]
@@ -79,12 +75,12 @@ struct Config {
 
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone, Copy)]
-struct SessionManager;
+struct SessionManager(Connection);
 
 /// The connection pool returned by the `connect` command
 #[cfg(feature = "with_io")]
-#[derive(Debug, Clone)]
-pub struct Connection(r2d2::Pool<SessionManager>);
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Connection(Uuid);
 
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone, Eq)]
