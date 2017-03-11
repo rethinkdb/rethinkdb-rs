@@ -7,3 +7,4 @@ pub extern crate rand;
 pub extern crate parking_lot;
 pub extern crate uuid;
 pub extern crate ordermap;
+pub extern crate bufstream;
