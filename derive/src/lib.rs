@@ -1,28 +1,28 @@
 #[macro_use]
 extern crate proc_macro_hack;
+#[macro_use]
+extern crate quote;
+
+use quote::Tokens;
 
 proc_macro_expr_impl! {
     pub fn args_impl(input: &str) -> String {
-        let mut args = String::new();
-
         if input.trim().is_empty() {
-            args.push_str("reql::Term::new()");
-            return args;
+            return quote!(reql::Term::new()).to_string();
         }
 
-        args.push_str(&format!(r#"
-            {{
-                let mut args = reql::Args::new();
-                args.set_string("args!({})");
-                {}
-                args
-            }}
-        "#, input.replace(r#"""#, r#"\""#), process_args(input)));
+        let body = process_args(input);
+        let args = format!("args!({})", input);
 
-        args
+        quote!({
+            let mut args = reql::Args::new();
+            args.set_string(#args);
+            #body
+            args
+        }).to_string()
     }
 }
 
-fn process_args(input: &str) -> String {
-    String::new()
+fn process_args(input: &str) -> Tokens {
+    Tokens::new()
 }
