@@ -1,19 +1,28 @@
-#![recursion_limit="1024"]
-
-extern crate proc_macro;
-extern crate syn;
 #[macro_use]
-extern crate quote;
-extern crate case;
+extern crate proc_macro_hack;
 
-mod command;
+proc_macro_expr_impl! {
+    pub fn args_impl(input: &str) -> String {
+        let mut args = String::new();
 
-use proc_macro::TokenStream;
-use command::Command;
+        if input.trim().is_empty() {
+            args.push_str("reql::Term::new()");
+            return args;
+        }
 
-#[proc_macro_derive(Command, attributes(command))]
-pub fn derive_command(input: TokenStream) -> TokenStream {
-    let source = input.to_string();
-    let ast = syn::parse_macro_input(&source).unwrap();
-    Command::new(ast).derive().parse().unwrap()
+        args.push_str(&format!(r#"
+            {{
+                let mut args = reql::Args::new();
+                args.set_string("args!({})");
+                {}
+                args
+            }}
+        "#, input.replace(r#"""#, r#"\""#), process_args(input)));
+
+        args
+    }
+}
+
+fn process_args(input: &str) -> String {
+    String::new()
 }

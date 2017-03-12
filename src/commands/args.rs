@@ -260,8 +260,8 @@ impl Args {
     }
 
     #[doc(hidden)]
-    pub fn set_string(&mut self, string: String) {
-        self.string = string;
+    pub fn set_string(&mut self, string: &str) {
+        self.string = string.into();
     }
 
     #[doc(hidden)]

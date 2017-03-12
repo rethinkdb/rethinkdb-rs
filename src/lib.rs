@@ -12,12 +12,20 @@ extern crate lazy_static;
 extern crate reql_io;
 #[macro_use]
 extern crate slog;
+#[macro_use]
+#[allow(unused_imports)]
+extern crate reql_derive;
+#[macro_use]
+extern crate proc_macro_hack;
 
 #[macro_use]
 mod macros;
 mod types;
 mod commands;
 pub mod errors;
+
+#[doc(hidden)]
+pub use reql_derive::*;
 
 // Needed by the `args` macro
 #[doc(hidden)]

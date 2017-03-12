@@ -37,6 +37,9 @@ macro_rules! with_args {
 /// r.branch(args!(r.expr(x).gt(5), "big", "small"));
 /// # }
 /// ```
+proc_macro_expr_decl!(args! => args_impl);
+
+/*
 #[macro_export]
 macro_rules! args {
     ( ) => {{ $crate::Term::new() }};
@@ -52,6 +55,7 @@ macro_rules! args {
         args
     }};
 }
+*/
 
 #[doc(hidden)]
 #[macro_export]

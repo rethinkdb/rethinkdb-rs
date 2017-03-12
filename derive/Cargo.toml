@@ -7,7 +7,7 @@ repository = "https://github.com/rust-rethinkdb/reql"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
-syn = "0.11"
+syn = { version = "0.11", features = ["full"] }
 quote = "0.3"
 case = "0.1"
 proc-macro-hack = "0.3"
