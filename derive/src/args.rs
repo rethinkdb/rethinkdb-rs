@@ -1,30 +1,35 @@
 use syn::{self, Token, TokenTree, BinOpToken, DelimToken};
 use quote::{Tokens, ToTokens};
+use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Args<'a> {
     input: &'a str,
+    args: Vec<Group>,
     pub tokens: Tokens,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 enum Type {
-    Object,
-    List,
-    Closure,
     Expr,
+    Closure,
+    List,
+    Object,
 }
 
 #[derive(Debug, Clone)]
-struct Group {
-    tree: Vec<TokenTree>,
-    typ: Type,
+enum Group {
+    Expr(Vec<TokenTree>),
+    Closure(Vec<TokenTree>),
+    List(Vec<Group>),
+    Object(HashMap<String, Group>),
 }
 
 impl<'a> Args<'a> {
     pub fn new(input: &str) -> Args {
         Args {
             input: input.trim(),
+            args: Vec::new(),
             tokens: Tokens::new(),
         }
     }
@@ -47,67 +52,146 @@ impl<'a> Args<'a> {
 
         self
     }
-    fn body(&self) -> Tokens {
-        let args = self.group_by_comma();
-        let args: Vec<String> = args.into_iter()
-            .map(|arg| {
-                let mut tokens = Tokens::new();
-                for arg in arg.tree {
-                    arg.to_tokens(&mut tokens);
-                }
-                format!("{:?} => {}", arg.typ, tokens)
-            })
-        .collect();
-        panic!(format!("{:?}", args));
+
+    fn body(&mut self) -> Tokens {
+        let tt = syn::parse_token_trees(self.input).expect("failed to parse token tree");
+        self.args = self.group_by_comma(tt);
+        panic!(format!("{:?}", self.args));
     }
 
-    fn group_by_comma(&self) -> Vec<Group> {
+    fn finalise_arg(&self, args: &mut Vec<Group>, tokens: &mut Vec<TokenTree>, typ: &mut Type) {
+        let group = match *typ {
+            Type::Expr => Group::Expr(tokens.clone()),
+            Type::Closure => Group::Closure(tokens.clone()),
+            Type::List => Group::List(self.group_by_comma(tokens.clone())),
+            Type::Object => Group::Object(self.hash_from_tokens(tokens.clone())),
+        };
+        args.push(group);
+        *tokens = Vec::new();
+        *typ = Type::Expr;
+    }
+
+    fn hash_from_tokens(&self, tt: Vec<TokenTree>) -> HashMap<String, Group> {
+        let mut hash = HashMap::new();
+
+        let mut is_key = true;
+        let mut key = String::new();
+        let mut val = Vec::new();
+        let last = tt.len()-1;
+
+        for (i, tree) in tt.into_iter().enumerate() {
+            if let TokenTree::Token(Token::Colon) = tree {
+                if key.is_empty() {
+                    panic!("A key of an object cannot be empty.");
+                }
+                is_key = false;
+                continue;
+            }
+            if is_key {
+                key = {
+                    let mut tokens = Tokens::new();
+                    tree.to_tokens(&mut tokens);
+                    tokens.to_string()
+                };
+                continue;
+            }
+            let token_is_comma = if let TokenTree::Token(Token::Comma) = tree { true } else { false };
+            let on_last_token = if i == last { true } else { false };
+            let val_end = token_is_comma || on_last_token;
+            if !token_is_comma {
+                val.push(tree);
+            }
+            if val_end {
+                let arg = self.group_by_comma(val.clone());
+                let len = arg.len();
+                if len == 0 {
+                    panic!("An object key cannot have no value.");
+                } else if len == 1 {
+                    hash.insert(key.clone(), arg.into_iter().next().unwrap());
+                } else {
+                    panic!("An object key cannot have more than 1 values.");
+                }
+                is_key = true;
+                val = Vec::new();
+            }
+        }
+
+        hash
+    }
+
+    fn group_by_comma(&self, tt: Vec<TokenTree>) -> Vec<Group> {
         let mut args = Vec::new();
-        let tt = syn::parse_token_trees(self.input).expect("failed to parse token tree");
-        let mut group = Group::new();
-        for tree in tt {
-            if group.is_empty() {
-                if let TokenTree::Delimited(ref d) = tree {
-                    if d.delim == DelimToken::Bracket { group.typ = Type::List; }
-                    else if d.delim == DelimToken::Brace { group.typ = Type::Object; }
+        let mut tokens = Vec::new();
+        let mut typ = Type::Expr;
+        let last = tt.len()-1;
+
+        for (i, tree) in tt.into_iter().enumerate() {
+            let token_is_comma = if let TokenTree::Token(Token::Comma) = tree { true } else { false };
+            let on_last_token = if i == last { true } else { false };
+            let arg_end = token_is_comma || on_last_token;
+
+            match Type::new(&tokens, &tree, &mut typ) {
+                Type::Expr => {
+                    if !token_is_comma {
+                        tokens.push(tree);
+                    }
+                    if arg_end {
+                        self.finalise_arg(&mut args, &mut tokens, &mut typ);
+                    }
                 }
-                else if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = tree {
-                    group.typ = Type::Closure;
+                Type::Closure => {
+                    if !token_is_comma {
+                        tokens.push(tree);
+                    }
+                    if arg_end {
+                        self.finalise_arg(&mut args, &mut tokens, &mut typ);
+                    }
                 }
-            } else if group.tree.len() == 1 {
-                if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = tree {
-                    if let TokenTree::Token(Token::Ident(ref i)) = group.tree[0] {
-                        if i == "move" {
-                            group.typ = Type::Closure;
+                Type::List => {
+                    if !token_is_comma {
+                        if let TokenTree::Delimited(d) = tree {
+                            tokens = d.tts;
                         }
+                    }
+                    if arg_end {
+                        self.finalise_arg(&mut args, &mut tokens, &mut typ);
+                    }
+                }
+                Type::Object => {
+                    if !token_is_comma {
+                        if let TokenTree::Delimited(d) = tree {
+                            tokens = d.tts;
+                        }
+                    }
+                    if arg_end {
+                        self.finalise_arg(&mut args, &mut tokens, &mut typ);
                     }
                 }
             }
-            if let TokenTree::Token(Token::Comma) = tree {
-                if !group.is_empty() {
-                    args.push(group);
-                    group = Group::new();
-                }
-            } else {
-                group.tree.push(tree);
-            }
-        }
-        if !group.is_empty() {
-            args.push(group);
         }
         args
     }
 }
 
-impl Group {
-    fn new() -> Self {
-        Group {
-            tree: Vec::new(),
-            typ: Type::Expr,
+impl Type {
+    fn new(tokens: &Vec<TokenTree>, tree: &TokenTree, typ: &mut Type) -> Type {
+        if tokens.is_empty() {
+            if let TokenTree::Delimited(ref d) = *tree {
+                if d.delim == DelimToken::Bracket { *typ = Type::List; }
+                else if d.delim == DelimToken::Brace { *typ = Type::Object; }
+            }
+            else if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = *tree {
+                *typ = Type::Closure;
+            }
+        } else if tokens.len() == 1 {
+            if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = *tree {
+                if let TokenTree::Token(Token::Ident(ref i)) = tokens[0] {
+                    if i == "move" {
+                        *typ = Type::Closure;
+                    }
+                }
+            }
         }
-    }
-
-    fn is_empty(&self) -> bool {
-        self.tree.is_empty()
+        *typ
     }
 }
