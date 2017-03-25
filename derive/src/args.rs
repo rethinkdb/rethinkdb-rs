@@ -1,11 +1,10 @@
-use syn::{self, Token, TokenTree, BinOpToken, DelimToken};
+use syn::{self, Token, TokenTree, Ident, BinOpToken, DelimToken};
 use quote::{Tokens, ToTokens};
 use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Args<'a> {
     input: &'a str,
-    args: Vec<Group>,
     pub tokens: Tokens,
 }
 
@@ -29,7 +28,6 @@ impl<'a> Args<'a> {
     pub fn new(input: &str) -> Args {
         Args {
             input: input.trim(),
-            args: Vec::new(),
             tokens: Tokens::new(),
         }
     }
@@ -44,7 +42,10 @@ impl<'a> Args<'a> {
         let body = self.body();
 
         self.tokens = quote!({
-            let mut args = reql::Args::new();
+            #[allow(unused_imports)]
+            use reql::{ToArg, Args, Term};
+
+            let mut args = Args::new();
             args.set_string(#args);
             #body
             args
@@ -55,8 +56,13 @@ impl<'a> Args<'a> {
 
     fn body(&mut self) -> Tokens {
         let tt = syn::parse_token_trees(self.input).expect("failed to parse token tree");
-        self.args = self.group_by_comma(tt);
-        panic!(format!("{:?}", self.args));
+        let mut tokens = Tokens::new();
+        let args = self.group_by_comma(tt);
+        let last = args.len()-1;
+        for (i, arg) in args.into_iter().enumerate() {
+            arg.tokenise("args", i == last).to_tokens(&mut tokens);
+        }
+        tokens
     }
 
     fn finalise_arg(&self, args: &mut Vec<Group>, tokens: &mut Vec<TokenTree>, typ: &mut Type) {
@@ -170,6 +176,68 @@ impl<'a> Args<'a> {
             }
         }
         args
+    }
+}
+
+impl Group {
+    fn tokenise(self, var: &str, last: bool) -> Tokens {
+        let mut tokens = Tokens::new();
+        let var = Ident::from(var);
+        match self {
+            Group::Expr(tt) => {
+                let mut expr = Tokens::new();
+                for token in tt {
+                    token.to_tokens(&mut expr);
+                }
+                quote!(#var.add_arg(#expr.to_arg());)
+                    .to_tokens(&mut tokens);
+            }
+            Group::Closure(_closure) => {
+                unimplemented!();
+            }
+            Group::List(tt) => {
+                let mut list = quote!(let mut list_arg = Term::new(););
+                for group in tt {
+                    quote!(let mut list_val = Args::new();)
+                        .to_tokens(&mut list);
+                    group.tokenise("list_val", false)
+                        .to_tokens(&mut list);
+                    quote!(list_arg.mut_args().push(list_val.to_arg().term());)
+                        .to_tokens(&mut list);
+                }
+                quote!(#var.mut_term().mut_args().push(list_arg);)
+                        .to_tokens(&mut list);
+                list.to_tokens(&mut tokens);
+            }
+            Group::Object(tt) => {
+                let mut obj = Tokens::new();
+                if !last {
+                    quote!(let mut obj_arg = Term::new();)
+                        .to_tokens(&mut obj);
+                }
+                for (key, group) in tt {
+                    quote!(let mut obj_val = Args::new();)
+                        .to_tokens(&mut obj);
+                    group.tokenise("obj_val", false)
+                        .to_tokens(&mut obj);
+                    quote!(let temp_pair = Args::create_term_pair(#key, obj_val);)
+                        .to_tokens(&mut obj);
+                    if last {
+                        quote!(#var.mut_term().mut_optargs().push(temp_pair);)
+                            .to_tokens(&mut obj);
+                    } else {
+                        quote!(obj_arg.mut_optargs().push(temp_pair);)
+                            .to_tokens(&mut obj);
+                    }
+                }
+                if !last {
+                    quote!(#var.mut_term().mut_args().push(obj_arg);)
+                        .to_tokens(&mut obj);
+                }
+                obj.to_tokens(&mut tokens);
+            }
+        }
+        tokens
     }
 }
 

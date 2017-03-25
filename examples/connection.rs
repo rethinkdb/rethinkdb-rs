@@ -16,8 +16,6 @@ fn main() {
     let r = Client::new().with_logger(logger);
 
     // Create a connection pool
-    //let _pool = r.connect(args!({servers: ["localhost:8987"]})).unwrap();
-    let _pool = r.connect(args!(nada, core.remote(), "dog, cat, spider", [alpha, beta], {name: "mina", sex: "male"}, move |name| {
-        println!("hello {}", name);
-    })).unwrap();
+    //let _pool = r.connect(args!({servers: ["localhost"]})).unwrap();
+    let _pool = r.connect(args!()).unwrap();
 }
