@@ -43,7 +43,7 @@ impl Commands {
 
             #[cfg(feature = "with_io")]
             use {{Connection, Response}};
-            use {{Client, ToArg, Result}};
+            use {{Client, IntoArg, Result}};
             use slog::Logger;
             use ql2::proto::Term_TermType as Type;
         "#)
@@ -123,7 +123,7 @@ impl Commands {
                 /// # }}
                 /// ```
 
-                pub fn with_args<T: ToArg>(&self, args: T) -> Client {{
+                pub fn with_args<T: IntoArg>(&self, args: T) -> Client {{
                     util::with_args(self, args)
                 }}
 
@@ -178,7 +178,7 @@ impl Command {
             format!(r#"
                 {}
                 #[cfg(feature = "with_io")]
-                pub fn connect<T: ToArg>(&self, args: T) -> Result<Connection> {{
+                pub fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {{
                     io::connect(self, args)
                 }}
             "#, docs)
@@ -186,14 +186,14 @@ impl Command {
             format!(r#"
                 {}
                 #[cfg(feature = "with_io")]
-                pub fn run<T: ToArg>(&self, args: T) -> Result<Response> {{
+                pub fn run<T: IntoArg>(&self, args: T) -> Result<Response> {{
                     io::run(self, args)
                 }}
             "#, docs)
         } else if name == "expr" {
             format!(r#"
                 {}
-                pub fn expr<T: ToArg>(&self, args: T) -> Client {{
+                pub fn expr<T: IntoArg>(&self, args: T) -> Client {{
                     util::make_cmd(self, "expr", None, Some(args))
                 }}
             "#, docs)
@@ -207,7 +207,7 @@ impl Command {
         } else {
             format!(r#"
                 {docs}
-                pub fn {name}<T: ToArg>(&self, args: T) -> Client {{
+                pub fn {name}<T: IntoArg>(&self, args: T) -> Client {{
                     util::make_cmd(self, "{name}", Some({typ}), Some(args))
                 }}
             "#, docs=docs, name=name, typ=typ)

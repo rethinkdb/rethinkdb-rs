@@ -12,7 +12,7 @@
 
             #[cfg(feature = "with_io")]
             use {Connection, Response};
-            use {Client, ToArg, Result};
+            use {Client, IntoArg, Result};
             use slog::Logger;
             use ql2::proto::Term_TermType as Type;
         
@@ -80,7 +80,7 @@
                 /// # }
                 /// ```
 
-                pub fn with_args<T: ToArg>(&self, args: T) -> Client {
+                pub fn with_args<T: IntoArg>(&self, args: T) -> Client {
                     util::with_args(self, args)
                 }
 
@@ -206,7 +206,7 @@
 /// ```
 
                 #[cfg(feature = "with_io")]
-                pub fn connect<T: ToArg>(&self, args: T) -> Result<Connection> {
+                pub fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {
                     io::connect(self, args)
                 }
             
@@ -363,7 +363,7 @@
 /// ```
 
                 #[cfg(feature = "with_io")]
-                pub fn run<T: ToArg>(&self, args: T) -> Result<Response> {
+                pub fn run<T: IntoArg>(&self, args: T) -> Result<Response> {
                     io::run(self, args)
                 }
             
@@ -567,7 +567,7 @@
 /// 
 /// 
 
-                pub fn db_create<T: ToArg>(&self, args: T) -> Client {
+                pub fn db_create<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "db_create", Some(Type::DB_CREATE), Some(args))
                 }
             
@@ -608,7 +608,7 @@
 /// ```
 /// 
 
-                pub fn db_drop<T: ToArg>(&self, args: T) -> Client {
+                pub fn db_drop<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "db_drop", Some(Type::DB_DROP), Some(args))
                 }
             
@@ -713,7 +713,7 @@
 /// 
 /// Read [Sharding and replication](/docs/sharding-and-replication/) for a complete discussion of the subject, including advanced topics.
 
-                pub fn table_create<T: ToArg>(&self, args: T) -> Client {
+                pub fn table_create<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "table_create", Some(Type::TABLE_CREATE), Some(args))
                 }
             
@@ -766,7 +766,7 @@
 /// 
 /// 
 
-                pub fn table_drop<T: ToArg>(&self, args: T) -> Client {
+                pub fn table_drop<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "table_drop", Some(Type::TABLE_DROP), Some(args))
                 }
             
@@ -880,7 +880,7 @@
 /// })
 /// ```
 
-                pub fn index_create<T: ToArg>(&self, args: T) -> Client {
+                pub fn index_create<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "index_create", Some(Type::INDEX_CREATE), Some(args))
                 }
             
@@ -896,7 +896,7 @@
 /// 
 /// 
 
-                pub fn index_drop<T: ToArg>(&self, args: T) -> Client {
+                pub fn index_drop<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "index_drop", Some(Type::INDEX_DROP), Some(args))
                 }
             
@@ -931,7 +931,7 @@
 /// r.table('comments').indexRename('postId', 'messageId').run(conn, callback)
 /// ```
 
-                pub fn index_rename<T: ToArg>(&self, args: T) -> Client {
+                pub fn index_rename<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "index_rename", Some(Type::INDEX_RENAME), Some(args))
                 }
             
@@ -1213,7 +1213,7 @@
 /// }}).run(conn, callback)
 /// ```
 
-                pub fn insert<T: ToArg>(&self, args: T) -> Client {
+                pub fn insert<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "insert", Some(Type::INSERT), Some(args))
                 }
             
@@ -1471,7 +1471,7 @@
 /// ).run(conn, callback)
 /// ```
 
-                pub fn update<T: ToArg>(&self, args: T) -> Client {
+                pub fn update<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "update", Some(Type::UPDATE), Some(args))
                 }
             
@@ -1613,7 +1613,7 @@
 /// }
 /// ```
 
-                pub fn replace<T: ToArg>(&self, args: T) -> Client {
+                pub fn replace<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "replace", Some(Type::REPLACE), Some(args))
                 }
             
@@ -1750,7 +1750,7 @@
 /// ```
 /// 
 
-                pub fn db<T: ToArg>(&self, args: T) -> Client {
+                pub fn db<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "db", Some(Type::DB), Some(args))
                 }
             
@@ -1786,7 +1786,7 @@
 /// r.db('heroes').table('marvel', {readMode: 'outdated'}).run(conn, callback)
 /// ```
 
-                pub fn table<T: ToArg>(&self, args: T) -> Client {
+                pub fn table<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "table", Some(Type::TABLE), Some(args))
                 }
             
@@ -1816,7 +1816,7 @@
 /// r.table('heroes').get(3).changes().run(conn, callback);
 /// ```
 
-                pub fn get<T: ToArg>(&self, args: T) -> Client {
+                pub fn get<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "get", Some(Type::GET), Some(args))
                 }
             
@@ -1863,7 +1863,7 @@
 /// 
 /// Secondary indexes can be used in extremely powerful ways with `getAll` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 
-                pub fn get_all<T: ToArg>(&self, args: T) -> Client {
+                pub fn get_all<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "get_all", Some(Type::GET_ALL), Some(args))
                 }
             
@@ -1948,7 +1948,7 @@
 /// RethinkDB uses byte-wise ordering for `between` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
 /// {% endinfobox %}
 
-                pub fn between<T: ToArg>(&self, args: T) -> Client {
+                pub fn between<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "between", Some(Type::BETWEEN), Some(args))
                 }
             
@@ -2160,7 +2160,7 @@
 /// 
 /// Instead of using the `default` optional argument to `filter`, we have to use default values on the fields within the `or` clause. Why? If the field on the left side of the `or` clause is missing from a document&mdash;in this case, if the user doesn't have a `role` field&mdash;the predicate will generate an error, and will return `false` (or the value the `default` argument is set to) without evaluating the right side of the `or`. By using `.default(false)` on the fields, each side of the `or` will evaluate to either the field's value or `false` if the field doesn't exist.
 
-                pub fn filter<T: ToArg>(&self, args: T) -> Client {
+                pub fn filter<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "filter", Some(Type::FILTER), Some(args))
                 }
             
@@ -2186,7 +2186,7 @@
 /// 
 /// (Compare this to an [outerJoin](/api/javascript/outer_join) with the same inputs and predicate, which would return a list of *all* Marvel heroes along with any DC heroes with a higher strength.)
 
-                pub fn inner_join<T: ToArg>(&self, args: T) -> Client {
+                pub fn inner_join<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "inner_join", Some(Type::INNER_JOIN), Some(args))
                 }
             
@@ -2211,7 +2211,7 @@
 /// 
 /// (Compare this to an [innerJoin](/api/javascript/inner_join) with the same inputs and predicate, which would return a list only of the matchups in which the DC hero has the higher strength.)
 
-                pub fn outer_join<T: ToArg>(&self, args: T) -> Client {
+                pub fn outer_join<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "outer_join", Some(Type::OUTER_JOIN), Some(args))
                 }
             
@@ -2337,7 +2337,7 @@
 /// ]
 /// ```
 
-                pub fn eq_join<T: ToArg>(&self, args: T) -> Client {
+                pub fn eq_join<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "eq_join", Some(Type::EQ_JOIN), Some(args))
                 }
             
@@ -2416,7 +2416,7 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn map<T: ToArg>(&self, args: T) -> Client {
+                pub fn map<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "map", Some(Type::MAP), Some(args))
                 }
             
@@ -2455,7 +2455,7 @@
 /// r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn, callback)
 /// ```
 
-                pub fn with_fields<T: ToArg>(&self, args: T) -> Client {
+                pub fn with_fields<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "with_fields", Some(Type::WITH_FIELDS), Some(args))
                 }
             
@@ -2510,7 +2510,7 @@
 /// }).run(conn, callback)
 /// ```
 
-                pub fn concat_map<T: ToArg>(&self, args: T) -> Client {
+                pub fn concat_map<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "concat_map", Some(Type::CONCAT_MAP), Some(args))
                 }
             
@@ -2647,7 +2647,7 @@
 /// ```
 /// 
 
-                pub fn order_by<T: ToArg>(&self, args: T) -> Client {
+                pub fn order_by<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "order_by", Some(Type::ORDER_BY), Some(args))
                 }
             
@@ -2661,7 +2661,7 @@
 /// r.table('marvel').orderBy('successMetric').skip(10).run(conn, callback)
 /// ```
 
-                pub fn skip<T: ToArg>(&self, args: T) -> Client {
+                pub fn skip<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "skip", Some(Type::SKIP), Some(args))
                 }
             
@@ -2677,7 +2677,7 @@
 /// 
 /// 
 
-                pub fn limit<T: ToArg>(&self, args: T) -> Client {
+                pub fn limit<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "limit", Some(Type::LIMIT), Some(args))
                 }
             
@@ -2731,7 +2731,7 @@
 /// "tab"
 /// ```
 
-                pub fn slice<T: ToArg>(&self, args: T) -> Client {
+                pub fn slice<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "slice", Some(Type::SLICE), Some(args))
                 }
             
@@ -2760,7 +2760,7 @@
 /// r.table('players').orderBy({index: r.desc('score')}).nth(-1).run(conn, callback)
 /// ```
 
-                pub fn nth<T: ToArg>(&self, args: T) -> Client {
+                pub fn nth<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "nth", Some(Type::NTH), Some(args))
                 }
             
@@ -2784,7 +2784,7 @@
 /// ).run(conn, callback)
 /// ```
 
-                pub fn offsets_of<T: ToArg>(&self, args: T) -> Client {
+                pub fn offsets_of<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "offsets_of", Some(Type::OFFSETS_OF), Some(args))
                 }
             
@@ -2845,7 +2845,7 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn union<T: ToArg>(&self, args: T) -> Client {
+                pub fn union<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "union", Some(Type::UNION), Some(args))
                 }
             
@@ -2863,7 +2863,7 @@
 /// r.table('marvel').sample(3).run(conn, callback)
 /// ```
 
-                pub fn sample<T: ToArg>(&self, args: T) -> Client {
+                pub fn sample<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "sample", Some(Type::SAMPLE), Some(args))
                 }
             
@@ -3491,7 +3491,7 @@
 /// 
 /// A shorter way to execute this query is to use [max](/api/javascript/max).
 
-                pub fn reduce<T: ToArg>(&self, args: T) -> Client {
+                pub fn reduce<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "reduce", Some(Type::REDUCE), Some(args))
                 }
             
@@ -3568,7 +3568,7 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn fold<T: ToArg>(&self, args: T) -> Client {
+                pub fn fold<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "fold", Some(Type::FOLD), Some(args))
                 }
             
@@ -3890,7 +3890,7 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn contains<T: ToArg>(&self, args: T) -> Client {
+                pub fn contains<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "contains", Some(Type::CONTAINS), Some(args))
                 }
             
@@ -3931,7 +3931,7 @@
 /// 
 /// For more information read the [nested field documentation](/docs/nested-fields/).
 
-                pub fn pluck<T: ToArg>(&self, args: T) -> Client {
+                pub fn pluck<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "pluck", Some(Type::PLUCK), Some(args))
                 }
             
@@ -3969,7 +3969,7 @@
 /// ```
 /// 
 
-                pub fn without<T: ToArg>(&self, args: T) -> Client {
+                pub fn without<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "without", Some(Type::WITHOUT), Some(args))
                 }
             
@@ -4033,7 +4033,7 @@
 /// ```
 /// 
 
-                pub fn merge<T: ToArg>(&self, args: T) -> Client {
+                pub fn merge<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "merge", Some(Type::MERGE), Some(args))
                 }
             
@@ -4049,7 +4049,7 @@
 /// 
 /// 
 
-                pub fn append<T: ToArg>(&self, args: T) -> Client {
+                pub fn append<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "append", Some(Type::APPEND), Some(args))
                 }
             
@@ -4065,7 +4065,7 @@
 /// 
 /// 
 
-                pub fn prepend<T: ToArg>(&self, args: T) -> Client {
+                pub fn prepend<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "prepend", Some(Type::PREPEND), Some(args))
                 }
             
@@ -4093,7 +4093,7 @@
 /// 
 /// 
 
-                pub fn difference<T: ToArg>(&self, args: T) -> Client {
+                pub fn difference<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "difference", Some(Type::DIFFERENCE), Some(args))
                 }
             
@@ -4109,7 +4109,7 @@
 /// 
 /// 
 
-                pub fn set_insert<T: ToArg>(&self, args: T) -> Client {
+                pub fn set_insert<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "set_insert", Some(Type::SET_INSERT), Some(args))
                 }
             
@@ -4124,7 +4124,7 @@
 /// ```
 /// 
 
-                pub fn set_union<T: ToArg>(&self, args: T) -> Client {
+                pub fn set_union<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "set_union", Some(Type::SET_UNION), Some(args))
                 }
             
@@ -4140,7 +4140,7 @@
 /// ```
 /// 
 
-                pub fn set_intersection<T: ToArg>(&self, args: T) -> Client {
+                pub fn set_intersection<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "set_intersection", Some(Type::SET_INTERSECTION), Some(args))
                 }
             
@@ -4157,7 +4157,7 @@
 /// 
 /// 
 
-                pub fn set_difference<T: ToArg>(&self, args: T) -> Client {
+                pub fn set_difference<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "set_difference", Some(Type::SET_DIFFERENCE), Some(args))
                 }
             
@@ -4185,7 +4185,7 @@
 /// 40
 /// ```
 
-                pub fn bracket<T: ToArg>(&self, args: T) -> Client {
+                pub fn bracket<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "bracket", Some(Type::BRACKET), Some(args))
                 }
             
@@ -4202,7 +4202,7 @@
 /// r.table('marvel').get('IronMan').getField('firstAppearance').run(conn, callback)
 /// ```
 
-                pub fn get_field<T: ToArg>(&self, args: T) -> Client {
+                pub fn get_field<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "get_field", Some(Type::GET_FIELD), Some(args))
                 }
             
@@ -4263,7 +4263,7 @@
 ///     ).run(conn, callback)
 /// ```
 
-                pub fn has_fields<T: ToArg>(&self, args: T) -> Client {
+                pub fn has_fields<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "has_fields", Some(Type::HAS_FIELDS), Some(args))
                 }
             
@@ -4281,7 +4281,7 @@
 /// 
 /// 
 
-                pub fn insert_at<T: ToArg>(&self, args: T) -> Client {
+                pub fn insert_at<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "insert_at", Some(Type::INSERT_AT), Some(args))
                 }
             
@@ -4298,7 +4298,7 @@
 /// ```
 /// 
 
-                pub fn splice_at<T: ToArg>(&self, args: T) -> Client {
+                pub fn splice_at<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "splice_at", Some(Type::SPLICE_AT), Some(args))
                 }
             
@@ -4362,7 +4362,7 @@
 /// }).run(conn, callback)
 /// ```
 
-                pub fn delete_at<T: ToArg>(&self, args: T) -> Client {
+                pub fn delete_at<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "delete_at", Some(Type::DELETE_AT), Some(args))
                 }
             
@@ -4378,7 +4378,7 @@
 /// r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
 /// ```
 
-                pub fn change_at<T: ToArg>(&self, args: T) -> Client {
+                pub fn change_at<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "change_at", Some(Type::CHANGE_AT), Some(args))
                 }
             
@@ -4606,7 +4606,7 @@
 /// r.expr("name[at]domain.com").match(".*@(.*)").run(conn, callback)
 /// ```
 
-                pub fn match_<T: ToArg>(&self, args: T) -> Client {
+                pub fn match_<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "match_", Some(Type::MATCH), Some(args))
                 }
             
@@ -4792,7 +4792,7 @@
 /// "foobarbuzz"
 /// ```
 
-                pub fn add<T: ToArg>(&self, args: T) -> Client {
+                pub fn add<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "add", Some(Type::ADD), Some(args))
                 }
             
@@ -4818,7 +4818,7 @@
 /// r.now().sub(date)
 /// ```
 
-                pub fn sub<T: ToArg>(&self, args: T) -> Client {
+                pub fn sub<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "sub", Some(Type::SUB), Some(args))
                 }
             
@@ -4839,7 +4839,7 @@
 /// ```
 /// 
 
-                pub fn mul<T: ToArg>(&self, args: T) -> Client {
+                pub fn mul<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "mul", Some(Type::MUL), Some(args))
                 }
             
@@ -4854,13 +4854,13 @@
 /// ```
 /// 
 
-                pub fn div<T: ToArg>(&self, args: T) -> Client {
+                pub fn div<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "div", Some(Type::DIV), Some(args))
                 }
             
 
                 
-                pub fn mod_<T: ToArg>(&self, args: T) -> Client {
+                pub fn mod_<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "mod_", Some(Type::MOD), Some(args))
                 }
             
@@ -4890,7 +4890,7 @@
 /// true
 /// ```
 
-                pub fn and<T: ToArg>(&self, args: T) -> Client {
+                pub fn and<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "and", Some(Type::AND), Some(args))
                 }
             
@@ -4929,7 +4929,7 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn or<T: ToArg>(&self, args: T) -> Client {
+                pub fn or<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "or", Some(Type::OR), Some(args))
                 }
             
@@ -4949,7 +4949,7 @@
 /// r.eq(a, b, c).run(conn, callback);
 /// ```
 
-                pub fn eq<T: ToArg>(&self, args: T) -> Client {
+                pub fn eq<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "eq", Some(Type::EQ), Some(args))
                 }
             
@@ -4969,7 +4969,7 @@
 /// r.ne(a, b, c).run(conn, callback);
 /// ```
 
-                pub fn ne<T: ToArg>(&self, args: T) -> Client {
+                pub fn ne<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "ne", Some(Type::NE), Some(args))
                 }
             
@@ -4996,7 +4996,7 @@
 /// r.gt(a, b).and(r.gt(b, c)).run(conn, callback);
 /// ```
 
-                pub fn gt<T: ToArg>(&self, args: T) -> Client {
+                pub fn gt<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "gt", Some(Type::GT), Some(args))
                 }
             
@@ -5023,7 +5023,7 @@
 /// r.ge(a, b).and(r.ge(b, c)).run(conn, callback);
 /// ```
 
-                pub fn ge<T: ToArg>(&self, args: T) -> Client {
+                pub fn ge<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "ge", Some(Type::GE), Some(args))
                 }
             
@@ -5050,7 +5050,7 @@
 /// r.lt(a, b).and(r.lt(b, c)).run(conn, callback);
 /// ```
 
-                pub fn lt<T: ToArg>(&self, args: T) -> Client {
+                pub fn lt<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "lt", Some(Type::LT), Some(args))
                 }
             
@@ -5077,7 +5077,7 @@
 /// r.le(a, b).and(r.le(b, c)).run(conn, callback);
 /// ```
 
-                pub fn le<T: ToArg>(&self, args: T) -> Client {
+                pub fn le<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "le", Some(Type::LE), Some(args))
                 }
             
@@ -5297,7 +5297,7 @@
 /// r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')}).run(conn, callback)
 /// ```
 
-                pub fn time<T: ToArg>(&self, args: T) -> Client {
+                pub fn time<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "time", Some(Type::TIME), Some(args))
                 }
             
@@ -5314,7 +5314,7 @@
 /// r.table("user").get("John").update({birthdate: r.epochTime(531360000)}).run(conn, callback)
 /// ```
 
-                pub fn epoch_time<T: ToArg>(&self, args: T) -> Client {
+                pub fn epoch_time<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "epoch_time", Some(Type::EPOCH_TIME), Some(args))
                 }
             
@@ -5334,7 +5334,7 @@
 /// 
 /// 
 
-                pub fn iso8601<T: ToArg>(&self, args: T) -> Client {
+                pub fn iso8601<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "iso8601", Some(Type::ISO8601), Some(args))
                 }
             
@@ -5352,7 +5352,7 @@
 /// 
 /// 
 
-                pub fn in_timezone<T: ToArg>(&self, args: T) -> Client {
+                pub fn in_timezone<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "in_timezone", Some(Type::IN_TIMEZONE), Some(args))
                 }
             
@@ -5400,7 +5400,7 @@
 /// ```
 /// 
 
-                pub fn during<T: ToArg>(&self, args: T) -> Client {
+                pub fn during<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "during", Some(Type::DURING), Some(args))
                 }
             
@@ -5688,7 +5688,7 @@
 /// 
 /// Read more details about RethinkDB's binary object support: [Storing binary objects](/docs/storing-binary/).
 
-                pub fn binary<T: ToArg>(&self, args: T) -> Client {
+                pub fn binary<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "binary", Some(Type::BINARY), Some(args))
                 }
             
@@ -5741,7 +5741,7 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn do_<T: ToArg>(&self, args: T) -> Client {
+                pub fn do_<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "do_", Some(Type::FUNCALL), Some(args))
                 }
             
@@ -5823,7 +5823,7 @@
 /// ]
 /// ```
 
-                pub fn branch<T: ToArg>(&self, args: T) -> Client {
+                pub fn branch<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "branch", Some(Type::BRANCH), Some(args))
                 }
             
@@ -5839,7 +5839,7 @@
 /// }).run(conn, callback)
 /// ```
 
-                pub fn for_each<T: ToArg>(&self, args: T) -> Client {
+                pub fn for_each<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "for_each", Some(Type::FOR_EACH), Some(args))
                 }
             
@@ -5905,7 +5905,7 @@
 /// 
 /// 
 
-                pub fn error<T: ToArg>(&self, args: T) -> Client {
+                pub fn error<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "error", Some(Type::ERROR), Some(args))
                 }
             
@@ -5997,7 +5997,7 @@
 /// 
 /// This particular example simply returns the error message, so it isn't very useful. But it would be possible to change the default value based on the specific error message thrown.
 
-                pub fn default<T: ToArg>(&self, args: T) -> Client {
+                pub fn default<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "default", Some(Type::DEFAULT), Some(args))
                 }
             
@@ -6021,7 +6021,7 @@
 /// ```
 /// 
 
-                pub fn expr<T: ToArg>(&self, args: T) -> Client {
+                pub fn expr<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "expr", None, Some(args))
                 }
             
@@ -6057,7 +6057,7 @@
 /// ```
 /// 
 
-                pub fn js<T: ToArg>(&self, args: T) -> Client {
+                pub fn js<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "js", Some(Type::JAVASCRIPT), Some(args))
                 }
             
@@ -6094,7 +6094,7 @@
 /// r.expr(1).coerceTo('string').run(conn, callback)
 /// ```
 
-                pub fn coerce_to<T: ToArg>(&self, args: T) -> Client {
+                pub fn coerce_to<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "coerce_to", Some(Type::COERCE_TO), Some(args))
                 }
             
@@ -6164,7 +6164,7 @@
 /// r.json("[1,2,3]").run(conn, callback)
 /// ```
 
-                pub fn json<T: ToArg>(&self, args: T) -> Client {
+                pub fn json<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "json", Some(Type::JSON), Some(args))
                 }
             
@@ -6182,7 +6182,7 @@
 /// '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
 /// ```
 
-                pub fn to_json<T: ToArg>(&self, args: T) -> Client {
+                pub fn to_json<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "to_json", Some(Type::TO_JSON_STRING), Some(args))
                 }
             
@@ -6336,7 +6336,7 @@
 /// 
 /// See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
 
-                pub fn http<T: ToArg>(&self, args: T) -> Client {
+                pub fn http<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "http", Some(Type::HTTP), Some(args))
                 }
             
@@ -6397,7 +6397,7 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn circle<T: ToArg>(&self, args: T) -> Client {
+                pub fn circle<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "circle", Some(Type::CIRCLE), Some(args))
                 }
             
@@ -6425,7 +6425,7 @@
 /// 734.1252496021841
 /// ```
 
-                pub fn distance<T: ToArg>(&self, args: T) -> Client {
+                pub fn distance<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "distance", Some(Type::DISTANCE), Some(args))
                 }
             
@@ -6486,7 +6486,7 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn geojson<T: ToArg>(&self, args: T) -> Client {
+                pub fn geojson<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "geojson", Some(Type::GEOJSON), Some(args))
                 }
             
@@ -6524,7 +6524,7 @@
 /// r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
 /// ```
 
-                pub fn get_intersecting<T: ToArg>(&self, args: T) -> Client {
+                pub fn get_intersecting<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "get_intersecting", Some(Type::GET_INTERSECTING), Some(args))
                 }
             
@@ -6559,7 +6559,7 @@
 /// [c]:  /api/javascript/circle/
 /// {% endinfobox %}
 
-                pub fn get_nearest<T: ToArg>(&self, args: T) -> Client {
+                pub fn get_nearest<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "get_nearest", Some(Type::GET_NEAREST), Some(args))
                 }
             
@@ -6599,7 +6599,7 @@
 ///     includes(circle1).run(conn, callback);
 /// ```
 
-                pub fn includes<T: ToArg>(&self, args: T) -> Client {
+                pub fn includes<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "includes", Some(Type::INCLUDES), Some(args))
                 }
             
@@ -6630,7 +6630,7 @@
 /// The `intersects` command cannot take advantage of a geospatial [secondary index](/docs/secondary-indexes/javascript). If you're working with large data sets, you should consider using an index and the [getIntersecting](/api/javascript/get_intersecting) command instead of `intersects`.
 /// {% endinfobox %}
 
-                pub fn intersects<T: ToArg>(&self, args: T) -> Client {
+                pub fn intersects<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "intersects", Some(Type::INTERSECTS), Some(args))
                 }
             
@@ -6671,7 +6671,7 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn line<T: ToArg>(&self, args: T) -> Client {
+                pub fn line<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "line", Some(Type::LINE), Some(args))
                 }
             
@@ -6691,7 +6691,7 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn point<T: ToArg>(&self, args: T) -> Client {
+                pub fn point<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "point", Some(Type::POINT), Some(args))
                 }
             
@@ -6742,7 +6742,7 @@
 /// }).run(conn, callback);
 /// ```
 
-                pub fn polygon<T: ToArg>(&self, args: T) -> Client {
+                pub fn polygon<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "polygon", Some(Type::POLYGON), Some(args))
                 }
             
@@ -6771,7 +6771,7 @@
 /// outerPolygon.polygonSub(innerPolygon).run(conn, callback);
 /// ```
 
-                pub fn polygon_sub<T: ToArg>(&self, args: T) -> Client {
+                pub fn polygon_sub<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "polygon_sub", Some(Type::POLYGON_SUB), Some(args))
                 }
             
@@ -7220,7 +7220,7 @@
 /// ).run(conn, callback);
 /// ```
 
-                pub fn reconfigure<T: ToArg>(&self, args: T) -> Client {
+                pub fn reconfigure<T: IntoArg>(&self, args: T) -> Client {
                     util::make_cmd(self, "reconfigure", Some(Type::RECONFIGURE), Some(args))
                 }
             

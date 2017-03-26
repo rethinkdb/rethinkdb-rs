@@ -7,7 +7,7 @@ use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use std::cmp::Ordering;
 
-use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, ToArg};
+use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, IntoArg};
 use ql2::proto::{Term, Datum};
 use reql_io::r2d2;
 use reql_io::ordermap::OrderMap;
@@ -21,9 +21,9 @@ lazy_static! {
     static ref POOL: RwLock<OrderMap<Connection, r2d2::Pool<SessionManager>>> = RwLock::new(OrderMap::new());
 }
 
-pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Connection> {
+pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
     let conn = Connection(Uuid::new_v4());
-    let arg = args.to_arg();
+    let arg = args.into_arg();
     let logger = client.logger.new(o!("command" => "connect"));
     let query = format!("{}.connect({})", client.query, arg.string);
     debug!(logger, "{}", query);
@@ -38,7 +38,7 @@ pub fn connect<A: ToArg>(client: &Client, args: A) -> Result<Connection> {
     Ok(conn)
 }
 
-pub fn run<A: ToArg>(client: &Client, args: A) -> Result<Response> {
+pub fn run<A: IntoArg>(client: &Client, args: A) -> Result<Response> {
     unimplemented!();
 }
 

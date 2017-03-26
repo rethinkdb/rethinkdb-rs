@@ -55,7 +55,7 @@ use slog::Logger;
 /// The result of any command that can potentially return an error
 pub type Result<T> = ::std::result::Result<T, Error>;
 
-/// The return type of `ToArg::to_arg`
+/// The return type of `IntoArg::into_arg`
 pub struct Arg {
     string: String,
     term: Term,
@@ -142,6 +142,6 @@ pub struct Args {
 }
 
 /// The argument that is passed to any command
-pub trait ToArg {
-    fn to_arg(self) -> Arg;
+pub trait IntoArg {
+    fn into_arg(self) -> Arg;
 }

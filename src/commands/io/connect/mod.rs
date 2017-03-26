@@ -4,7 +4,7 @@ mod pool;
 use std::net::{ToSocketAddrs, SocketAddr, IpAddr, Ipv4Addr};
 use std::{fmt, io, result};
 
-use {Client, Server, Session, ToArg, Connection, SessionManager, Result};
+use {Client, Server, Session, IntoArg, Connection, SessionManager, Result};
 use super::io_error;
 use errors::*;
 use reql_io::r2d2;
@@ -13,7 +13,7 @@ use reql_io::tokio_core::io::{Codec, EasyBuf};
 use reql_io::byteorder::{LittleEndian, ByteOrder};
 
 impl Connect for Client {
-    fn connect<T: ToArg>(&self, args: T) -> Result<Connection> {
+    fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {
         let logger = self.logger.new(o!("command" => "connect"));
         let query = format!("{}.connect({:?}, &handle)", self.query, cfg);
         debug!(logger, "{}", query);

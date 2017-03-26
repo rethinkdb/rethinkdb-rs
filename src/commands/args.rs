@@ -1,12 +1,12 @@
-use {Client, Connection, ToArg, Arg, Args};
+use {Client, Connection, IntoArg, Arg, Args};
 use types::FromJson;
 use serde_json::value::Value;
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 #[cfg(feature = "with_io")]
 use reql_io::tokio_core::reactor::Remote;
 
-impl ToArg for Client {
-    fn to_arg(self) -> Arg {
+impl IntoArg for Client {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.query,
             term: self.term,
@@ -16,8 +16,8 @@ impl ToArg for Client {
     }
 }
 
-impl ToArg for Args {
-    fn to_arg(self) -> Arg {
+impl IntoArg for Args {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.string,
             term: self.term,
@@ -27,8 +27,8 @@ impl ToArg for Args {
     }
 }
 
-impl ToArg for Term {
-    fn to_arg(self) -> Arg {
+impl IntoArg for Term {
+    fn into_arg(self) -> Arg {
         Arg {
             string: String::new(),
             term: self,
@@ -38,8 +38,8 @@ impl ToArg for Term {
     }
 }
 
-impl ToArg for String {
-    fn to_arg(self) -> Arg {
+impl IntoArg for String {
+    fn into_arg(self) -> Arg {
         Arg {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
@@ -49,8 +49,8 @@ impl ToArg for String {
     }
 }
 
-impl ToArg for char {
-    fn to_arg(self) -> Arg {
+impl IntoArg for char {
+    fn into_arg(self) -> Arg {
         Arg {
             string: format!("'{}'", self),
             term: Term::from_json(self),
@@ -60,8 +60,8 @@ impl ToArg for char {
     }
 }
 
-impl<'a> ToArg for &'a String {
-    fn to_arg(self) -> Arg {
+impl<'a> IntoArg for &'a String {
+    fn into_arg(self) -> Arg {
         Arg {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
@@ -71,8 +71,8 @@ impl<'a> ToArg for &'a String {
     }
 }
 
-impl<'a> ToArg for &'a str {
-    fn to_arg(self) -> Arg {
+impl<'a> IntoArg for &'a str {
+    fn into_arg(self) -> Arg {
         Arg {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
@@ -82,8 +82,8 @@ impl<'a> ToArg for &'a str {
     }
 }
 
-impl ToArg for f32 {
-    fn to_arg(self) -> Arg {
+impl IntoArg for f32 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -93,8 +93,8 @@ impl ToArg for f32 {
     }
 }
 
-impl ToArg for i32 {
-    fn to_arg(self) -> Arg {
+impl IntoArg for i32 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -104,8 +104,8 @@ impl ToArg for i32 {
     }
 }
 
-impl ToArg for u32 {
-    fn to_arg(self) -> Arg {
+impl IntoArg for u32 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -115,8 +115,8 @@ impl ToArg for u32 {
     }
 }
 
-impl ToArg for f64 {
-    fn to_arg(self) -> Arg {
+impl IntoArg for f64 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -126,8 +126,8 @@ impl ToArg for f64 {
     }
 }
 
-impl ToArg for i64 {
-    fn to_arg(self) -> Arg {
+impl IntoArg for i64 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -137,8 +137,8 @@ impl ToArg for i64 {
     }
 }
 
-impl ToArg for u64 {
-    fn to_arg(self) -> Arg {
+impl IntoArg for u64 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -148,8 +148,8 @@ impl ToArg for u64 {
     }
 }
 
-impl ToArg for bool {
-    fn to_arg(self) -> Arg {
+impl IntoArg for bool {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -159,8 +159,8 @@ impl ToArg for bool {
     }
 }
 
-impl ToArg for Value {
-    fn to_arg(self) -> Arg {
+impl IntoArg for Value {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -171,8 +171,8 @@ impl ToArg for Value {
 }
 
 #[cfg(feature = "with_io")]
-impl ToArg for &'static Connection {
-    fn to_arg(self) -> Arg {
+impl IntoArg for &'static Connection {
+    fn into_arg(self) -> Arg {
         Arg {
             string: String::new(),
             term: Term::new(),
@@ -183,8 +183,8 @@ impl ToArg for &'static Connection {
 }
 
 #[cfg(feature = "with_io")]
-impl ToArg for Remote {
-    fn to_arg(self) -> Arg {
+impl IntoArg for Remote {
+    fn into_arg(self) -> Arg {
         Arg {
             string: String::from("core.remote()"),
             term: Term::new(),
@@ -197,7 +197,7 @@ impl ToArg for Remote {
 impl Arg {
     /// Create a new command argument
     ///
-    /// This is the return type of the `ToArg` trait. You need to
+    /// This is the return type of the `IntoArg` trait. You need to
     /// use `Arg::new` to create an argument when implementing that
     /// trait for any additional types that you want to pass to ReQL
     /// commands.
@@ -265,9 +265,9 @@ impl Args {
     }
 
     #[doc(hidden)]
-    pub fn create_term_pair<T: ::ToArg>(key: &str, val: T) -> TermPair {
+    pub fn create_term_pair<T: ::IntoArg>(key: &str, val: T) -> TermPair {
         let mut temp = Term::new();
-        temp.mut_args().push(val.to_arg().term);
+        temp.mut_args().push(val.into_arg().term);
         let mut temp_pair = TermPair::new();
         temp_pair.set_key(key.into());
         temp_pair.set_val(temp);

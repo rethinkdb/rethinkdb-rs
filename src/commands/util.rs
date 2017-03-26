@@ -1,4 +1,4 @@
-use {Client, ToArg, slog};
+use {Client, IntoArg, slog};
 use ql2::proto::Term;
 use protobuf::repeated::RepeatedField;
 use ql2::proto::Term_TermType;
@@ -11,7 +11,7 @@ pub fn new_client() -> Client {
     }
 }
 
-pub fn make_cmd<A: ToArg>(client: &Client,
+pub fn make_cmd<A: IntoArg>(client: &Client,
                           name: &'static str,
                           cmd_type: Option<Term_TermType>,
                           args: Option<A>)
@@ -29,7 +29,7 @@ pub fn make_cmd<A: ToArg>(client: &Client,
     cmd.term = term;
     match args {
         Some(args) => {
-            let arg = args.to_arg();
+            let arg = args.into_arg();
             with_args!(cmd, arg);
             cmd.query = format!("{}.{}({})", client.query, name, arg.string);
         }
@@ -48,8 +48,8 @@ pub fn with_logger(client: &Client, logger: slog::Logger) -> Client {
     cmd
 }
 
-pub fn with_args<A: ToArg>(client: &Client, args: A) -> Client {
-    let args = args.to_arg();
+pub fn with_args<A: IntoArg>(client: &Client, args: A) -> Client {
+    let args = args.into_arg();
     let mut cmd = client.clone();
     cmd.query += &format!(".with_args({})", args.string);
     let logger = cmd.logger.new(o!("command" => "with_args"));
