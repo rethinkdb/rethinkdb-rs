@@ -1,5 +1,5 @@
 mod pool;
-//mod handshake;
+mod handshake;
 
 use std::{io, error};
 use std::net::ToSocketAddrs;

@@ -15,5 +15,5 @@ tokio-core = "0.1"
 futures = "0.1"
 rand = "0.3"
 parking_lot = "0.3"
-uuid = { version = "0.4", features = ["use_std", "v4"] }
+uuid = { version = "0.4", features = ["use_std", "v4", "serde"] }
 ordermap = "0.2"

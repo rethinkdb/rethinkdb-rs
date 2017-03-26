@@ -3,6 +3,11 @@
 extern crate ql2;
 extern crate protobuf;
 extern crate serde_json;
+#[cfg(feature = "with_io")]
+#[macro_use]
+extern crate serde_derive;
+#[cfg(feature = "with_io")]
+extern crate serde;
 #[macro_use]
 extern crate derive_error;
 #[cfg(feature = "with_io")]
@@ -67,7 +72,6 @@ pub struct Response;
 struct Session {
     id: u64,
     broken: bool,
-    server: Server,
     stream: TcpStream,
     logger: Logger,
 }

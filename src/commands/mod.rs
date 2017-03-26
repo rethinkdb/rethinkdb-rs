@@ -3,6 +3,7 @@
             // AUTO GENERATED
             // Manual changes made to this file will be overwritten by the build script.
             // Edit `build/commands.rs` instead...
+            // @generated
 
             #[cfg(feature = "with_io")]
             mod io;
