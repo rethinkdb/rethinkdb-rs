@@ -90,6 +90,12 @@ struct Config {
 struct SessionManager(Connection);
 
 /// The connection pool returned by the `connect` command
+///
+/// This connection pool is designed to make it very easy
+/// to pass around. It doesn't carry the actual connections
+/// themselves. Instead it is simply a reference to the
+/// actual underlying connection pool. As such, you can
+/// `clone` or `copy` it.
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Connection(Uuid);
