@@ -43,7 +43,7 @@ impl<'a> Args<'a> {
 
         self.tokens = quote!({
             #[allow(unused_imports)]
-            use reql::{ToArg, Args, Term};
+            use reql::{IntoArg, Args, Term};
 
             let mut args = Args::new();
             args.set_string(#args);
@@ -94,10 +94,13 @@ impl<'a> Args<'a> {
                 continue;
             }
             if is_key {
-                key = {
-                    let mut tokens = Tokens::new();
-                    tree.to_tokens(&mut tokens);
-                    tokens.to_string()
+                key = match tree {
+                    TokenTree::Token(Token::Literal(syn::Lit::Str(key, _))) => key,
+                    tree => {
+                        let mut tokens = Tokens::new();
+                        tree.to_tokens(&mut tokens);
+                        tokens.to_string()
+                    }
                 };
                 continue;
             }
@@ -189,7 +192,7 @@ impl Group {
                 for token in tt {
                     token.to_tokens(&mut expr);
                 }
-                quote!(#var.add_arg(#expr.to_arg());)
+                quote!(#var.add_arg(#expr.into_arg());)
                     .to_tokens(&mut tokens);
             }
             Group::Closure(_closure) => {
@@ -202,7 +205,7 @@ impl Group {
                         .to_tokens(&mut list);
                     group.tokenise("list_val", false)
                         .to_tokens(&mut list);
-                    quote!(list_arg.mut_args().push(list_val.to_arg().term());)
+                    quote!(list_arg.mut_args().push(list_val.into_arg().term());)
                         .to_tokens(&mut list);
                 }
                 quote!(#var.mut_term().mut_args().push(list_arg);)
