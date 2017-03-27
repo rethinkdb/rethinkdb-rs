@@ -22,8 +22,10 @@ lazy_static! {
 }
 
 pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
-    let conn = Connection(Uuid::new_v4());
+    bail_result!(client);
     let arg = args.into_arg();
+    bail_result!(arg);
+    let conn = Connection(Uuid::new_v4());
     let logger = client.logger.new(o!("command" => "connect"));
     let query = format!("{}.connect({})", client.query, arg.string);
     debug!(logger, "{}", query);

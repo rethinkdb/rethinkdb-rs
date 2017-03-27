@@ -1,5 +1,7 @@
 //! The ReQL data types
 
+use Result;
+use errors::DriverError;
 use ql2::proto::{Term, Datum, Term_TermType as TermType, Term_AssocPair as TermPair,
                  Datum_DatumType as DatumType, Datum_AssocPair as DatumPair};
 use serde_json::value::{Value, ToJson};
@@ -7,68 +9,60 @@ use protobuf::repeated::RepeatedField;
 use protobuf::ProtobufEnum;
 
 pub trait FromJson {
-    fn from_json<T: ToJson>(t: T) -> Term {
+    fn from_json<T: ToJson>(t: T) -> Result<Term> {
         // Datum
         let mut datum = Datum::new();
-        match t.to_json() {
-            Ok(val) => {
-                match val {
-                    Value::String(val) => {
-                        datum.set_field_type(DatumType::R_STR);
-                        datum.set_r_str(val);
+        match t.to_json()? {
+            Value::String(val) => {
+                datum.set_field_type(DatumType::R_STR);
+                datum.set_r_str(val);
+            }
+            Value::Bool(val) => {
+                datum.set_field_type(DatumType::R_BOOL);
+                datum.set_r_bool(val);
+            }
+            Value::Number(val) => {
+                match val.as_f64() {
+                    Some(val) => {
+                        datum.set_field_type(DatumType::R_NUM);
+                        datum.set_r_num(val);
                     }
-                    Value::Bool(val) => {
-                        datum.set_field_type(DatumType::R_BOOL);
-                        datum.set_r_bool(val);
-                    }
-                    Value::Number(val) => {
-                        match val.as_f64() {
-                            Some(val) => {
-                                datum.set_field_type(DatumType::R_NUM);
-                                datum.set_r_num(val);
-                            }
-                            None => {
-                                // @TODO: handle this at compile time
-                                unreachable!();
-                            }
-                        }
-                    }
-                    Value::Array(val) => {
-                        datum.set_field_type(DatumType::R_ARRAY);
-                        let args: Vec<Datum> = val.iter()
-                            .map(|a| Term::from_json(a).take_datum())
-                            .collect();
-                        let arr = RepeatedField::from_vec(args);
-                        datum.set_r_array(arr);
-                    }
-                    Value::Object(val) => {
-                        datum.set_field_type(DatumType::R_OBJECT);
-                        let args: Vec<DatumPair> = val.into_iter()
-                            .map(|(name, arg)| {
-                                let mut obj = DatumPair::new();
-                                obj.set_key(name.into());
-                                obj.set_val(Term::from_json(arg).take_datum());
-                                obj
-                            })
-                            .collect();
-                        let obj = RepeatedField::from_vec(args);
-                        datum.set_r_object(obj);
-                    }
-                    Value::Null => {
-                        datum.set_field_type(DatumType::R_NULL);
+                    None => {
+                        let msg = String::from("Value::Number could not be coerced to f64");
+                        return Err(DriverError::Other(msg))?;
                     }
                 }
             }
-            Err(_) => {
-                // @TODO handle this at compile time
-                unreachable!();
+            Value::Array(val) => {
+                datum.set_field_type(DatumType::R_ARRAY);
+                let mut args = Vec::new();
+                for a in val.iter() {
+                    args.push(Term::from_json(a)?.take_datum());
+                }
+                let arr = RepeatedField::from_vec(args);
+                datum.set_r_array(arr);
+            }
+            Value::Object(val) => {
+                datum.set_field_type(DatumType::R_OBJECT);
+                let mut args = Vec::new();
+                for (name, arg) in val.into_iter() {
+                    let mut obj = DatumPair::new();
+                    obj.set_key(name.into());
+                    obj.set_val(Term::from_json(arg)?.take_datum());
+                    args.push(obj);
+                }
+                let obj = RepeatedField::from_vec(args);
+                datum.set_r_object(obj);
+            }
+            Value::Null => {
+                datum.set_field_type(DatumType::R_NULL);
             }
         }
         // Term
         let mut term = Term::new();
         term.set_field_type(TermType::DATUM);
         term.set_datum(datum);
-        term
+        Ok(term)
     }
 }
 

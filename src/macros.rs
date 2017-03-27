@@ -14,6 +14,28 @@ macro_rules! with_args {
     }}
 }
 
+macro_rules! bail_result {
+    ($qry:ident) => {
+        if let ::QueryError::Some(ref qry) = $qry.error {
+            unimplemented!();
+            //return Err(qry.clone().1)?;
+        }
+    }
+}
+
+macro_rules! bail_client {
+    ($qry:ident, $cli:ident) => {
+        if let ::QueryError::Some(_) = $cli.error {
+            return $cli.clone();
+        }
+        if let ::QueryError::Some(ref qry) = $qry.error {
+            let mut cmd = $cli.clone();
+            cmd.error = ::QueryError::Some(qry.clone());
+            return cmd;
+        }
+    }
+}
+
 /// Splice an array of arguments into another term
 ///
 /// `args` is a macro that’s used to splice a number of arguments into another term. This is

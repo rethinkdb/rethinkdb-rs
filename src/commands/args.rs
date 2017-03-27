@@ -1,4 +1,4 @@
-use {Client, Connection, IntoArg, Arg, Args};
+use {Client, Connection, QueryError, IntoArg, Arg, Args};
 use types::FromJson;
 use serde_json::value::Value;
 use ql2::proto::{Term, Term_AssocPair as TermPair};
@@ -10,6 +10,7 @@ impl IntoArg for Client {
         Arg {
             string: self.query,
             term: self.term,
+            error: self.error,
             pool: None,
             remote: None,
         }
@@ -21,6 +22,7 @@ impl IntoArg for Args {
         Arg {
             string: self.string,
             term: self.term,
+            error: self.error,
             pool: self.pool,
             remote: self.remote,
         }
@@ -32,6 +34,7 @@ impl IntoArg for Term {
         Arg {
             string: String::new(),
             term: self,
+            error: QueryError::None,
             pool: None,
             remote: None,
         }
@@ -40,9 +43,16 @@ impl IntoArg for Term {
 
 impl IntoArg for String {
     fn into_arg(self) -> Arg {
+        let string = format!(r#""{}""#, self);
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
-            string: format!(r#""{}""#, self),
-            term: Term::from_json(self),
+            string: string,
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -51,9 +61,15 @@ impl IntoArg for String {
 
 impl IntoArg for char {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: format!("'{}'", self),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -62,9 +78,15 @@ impl IntoArg for char {
 
 impl<'a> IntoArg for &'a String {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: format!(r#""{}""#, self),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -73,9 +95,15 @@ impl<'a> IntoArg for &'a String {
 
 impl<'a> IntoArg for &'a str {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: format!(r#""{}""#, self),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -84,9 +112,15 @@ impl<'a> IntoArg for &'a str {
 
 impl IntoArg for f32 {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: self.to_string(),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -95,9 +129,15 @@ impl IntoArg for f32 {
 
 impl IntoArg for i32 {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: self.to_string(),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -106,9 +146,15 @@ impl IntoArg for i32 {
 
 impl IntoArg for u32 {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: self.to_string(),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -117,9 +163,15 @@ impl IntoArg for u32 {
 
 impl IntoArg for f64 {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: self.to_string(),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -128,9 +180,15 @@ impl IntoArg for f64 {
 
 impl IntoArg for i64 {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: self.to_string(),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -139,9 +197,15 @@ impl IntoArg for i64 {
 
 impl IntoArg for u64 {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: self.to_string(),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -150,9 +214,15 @@ impl IntoArg for u64 {
 
 impl IntoArg for bool {
     fn into_arg(self) -> Arg {
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
             string: self.to_string(),
-            term: Term::from_json(self),
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -161,9 +231,16 @@ impl IntoArg for bool {
 
 impl IntoArg for Value {
     fn into_arg(self) -> Arg {
+        let string = self.to_string();
+        let (term, error) = match Term::from_json(self) {
+            Ok(term) => (term, QueryError::None),
+            Err(err) => (Term::new(), QueryError::from(err)),
+        };
+
         Arg {
-            string: self.to_string(),
-            term: Term::from_json(self),
+            string: string,
+            term: term,
+            error: error,
             pool: None,
             remote: None,
         }
@@ -176,6 +253,7 @@ impl IntoArg for &'static Connection {
         Arg {
             string: String::new(),
             term: Term::new(),
+            error: QueryError::None,
             pool: Some(*self),
             remote: None,
         }
@@ -188,6 +266,7 @@ impl IntoArg for Remote {
         Arg {
             string: String::from("core.remote()"),
             term: Term::new(),
+            error: QueryError::None,
             pool: None,
             remote: Some(self),
         }
@@ -210,6 +289,7 @@ impl Arg {
         Arg {
             string: as_str.into(),
             term: term,
+            error: QueryError::None,
             pool: None,
             remote: None,
         }
@@ -231,6 +311,7 @@ impl Args {
     pub fn new() -> Args {
         Args {
             term: Term::new(),
+            error: QueryError::None,
             string: String::new(),
             pool: None,
             remote: None,

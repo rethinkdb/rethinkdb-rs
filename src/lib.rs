@@ -38,6 +38,7 @@ pub use ql2::proto::Term;
 
 #[cfg(feature = "with_io")]
 use std::net::SocketAddr;
+use std::sync::Arc;
 
 use errors::Error;
 
@@ -59,6 +60,7 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 pub struct Arg {
     string: String,
     term: Term,
+    error: QueryError,
     pool: Option<Connection>,
     remote: Option<Remote>,
 }
@@ -123,11 +125,18 @@ struct TlsCfg {
     ca_certs: String,
 }
 
+#[derive(Debug, Clone)]
+enum QueryError {
+    Some(Arc<errors::Error>),
+    None,
+}
+
 /// The database cluster client
 #[must_use]
 #[derive(Debug, Clone)]
 pub struct Client {
     term: Term,
+    error: QueryError,
     query: String,
     logger: Logger,
 }
@@ -135,8 +144,9 @@ pub struct Client {
 /// The return type of the `args!()` macro
 #[doc(hidden)]
 pub struct Args {
-    term: Term,
     string: String,
+    term: Term,
+    error: QueryError,
     pool: Option<Connection>,
     remote: Option<Remote>,
 }
@@ -144,4 +154,10 @@ pub struct Args {
 /// The argument that is passed to any command
 pub trait IntoArg {
     fn into_arg(self) -> Arg;
+}
+
+impl<T: Into<Error>> From<T> for QueryError {
+    fn from(t: T) -> QueryError {
+        QueryError::Some(Arc::new(t.into()))
+    }
 }
