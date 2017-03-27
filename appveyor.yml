@@ -116,12 +116,12 @@ install:
   - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
   - rustc -vV
   - cargo -vV
-  - curl -L https://download.rethinkdb.com/windows/rethinkdb-2.3.5.zip > rethinkdb.zip
-  - unzip rethinkdb.zip -d rethinkdb
-  - ps: $RethinkProcess = Start-Process rethinkdb/rethinkdb.exe -PassThru
+  #- curl -L https://download.rethinkdb.com/windows/rethinkdb-2.3.5.zip > rethinkdb.zip
+  #- unzip rethinkdb.zip -d rethinkdb
+  #- ps: $RethinkProcess = Start-Process rethinkdb/rethinkdb.exe -PassThru
 
-on_finish:
-  - ps: Stop-Process -Id $RethinkProcess.Id
+#on_finish:
+#  - ps: Stop-Process -Id $RethinkProcess.Id
 
 ## Build Script ##
 
@@ -133,4 +133,4 @@ build: false
 #directly or perform other testing commands. Rust will automatically be placed in the PATH
 # environment variable.
 test_script:
-  - cargo test %cargoflags%
+  - cargo test
