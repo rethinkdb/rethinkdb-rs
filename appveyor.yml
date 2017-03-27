@@ -6,14 +6,6 @@
 # Rust needs at least Visual Studio 2013 Appveyor OS for MSVC targets.
 os: Visual Studio 2015
 
-install:
-  - curl -L https://download.rethinkdb.com/windows/rethinkdb-2.3.5.zip > rethinkdb.zip
-  - unzip rethinkdb.zip -d rethinkdb
-  - ps: $RethinkProcess = Start-Process rethinkdb/rethinkdb.exe -PassThru
-
-on_finish:
-  - ps: Stop-Process -Id $RethinkProcess.Id
-
 ## Build Matrix ##
 
 # This configuration will setup a build for each channel & target combination (12 windows
@@ -124,6 +116,12 @@ install:
   - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
   - rustc -vV
   - cargo -vV
+  - curl -L https://download.rethinkdb.com/windows/rethinkdb-2.3.5.zip > rethinkdb.zip
+  - unzip rethinkdb.zip -d rethinkdb
+  - ps: $RethinkProcess = Start-Process rethinkdb/rethinkdb.exe -PassThru
+
+on_finish:
+  - ps: Stop-Process -Id $RethinkProcess.Id
 
 ## Build Script ##
 
