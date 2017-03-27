@@ -41,6 +41,12 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
 }
 
 pub fn run<A: IntoArg>(client: &Client, args: A) -> Result<Response> {
+    bail_result!(client);
+    let arg = args.into_arg();
+    bail_result!(arg);
+    let logger = client.logger.new(o!("command" => "connect"));
+    let query = format!("{}.connect({})", client.query, arg.string);
+    debug!(logger, "{}", query);
     unimplemented!();
 }
 

@@ -17,8 +17,7 @@ macro_rules! with_args {
 macro_rules! bail_result {
     ($qry:ident) => {
         if let ::ErrorOption::Some(ref qry) = $qry.error {
-            unimplemented!();
-            //return Err(qry.clone().1)?;
+            let _arc = qry.into_inner();
         }
     }
 }

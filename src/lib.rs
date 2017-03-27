@@ -22,6 +22,7 @@ extern crate slog;
 extern crate reql_derive;
 #[macro_use]
 extern crate proc_macro_hack;
+extern crate owning_ref;
 
 #[macro_use]
 mod macros;
@@ -40,8 +41,6 @@ pub use ql2::proto::Term;
 use std::net::SocketAddr;
 use std::sync::Arc;
 
-use errors::Error;
-
 #[cfg(feature = "with_io")]
 use std::time::Duration;
 #[cfg(feature = "with_io")]
@@ -51,7 +50,9 @@ use reql_io::uuid::Uuid;
 #[cfg(feature = "with_io")]
 use std::net::TcpStream;
 
+use errors::Error;
 use slog::Logger;
+use owning_ref::ArcRef;
 
 /// The result of any command that can potentially return an error
 pub type Result<T> = ::std::result::Result<T, Error>;
@@ -127,7 +128,7 @@ struct TlsCfg {
 
 #[derive(Debug, Clone)]
 enum ErrorOption {
-    Some(Arc<errors::Error>),
+    Some(ArcRef<errors::Error>),
     None,
 }
 
@@ -158,6 +159,6 @@ pub trait IntoArg {
 
 impl<T: Into<Error>> From<T> for ErrorOption {
     fn from(t: T) -> ErrorOption {
-        ErrorOption::Some(Arc::new(t.into()))
+        ErrorOption::Some(ArcRef::new(Arc::new(t.into())))
     }
 }
