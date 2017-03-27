@@ -18,12 +18,6 @@ Add this crate to your dependencies section:-
 reql = { git = "https://github.com/rust-rethinkdb/reql" }
 ```
 
-Import it in your `main.rs` or `lib.rs`:-
-
-```rust
-#[macro_use] extern crate reql;
-```
-
 Run ReQL commands:-
 
 ```rust
