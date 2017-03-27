@@ -1,4 +1,4 @@
-use {Client, IntoArg, QueryError, slog};
+use {Client, IntoArg, ErrorOption, slog};
 use ql2::proto::Term;
 use protobuf::repeated::RepeatedField;
 use ql2::proto::Term_TermType;
@@ -6,7 +6,7 @@ use ql2::proto::Term_TermType;
 pub fn new_client() -> Client {
     Client {
         term: Term::new(),
-        error: QueryError::None,
+        error: ErrorOption::None,
         query: String::from("r"),
         logger: slog::Logger::root(slog::Discard, o!()),
     }

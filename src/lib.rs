@@ -60,7 +60,7 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 pub struct Arg {
     string: String,
     term: Term,
-    error: QueryError,
+    error: ErrorOption,
     pool: Option<Connection>,
     remote: Option<Remote>,
 }
@@ -126,7 +126,7 @@ struct TlsCfg {
 }
 
 #[derive(Debug, Clone)]
-enum QueryError {
+enum ErrorOption {
     Some(Arc<errors::Error>),
     None,
 }
@@ -136,7 +136,7 @@ enum QueryError {
 #[derive(Debug, Clone)]
 pub struct Client {
     term: Term,
-    error: QueryError,
+    error: ErrorOption,
     query: String,
     logger: Logger,
 }
@@ -146,7 +146,7 @@ pub struct Client {
 pub struct Args {
     string: String,
     term: Term,
-    error: QueryError,
+    error: ErrorOption,
     pool: Option<Connection>,
     remote: Option<Remote>,
 }
@@ -156,8 +156,8 @@ pub trait IntoArg {
     fn into_arg(self) -> Arg;
 }
 
-impl<T: Into<Error>> From<T> for QueryError {
-    fn from(t: T) -> QueryError {
-        QueryError::Some(Arc::new(t.into()))
+impl<T: Into<Error>> From<T> for ErrorOption {
+    fn from(t: T) -> ErrorOption {
+        ErrorOption::Some(Arc::new(t.into()))
     }
 }
