@@ -6,14 +6,17 @@ use std::sync::mpsc::SendError;
 use serde_json::error::Error as JsonError;
 use protobuf::ProtobufError;
 use serde_json::Value;
+use std::sync::Arc;
 
 /// The most generic error message in ReQL
-#[derive(Debug, Error)]
+#[derive(Debug, Clone, Error)]
 pub enum Error {
     #[error(msg_embedded, non_std, no_from)]
     Compile(String),
-    Runtime(RuntimeError),
-    Driver(DriverError),
+    #[error(non_std, no_from)]
+    Runtime(Arc<RuntimeError>),
+    #[error(non_std, no_from)]
+    Driver(Arc<DriverError>),
 }
 
 /// The parent class of all runtime errors
@@ -75,6 +78,18 @@ pub enum ResponseError {
     Parse(Utf8Error),
     #[error(non_std, no_from)]
     Db(Value),
+}
+
+impl From<DriverError> for Error {
+    fn from(err: DriverError) -> Error {
+        Error::Driver(Arc::new(err))
+    }
+}
+
+impl From<RuntimeError> for Error {
+    fn from(err: RuntimeError) -> Error {
+        Error::Runtime(Arc::new(err))
+    }
 }
 
 impl From<ResponseError> for Error {

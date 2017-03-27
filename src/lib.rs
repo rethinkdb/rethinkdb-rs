@@ -22,7 +22,6 @@ extern crate slog;
 extern crate reql_derive;
 #[macro_use]
 extern crate proc_macro_hack;
-extern crate owning_ref;
 
 #[macro_use]
 mod macros;
@@ -39,7 +38,6 @@ pub use ql2::proto::Term;
 
 #[cfg(feature = "with_io")]
 use std::net::SocketAddr;
-use std::sync::Arc;
 
 #[cfg(feature = "with_io")]
 use std::time::Duration;
@@ -52,12 +50,12 @@ use std::net::TcpStream;
 
 use errors::Error;
 use slog::Logger;
-use owning_ref::ArcRef;
 
 /// The result of any command that can potentially return an error
 pub type Result<T> = ::std::result::Result<T, Error>;
 
 /// The return type of `IntoArg::into_arg`
+#[derive(Clone)]
 pub struct Arg {
     string: String,
     term: Term,
@@ -128,7 +126,7 @@ struct TlsCfg {
 
 #[derive(Debug, Clone)]
 enum ErrorOption {
-    Some(ArcRef<errors::Error>),
+    Some(Error),
     None,
 }
 
@@ -144,6 +142,7 @@ pub struct Client {
 
 /// The return type of the `args!()` macro
 #[doc(hidden)]
+#[derive(Clone)]
 pub struct Args {
     string: String,
     term: Term,
@@ -159,6 +158,6 @@ pub trait IntoArg {
 
 impl<T: Into<Error>> From<T> for ErrorOption {
     fn from(t: T) -> ErrorOption {
-        ErrorOption::Some(ArcRef::new(Arc::new(t.into())))
+        ErrorOption::Some(t.into())
     }
 }

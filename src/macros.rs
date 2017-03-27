@@ -16,8 +16,8 @@ macro_rules! with_args {
 
 macro_rules! bail_result {
     ($qry:ident) => {
-        if let ::ErrorOption::Some(ref qry) = $qry.error {
-            let _arc = qry.into_inner();
+        if let ::ErrorOption::Some(ref error) = $qry.error {
+            return Err(error.clone());
         }
     }
 }
@@ -27,9 +27,9 @@ macro_rules! bail_client {
         if let ::ErrorOption::Some(_) = $cli.error {
             return $cli.clone();
         }
-        if let ::ErrorOption::Some(ref qry) = $qry.error {
+        if let ::ErrorOption::Some(ref error) = $qry.error {
             let mut cmd = $cli.clone();
-            cmd.error = ::ErrorOption::Some(qry.clone());
+            cmd.error = ::ErrorOption::Some(error.clone());
             return cmd;
         }
     }

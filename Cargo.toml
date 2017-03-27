@@ -31,7 +31,6 @@ proc-macro-hack = "0.3"
 reql-derive = { path = "./derive" }
 reql-io = { version = "0.3", path = "./io", optional = true }
 lazy_static = { version = "0.2", optional = true }
-owning_ref = "0.2"
 
 [dev-dependencies]
 slog-term = "1.5"
