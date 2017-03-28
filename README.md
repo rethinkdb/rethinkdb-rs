@@ -28,7 +28,7 @@ use reql::Client;
 fn main() {
     // Create a new ReQL client
     let r = Client::new();
-    // Create a connection pool to your servers
+    // Create a connection pool
     let conn = r.connect(args!({servers: ["localhost"], db: "blog"})).unwrap();
     // Run your ReQL commands
     let heroes = r.table("posts").get_all(args!("review", {index: "category"})).run(&conn).unwrap();
