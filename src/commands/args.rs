@@ -1,9 +1,15 @@
-use {Client, Connection, ErrorOption, IntoArg, Arg, Args};
+use {Client, Connection, ErrorOption, IntoArg, Arg};
 use types::FromJson;
 use serde_json::value::Value;
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 #[cfg(feature = "with_io")]
 use reql_io::tokio_core::reactor::Remote;
+
+impl IntoArg for Arg {
+    fn into_arg(self) -> Arg {
+        self
+    }
+}
 
 impl IntoArg for Client {
     fn into_arg(self) -> Arg {
@@ -13,18 +19,6 @@ impl IntoArg for Client {
             error: self.error,
             pool: None,
             remote: None,
-        }
-    }
-}
-
-impl IntoArg for Args {
-    fn into_arg(self) -> Arg {
-        Arg {
-            string: self.string,
-            term: self.term,
-            error: self.error,
-            pool: self.pool,
-            remote: self.remote,
         }
     }
 }
@@ -285,10 +279,10 @@ impl Arg {
     /// convert your argument to a term and pass it as `term` to this method.
     /// For debugging and logging purposes, this method also requires that you
     /// pass the string representation of your argument i.e. `as_str`.
-    pub fn new(term: Term, as_str: &str) -> Arg {
+    pub fn new() -> Arg {
         Arg {
-            string: as_str.into(),
-            term: term,
+            string: String::new(),
+            term: Term::new(),
             error: ErrorOption::None,
             pool: None,
             remote: None,
@@ -298,29 +292,6 @@ impl Arg {
     #[doc(hidden)]
     pub fn term(self) -> Term {
         self.term
-    }
-
-    #[doc(hidden)]
-    pub fn pool(self) -> Option<Connection> {
-        self.pool
-    }
-}
-
-impl Args {
-    #[doc(hidden)]
-    pub fn new() -> Args {
-        Args {
-            term: Term::new(),
-            error: ErrorOption::None,
-            string: String::new(),
-            pool: None,
-            remote: None,
-        }
-    }
-
-    #[doc(hidden)]
-    pub fn term(&self) -> &Term {
-        &self.term
     }
 
     #[doc(hidden)]

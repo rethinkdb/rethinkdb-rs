@@ -16,6 +16,6 @@ fn main() {
     let r = Client::new().with_logger(logger);
 
     // Create a connection pool
-    //let _pool = r.connect(args!({servers: ["localhost"]})).unwrap();
-    let _pool = r.connect(args!()).unwrap();
+    let _pool = r.connect(args!({servers: ["localhost"]})).unwrap();
+    //let _pool = r.connect(args!()).unwrap();
 }

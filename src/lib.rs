@@ -140,17 +140,6 @@ pub struct Client {
     logger: Logger,
 }
 
-/// The return type of the `args!()` macro
-#[doc(hidden)]
-#[derive(Clone)]
-pub struct Args {
-    string: String,
-    term: Term,
-    error: ErrorOption,
-    pool: Option<Connection>,
-    remote: Option<Remote>,
-}
-
 /// The argument that is passed to any command
 pub trait IntoArg {
     fn into_arg(self) -> Arg;

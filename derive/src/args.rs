@@ -43,9 +43,9 @@ impl<'a> Args<'a> {
 
         self.tokens = quote!({
             #[allow(unused_imports)]
-            use reql::{IntoArg, Args, Term};
+            use reql::{IntoArg, Arg, Term};
 
-            let mut args = Args::new();
+            let mut args = Arg::new();
             args.set_string(#args);
             #body
             args
@@ -201,7 +201,7 @@ impl Group {
             Group::List(tt) => {
                 let mut list = quote!(let mut list_arg = Term::new(););
                 for group in tt {
-                    quote!(let mut list_val = Args::new();)
+                    quote!(let mut list_val = Arg::new();)
                         .to_tokens(&mut list);
                     group.tokenise("list_val", false)
                         .to_tokens(&mut list);
@@ -219,11 +219,11 @@ impl Group {
                         .to_tokens(&mut obj);
                 }
                 for (key, group) in tt {
-                    quote!(let mut obj_val = Args::new();)
+                    quote!(let mut obj_val = Arg::new();)
                         .to_tokens(&mut obj);
                     group.tokenise("obj_val", false)
                         .to_tokens(&mut obj);
-                    quote!(let temp_pair = Args::create_term_pair(#key, obj_val);)
+                    quote!(let temp_pair = Arg::create_term_pair(#key, obj_val);)
                         .to_tokens(&mut obj);
                     if last {
                         quote!(#var.mut_term().mut_optargs().push(temp_pair);)
