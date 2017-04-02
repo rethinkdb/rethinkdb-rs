@@ -16,6 +16,8 @@ fn main() {
     let r = Client::new().with_logger(logger);
 
     // Create a connection pool
-    let _pool = r.connect(args!({servers: ["localhost"]})).unwrap();
-    //let _pool = r.connect(args!()).unwrap();
+    let conn = r.connect(args!({servers: ["localhost"]})).unwrap();
+    
+    // Run the query
+    r.db("test").table_create("blog").run(conn).unwrap();
 }

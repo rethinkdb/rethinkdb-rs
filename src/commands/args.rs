@@ -242,13 +242,13 @@ impl IntoArg for Value {
 }
 
 #[cfg(feature = "with_io")]
-impl IntoArg for &'static Connection {
+impl IntoArg for Connection {
     fn into_arg(self) -> Arg {
         Arg {
-            string: String::new(),
+            string: String::from("conn"),
             term: Term::new(),
             error: ErrorOption::None,
-            pool: Some(*self),
+            pool: Some(self),
             remote: None,
         }
     }

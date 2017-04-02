@@ -44,10 +44,9 @@ pub fn run<A: IntoArg>(client: &Client, args: A) -> Result<Response> {
     bail_result!(client);
     let arg = args.into_arg();
     bail_result!(arg);
-    let logger = client.logger.new(o!("command" => "connect"));
-    let query = format!("{}.connect({})", client.query, arg.string);
+    let logger = client.logger.new(o!("command" => "run"));
+    let query = format!("{}.run({})", client.query, arg.string);
     debug!(logger, "{}", query);
-    unimplemented!();
 }
 
 fn io_error<T>(err: T) -> io::Error
