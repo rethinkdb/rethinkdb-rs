@@ -38,6 +38,8 @@ pub use ql2::proto::Term;
 
 #[cfg(feature = "with_io")]
 use std::net::SocketAddr;
+#[cfg(feature = "with_io")]
+use std::marker::PhantomData;
 
 #[cfg(feature = "with_io")]
 use std::time::Duration;
@@ -47,6 +49,8 @@ use reql_io::tokio_core::reactor::Remote;
 use reql_io::uuid::Uuid;
 #[cfg(feature = "with_io")]
 use std::net::TcpStream;
+#[cfg(feature = "with_io")]
+use serde::Deserialize;
 
 use errors::Error;
 use slog::Logger;
@@ -67,7 +71,12 @@ pub struct Arg {
 /// The response returned by the `run` command
 #[cfg(feature = "with_io")]
 #[derive(Debug, Clone)]
-pub struct Response;
+pub struct Response<T: Deserialize> {
+    term: Term,
+    opts: Term,
+    conn: Connection,
+    resp: PhantomData<T>,
+}
 
 #[cfg(feature = "with_io")]
 struct Session {
@@ -142,7 +151,15 @@ pub struct Client {
 
 /// The argument that is passed to any command
 pub trait IntoArg {
+    /// Converts a supported type into Arg
     fn into_arg(self) -> Arg;
+}
+
+/// Lazily execute a command
+#[cfg(feature = "with_io")]
+pub trait Run<A: IntoArg> {
+    /// Prepare a commmand to be submitted
+    fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>>;
 }
 
 impl<T: Into<Error>> From<T> for ErrorOption {

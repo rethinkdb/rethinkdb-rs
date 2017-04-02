@@ -91,7 +91,7 @@ impl Config {
         .filter(|command| {
             let blacklist = vec![
                 "r", "args", "use", "row", "opt_arg", "array", "object", "close", "reconnect",
-                "noreply_wait", "server", "event_emitter",
+                "noreply_wait", "server", "event_emitter", "run",
             ];
             for cmd in blacklist {
                 if cmd == command.permalink {

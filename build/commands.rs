@@ -42,7 +42,7 @@ impl Commands {
             mod args;
 
             #[cfg(feature = "with_io")]
-            use {{Connection, Response}};
+            use Connection;
             use {{Client, IntoArg, Result}};
             use slog::Logger;
             use ql2::proto::Term_TermType as Type;
@@ -180,14 +180,6 @@ impl Command {
                 #[cfg(feature = "with_io")]
                 pub fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {{
                     io::connect(self, args)
-                }}
-            "#, docs)
-        } else if name == "run" {
-            format!(r#"
-                {}
-                #[cfg(feature = "with_io")]
-                pub fn run<T: IntoArg>(&self, args: T) -> Result<Response> {{
-                    io::run(self, args)
                 }}
             "#, docs)
         } else if name == "expr" {

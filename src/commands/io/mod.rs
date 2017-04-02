@@ -6,8 +6,9 @@ use std::net::ToSocketAddrs;
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use std::cmp::Ordering;
+use std::marker::PhantomData;
 
-use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, IntoArg};
+use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, IntoArg, Run};
 use ql2::proto::{Term, Datum};
 use reql_io::r2d2;
 use reql_io::ordermap::OrderMap;
@@ -15,6 +16,8 @@ use reql_io::uuid::Uuid;
 use reql_io::parking_lot::RwLock;
 use reql_io::tokio_core::reactor::Remote;
 use slog::Logger;
+use serde::Deserialize;
+use errors::*;
 
 lazy_static! {
     static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
@@ -40,13 +43,28 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
     Ok(conn)
 }
 
-pub fn run<A: IntoArg>(client: &Client, args: A) -> Result<Response> {
-    bail_result!(client);
-    let arg = args.into_arg();
-    bail_result!(arg);
-    let logger = client.logger.new(o!("command" => "run"));
-    let query = format!("{}.run({})", client.query, arg.string);
-    debug!(logger, "{}", query);
+impl<A: IntoArg> Run<A> for Client {
+    fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>> {
+        bail_result!(self);
+        let arg = args.into_arg();
+        bail_result!(arg);
+        let logger = self.logger.new(o!("command" => "run"));
+        let query = format!("{}.run({})", self.query, arg.string);
+        debug!(logger, "{}", query);
+        let conn = match arg.pool {
+            Some(pool) => pool,
+            None => {
+                let msg = String::from("`run` requires a connection");
+                return Err(DriverError::Other(msg))?;
+            }
+        };
+        Ok(Response {
+            term: self.term.clone(),
+            opts: arg.term,
+            conn: conn,
+            resp: PhantomData,
+        })
+    }
 }
 
 fn io_error<T>(err: T) -> io::Error
