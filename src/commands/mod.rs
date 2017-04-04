@@ -5,12 +5,12 @@
             // Edit `build/commands.rs` instead...
             // @generated
 
-            #[cfg(feature = "with_io")]
+            #[cfg(feature = "with-io")]
             mod io;
             mod util;
             mod args;
 
-            #[cfg(feature = "with_io")]
+            #[cfg(feature = "with-io")]
             use Connection;
             use {Client, IntoArg, Result};
             use slog::Logger;
@@ -205,7 +205,7 @@
 /// });
 /// ```
 
-                #[cfg(feature = "with_io")]
+                #[cfg(feature = "with-io")]
                 pub fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {
                     io::connect(self, args)
                 }

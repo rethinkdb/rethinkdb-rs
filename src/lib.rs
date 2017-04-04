@@ -3,14 +3,14 @@
 extern crate ql2;
 extern crate protobuf;
 extern crate serde_json;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 #[macro_use]
 extern crate serde_derive;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate serde;
 #[macro_use]
 extern crate derive_error;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
@@ -20,23 +20,23 @@ extern crate slog;
 extern crate reql_derive;
 #[macro_use]
 extern crate proc_macro_hack;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate r2d2;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate scram;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate tokio_core;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate byteorder;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate futures;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate parking_lot;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate uuid;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate ordermap;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 extern crate bufstream;
 
 #[macro_use]
@@ -52,20 +52,20 @@ pub use reql_derive::*;
 #[doc(hidden)]
 pub use ql2::proto::Term;
 
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 use std::net::SocketAddr;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 use std::marker::PhantomData;
 
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 use std::time::Duration;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 use tokio_core::reactor::Remote;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 use uuid::Uuid;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 use std::net::TcpStream;
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 use serde::Deserialize;
 
 use errors::Error;
@@ -84,7 +84,7 @@ pub struct Arg {
 }
 
 /// The response returned by the `run` command
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 #[derive(Debug, Clone)]
 pub struct Response<T: Deserialize> {
     term: Term,
@@ -93,7 +93,7 @@ pub struct Response<T: Deserialize> {
     resp: PhantomData<T>,
 }
 
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 struct Session {
     id: u64,
     broken: bool,
@@ -101,7 +101,7 @@ struct Session {
     logger: Logger,
 }
 
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 #[derive(Clone)]
 struct Config {
     cluster: Vec<Server>,
@@ -110,7 +110,7 @@ struct Config {
     logger: Logger,
 }
 
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 #[derive(Debug, Clone, Copy)]
 struct SessionManager(Connection);
 
@@ -121,18 +121,18 @@ struct SessionManager(Connection);
 /// themselves. Instead it is simply a reference to the
 /// actual underlying connection pool. As such, you can
 /// `clone` or `copy` it.
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Connection(Uuid);
 
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 #[derive(Debug, Clone, Eq)]
 struct Server {
     addresses: Vec<SocketAddr>,
     latency: Duration,
 }
 
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 #[derive(Debug, Clone)]
 struct Opts {
     db: String,
@@ -142,7 +142,7 @@ struct Opts {
     tls: Option<TlsCfg>,
 }
 
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 #[derive(Debug, Clone)]
 struct TlsCfg {
     ca_certs: String,
@@ -164,7 +164,7 @@ pub trait IntoArg {
 }
 
 /// Lazily execute a command
-#[cfg(feature = "with_io")]
+#[cfg(feature = "with-io")]
 pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
     fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>>;

@@ -16,8 +16,8 @@ travis-ci = { repository = "rust-rethinkdb/reql" }
 appveyor = { repository = "rust-rethinkdb/reql" }
 
 [features]
-default = ["with_io"]
-with_io = ["lazy_static", "serde_derive", "r2d2", "byteorder",
+default = ["with-io"]
+with-io = ["lazy_static", "serde_derive", "r2d2", "byteorder",
 	"bufstream", "scram", "tokio-core", "futures",
 	"parking_lot", "uuid", "ordermap"]
 
