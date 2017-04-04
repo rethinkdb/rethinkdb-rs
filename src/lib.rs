@@ -62,8 +62,7 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 #[derive(Clone)]
 pub struct Arg {
     string: String,
-    term: Term,
-    error: ErrorOption,
+    term: Result<Term>,
     pool: Option<Connection>,
     remote: Option<Remote>,
 }
@@ -133,18 +132,11 @@ struct TlsCfg {
     ca_certs: String,
 }
 
-#[derive(Debug, Clone)]
-enum ErrorOption {
-    Some(Error),
-    None,
-}
-
 /// The database cluster client
 #[must_use]
 #[derive(Debug, Clone)]
 pub struct Client {
-    term: Term,
-    error: ErrorOption,
+    term: Result<Term>,
     query: String,
     logger: Logger,
 }
@@ -160,10 +152,4 @@ pub trait IntoArg {
 pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
     fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>>;
-}
-
-impl<T: Into<Error>> From<T> for ErrorOption {
-    fn from(t: T) -> ErrorOption {
-        ErrorOption::Some(t.into())
-    }
 }

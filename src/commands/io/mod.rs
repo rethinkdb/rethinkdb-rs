@@ -25,15 +25,17 @@ lazy_static! {
 }
 
 pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
-    bail_result!(client);
+    if let Err(ref error) = client.term {
+        return Err(error.clone());
+    }
     let arg = args.into_arg();
-    bail_result!(arg);
+    let aterm = arg.term?;
     let conn = Connection(Uuid::new_v4());
     let logger = client.logger.new(o!("command" => "connect"));
     let query = format!("{}.connect({})", client.query, arg.string);
     debug!(logger, "{}", query);
     info!(logger, "creating connection pool...");
-    conn.set_config(arg.term, arg.remote, logger.clone())?;
+    conn.set_config(aterm, arg.remote, logger.clone())?;
     conn.maintain();
     let config = r2d2::Config::default();
     let session = SessionManager(conn);
@@ -45,9 +47,12 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
 
 impl<A: IntoArg> Run<A> for Client {
     fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>> {
-        bail_result!(self);
+        let cterm = match self.term {
+            Ok(ref term) => term.clone(),
+            Err(ref error) => { return Err(error.clone()); }
+        };
         let arg = args.into_arg();
-        bail_result!(arg);
+        let aterm = arg.term?;
         let logger = self.logger.new(o!("command" => "run"));
         let query = format!("{}.run({})", self.query, arg.string);
         debug!(logger, "{}", query);
@@ -59,8 +64,8 @@ impl<A: IntoArg> Run<A> for Client {
             }
         };
         Ok(Response {
-            term: self.term.clone(),
-            opts: arg.term,
+            term: cterm,
+            opts: aterm,
             conn: conn,
             resp: PhantomData,
         })

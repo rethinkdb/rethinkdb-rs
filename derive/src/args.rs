@@ -199,23 +199,23 @@ impl Group {
                 unimplemented!();
             }
             Group::List(tt) => {
-                let mut list = quote!(let mut list_arg = Term::new(););
+                let mut list = quote!(let mut list_arg = Arg::new(););
                 for group in tt {
                     quote!(let mut list_val = Arg::new();)
                         .to_tokens(&mut list);
                     group.tokenise("list_val", false)
                         .to_tokens(&mut list);
-                    quote!(list_arg.mut_args().push(list_val.into_arg().term());)
+                    quote!(list_arg.add_arg(list_val);)
                         .to_tokens(&mut list);
                 }
-                quote!(#var.mut_term().mut_args().push(list_arg);)
+                quote!(#var.add_arg(list_arg);)
                         .to_tokens(&mut list);
                 list.to_tokens(&mut tokens);
             }
             Group::Object(tt) => {
                 let mut obj = Tokens::new();
                 if !last {
-                    quote!(let mut obj_arg = Term::new();)
+                    quote!(let mut obj_arg = Arg::new();)
                         .to_tokens(&mut obj);
                 }
                 for (key, group) in tt {
@@ -223,18 +223,24 @@ impl Group {
                         .to_tokens(&mut obj);
                     group.tokenise("obj_val", false)
                         .to_tokens(&mut obj);
-                    quote!(let temp_pair = Arg::create_term_pair(#key, obj_val);)
-                        .to_tokens(&mut obj);
                     if last {
-                        quote!(#var.mut_term().mut_optargs().push(temp_pair);)
-                            .to_tokens(&mut obj);
+                        quote!(
+                            match Arg::create_term_pair(#key, obj_val) {
+                                Ok(temp_pair) => #var.add_opt(temp_pair),
+                                Err(error) => #var.set_term(Err(error)),
+                            })
+                        .to_tokens(&mut obj);
                     } else {
-                        quote!(obj_arg.mut_optargs().push(temp_pair);)
-                            .to_tokens(&mut obj);
+                        quote!(
+                            match Arg::create_term_pair(#key, obj_val) {
+                                Ok(temp_pair) => obj_arg.add_opt(temp_pair),
+                                Err(error) => obj_arg.set_term(Err(error)),
+                            })
+                        .to_tokens(&mut obj);
                     }
                 }
                 if !last {
-                    quote!(#var.mut_term().mut_args().push(obj_arg);)
+                    quote!(#var.add_arg(obj_arg);)
                         .to_tokens(&mut obj);
                 }
                 obj.to_tokens(&mut tokens);
