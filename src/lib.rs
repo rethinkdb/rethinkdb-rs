@@ -13,8 +13,6 @@ extern crate derive_error;
 #[cfg(feature = "with_io")]
 #[macro_use]
 extern crate lazy_static;
-#[cfg(feature = "with_io")]
-extern crate reql_io;
 #[macro_use]
 extern crate slog;
 #[macro_use]
@@ -22,6 +20,24 @@ extern crate slog;
 extern crate reql_derive;
 #[macro_use]
 extern crate proc_macro_hack;
+#[cfg(feature = "with_io")]
+extern crate r2d2;
+#[cfg(feature = "with_io")]
+extern crate scram;
+#[cfg(feature = "with_io")]
+extern crate tokio_core;
+#[cfg(feature = "with_io")]
+extern crate byteorder;
+#[cfg(feature = "with_io")]
+extern crate futures;
+#[cfg(feature = "with_io")]
+extern crate parking_lot;
+#[cfg(feature = "with_io")]
+extern crate uuid;
+#[cfg(feature = "with_io")]
+extern crate ordermap;
+#[cfg(feature = "with_io")]
+extern crate bufstream;
 
 #[macro_use]
 mod macros;
@@ -44,9 +60,9 @@ use std::marker::PhantomData;
 #[cfg(feature = "with_io")]
 use std::time::Duration;
 #[cfg(feature = "with_io")]
-use reql_io::tokio_core::reactor::Remote;
+use tokio_core::reactor::Remote;
 #[cfg(feature = "with_io")]
-use reql_io::uuid::Uuid;
+use uuid::Uuid;
 #[cfg(feature = "with_io")]
 use std::net::TcpStream;
 #[cfg(feature = "with_io")]
@@ -90,7 +106,7 @@ struct Session {
 struct Config {
     cluster: Vec<Server>,
     opts: Opts,
-    remote: Option<Remote>,
+    remote: Remote,
     logger: Logger,
 }
 

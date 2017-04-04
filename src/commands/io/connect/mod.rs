@@ -7,10 +7,10 @@ use std::{fmt, io, result};
 use {Client, Server, Session, IntoArg, Connection, SessionManager, Result};
 use super::io_error;
 use errors::*;
-use reql_io::r2d2;
-use reql_io::tokio_core::reactor::Handle;
-use reql_io::tokio_core::io::{Codec, EasyBuf};
-use reql_io::byteorder::{LittleEndian, ByteOrder};
+use r2d2;
+use tokio_core::reactor::Handle;
+use tokio_core::io::{Codec, EasyBuf};
+use byteorder::{LittleEndian, ByteOrder};
 
 impl Connect for Client {
     fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {

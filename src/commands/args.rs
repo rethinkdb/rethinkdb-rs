@@ -3,7 +3,7 @@ use types::FromJson;
 use serde_json::value::Value;
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 #[cfg(feature = "with_io")]
-use reql_io::tokio_core::reactor::Remote;
+use tokio_core::reactor::{Handle, Remote};
 
 impl IntoArg for Arg {
     fn into_arg(self) -> Arg {
@@ -178,10 +178,22 @@ impl IntoArg for Connection {
 }
 
 #[cfg(feature = "with_io")]
+impl<'a> IntoArg for &'a Handle {
+    fn into_arg(self) -> Arg {
+        Arg {
+            string: String::from("&handle"),
+            term: Ok(Term::new()),
+            pool: None,
+            remote: Some(self.remote().clone()),
+        }
+    }
+}
+
+#[cfg(feature = "with_io")]
 impl IntoArg for Remote {
     fn into_arg(self) -> Arg {
         Arg {
-            string: String::from("core.remote()"),
+            string: String::from("remote"),
             term: Ok(Term::new()),
             pool: None,
             remote: Some(self),

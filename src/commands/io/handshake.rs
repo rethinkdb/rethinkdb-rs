@@ -5,10 +5,10 @@ use std::io::{Write, BufRead, Read};
 use {Session, Result, Opts};
 use errors::*;
 use super::io_error;
-use reql_io::scram::{ClientFirst, ServerFirst, ServerFinal};
-use reql_io::bufstream::BufStream;
-use reql_io::byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
-use reql_io::uuid::Uuid;
+use scram::{ClientFirst, ServerFirst, ServerFinal};
+use bufstream::BufStream;
+use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
+use uuid::Uuid;
 use ql2::proto::{
     VersionDummy_Version as Version,
     Query_QueryType as QueryType,

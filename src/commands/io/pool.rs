@@ -1,4 +1,4 @@
-use reql_io::r2d2;
+use r2d2;
 use errors::Error;
 use super::io_error;
 use {SessionManager, Connection, Session, Result};

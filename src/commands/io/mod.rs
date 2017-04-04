@@ -10,11 +10,11 @@ use std::marker::PhantomData;
 
 use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, IntoArg, Run};
 use ql2::proto::{Term, Datum};
-use reql_io::r2d2;
-use reql_io::ordermap::OrderMap;
-use reql_io::uuid::Uuid;
-use reql_io::parking_lot::RwLock;
-use reql_io::tokio_core::reactor::Remote;
+use r2d2;
+use ordermap::OrderMap;
+use uuid::Uuid;
+use parking_lot::RwLock;
+use tokio_core::reactor::Remote;
 use slog::Logger;
 use serde::Deserialize;
 use errors::*;
@@ -35,7 +35,10 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
     let query = format!("{}.connect({})", client.query, arg.string);
     debug!(logger, "{}", query);
     info!(logger, "creating connection pool...");
-    conn.set_config(aterm, arg.remote, logger.clone())?;
+    match arg.remote {
+        Some(remote) => conn.set_config(aterm, remote, logger.clone())?,
+        None => { return Err(io_error("a futures handle is required for `connect`"))?; }
+    }
     conn.maintain();
     let config = r2d2::Config::default();
     let session = SessionManager(conn);
@@ -130,7 +133,7 @@ impl PartialEq for Server {
 }
 
 impl Connection {
-    fn set_config(&self, mut term: Term, remote: Option<Remote>, logger: Logger) -> Result<()> {
+    fn set_config(&self, mut term: Term, remote: Remote, logger: Logger) -> Result<()> {
         let mut cluster = Vec::new();
         let mut hosts = Vec::new();
         let mut opts = Opts::default();
