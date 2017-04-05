@@ -6,9 +6,8 @@ use std::net::ToSocketAddrs;
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use std::cmp::Ordering;
-use std::marker::PhantomData;
 
-use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, IntoArg, Run};
+use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, ResponseValue, IntoArg, Run};
 use ql2::proto::{Term, Datum};
 use r2d2;
 use ordermap::OrderMap;
@@ -18,6 +17,9 @@ use tokio_core::reactor::Remote;
 use slog::Logger;
 use serde::Deserialize;
 use errors::*;
+use futures::sync::mpsc;
+
+const CHANNEL_SIZE: usize = 1024 * 1024;
 
 lazy_static! {
     static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
@@ -66,12 +68,15 @@ impl<A: IntoArg> Run<A> for Client {
                 return Err(DriverError::Other(msg))?;
             }
         };
+        let (tx, rx) = mpsc::channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
+        Ok(rx)
+        /*
         Ok(Response {
             term: cterm,
             opts: aterm,
             conn: conn,
-            resp: PhantomData,
         })
+        */
     }
 }
 

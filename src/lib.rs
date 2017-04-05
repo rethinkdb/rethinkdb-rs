@@ -54,8 +54,6 @@ pub use ql2::proto::Term;
 
 #[cfg(feature = "with-io")]
 use std::net::SocketAddr;
-#[cfg(feature = "with-io")]
-use std::marker::PhantomData;
 
 #[cfg(feature = "with-io")]
 use std::time::Duration;
@@ -67,9 +65,12 @@ use uuid::Uuid;
 use std::net::TcpStream;
 #[cfg(feature = "with-io")]
 use serde::Deserialize;
+#[cfg(feature = "with-io")]
+use futures::sync::mpsc::Receiver;
 
 use errors::Error;
 use slog::Logger;
+use serde_json::Value;
 
 /// The result of any command that can potentially return an error
 pub type Result<T> = ::std::result::Result<T, Error>;
@@ -83,15 +84,11 @@ pub struct Arg {
     remote: Option<Remote>,
 }
 
-/// The response returned by the `run` command
+/// ReQL Response
+///
+/// Response returned by `run()`
 #[cfg(feature = "with-io")]
-#[derive(Debug, Clone)]
-pub struct Response<T: Deserialize> {
-    term: Term,
-    opts: Term,
-    conn: Connection,
-    resp: PhantomData<T>,
-}
+pub type Response<T> = Receiver<Result<ResponseValue<T>>>;
 
 #[cfg(feature = "with-io")]
 struct Session {
@@ -155,6 +152,43 @@ pub struct Client {
     term: Result<Term>,
     query: String,
     logger: Logger,
+}
+
+/// Response value
+#[cfg(feature = "with-io")]
+#[derive(Debug, Clone)]
+pub enum ResponseValue<T: Deserialize> {
+    Write(WriteStatus),
+    Read(T),
+    Raw(Value),
+    None,
+}
+
+/// Status returned by a write command
+#[cfg(feature = "with-io")]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct WriteStatus {
+    inserted: u32,
+    replaced: u32,
+    unchanged: u32,
+    skipped: u32,
+    deleted: u32,
+    errors: u32,
+    first_error: Option<String>,
+    generated_keys: Option<Vec<Uuid>>,
+    warnings: Option<Vec<String>>,
+    changes: Option<Value>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[cfg(feature = "with-io")]
+struct ReqlResponse {
+    t: i32,
+    e: Option<i32>,
+    r: Value,
+    b: Option<Value>,
+    p: Option<Value>,
+    n: Option<Value>,
 }
 
 /// The argument that is passed to any command
