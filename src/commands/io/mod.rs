@@ -19,6 +19,7 @@ use slog::Logger;
 use serde::Deserialize;
 use errors::*;
 use futures::sync::mpsc::{self, Sender};
+use futures::{Future, Sink};
 
 const CHANNEL_SIZE: usize = 1024 * 1024;
 
@@ -30,7 +31,8 @@ lazy_static! {
 struct Request<T: Deserialize + Send + 'static> {
     term: Term,
     opts: Term,
-    conn: Connection,
+    pool: r2d2::Pool<SessionManager>,
+    cfg: Config,
     tx: Sender<Result<ResponseValue<T>>>,
 }
 
@@ -70,32 +72,48 @@ impl<A: IntoArg> Run<A> for Client {
         let query = format!("{}.run({})", self.query, arg.string);
         debug!(logger, "{}", query);
         let conn = match arg.pool {
-            Some(pool) => pool,
+            Some(conn) => conn.clone(),
             None => {
                 let msg = String::from("`run` requires a connection");
                 return Err(DriverError::Other(msg))?;
             }
         };
-        let (tx, rx) = mpsc::channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
-        let remote = match CONFIG.read().get(&conn) {
-            Some(opts) => opts.remote.clone(),
+        let pool = match POOL.read().get(&conn) {
+            Some(pool) => pool.clone(),
+            None => {
+                let msg = String::from("bug: connection not in POOL");
+                return Err(DriverError::Other(msg))?;
+            }
+        };
+        let cfg = match CONFIG.read().get(&conn) {
+            Some(cfg) => cfg.clone(),
             None => { return Err(io_error("a tokio handle is required"))?; }
         };
-        remote.spawn(move |_| {
+        let (tx, rx) = mpsc::channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
+        cfg.remote.clone().spawn(move |_| {
             let request = Request {
                 term: cterm,
                 opts: aterm,
-                conn: conn,
-                tx: tx,
+                pool: pool,
+                cfg: cfg,
+                tx: tx.clone(),
             };
-            request.submit()
+            match request.submit() {
+                Ok(_) => Ok(()),
+                Err(error) => {
+                    if let Err(error) = tx.send(Err(error)).wait() {
+                        warn!(logger, "failed to send message: {}", error);
+                    }
+                    Err(())
+                }
+            }
         });
         Ok(rx)
     }
 }
 
 fn io_error<T>(err: T) -> io::Error
-    where T: Into<Box<error::Error + Send + Sync>>
+where T: Into<Box<error::Error + Send + Sync>>
 {
     io::Error::new(io::ErrorKind::Other, err)
 }
@@ -174,9 +192,9 @@ impl Connection {
 
         for host in hosts {
             let addresses = host.to_socket_addrs().or_else(|_| {
-                    let host = format!("{}:{}", host, 28015);
-                    host.to_socket_addrs()
-                })?;
+                let host = format!("{}:{}", host, 28015);
+                host.to_socket_addrs()
+            })?;
             cluster.push(Server {
                 addresses: addresses.collect(),
                 latency: Duration::from_millis(u64::max_value()),
