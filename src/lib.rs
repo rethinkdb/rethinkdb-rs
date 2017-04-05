@@ -201,5 +201,5 @@ pub trait IntoArg {
 #[cfg(feature = "with-io")]
 pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
-    fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>>;
+    fn run<T: Deserialize + Send + 'static>(&self, args: A) -> Result<Response<T>>;
 }

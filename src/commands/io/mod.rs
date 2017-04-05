@@ -1,4 +1,5 @@
 mod pool;
+mod request;
 mod handshake;
 
 use std::{io, error};
@@ -17,13 +18,20 @@ use tokio_core::reactor::Remote;
 use slog::Logger;
 use serde::Deserialize;
 use errors::*;
-use futures::sync::mpsc;
+use futures::sync::mpsc::{self, Sender};
 
 const CHANNEL_SIZE: usize = 1024 * 1024;
 
 lazy_static! {
     static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
     static ref POOL: RwLock<OrderMap<Connection, r2d2::Pool<SessionManager>>> = RwLock::new(OrderMap::new());
+}
+
+struct Request<T: Deserialize + Send + 'static> {
+    term: Term,
+    opts: Term,
+    conn: Connection,
+    tx: Sender<Result<ResponseValue<T>>>,
 }
 
 pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
@@ -51,7 +59,7 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
 }
 
 impl<A: IntoArg> Run<A> for Client {
-    fn run<T: Deserialize>(&self, args: A) -> Result<Response<T>> {
+    fn run<T: Deserialize + Send + 'static>(&self, args: A) -> Result<Response<T>> {
         let cterm = match self.term {
             Ok(ref term) => term.clone(),
             Err(ref error) => { return Err(error.clone()); }
@@ -69,14 +77,20 @@ impl<A: IntoArg> Run<A> for Client {
             }
         };
         let (tx, rx) = mpsc::channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
+        let remote = match CONFIG.read().get(&conn) {
+            Some(opts) => opts.remote.clone(),
+            None => { return Err(io_error("a tokio handle is required"))?; }
+        };
+        remote.spawn(move |_| {
+            let request = Request {
+                term: cterm,
+                opts: aterm,
+                conn: conn,
+                tx: tx,
+            };
+            request.submit()
+        });
         Ok(rx)
-        /*
-        Ok(Response {
-            term: cterm,
-            opts: aterm,
-            conn: conn,
-        })
-        */
     }
 }
 
