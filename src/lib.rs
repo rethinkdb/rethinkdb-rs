@@ -151,6 +151,8 @@ struct TlsCfg {
 pub struct Client {
     term: Result<Term>,
     query: String,
+    write: bool,
+    idx: u32,
     logger: Logger,
 }
 
