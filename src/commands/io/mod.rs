@@ -2,24 +2,30 @@ mod pool;
 mod request;
 mod handshake;
 
-use std::{io, error};
+use std::error;
+use std::io::{self, Write, Read};
 use std::net::ToSocketAddrs;
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use std::cmp::Ordering;
 
-use {Client, Config, SessionManager, Server, Result, Connection, Opts, Response, ResponseValue, IntoArg, Run};
+use {Client, Config, SessionManager, Server,
+        Result, Connection, Opts, Response,
+        ResponseValue, IntoArg, Session, Run};
 use ql2::proto::{Term, Datum};
 use r2d2;
 use ordermap::OrderMap;
 use uuid::Uuid;
 use parking_lot::RwLock;
 use tokio_core::reactor::Remote;
+use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use slog::Logger;
 use serde::Deserialize;
 use errors::*;
 use futures::sync::mpsc::{self, Sender};
 use futures::{Future, Sink};
+use protobuf::ProtobufEnum;
+use ql2::proto::Query_QueryType as QueryType;
 
 const CHANNEL_SIZE: usize = 1024 * 1024;
 
@@ -34,6 +40,8 @@ struct Request<T: Deserialize + Send + 'static> {
     pool: r2d2::Pool<SessionManager>,
     cfg: Config,
     tx: Sender<Result<ResponseValue<T>>>,
+    write: bool,
+    retry: bool,
 }
 
 pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
@@ -89,6 +97,7 @@ impl<A: IntoArg> Run<A> for Client {
             Some(cfg) => cfg.clone(),
             None => { return Err(io_error("a tokio handle is required"))?; }
         };
+        let write = self.write;
         let (tx, rx) = mpsc::channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
         cfg.remote.clone().spawn(move |_| {
             let request = Request {
@@ -97,6 +106,8 @@ impl<A: IntoArg> Run<A> for Client {
                 pool: pool,
                 cfg: cfg,
                 tx: tx.clone(),
+                write: write,
+                retry: false,
             };
             match request.submit() {
                 Ok(_) => Ok(()),
@@ -233,4 +244,64 @@ impl Connection {
     fn set_pool(&self, pool: r2d2::Pool<SessionManager>) {
         POOL.write().insert(*self, pool);
     }
+}
+
+fn write_query(conn: &mut Session, query: &str) -> Result<()> {
+    let query = query.as_bytes();
+    let token = conn.id;
+    if let Err(error) = conn.stream.write_u64::<LittleEndian>(token) {
+        conn.broken = true;
+        return Err(io_error(error))?;
+    }
+    if let Err(error) = conn.stream.write_u32::<LittleEndian>(query.len() as u32) {
+        conn.broken = true;
+        return Err(io_error(error))?;
+    }
+    if let Err(error) = conn.stream.write_all(query) {
+        conn.broken = true;
+        return Err(io_error(error))?;
+    }
+    if let Err(error) = conn.stream.flush() {
+        conn.broken = true;
+        return Err(io_error(error))?;
+    }
+    Ok(())
+}
+
+fn read_query(conn: &mut Session) -> Result<Vec<u8>> {
+    let _ = match conn.stream.read_u64::<LittleEndian>() {
+        Ok(token) => token,
+        Err(error) => {
+            conn.broken = true;
+            return Err(io_error(error))?;
+        }
+    };
+    let len = match conn.stream.read_u32::<LittleEndian>() {
+        Ok(len) => len,
+        Err(error) => {
+            conn.broken = true;
+            return Err(io_error(error))?;
+        }
+    };
+    let mut resp = vec![0u8; len as usize];
+    if let Err(error) = conn.stream.read_exact(&mut resp) {
+        conn.broken = true;
+        return Err(io_error(error))?;
+    }
+    Ok(resp)
+}
+
+fn wrap_query(query_type: QueryType,
+              query: Option<String>,
+              options: Option<String>)
+-> String {
+    let mut qry = format!("[{}", query_type.value());
+    if let Some(query) = query {
+        qry.push_str(&format!(",{}", query));
+    }
+    if let Some(options) = options {
+        qry.push_str(&format!(",{}", options));
+    }
+    qry.push_str("]");
+    qry
 }

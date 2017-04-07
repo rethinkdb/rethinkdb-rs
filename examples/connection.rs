@@ -1,5 +1,6 @@
 extern crate slog_term;
 extern crate tokio_core;
+extern crate futures;
 #[macro_use] extern crate slog;
 #[macro_use] extern crate serde_derive;
 #[macro_use] extern crate reql;
@@ -7,8 +8,9 @@ extern crate tokio_core;
 use slog::DrainExt;
 use reql::{Client, Run};
 use tokio_core::reactor::Core;
+use futures::stream::Stream;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct Blog {
     _name: String,
 }
@@ -30,5 +32,6 @@ fn main() {
     let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
     
     // Run the query
-    r.db("test").table_create("blog").run::<Blog>(conn).unwrap();
+    let blog = r.db("test").table_create("blog").run::<Blog>(conn).unwrap();
+    println!("{:?}", blog.wait());
 }

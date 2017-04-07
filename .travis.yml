@@ -6,6 +6,10 @@ rust:
 - stable
 - 1.15.0
 
+matrix:
+  allow_failures:
+    - rust: nightly
+
 addons:
   rethinkdb: '2.3.5'
 

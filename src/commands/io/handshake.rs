@@ -1,14 +1,13 @@
 use std::net::TcpStream;
 use std::str;
-use std::io::{Write, BufRead, Read};
+use std::io::{Write, BufRead};
 
-use {Session, Result, Opts};
+use {Session, Result, Opts, ReqlResponse};
 use errors::*;
-use super::io_error;
+use super::{io_error, wrap_query, write_query, read_query};
 use scram::{ClientFirst, ServerFirst, ServerFinal};
 use bufstream::BufStream;
-use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
-use uuid::Uuid;
+use byteorder::{WriteBytesExt, LittleEndian};
 use ql2::proto::{
     VersionDummy_Version as Version,
     Query_QueryType as QueryType,
@@ -16,7 +15,6 @@ use ql2::proto::{
 };
 use protobuf::ProtobufEnum;
 use serde_json::{
-    Value,
     from_str, from_slice, from_value,
     to_vec,
 };
@@ -47,31 +45,6 @@ struct AuthResponse {
 #[derive(Serialize, Deserialize, Debug)]
 struct AuthConfirmation {
      authentication: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct ReqlResponse {
-    t: i32,
-    e: Option<i32>,
-    r: Value,
-    b: Option<Value>,
-    p: Option<Value>,
-    n: Option<Value>,
-}
-
-/// Status returned by a write command
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct WriteStatus {
-    inserted: u32,
-    replaced: u32,
-    unchanged: u32,
-    skipped: u32,
-    deleted: u32,
-    errors: u32,
-    first_error: Option<String>,
-    generated_keys: Option<Vec<Uuid>>,
-    warnings: Option<Vec<String>>,
-    changes: Option<Value>,
 }
 
 impl Session {
@@ -213,64 +186,4 @@ fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
         }
     }
     Ok(())
-}
-
-fn write_query(conn: &mut Session, query: &str) -> Result<()> {
-    let query = query.as_bytes();
-    let token = conn.id;
-    if let Err(error) = conn.stream.write_u64::<LittleEndian>(token) {
-        conn.broken = true;
-        return Err(io_error(error))?;
-    }
-    if let Err(error) = conn.stream.write_u32::<LittleEndian>(query.len() as u32) {
-        conn.broken = true;
-        return Err(io_error(error))?;
-    }
-    if let Err(error) = conn.stream.write_all(query) {
-        conn.broken = true;
-        return Err(io_error(error))?;
-    }
-    if let Err(error) = conn.stream.flush() {
-        conn.broken = true;
-        return Err(io_error(error))?;
-    }
-    Ok(())
-}
-
-fn read_query(conn: &mut Session) -> Result<Vec<u8>> {
-    let _ = match conn.stream.read_u64::<LittleEndian>() {
-        Ok(token) => token,
-        Err(error) => {
-            conn.broken = true;
-            return Err(io_error(error))?;
-        }
-    };
-    let len = match conn.stream.read_u32::<LittleEndian>() {
-        Ok(len) => len,
-        Err(error) => {
-            conn.broken = true;
-            return Err(io_error(error))?;
-        }
-    };
-    let mut resp = vec![0u8; len as usize];
-    if let Err(error) = conn.stream.read_exact(&mut resp) {
-        conn.broken = true;
-        return Err(io_error(error))?;
-    }
-    Ok(resp)
-}
-
-pub fn wrap_query(query_type: QueryType,
-              query: Option<String>,
-              options: Option<String>)
--> String {
-    let mut qry = format!("[{}", query_type.value());
-    if let Some(query) = query {
-        qry.push_str(&format!(",{}", query));
-    }
-    if let Some(options) = options {
-        qry.push_str(&format!(",{}", options));
-    }
-    qry.push_str("]");
-    qry
 }

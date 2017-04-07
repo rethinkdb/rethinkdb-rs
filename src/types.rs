@@ -76,7 +76,7 @@ trait IsEmpty {
     fn is_empty(&self) -> bool;
 }
 
-trait Encode {
+pub trait Encode {
     fn encode(&self) -> String;
 }
 
