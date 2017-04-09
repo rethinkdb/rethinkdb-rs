@@ -33,5 +33,10 @@ fn main() {
     
     // Run the query
     let blog = r.db("test").table_create("blog").run::<Blog>(conn).unwrap();
-    println!("{:?}", blog.wait());
+    let res = blog.and_then(|resp| {
+        println!("{:?}", resp);
+        Ok(())
+    });
+
+    for _ in res.wait() { }
 }

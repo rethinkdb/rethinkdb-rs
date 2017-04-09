@@ -20,14 +20,18 @@ use serde_json::{
 
 impl<T: Deserialize + Send + 'static> Request<T> {
     pub fn submit(mut self) -> Result<()> {
+        let mut conn = self.pool.get()?;
         let commands = self.term.encode();
+        debug!(conn.logger, "{}", commands);
         let opts = self.opts.encode();
+        debug!(conn.logger, "{}", opts);
         let mut query = wrap_query(QueryType::START, Some(commands), Some(opts));
+        debug!(conn.logger, "{}", query);
         // Try sending the query
+        debug!(conn.logger, "submiting to server");
         {
             let mut i = 0;
             let mut connect = false;
-            let mut conn = self.pool.get()?;
             while i < self.cfg.opts.retries {
                 // Open a new connection if necessary
                 if connect {

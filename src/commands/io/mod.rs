@@ -109,6 +109,7 @@ impl<A: IntoArg> Run<A> for Client {
                 write: write,
                 retry: false,
             };
+            debug!(logger, "submitting request");
             match request.submit() {
                 Ok(_) => Ok(()),
                 Err(error) => {
