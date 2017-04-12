@@ -1,8 +1,8 @@
 use std::error::Error as StdError;
 
 use errors::*;
-use {Session, ReqlResponse, WriteStatus, Result, ResponseValue};
-use super::{Request, wrap_query, write_query, read_query};
+use {Session, Response, ReqlResponse, WriteStatus, Result, ResponseValue};
+use super::{wrap_query, write_query, read_query};
 
 use serde::Deserialize;
 use futures::{Future, Sink};
@@ -18,8 +18,8 @@ use serde_json::{
     from_slice, from_value,
 };
 
-impl<T: Deserialize + Send + 'static> Request<T> {
-    pub fn submit(mut self) -> Result<()> {
+impl<T: Deserialize + Send + 'static> Response<T> {
+    pub fn submit(&mut self) {
         let mut conn = self.pool.get()?;
         let commands = self.term.encode();
         debug!(conn.logger, "{}", commands);
@@ -95,7 +95,7 @@ impl<T: Deserialize + Send + 'static> Request<T> {
                     Some(_)  => {/* we are done */},
 
                     None => {
-                        let msg = String::from("Request::handle() unexpectedly returned None");
+                        let msg = String::from("Response::handle() unexpectedly returned None");
                         return Err(DriverError::Other(msg))?;
                     },
                 }

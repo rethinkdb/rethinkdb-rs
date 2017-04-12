@@ -22,26 +22,14 @@ use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use slog::Logger;
 use serde::Deserialize;
 use errors::*;
-use futures::sync::mpsc::{self, Sender};
+use futures::sync::mpsc;
 use futures::{Future, Sink};
 use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
 
-const CHANNEL_SIZE: usize = 1024 * 1024;
-
 lazy_static! {
     static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
     static ref POOL: RwLock<OrderMap<Connection, r2d2::Pool<SessionManager>>> = RwLock::new(OrderMap::new());
-}
-
-struct Request<T: Deserialize + Send + 'static> {
-    term: Term,
-    opts: Term,
-    pool: r2d2::Pool<SessionManager>,
-    cfg: Config,
-    tx: Sender<Result<ResponseValue<T>>>,
-    write: bool,
-    retry: bool,
 }
 
 pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
@@ -97,30 +85,23 @@ impl<A: IntoArg> Run<A> for Client {
             Some(cfg) => cfg.clone(),
             None => { return Err(io_error("a tokio handle is required"))?; }
         };
-        let write = self.write;
-        let (tx, rx) = mpsc::channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
-        cfg.remote.clone().spawn(move |_| {
-            let request = Request {
-                term: cterm,
-                opts: aterm,
-                pool: pool,
-                cfg: cfg,
-                tx: tx.clone(),
-                write: write,
-                retry: false,
-            };
-            debug!(logger, "submitting request");
-            match request.submit() {
-                Ok(_) => Ok(()),
-                Err(error) => {
-                    if let Err(error) = tx.send(Err(error)).wait() {
-                        warn!(logger, "failed to send message: {}", error);
-                    }
-                    Err(())
-                }
-            }
+        let remote = cfg.remote.clone();
+        let mut response = Response {
+            term: cterm,
+            opts: aterm,
+            pool: pool,
+            cfg: cfg,
+            values: Vec::new(),
+            errors: Vec::new(),
+            done: false,
+            write: self.write,
+            retry: false,
+        };
+        remote.spawn(move |_| {
+            response.submit();
+            Ok(())
         });
-        Ok(rx)
+        Ok(response)
     }
 }
 

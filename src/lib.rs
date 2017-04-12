@@ -88,7 +88,17 @@ pub struct Arg {
 ///
 /// Response returned by `run()`
 #[cfg(feature = "with-io")]
-pub type Response<T> = Receiver<Result<ResponseValue<T>>>;
+struct Response<T: Deserialize + Send + 'static> {
+    term: Term,
+    opts: Term,
+    pool: r2d2::Pool<SessionManager>,
+    cfg: Config,
+    values: Vec<ResponseValue<T>>,
+    errors: Vec<Error>,
+    done: bool,
+    write: bool,
+    retry: bool,
+}
 
 #[cfg(feature = "with-io")]
 struct Session {
