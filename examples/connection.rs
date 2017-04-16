@@ -5,7 +5,7 @@ extern crate futures;
 #[macro_use] extern crate reql;
 
 use reql::{Client, Run};
-use reql::structs::ClusterConfig;
+use reql::structs::ServerStatus;
 use slog::DrainExt;
 use tokio_core::reactor::Core;
 use futures::stream::Stream;
@@ -27,10 +27,10 @@ fn main() {
     let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
     
     // Run the query
-    let cfg = r.db("rethinkdb").table("cluster_config").run::<ClusterConfig>(conn).unwrap();
+    let stati = r.db("rethinkdb").table("server_status").run::<ServerStatus>(conn).unwrap();
 
     // Process results
-    for cfg in cfg.wait() {
-        println!("{:?}", cfg);
+    for status in stati.wait() {
+        println!("{:?}", status);
     }
 }

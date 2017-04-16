@@ -38,6 +38,7 @@ extern crate uuid;
 extern crate ordermap;
 #[cfg(feature = "with-io")]
 extern crate bufstream;
+extern crate chrono;
 
 #[macro_use]
 mod macros;
