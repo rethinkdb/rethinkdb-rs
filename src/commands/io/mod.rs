@@ -1,6 +1,5 @@
 mod pool;
 mod request;
-mod response;
 mod handshake;
 
 use std::error;
@@ -9,11 +8,10 @@ use std::net::ToSocketAddrs;
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use std::cmp::Ordering;
-use std::sync::mpsc::{self, Receiver};
 
 use {Client, Config, SessionManager, Server,
         Result, Connection, Opts, Request, Response,
-        ResponseValue, Message, IntoArg, Session, Run};
+        ResponseValue, IntoArg, Session, Run};
 use ql2::proto::{Term, Datum};
 use r2d2;
 use ordermap::OrderMap;
@@ -24,7 +22,7 @@ use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use slog::Logger;
 use serde::Deserialize;
 use errors::*;
-use futures::{Future, Sink};
+use futures::sync::mpsc;
 use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
 
@@ -32,6 +30,8 @@ lazy_static! {
     static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
     static ref POOL: RwLock<OrderMap<Connection, r2d2::Pool<SessionManager>>> = RwLock::new(OrderMap::new());
 }
+
+const CHANNEL_SIZE: usize = 1024;
 
 pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
     if let Err(ref error) = client.term {
@@ -86,23 +86,23 @@ impl<A: IntoArg> Run<A> for Client {
             Some(cfg) => cfg.clone(),
             None => { return Err(io_error("a tokio handle is required"))?; }
         };
-        let (tx, rx) = mpsc::channel::<Message<T>>();
-        let write = self.write;
+        let (tx, rx) = mpsc::channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
         //let remote = cfg.remote.clone();
         ::std::thread::spawn(move || {
-            let mut req = Request {
+            let req = Request {
                 term: cterm,
                 opts: aterm,
                 pool: pool,
                 cfg: cfg,
                 tx: tx,
-                write: write,
+                write: true,
                 retry: false,
+                logger: logger,
             };
             req.submit();
             //Ok(())
         });
-        Ok(Response(rx))
+        Ok(rx)
     }
 }
 

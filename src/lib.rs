@@ -54,8 +54,6 @@ pub use ql2::proto::Term;
 
 #[cfg(feature = "with-io")]
 use std::net::SocketAddr;
-#[cfg(feature = "with-io")]
-use std::sync::mpsc::{Receiver, Sender};
 
 #[cfg(feature = "with-io")]
 use std::time::Duration;
@@ -67,6 +65,8 @@ use uuid::Uuid;
 use std::net::TcpStream;
 #[cfg(feature = "with-io")]
 use serde::Deserialize;
+#[cfg(feature = "with-io")]
+use futures::sync::mpsc::{Receiver, Sender};
 
 use errors::Error;
 use slog::Logger;
@@ -84,14 +84,11 @@ pub struct Arg {
     remote: Option<Remote>,
 }
 
-type Message<T> = Result<ResponseValue<T>>;
-
 /// ReQL Response
 ///
 /// Response returned by `run()`
 #[cfg(feature = "with-io")]
-#[derive(Debug)]
-pub struct Response<T: Deserialize + Send>(Receiver<Message<T>>);
+pub type Response<T> = Receiver<Result<ResponseValue<T>>>;
 
 #[cfg(feature = "with-io")]
 struct Request<T: Deserialize + Send> {
@@ -99,9 +96,10 @@ struct Request<T: Deserialize + Send> {
     opts: Term,
     pool: r2d2::Pool<SessionManager>,
     cfg: Config,
-    tx: Sender<Message<T>>,
+    tx: Sender<Result<ResponseValue<T>>>,
     write: bool,
     retry: bool,
+    logger: Logger,
 }
 
 #[cfg(feature = "with-io")]

@@ -23,7 +23,7 @@ with-io = ["lazy_static", "serde_derive", "r2d2", "byteorder",
 
 [dependencies]
 protobuf = "1.1"
-slog = "2.0"
+slog = "1.5"
 serde = "0.9"
 serde_json = "0.9"
 ql2 = "1.1"
@@ -45,7 +45,7 @@ uuid = { version = "0.4", features = ["use_std", "v4", "serde"], optional = true
 ordermap = { version = "0.2", optional = true }
 
 [dev-dependencies]
-slog-term = "~2.0.0-4"
+slog-term = "1.5"
 
 [build-dependencies]
 serde = "0.9"

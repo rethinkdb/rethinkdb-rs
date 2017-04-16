@@ -1,8 +1,7 @@
 use std::error::Error as StdError;
-use std::sync::mpsc::Sender;
 
 use errors::*;
-use {Session, Request, Response, ReqlResponse, WriteStatus, Result, ResponseValue};
+use {Session, Request, ReqlResponse, WriteStatus, Result, ResponseValue};
 use super::{wrap_query, write_query, read_query};
 
 use serde::Deserialize;
@@ -24,30 +23,40 @@ impl<T: Deserialize + Send> Request<T> {
         let mut conn = match self.pool.get() {
             Ok(conn) => conn,
             Err(error) => {
-                self.tx.send(Err(error.into()));
+                let _ = self.tx.clone().send(Err(error.into())).wait();
                 return;
             }
         };
         let commands = self.term.encode();
-        debug!(conn.logger, "{}", commands);
-        let opts = self.opts.encode();
-        debug!(conn.logger, "{}", opts);
-        let mut query = wrap_query(QueryType::START, Some(commands), Some(opts));
-        debug!(conn.logger, "{}", query);
+        self.logger = conn.logger.clone();
+        debug!(self.logger, "{}", commands);
+        let opts = {
+            let res = self.opts.encode();
+            if res.is_empty() {
+                None
+            } else {
+                debug!(self.logger, "{}", res);
+                Some(res)
+            }
+        };
+        let mut query = wrap_query(QueryType::START, Some(commands), opts);
+        debug!(self.logger, "{}", query);
         // Try sending the query
-        debug!(conn.logger, "submiting to server");
+        debug!(self.logger, "submiting to server");
         {
             let mut i = 0;
             let mut connect = false;
             while i < self.cfg.opts.retries {
+                debug!(self.logger, "Attempt number {}", i);
                 // Open a new connection if necessary
                 if connect {
+                    debug!(self.logger, "reconnecting...");
                     drop(&mut conn);
                     conn = match self.pool.get() {
                         Ok(c) => c,
                         Err(error) => {
                             if i == self.cfg.opts.retries - 1 {
-                                self.tx.send(Err(error.into()));
+                                let _ = self.tx.clone().send(Err(error.into())).wait();
                                 return;
                             } else {
                                 i += 1;
@@ -55,13 +64,15 @@ impl<T: Deserialize + Send> Request<T> {
                             }
                         }
                     };
+                    self.logger = conn.logger.clone();
                 }
                 // Submit the query if necessary
                 if self.write {
+                    debug!(self.logger, "submitting query");
                     if let Err(error) = write_query(&mut conn, &query) {
                         connect = true;
                         if i == self.cfg.opts.retries - 1 {
-                            self.tx.send(Err(error.into()));
+                            let _ = self.tx.clone().send(Err(error.into())).wait();
                             return;
                         } else {
                             i += 1;
@@ -71,9 +82,10 @@ impl<T: Deserialize + Send> Request<T> {
                     connect = false;
                 }
                 // Handle the response
+                debug!(self.logger, "processing response");
                 if let Err(error) = self.process(&mut conn, &mut query) {
                     if i == self.cfg.opts.retries - 1 || !self.retry {
-                        self.tx.send(Err(error.into()));
+                        let _ = self.tx.clone().send(Err(error.into())).wait();
                         return;
                     }
                     i += 1;
@@ -88,6 +100,7 @@ impl<T: Deserialize + Send> Request<T> {
     {
         self.retry = false;
         self.write = false;
+        debug!(self.logger, "processing request");
         match self.handle(conn) {
             Ok(t) => {
                 match t {
@@ -183,11 +196,11 @@ impl<T: Deserialize + Send> Request<T> {
                 // them to the caller
                 if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
                     for v in stati {
-                        self.tx.send(Ok(ResponseValue::Write(v)));
+                        let _ = self.tx.clone().send(Ok(ResponseValue::Write(v))).wait();
                     }
                 } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                     for v in data {
-                        self.tx.send(Ok(ResponseValue::Read(v)));
+                        let _ = self.tx.clone().send(Ok(ResponseValue::Read(v))).wait();
                     }
                 }
                 // Send unexpected query responses
@@ -198,15 +211,15 @@ impl<T: Deserialize + Send> Request<T> {
                     for v in data {
                         match v {
                             Value::Null => {
-                                self.tx.send(Ok(ResponseValue::None));
+                                let _ = self.tx.clone().send(Ok(ResponseValue::None)).wait();
                             }
                             value => {
-                                self.tx.send(Ok(ResponseValue::Raw(value)));
+                                let _ = self.tx.clone().send(Ok(ResponseValue::Raw(value))).wait();
                             }
                         }
                     }
                 } else {
-                    self.tx.send(Ok(ResponseValue::Raw(result.r.clone())));
+                    let _ = self.tx.clone().send(Ok(ResponseValue::Raw(result.r.clone()))).wait();
                 }
                 // Return response type so we know if we need to retrieve more data
                 Ok(Some(respt))
