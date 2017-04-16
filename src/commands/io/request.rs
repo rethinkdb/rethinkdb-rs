@@ -1,7 +1,7 @@
 use std::error::Error as StdError;
 
 use errors::*;
-use {Session, Request, ReqlResponse, WriteStatus, Result, ResponseValue};
+use {Session, Request, ReqlResponse, Result, ResponseValue};
 use super::{wrap_query, write_query, read_query};
 
 use serde::Deserialize;
@@ -194,13 +194,9 @@ impl<T: Deserialize + Send> Request<T> {
                 }
                 // Since this is a successful query let's process the results and send
                 // them to the caller
-                if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
-                    for v in stati {
-                        let _ = self.tx.clone().send(Ok(ResponseValue::Write(v))).wait();
-                    }
-                } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
+                if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                     for v in data {
-                        let _ = self.tx.clone().send(Ok(ResponseValue::Read(v))).wait();
+                        let _ = self.tx.clone().send(Ok(Some(ResponseValue::Expected(v)))).wait();
                     }
                 }
                 // Send unexpected query responses
@@ -211,15 +207,22 @@ impl<T: Deserialize + Send> Request<T> {
                     for v in data {
                         match v {
                             Value::Null => {
-                                let _ = self.tx.clone().send(Ok(ResponseValue::None)).wait();
+                                let _ = self.tx.clone().send(Ok(None)).wait();
                             }
                             value => {
-                                let _ = self.tx.clone().send(Ok(ResponseValue::Raw(value))).wait();
+                                let _ = self.tx.clone().send(Ok(Some(ResponseValue::Unexpected(value)))).wait();
                             }
                         }
                     }
                 } else {
-                    let _ = self.tx.clone().send(Ok(ResponseValue::Raw(result.r.clone()))).wait();
+                    match result.r.clone() {
+                        Value::Null => {
+                            let _ = self.tx.clone().send(Ok(None)).wait();
+                        }
+                        value => {
+                            let _ = self.tx.clone().send(Ok(Some(ResponseValue::Unexpected(value)))).wait();
+                        }
+                    }
                 }
                 // Return response type so we know if we need to retrieve more data
                 Ok(Some(respt))

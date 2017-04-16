@@ -2,19 +2,13 @@ extern crate slog_term;
 #[macro_use] extern crate slog;
 extern crate tokio_core;
 extern crate futures;
-#[macro_use] extern crate serde_derive;
 #[macro_use] extern crate reql;
 
 use reql::{Client, Run};
+use reql::structs::ClusterConfig;
 use slog::DrainExt;
 use tokio_core::reactor::Core;
 use futures::stream::Stream;
-
-#[derive(Deserialize, Debug)]
-struct ClusterConfig {
-    id: String,
-    heartbeat_timeout_secs: u32,
-}
 
 fn main() {
     // Build an output drain
@@ -34,12 +28,8 @@ fn main() {
     
     // Run the query
     let cfg = r.db("rethinkdb").table("cluster_config").run::<ClusterConfig>(conn).unwrap();
-    /*
-    loop {
-        println!("{:?}", cfg.poll());
-        ::std::thread::sleep(::std::time::Duration::from_millis(500));
-    }
-    */
+
+    // Process results
     for cfg in cfg.wait() {
         println!("{:?}", cfg);
     }

@@ -44,6 +44,7 @@ mod macros;
 mod types;
 mod commands;
 pub mod errors;
+pub mod structs;
 
 #[doc(hidden)]
 pub use reql_derive::*;
@@ -88,7 +89,7 @@ pub struct Arg {
 ///
 /// Response returned by `run()`
 #[cfg(feature = "with-io")]
-pub type Response<T> = Receiver<Result<ResponseValue<T>>>;
+pub type Response<T> = Receiver<Result<Option<ResponseValue<T>>>>;
 
 #[cfg(feature = "with-io")]
 struct Request<T: Deserialize + Send> {
@@ -96,7 +97,7 @@ struct Request<T: Deserialize + Send> {
     opts: Term,
     pool: r2d2::Pool<SessionManager>,
     cfg: Config,
-    tx: Sender<Result<ResponseValue<T>>>,
+    tx: Sender<Result<Option<ResponseValue<T>>>>,
     write: bool,
     retry: bool,
     logger: Logger,
@@ -172,26 +173,8 @@ pub struct Client {
 #[cfg(feature = "with-io")]
 #[derive(Debug, Clone)]
 pub enum ResponseValue<T: Deserialize + Send> {
-    Write(WriteStatus),
-    Read(T),
-    Raw(Value),
-    None,
-}
-
-/// Status returned by a write command
-#[cfg(feature = "with-io")]
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct WriteStatus {
-    inserted: u32,
-    replaced: u32,
-    unchanged: u32,
-    skipped: u32,
-    deleted: u32,
-    errors: u32,
-    first_error: Option<String>,
-    generated_keys: Option<Vec<Uuid>>,
-    warnings: Option<Vec<String>>,
-    changes: Option<Value>,
+    Expected(T),
+    Unexpected(Value),
 }
 
 #[derive(Serialize, Deserialize, Debug)]

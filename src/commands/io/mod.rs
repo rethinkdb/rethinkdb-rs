@@ -11,7 +11,7 @@ use std::cmp::Ordering;
 
 use {Client, Config, SessionManager, Server,
         Result, Connection, Opts, Request, Response,
-        ResponseValue, IntoArg, Session, Run};
+        IntoArg, Session, Run};
 use ql2::proto::{Term, Datum};
 use r2d2;
 use ordermap::OrderMap;
@@ -86,8 +86,10 @@ impl<A: IntoArg> Run<A> for Client {
             Some(cfg) => cfg.clone(),
             None => { return Err(io_error("a tokio handle is required"))?; }
         };
-        let (tx, rx) = mpsc::channel::<Result<ResponseValue<T>>>(CHANNEL_SIZE);
+        let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
         //let remote = cfg.remote.clone();
+        // @TODO spawning a thread per query is less than ideal. Ideally we will
+        // need first class support for Tokio to get rid of this.
         ::std::thread::spawn(move || {
             let req = Request {
                 term: cterm,
@@ -100,7 +102,6 @@ impl<A: IntoArg> Run<A> for Client {
                 logger: logger,
             };
             req.submit();
-            //Ok(())
         });
         Ok(rx)
     }
