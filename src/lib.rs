@@ -54,6 +54,8 @@ pub use ql2::proto::Term;
 
 #[cfg(feature = "with-io")]
 use std::net::SocketAddr;
+#[cfg(feature = "with-io")]
+use std::sync::mpsc::{Receiver, Sender};
 
 #[cfg(feature = "with-io")]
 use std::time::Duration;
@@ -65,8 +67,6 @@ use uuid::Uuid;
 use std::net::TcpStream;
 #[cfg(feature = "with-io")]
 use serde::Deserialize;
-#[cfg(feature = "with-io")]
-use futures::sync::mpsc::Receiver;
 
 use errors::Error;
 use slog::Logger;
@@ -84,18 +84,22 @@ pub struct Arg {
     remote: Option<Remote>,
 }
 
+type Message<T> = Result<ResponseValue<T>>;
+
 /// ReQL Response
 ///
 /// Response returned by `run()`
 #[cfg(feature = "with-io")]
-struct Response<T: Deserialize + Send + 'static> {
+#[derive(Debug)]
+pub struct Response<T: Deserialize + Send>(Receiver<Message<T>>);
+
+#[cfg(feature = "with-io")]
+struct Request<T: Deserialize + Send> {
     term: Term,
     opts: Term,
     pool: r2d2::Pool<SessionManager>,
     cfg: Config,
-    values: Vec<ResponseValue<T>>,
-    errors: Vec<Error>,
-    done: bool,
+    tx: Sender<Message<T>>,
     write: bool,
     retry: bool,
 }
@@ -169,7 +173,7 @@ pub struct Client {
 /// Response value
 #[cfg(feature = "with-io")]
 #[derive(Debug, Clone)]
-pub enum ResponseValue<T: Deserialize> {
+pub enum ResponseValue<T: Deserialize + Send> {
     Write(WriteStatus),
     Read(T),
     Raw(Value),

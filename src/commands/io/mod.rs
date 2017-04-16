@@ -1,5 +1,6 @@
 mod pool;
 mod request;
+mod response;
 mod handshake;
 
 use std::error;
@@ -8,10 +9,11 @@ use std::net::ToSocketAddrs;
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use std::cmp::Ordering;
+use std::sync::mpsc::{self, Receiver};
 
 use {Client, Config, SessionManager, Server,
-        Result, Connection, Opts, Response,
-        ResponseValue, IntoArg, Session, Run};
+        Result, Connection, Opts, Request, Response,
+        ResponseValue, Message, IntoArg, Session, Run};
 use ql2::proto::{Term, Datum};
 use r2d2;
 use ordermap::OrderMap;
@@ -22,7 +24,6 @@ use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use slog::Logger;
 use serde::Deserialize;
 use errors::*;
-use futures::sync::mpsc;
 use futures::{Future, Sink};
 use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
@@ -85,23 +86,23 @@ impl<A: IntoArg> Run<A> for Client {
             Some(cfg) => cfg.clone(),
             None => { return Err(io_error("a tokio handle is required"))?; }
         };
-        let remote = cfg.remote.clone();
-        let mut response = Response {
-            term: cterm,
-            opts: aterm,
-            pool: pool,
-            cfg: cfg,
-            values: Vec::new(),
-            errors: Vec::new(),
-            done: false,
-            write: self.write,
-            retry: false,
-        };
-        remote.spawn(move |_| {
-            response.submit();
-            Ok(())
+        let (tx, rx) = mpsc::channel::<Message<T>>();
+        let write = self.write;
+        //let remote = cfg.remote.clone();
+        ::std::thread::spawn(move || {
+            let mut req = Request {
+                term: cterm,
+                opts: aterm,
+                pool: pool,
+                cfg: cfg,
+                tx: tx,
+                write: write,
+                retry: false,
+            };
+            req.submit();
+            //Ok(())
         });
-        Ok(response)
+        Ok(Response(rx))
     }
 }
 

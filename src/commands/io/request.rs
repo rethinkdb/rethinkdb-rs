@@ -1,7 +1,8 @@
 use std::error::Error as StdError;
+use std::sync::mpsc::Sender;
 
 use errors::*;
-use {Session, Response, ReqlResponse, WriteStatus, Result, ResponseValue};
+use {Session, Request, Response, ReqlResponse, WriteStatus, Result, ResponseValue};
 use super::{wrap_query, write_query, read_query};
 
 use serde::Deserialize;
@@ -18,9 +19,15 @@ use serde_json::{
     from_slice, from_value,
 };
 
-impl<T: Deserialize + Send + 'static> Response<T> {
-    pub fn submit(&mut self) {
-        let mut conn = self.pool.get()?;
+impl<T: Deserialize + Send> Request<T> {
+    pub fn submit(mut self) {
+        let mut conn = match self.pool.get() {
+            Ok(conn) => conn,
+            Err(error) => {
+                self.tx.send(Err(error.into()));
+                return;
+            }
+        };
         let commands = self.term.encode();
         debug!(conn.logger, "{}", commands);
         let opts = self.opts.encode();
@@ -40,7 +47,8 @@ impl<T: Deserialize + Send + 'static> Response<T> {
                         Ok(c) => c,
                         Err(error) => {
                             if i == self.cfg.opts.retries - 1 {
-                                return Err(error)?;
+                                self.tx.send(Err(error.into()));
+                                return;
                             } else {
                                 i += 1;
                                 continue;
@@ -53,7 +61,8 @@ impl<T: Deserialize + Send + 'static> Response<T> {
                     if let Err(error) = write_query(&mut conn, &query) {
                         connect = true;
                         if i == self.cfg.opts.retries - 1 {
-                            return Err(error)?;
+                            self.tx.send(Err(error.into()));
+                            return;
                         } else {
                             i += 1;
                             continue;
@@ -64,7 +73,8 @@ impl<T: Deserialize + Send + 'static> Response<T> {
                 // Handle the response
                 if let Err(error) = self.process(&mut conn, &mut query) {
                     if i == self.cfg.opts.retries - 1 || !self.retry {
-                        return Err(error)?;
+                        self.tx.send(Err(error.into()));
+                        return;
                     }
                     i += 1;
                     continue;
@@ -72,10 +82,9 @@ impl<T: Deserialize + Send + 'static> Response<T> {
                 break;
             }
         }
-        Ok(())
     }
 
-    pub fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()>
+    fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()>
     {
         self.retry = false;
         self.write = false;
@@ -111,7 +120,7 @@ impl<T: Deserialize + Send + 'static> Response<T> {
         Ok(())
     }
 
-    pub fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>>
+    fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>>
     {
         self.retry = false;
         match read_query(conn) {
@@ -174,13 +183,11 @@ impl<T: Deserialize + Send + 'static> Response<T> {
                 // them to the caller
                 if let Ok(stati) = from_value::<Vec<WriteStatus>>(result.r.clone()) {
                     for v in stati {
-                        let tx = self.tx.clone();
-                        tx.send(Ok(ResponseValue::Write(v))).wait()?;
+                        self.tx.send(Ok(ResponseValue::Write(v)));
                     }
                 } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                     for v in data {
-                        let tx = self.tx.clone();
-                        tx.send(Ok(ResponseValue::Read(v))).wait()?;
+                        self.tx.send(Ok(ResponseValue::Read(v)));
                     }
                 }
                 // Send unexpected query responses
@@ -189,19 +196,17 @@ impl<T: Deserialize + Send + 'static> Response<T> {
                 // so we just return it raw.
                 else if let Ok(data) = from_value::<Vec<Value>>(result.r.clone()) {
                     for v in data {
-                        let tx = self.tx.clone();
                         match v {
                             Value::Null => {
-                                tx.send(Ok(ResponseValue::None)).wait()?;
+                                self.tx.send(Ok(ResponseValue::None));
                             }
                             value => {
-                                tx.send(Ok(ResponseValue::Raw(value))).wait()?;
+                                self.tx.send(Ok(ResponseValue::Raw(value)));
                             }
                         }
                     }
                 } else {
-                    let tx = self.tx.clone();
-                    tx.send(Ok(ResponseValue::Raw(result.r.clone()))).wait()?;
+                    self.tx.send(Ok(ResponseValue::Raw(result.r.clone())));
                 }
                 // Return response type so we know if we need to retrieve more data
                 Ok(Some(respt))
