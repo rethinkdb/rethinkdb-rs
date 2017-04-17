@@ -178,6 +178,9 @@ pub enum ResponseValue<T: Deserialize + Send> {
     Unexpected(Value),
 }
 
+#[derive(Debug, Clone)]
+pub struct DateTime(chrono::DateTime<chrono::UTC>);
+
 #[derive(Serialize, Deserialize, Debug)]
 #[cfg(feature = "with-io")]
 struct ReqlResponse {

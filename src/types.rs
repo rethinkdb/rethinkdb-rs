@@ -1,12 +1,16 @@
 //! The ReQL data types
 
-use Result;
+use std::result;
+use std::ops::Deref;
+
+use {Result, DateTime, chrono};
 use errors::DriverError;
 use ql2::proto::{Term, Datum, Term_TermType as TermType, Term_AssocPair as TermPair,
                  Datum_DatumType as DatumType, Datum_AssocPair as DatumPair};
 use serde_json::value::{Value, ToJson};
 use protobuf::repeated::RepeatedField;
 use protobuf::ProtobufEnum;
+use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
 pub trait FromJson {
     fn from_json<T: ToJson>(t: T) -> Result<Term> {
@@ -165,5 +169,42 @@ impl Encode for Term {
             res.push_str("]");
         }
         res
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Time {
+    #[serde(rename = "$reql_type$")]
+    reql_type: String,
+    epoch_time: f64,
+    timezone: String,
+}
+
+impl Deserialize for DateTime {
+    fn deserialize<D>(deserializer: D) -> result::Result<Self, D::Error>
+        where D: Deserializer
+    {
+        let time = Time::deserialize(deserializer)?;
+        let secs = time.epoch_time.trunc() as i64;
+        let nsecs = time.epoch_time.fract().abs() as u32;
+        let naive = chrono::NaiveDateTime::from_timestamp(secs, nsecs);
+        let dt = chrono::DateTime::<chrono::UTC>::from_utc(naive, chrono::UTC);
+        Ok(DateTime(dt))
+    }
+}
+
+impl Serialize for DateTime {
+    fn serialize<S>(&self, _serializer: S) -> result::Result<S::Ok, S::Error>
+        where S: Serializer
+    {
+        unimplemented!();
+    }
+}
+
+impl Deref for DateTime {
+    type Target = chrono::DateTime<chrono::UTC>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }

@@ -3,9 +3,9 @@
 use std::net::IpAddr;
 use std::collections::HashMap;
 
+use DateTime;
 use serde_json::Value;
 use uuid::Uuid;
-use chrono::{DateTime, UTC};
 
 /// Status returned by a write command
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -73,7 +73,7 @@ pub struct Network {
     pub hostname: String,
     pub http_admin_port: u32,
     pub reql_port: u32,
-    pub time_connected: DateTime<UTC>,
+    pub time_connected: DateTime,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -81,7 +81,7 @@ pub struct Process {
     pub argv: Vec<String>,
     pub cache_size_mb: f64,
     pub pid: u64,
-    pub time_started: DateTime<UTC>,
+    pub time_started: DateTime,
     pub version: String,
 }
 
