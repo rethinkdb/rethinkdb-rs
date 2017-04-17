@@ -4,6 +4,7 @@ use std::net::IpAddr;
 use std::collections::HashMap;
 
 use DateTime;
+use serde::Deserialize;
 use serde_json::Value;
 use uuid::Uuid;
 
@@ -112,4 +113,10 @@ pub struct TableStatus {
 /// Structure of data in `uses` table
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct User {
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct Change<O: Deserialize, N: Deserialize> {
+    pub old_val: Option<O>,
+    pub new_val: Option<N>,
 }
