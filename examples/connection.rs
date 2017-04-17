@@ -13,6 +13,7 @@ use reql::{Client, Run, ResponseValue};
 use reql::structs::ServerStatus;
 
 fn main() {
+    args!(|| "hello world!");
     // Build an output drain
     let drain = slog_term::streamer().async().compact().build();
 
@@ -29,7 +30,8 @@ fn main() {
     let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
     
     // Run the query
-    let stati = r.db("rethinkdb").table("server_status").run::<ServerStatus>(conn).unwrap();
+    let query = r.db("rethinkdb").table("server_status");
+    let stati = query.changes().map(args!(query)).run::<ServerStatus>(conn).unwrap();
 
     // Process results
     for res in stati.wait() {
@@ -41,7 +43,7 @@ fn main() {
                 println!("unexpected response from DB: {:?}", res);
             }
             Ok(Err(error)) => {
-                println!("{}", error);
+                println!("{:?}", error);
             }
             Err(_) => {
                 println!("an error occured while processing the stream");
