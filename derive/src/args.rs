@@ -260,6 +260,9 @@ impl Type {
             else if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = *tree {
                 *typ = Type::Closure;
             }
+            else if let TokenTree::Token(Token::OrOr) = *tree {
+                *typ = Type::Closure;
+            }
         } else if tokens.len() == 1 {
             if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = *tree {
                 if let TokenTree::Token(Token::Ident(ref i)) = tokens[0] {
