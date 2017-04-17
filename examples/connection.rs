@@ -2,13 +2,15 @@ extern crate slog_term;
 #[macro_use] extern crate slog;
 extern crate tokio_core;
 extern crate futures;
+
 #[macro_use] extern crate reql;
 
-use reql::{Client, Run};
-use reql::structs::ServerStatus;
 use slog::DrainExt;
 use tokio_core::reactor::Core;
 use futures::stream::Stream;
+
+use reql::{Client, Run, ResponseValue};
+use reql::structs::ServerStatus;
 
 fn main() {
     // Build an output drain
@@ -30,7 +32,20 @@ fn main() {
     let stati = r.db("rethinkdb").table("server_status").run::<ServerStatus>(conn).unwrap();
 
     // Process results
-    for status in stati.wait() {
-        println!("{:?}", status);
+    for res in stati.wait() {
+        match res {
+            Ok(Ok(Some(ResponseValue::Expected(server)))) => {
+                println!("{} => {:?}", server.name, server.network.canonical_addresses);
+            }
+            Ok(Ok(res)) => {
+                println!("unexpected response from DB: {:?}", res);
+            }
+            Ok(Err(error)) => {
+                println!("{}", error);
+            }
+            Err(_) => {
+                println!("an error occured while processing the stream");
+            }
+        }
     }
 }
