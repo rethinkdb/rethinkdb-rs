@@ -45,7 +45,7 @@ impl Commands {
             use Connection;
             use {{Client, IntoArg, Result}};
             use slog::Logger;
-            use ql2::proto::Term_TermType as Type;
+            use ql2::proto::{{Term, Term_TermType as Type}};
         "#)
     }
 
@@ -73,6 +73,19 @@ impl Commands {
 
                 pub fn new() -> Client {{
                     util::new_client()
+                }}
+
+                #[doc(hidden)]
+                pub fn set_term(&mut self, term: Result<Term>) {{
+                    self.term = term;
+                }}
+
+                #[doc(hidden)]
+                pub fn term(&self) -> Result<&Term> {{
+                    match self.term {{
+                        Ok(ref term) => Ok(term),
+                        Err(ref error) => Err(error.clone()),
+                    }}
                 }}
 
                 /// Override the current logger

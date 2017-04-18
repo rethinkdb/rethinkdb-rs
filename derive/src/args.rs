@@ -195,8 +195,40 @@ impl Group {
                 quote!(#var.add_arg(#expr.into_arg());)
                     .to_tokens(&mut tokens);
             }
-            Group::Closure(_closure) => {
-                unimplemented!();
+            Group::Closure(tt) => {
+                let mut func = Tokens::new();
+                let mut args = Tokens::new();
+                let mut found_lbar = false;
+                let mut found_rbar = false;
+                for token in tt {
+                    token.to_tokens(&mut func);
+                    if found_rbar {
+                        continue;
+                    }
+                    if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = token {
+                        if found_lbar {
+                            found_rbar = true;
+                            continue;
+                        } else {
+                            found_lbar = true;
+                            continue;
+                        }
+                    }
+                    else if let TokenTree::Token(Token::OrOr) = token {
+                        found_lbar = true;
+                        found_rbar = true;
+                        continue;
+                    }
+                    if found_lbar && !found_rbar {
+                        quote!(, var!())
+                            .to_tokens(&mut args);
+                    }
+                }
+                let closure = quote! {
+                    let func = func!(#func #args);
+                    #var.add_arg(func.into_arg());
+                };
+                closure.to_tokens(&mut tokens);
             }
             Group::List(tt) => {
                 let mut list = quote!(let mut list_arg = Arg::new(););

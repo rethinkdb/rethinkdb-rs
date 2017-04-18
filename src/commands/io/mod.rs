@@ -2,7 +2,7 @@ mod pool;
 mod request;
 mod handshake;
 
-use std::error;
+use std::{error, thread};
 use std::io::{self, Write, Read};
 use std::net::ToSocketAddrs;
 use std::net::TcpStream;
@@ -25,6 +25,7 @@ use errors::*;
 use futures::sync::mpsc;
 use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
+use structs::ServerStatus;
 
 lazy_static! {
     static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
@@ -218,7 +219,17 @@ impl Connection {
             }
         }
         config.cluster.sort();
-        CONFIG.write().insert(*self, config);
+        CONFIG.write().insert(*self, config.clone());
+        let conn = *self;
+        thread::spawn(move || {
+            let r = Client::new();
+            let query = r.db("rethinkdb").table("server_status").changes();
+            loop {
+                if let Ok(stati) = query.run::<ServerStatus>(conn) {
+                }
+                thread::sleep(Duration::from_millis(500));
+            }
+        });
     }
 
     fn config(&self) -> Config {

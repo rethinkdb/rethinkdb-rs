@@ -47,12 +47,17 @@ mod commands;
 pub mod errors;
 pub mod structs;
 
-#[doc(hidden)]
-pub use reql_derive::*;
-
 // Needed by the `args` macro
 #[doc(hidden)]
-pub use ql2::proto::Term;
+pub use reql_derive::*;
+#[doc(hidden)]
+pub use ql2::proto::{
+    Term, Datum,
+    Term_TermType as TT,
+    Datum_DatumType as DT,
+};
+#[doc(hidden)]
+pub use protobuf::repeated::RepeatedField;
 
 #[cfg(feature = "with-io")]
 use std::net::SocketAddr;
@@ -166,7 +171,6 @@ pub struct Client {
     term: Result<Term>,
     query: String,
     write: bool,
-    idx: u32,
     logger: Logger,
 }
 

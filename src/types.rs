@@ -152,12 +152,18 @@ impl Encode for Term {
         }
         let terms = self.get_args();
         if !terms.is_empty() {
-            let mut args = String::from("[");
+            let mut args = if self.has_field_type() {
+                String::from("[")
+            } else {
+                String::new()
+            };
             for term in terms {
                 args.push_str(&format!("{},", term.encode()));
             }
             args = args.trim_right_matches(",").to_string();
-            args.push_str("]");
+            if self.has_field_type() {
+                args.push_str("]");
+            }
             res.push(args);
         }
         let opts = self.clone().take_optargs().into_vec();
@@ -167,6 +173,15 @@ impl Encode for Term {
         let mut res = res.join(",");
         if !self.is_datum() {
             res.push_str("]");
+        }
+        // replace closure placeholders
+        let parts: Vec<&str> = res.split("\"VARID-C1058970-A4C6-47A8-AD25-1113EA72F84E\"").collect();
+        let mut res = String::new();
+        for (i, part) in parts.into_iter().enumerate() {
+            if i != 0 {
+                res.push_str(&i.to_string());
+            }
+            res.push_str(&part);
         }
         res
     }

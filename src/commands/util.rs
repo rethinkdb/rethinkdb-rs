@@ -8,7 +8,6 @@ pub fn new_client() -> Client {
         term: Ok(Term::new()),
         query: String::from("r"),
         write: false,
-        idx: 0,
         logger: slog::Logger::root(slog::Discard, o!()),
     }
 }
