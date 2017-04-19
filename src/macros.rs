@@ -28,10 +28,11 @@ macro_rules! var {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! func {
-    ($f:expr, $( $v:expr ),* ) => {{
+    ($f:tt, $( $v:expr ),* ) => {{
         use $crate::{Client, RepeatedField, Term, Datum, TT, DT};
 
         // IDs
+        #[allow(unused_mut)]
         let mut ids = Vec::new();
         let res: Client = $f(
             $({

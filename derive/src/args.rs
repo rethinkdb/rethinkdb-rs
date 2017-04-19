@@ -58,6 +58,7 @@ impl<'a> Args<'a> {
         let tt = syn::parse_token_trees(self.input).expect("failed to parse token tree");
         let mut tokens = Tokens::new();
         let args = self.group_by_comma(tt);
+        panic!(format!("{:?}", args));
         let last = args.len()-1;
         for (i, arg) in args.into_iter().enumerate() {
             arg.tokenise("args", i == last).to_tokens(&mut tokens);
@@ -65,7 +66,7 @@ impl<'a> Args<'a> {
         tokens
     }
 
-    fn finalise_arg(&self, args: &mut Vec<Group>, tokens: &mut Vec<TokenTree>, typ: &mut Type) {
+    fn finalise_arg(&self, args: &mut Vec<Group>, tokens: &mut Vec<TokenTree>, typ: &mut Type, found_lbar: &mut bool, found_rbar: &mut bool, found_body: &mut bool) {
         let group = match *typ {
             Type::Expr => Group::Expr(tokens.clone()),
             Type::Closure => Group::Closure(tokens.clone()),
@@ -75,6 +76,9 @@ impl<'a> Args<'a> {
         args.push(group);
         *tokens = Vec::new();
         *typ = Type::Expr;
+        *found_lbar = false;
+        *found_rbar = false;
+        *found_body = false;
     }
 
     fn hash_from_tokens(&self, tt: Vec<TokenTree>) -> HashMap<String, Group> {
@@ -133,27 +137,34 @@ impl<'a> Args<'a> {
         let mut tokens = Vec::new();
         let mut typ = Type::Expr;
         let last = tt.len()-1;
+        let mut found_lbar = false;
+        let mut found_rbar = false;
+        let mut found_body = false;
 
         for (i, tree) in tt.into_iter().enumerate() {
             let token_is_comma = if let TokenTree::Token(Token::Comma) = tree { true } else { false };
             let on_last_token = if i == last { true } else { false };
             let arg_end = token_is_comma || on_last_token;
+            let mut token_is_bar = false;
 
-            match Type::new(&tokens, &tree, &mut typ) {
+            match Type::new(&tokens, &tree, &mut typ, &mut token_is_bar, &mut found_lbar, &mut found_rbar) {
                 Type::Expr => {
                     if !token_is_comma {
                         tokens.push(tree);
                     }
                     if arg_end {
-                        self.finalise_arg(&mut args, &mut tokens, &mut typ);
+                        self.finalise_arg(&mut args, &mut tokens, &mut typ, &mut found_lbar, &mut found_rbar, &mut found_body);
                     }
                 }
                 Type::Closure => {
-                    if !token_is_comma {
+                    if !token_is_comma && !token_is_bar {
                         tokens.push(tree);
+                        if found_rbar {
+                            found_body = true;
+                        }
                     }
-                    if arg_end {
-                        self.finalise_arg(&mut args, &mut tokens, &mut typ);
+                    if on_last_token || found_body {
+                        self.finalise_arg(&mut args, &mut tokens, &mut typ, &mut found_lbar, &mut found_rbar, &mut found_body);
                     }
                 }
                 Type::List => {
@@ -163,7 +174,7 @@ impl<'a> Args<'a> {
                         }
                     }
                     if arg_end {
-                        self.finalise_arg(&mut args, &mut tokens, &mut typ);
+                        self.finalise_arg(&mut args, &mut tokens, &mut typ, &mut found_lbar, &mut found_rbar, &mut found_body);
                     }
                 }
                 Type::Object => {
@@ -173,7 +184,7 @@ impl<'a> Args<'a> {
                         }
                     }
                     if arg_end {
-                        self.finalise_arg(&mut args, &mut tokens, &mut typ);
+                        self.finalise_arg(&mut args, &mut tokens, &mut typ, &mut found_lbar, &mut found_rbar, &mut found_body);
                     }
                 }
             }
@@ -220,12 +231,12 @@ impl Group {
                         continue;
                     }
                     if found_lbar && !found_rbar {
-                        quote!(, var!())
+                        quote!(var!(),)
                             .to_tokens(&mut args);
                     }
                 }
                 let closure = quote! {
-                    let func = func!(#func #args);
+                    let func = func!((#func), #args);
                     #var.add_arg(func.into_arg());
                 };
                 closure.to_tokens(&mut tokens);
@@ -283,7 +294,7 @@ impl Group {
 }
 
 impl Type {
-    fn new(tokens: &Vec<TokenTree>, tree: &TokenTree, typ: &mut Type) -> Type {
+    fn new(tokens: &Vec<TokenTree>, tree: &TokenTree, typ: &mut Type, token_is_bar: &mut bool, found_lbar: &mut bool, found_rbar: &mut bool) -> Type {
         if tokens.is_empty() {
             if let TokenTree::Delimited(ref d) = *tree {
                 if d.delim == DelimToken::Bracket { *typ = Type::List; }
@@ -291,15 +302,36 @@ impl Type {
             }
             else if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = *tree {
                 *typ = Type::Closure;
+                *token_is_bar = true;
+                if *found_lbar {
+                    *found_rbar = true;
+                } else {
+                    *found_lbar = true;
+                }
             }
             else if let TokenTree::Token(Token::OrOr) = *tree {
                 *typ = Type::Closure;
+                *token_is_bar = true;
+                *found_lbar = true;
+                *found_rbar = true;
             }
         } else if tokens.len() == 1 {
-            if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = *tree {
-                if let TokenTree::Token(Token::Ident(ref i)) = tokens[0] {
-                    if i == "move" {
+            if let TokenTree::Token(Token::Ident(ref i)) = tokens[0] {
+                if i == "move" {
+                    if let TokenTree::Token(Token::BinOp(BinOpToken::Or)) = *tree {
                         *typ = Type::Closure;
+                        *token_is_bar = true;
+                        if *found_lbar {
+                            *found_rbar = true;
+                        } else {
+                            *found_lbar = true;
+                        }
+                    }
+                    else if let TokenTree::Token(Token::OrOr) = *tree {
+                        *typ = Type::Closure;
+                        *token_is_bar = true;
+                        *found_lbar = true;
+                        *found_rbar = true;
                     }
                 }
             }

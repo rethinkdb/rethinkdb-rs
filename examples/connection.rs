@@ -29,23 +29,25 @@ fn main() {
     let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
     
     // Run the query
-    let query = r.db("rethinkdb").table("server_status");
-    //let stati = query.changes().map(args!(|| query.coerce_to("array"))).run::<ServerStatus>(conn).unwrap();
-    let stati = query.changes().map(args!(|| query.coerce_to("array"))).run::<ServerStatus>(conn).unwrap();
+    let query = r.db("rethinkdb").table("server_status").coerce_to("array");
+    let stati = query.changes().with_args(args!({include_initial: true}))
+        .map(args!(|| query))
+        .run::<Vec<ServerStatus>>(conn)
+        .unwrap();
 
     // Process results
     for res in stati.wait() {
         match res {
-            Ok(Ok(Some(ResponseValue::Expected(server)))) => {
-                println!("{} => {:?}", server.name, server.network.canonical_addresses);
+            Ok(Ok(Some(ResponseValue::Expected(servers)))) => {
+                for server in servers {
+                    println!("{} => {:?}", server.name, server.network.canonical_addresses);
+                }
             }
             Ok(Ok(res)) => {
-                println!("unexpected response from DB: {:?}", res);
+                println!("unexpected response from server: {:?}", res);
             }
             Ok(Err(error)) => {
-                if let reql::errors::Error::Runtime(error) = error {
-                    println!("{}", error);
-                }
+                println!("{:?}", error);
             }
             Err(_) => {
                 println!("an error occured while processing the stream");
