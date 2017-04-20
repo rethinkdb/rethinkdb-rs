@@ -29,7 +29,6 @@ impl<T: Deserialize + Send> Request<T> {
         };
         let commands = self.term.encode();
         self.logger = conn.logger.clone();
-        debug!(self.logger, "{}", commands);
         let opts = {
             let res = self.opts.encode();
             if res.is_empty() {
@@ -47,7 +46,7 @@ impl<T: Deserialize + Send> Request<T> {
             let mut i = 0;
             let mut connect = false;
             while i < self.cfg.opts.retries {
-                debug!(self.logger, "Attempt number {}", i);
+                debug!(self.logger, "attempt number {}", i);
                 // Open a new connection if necessary
                 if connect {
                     debug!(self.logger, "reconnecting...");
@@ -82,7 +81,6 @@ impl<T: Deserialize + Send> Request<T> {
                     connect = false;
                 }
                 // Handle the response
-                debug!(self.logger, "processing response");
                 if let Err(error) = self.process(&mut conn, &mut query) {
                     if i == self.cfg.opts.retries - 1 || !self.retry {
                         let _ = self.tx.clone().send(Err(error.into())).wait();
@@ -100,7 +98,6 @@ impl<T: Deserialize + Send> Request<T> {
     {
         self.retry = false;
         self.write = false;
-        debug!(self.logger, "processing request");
         match self.handle(conn) {
             Ok(t) => {
                 match t {

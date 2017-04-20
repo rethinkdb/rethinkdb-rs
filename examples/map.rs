@@ -2,15 +2,16 @@ extern crate slog_term;
 #[macro_use] extern crate slog;
 extern crate tokio_core;
 extern crate futures;
+extern crate serde_json;
 
 #[macro_use] extern crate reql;
 
 use slog::DrainExt;
 use tokio_core::reactor::Core;
 use futures::stream::Stream;
+use serde_json::value::ToJson;
 
 use reql::{Client, Run, ResponseValue};
-use reql::structs::ServerStatus;
 
 fn main() {
     // Build an output drain
@@ -29,22 +30,21 @@ fn main() {
     let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
     
     // Run the query
-    let query = r.db("rethinkdb").table("server_status").coerce_to("array");
-    let stati = query.changes().with_args(args!({include_initial: true}))
-        .map(args!(|| query))
-        .run::<Vec<ServerStatus>>(conn)
-        .unwrap();
+    let sequence1 = [100, 200, 300, 400].to_json().unwrap();
+    let sequence2 = [10, 20, 30, 40].to_json().unwrap();
+    let sequence3 = [1, 2, 3, 4].to_json().unwrap();
+    let sum = r.map(args!(sequence1, sequence2, sequence3, |val1, val2, val3| {
+        val1.add(val2).add(val3)
+    })).run::<[i32; 4]>(conn).unwrap();
 
     // Process results
-    for res in stati.wait() {
+    for res in sum.wait() {
         match res {
-            Ok(Ok(Some(ResponseValue::Expected(servers)))) => {
-                for server in servers {
-                    println!("{} => {:?}", server.name, server.network.canonical_addresses);
-                }
+            Ok(Ok(Some(ResponseValue::Expected(sum)))) => {
+                println!("{:?}", sum);
             }
             Ok(Ok(res)) => {
-                println!("unexpected response from server: {:?}", res);
+                println!("unexpected response from DB: {:?}", res);
             }
             Ok(Err(error)) => {
                 println!("{:?}", error);

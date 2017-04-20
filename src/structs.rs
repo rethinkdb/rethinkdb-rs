@@ -119,4 +119,9 @@ pub struct User {
 pub struct Change<O: Deserialize, N: Deserialize> {
     pub old_val: Option<O>,
     pub new_val: Option<N>,
+    #[serde(rename = "type")]
+    pub result_type: Option<String>,
+    pub old_offset: Option<usize>,
+    pub new_offset: Option<usize>,
+    pub state: Option<String>,
 }
