@@ -192,7 +192,9 @@ impl Deserialize for DateTime {
     {
         let time = Time::deserialize(deserializer)?;
         let secs = time.epoch_time.trunc() as i64;
-        let nsecs = time.epoch_time.fract().abs() as u32;
+        // RethinkDB timestamps have millisecond precision so we need
+        // to convert the milliseconds to nanoseconds first
+        let nsecs = (time.epoch_time.fract().abs() * 1_000_000) as u32;
         let naive = chrono::NaiveDateTime::from_timestamp(secs, nsecs);
         let dt = chrono::DateTime::<chrono::UTC>::from_utc(naive, chrono::UTC);
         Ok(DateTime(dt))
