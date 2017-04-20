@@ -1,15 +1,13 @@
 #[doc(hidden)]
 #[macro_export]
 macro_rules! var {
-    () => {{
+    ($idx:expr) => {{
         use $crate::{Client, RepeatedField, Term, Datum, TT, DT};
 
         // ID
         let mut id = Datum::new();
-        //id.set_field_type(DT::R_NUM);
-        //id.set_r_num(idx as f64);
-        id.set_field_type(DT::R_STR);
-        id.set_r_str("VARID-C1058970-A4C6-47A8-AD25-1113EA72F84E".into());
+        id.set_field_type(DT::R_NUM);
+        id.set_r_num($idx as f64);
         // DATUM
         let mut datum = Term::new();
         datum.set_field_type(TT::DATUM);

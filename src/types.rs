@@ -174,15 +174,6 @@ impl Encode for Term {
         if !self.is_datum() {
             res.push_str("]");
         }
-        // replace closure placeholders
-        let parts: Vec<&str> = res.split("\"VARID-C1058970-A4C6-47A8-AD25-1113EA72F84E\"").collect();
-        let mut res = String::new();
-        for (i, part) in parts.into_iter().enumerate() {
-            if i != 0 {
-                res.push_str(&i.to_string());
-            }
-            res.push_str(&part);
-        }
         res
     }
 }

@@ -206,7 +206,7 @@ impl Group {
                 let mut args = Tokens::new();
                 let mut found_lbar = false;
                 let mut found_rbar = false;
-                for token in tt {
+                for (i, token) in tt.into_iter().enumerate() {
                     token.to_tokens(&mut func);
                     if found_rbar {
                         continue;
@@ -228,7 +228,7 @@ impl Group {
                     if found_lbar {
                         quote!(: Client,)
                             .to_tokens(&mut func);
-                        quote!(var!(),)
+                        quote!(var!(#i),)
                             .to_tokens(&mut args);
                     }
                 }
