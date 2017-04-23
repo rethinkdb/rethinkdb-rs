@@ -4,7 +4,7 @@ use errors::*;
 use {Session, Request, ReqlResponse, Result, ResponseValue};
 use super::{wrap_query, write_query, read_query};
 
-use serde::Deserialize;
+use serde::de::DeserializeOwned;
 use futures::{Future, Sink};
 use protobuf::ProtobufEnum;
 use types::Encode;
@@ -18,7 +18,7 @@ use serde_json::{
     from_slice, from_value,
 };
 
-impl<T: Deserialize + Send> Request<T> {
+impl<T: DeserializeOwned + Send> Request<T> {
     pub fn submit(mut self) {
         let mut conn = match self.pool.get() {
             Ok(conn) => conn,
@@ -191,7 +191,10 @@ impl<T: Deserialize + Send> Request<T> {
                 }
                 // Since this is a successful query let's process the results and send
                 // them to the caller
-                if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
+                if let Ok(data) = from_value::<T>(result.r.clone()) {
+                    let _ = self.tx.clone().send(Ok(Some(ResponseValue::Expected(data)))).wait();
+                }
+                else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                     for v in data {
                         let _ = self.tx.clone().send(Ok(Some(ResponseValue::Expected(v)))).wait();
                     }

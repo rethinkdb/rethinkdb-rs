@@ -7,16 +7,16 @@ use {Result, DateTime, chrono};
 use errors::DriverError;
 use ql2::proto::{Term, Datum, Term_TermType as TermType, Term_AssocPair as TermPair,
                  Datum_DatumType as DatumType, Datum_AssocPair as DatumPair};
-use serde_json::value::{Value, ToJson};
+use serde_json::value::{Value, to_value};
 use protobuf::repeated::RepeatedField;
 use protobuf::ProtobufEnum;
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
 pub trait FromJson {
-    fn from_json<T: ToJson>(t: T) -> Result<Term> {
+    fn from_json<T: Serialize>(t: T) -> Result<Term> {
         // Datum
         let mut datum = Datum::new();
-        match t.to_json()? {
+        match to_value(t)? {
             Value::String(val) => {
                 datum.set_field_type(DatumType::R_STR);
                 datum.set_r_str(val);
@@ -186,9 +186,9 @@ struct Time {
     timezone: String,
 }
 
-impl Deserialize for DateTime {
+impl<'de> Deserialize<'de> for DateTime {
     fn deserialize<D>(deserializer: D) -> result::Result<Self, D::Error>
-        where D: Deserializer
+        where D: Deserializer<'de>
     {
         let time = Time::deserialize(deserializer)?;
         let secs = time.epoch_time.trunc() as i64;

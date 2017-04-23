@@ -71,7 +71,7 @@ use uuid::Uuid;
 #[cfg(feature = "with-io")]
 use std::net::TcpStream;
 #[cfg(feature = "with-io")]
-use serde::Deserialize;
+use serde::de::DeserializeOwned;
 #[cfg(feature = "with-io")]
 use futures::sync::mpsc::{Receiver, Sender};
 
@@ -98,7 +98,7 @@ pub struct Arg {
 pub type Response<T> = Receiver<Result<Option<ResponseValue<T>>>>;
 
 #[cfg(feature = "with-io")]
-struct Request<T: Deserialize + Send> {
+struct Request<T: DeserializeOwned + Send> {
     term: Term,
     opts: Term,
     pool: r2d2::Pool<SessionManager>,
@@ -144,6 +144,7 @@ pub struct Connection(Uuid);
 #[cfg(feature = "with-io")]
 #[derive(Debug, Clone, Eq)]
 struct Server {
+    name: String,
     addresses: Vec<SocketAddr>,
     latency: Duration,
 }
@@ -177,7 +178,7 @@ pub struct Client {
 /// Response value
 #[cfg(feature = "with-io")]
 #[derive(Debug, Clone)]
-pub enum ResponseValue<T: Deserialize + Send> {
+pub enum ResponseValue<T: DeserializeOwned + Send> {
     Expected(T),
     Unexpected(Value),
 }
@@ -206,5 +207,5 @@ pub trait IntoArg {
 #[cfg(feature = "with-io")]
 pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
-    fn run<T: Deserialize + Send + 'static>(&self, args: A) -> Result<Response<T>>;
+    fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>>;
 }

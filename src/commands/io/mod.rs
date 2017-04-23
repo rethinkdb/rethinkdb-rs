@@ -20,7 +20,7 @@ use parking_lot::RwLock;
 use tokio_core::reactor::Remote;
 use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use slog::Logger;
-use serde::Deserialize;
+use serde::de::DeserializeOwned;
 use errors::*;
 use futures::sync::mpsc;
 use protobuf::ProtobufEnum;
@@ -59,7 +59,7 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
 }
 
 impl<A: IntoArg> Run<A> for Client {
-    fn run<T: Deserialize + Send + 'static>(&self, args: A) -> Result<Response<T>> {
+    fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>> {
         let cterm = match self.term {
             Ok(ref term) => term.clone(),
             Err(ref error) => { return Err(error.clone()); }
@@ -192,6 +192,7 @@ impl Connection {
                 host.to_socket_addrs()
             })?;
             cluster.push(Server {
+                name: host,
                 addresses: addresses.collect(),
                 latency: Duration::from_millis(u64::max_value()),
             });

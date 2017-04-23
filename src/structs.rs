@@ -4,7 +4,6 @@ use std::net::IpAddr;
 use std::collections::HashMap;
 
 use DateTime;
-use serde::Deserialize;
 use serde_json::Value;
 use uuid::Uuid;
 
@@ -116,7 +115,7 @@ pub struct User {
 }
 
 #[derive(Deserialize, Debug, Clone)]
-pub struct Change<O: Deserialize, N: Deserialize> {
+pub struct Change<O, N> {
     pub old_val: Option<O>,
     pub new_val: Option<N>,
     #[serde(rename = "type")]
