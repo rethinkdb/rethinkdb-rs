@@ -4,14 +4,15 @@ mod handshake;
 
 use std::{error, thread};
 use std::io::{self, Write, Read};
-use std::net::ToSocketAddrs;
+use std::net::{ToSocketAddrs, SocketAddr};
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use std::cmp::Ordering;
 
 use {Client, Config, SessionManager, Server,
         Result, Connection, Opts, Request, Response,
-        IntoArg, Session, Run};
+        IntoArg, Session, Run, ResponseValue,
+};
 use ql2::proto::{Term, Datum};
 use r2d2;
 use ordermap::OrderMap;
@@ -22,10 +23,11 @@ use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use slog::Logger;
 use serde::de::DeserializeOwned;
 use errors::*;
+use futures::{Stream, Sink};
 use futures::sync::mpsc;
 use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
-use structs::ServerStatus;
+use structs::{Change, ServerStatus};
 
 lazy_static! {
     static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
@@ -49,12 +51,13 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
         Some(remote) => conn.set_config(aterm, remote, logger.clone())?,
         None => { return Err(io_error("a futures handle is required for `connect`"))?; }
     }
-    conn.maintain();
+    conn.set_latency()?;
     let config = r2d2::Config::default();
     let session = SessionManager(conn);
     let r2d2 = r2d2::Pool::new(config, session).map_err(|err| io_error(err))?;
     conn.set_pool(r2d2);
     info!(logger, "connection pool created successfully");
+    conn.maintain();
     Ok(conn)
 }
 
@@ -191,11 +194,8 @@ impl Connection {
                 let host = format!("{}:{}", host, 28015);
                 host.to_socket_addrs()
             })?;
-            cluster.insert(host.clone(), Server {
-                name: host,
-                addresses: addresses.collect(),
-                latency: Duration::from_millis(u64::max_value()),
-            });
+            let server = Server::new(&host, addresses.collect());
+            cluster.insert(host, server);
         }
 
         CONFIG.write().insert(*self, Config {
@@ -209,27 +209,70 @@ impl Connection {
     }
 
     fn maintain(&self) {
-        let mut config = self.config();
-        for mut server in config.cluster.values_mut() {
-            for address in server.addresses.iter() {
-                let start = Instant::now();
-                if let Ok(_) = TcpStream::connect(address) {
-                    server.latency = start.elapsed();
-                    break;
-                }
-            }
-        }
-        CONFIG.write().insert(*self, config.clone());
+        self.reset_cluster();
         let conn = *self;
+        let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
         thread::spawn(move || {
             let r = Client::new();
-            let query = r.db("rethinkdb").table("server_status").changes();
+            let query = r.db("rethinkdb").table("server_status").changes().with_args(args!({include_initial: true}));
             loop {
-                if let Ok(stati) = query.run::<ServerStatus>(conn) {
+                let changes = query.run::<Change<ServerStatus, ServerStatus>>(conn).unwrap();
+                for change in changes.wait() {
+                    match change {
+                        Ok(Ok(Some(ResponseValue::Expected(change)))) => {
+                            if let Some(ref mut config) = CONFIG.write().get_mut(&conn) {
+                                let cluster = &mut config.cluster;
+                                if let Some(status) = change.new_val {
+                                    let mut addresses = Vec::new();
+                                    for addr in status.network.canonical_addresses {
+                                        let socket = SocketAddr::new(addr.host, addr.port);
+                                        addresses.push(socket);
+                                    }
+                                    let server = Server::new(&status.name, addresses);
+                                    cluster.insert(server.name.to_owned(), server);
+                                    let _ = tx.clone().send(());
+                                } else if let Some(status) = change.old_val {
+                                    cluster.remove(&status.name);
+                                }
+                            }
+                        }
+                        Ok(Ok(res)) => {
+                            println!("unexpected response from server: {:?}", res);
+                        }
+                        Ok(Err(error)) => {
+                            println!("{:?}", error);
+                        }
+                        Err(_) => {
+                            println!("an error occured while processing the stream");
+                        }
+                    }
                 }
                 thread::sleep(Duration::from_millis(500));
             }
         });
+        // wait for at least one database result before continuing
+        let _ = rx.wait();
+    }
+
+    fn reset_cluster(&self) {
+        if let Some(ref mut config) = CONFIG.write().get_mut(self) {
+            config.cluster = OrderMap::new();
+        }
+    }
+
+    fn set_latency(&self) -> Result<()> {
+        match CONFIG.write().get_mut(self) {
+            Some(ref mut config) => {
+                for mut server in config.cluster.values_mut() {
+                    server.set_latency();
+                }
+                Ok(())
+            }
+            None => {
+                let msg = String::from("conn.set_latency() called before setting configuration");
+                Err(DriverError::Other(msg))?
+            }
+        }
     }
 
     fn config(&self) -> Config {
@@ -238,6 +281,26 @@ impl Connection {
 
     fn set_pool(&self, pool: r2d2::Pool<SessionManager>) {
         POOL.write().insert(*self, pool);
+    }
+}
+
+impl Server {
+    fn new(host: &str, addresses: Vec<SocketAddr>) -> Server {
+        Server {
+            name: host.to_string(),
+            addresses: addresses,
+            latency: Duration::from_millis(u64::max_value()),
+        }
+    }
+
+    fn set_latency(&mut self) {
+        for address in self.addresses.iter() {
+            let start = Instant::now();
+            if let Ok(_) = TcpStream::connect(address) {
+                self.latency = start.elapsed();
+                break;
+            }
+        }
     }
 }
 

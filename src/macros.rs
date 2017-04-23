@@ -89,25 +89,35 @@ macro_rules! with_args {
 }
 
 proc_macro_expr_decl!(
-    /// Splice an array of arguments into another term
-    ///
-    /// `args` is a macro that’s used to splice a number of arguments into another term. This is
-    /// useful when you want to call a variadic term such as [branch](struct.Client.html#method.branch) with a set of arguments produced at
-    /// runtime.
-    ///
-    /// # Example
-    ///
-    /// Get Alice and Bob from the table `people`.
-    ///
-    /// ```
-    /// # #![allow(unused_must_use)]
-    /// # #[macro_use] extern crate reql;
-    /// # use reql::Client;
-    /// # fn main() {
-    /// # let r = Client::new();
-    /// let x = 10;
-    /// r.branch(args!(r.expr(x).gt(5), "big", "small"));
-    /// # }
-    /// ```
-    args! => args_impl
+    #[doc(hidden)]
+    __args! => args_impl
 );
+
+/// Splice an array of arguments into another term
+///
+/// `args` is a macro that’s used to splice a number of arguments into another term. This is
+/// useful when you want to call a variadic term such as [branch](struct.Client.html#method.branch) with a set of arguments produced at
+/// runtime.
+///
+/// # Example
+///
+/// Get Alice and Bob from the table `people`.
+///
+/// ```
+/// # #![allow(unused_must_use)]
+/// # #[macro_use] extern crate reql;
+/// # use reql::Client;
+/// # fn main() {
+/// # let r = Client::new();
+/// let x = 10;
+/// r.branch(args!(r.expr(x).gt(5), "big", "small"));
+/// # }
+/// ```
+#[macro_export]
+macro_rules! args {
+    ( $($args:tt)* ) => {{
+        #[allow(unused_imports)]
+        use $crate::{Term, IntoArg, Arg};
+        __args!($($args)*)
+    }}
+}

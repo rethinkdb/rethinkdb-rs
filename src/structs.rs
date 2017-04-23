@@ -62,7 +62,7 @@ pub struct ServerConfig {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CanonicalAddress {
     pub host: IpAddr,
-    pub port: u32,
+    pub port: u16,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
