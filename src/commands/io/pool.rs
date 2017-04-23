@@ -26,7 +26,8 @@ impl Session {
         let cfg = conn.config();
         let logger = cfg.logger;
         //let remote = cfg.remote;
-        let servers = cfg.cluster;
+        let mut servers = cfg.cluster;
+        servers.sort();
         debug!(logger, "cluster: {:?}", servers);
 
         for server in servers {
@@ -36,7 +37,7 @@ impl Session {
                     Ok(stream) => {
                         let logger = logger.new(o!(
                             "local_addr" => stream.local_addr()?.to_string(),
-                            "peer_addr" => address.to_string(),
+                            "peer_addr" => server.name,
                         ));
 
                         let mut conn = Session {

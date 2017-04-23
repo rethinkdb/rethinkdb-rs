@@ -219,7 +219,6 @@ impl Connection {
                 }
             }
         }
-        config.cluster.sort();
         CONFIG.write().insert(*self, config.clone());
         let conn = *self;
         thread::spawn(move || {
