@@ -26,7 +26,7 @@ fn main() {
     let core = Core::new().unwrap();
 
     // Create a connection pool
-    let conn = r.connect(args!(core.handle(), {servers: ["localhost:28015", "localhost:28016"]})).unwrap();
+    let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
     
     // Run the query
     let stati = r.db("rethinkdb").table("server_status")

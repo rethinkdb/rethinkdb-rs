@@ -9,7 +9,7 @@ extern crate serde_json;
 use slog::DrainExt;
 use tokio_core::reactor::Core;
 use futures::stream::Stream;
-use serde_json::value::ToJson;
+use serde_json::value::to_value;
 
 use reql::{Client, Run, ResponseValue};
 
@@ -30,9 +30,10 @@ fn main() {
     let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
     
     // Run the query
-    let sequence1 = [100, 200, 300, 400].to_json().unwrap();
-    let sequence2 = [10, 20, 30, 40].to_json().unwrap();
-    let sequence3 = [1, 2, 3, 4].to_json().unwrap();
+    let sequence1 = to_value([100, 200, 300, 400]).unwrap();
+    let sequence2 = to_value([10, 20, 30, 40]).unwrap();
+    let sequence3 = to_value([1, 2, 3, 4]).unwrap();
+
     let sum = r.map(args!(sequence1, sequence2, sequence3, |val1, val2, val3| {
         val1.add(val2).add(val3)
     })).run::<[i32; 4]>(conn).unwrap();
