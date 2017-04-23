@@ -46,7 +46,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
             let mut i = 0;
             let mut connect = false;
             while i < self.cfg.opts.retries {
-                debug!(self.logger, "attempt number {}", i);
+                debug!(self.logger, "attempt number {}", i+1);
                 // Open a new connection if necessary
                 if connect {
                     debug!(self.logger, "reconnecting...");

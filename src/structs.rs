@@ -68,11 +68,11 @@ pub struct CanonicalAddress {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Network {
     pub canonical_addresses: Vec<CanonicalAddress>,
-    pub cluster_port: u32,
+    pub cluster_port: u16,
     pub connected_to: HashMap<String, bool>,
     pub hostname: String,
-    pub http_admin_port: u32,
-    pub reql_port: u32,
+    pub http_admin_port: u16,
+    pub reql_port: u16,
     pub time_connected: DateTime,
 }
 

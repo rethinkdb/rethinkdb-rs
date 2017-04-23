@@ -225,7 +225,7 @@ impl Connection {
                                 if let Some(status) = change.new_val {
                                     let mut addresses = Vec::new();
                                     for addr in status.network.canonical_addresses {
-                                        let socket = SocketAddr::new(addr.host, addr.port);
+                                        let socket = SocketAddr::new(addr.host, status.network.reql_port);
                                         addresses.push(socket);
                                     }
                                     let server = Server::new(&status.name, addresses);

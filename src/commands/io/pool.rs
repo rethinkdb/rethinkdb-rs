@@ -37,7 +37,7 @@ impl Session {
                     Ok(stream) => {
                         let logger = logger.new(o!(
                             "local_addr" => stream.local_addr()?.to_string(),
-                            "peer_addr" => server.name.to_string(),
+                            "peer_addr" => format!("{}:{}", server.name, address.port()),
                         ));
 
                         let mut conn = Session {
