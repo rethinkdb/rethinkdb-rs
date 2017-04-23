@@ -167,7 +167,7 @@ impl PartialEq for Server {
 
 impl Connection {
     fn set_config(&self, mut term: Term, remote: Remote, logger: Logger) -> Result<()> {
-        let mut cluster = Vec::new();
+        let mut cluster = OrderMap::new();
         let mut hosts = Vec::new();
         let mut opts = Opts::default();
 
@@ -191,7 +191,7 @@ impl Connection {
                 let host = format!("{}:{}", host, 28015);
                 host.to_socket_addrs()
             })?;
-            cluster.push(Server {
+            cluster.insert(host.clone(), Server {
                 name: host,
                 addresses: addresses.collect(),
                 latency: Duration::from_millis(u64::max_value()),
@@ -210,7 +210,7 @@ impl Connection {
 
     fn maintain(&self) {
         let mut config = self.config();
-        for mut server in config.cluster.iter_mut() {
+        for mut server in config.cluster.values_mut() {
             for address in server.addresses.iter() {
                 let start = Instant::now();
                 if let Ok(_) = TcpStream::connect(address) {

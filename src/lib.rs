@@ -74,6 +74,8 @@ use std::net::TcpStream;
 use serde::de::DeserializeOwned;
 #[cfg(feature = "with-io")]
 use futures::sync::mpsc::{Receiver, Sender};
+#[cfg(feature = "with-io")]
+use ordermap::OrderMap;
 
 use errors::Error;
 use slog::Logger;
@@ -120,7 +122,7 @@ struct Session {
 #[cfg(feature = "with-io")]
 #[derive(Clone)]
 struct Config {
-    cluster: Vec<Server>,
+    cluster: OrderMap<String, Server>,
     opts: Opts,
     remote: Remote,
     logger: Logger,

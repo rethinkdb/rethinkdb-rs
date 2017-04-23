@@ -26,18 +26,18 @@ impl Session {
         let cfg = conn.config();
         let logger = cfg.logger;
         //let remote = cfg.remote;
-        let mut servers = cfg.cluster;
+        let mut servers: Vec<_> = cfg.cluster.values().collect();
         servers.sort();
         debug!(logger, "cluster: {:?}", servers);
 
         for server in servers {
-            for address in server.addresses {
+            for address in server.addresses.iter() {
                 debug!(logger, "connecting to {}", address);
                 match TcpStream::connect(&address) {
                     Ok(stream) => {
                         let logger = logger.new(o!(
                             "local_addr" => stream.local_addr()?.to_string(),
-                            "peer_addr" => server.name,
+                            "peer_addr" => server.name.to_string(),
                         ));
 
                         let mut conn = Session {
