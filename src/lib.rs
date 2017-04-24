@@ -97,7 +97,11 @@ pub struct Arg {
 ///
 /// Response returned by `run()`
 #[cfg(feature = "with-io")]
-pub type Response<T> = Receiver<Result<Option<ResponseValue<T>>>>;
+#[derive(Debug)]
+pub struct Response<T: DeserializeOwned + Send> {
+    done: bool,
+    rx: Receiver<Result<Option<ResponseValue<T>>>>,
+}
 
 #[cfg(feature = "with-io")]
 struct Request<T: DeserializeOwned + Send> {
@@ -157,7 +161,7 @@ struct Opts {
     db: String,
     user: String,
     password: String,
-    retries: u8,
+    retries: u64,
     tls: Option<TlsCfg>,
 }
 

@@ -23,7 +23,7 @@ use byteorder::{WriteBytesExt, LittleEndian, ReadBytesExt};
 use slog::Logger;
 use serde::de::DeserializeOwned;
 use errors::*;
-use futures::{Stream, Sink};
+use futures::{Stream, Sink, Poll, Async};
 use futures::sync::mpsc;
 use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
@@ -107,7 +107,41 @@ impl<A: IntoArg> Run<A> for Client {
             };
             req.submit();
         });
-        Ok(rx)
+        Ok(Response {
+            done: false,
+            rx: rx,
+        })
+    }
+}
+
+impl<T: DeserializeOwned + Send> Stream for Response<T> {
+    type Item = Option<ResponseValue<T>>;
+    type Error = Error;
+
+    fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
+        if self.done {
+            return Ok(Async::Ready(None));
+        }
+        match self.rx.poll() {
+            Ok(Async::NotReady) => {
+                Ok(Async::NotReady)
+            }
+            Ok(Async::Ready(Some(res))) => {
+                match res {
+                    Ok(data) => Ok(Async::Ready(Some(data))),
+                    Err(error) => Err(error),
+                }
+            }
+            Ok(Async::Ready(None)) => {
+                self.done = true;
+                Ok(Async::Ready(None))
+            }
+            Err(_) => {
+                self.done = true;
+                let msg = String::from("an error occured while processing the stream");
+                Err(DriverError::Other(msg))?
+            }
+        }
     }
 }
 
@@ -130,6 +164,16 @@ impl Default for Opts {
             db: "test".into(),
             user: "admin".into(),
             password: String::new(),
+            // @TODO number of retries doesn't mean much
+            // let's use a timeout instead and make it an
+            // option in both connect and run. The connect
+            // one will be the user default and the run one
+            // will have the highest precedence. Also let's
+            // call it `retry_timeout` to communicate clearly
+            // what it does.
+            //
+            // another idea is to let users mark queries as `reproducible`
+            // so they can be reposted to make sure they are saved.
             retries: 5,
             tls: None,
         }
@@ -219,7 +263,7 @@ impl Connection {
                 let changes = query.run::<Change<ServerStatus, ServerStatus>>(conn).unwrap();
                 for change in changes.wait() {
                     match change {
-                        Ok(Ok(Some(ResponseValue::Expected(change)))) => {
+                        Ok(Some(ResponseValue::Expected(change))) => {
                             if let Some(ref mut config) = CONFIG.write().get_mut(&conn) {
                                 let cluster = &mut config.cluster;
                                 if let Some(status) = change.new_val {
@@ -228,7 +272,8 @@ impl Connection {
                                         let socket = SocketAddr::new(addr.host, status.network.reql_port);
                                         addresses.push(socket);
                                     }
-                                    let server = Server::new(&status.name, addresses);
+                                    let mut server = Server::new(&status.name, addresses);
+                                    server.set_latency();
                                     cluster.insert(server.name.to_owned(), server);
                                     let _ = tx.clone().send(());
                                 } else if let Some(status) = change.old_val {
@@ -236,14 +281,11 @@ impl Connection {
                                 }
                             }
                         }
-                        Ok(Ok(res)) => {
+                        Ok(res) => {
                             println!("unexpected response from server: {:?}", res);
                         }
-                        Ok(Err(error)) => {
+                        Err(error) => {
                             println!("{:?}", error);
-                        }
-                        Err(_) => {
-                            println!("an error occured while processing the stream");
                         }
                     }
                 }

@@ -49,7 +49,7 @@ ordermap = { version = "0.2", optional = true }
 slog-term = "1.5"
 
 [build-dependencies]
-serde = "0.9"
-serde_derive = "0.9"
-serde_yaml = "0.6"
+serde = "1.0"
+serde_derive = "1.0"
+serde_yaml = { git = "https://github.com/dtolnay/serde-yaml" }
 nom = "2.1"

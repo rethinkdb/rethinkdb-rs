@@ -37,17 +37,14 @@ fn main() {
     // Process results
     for res in stati.wait() {
         match res {
-            Ok(Ok(Some(ResponseValue::Expected(change)))) => {
+            Ok(Some(ResponseValue::Expected(change))) => {
                 println!("{:?}", change);
             }
-            Ok(Ok(res)) => {
+            Ok(res) => {
                 println!("unexpected response from server: {:?}", res);
             }
-            Ok(Err(error)) => {
+            Err(error) => {
                 println!("{:?}", error);
-            }
-            Err(_) => {
-                println!("an error occured while processing the stream");
             }
         }
     }

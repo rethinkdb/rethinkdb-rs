@@ -2,14 +2,13 @@ extern crate slog_term;
 #[macro_use] extern crate slog;
 extern crate tokio_core;
 extern crate futures;
-extern crate serde_json;
+#[macro_use] extern crate serde_json;
 
 #[macro_use] extern crate reql;
 
 use slog::DrainExt;
 use tokio_core::reactor::Core;
 use futures::stream::Stream;
-use serde_json::value::to_value;
 
 use reql::{Client, Run, ResponseValue};
 
@@ -30,9 +29,9 @@ fn main() {
     let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
     
     // Run the query
-    let sequence1 = to_value([100, 200, 300, 400]).unwrap();
-    let sequence2 = to_value([10, 20, 30, 40]).unwrap();
-    let sequence3 = to_value([1, 2, 3, 4]).unwrap();
+    let sequence1 = json!([100, 200, 300, 400]);
+    let sequence2 = json!([10, 20, 30, 40]);
+    let sequence3 = json!([1, 2, 3, 4]);
 
     let sum = r.map(args!(sequence1, sequence2, sequence3, |val1, val2, val3| {
         val1.add(val2).add(val3)
@@ -41,17 +40,14 @@ fn main() {
     // Process results
     for res in sum.wait() {
         match res {
-            Ok(Ok(Some(ResponseValue::Expected(sum)))) => {
+            Ok(Some(ResponseValue::Expected(sum))) => {
                 println!("{:?}", sum);
             }
-            Ok(Ok(res)) => {
+            Ok(res) => {
                 println!("unexpected response from DB: {:?}", res);
             }
-            Ok(Err(error)) => {
+            Err(error) => {
                 println!("{:?}", error);
-            }
-            Err(_) => {
-                println!("an error occured while processing the stream");
             }
         }
     }
