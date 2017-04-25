@@ -17,6 +17,7 @@ use reql::structs::WriteStatus;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct User {
+    id: i32,
     name: String,
     age: i32,
 }
@@ -35,8 +36,9 @@ fn main() {
     let core = Core::new().unwrap();
 
     // Create a connection pool
-    let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
+    let conn = r.connect(args!(core.handle(), {servers: ["localhost"], reproducible: true})).unwrap();
 
+    /*
     // Create the table
     match r.db("test").table_create(args!("users", {replicas: 3})).run::<()>(conn).unwrap().wait().next().unwrap() {
         Ok(Some(ResponseValue::Expected(status))) => {
@@ -49,10 +51,12 @@ fn main() {
             println!("{:?}", error);
         }
     }
+    */
 
-    for i in 0..30000 {
+    for i in 0..3000 {
         // Run the query
         let user = User {
+            id: i,
             name: format!("User {}", i),
             age: i,
         };

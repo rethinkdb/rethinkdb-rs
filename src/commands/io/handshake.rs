@@ -70,7 +70,7 @@ impl Session {
     }
 
     pub fn is_valid(&mut self) -> Result<()> {
-        self.id += 1;
+        self.id = self.id.wrapping_add(1);
         let query = wrap_query(QueryType::START, Some(String::from("1")), None);
         write_query(self, &query)?;
         let resp = read_query(self)?;

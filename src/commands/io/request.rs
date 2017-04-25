@@ -1,7 +1,7 @@
 use std::error::Error as StdError;
 
 use errors::*;
-use {Session, Request, ReqlResponse, Result, ResponseValue};
+use {Session, SessionManager, Request, ReqlResponse, Result, ResponseValue};
 use super::{wrap_query, write_query, read_query};
 
 use serde::de::DeserializeOwned;
@@ -13,17 +13,28 @@ use ql2::proto::{
     Response_ResponseType as ResponseType,
     Response_ErrorType as ErrorType,
 };
+use r2d2::PooledConnection;
 use serde_json::{
     Value,
     from_slice, from_value,
 };
 
 impl<T: DeserializeOwned + Send> Request<T> {
+    fn conn(&self) -> Result<PooledConnection<SessionManager>> {
+        match self.pool.get() {
+            Ok(mut conn) => {
+                conn.id = conn.id.wrapping_add(1);
+                Ok(conn)
+            }
+            Err(error) => Err(error)?,
+        }
+    }
+
     pub fn submit(mut self) {
-        let mut conn = match self.pool.get() {
+        let mut conn = match self.conn() {
             Ok(conn) => conn,
             Err(error) => {
-                let _ = self.tx.clone().send(Err(error.into())).wait();
+                let _ = self.tx.clone().send(Err(error)).wait();
                 return;
             }
         };
@@ -45,46 +56,55 @@ impl<T: DeserializeOwned + Send> Request<T> {
         {
             let mut i = 0;
             let mut connect = false;
-            while i < self.cfg.opts.retries {
+            let reproducible = self.cfg.opts.reproducible;
+            while i < self.cfg.opts.retries || reproducible {
                 debug!(self.logger, "attempt number {}", i+1);
                 // Open a new connection if necessary
                 if connect {
                     debug!(self.logger, "reconnecting...");
                     drop(&mut conn);
-                    conn = match self.pool.get() {
+                    conn = match self.conn() {
                         Ok(c) => c,
                         Err(error) => {
                             if i == self.cfg.opts.retries - 1 {
                                 let _ = self.tx.clone().send(Err(error.into())).wait();
-                                return;
-                            } else {
-                                i += 1;
-                                continue;
+                                if !reproducible {
+                                    return;
+                                }
                             }
+                            i += 1;
+                            continue;
                         }
                     };
                     self.logger = conn.logger.clone();
                 }
                 // Submit the query if necessary
-                if self.write {
+                if self.write || reproducible {
                     debug!(self.logger, "submitting query");
                     if let Err(error) = write_query(&mut conn, &query) {
                         connect = true;
                         if i == self.cfg.opts.retries - 1 {
                             let _ = self.tx.clone().send(Err(error.into())).wait();
-                            return;
-                        } else {
-                            i += 1;
-                            continue;
+                            if !reproducible {
+                                return;
+                            }
                         }
+                        i += 1;
+                        continue;
                     }
-                    connect = false;
+                    if reproducible {
+                        connect = true;
+                    } else {
+                        connect = false;
+                    }
                 }
                 // Handle the response
                 if let Err(error) = self.process(&mut conn, &mut query) {
                     if i == self.cfg.opts.retries - 1 || !self.retry {
                         let _ = self.tx.clone().send(Err(error.into())).wait();
-                        return;
+                        if !reproducible {
+                            return;
+                        }
                     }
                     i += 1;
                     continue;

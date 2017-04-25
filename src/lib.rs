@@ -162,6 +162,7 @@ struct Opts {
     user: String,
     password: String,
     retries: u64,
+    reproducible: bool,
     tls: Option<TlsCfg>,
 }
 

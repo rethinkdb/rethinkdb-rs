@@ -52,7 +52,13 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
         None => { return Err(io_error("a futures handle is required for `connect`"))?; }
     }
     conn.set_latency()?;
-    let config = r2d2::Config::default();
+    let config = r2d2::Config::builder()
+        .pool_size(1024)
+        .idle_timeout(Some(Duration::from_secs(30)))
+        .max_lifetime(Some(Duration::from_secs(150)))
+        .min_idle(Some(5))
+        .connection_timeout(Duration::from_secs(3))
+        .build();
     let session = SessionManager(conn);
     let r2d2 = r2d2::Pool::new(config, session).map_err(|err| io_error(err))?;
     conn.set_pool(r2d2);
@@ -151,13 +157,6 @@ where T: Into<Box<error::Error + Send + Sync>>
     io::Error::new(io::ErrorKind::Other, err)
 }
 
-fn take_string(val: Vec<Datum>) -> String {
-    for mut datum in val {
-        return datum.take_r_str();
-    }
-    String::new()
-}
-
 impl Default for Opts {
     fn default() -> Opts {
         Opts {
@@ -171,27 +170,11 @@ impl Default for Opts {
             // will have the highest precedence. Also let's
             // call it `retry_timeout` to communicate clearly
             // what it does.
-            //
-            // another idea is to let users mark queries as `reproducible`
-            // so they can be reposted to make sure they are saved.
             retries: 5,
+            reproducible: false,
             tls: None,
         }
     }
-}
-
-fn find_datum(mut term: Term) -> Vec<Datum> {
-    let mut res = Vec::new();
-    if term.has_datum() {
-        res.push(term.take_datum());
-    } else {
-        for term in term.take_args().into_vec() {
-            for datum in find_datum(term) {
-                res.push(datum);
-            }
-        }
-    }
-    res
 }
 
 impl Ord for Server {
@@ -212,6 +195,34 @@ impl PartialEq for Server {
     }
 }
 
+fn find_datum(mut term: Term) -> Vec<Datum> {
+    let mut res = Vec::new();
+    if term.has_datum() {
+        res.push(term.take_datum());
+    } else {
+        for term in term.take_args().into_vec() {
+            for datum in find_datum(term) {
+                res.push(datum);
+            }
+        }
+    }
+    res
+}
+
+fn take_string(key: &str, val: Vec<Datum>) -> Result<String> {
+    for mut datum in val {
+        return Ok(datum.take_r_str());
+    }
+    Err(DriverError::Other(format!("`{}` must be a string", key)))?
+}
+
+fn take_bool(key: &str, val: Vec<Datum>) -> Result<bool> {
+    for datum in val {
+        return Ok(datum.get_r_bool());
+    }
+    Err(DriverError::Other(format!("`{}` must be a boolean", key)))?
+}
+
 impl Connection {
     fn set_config(&self, mut term: Term, remote: Remote, logger: Logger) -> Result<()> {
         let mut cluster = OrderMap::new();
@@ -223,10 +234,15 @@ impl Connection {
             let key = arg.take_key();
             let val = find_datum(arg.take_val());
 
-            if key == "db" { opts.db = take_string(val); }
-            else if key == "user" { opts.user = take_string(val); }
-            else if key == "password" { opts.password = take_string(val); }
-            else if key == "servers" { hosts.extend(val.into_iter().map(|datum| take_string(vec![datum]))); }
+            if key == "db" { opts.db = take_string(&key, val)?; }
+            else if key == "user" { opts.user = take_string(&key, val)?; }
+            else if key == "password" { opts.password = take_string(&key, val)?; }
+            else if key == "reproducible" { opts.reproducible = take_bool(&key, val)?; }
+            else if key == "servers" {
+                for host in val {
+                    hosts.push(take_string(&key, vec![host])?);
+                }
+            }
         }
 
         if hosts.is_empty() {
