@@ -1,0 +1,50 @@
+extern crate tokio_core;
+extern crate futures;
+extern crate reql;
+
+use tokio_core::reactor::Core;
+use futures::stream::Stream;
+use reql::{Client, Run, ResponseValue};
+use reql::structs::ServerStatus;
+
+fn main() {
+    // Create a new ReQL client
+    let r = Client::new();
+
+    // Create an even loop
+    let core = Core::new().unwrap();
+
+    // Create a connection pool
+    let conn = r.connect(&core.handle()).unwrap();
+    
+    // Run the query
+    let stati = r.db("rethinkdb").table("server_status").run::<ServerStatus>(conn).unwrap();
+
+    // Process the results
+    for res in stati.wait() {
+        match res {
+            // The server returned the response we were expecting
+            Ok(Some(ResponseValue::Expected(change))) => {
+                println!("{:?}", change);
+            }
+            // We got a response alright, but it wasn't the one were expecting
+            // plus it's not an error either, otherwise it would have been
+            // returned as such (This simply means that the response we got
+            // couldn't be serialised into the type we were expecting)
+            Ok(Some(ResponseValue::Unexpected(change))) => {
+                println!("unexpected response from server: {:?}", change);
+            }
+            // This is impossible in this particular example since there
+            // needs to be at least one server available to give this
+            // response otherwise we would have run into an error for
+            // failing to connect
+            Ok(None) => {
+                println!("got no documents in the database");
+            }
+            // Our query ran into an error
+            Err(error) => {
+                println!("{:?}", error);
+            }
+        }
+    }
+}
