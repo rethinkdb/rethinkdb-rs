@@ -38,19 +38,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
                 return;
             }
         };
-        let commands = self.term.encode();
         self.logger = conn.logger.clone();
-        let opts = {
-            let res = self.opts.encode();
-            if res.is_empty() {
-                None
-            } else {
-                debug!(self.logger, "{}", res);
-                Some(res)
-            }
-        };
-        let mut query = wrap_query(QueryType::START, Some(commands), opts);
-        debug!(self.logger, "{}", query);
         // Try sending the query
         debug!(self.logger, "submiting to server");
         {
@@ -78,6 +66,18 @@ impl<T: DeserializeOwned + Send> Request<T> {
                     };
                     self.logger = conn.logger.clone();
                 }
+                let commands = self.term.encode();
+                let opts = {
+                    let res = self.opts.encode();
+                    if res.is_empty() {
+                        None
+                    } else {
+                        debug!(self.logger, "{}", res);
+                        Some(res)
+                    }
+                };
+                let mut query = wrap_query(QueryType::START, Some(commands), opts);
+                debug!(self.logger, "{}", query);
                 // Submit the query if necessary
                 if self.write || reproducible {
                     debug!(self.logger, "submitting query");
