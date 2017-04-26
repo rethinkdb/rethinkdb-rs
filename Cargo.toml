@@ -13,7 +13,6 @@ build = "build/main.rs"
 
 [badges]
 travis-ci = { repository = "rust-rethinkdb/reql" }
-appveyor = { repository = "rust-rethinkdb/reql" }
 
 [features]
 default = ["with-io"]

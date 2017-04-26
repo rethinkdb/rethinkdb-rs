@@ -25,15 +25,15 @@ fn main() {
     for res in stati.wait() {
         match res {
             // The server returned the response we were expecting
-            Ok(Some(Document::Expected(change))) => {
-                println!("{:?}", change);
+            Ok(Some(Document::Expected(status))) => {
+                println!("{:?}", status);
             }
             // We got a response alright, but it wasn't the one were expecting
             // plus it's not an error either, otherwise it would have been
             // returned as such (This simply means that the response we got
             // couldn't be serialised into the type we were expecting)
-            Ok(Some(Document::Unexpected(change))) => {
-                println!("unexpected response from server: {:?}", change);
+            Ok(Some(Document::Unexpected(status))) => {
+                println!("unexpected response from server: {:?}", status);
             }
             // This is impossible in this particular example since there
             // needs to be at least one server available to give this
