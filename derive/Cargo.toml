@@ -1,15 +1,14 @@
 [package]
 name = "reql-derive"
-description = "Derive macro used by the reql crate"
-version = "0.0.6-alpha4"
+description = "An implementation of the args macro used by the reql crate"
+version = "0.0.6"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rust-rethinkdb/reql"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
-syn = { version = "0.11", features = ["full"] }
+syn = "0.11"
 quote = "0.3"
-case = "0.1"
 proc-macro-hack = "0.3"
 
 [lib]

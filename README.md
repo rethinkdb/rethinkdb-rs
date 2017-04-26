@@ -79,6 +79,10 @@ fn main() {
 }
 ```
 
+Checkout the [blocking example] to see this same example implemented using a for loop instead.
+
+[blocking example]: https://github.com/rust-rethinkdb/reql/blob/master/examples/blocking.rs
+
 ## License
 
 Licensed under either of
