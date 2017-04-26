@@ -18,6 +18,7 @@ extern crate slog;
 #[macro_use]
 #[allow(unused_imports)]
 extern crate reql_derive;
+extern crate reql_types;
 #[macro_use]
 extern crate proc_macro_hack;
 #[cfg(feature = "with-io")]
@@ -38,14 +39,12 @@ extern crate uuid;
 extern crate ordermap;
 #[cfg(feature = "with-io")]
 extern crate bufstream;
-extern crate chrono;
 
 #[macro_use]
 mod macros;
 mod types;
 mod commands;
 pub mod errors;
-pub mod structs;
 
 // Needed by the `args` macro
 #[doc(hidden)]
@@ -189,9 +188,6 @@ pub enum ResponseValue<T: DeserializeOwned + Send> {
     Expected(T),
     Unexpected(Value),
 }
-
-#[derive(Debug, Clone)]
-pub struct DateTime(chrono::DateTime<chrono::UTC>);
 
 #[derive(Serialize, Deserialize, Debug)]
 #[cfg(feature = "with-io")]

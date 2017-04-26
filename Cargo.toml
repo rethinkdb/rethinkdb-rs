@@ -30,7 +30,7 @@ ql2 = "1.1"
 derive-error = "0.0.3"
 proc-macro-hack = "0.3"
 reql-derive = { version = "0.0.6", path = "./derive" }
-chrono = { version = "0.3", features = ["serde"] }
+reql-types = { version = "0.0.1", path = "./types" }
 
 # IO dependencies
 lazy_static = { version = "0.2", optional = true }

@@ -2,6 +2,7 @@ extern crate slog_term;
 #[macro_use] extern crate slog;
 extern crate tokio_core;
 extern crate futures;
+extern crate reql_types;
 
 #[macro_use] extern crate reql;
 
@@ -10,7 +11,7 @@ use tokio_core::reactor::Core;
 use futures::stream::Stream;
 
 use reql::{Client, Run, ResponseValue};
-use reql::structs::{Change, ServerStatus};
+use reql_types::{Change, ServerStatus};
 
 fn main() {
     // Build an output drain

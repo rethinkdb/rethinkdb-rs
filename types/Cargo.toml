@@ -1,0 +1,15 @@
+[package]
+name = "reql-types"
+description = "Some useful types to use along with the reql crate"
+version = "0.0.1"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/rust-rethinkdb/reql"
+documentation = "https://docs.rs/reql-types"
+authors = ["rushmorem <rushmore@webenchanter.com>"]
+
+[dependencies]
+serde = "1.0"
+serde_json = "1.0"
+serde_derive = "1.0"
+chrono = { version = "0.3", features = ["serde"] }
+uuid = { version = "0.5", features = ["use_std", "v4", "serde"] }

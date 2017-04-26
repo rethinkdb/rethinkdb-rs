@@ -2,6 +2,7 @@ extern crate slog_term;
 #[macro_use] extern crate slog;
 extern crate tokio_core;
 extern crate futures;
+extern crate reql_types;
 
 #[macro_use] extern crate reql;
 #[macro_use] extern crate serde_derive;
@@ -13,7 +14,7 @@ use futures::stream::Stream;
 use serde_json::value::to_value;
 
 use reql::{Client, Run, ResponseValue};
-use reql::structs::WriteStatus;
+use reql_types::WriteStatus;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct User {
@@ -36,9 +37,8 @@ fn main() {
     let core = Core::new().unwrap();
 
     // Create a connection pool
-    let conn = r.connect(args!(core.handle(), {servers: ["localhost"], reproducible: true})).unwrap();
+    let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
 
-    /*
     // Create the table
     match r.db("test").table_create(args!("users", {replicas: 3})).run::<()>(conn).unwrap().wait().next().unwrap() {
         Ok(Some(ResponseValue::Expected(status))) => {
@@ -51,7 +51,6 @@ fn main() {
             println!("{:?}", error);
         }
     }
-    */
 
     for i in 0..3000 {
         // Run the query

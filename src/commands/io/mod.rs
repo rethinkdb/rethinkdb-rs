@@ -27,7 +27,7 @@ use futures::{Stream, Sink, Poll, Async};
 use futures::sync::mpsc;
 use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
-use structs::{Change, ServerStatus};
+use reql_types::{Change, ServerStatus};
 
 lazy_static! {
     static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
