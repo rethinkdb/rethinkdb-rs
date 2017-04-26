@@ -5,7 +5,7 @@ This is a [RethinkDB] driver written in [Rust].
 [RethinkDB]: https://www.rethinkdb.com
 [Rust]: https://www.rust-lang.org
 
-[![Build Status](https://travis-ci.org/rust-rethinkdb/reql.svg?branch=master)](https://travis-ci.org/rust-rethinkdb/reql) [![Build status](https://ci.appveyor.com/api/projects/status/cp8tmb9xxjw0kfgj?svg=true)](https://ci.appveyor.com/project/rushmorem/reql) [![Latest Version](https://img.shields.io/crates/v/reql.svg)](https://crates.io/crates/reql) [![Docs](https://docs.rs/reql/badge.svg)](https://docs.rs/reql/*/reql/struct.Client.html)
+[![Build Status](https://travis-ci.org/rust-rethinkdb/reql.svg?branch=master)](https://travis-ci.org/rust-rethinkdb/reql) [![Build status](https://ci.appveyor.com/api/projects/status/cp8tmb9xxjw0kfgj?svg=true)](https://ci.appveyor.com/project/rushmorem/reql) [![Latest Version](https://img.shields.io/crates/v/reql.svg)](https://crates.io/crates/reql) [![Docs](https://docs.rs/reql/badge.svg)](https://docs.rs/reql)
 
 *Note:* At the moment, version `0.0.5` is the only usable version of this driver (version `0.0.6` hasn't been released yet). However, it only has a few commands implemented and the API has since changed. Version `0.0.6` will have all the ReQL commands implemented. It's going to be released sometime in April.
 
@@ -24,11 +24,12 @@ Run ReQL commands:-
 extern crate tokio_core;
 extern crate futures;
 extern crate reql;
+extern crate reql_types;
 
 use tokio_core::reactor::Core;
 use futures::stream::Stream;
-use reql::{Client, Run, ResponseValue};
-use reql::structs::ServerStatus;
+use reql::{Client, Run, Document};
+use reql_types::ServerStatus;
 
 fn main() {
     // Create a new ReQL client
@@ -47,14 +48,14 @@ fn main() {
     let stati = query.and_then(|status| {
         match status {
             // The server returned the response we were expecting
-            Some(ResponseValue::Expected(change)) => {
+            Some(Document::Expected(change)) => {
                 println!("{:?}", change);
             }
             // We got a response alright, but it wasn't the one were expecting
             // plus it's not an error either, otherwise it would have been
             // returned as such (This simply means that the response we got
             // couldn't be serialised into the type we were expecting)
-            Some(ResponseValue::Unexpected(change)) => {
+            Some(Document::Unexpected(change)) => {
                 println!("unexpected response from server: {:?}", change);
             }
             // This is impossible in this particular example since there
