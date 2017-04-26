@@ -10,7 +10,7 @@ use slog::DrainExt;
 use tokio_core::reactor::Core;
 use futures::stream::Stream;
 
-use reql::{Client, Run, ResponseValue};
+use reql::{Client, Run, Document};
 
 fn main() {
     // Build an output drain
@@ -40,7 +40,7 @@ fn main() {
     // Process results
     for res in sum.wait() {
         match res {
-            Ok(Some(ResponseValue::Expected(sum))) => {
+            Ok(Some(Document::Expected(sum))) => {
                 println!("{:?}", sum);
             }
             Ok(res) => {

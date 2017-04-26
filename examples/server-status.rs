@@ -10,7 +10,7 @@ use slog::DrainExt;
 use tokio_core::reactor::Core;
 use futures::stream::Stream;
 
-use reql::{Client, Run, ResponseValue};
+use reql::{Client, Run, Document};
 use reql_types::{Change, ServerStatus};
 
 fn main() {
@@ -38,7 +38,7 @@ fn main() {
     // Process results
     for res in stati.wait() {
         match res {
-            Ok(Some(ResponseValue::Expected(change))) => {
+            Ok(Some(Document::Expected(change))) => {
                 println!("{:?}", change);
             }
             Ok(res) => {

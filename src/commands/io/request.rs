@@ -1,7 +1,7 @@
 use std::error::Error as StdError;
 
 use errors::*;
-use {Session, SessionManager, Request, ReqlResponse, Result, ResponseValue};
+use {Session, SessionManager, Request, ReqlResponse, Result, Document};
 use super::{wrap_query, write_query, read_query};
 
 use serde::de::DeserializeOwned;
@@ -212,11 +212,11 @@ impl<T: DeserializeOwned + Send> Request<T> {
                 // Since this is a successful query let's process the results and send
                 // them to the caller
                 if let Ok(data) = from_value::<T>(result.r.clone()) {
-                    let _ = self.tx.clone().send(Ok(Some(ResponseValue::Expected(data)))).wait();
+                    let _ = self.tx.clone().send(Ok(Some(Document::Expected(data)))).wait();
                 }
                 else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                     for v in data {
-                        let _ = self.tx.clone().send(Ok(Some(ResponseValue::Expected(v)))).wait();
+                        let _ = self.tx.clone().send(Ok(Some(Document::Expected(v)))).wait();
                     }
                 }
                 // Send unexpected query responses
@@ -230,7 +230,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
                                 let _ = self.tx.clone().send(Ok(None)).wait();
                             }
                             value => {
-                                let _ = self.tx.clone().send(Ok(Some(ResponseValue::Unexpected(value)))).wait();
+                                let _ = self.tx.clone().send(Ok(Some(Document::Unexpected(value)))).wait();
                             }
                         }
                     }
@@ -240,7 +240,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
                             let _ = self.tx.clone().send(Ok(None)).wait();
                         }
                         value => {
-                            let _ = self.tx.clone().send(Ok(Some(ResponseValue::Unexpected(value)))).wait();
+                            let _ = self.tx.clone().send(Ok(Some(Document::Unexpected(value)))).wait();
                         }
                     }
                 }

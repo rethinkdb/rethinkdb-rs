@@ -99,7 +99,7 @@ pub struct Arg {
 #[derive(Debug)]
 pub struct Response<T: DeserializeOwned + Send> {
     done: bool,
-    rx: Receiver<Result<Option<ResponseValue<T>>>>,
+    rx: Receiver<Result<Option<Document<T>>>>,
 }
 
 #[cfg(feature = "with-io")]
@@ -108,7 +108,7 @@ struct Request<T: DeserializeOwned + Send> {
     opts: Term,
     pool: r2d2::Pool<SessionManager>,
     cfg: Config,
-    tx: Sender<Result<Option<ResponseValue<T>>>>,
+    tx: Sender<Result<Option<Document<T>>>>,
     write: bool,
     retry: bool,
     logger: Logger,
@@ -181,10 +181,10 @@ pub struct Client {
     logger: Logger,
 }
 
-/// Response value
+/// The JSON document returned by the server
 #[cfg(feature = "with-io")]
 #[derive(Debug, Clone)]
-pub enum ResponseValue<T: DeserializeOwned + Send> {
+pub enum Document<T: DeserializeOwned + Send> {
     Expected(T),
     Unexpected(Value),
 }

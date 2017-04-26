@@ -11,7 +11,7 @@ use std::cmp::Ordering;
 
 use {Client, Config, SessionManager, Server,
         Result, Connection, Opts, Request, Response,
-        IntoArg, Session, Run, ResponseValue,
+        IntoArg, Session, Run, Document,
 };
 use ql2::proto::{Term, Datum};
 use r2d2;
@@ -121,7 +121,7 @@ impl<A: IntoArg> Run<A> for Client {
 }
 
 impl<T: DeserializeOwned + Send> Stream for Response<T> {
-    type Item = Option<ResponseValue<T>>;
+    type Item = Option<Document<T>>;
     type Error = Error;
 
     fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
@@ -279,7 +279,7 @@ impl Connection {
                 let changes = query.run::<Change<ServerStatus, ServerStatus>>(conn).unwrap();
                 for change in changes.wait() {
                     match change {
-                        Ok(Some(ResponseValue::Expected(change))) => {
+                        Ok(Some(Document::Expected(change))) => {
                             if let Some(ref mut config) = CONFIG.write().get_mut(&conn) {
                                 let cluster = &mut config.cluster;
                                 if let Some(status) = change.new_val {
