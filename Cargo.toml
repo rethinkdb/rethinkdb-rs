@@ -51,5 +51,5 @@ slog-term = "1.5"
 [build-dependencies]
 serde = "1.0"
 serde_derive = "1.0"
-serde_yaml = { git = "https://github.com/dtolnay/serde-yaml" }
+serde_yaml = "0.7"
 nom = "2.1"
