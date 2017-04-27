@@ -7,7 +7,6 @@ use super::{wrap_query, write_query, read_query};
 use serde::de::DeserializeOwned;
 use futures::{Future, Sink};
 use protobuf::ProtobufEnum;
-use types::Encode;
 use ql2::proto::{
     Query_QueryType as QueryType,
     Response_ResponseType as ResponseType,
@@ -65,10 +64,15 @@ impl<T: DeserializeOwned + Send> Request<T> {
                         }
                     };
                     self.logger = conn.logger.clone();
+                    self.write = true;
                 }
-                let commands = self.term.encode();
+                let commands = {
+                    let term = self.term.clone();
+                    self.encode(&term, false)
+                };
                 let opts = {
-                    let res = self.opts.encode();
+                    let term = self.opts.clone();
+                    let res = self.encode(&term, true);
                     if res.is_empty() {
                         None
                     } else {

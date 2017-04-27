@@ -1,6 +1,6 @@
 //! The ReQL data types
 
-use Result;
+use {Result, Request};
 use errors::DriverError;
 use ql2::proto::{Term, Datum, Term_TermType as TermType, Term_AssocPair as TermPair,
                  Datum_DatumType as DatumType, Datum_AssocPair as DatumPair};
@@ -8,6 +8,7 @@ use serde_json::value::{Value, to_value};
 use protobuf::repeated::RepeatedField;
 use protobuf::ProtobufEnum;
 use serde::Serialize;
+use serde::de::DeserializeOwned;
 
 pub trait FromJson {
     fn from_json<T: Serialize>(t: T) -> Result<Term> {
@@ -93,18 +94,6 @@ impl IsEmpty for Term {
     }
 }
 
-impl Encode for Vec<TermPair> {
-    fn encode(&self) -> String {
-        let mut opts = String::from("{");
-        for term in self {
-            opts.push_str(&format!("\"{}\":{},", term.get_key(), term.get_val().encode()));
-        }
-        opts = opts.trim_right_matches(",").to_string();
-        opts.push_str("}");
-        opts
-    }
-}
-
 impl Encode for Datum {
     fn encode(&self) -> String {
         match self.get_field_type() {
@@ -137,40 +126,50 @@ impl Encode for Datum {
     }
 }
 
-impl Encode for Term {
-    fn encode(&self) -> String {
+impl<T: DeserializeOwned + Send> Request<T> {
+    pub fn encode(&mut self, data: &Term, encoding_opts: bool) -> String {
         let mut res = Vec::new();
-        if !self.is_datum() {
-            res.push(format!("[{}", self.get_field_type().value()));
+        if !data.is_datum() {
+            res.push(format!("[{}", data.get_field_type().value()));
         }
-        if self.has_datum() {
-            let datum = self.get_datum();
+        if data.has_datum() {
+            let datum = data.get_datum();
             res.push(datum.encode());
         }
-        let terms = self.get_args();
+        let terms = data.get_args();
         if !terms.is_empty() {
-            let mut args = if self.has_field_type() {
+            let mut args = if data.has_field_type() {
                 String::from("[")
             } else {
                 String::new()
             };
             for term in terms {
-                args.push_str(&format!("{},", term.encode()));
+                args.push_str(&format!("{},", self.encode(&term, encoding_opts)));
             }
             args = args.trim_right_matches(",").to_string();
-            if self.has_field_type() {
+            if data.has_field_type() {
                 args.push_str("]");
             }
             res.push(args);
         }
-        let opts = self.clone().take_optargs().into_vec();
+        let opts = data.clone().take_optargs().into_vec();
         if !opts.is_empty() {
-            res.push(format!("{}", opts.encode()));
+            res.push(format!("{}", self.encode_pairs(&opts, encoding_opts)));
         }
         let mut res = res.join(",");
-        if !self.is_datum() {
+        if !data.is_datum() {
             res.push_str("]");
         }
         res
+    }
+
+    fn encode_pairs(&mut self, data: &Vec<TermPair>, encoding_opts: bool) -> String {
+        let mut opts = String::from("{");
+        for term in data {
+            opts.push_str(&format!("\"{}\":{},", term.get_key(), self.encode(term.get_val(), encoding_opts)));
+        }
+        opts = opts.trim_right_matches(",").to_string();
+        opts.push_str("}");
+        opts
     }
 }
