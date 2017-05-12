@@ -1,7 +1,7 @@
-extern crate tokio_core;
 extern crate futures;
 extern crate reql;
 extern crate reql_types;
+extern crate tokio_core;
 
 use futures::stream::Stream;
 use reql::{Client, Document, Run};

@@ -1,15 +1,13 @@
-extern crate slog_term;
-#[macro_use]
-extern crate slog;
-extern crate tokio_core;
 extern crate futures;
-extern crate reql_types;
-
 #[macro_use]
 extern crate reql;
+extern crate reql_types;
+#[macro_use]
+extern crate slog;
+extern crate slog_term;
+extern crate tokio_core;
 
 use futures::stream::Stream;
-
 use reql::{Client, Document, Run};
 use reql_types::{Change, ServerStatus};
 use slog::DrainExt;

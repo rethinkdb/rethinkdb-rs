@@ -13,16 +13,17 @@ The minimum supported Rust version is `v1.17.0`.
 
 ```rust
 extern crate futures;
-extern crate tokio_core;
 extern crate reql;
 extern crate reql_types;
+extern crate tokio_core;
 
 use futures::stream::Stream;
-use tokio_core::reactor::Core;
-use reql::{Client, Run, Document};
+use reql::{Client, Document, Run};
 use reql_types::ServerStatus;
+use tokio_core::reactor::Core;
 
-fn main() {
+fn main()
+{
     // Create a new ReQL client
     let r = Client::new();
 
@@ -33,7 +34,10 @@ fn main() {
     let conn = r.connect(&core.handle()).unwrap();
 
     // Run the query
-    let query = r.db("rethinkdb").table("server_status").run::<ServerStatus>(conn).unwrap();
+    let query = r.db("rethinkdb")
+        .table("server_status")
+        .run::<ServerStatus>(conn)
+        .unwrap();
 
     // Process the results
     let stati = query.and_then(|status| {
@@ -63,11 +67,10 @@ fn main() {
     .or_else(|error| {
         println!("{:?}", error);
         Err(())
-    })
-    ;
+    });
 
     // Wait for all the results to be processed
-    for _ in stati.wait() { }
+    for _ in stati.wait() {}
 }
 ```
 
