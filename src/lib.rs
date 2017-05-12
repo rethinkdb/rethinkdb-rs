@@ -13,7 +13,6 @@ extern crate lazy_static;
 #[macro_use]
 extern crate slog;
 #[macro_use]
-//#[allow(unused_imports)]
 extern crate reql_derive;
 extern crate reql_types;
 #[macro_use]
