@@ -32,10 +32,10 @@ fn main()
             Some(Document::Expected(status)) => {
                 println!("{:?}", status);
             }
-            // We got a response alright, but it wasn't the one were expecting
-            // plus it's not an error either, otherwise it would have been
-            // returned as such (This simply means that the response we got
-            // couldn't be serialised into the type we were expecting)
+            // We got a response alright, but it wasn't the one we were
+            // expecting plus it's not an error either, otherwise it would
+            // have been returned as such (This simply means that the response
+            // we got couldn't be serialised into the type we were expecting)
             Some(Document::Unexpected(status)) => {
                 println!("unexpected response from server: {:?}", status);
             }
