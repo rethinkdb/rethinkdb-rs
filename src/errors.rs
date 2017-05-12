@@ -7,11 +7,11 @@ use std::sync::Arc;
 use serde_json::error::Error as JsonError;
 use protobuf::ProtobufError;
 use serde_json::Value;
-#[cfg(feature = "with-io")]
+
 use r2d2::GetTimeout;
-#[cfg(feature = "with-io")]
+
 use futures::sync::mpsc::SendError;
-#[cfg(feature = "with-io")]
+
 use scram;
 
 /// The most generic error message in ReQL
@@ -70,10 +70,10 @@ pub enum AvailabilityError {
 pub enum DriverError {
     #[error(msg_embedded, non_std, no_from)]
     Auth(String),
-    #[cfg(feature = "with-io")]
+    
     Scram(scram::Error),
     Io(IoError),
-    #[cfg(feature = "with-io")]
+    
     GetTimeout(GetTimeout),
     Response(ResponseError),
     Json(JsonError),
@@ -141,21 +141,21 @@ impl From<ProtobufError> for Error {
     }
 }
 
-#[cfg(feature = "with-io")]
+
 impl From<GetTimeout> for Error {
     fn from(err: GetTimeout) -> Error {
         From::from(DriverError::GetTimeout(err))
     }
 }
 
-#[cfg(feature = "with-io")]
+
 impl From<scram::Error> for Error {
     fn from(err: scram::Error) -> Error {
         From::from(DriverError::Scram(err))
     }
 }
 
-#[cfg(feature = "with-io")]
+
 impl<T> From<SendError<T>> for Error {
     fn from(err: SendError<T>) -> Error {
         let msg = format!("{:?}", err);

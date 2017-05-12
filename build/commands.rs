@@ -36,12 +36,10 @@ impl Commands {
             // Edit `build/commands.rs` instead...
             // @generated
 
-            #[cfg(feature = "with-io")]
             mod io;
             mod util;
             mod args;
 
-            #[cfg(feature = "with-io")]
             use Connection;
             use {{Client, IntoArg, Result}};
             use slog::Logger;
@@ -190,7 +188,6 @@ impl Command {
         self.tokens = if name == "connect" {
             format!(r#"
                 {}
-                #[cfg(feature = "with-io")]
                 pub fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {{
                     io::connect(self, args)
                 }}

@@ -3,14 +3,14 @@
 extern crate ql2;
 extern crate protobuf;
 extern crate serde_json;
-#[cfg(feature = "with-io")]
+
 #[macro_use]
 extern crate serde_derive;
-#[cfg(feature = "with-io")]
+
 extern crate serde;
 #[macro_use]
 extern crate derive_error;
-#[cfg(feature = "with-io")]
+
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
@@ -21,23 +21,23 @@ extern crate reql_derive;
 extern crate reql_types;
 #[macro_use]
 extern crate proc_macro_hack;
-#[cfg(feature = "with-io")]
+
 extern crate r2d2;
-#[cfg(feature = "with-io")]
+
 extern crate scram;
-#[cfg(feature = "with-io")]
+
 extern crate tokio_core;
-#[cfg(feature = "with-io")]
+
 extern crate byteorder;
-#[cfg(feature = "with-io")]
+
 extern crate futures;
-#[cfg(feature = "with-io")]
+
 extern crate parking_lot;
-#[cfg(feature = "with-io")]
+
 extern crate uuid;
-#[cfg(feature = "with-io")]
+
 extern crate ordermap;
-#[cfg(feature = "with-io")]
+
 extern crate bufstream;
 
 #[macro_use]
@@ -58,22 +58,22 @@ pub use ql2::proto::{
 #[doc(hidden)]
 pub use protobuf::repeated::RepeatedField;
 
-#[cfg(feature = "with-io")]
+
 use std::net::SocketAddr;
 
-#[cfg(feature = "with-io")]
+
 use std::time::Duration;
-#[cfg(feature = "with-io")]
+
 use tokio_core::reactor::Remote;
-#[cfg(feature = "with-io")]
+
 use uuid::Uuid;
-#[cfg(feature = "with-io")]
+
 use std::net::TcpStream;
-#[cfg(feature = "with-io")]
+
 use serde::de::DeserializeOwned;
-#[cfg(feature = "with-io")]
+
 use futures::sync::mpsc::{Receiver, Sender};
-#[cfg(feature = "with-io")]
+
 use ordermap::OrderMap;
 
 use errors::Error;
@@ -95,14 +95,14 @@ pub struct Arg {
 /// ReQL Response
 ///
 /// Response returned by `run()`
-#[cfg(feature = "with-io")]
+
 #[derive(Debug)]
 pub struct Response<T: DeserializeOwned + Send> {
     done: bool,
     rx: Receiver<Result<Option<Document<T>>>>,
 }
 
-#[cfg(feature = "with-io")]
+
 struct Request<T: DeserializeOwned + Send> {
     term: Term,
     opts: Term,
@@ -114,7 +114,7 @@ struct Request<T: DeserializeOwned + Send> {
     logger: Logger,
 }
 
-#[cfg(feature = "with-io")]
+
 struct Session {
     id: u64,
     broken: bool,
@@ -122,7 +122,7 @@ struct Session {
     logger: Logger,
 }
 
-#[cfg(feature = "with-io")]
+
 #[derive(Clone)]
 struct Config {
     cluster: OrderMap<String, Server>,
@@ -131,7 +131,7 @@ struct Config {
     logger: Logger,
 }
 
-#[cfg(feature = "with-io")]
+
 #[derive(Debug, Clone, Copy)]
 struct SessionManager(Connection);
 
@@ -142,11 +142,11 @@ struct SessionManager(Connection);
 /// themselves. Instead it is simply a reference to the
 /// actual underlying connection pool. As such, you can
 /// `clone` or `copy` it.
-#[cfg(feature = "with-io")]
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Connection(Uuid);
 
-#[cfg(feature = "with-io")]
+
 #[derive(Debug, Clone, Eq)]
 struct Server {
     name: String,
@@ -154,7 +154,7 @@ struct Server {
     latency: Duration,
 }
 
-#[cfg(feature = "with-io")]
+
 #[derive(Debug, Clone)]
 struct Opts {
     db: String,
@@ -165,7 +165,7 @@ struct Opts {
     tls: Option<TlsCfg>,
 }
 
-#[cfg(feature = "with-io")]
+
 #[derive(Debug, Clone)]
 struct TlsCfg {
     ca_certs: String,
@@ -182,7 +182,7 @@ pub struct Client {
 }
 
 /// The JSON document returned by the server
-#[cfg(feature = "with-io")]
+
 #[derive(Debug, Clone)]
 pub enum Document<T: DeserializeOwned + Send> {
     Expected(T),
@@ -190,7 +190,7 @@ pub enum Document<T: DeserializeOwned + Send> {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-#[cfg(feature = "with-io")]
+
 struct ReqlResponse {
     t: i32,
     e: Option<i32>,
@@ -207,7 +207,7 @@ pub trait IntoArg {
 }
 
 /// Lazily execute a command
-#[cfg(feature = "with-io")]
+
 pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
     fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>>;
