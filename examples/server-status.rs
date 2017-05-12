@@ -10,13 +10,14 @@ extern crate tokio_core;
 use futures::stream::Stream;
 use reql::{Client, Document, Run};
 use reql_types::{Change, ServerStatus};
-use slog::DrainExt;
+use slog::Drain;
 use tokio_core::reactor::Core;
 
 fn main()
 {
     // Build an output drain
-    let drain = slog_term::streamer().async().compact().build();
+    let plain = slog_term::PlainSyncDecorator::new(std::io::stdout());
+    let drain = slog_term::FullFormat::new(plain).build();
 
     // Setup a logger
     let logger = slog::Logger::root(drain.fuse(), o!());
