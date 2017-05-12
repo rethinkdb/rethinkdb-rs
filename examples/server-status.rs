@@ -1,10 +1,12 @@
 extern crate slog_term;
-#[macro_use] extern crate slog;
+#[macro_use]
+extern crate slog;
 extern crate tokio_core;
 extern crate futures;
 extern crate reql_types;
 
-#[macro_use] extern crate reql;
+#[macro_use]
+extern crate reql;
 
 use slog::DrainExt;
 use tokio_core::reactor::Core;
@@ -27,11 +29,14 @@ fn main() {
     let core = Core::new().unwrap();
 
     // Create a connection pool
-    let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
-    
+    let conn = r.connect(args!(core.handle(), {servers: ["localhost"]}))
+        .unwrap();
+
     // Run the query
-    let stati = r.db("rethinkdb").table("server_status")
-        .changes().with_args(args!({include_initial: true}))
+    let stati = r.db("rethinkdb")
+        .table("server_status")
+        .changes()
+        .with_args(args!({include_initial: true}))
         .run::<Change<ServerStatus, ServerStatus>>(conn)
         .unwrap();
 

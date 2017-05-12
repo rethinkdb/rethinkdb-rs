@@ -9,10 +9,8 @@ use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use std::cmp::Ordering;
 
-use {Client, Config, SessionManager, Server,
-        Result, Connection, Opts, Request, Response,
-        IntoArg, Session, Run, Document,
-};
+use {Client, Config, SessionManager, Server, Result, Connection, Opts, Request, Response, IntoArg,
+     Session, Run, Document};
 use ql2::proto::{Term, Datum};
 use r2d2;
 use ordermap::OrderMap;
@@ -49,7 +47,9 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
     info!(logger, "creating connection pool...");
     match arg.remote {
         Some(remote) => conn.set_config(aterm, remote, logger.clone())?,
-        None => { return Err(io_error("a futures handle is required for `connect`"))?; }
+        None => {
+            return Err(io_error("a futures handle is required for `connect`"))?;
+        }
     }
     conn.set_latency()?;
     let config = r2d2::Config::builder()
@@ -60,7 +60,8 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
         .connection_timeout(Duration::from_secs(3))
         .build();
     let session = SessionManager(conn);
-    let r2d2 = r2d2::Pool::new(config, session).map_err(|err| io_error(err))?;
+    let r2d2 = r2d2::Pool::new(config, session)
+        .map_err(|err| io_error(err))?;
     conn.set_pool(r2d2);
     info!(logger, "connection pool created successfully");
     conn.maintain();
@@ -71,7 +72,9 @@ impl<A: IntoArg> Run<A> for Client {
     fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>> {
         let cterm = match self.term {
             Ok(ref term) => term.clone(),
-            Err(ref error) => { return Err(error.clone()); }
+            Err(ref error) => {
+                return Err(error.clone());
+            }
         };
         let arg = args.into_arg();
         let aterm = arg.term?;
@@ -94,7 +97,9 @@ impl<A: IntoArg> Run<A> for Client {
         };
         let cfg = match CONFIG.read().get(&conn) {
             Some(cfg) => cfg.clone(),
-            None => { return Err(io_error("a tokio handle is required"))?; }
+            None => {
+                return Err(io_error("a tokio handle is required"))?;
+            }
         };
         let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
         //let remote = cfg.remote.clone();
@@ -114,9 +119,9 @@ impl<A: IntoArg> Run<A> for Client {
             req.submit();
         });
         Ok(Response {
-            done: false,
-            rx: rx,
-        })
+               done: false,
+               rx: rx,
+           })
     }
 }
 
@@ -129,9 +134,7 @@ impl<T: DeserializeOwned + Send> Stream for Response<T> {
             return Ok(Async::Ready(None));
         }
         match self.rx.poll() {
-            Ok(Async::NotReady) => {
-                Ok(Async::NotReady)
-            }
+            Ok(Async::NotReady) => Ok(Async::NotReady),
             Ok(Async::Ready(Some(res))) => {
                 match res {
                     Ok(data) => Ok(Async::Ready(Some(data))),
@@ -152,7 +155,7 @@ impl<T: DeserializeOwned + Send> Stream for Response<T> {
 }
 
 fn io_error<T>(err: T) -> io::Error
-where T: Into<Box<error::Error + Send + Sync>>
+    where T: Into<Box<error::Error + Send + Sync>>
 {
     io::Error::new(io::ErrorKind::Other, err)
 }
@@ -234,11 +237,15 @@ impl Connection {
             let key = arg.take_key();
             let val = find_datum(arg.take_val());
 
-            if key == "db" { opts.db = take_string(&key, val)?; }
-            else if key == "user" { opts.user = take_string(&key, val)?; }
-            else if key == "password" { opts.password = take_string(&key, val)?; }
-            else if key == "reproducible" { opts.reproducible = take_bool(&key, val)?; }
-            else if key == "servers" {
+            if key == "db" {
+                opts.db = take_string(&key, val)?;
+            } else if key == "user" {
+                opts.user = take_string(&key, val)?;
+            } else if key == "password" {
+                opts.password = take_string(&key, val)?;
+            } else if key == "reproducible" {
+                opts.reproducible = take_bool(&key, val)?;
+            } else if key == "servers" {
                 for host in val {
                     hosts.push(take_string(&key, vec![host])?);
                 }
@@ -250,20 +257,24 @@ impl Connection {
         }
 
         for host in hosts {
-            let addresses = host.to_socket_addrs().or_else(|_| {
-                let host = format!("{}:{}", host, 28015);
-                host.to_socket_addrs()
-            })?;
+            let addresses = host.to_socket_addrs()
+                .or_else(|_| {
+                             let host = format!("{}:{}", host, 28015);
+                             host.to_socket_addrs()
+                         })?;
             let server = Server::new(&host, addresses.collect());
             cluster.insert(host, server);
         }
 
-        CONFIG.write().insert(*self, Config {
-            cluster: cluster,
-            opts: opts,
-            remote: remote,
-            logger: logger,
-        });
+        CONFIG
+            .write()
+            .insert(*self,
+                    Config {
+                        cluster: cluster,
+                        opts: opts,
+                        remote: remote,
+                        logger: logger,
+                    });
 
         Ok(())
     }
@@ -274,9 +285,14 @@ impl Connection {
         let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
         thread::spawn(move || {
             let r = Client::new();
-            let query = r.db("rethinkdb").table("server_status").changes().with_args(args!({include_initial: true}));
+            let query = r.db("rethinkdb")
+                .table("server_status")
+                .changes()
+                .with_args(args!({include_initial: true}));
             loop {
-                let changes = query.run::<Change<ServerStatus, ServerStatus>>(conn).unwrap();
+                let changes = query
+                    .run::<Change<ServerStatus, ServerStatus>>(conn)
+                    .unwrap();
                 for change in changes.wait() {
                     match change {
                         Ok(Some(Document::Expected(change))) => {
@@ -285,7 +301,8 @@ impl Connection {
                                 if let Some(status) = change.new_val {
                                     let mut addresses = Vec::new();
                                     for addr in status.network.canonical_addresses {
-                                        let socket = SocketAddr::new(addr.host, status.network.reql_port);
+                                        let socket = SocketAddr::new(addr.host,
+                                                                     status.network.reql_port);
                                         addresses.push(socket);
                                     }
                                     let mut server = Server::new(&status.name, addresses);
@@ -407,10 +424,7 @@ fn read_query(conn: &mut Session) -> Result<Vec<u8>> {
     Ok(resp)
 }
 
-fn wrap_query(query_type: QueryType,
-              query: Option<String>,
-              options: Option<String>)
--> String {
+fn wrap_query(query_type: QueryType, query: Option<String>, options: Option<String>) -> String {
     let mut qry = format!("[{}", query_type.value());
     if let Some(query) = query {
         qry.push_str(&format!(",{}", query));

@@ -7,16 +7,10 @@ use super::{wrap_query, write_query, read_query};
 use serde::de::DeserializeOwned;
 use futures::{Future, Sink};
 use protobuf::ProtobufEnum;
-use ql2::proto::{
-    Query_QueryType as QueryType,
-    Response_ResponseType as ResponseType,
-    Response_ErrorType as ErrorType,
-};
+use ql2::proto::{Query_QueryType as QueryType, Response_ResponseType as ResponseType,
+                 Response_ErrorType as ErrorType};
 use r2d2::PooledConnection;
-use serde_json::{
-    Value,
-    from_slice, from_value,
-};
+use serde_json::{Value, from_slice, from_value};
 
 impl<T: DeserializeOwned + Send> Request<T> {
     fn conn(&self) -> Result<PooledConnection<SessionManager>> {
@@ -118,8 +112,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
         }
     }
 
-    fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()>
-    {
+    fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()> {
         self.retry = false;
         self.write = false;
         match self.handle(conn) {
@@ -133,18 +126,20 @@ impl<T: DeserializeOwned + Send> Request<T> {
                             return Err(error)?;
                         }
                         self.process(conn, query)?;
-                    },
+                    }
 
-                    Some(_)  => {/* we are done */},
+                    Some(_) => { /* we are done */ }
 
                     None => {
                         let msg = String::from("Response::handle() unexpectedly returned None");
                         return Err(DriverError::Other(msg))?;
-                    },
+                    }
                 }
             }
             Err(error) => {
-                if error.description().starts_with("Cannot perform write: primary replica for shard") {
+                if error
+                       .description()
+                       .starts_with("Cannot perform write: primary replica for shard") {
                     self.write = true;
                     self.retry = true;
                 }
@@ -154,8 +149,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
         Ok(())
     }
 
-    fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>>
-    {
+    fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>> {
         self.retry = false;
         match read_query(conn) {
             Ok(resp) => {
@@ -167,10 +161,12 @@ impl<T: DeserializeOwned + Send> Request<T> {
                     let msg = format!("Unsupported response type ({}), returned by the database.", result.t);
                     return Err(DriverError::Other(msg))?;
                 }
-                // If the database says this response is an error convert the error 
+                // If the database says this response is an error convert the error
                 // message to our native one.
                 let has_generic_error = match respt {
-                    ResponseType::CLIENT_ERROR | ResponseType::COMPILE_ERROR | ResponseType::RUNTIME_ERROR => true,
+                    ResponseType::CLIENT_ERROR |
+                    ResponseType::COMPILE_ERROR |
+                    ResponseType::RUNTIME_ERROR => true,
                     _ => false,
                 };
                 let mut msg = String::new();
@@ -193,13 +189,21 @@ impl<T: DeserializeOwned + Send> Request<T> {
                     if let Some(error) = ErrorType::from_i32(e) {
                         match error {
                             ErrorType::INTERNAL => return Err(RuntimeError::Internal(msg))?,
-                            ErrorType::RESOURCE_LIMIT => return Err(RuntimeError::ResourceLimit(msg))?,
+                            ErrorType::RESOURCE_LIMIT => {
+                                return Err(RuntimeError::ResourceLimit(msg))?
+                            }
                             ErrorType::QUERY_LOGIC => return Err(RuntimeError::QueryLogic(msg))?,
-                            ErrorType::NON_EXISTENCE => return Err(RuntimeError::NonExistence(msg))?,
+                            ErrorType::NON_EXISTENCE => {
+                                return Err(RuntimeError::NonExistence(msg))?
+                            }
                             ErrorType::OP_FAILED => return Err(AvailabilityError::OpFailed(msg))?,
-                            ErrorType::OP_INDETERMINATE => return Err(AvailabilityError::OpIndeterminate(msg))?,
+                            ErrorType::OP_INDETERMINATE => {
+                                return Err(AvailabilityError::OpIndeterminate(msg))?
+                            }
                             ErrorType::USER => return Err(RuntimeError::User(msg))?,
-                            ErrorType::PERMISSION_ERROR => return Err(RuntimeError::Permission(msg))?,
+                            ErrorType::PERMISSION_ERROR => {
+                                return Err(RuntimeError::Permission(msg))?
+                            }
                         }
                     } else {
                         return Err(ResponseError::Db(result.r))?;
@@ -210,15 +214,17 @@ impl<T: DeserializeOwned + Send> Request<T> {
                         ResponseType::CLIENT_ERROR => return Err(DriverError::Other(msg))?,
                         ResponseType::COMPILE_ERROR => return Err(Error::Compile(msg))?,
                         ResponseType::RUNTIME_ERROR => return Err(ResponseError::Db(result.r))?,
-                        _ => {/* not an error */},
+                        _ => { /* not an error */ }
                     }
                 }
                 // Since this is a successful query let's process the results and send
                 // them to the caller
                 if let Ok(data) = from_value::<T>(result.r.clone()) {
-                    let _ = self.tx.clone().send(Ok(Some(Document::Expected(data)))).wait();
-                }
-                else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
+                    let _ = self.tx
+                        .clone()
+                        .send(Ok(Some(Document::Expected(data))))
+                        .wait();
+                } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                     for v in data {
                         let _ = self.tx.clone().send(Ok(Some(Document::Expected(v)))).wait();
                     }
@@ -234,7 +240,10 @@ impl<T: DeserializeOwned + Send> Request<T> {
                                 let _ = self.tx.clone().send(Ok(None)).wait();
                             }
                             value => {
-                                let _ = self.tx.clone().send(Ok(Some(Document::Unexpected(value)))).wait();
+                                let _ = self.tx
+                                    .clone()
+                                    .send(Ok(Some(Document::Unexpected(value))))
+                                    .wait();
                             }
                         }
                     }
@@ -244,19 +253,22 @@ impl<T: DeserializeOwned + Send> Request<T> {
                             let _ = self.tx.clone().send(Ok(None)).wait();
                         }
                         value => {
-                            let _ = self.tx.clone().send(Ok(Some(Document::Unexpected(value)))).wait();
+                            let _ = self.tx
+                                .clone()
+                                .send(Ok(Some(Document::Unexpected(value))))
+                                .wait();
                         }
                     }
                 }
                 // Return response type so we know if we need to retrieve more data
                 Ok(Some(respt))
-            },
+            }
             // We failed to read the server's response so we will
             // try again as long as we haven't used up all our allowed retries.
             Err(error) => {
                 self.retry = true;
                 return Err(error)?;
-            },
+            }
         }
     }
 }

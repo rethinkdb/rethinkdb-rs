@@ -3,41 +3,29 @@
 extern crate ql2;
 extern crate protobuf;
 extern crate serde_json;
-
 #[macro_use]
 extern crate serde_derive;
-
 extern crate serde;
 #[macro_use]
 extern crate derive_error;
-
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
 extern crate slog;
 #[macro_use]
-#[allow(unused_imports)]
+//#[allow(unused_imports)]
 extern crate reql_derive;
 extern crate reql_types;
 #[macro_use]
 extern crate proc_macro_hack;
-
 extern crate r2d2;
-
 extern crate scram;
-
 extern crate tokio_core;
-
 extern crate byteorder;
-
 extern crate futures;
-
 extern crate parking_lot;
-
 extern crate uuid;
-
 extern crate ordermap;
-
 extern crate bufstream;
 
 #[macro_use]
@@ -50,32 +38,19 @@ pub mod errors;
 #[doc(hidden)]
 pub use reql_derive::*;
 #[doc(hidden)]
-pub use ql2::proto::{
-    Term, Datum,
-    Term_TermType as TT,
-    Datum_DatumType as DT,
-};
+pub use ql2::proto::{Term, Datum, Term_TermType as TT, Datum_DatumType as DT};
 #[doc(hidden)]
 pub use protobuf::repeated::RepeatedField;
 
-
 use std::net::SocketAddr;
-
-
 use std::time::Duration;
-
-use tokio_core::reactor::Remote;
-
-use uuid::Uuid;
-
 use std::net::TcpStream;
 
+use tokio_core::reactor::Remote;
+use uuid::Uuid;
 use serde::de::DeserializeOwned;
-
 use futures::sync::mpsc::{Receiver, Sender};
-
 use ordermap::OrderMap;
-
 use errors::Error;
 use slog::Logger;
 use serde_json::Value;
@@ -95,7 +70,6 @@ pub struct Arg {
 /// ReQL Response
 ///
 /// Response returned by `run()`
-
 #[derive(Debug)]
 pub struct Response<T: DeserializeOwned + Send> {
     done: bool,
@@ -131,7 +105,6 @@ struct Config {
     logger: Logger,
 }
 
-
 #[derive(Debug, Clone, Copy)]
 struct SessionManager(Connection);
 
@@ -142,10 +115,8 @@ struct SessionManager(Connection);
 /// themselves. Instead it is simply a reference to the
 /// actual underlying connection pool. As such, you can
 /// `clone` or `copy` it.
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Connection(Uuid);
-
 
 #[derive(Debug, Clone, Eq)]
 struct Server {
@@ -153,7 +124,6 @@ struct Server {
     addresses: Vec<SocketAddr>,
     latency: Duration,
 }
-
 
 #[derive(Debug, Clone)]
 struct Opts {
@@ -164,7 +134,6 @@ struct Opts {
     reproducible: bool,
     tls: Option<TlsCfg>,
 }
-
 
 #[derive(Debug, Clone)]
 struct TlsCfg {
@@ -182,7 +151,6 @@ pub struct Client {
 }
 
 /// The JSON document returned by the server
-
 #[derive(Debug, Clone)]
 pub enum Document<T: DeserializeOwned + Send> {
     Expected(T),
@@ -190,7 +158,6 @@ pub enum Document<T: DeserializeOwned + Send> {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-
 struct ReqlResponse {
     t: i32,
     e: Option<i32>,
@@ -207,7 +174,6 @@ pub trait IntoArg {
 }
 
 /// Lazily execute a command
-
 pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
     fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>>;

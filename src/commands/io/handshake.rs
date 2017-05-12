@@ -8,23 +8,17 @@ use super::{io_error, wrap_query, write_query, read_query};
 use scram::client::{ScramClient, ServerFinal};
 use bufstream::BufStream;
 use byteorder::{WriteBytesExt, LittleEndian};
-use ql2::proto::{
-    VersionDummy_Version as Version,
-    Query_QueryType as QueryType,
-    Response_ResponseType as ResponseType,
-};
+use ql2::proto::{VersionDummy_Version as Version, Query_QueryType as QueryType,
+                 Response_ResponseType as ResponseType};
 use protobuf::ProtobufEnum;
-use serde_json::{
-    from_str, from_slice, from_value,
-    to_vec,
-};
+use serde_json::{from_str, from_slice, from_value, to_vec};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ServerInfo {
-     success: bool,
-     min_protocol_version: usize,
-     max_protocol_version: usize,
-     server_version: String,
+    success: bool,
+    min_protocol_version: usize,
+    max_protocol_version: usize,
+    server_version: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -36,22 +30,21 @@ struct AuthRequest {
 
 #[derive(Serialize, Deserialize, Debug)]
 struct AuthResponse {
-     success: bool,
-     authentication: Option<String>,
-     error_code: Option<usize>,
-     error: Option<String>,
+    success: bool,
+    authentication: Option<String>,
+    error_code: Option<usize>,
+    error: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct AuthConfirmation {
-     authentication: String,
+    authentication: String,
 }
 
 impl Session {
     pub fn handshake(&mut self, opts: &Opts) -> Result<()> {
         // Send desired version to the server
-        let _ = self.stream
-                     .write_u32::<LittleEndian>(Version::V1_0 as u32)?;
+        let _ = self.stream.write_u32::<LittleEndian>(Version::V1_0 as u32)?;
         parse_server_version(&self.stream)?;
 
         // Send client first message

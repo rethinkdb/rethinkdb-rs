@@ -13,13 +13,15 @@ pub fn new_client() -> Client {
 }
 
 pub fn make_cmd<A: IntoArg>(client: &Client,
-                          name: &'static str,
-                          cmd_type: Option<Term_TermType>,
-                          args: Option<A>)
-                          -> Client {
+                            name: &'static str,
+                            cmd_type: Option<Term_TermType>,
+                            args: Option<A>)
+                            -> Client {
     let cterm = match client.term {
         Ok(ref term) => term.clone(),
-        Err(_) => { return client.clone(); }
+        Err(_) => {
+            return client.clone();
+        }
     };
     let logger = client.logger.new(o!("command" => name));
     let mut term = Term::new();

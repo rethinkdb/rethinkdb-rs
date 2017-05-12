@@ -2,7 +2,6 @@ use {Client, Result, Connection, IntoArg, Arg};
 use types::FromJson;
 use serde_json::value::Value;
 use ql2::proto::{Term, Term_AssocPair as TermPair};
-
 use tokio_core::reactor::{Handle, Remote};
 
 impl IntoArg for Arg {
@@ -244,7 +243,9 @@ impl Arg {
         if let Ok(ref mut term) = self.term {
             match arg.term {
                 Ok(aterm) => term.mut_args().push(aterm),
-                Err(e) => { error = Some(e); }
+                Err(e) => {
+                    error = Some(e);
+                }
             }
         }
         if let Some(e) = error {

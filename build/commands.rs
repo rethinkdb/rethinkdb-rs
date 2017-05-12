@@ -169,7 +169,7 @@ impl Command {
         } else {
             &self.menu.permalink
         };
-        
+
         let cmd = if let Some(ref cmd) = self.menu.typ {
             cmd
         } else {
@@ -177,7 +177,7 @@ impl Command {
         };
 
         let typ = format!("Type::{}", cmd.to_uppercase());
-        
+
         let mut docs = String::new();
         let mut file = File::open(&self.src).unwrap();
         if file.read_to_string(&mut docs).unwrap() == 0 {
@@ -191,28 +191,36 @@ impl Command {
                 pub fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {{
                     io::connect(self, args)
                 }}
-            "#, docs)
+            "#,
+                    docs)
         } else if name == "expr" {
             format!(r#"
                 {}
                 pub fn expr<T: IntoArg>(&self, args: T) -> Client {{
                     util::make_cmd(self, "expr", None, Some(args))
                 }}
-            "#, docs)
+            "#,
+                    docs)
         } else if no_args {
             format!(r#"
                 {docs}
                 pub fn {name}(&self) -> Client {{
                     util::make_cmd::<Client>(self, "{name}", Some({typ}), None)
                 }}
-            "#, docs=docs, name=name, typ=typ)
+            "#,
+                    docs = docs,
+                    name = name,
+                    typ = typ)
         } else {
             format!(r#"
                 {docs}
                 pub fn {name}<T: IntoArg>(&self, args: T) -> Client {{
                     util::make_cmd(self, "{name}", Some({typ}), Some(args))
                 }}
-            "#, docs=docs, name=name, typ=typ)
+            "#,
+                    docs = docs,
+                    name = name,
+                    typ = typ)
         };
     }
 

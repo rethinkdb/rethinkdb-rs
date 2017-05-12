@@ -1,10 +1,13 @@
 extern crate slog_term;
-#[macro_use] extern crate slog;
+#[macro_use]
+extern crate slog;
 extern crate tokio_core;
 extern crate futures;
-#[macro_use] extern crate serde_json;
+#[macro_use]
+extern crate serde_json;
 
-#[macro_use] extern crate reql;
+#[macro_use]
+extern crate reql;
 
 use slog::DrainExt;
 use tokio_core::reactor::Core;
@@ -26,8 +29,9 @@ fn main() {
     let core = Core::new().unwrap();
 
     // Create a connection pool
-    let conn = r.connect(args!(core.handle(), {servers: ["localhost"]})).unwrap();
-    
+    let conn = r.connect(args!(core.handle(), {servers: ["localhost"]}))
+        .unwrap();
+
     // Run the query
     let sequence1 = json!([100, 200, 300, 400]);
     let sequence2 = json!([10, 20, 30, 40]);
@@ -35,7 +39,9 @@ fn main() {
 
     let sum = r.map(args!(sequence1, sequence2, sequence3, |val1, val2, val3| {
         val1.add(val2).add(val3)
-    })).run::<[i32; 4]>(conn).unwrap();
+    }))
+        .run::<[i32; 4]>(conn)
+        .unwrap();
 
     // Process results
     for res in sum.wait() {

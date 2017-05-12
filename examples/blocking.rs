@@ -17,9 +17,12 @@ fn main() {
 
     // Create a connection pool
     let conn = r.connect(&core.handle()).unwrap();
-    
+
     // Run the query
-    let stati = r.db("rethinkdb").table("server_status").run::<ServerStatus>(conn).unwrap();
+    let stati = r.db("rethinkdb")
+        .table("server_status")
+        .run::<ServerStatus>(conn)
+        .unwrap();
 
     // Process the results
     for res in stati.wait() {

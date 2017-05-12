@@ -19,7 +19,10 @@ fn main() {
     let conn = r.connect(&core.handle()).unwrap();
 
     // Run the query
-    let query = r.db("rethinkdb").table("server_status").run::<ServerStatus>(conn).unwrap();
+    let query = r.db("rethinkdb")
+        .table("server_status")
+        .run::<ServerStatus>(conn)
+        .unwrap();
 
     // Process the results
     let stati = query.and_then(|status| {
@@ -49,9 +52,8 @@ fn main() {
     .or_else(|error| {
         println!("{:?}", error);
         Err(())
-    })
-    ;
+    });
 
     // Wait for all the results to be processed
-    for _ in stati.wait() { }
+    for _ in stati.wait() {}
 }
