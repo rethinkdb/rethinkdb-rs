@@ -1,17 +1,19 @@
 //! The ReQL data types
 
-use {Result, Request};
+use {Request, Result};
 use errors::DriverError;
-use ql2::proto::{Term, Datum, Term_TermType as TermType, Term_AssocPair as TermPair,
-                 Datum_DatumType as DatumType, Datum_AssocPair as DatumPair};
-use serde_json::value::{Value, to_value};
-use protobuf::repeated::RepeatedField;
 use protobuf::ProtobufEnum;
+use protobuf::repeated::RepeatedField;
+use ql2::proto::{Datum, Datum_AssocPair as DatumPair, Datum_DatumType as DatumType, Term,
+                 Term_AssocPair as TermPair, Term_TermType as TermType};
 use serde::Serialize;
 use serde::de::DeserializeOwned;
+use serde_json::value::{Value, to_value};
 
-pub trait FromJson {
-    fn from_json<T: Serialize>(t: T) -> Result<Term> {
+pub trait FromJson
+{
+    fn from_json<T: Serialize>(t: T) -> Result<Term>
+    {
         // Datum
         let mut datum = Datum::new();
         match to_value(t)? {
@@ -70,32 +72,41 @@ pub trait FromJson {
 
 impl FromJson for Term {}
 
-trait IsDatum {
+trait IsDatum
+{
     fn is_datum(&self) -> bool;
 }
 
-trait IsEmpty {
+trait IsEmpty
+{
     fn is_empty(&self) -> bool;
 }
 
-pub trait Encode {
+pub trait Encode
+{
     fn encode(&self) -> String;
 }
 
-impl IsDatum for Term {
-    fn is_datum(&self) -> bool {
+impl IsDatum for Term
+{
+    fn is_datum(&self) -> bool
+    {
         self.get_field_type() == TermType::DATUM
     }
 }
 
-impl IsEmpty for Term {
-    fn is_empty(&self) -> bool {
+impl IsEmpty for Term
+{
+    fn is_empty(&self) -> bool
+    {
         *self == Term::new()
     }
 }
 
-impl Encode for Datum {
-    fn encode(&self) -> String {
+impl Encode for Datum
+{
+    fn encode(&self) -> String
+    {
         match self.get_field_type() {
             DatumType::R_NULL => String::from("null"),
             DatumType::R_BOOL => format!("{}", self.get_r_bool()),
@@ -126,8 +137,10 @@ impl Encode for Datum {
     }
 }
 
-impl<T: DeserializeOwned + Send> Request<T> {
-    pub fn encode(&mut self, data: &Term, encoding_opts: bool) -> String {
+impl<T: DeserializeOwned + Send> Request<T>
+{
+    pub fn encode(&mut self, data: &Term, encoding_opts: bool) -> String
+    {
         let mut res = Vec::new();
         if !data.is_datum() {
             res.push(format!("[{}", data.get_field_type().value()));
@@ -163,7 +176,8 @@ impl<T: DeserializeOwned + Send> Request<T> {
         res
     }
 
-    fn encode_pairs(&mut self, data: &Vec<TermPair>, encoding_opts: bool) -> String {
+    fn encode_pairs(&mut self, data: &Vec<TermPair>, encoding_opts: bool) -> String
+    {
         let mut opts = String::from("{");
         for term in data {
             opts.push_str(&format!("\"{}\":{},", term.get_key(), self.encode(term.get_val(), encoding_opts)));

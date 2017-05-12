@@ -9,12 +9,13 @@ mod io;
 mod util;
 mod args;
 
-use Connection;
 use {Client, IntoArg, Result};
-use slog::Logger;
+use Connection;
 use ql2::proto::{Term, Term_TermType as Type};
+use slog::Logger;
 
-impl Client {
+impl Client
+{
     /// Create a new ReQL client
     ///
     /// By convention, the variable binding holding a ReQL client is called `r`.
@@ -25,17 +26,20 @@ impl Client {
     /// let r = Client::new();
     /// ```
 
-    pub fn new() -> Client {
+    pub fn new() -> Client
+    {
         util::new_client()
     }
 
     #[doc(hidden)]
-    pub fn set_term(&mut self, term: Result<Term>) {
+    pub fn set_term(&mut self, term: Result<Term>)
+    {
         self.term = term;
     }
 
     #[doc(hidden)]
-    pub fn term(&self) -> Result<&Term> {
+    pub fn term(&self) -> Result<&Term>
+    {
         match self.term {
             Ok(ref term) => Ok(term),
             Err(ref error) => Err(error.clone()),
@@ -66,7 +70,8 @@ impl Client {
     ///
     /// [examples/logging.rs]: https://github.com/rust-rethinkdb/reql/blob/master/examples/logging.rs
 
-    pub fn with_logger(&self, logger: Logger) -> Client {
+    pub fn with_logger(&self, logger: Logger) -> Client
+    {
         util::with_logger(self, logger)
     }
 
@@ -90,7 +95,8 @@ impl Client {
     /// # }
     /// ```
 
-    pub fn with_args<T: IntoArg>(&self, args: T) -> Client {
+    pub fn with_args<T: IntoArg>(&self, args: T) -> Client
+    {
         util::with_args(self, args)
     }
 
@@ -215,7 +221,8 @@ impl Client {
     /// });
     /// ```
 
-    pub fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {
+    pub fn connect<T: IntoArg>(&self, args: T) -> Result<Connection>
+    {
         io::connect(self, args)
     }
 
@@ -376,7 +383,8 @@ impl Client {
     ///
     /// [ast]: https://github.com/rethinkdb/horizon/blob/next/client/src/ast.js
 
-    pub fn changes(&self) -> Client {
+    pub fn changes(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "changes", Some(Type::CHANGES), None)
     }
 
@@ -419,7 +427,8 @@ impl Client {
     ///
     ///
 
-    pub fn db_create<T: IntoArg>(&self, args: T) -> Client {
+    pub fn db_create<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "db_create", Some(Type::DB_CREATE), Some(args))
     }
 
@@ -460,7 +469,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn db_drop<T: IntoArg>(&self, args: T) -> Client {
+    pub fn db_drop<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "db_drop", Some(Type::DB_DROP), Some(args))
     }
 
@@ -476,7 +486,8 @@ impl Client {
     /// r.dbList().run(conn, callback)
     /// ```
 
-    pub fn db_list(&self) -> Client {
+    pub fn db_list(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "db_list", Some(Type::DB_LIST), None)
     }
 
@@ -565,7 +576,8 @@ impl Client {
     ///
     /// Read [Sharding and replication](/docs/sharding-and-replication/) for a complete discussion of the subject, including advanced topics.
 
-    pub fn table_create<T: IntoArg>(&self, args: T) -> Client {
+    pub fn table_create<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "table_create", Some(Type::TABLE_CREATE), Some(args))
     }
 
@@ -618,7 +630,8 @@ impl Client {
     ///
     ///
 
-    pub fn table_drop<T: IntoArg>(&self, args: T) -> Client {
+    pub fn table_drop<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "table_drop", Some(Type::TABLE_DROP), Some(args))
     }
 
@@ -635,7 +648,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn table_list(&self) -> Client {
+    pub fn table_list(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "table_list", Some(Type::TABLE_LIST), None)
     }
 
@@ -732,7 +746,8 @@ impl Client {
     /// })
     /// ```
 
-    pub fn index_create<T: IntoArg>(&self, args: T) -> Client {
+    pub fn index_create<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "index_create", Some(Type::INDEX_CREATE), Some(args))
     }
 
@@ -748,7 +763,8 @@ impl Client {
     ///
     ///
 
-    pub fn index_drop<T: IntoArg>(&self, args: T) -> Client {
+    pub fn index_drop<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "index_drop", Some(Type::INDEX_DROP), Some(args))
     }
 
@@ -763,7 +779,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn index_list(&self) -> Client {
+    pub fn index_list(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "index_list", Some(Type::INDEX_LIST), None)
     }
 
@@ -783,7 +800,8 @@ impl Client {
     /// r.table('comments').indexRename('postId', 'messageId').run(conn, callback)
     /// ```
 
-    pub fn index_rename<T: IntoArg>(&self, args: T) -> Client {
+    pub fn index_rename<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "index_rename", Some(Type::INDEX_RENAME), Some(args))
     }
 
@@ -844,7 +862,8 @@ impl Client {
     /// });
     /// ```
 
-    pub fn index_status(&self) -> Client {
+    pub fn index_status(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "index_status", Some(Type::INDEX_STATUS), None)
     }
 
@@ -880,7 +899,8 @@ impl Client {
     /// r.table('test').indexWait('timestamp').run(conn, callback)
     /// ```
 
-    pub fn index_wait(&self) -> Client {
+    pub fn index_wait(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "index_wait", Some(Type::INDEX_WAIT), None)
     }
 
@@ -1065,7 +1085,8 @@ impl Client {
     /// }}).run(conn, callback)
     /// ```
 
-    pub fn insert<T: IntoArg>(&self, args: T) -> Client {
+    pub fn insert<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "insert", Some(Type::INSERT), Some(args))
     }
 
@@ -1323,7 +1344,8 @@ impl Client {
     /// ).run(conn, callback)
     /// ```
 
-    pub fn update<T: IntoArg>(&self, args: T) -> Client {
+    pub fn update<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "update", Some(Type::UPDATE), Some(args))
     }
 
@@ -1465,7 +1487,8 @@ impl Client {
     /// }
     /// ```
 
-    pub fn replace<T: IntoArg>(&self, args: T) -> Client {
+    pub fn replace<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "replace", Some(Type::REPLACE), Some(args))
     }
 
@@ -1561,7 +1584,8 @@ impl Client {
     /// r.table("comments").delete({durability: "soft"}).run(conn, callback)
     /// ```
 
-    pub fn delete(&self) -> Client {
+    pub fn delete(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "delete", Some(Type::DELETE), None)
     }
 
@@ -1585,7 +1609,8 @@ impl Client {
     ///
     ///
 
-    pub fn sync(&self) -> Client {
+    pub fn sync(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "sync", Some(Type::SYNC), None)
     }
 
@@ -1602,7 +1627,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn db<T: IntoArg>(&self, args: T) -> Client {
+    pub fn db<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "db", Some(Type::DB), Some(args))
     }
 
@@ -1638,7 +1664,8 @@ impl Client {
     /// r.db('heroes').table('marvel', {readMode: 'outdated'}).run(conn, callback)
     /// ```
 
-    pub fn table<T: IntoArg>(&self, args: T) -> Client {
+    pub fn table<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "table", Some(Type::TABLE), Some(args))
     }
 
@@ -1668,7 +1695,8 @@ impl Client {
     /// r.table('heroes').get(3).changes().run(conn, callback);
     /// ```
 
-    pub fn get<T: IntoArg>(&self, args: T) -> Client {
+    pub fn get<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "get", Some(Type::GET), Some(args))
     }
 
@@ -1715,7 +1743,8 @@ impl Client {
     ///
     /// Secondary indexes can be used in extremely powerful ways with `getAll` and other commands; read the full article on [secondary indexes](/docs/secondary-indexes) for examples using boolean operations, `contains` and more.
 
-    pub fn get_all<T: IntoArg>(&self, args: T) -> Client {
+    pub fn get_all<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "get_all", Some(Type::GET_ALL), Some(args))
     }
 
@@ -1800,7 +1829,8 @@ impl Client {
     /// RethinkDB uses byte-wise ordering for `between` and does not support Unicode collations; non-ASCII characters will be sorted by UTF-8 codepoint.
     /// {% endinfobox %}
 
-    pub fn between<T: IntoArg>(&self, args: T) -> Client {
+    pub fn between<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "between", Some(Type::BETWEEN), Some(args))
     }
 
@@ -2012,7 +2042,8 @@ impl Client {
     ///
     /// Instead of using the `default` optional argument to `filter`, we have to use default values on the fields within the `or` clause. Why? If the field on the left side of the `or` clause is missing from a document&mdash;in this case, if the user doesn't have a `role` field&mdash;the predicate will generate an error, and will return `false` (or the value the `default` argument is set to) without evaluating the right side of the `or`. By using `.default(false)` on the fields, each side of the `or` will evaluate to either the field's value or `false` if the field doesn't exist.
 
-    pub fn filter<T: IntoArg>(&self, args: T) -> Client {
+    pub fn filter<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "filter", Some(Type::FILTER), Some(args))
     }
 
@@ -2038,7 +2069,8 @@ impl Client {
     ///
     /// (Compare this to an [outerJoin](/api/javascript/outer_join) with the same inputs and predicate, which would return a list of *all* Marvel heroes along with any DC heroes with a higher strength.)
 
-    pub fn inner_join<T: IntoArg>(&self, args: T) -> Client {
+    pub fn inner_join<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "inner_join", Some(Type::INNER_JOIN), Some(args))
     }
 
@@ -2063,7 +2095,8 @@ impl Client {
     ///
     /// (Compare this to an [innerJoin](/api/javascript/inner_join) with the same inputs and predicate, which would return a list only of the matchups in which the DC hero has the higher strength.)
 
-    pub fn outer_join<T: IntoArg>(&self, args: T) -> Client {
+    pub fn outer_join<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "outer_join", Some(Type::OUTER_JOIN), Some(args))
     }
 
@@ -2189,7 +2222,8 @@ impl Client {
     /// ]
     /// ```
 
-    pub fn eq_join<T: IntoArg>(&self, args: T) -> Client {
+    pub fn eq_join<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "eq_join", Some(Type::EQ_JOIN), Some(args))
     }
 
@@ -2206,7 +2240,8 @@ impl Client {
     ///
     ///
 
-    pub fn zip(&self) -> Client {
+    pub fn zip(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "zip", Some(Type::ZIP), None)
     }
 
@@ -2268,7 +2303,8 @@ impl Client {
     /// }).run(conn, callback);
     /// ```
 
-    pub fn map<T: IntoArg>(&self, args: T) -> Client {
+    pub fn map<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "map", Some(Type::MAP), Some(args))
     }
 
@@ -2307,7 +2343,8 @@ impl Client {
     /// r.table('users').withFields('id', 'user', {contact: {phone: "work"}).run(conn, callback)
     /// ```
 
-    pub fn with_fields<T: IntoArg>(&self, args: T) -> Client {
+    pub fn with_fields<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "with_fields", Some(Type::WITH_FIELDS), Some(args))
     }
 
@@ -2362,7 +2399,8 @@ impl Client {
     /// }).run(conn, callback)
     /// ```
 
-    pub fn concat_map<T: IntoArg>(&self, args: T) -> Client {
+    pub fn concat_map<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "concat_map", Some(Type::CONCAT_MAP), Some(args))
     }
 
@@ -2499,7 +2537,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn order_by<T: IntoArg>(&self, args: T) -> Client {
+    pub fn order_by<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "order_by", Some(Type::ORDER_BY), Some(args))
     }
 
@@ -2513,7 +2552,8 @@ impl Client {
     /// r.table('marvel').orderBy('successMetric').skip(10).run(conn, callback)
     /// ```
 
-    pub fn skip<T: IntoArg>(&self, args: T) -> Client {
+    pub fn skip<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "skip", Some(Type::SKIP), Some(args))
     }
 
@@ -2529,7 +2569,8 @@ impl Client {
     ///
     ///
 
-    pub fn limit<T: IntoArg>(&self, args: T) -> Client {
+    pub fn limit<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "limit", Some(Type::LIMIT), Some(args))
     }
 
@@ -2583,7 +2624,8 @@ impl Client {
     /// "tab"
     /// ```
 
-    pub fn slice<T: IntoArg>(&self, args: T) -> Client {
+    pub fn slice<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "slice", Some(Type::SLICE), Some(args))
     }
 
@@ -2612,7 +2654,8 @@ impl Client {
     /// r.table('players').orderBy({index: r.desc('score')}).nth(-1).run(conn, callback)
     /// ```
 
-    pub fn nth<T: IntoArg>(&self, args: T) -> Client {
+    pub fn nth<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "nth", Some(Type::NTH), Some(args))
     }
 
@@ -2636,7 +2679,8 @@ impl Client {
     /// ).run(conn, callback)
     /// ```
 
-    pub fn offsets_of<T: IntoArg>(&self, args: T) -> Client {
+    pub fn offsets_of<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "offsets_of", Some(Type::OFFSETS_OF), Some(args))
     }
 
@@ -2650,7 +2694,8 @@ impl Client {
     /// r.table('marvel').isEmpty().run(conn, callback)
     /// ```
 
-    pub fn is_empty(&self) -> Client {
+    pub fn is_empty(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "is_empty", Some(Type::IS_EMPTY), None)
     }
 
@@ -2697,7 +2742,8 @@ impl Client {
     /// ).run(conn, callback);
     /// ```
 
-    pub fn union<T: IntoArg>(&self, args: T) -> Client {
+    pub fn union<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "union", Some(Type::UNION), Some(args))
     }
 
@@ -2715,7 +2761,8 @@ impl Client {
     /// r.table('marvel').sample(3).run(conn, callback)
     /// ```
 
-    pub fn sample<T: IntoArg>(&self, args: T) -> Client {
+    pub fn sample<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "sample", Some(Type::SAMPLE), Some(args))
     }
 
@@ -3150,7 +3197,8 @@ impl Client {
     /// ]
     /// ```
 
-    pub fn group(&self) -> Client {
+    pub fn group(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "group", Some(Type::GROUP), None)
     }
 
@@ -3274,7 +3322,8 @@ impl Client {
     /// r.table('games').group('player').avg('points').ungroup().run(conn, callback) // Returns "ARRAY"
     /// ```
 
-    pub fn ungroup(&self) -> Client {
+    pub fn ungroup(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "ungroup", Some(Type::UNGROUP), None)
     }
 
@@ -3343,7 +3392,8 @@ impl Client {
     ///
     /// A shorter way to execute this query is to use [max](/api/javascript/max).
 
-    pub fn reduce<T: IntoArg>(&self, args: T) -> Client {
+    pub fn reduce<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "reduce", Some(Type::REDUCE), Some(args))
     }
 
@@ -3420,7 +3470,8 @@ impl Client {
     /// ).run(conn, callback);
     /// ```
 
-    pub fn fold<T: IntoArg>(&self, args: T) -> Client {
+    pub fn fold<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "fold", Some(Type::FOLD), Some(args))
     }
 
@@ -3464,7 +3515,8 @@ impl Client {
     /// 5
     /// ```
 
-    pub fn count(&self) -> Client {
+    pub fn count(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "count", Some(Type::COUNT), None)
     }
 
@@ -3502,7 +3554,8 @@ impl Client {
     /// }).run(conn, callback)
     /// ```
 
-    pub fn sum(&self) -> Client {
+    pub fn sum(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "sum", Some(Type::SUM), None)
     }
 
@@ -3549,7 +3602,8 @@ impl Client {
     /// r.table('games').avg('points').default(null).run(conn, callback)
     /// ```
 
-    pub fn avg(&self) -> Client {
+    pub fn avg(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "avg", Some(Type::AVG), None)
     }
 
@@ -3605,7 +3659,8 @@ impl Client {
     /// r.table('users').min('points').default(null).run(conn, callback);
     /// ```
 
-    pub fn min(&self) -> Client {
+    pub fn min(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "min", Some(Type::MIN), None)
     }
 
@@ -3661,7 +3716,8 @@ impl Client {
     /// r.table('users').max('points').default(null).run(conn, callback);
     /// ```
 
-    pub fn max(&self) -> Client {
+    pub fn max(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "max", Some(Type::MAX), None)
     }
 
@@ -3697,7 +3753,8 @@ impl Client {
     ///
     /// However, the first form (passing the index as an argument to `distinct`) is faster, and won't run into array limit issues since it's returning a stream.
 
-    pub fn distinct(&self) -> Client {
+    pub fn distinct(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "distinct", Some(Type::DISTINCT), None)
     }
 
@@ -3742,7 +3799,8 @@ impl Client {
     /// }).run(conn, callback);
     /// ```
 
-    pub fn contains<T: IntoArg>(&self, args: T) -> Client {
+    pub fn contains<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "contains", Some(Type::CONTAINS), Some(args))
     }
 
@@ -3783,7 +3841,8 @@ impl Client {
     ///
     /// For more information read the [nested field documentation](/docs/nested-fields/).
 
-    pub fn pluck<T: IntoArg>(&self, args: T) -> Client {
+    pub fn pluck<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "pluck", Some(Type::PLUCK), Some(args))
     }
 
@@ -3821,7 +3880,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn without<T: IntoArg>(&self, args: T) -> Client {
+    pub fn without<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "without", Some(Type::WITHOUT), Some(args))
     }
 
@@ -3885,7 +3945,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn merge<T: IntoArg>(&self, args: T) -> Client {
+    pub fn merge<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "merge", Some(Type::MERGE), Some(args))
     }
 
@@ -3901,7 +3962,8 @@ impl Client {
     ///
     ///
 
-    pub fn append<T: IntoArg>(&self, args: T) -> Client {
+    pub fn append<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "append", Some(Type::APPEND), Some(args))
     }
 
@@ -3917,7 +3979,8 @@ impl Client {
     ///
     ///
 
-    pub fn prepend<T: IntoArg>(&self, args: T) -> Client {
+    pub fn prepend<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "prepend", Some(Type::PREPEND), Some(args))
     }
 
@@ -3945,7 +4008,8 @@ impl Client {
     ///
     ///
 
-    pub fn difference<T: IntoArg>(&self, args: T) -> Client {
+    pub fn difference<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "difference", Some(Type::DIFFERENCE), Some(args))
     }
 
@@ -3961,7 +4025,8 @@ impl Client {
     ///
     ///
 
-    pub fn set_insert<T: IntoArg>(&self, args: T) -> Client {
+    pub fn set_insert<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "set_insert", Some(Type::SET_INSERT), Some(args))
     }
 
@@ -3976,7 +4041,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn set_union<T: IntoArg>(&self, args: T) -> Client {
+    pub fn set_union<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "set_union", Some(Type::SET_UNION), Some(args))
     }
 
@@ -3992,7 +4058,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn set_intersection<T: IntoArg>(&self, args: T) -> Client {
+    pub fn set_intersection<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self,
                        "set_intersection",
                        Some(Type::SET_INTERSECTION),
@@ -4012,7 +4079,8 @@ impl Client {
     ///
     ///
 
-    pub fn set_difference<T: IntoArg>(&self, args: T) -> Client {
+    pub fn set_difference<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self,
                        "set_difference",
                        Some(Type::SET_DIFFERENCE),
@@ -4043,7 +4111,8 @@ impl Client {
     /// 40
     /// ```
 
-    pub fn bracket<T: IntoArg>(&self, args: T) -> Client {
+    pub fn bracket<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "bracket", Some(Type::BRACKET), Some(args))
     }
 
@@ -4060,7 +4129,8 @@ impl Client {
     /// r.table('marvel').get('IronMan').getField('firstAppearance').run(conn, callback)
     /// ```
 
-    pub fn get_field<T: IntoArg>(&self, args: T) -> Client {
+    pub fn get_field<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "get_field", Some(Type::GET_FIELD), Some(args))
     }
 
@@ -4121,7 +4191,8 @@ impl Client {
     ///     ).run(conn, callback)
     /// ```
 
-    pub fn has_fields<T: IntoArg>(&self, args: T) -> Client {
+    pub fn has_fields<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "has_fields", Some(Type::HAS_FIELDS), Some(args))
     }
 
@@ -4139,7 +4210,8 @@ impl Client {
     ///
     ///
 
-    pub fn insert_at<T: IntoArg>(&self, args: T) -> Client {
+    pub fn insert_at<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "insert_at", Some(Type::INSERT_AT), Some(args))
     }
 
@@ -4156,7 +4228,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn splice_at<T: IntoArg>(&self, args: T) -> Client {
+    pub fn splice_at<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "splice_at", Some(Type::SPLICE_AT), Some(args))
     }
 
@@ -4220,7 +4293,8 @@ impl Client {
     /// }).run(conn, callback)
     /// ```
 
-    pub fn delete_at<T: IntoArg>(&self, args: T) -> Client {
+    pub fn delete_at<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "delete_at", Some(Type::DELETE_AT), Some(args))
     }
 
@@ -4236,7 +4310,8 @@ impl Client {
     /// r.expr(["Iron Man", "Bruce", "Spider-Man"]).changeAt(1, "Hulk").run(conn, callback)
     /// ```
 
-    pub fn change_at<T: IntoArg>(&self, args: T) -> Client {
+    pub fn change_at<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "change_at", Some(Type::CHANGE_AT), Some(args))
     }
 
@@ -4256,7 +4331,8 @@ impl Client {
     /// [ "id", "mail", "name" ]
     /// ```
 
-    pub fn keys(&self) -> Client {
+    pub fn keys(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "keys", Some(Type::KEYS), None)
     }
 
@@ -4276,7 +4352,8 @@ impl Client {
     /// [ 1, "fred@example.com", "fred" ]
     /// ```
 
-    pub fn values(&self) -> Client {
+    pub fn values(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "values", Some(Type::VALUES), None)
     }
 
@@ -4349,7 +4426,8 @@ impl Client {
     /// }
     /// ```
 
-    pub fn literal(&self) -> Client {
+    pub fn literal(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "literal", Some(Type::LITERAL), None)
     }
 
@@ -4464,7 +4542,8 @@ impl Client {
     /// r.expr("name[at]domain.com").match(".*@(.*)").run(conn, callback)
     /// ```
 
-    pub fn match_<T: IntoArg>(&self, args: T) -> Client {
+    pub fn match_<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "match_", Some(Type::MATCH), Some(args))
     }
 
@@ -4546,7 +4625,8 @@ impl Client {
     /// ["foo", "bar bax"]
     /// ```
 
-    pub fn split(&self) -> Client {
+    pub fn split(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "split", Some(Type::SPLIT), None)
     }
 
@@ -4568,7 +4648,8 @@ impl Client {
     ///
     /// __Note:__ `upcase` and `downcase` only affect ASCII characters.
 
-    pub fn upcase(&self) -> Client {
+    pub fn upcase(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "upcase", Some(Type::UPCASE), None)
     }
 
@@ -4590,7 +4671,8 @@ impl Client {
     ///
     /// __Note:__ `upcase` and `downcase` only affect ASCII characters.
 
-    pub fn downcase(&self) -> Client {
+    pub fn downcase(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "downcase", Some(Type::DOWNCASE), None)
     }
 
@@ -4650,7 +4732,8 @@ impl Client {
     /// "foobarbuzz"
     /// ```
 
-    pub fn add<T: IntoArg>(&self, args: T) -> Client {
+    pub fn add<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "add", Some(Type::ADD), Some(args))
     }
 
@@ -4676,7 +4759,8 @@ impl Client {
     /// r.now().sub(date)
     /// ```
 
-    pub fn sub<T: IntoArg>(&self, args: T) -> Client {
+    pub fn sub<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "sub", Some(Type::SUB), Some(args))
     }
 
@@ -4697,7 +4781,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn mul<T: IntoArg>(&self, args: T) -> Client {
+    pub fn mul<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "mul", Some(Type::MUL), Some(args))
     }
 
@@ -4712,13 +4797,15 @@ impl Client {
     /// ```
     ///
 
-    pub fn div<T: IntoArg>(&self, args: T) -> Client {
+    pub fn div<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "div", Some(Type::DIV), Some(args))
     }
 
 
 
-    pub fn mod_<T: IntoArg>(&self, args: T) -> Client {
+    pub fn mod_<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "mod_", Some(Type::MOD), Some(args))
     }
 
@@ -4748,7 +4835,8 @@ impl Client {
     /// true
     /// ```
 
-    pub fn and<T: IntoArg>(&self, args: T) -> Client {
+    pub fn and<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "and", Some(Type::AND), Some(args))
     }
 
@@ -4787,7 +4875,8 @@ impl Client {
     /// ).run(conn, callback);
     /// ```
 
-    pub fn or<T: IntoArg>(&self, args: T) -> Client {
+    pub fn or<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "or", Some(Type::OR), Some(args))
     }
 
@@ -4807,7 +4896,8 @@ impl Client {
     /// r.eq(a, b, c).run(conn, callback);
     /// ```
 
-    pub fn eq<T: IntoArg>(&self, args: T) -> Client {
+    pub fn eq<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "eq", Some(Type::EQ), Some(args))
     }
 
@@ -4827,7 +4917,8 @@ impl Client {
     /// r.ne(a, b, c).run(conn, callback);
     /// ```
 
-    pub fn ne<T: IntoArg>(&self, args: T) -> Client {
+    pub fn ne<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "ne", Some(Type::NE), Some(args))
     }
 
@@ -4854,7 +4945,8 @@ impl Client {
     /// r.gt(a, b).and(r.gt(b, c)).run(conn, callback);
     /// ```
 
-    pub fn gt<T: IntoArg>(&self, args: T) -> Client {
+    pub fn gt<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "gt", Some(Type::GT), Some(args))
     }
 
@@ -4881,7 +4973,8 @@ impl Client {
     /// r.ge(a, b).and(r.ge(b, c)).run(conn, callback);
     /// ```
 
-    pub fn ge<T: IntoArg>(&self, args: T) -> Client {
+    pub fn ge<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "ge", Some(Type::GE), Some(args))
     }
 
@@ -4908,7 +5001,8 @@ impl Client {
     /// r.lt(a, b).and(r.lt(b, c)).run(conn, callback);
     /// ```
 
-    pub fn lt<T: IntoArg>(&self, args: T) -> Client {
+    pub fn lt<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "lt", Some(Type::LT), Some(args))
     }
 
@@ -4935,7 +5029,8 @@ impl Client {
     /// r.le(a, b).and(r.le(b, c)).run(conn, callback);
     /// ```
 
-    pub fn le<T: IntoArg>(&self, args: T) -> Client {
+    pub fn le<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "le", Some(Type::LE), Some(args))
     }
 
@@ -4970,7 +5065,8 @@ impl Client {
     /// }).run(conn, callback)
     /// ```
 
-    pub fn not(&self) -> Client {
+    pub fn not(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "not", Some(Type::NOT), None)
     }
 
@@ -5008,7 +5104,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn random(&self) -> Client {
+    pub fn random(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "random", Some(Type::RANDOM), None)
     }
 
@@ -5045,7 +5142,8 @@ impl Client {
     /// r.table('superheroes').get('ironman')('weight').round().run(conn, callback);
     /// ```
 
-    pub fn round(&self) -> Client {
+    pub fn round(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "round", Some(Type::ROUND), None)
     }
 
@@ -5077,7 +5175,8 @@ impl Client {
     /// r.table('superheroes').get('ironman')('weight').ceil().run(conn, callback);
     /// ```
 
-    pub fn ceil(&self) -> Client {
+    pub fn ceil(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "ceil", Some(Type::CEIL), None)
     }
 
@@ -5109,7 +5208,8 @@ impl Client {
     /// r.table('superheroes').get('ironman')('weight').floor().run(conn, callback);
     /// ```
 
-    pub fn floor(&self) -> Client {
+    pub fn floor(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "floor", Some(Type::FLOOR), None)
     }
 
@@ -5129,7 +5229,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn now(&self) -> Client {
+    pub fn now(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "now", Some(Type::NOW), None)
     }
 
@@ -5155,7 +5256,8 @@ impl Client {
     /// r.table("user").get("John").update({birthdate: r.time(1986, 11, 3, 'Z')}).run(conn, callback)
     /// ```
 
-    pub fn time<T: IntoArg>(&self, args: T) -> Client {
+    pub fn time<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "time", Some(Type::TIME), Some(args))
     }
 
@@ -5172,7 +5274,8 @@ impl Client {
     /// r.table("user").get("John").update({birthdate: r.epochTime(531360000)}).run(conn, callback)
     /// ```
 
-    pub fn epoch_time<T: IntoArg>(&self, args: T) -> Client {
+    pub fn epoch_time<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "epoch_time", Some(Type::EPOCH_TIME), Some(args))
     }
 
@@ -5192,7 +5295,8 @@ impl Client {
     ///
     ///
 
-    pub fn iso8601<T: IntoArg>(&self, args: T) -> Client {
+    pub fn iso8601<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "iso8601", Some(Type::ISO8601), Some(args))
     }
 
@@ -5210,7 +5314,8 @@ impl Client {
     ///
     ///
 
-    pub fn in_timezone<T: IntoArg>(&self, args: T) -> Client {
+    pub fn in_timezone<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "in_timezone", Some(Type::IN_TIMEZONE), Some(args))
     }
 
@@ -5228,7 +5333,8 @@ impl Client {
     ///
     ///
 
-    pub fn timezone(&self) -> Client {
+    pub fn timezone(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "timezone", Some(Type::TIMEZONE), None)
     }
 
@@ -5258,7 +5364,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn during<T: IntoArg>(&self, args: T) -> Client {
+    pub fn during<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "during", Some(Type::DURING), Some(args))
     }
 
@@ -5289,7 +5396,8 @@ impl Client {
     /// [now]: /api/javascript/now/
     /// [itz]: /api/javascript/in_timezone/
 
-    pub fn date(&self) -> Client {
+    pub fn date(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "date", Some(Type::DATE), None)
     }
 
@@ -5308,7 +5416,8 @@ impl Client {
     ///
     ///
 
-    pub fn time_of_day(&self) -> Client {
+    pub fn time_of_day(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "time_of_day", Some(Type::TIME_OF_DAY), None)
     }
 
@@ -5324,7 +5433,8 @@ impl Client {
     /// }).run(conn, callback)
     /// ```
 
-    pub fn year(&self) -> Client {
+    pub fn year(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "year", Some(Type::YEAR), None)
     }
 
@@ -5352,7 +5462,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn month(&self) -> Client {
+    pub fn month(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "month", Some(Type::MONTH), None)
     }
 
@@ -5370,7 +5481,8 @@ impl Client {
     ///
     ///
 
-    pub fn day(&self) -> Client {
+    pub fn day(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "day", Some(Type::DAY), None)
     }
 
@@ -5395,7 +5507,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn day_of_week(&self) -> Client {
+    pub fn day_of_week(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "day_of_week", Some(Type::DAY_OF_WEEK), None)
     }
 
@@ -5413,7 +5526,8 @@ impl Client {
     ///
     ///
 
-    pub fn day_of_year(&self) -> Client {
+    pub fn day_of_year(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "day_of_year", Some(Type::DAY_OF_YEAR), None)
     }
 
@@ -5430,7 +5544,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn hours(&self) -> Client {
+    pub fn hours(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "hours", Some(Type::HOURS), None)
     }
 
@@ -5448,7 +5563,8 @@ impl Client {
     ///
     ///
 
-    pub fn minutes(&self) -> Client {
+    pub fn minutes(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "minutes", Some(Type::MINUTES), None)
     }
 
@@ -5467,7 +5583,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn seconds(&self) -> Client {
+    pub fn seconds(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "seconds", Some(Type::SECONDS), None)
     }
 
@@ -5484,7 +5601,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn to_iso8601(&self) -> Client {
+    pub fn to_iso8601(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "to_iso8601", Some(Type::TO_ISO8601), None)
     }
 
@@ -5500,7 +5618,8 @@ impl Client {
     ///
     ///
 
-    pub fn to_epoch_time(&self) -> Client {
+    pub fn to_epoch_time(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "to_epoch_time", Some(Type::TO_EPOCH_TIME), None)
     }
 
@@ -5546,7 +5665,8 @@ impl Client {
     ///
     /// Read more details about RethinkDB's binary object support: [Storing binary objects](/docs/storing-binary/).
 
-    pub fn binary<T: IntoArg>(&self, args: T) -> Client {
+    pub fn binary<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "binary", Some(Type::BINARY), Some(args))
     }
 
@@ -5599,7 +5719,8 @@ impl Client {
     /// ).run(conn, callback);
     /// ```
 
-    pub fn do_<T: IntoArg>(&self, args: T) -> Client {
+    pub fn do_<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "do_", Some(Type::FUNCALL), Some(args))
     }
 
@@ -5681,7 +5802,8 @@ impl Client {
     /// ]
     /// ```
 
-    pub fn branch<T: IntoArg>(&self, args: T) -> Client {
+    pub fn branch<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "branch", Some(Type::BRANCH), Some(args))
     }
 
@@ -5697,7 +5819,8 @@ impl Client {
     /// }).run(conn, callback)
     /// ```
 
-    pub fn for_each<T: IntoArg>(&self, args: T) -> Client {
+    pub fn for_each<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "for_each", Some(Type::FOR_EACH), Some(args))
     }
 
@@ -5741,7 +5864,8 @@ impl Client {
     /// [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
     /// ```
 
-    pub fn range(&self) -> Client {
+    pub fn range(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "range", Some(Type::RANGE), None)
     }
 
@@ -5763,7 +5887,8 @@ impl Client {
     ///
     ///
 
-    pub fn error<T: IntoArg>(&self, args: T) -> Client {
+    pub fn error<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "error", Some(Type::ERROR), Some(args))
     }
 
@@ -5855,7 +5980,8 @@ impl Client {
     ///
     /// This particular example simply returns the error message, so it isn't very useful. But it would be possible to change the default value based on the specific error message thrown.
 
-    pub fn default<T: IntoArg>(&self, args: T) -> Client {
+    pub fn default<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "default", Some(Type::DEFAULT), Some(args))
     }
 
@@ -5879,7 +6005,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn expr<T: IntoArg>(&self, args: T) -> Client {
+    pub fn expr<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "expr", None, Some(args))
     }
 
@@ -5915,7 +6042,8 @@ impl Client {
     /// ```
     ///
 
-    pub fn js<T: IntoArg>(&self, args: T) -> Client {
+    pub fn js<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "js", Some(Type::JAVASCRIPT), Some(args))
     }
 
@@ -5952,7 +6080,8 @@ impl Client {
     /// r.expr(1).coerceTo('string').run(conn, callback)
     /// ```
 
-    pub fn coerce_to<T: IntoArg>(&self, args: T) -> Client {
+    pub fn coerce_to<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "coerce_to", Some(Type::COERCE_TO), Some(args))
     }
 
@@ -5994,7 +6123,8 @@ impl Client {
     /// "STRING"
     /// ```
 
-    pub fn type_of(&self) -> Client {
+    pub fn type_of(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "type_of", Some(Type::TYPE_OF), None)
     }
 
@@ -6008,7 +6138,8 @@ impl Client {
     /// r.table('marvel').info().run(conn, callback)
     /// ```
 
-    pub fn info(&self) -> Client {
+    pub fn info(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "info", Some(Type::INFO), None)
     }
 
@@ -6022,7 +6153,8 @@ impl Client {
     /// r.json("[1,2,3]").run(conn, callback)
     /// ```
 
-    pub fn json<T: IntoArg>(&self, args: T) -> Client {
+    pub fn json<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "json", Some(Type::JSON), Some(args))
     }
 
@@ -6040,7 +6172,8 @@ impl Client {
     /// '{"id": 1, "name": "Batman", "city": "Gotham", "powers": ["martial arts", "cinematic entrances"]}'
     /// ```
 
-    pub fn to_json<T: IntoArg>(&self, args: T) -> Client {
+    pub fn to_json<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "to_json", Some(Type::TO_JSON_STRING), Some(args))
     }
 
@@ -6194,7 +6327,8 @@ impl Client {
     ///
     /// See [the tutorial](/docs/external-api-access/) on `r.http` for more examples on how to use this command.
 
-    pub fn http<T: IntoArg>(&self, args: T) -> Client {
+    pub fn http<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "http", Some(Type::HTTP), Some(args))
     }
 
@@ -6224,7 +6358,8 @@ impl Client {
     /// "90691cbc-b5ea-5826-ae98-951e30fc3b2d"
     /// ```
 
-    pub fn uuid(&self) -> Client {
+    pub fn uuid(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "uuid", Some(Type::UUID), None)
     }
 
@@ -6255,7 +6390,8 @@ impl Client {
     /// }).run(conn, callback);
     /// ```
 
-    pub fn circle<T: IntoArg>(&self, args: T) -> Client {
+    pub fn circle<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "circle", Some(Type::CIRCLE), Some(args))
     }
 
@@ -6283,7 +6419,8 @@ impl Client {
     /// 734.1252496021841
     /// ```
 
-    pub fn distance<T: IntoArg>(&self, args: T) -> Client {
+    pub fn distance<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "distance", Some(Type::DISTANCE), Some(args))
     }
 
@@ -6316,7 +6453,8 @@ impl Client {
     /// }, {nonAtomic: true}).run(conn, callback);
     /// ```
 
-    pub fn fill(&self) -> Client {
+    pub fn fill(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "fill", Some(Type::FILL), None)
     }
 
@@ -6344,7 +6482,8 @@ impl Client {
     /// }).run(conn, callback);
     /// ```
 
-    pub fn geojson<T: IntoArg>(&self, args: T) -> Client {
+    pub fn geojson<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "geojson", Some(Type::GEOJSON), Some(args))
     }
 
@@ -6365,7 +6504,8 @@ impl Client {
     /// }
     /// ```
 
-    pub fn to_geojson(&self) -> Client {
+    pub fn to_geojson(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "to_geojson", Some(Type::TO_GEOJSON), None)
     }
 
@@ -6382,7 +6522,8 @@ impl Client {
     /// r.table('parks').getIntersecting(circle1, {index: 'area'}).run(conn, callback);
     /// ```
 
-    pub fn get_intersecting<T: IntoArg>(&self, args: T) -> Client {
+    pub fn get_intersecting<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self,
                        "get_intersecting",
                        Some(Type::GET_INTERSECTING),
@@ -6420,7 +6561,8 @@ impl Client {
     /// [c]:  /api/javascript/circle/
     /// {% endinfobox %}
 
-    pub fn get_nearest<T: IntoArg>(&self, args: T) -> Client {
+    pub fn get_nearest<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "get_nearest", Some(Type::GET_NEAREST), Some(args))
     }
 
@@ -6460,7 +6602,8 @@ impl Client {
     ///     includes(circle1).run(conn, callback);
     /// ```
 
-    pub fn includes<T: IntoArg>(&self, args: T) -> Client {
+    pub fn includes<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "includes", Some(Type::INCLUDES), Some(args))
     }
 
@@ -6491,7 +6634,8 @@ impl Client {
     /// The `intersects` command cannot take advantage of a geospatial [secondary index](/docs/secondary-indexes/javascript). If you're working with large data sets, you should consider using an index and the [getIntersecting](/api/javascript/get_intersecting) command instead of `intersects`.
     /// {% endinfobox %}
 
-    pub fn intersects<T: IntoArg>(&self, args: T) -> Client {
+    pub fn intersects<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "intersects", Some(Type::INTERSECTS), Some(args))
     }
 
@@ -6532,7 +6676,8 @@ impl Client {
     /// }).run(conn, callback);
     /// ```
 
-    pub fn line<T: IntoArg>(&self, args: T) -> Client {
+    pub fn line<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "line", Some(Type::LINE), Some(args))
     }
 
@@ -6552,7 +6697,8 @@ impl Client {
     /// }).run(conn, callback);
     /// ```
 
-    pub fn point<T: IntoArg>(&self, args: T) -> Client {
+    pub fn point<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "point", Some(Type::POINT), Some(args))
     }
 
@@ -6603,7 +6749,8 @@ impl Client {
     /// }).run(conn, callback);
     /// ```
 
-    pub fn polygon<T: IntoArg>(&self, args: T) -> Client {
+    pub fn polygon<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "polygon", Some(Type::POLYGON), Some(args))
     }
 
@@ -6632,7 +6779,8 @@ impl Client {
     /// outerPolygon.polygonSub(innerPolygon).run(conn, callback);
     /// ```
 
-    pub fn polygon_sub<T: IntoArg>(&self, args: T) -> Client {
+    pub fn polygon_sub<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "polygon_sub", Some(Type::POLYGON_SUB), Some(args))
     }
 
@@ -6725,7 +6873,8 @@ impl Client {
     /// r.grant('monitor', {read: true}).run(conn, callback);
     /// ```
 
-    pub fn grant(&self) -> Client {
+    pub fn grant(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "grant", Some(Type::GRANT), None)
     }
 
@@ -6775,7 +6924,8 @@ impl Client {
     /// > r.table('users').config().update({write_acks: 'single'}).run(conn, callback);
     /// ```
 
-    pub fn config(&self) -> Client {
+    pub fn config(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "config", Some(Type::CONFIG), None)
     }
 
@@ -6889,7 +7039,8 @@ impl Client {
     /// }
     /// ```
 
-    pub fn rebalance(&self) -> Client {
+    pub fn rebalance(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "rebalance", Some(Type::REBALANCE), None)
     }
 
@@ -7081,7 +7232,8 @@ impl Client {
     /// ).run(conn, callback);
     /// ```
 
-    pub fn reconfigure<T: IntoArg>(&self, args: T) -> Client {
+    pub fn reconfigure<T: IntoArg>(&self, args: T) -> Client
+    {
         util::make_cmd(self, "reconfigure", Some(Type::RECONFIGURE), Some(args))
     }
 
@@ -7143,7 +7295,8 @@ impl Client {
     /// }
     /// ```
 
-    pub fn status(&self) -> Client {
+    pub fn status(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "status", Some(Type::STATUS), None)
     }
 
@@ -7172,7 +7325,8 @@ impl Client {
     /// { "ready": 1 }
     /// ```
 
-    pub fn wait(&self) -> Client {
+    pub fn wait(&self) -> Client
+    {
         util::make_cmd::<Client>(self, "wait", Some(Type::WAIT), None)
     }
 }

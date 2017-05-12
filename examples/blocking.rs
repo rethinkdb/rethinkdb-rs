@@ -3,12 +3,13 @@ extern crate futures;
 extern crate reql;
 extern crate reql_types;
 
-use tokio_core::reactor::Core;
 use futures::stream::Stream;
-use reql::{Client, Run, Document};
+use reql::{Client, Document, Run};
 use reql_types::ServerStatus;
+use tokio_core::reactor::Core;
 
-fn main() {
+fn main()
+{
     // Create a new ReQL client
     let r = Client::new();
 

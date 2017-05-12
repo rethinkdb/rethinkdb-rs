@@ -1,19 +1,20 @@
 //! The errors returned by this driver
 
+use futures::sync::mpsc::SendError;
+use protobuf::ProtobufError;
+use r2d2::GetTimeout;
+use scram;
+use serde_json::Value;
+
+use serde_json::error::Error as JsonError;
 use std::io::Error as IoError;
 use std::str::Utf8Error;
 use std::sync::Arc;
 
-use serde_json::error::Error as JsonError;
-use protobuf::ProtobufError;
-use serde_json::Value;
-use r2d2::GetTimeout;
-use futures::sync::mpsc::SendError;
-use scram;
-
 /// The most generic error message in ReQL
 #[derive(Debug, Clone, Error)]
-pub enum Error {
+pub enum Error
+{
     #[error(msg_embedded, non_std, no_from)]
     Compile(String),
     #[error(non_std, no_from)]
@@ -27,7 +28,8 @@ pub enum Error {
 /// All errors on the server unrelated to compilation. Programs may use this to catch any runtime
 /// error, but the server will always return a more specific error class.
 #[derive(Debug, Error)]
-pub enum RuntimeError {
+pub enum RuntimeError
+{
     /// The query contains a logical impossibility, such as adding a number to a string.
     #[error(msg_embedded, non_std, no_from)]
     QueryLogic(String),
@@ -52,7 +54,8 @@ pub enum RuntimeError {
 /// to catch any availability error, but the server will always return one of this class’s
 /// children.
 #[derive(Debug, Error)]
-pub enum AvailabilityError {
+pub enum AvailabilityError
+{
     #[error(msg_embedded, non_std, no_from)]
     OpFailed(String),
     #[error(msg_embedded, non_std, no_from)]
@@ -64,7 +67,8 @@ pub enum AvailabilityError {
 /// This may be a driver bug, or it may be an unfulfillable command, such as an unserializable
 /// query.
 #[derive(Debug, Error)]
-pub enum DriverError {
+pub enum DriverError
+{
     #[error(msg_embedded, non_std, no_from)]
     Auth(String),
 
@@ -81,77 +85,100 @@ pub enum DriverError {
 
 /// Response related errors
 #[derive(Debug, Error)]
-pub enum ResponseError {
+pub enum ResponseError
+{
     Parse(Utf8Error),
     #[error(non_std, no_from)]
     Db(Value),
 }
 
-impl From<DriverError> for Error {
-    fn from(err: DriverError) -> Error {
+impl From<DriverError> for Error
+{
+    fn from(err: DriverError) -> Error
+    {
         Error::Driver(Arc::new(err))
     }
 }
 
-impl From<RuntimeError> for Error {
-    fn from(err: RuntimeError) -> Error {
+impl From<RuntimeError> for Error
+{
+    fn from(err: RuntimeError) -> Error
+    {
         Error::Runtime(Arc::new(err))
     }
 }
 
-impl From<ResponseError> for Error {
-    fn from(err: ResponseError) -> Error {
+impl From<ResponseError> for Error
+{
+    fn from(err: ResponseError) -> Error
+    {
         From::from(DriverError::Response(err))
     }
 }
 
-impl From<AvailabilityError> for Error {
-    fn from(err: AvailabilityError) -> Error {
+impl From<AvailabilityError> for Error
+{
+    fn from(err: AvailabilityError) -> Error
+    {
         From::from(RuntimeError::Availability(err))
     }
 }
 
-impl From<IoError> for Error {
-    fn from(err: IoError) -> Error {
+impl From<IoError> for Error
+{
+    fn from(err: IoError) -> Error
+    {
         From::from(DriverError::Io(err))
     }
 }
 
-impl From<Utf8Error> for Error {
-    fn from(err: Utf8Error) -> Error {
+impl From<Utf8Error> for Error
+{
+    fn from(err: Utf8Error) -> Error
+    {
         From::from(ResponseError::Parse(err))
     }
 }
 
-impl From<JsonError> for Error {
-    fn from(err: JsonError) -> Error {
+impl From<JsonError> for Error
+{
+    fn from(err: JsonError) -> Error
+    {
         From::from(DriverError::Json(err))
     }
 }
 
-impl From<ProtobufError> for Error {
-    fn from(err: ProtobufError) -> Error {
+impl From<ProtobufError> for Error
+{
+    fn from(err: ProtobufError) -> Error
+    {
         From::from(DriverError::Protobuf(err))
     }
 }
 
 
-impl From<GetTimeout> for Error {
-    fn from(err: GetTimeout) -> Error {
+impl From<GetTimeout> for Error
+{
+    fn from(err: GetTimeout) -> Error
+    {
         From::from(DriverError::GetTimeout(err))
     }
 }
 
 
-impl From<scram::Error> for Error {
-    fn from(err: scram::Error) -> Error {
+impl From<scram::Error> for Error
+{
+    fn from(err: scram::Error) -> Error
+    {
         From::from(DriverError::Scram(err))
     }
 }
 
 
-impl<T> From<SendError<T>> for Error {
-    fn from(err: SendError<T>) -> Error {
+impl<T> From<SendError<T>> for Error
+{
+    fn from(err: SendError<T>) -> Error
+    {
         let msg = format!("{:?}", err);
         From::from(DriverError::Other(msg))
     }

@@ -1,27 +1,32 @@
+
+
+use config;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
-use config;
-
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/build/parsers.rs"));
 
 #[derive(Debug, Clone)]
-pub struct Commands {
+pub struct Commands
+{
     header: String,
     commands: Vec<String>,
     menu: Vec<config::Command>,
 }
 
 #[derive(Debug, Clone)]
-pub struct Command {
+pub struct Command
+{
     menu: config::Command,
     tokens: String,
     pub src: PathBuf,
 }
 
-impl Commands {
-    pub fn new(menu: &[config::Command]) -> Commands {
+impl Commands
+{
+    pub fn new(menu: &[config::Command]) -> Commands
+    {
         Commands {
             header: Self::header(),
             commands: Vec::new(),
@@ -29,7 +34,8 @@ impl Commands {
         }
     }
 
-    fn header() -> String {
+    fn header() -> String
+    {
         format!(r#"
             // AUTO GENERATED
             // Manual changes made to this file will be overwritten by the build script.
@@ -47,11 +53,13 @@ impl Commands {
         "#)
     }
 
-    pub fn add_command(&mut self, cmd: &Command) {
+    pub fn add_command(&mut self, cmd: &Command)
+    {
         self.commands.push(cmd.tokens.to_owned());
     }
 
-    pub fn generate<P: AsRef<Path>>(&self, path: P) {
+    pub fn generate<P: AsRef<Path>>(&self, path: P)
+    {
         let header = &self.header;
         let commands: String = self.commands.join("\n");
 
@@ -148,8 +156,10 @@ impl Commands {
     }
 }
 
-impl Command {
-    pub fn new(dir: &str, menu: config::Command) -> Command {
+impl Command
+{
+    pub fn new(dir: &str, menu: config::Command) -> Command
+    {
         let path = format!("{}/{}.md", dir, menu.permalink);
         let src = PathBuf::from(&path);
 
@@ -163,7 +173,8 @@ impl Command {
         cmd
     }
 
-    fn build(&mut self) {
+    fn build(&mut self)
+    {
         let name = if let Some(ref name) = self.menu.method {
             name
         } else {
@@ -224,7 +235,8 @@ impl Command {
         };
     }
 
-    fn gen_docs(&self, mut docs: String) -> (bool, String) {
+    fn gen_docs(&self, mut docs: String) -> (bool, String)
+    {
         let mut no_args = false;
         let cmd = format!("{}()", self.menu.name);
 
@@ -300,7 +312,8 @@ impl Command {
         (no_args, doc_str)
     }
 
-    fn fixup(&self, commands: &str) -> String {
+    fn fixup(&self, commands: &str) -> String
+    {
         commands.lines()
             .map(|line| {
                 line.replace("/assets/images/docs/", "https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/")

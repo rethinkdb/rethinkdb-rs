@@ -1,9 +1,10 @@
 use {Client, IntoArg, slog};
-use ql2::proto::Term;
 use protobuf::repeated::RepeatedField;
+use ql2::proto::Term;
 use ql2::proto::Term_TermType;
 
-pub fn new_client() -> Client {
+pub fn new_client() -> Client
+{
     Client {
         term: Ok(Term::new()),
         query: String::from("r"),
@@ -16,7 +17,8 @@ pub fn make_cmd<A: IntoArg>(client: &Client,
                             name: &'static str,
                             cmd_type: Option<Term_TermType>,
                             args: Option<A>)
-                            -> Client {
+                            -> Client
+{
     let cterm = match client.term {
         Ok(ref term) => term.clone(),
         Err(_) => {
@@ -56,13 +58,15 @@ pub fn make_cmd<A: IntoArg>(client: &Client,
     cmd.with_logger(logger)
 }
 
-pub fn with_logger(client: &Client, logger: slog::Logger) -> Client {
+pub fn with_logger(client: &Client, logger: slog::Logger) -> Client
+{
     let mut cmd = client.clone();
     cmd.logger = logger;
     cmd
 }
 
-pub fn with_args<A: IntoArg>(client: &Client, args: A) -> Client {
+pub fn with_args<A: IntoArg>(client: &Client, args: A) -> Client
+{
     let mut cmd = client.clone();
     if let Err(_) = cmd.term {
         return cmd;

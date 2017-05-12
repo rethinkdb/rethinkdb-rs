@@ -8,10 +8,11 @@ extern crate serde_derive;
 mod config;
 mod commands;
 
+use commands::{Command, Commands};
 use config::Config;
-use commands::{Commands, Command};
 
-fn main() {
+fn main()
+{
     let cfg = Config::new();
     let mut commands = Commands::new(&cfg.menu);
 

@@ -1,19 +1,21 @@
-use std::error::Error as StdError;
+use super::{read_query, wrap_query, write_query};
+use {Document, ReqlResponse, Request, Result, Session, SessionManager};
 
 use errors::*;
-use {Session, SessionManager, Request, ReqlResponse, Result, Document};
-use super::{wrap_query, write_query, read_query};
-
-use serde::de::DeserializeOwned;
 use futures::{Future, Sink};
 use protobuf::ProtobufEnum;
-use ql2::proto::{Query_QueryType as QueryType, Response_ResponseType as ResponseType,
-                 Response_ErrorType as ErrorType};
+use ql2::proto::{Query_QueryType as QueryType, Response_ErrorType as ErrorType,
+                 Response_ResponseType as ResponseType};
 use r2d2::PooledConnection;
-use serde_json::{Value, from_slice, from_value};
 
-impl<T: DeserializeOwned + Send> Request<T> {
-    fn conn(&self) -> Result<PooledConnection<SessionManager>> {
+use serde::de::DeserializeOwned;
+use serde_json::{Value, from_slice, from_value};
+use std::error::Error as StdError;
+
+impl<T: DeserializeOwned + Send> Request<T>
+{
+    fn conn(&self) -> Result<PooledConnection<SessionManager>>
+    {
         match self.pool.get() {
             Ok(mut conn) => {
                 conn.id = conn.id.wrapping_add(1);
@@ -23,7 +25,8 @@ impl<T: DeserializeOwned + Send> Request<T> {
         }
     }
 
-    pub fn submit(mut self) {
+    pub fn submit(mut self)
+    {
         let mut conn = match self.conn() {
             Ok(conn) => conn,
             Err(error) => {
@@ -112,7 +115,8 @@ impl<T: DeserializeOwned + Send> Request<T> {
         }
     }
 
-    fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()> {
+    fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()>
+    {
         self.retry = false;
         self.write = false;
         match self.handle(conn) {
@@ -149,7 +153,8 @@ impl<T: DeserializeOwned + Send> Request<T> {
         Ok(())
     }
 
-    fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>> {
+    fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>>
+    {
         self.retry = false;
         match read_query(conn) {
             Ok(resp) => {

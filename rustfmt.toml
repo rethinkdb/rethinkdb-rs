@@ -1,0 +1,8 @@
+reorder_imported_names = true
+array_layout = "Block"
+closure_block_indent_threshold = -1
+fn_brace_style = "AlwaysNextLine"
+item_brace_style = "AlwaysNextLine"
+reorder_imports = true
+take_source_hints = true
+use_try_shorthand = true

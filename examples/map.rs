@@ -9,13 +9,14 @@ extern crate serde_json;
 #[macro_use]
 extern crate reql;
 
-use slog::DrainExt;
-use tokio_core::reactor::Core;
 use futures::stream::Stream;
 
-use reql::{Client, Run, Document};
+use reql::{Client, Document, Run};
+use slog::DrainExt;
+use tokio_core::reactor::Core;
 
-fn main() {
+fn main()
+{
     // Build an output drain
     let drain = slog_term::streamer().async().compact().build();
 
