@@ -2,10 +2,7 @@
 
 This is a [RethinkDB] driver written in [Rust].
 
-[RethinkDB]: https://www.rethinkdb.com
-[Rust]: https://www.rust-lang.org
-
-[![Build Status](https://travis-ci.org/rust-rethinkdb/reql.svg?branch=master)](https://travis-ci.org/rust-rethinkdb/reql) [![Latest Version](https://img.shields.io/crates/v/reql.svg)](https://crates.io/crates/reql) [![Docs](https://docs.rs/reql/badge.svg)](https://docs.rs/reql) [![rust-version-badge][]][rust-version]
+[![travis-badge][]][travis] [![cratesio-badge][]][cratesio] [![docsrs-badge][]][docsrs] [![rust-version-badge][]][rust-version]
 
 ## Example
 
@@ -74,8 +71,6 @@ fn main()
 
 Check out the [blocking example] to see this same example implemented using a for loop instead.
 
-[blocking example]: https://github.com/rust-rethinkdb/reql/blob/master/examples/blocking.rs
-
 ## License
 
 Licensed under either of
@@ -89,5 +84,14 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you shall be dual licensed as above, without any
 additional terms or conditions.
 
+[RethinkDB]: https://www.rethinkdb.com
+[Rust]: https://www.rust-lang.org
+[travis-badge]: https://travis-ci.org/rust-rethinkdb/reql.svg?branch=master
+[travis]: https://travis-ci.org/rust-rethinkdb/reql
+[cratesio-badge]: https://img.shields.io/crates/v/reql.svg
+[cratesio]: https://crates.io/crates/reql
+[docsrs-badge]: https://docs.rs/reql/badge.svg
+[docsrs]: https://docs.rs/reql
 [rust-version-badge]: https://img.shields.io/badge/rust-1.17+-blue.svg
 [rust-version]: .travis.yml#L7
+[blocking example]: https://github.com/rust-rethinkdb/reql/blob/master/examples/blocking.rs
