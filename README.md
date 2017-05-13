@@ -5,9 +5,7 @@ This is a [RethinkDB] driver written in [Rust].
 [RethinkDB]: https://www.rethinkdb.com
 [Rust]: https://www.rust-lang.org
 
-[![Build Status](https://travis-ci.org/rust-rethinkdb/reql.svg?branch=master)](https://travis-ci.org/rust-rethinkdb/reql) [![Latest Version](https://img.shields.io/crates/v/reql.svg)](https://crates.io/crates/reql) [![Docs](https://docs.rs/reql/badge.svg)](https://docs.rs/reql)
-
-The minimum supported Rust version is `v1.17.0`.
+[![Build Status](https://travis-ci.org/rust-rethinkdb/reql.svg?branch=master)](https://travis-ci.org/rust-rethinkdb/reql) [![Latest Version](https://img.shields.io/crates/v/reql.svg)](https://crates.io/crates/reql) [![Docs](https://docs.rs/reql/badge.svg)](https://docs.rs/reql) [![rust-version-badge][]][rust-version]
 
 ## Example
 
@@ -90,3 +88,6 @@ at your option.
 Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you shall be dual licensed as above, without any
 additional terms or conditions.
+
+[rust-version-badge]: https://img.shields.io/badge/rust-1.17+-blue.svg
+[rust-version]: .travis.yml#L7
