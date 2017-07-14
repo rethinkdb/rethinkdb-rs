@@ -144,6 +144,12 @@ alias: docs/guides/drivers/
                 </a>
             </li>
             <li>
+                <a href="https://github.com/rust-rethinkdb/reql">
+                    <img src="/assets/images/docs/driver-languages/rust.png" />
+                    <p class="name">Rust</p>
+                </a>
+            </li>
+            <li>
                 <a href="https://github.com/pixelspark/rethink-swift">
                     <img src="/assets/images/docs/driver-languages/swift.png" />
                     <p class="name">Swift</p>
@@ -217,5 +223,6 @@ __Thanks to all our amazing driver contributors!__
 - [@orthecreedence](https://github.com/orthecreedence) (Common Lisp): <https://github.com/orthecreedence/cl-rethinkdb>
 - [@pixelspark](https://github.com/pixelspark) (Swift): <https://github.com/pixelspark/rethink-swift>
 - [@rgv151](https://github.com/rgv151) (Nim): <https://github.com/rgv151/rethinkdb.nim>
+- [@rushmorem](https://github.com/rushmorem) (Rust): <https://github.com/rust-rethinkdb/reql>
 - [@unbit](https://github.com/unbit) (C): <https://github.com/unbit/librethinkdb>
 - The [rethinkdb-net team](https://github.com/mfenniak/rethinkdb-net/graphs/contributors) (C#/.NET): <https://github.com/mfenniak/rethinkdb-net>
