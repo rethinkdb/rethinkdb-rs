@@ -23,6 +23,11 @@ echo "deb http://download.rethinkdb.com/apt saucy main" | sudo tee /etc/apt/sour
 echo "deb http://download.rethinkdb.com/apt trusty main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
 ```
 
+## Linux Mint 18 ##
+```bash
+echo "deb http://download.rethinkdb.com/apt xenial main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
+```
+
 ## Install RethinkDB ##
 ```bash
 wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
