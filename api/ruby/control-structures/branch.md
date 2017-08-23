@@ -64,9 +64,9 @@ __Example:__ Categorize heroes by victory counts.
 r.table('marvel').map(
     r.branch(
         r.row['victories'] > 100,
-        r.row['name'].add(' is a superhero',)
+        r.row['name'].add(' is a superhero'),
         r.row['victories'] > 10,
-        r.row['name'].add(' is a hero',)
+        r.row['name'].add(' is a hero'),
         r.row['name'].add(' is very nice')
     )
 ).run(conn)
