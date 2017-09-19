@@ -256,9 +256,10 @@ Official performance numbers for RethinkDB have not been published yet. (We're s
 
 MongoDB uses [locks at various
 levels](http://docs.mongodb.org/manual/faq/concurrency/#which-operations-lock-the-database)
-for ensuring data consistency. In MongoDB, v2.2 writes and map-reduce require
-write locks at the database level. MongoDB uses threads for handling client
-connections.
+for ensuring data consistency. In MongoDB starting with v3.0, MMAPv1 engine supports
+collection-level locking and WiredTiger storage engine uses [document-level
+locking and multiversion concurrency control](https://docs.mongodb.com/manual/core/wiredtiger/).
+MongoDB uses threads for handling client connections.
 
 RethinkDB implements [block-level multiversion concurrency
 control](/docs/architecture/#how-does-rethinkdb-execute-queries)
