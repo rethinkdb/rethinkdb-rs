@@ -171,7 +171,7 @@ r.table("users").get(10001).pluck(
 }
 ```
 
-Be aware this behavior holds true when retrieving data from lists, too. If you extracted `subject` from `notes` above and Bob had 10 notes, 7 of which contained no `subject` field,  you would still get a list of 10 objects: 7 of them would be `{subject: <text>}` and 3 of them would be empty, i.e., `{ }`.
+Be aware this behavior holds true when retrieving data from lists, too. If you extracted `subject` from `notes` above and Bob had 10 notes, 3 of which contained no `subject` field,  you would still get a list of 10 objects: 7 of them would be `{subject: <text>}` and 3 of them would be empty, i.e., `{ }`.
 
 Also, another caveat: the nested field syntax doesn't guarantee identical schemas between documents that it returns. It's possible to describe a path that matches objects that have different schema, as seen in this simple example.
 
