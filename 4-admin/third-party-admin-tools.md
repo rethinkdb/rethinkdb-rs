@@ -35,6 +35,10 @@ Shoot us an email at <a href="mailto:info@rethinkdb.com">info@rethinkdb.com</a>.
 
 - [rethinkdb_nightly](https://github.com/robconery/rethinkdb_nightly) by [@robconery](https://github.com/robconery)  
   A Node.js module that will execute a nightly backup and push it to S3.
+  
+- [ReQLPro](http://reqlpro.com) by [codehangar](https://codehangar.io)  
+  A native application which provides a data browser for RethinkDB, it also allows you to update values in-place by double-clicking them in the table view. Avaliable for Mac, Win and Linux.
+
 
 # Logging tools
 
