@@ -137,7 +137,7 @@ __Disadvantages of using multiple tables:__
 - The queries linking the data between the authors and their posts
   tend to be more complicated.
 - With this approach you cannot atomically update both the author data
-  and and the posts data.
+  and the posts data.
 
 {% endinfobox %}
 
