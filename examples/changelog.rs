@@ -90,25 +90,24 @@ fn main()
             // and deserialized the data into our Change structure
             Some(Document::Expected(change)) => {
 
-                // Match our result_type vs rethinkdb's possible types
-                match &change.result_type {
+                // Valid String change type
+                if let Some(action) = change.result_type {
 
-                    // We've got a String change-type
-                    &Some(ref action) => {
 
-                        // Extract the change type
-                        print!("{:?} action received\n\t=> ", action);
+                    // Extract the change type
+                    print!("{:?} action received\n\t=> ", action);
 
-                        match action.as_ref() {
-                            "add" => println!("{:?}", change.new_val),
-                            "remove" => println!("{:?}", change.old_val),
-                            "change" => println!("from {:?} to {:?}", change.old_val, change.new_val),
+                    // Match the change type
+                    match action.as_str() {
+                        "add" => println!("{:?}", change.new_val),
+                        "remove" => println!("{:?}", change.old_val),
+                        "change" => println!("from {:?} to {:?}", change.old_val, change.new_val),
 
-                            _ => println!("{:?}", change)
-                        }
-                    },
-                    &None => println!("Invalid change type!")
-                };
+                        _ => println!("Unsupported change type: {:?}", action)
+                    }
+                } else {
+                    println!("Invalid change type");
+                }
             }
 
             // We got a response alright, but it wasn't the one we were
