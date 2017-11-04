@@ -10,6 +10,7 @@ extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
 
+use reql_types::Change;
 use futures::stream::Stream;
 use tokio_core::reactor::Core;
 use reql::{Client, Document, Run};
@@ -28,6 +29,22 @@ use reql::{Client, Document, Run};
  *
  * // Remove the first item
  * r.db('test').table('test').nth(0).delete();
+ */
+
+/**
+ * Or, in another rust context, you could run the following:
+ *
+ * // Insert an item
+ * r.db("test").table("test").insert(json!({ test: 1 })) // => run & unwrap
+ *
+ * // Give the first item a random number
+ * r.db("test").table("test").nth(0).update(args!(
+ *     { test: r.random(0, 100) },
+ *     { nonAtomic: true }
+ * ))  // => run & unwrap
+ *
+ * // Remove the first item
+ * r.db("test").table("test").nth(0).delete() // => run & unwrap
  *
  */
 
@@ -35,17 +52,6 @@ use reql::{Client, Document, Run};
 struct TestItem {
     test: i32,
     id: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Change {
-    // Upon deserialisation:
-    // We'll change the rethinkdb change "type" to avoid  naming issues
-    #[serde(rename(deserialize = "type"))]
-    action: String,
-    // new_val or old_val can be null, so we should use Options
-    new_val: Option<TestItem>,
-    old_val: Option<TestItem>,
 }
 
 fn main()
@@ -74,7 +80,7 @@ fn main()
         .with_args(args!({
             include_types: true
         }))
-        .run::<Change>(conn)
+        .run::<Change<TestItem, TestItem>>(conn)
         .unwrap();
 
     // Process the results
@@ -83,18 +89,28 @@ fn main()
             // The server returned the response we were expecting,
             // and deserialized the data into our Change structure
             Some(Document::Expected(change)) => {
-                // Extract the change type
-                print!("{} action received\n\t=> ", change.action);
 
-                // Match the change type
-                match change.action.as_ref() {
-                    "add" => println!("{:?}", change.new_val),
-                    "remove" => println!("{:?}", change.old_val),
-                    "change" => println!("from {:?} to {:?}", change.old_val, change.new_val),
+                // Match our result_type vs rethinkdb's possible types
+                match &change.result_type {
 
-                    _ => println!("{:?}", change)
-                }
+                    // We've got a String change-type
+                    &Some(ref action) => {
+
+                        // Extract the change type
+                        print!("{:?} action received\n\t=> ", action);
+
+                        match action.as_ref() {
+                            "add" => println!("{:?}", change.new_val),
+                            "remove" => println!("{:?}", change.old_val),
+                            "change" => println!("from {:?} to {:?}", change.old_val, change.new_val),
+
+                            _ => println!("{:?}", change)
+                        }
+                    },
+                    &None => println!("Invalid change type!")
+                };
             }
+
             // We got a response alright, but it wasn't the one we were
             // expecting plus it's not an error either, otherwise it would
             // have been returned as such (This simply means that the response
