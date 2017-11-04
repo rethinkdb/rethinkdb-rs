@@ -9,7 +9,7 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 [dependencies]
 syn = "0.11"
 quote = "0.3"
-proc-macro-hack = "0.3"
+proc-macro-hack = "0.4"
 
 [lib]
 proc-macro = true

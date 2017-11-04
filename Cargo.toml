@@ -21,7 +21,7 @@ serde = "1.0"
 serde_json = "1.0"
 ql2 = "1.1"
 derive-error = "0.0.4"
-proc-macro-hack = "0.3"
+proc-macro-hack = "0.4"
 lazy_static = "0.2"
 serde_derive = "1.0"
 r2d2 = "0.7"
@@ -31,7 +31,7 @@ scram = "0.2"
 tokio-core = "0.1"
 futures = "0.1"
 parking_lot = "0.4"
-ordermap = "0.2"
+ordermap = "0.3"
 reql-derive = { version = "0.0.6", path = "./derive" }
 reql-types = { version = "0.0.1", path = "./types" }
 uuid = { version = "0.5", features = ["use_std", "v4", "serde"] }

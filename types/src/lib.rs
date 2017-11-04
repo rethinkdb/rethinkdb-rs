@@ -16,7 +16,7 @@ use uuid::Uuid;
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
 #[derive(Debug, Clone)]
-pub struct DateTime(chrono::DateTime<chrono::UTC>);
+pub struct DateTime(chrono::DateTime<chrono::Utc>);
 
 /// Status returned by a write command
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -154,7 +154,7 @@ impl<'de> Deserialize<'de> for DateTime {
         // to convert the milliseconds to nanoseconds first
         let msecs = time.epoch_time.fract().abs() as u32;
         let naive = chrono::NaiveDateTime::from_timestamp(secs, msecs * 1_000_000);
-        let dt = chrono::DateTime::<chrono::UTC>::from_utc(naive, chrono::UTC);
+        let dt = chrono::DateTime::<chrono::Utc>::from_utc(naive, chrono::Utc);
         Ok(DateTime(dt))
     }
 }
@@ -168,7 +168,7 @@ impl Serialize for DateTime {
 }
 
 impl Deref for DateTime {
-    type Target = chrono::DateTime<chrono::UTC>;
+    type Target = chrono::DateTime<chrono::Utc>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
