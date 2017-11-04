@@ -39,6 +39,8 @@ struct TestItem {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Change {
+    // Upon deserialisation:
+    // We'll change the rethinkdb change "type" to avoid  naming issues
     #[serde(rename(deserialize = "type"))]
     action: String,
     // new_val or old_val can be null, so we should use Options
@@ -68,7 +70,7 @@ fn main()
         }))
         .changes()
 
-        // We want rethinkdb to inform us of the change type
+    // We want rethinkdb to inform us of the change type
         .with_args(args!({
             include_types: true
         }))
