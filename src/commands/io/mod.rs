@@ -362,7 +362,7 @@ impl Connection
     {
         match CONFIG.write().get_mut(self) {
             Some(ref mut config) => {
-                for mut server in config.cluster.values_mut() {
+                for server in config.cluster.values_mut() {
                     server.set_latency();
                 }
                 Ok(())

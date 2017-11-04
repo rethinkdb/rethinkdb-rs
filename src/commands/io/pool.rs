@@ -14,7 +14,7 @@ impl r2d2::ManageConnection for SessionManager
         Session::new(self.0)
     }
 
-    fn is_valid(&self, mut conn: &mut Session) -> Result<()>
+    fn is_valid(&self, conn: &mut Session) -> Result<()>
     {
         conn.is_valid()
     }
