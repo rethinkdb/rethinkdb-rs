@@ -3,7 +3,7 @@ name = "reql-derive"
 description = "An implementation of the args macro used by the reql crate"
 version = "0.0.6"
 license = "MIT/Apache-2.0"
-repository = "https://github.com/rust-rethinkdb/reql"
+repository = "https://github.com/rethinkdb-rs/reql"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]

@@ -3,7 +3,7 @@ name = "reql-types"
 description = "Some useful types to use along with the reql crate"
 version = "0.0.1"
 license = "MIT/Apache-2.0"
-repository = "https://github.com/rust-rethinkdb/reql"
+repository = "https://github.com/rethinkdb-rs/reql"
 documentation = "https://docs.rs/reql-types"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 

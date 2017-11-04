@@ -86,12 +86,12 @@ additional terms or conditions.
 
 [RethinkDB]: https://www.rethinkdb.com
 [Rust]: https://www.rust-lang.org
-[travis-badge]: https://travis-ci.org/rust-rethinkdb/reql.svg?branch=master
-[travis]: https://travis-ci.org/rust-rethinkdb/reql
+[travis-badge]: https://travis-ci.org/rethinkdb-rs/reql.svg?branch=master
+[travis]: https://travis-ci.org/rethinkdb-rs/reql
 [cratesio-badge]: https://img.shields.io/crates/v/reql.svg
 [cratesio]: https://crates.io/crates/reql
 [docsrs-badge]: https://docs.rs/reql/badge.svg
 [docsrs]: https://docs.rs/reql
 [rust-version-badge]: https://img.shields.io/badge/rust-1.18+-blue.svg
 [rust-version]: .travis.yml#L7
-[blocking example]: https://github.com/rust-rethinkdb/reql/blob/master/examples/blocking.rs
+[blocking example]: https://github.com/rethinkdb-rs/reql/blob/master/examples/blocking.rs

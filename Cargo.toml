@@ -3,7 +3,7 @@ name = "reql"
 description = "A native RethinkDB driver"
 version = "0.0.9-pre"
 license = "MIT/Apache-2.0"
-repository = "https://github.com/rust-rethinkdb/reql"
+repository = "https://github.com/rethinkdb-rs/reql"
 documentation = "https://docs.rs/reql"
 readme = "README.md"
 keywords = ["database", "rethinkdb", "reql", "driver"]
@@ -12,7 +12,7 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 build = "build/main.rs"
 
 [badges]
-travis-ci = { repository = "rust-rethinkdb/reql" }
+travis-ci = { repository = "rethinkdb-rs/reql" }
 
 [dependencies]
 protobuf = "1.2"

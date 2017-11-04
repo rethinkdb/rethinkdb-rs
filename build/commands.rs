@@ -116,7 +116,7 @@ impl Commands
                 ///
                 /// See [examples/logging.rs] for an example of setting up an [slog](https://docs.rs/slog) `logger`.
                 ///
-                /// [examples/logging.rs]: https://github.com/rust-rethinkdb/reql/blob/master/examples/logging.rs
+                /// [examples/logging.rs]: https://github.com/rethinkdb-rs/reql/blob/master/examples/logging.rs
 
                 pub fn with_logger(&self, logger: Logger) -> Client {{
                     util::with_logger(self, logger)
