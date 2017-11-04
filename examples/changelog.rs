@@ -20,23 +20,30 @@ use reql::{Client, Document, Run};
  *
  * setup a "test" database, with a "test" table, and run:
  *
- * r.db('test').table('test').insert({ test: 1 })
+ * // Insert an item
+ * r.db('test').table('test').insert({ test: 1 });
+ *
+ * // Give the first item a random number
+ * r.db('test').table('test').nth(0).update({ test: r.random(0, 100) }, { nonAtomic: true });
+ *
+ * // Remove the first item
+ * r.db('test').table('test').nth(0).delete();
  *
  */
 
 #[derive(Debug, Serialize, Deserialize)]
 struct TestItem {
-    test: i32
+    test: i32,
+    id: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Change {
-    // Upon deserialisation:
-    // We'll change the rethinkdb change "type" to avoid  naming issues
     #[serde(rename(deserialize = "type"))]
     action: String,
-    new_val: TestItem,
-    old_val: TestItem,
+    // new_val or old_val can be null, so we should use Options
+    new_val: Option<TestItem>,
+    old_val: Option<TestItem>,
 }
 
 fn main()
@@ -51,11 +58,17 @@ fn main()
     let conn = r.connect(&core.handle()).unwrap();
 
     // Run the query
-    let query = r.db("test")
+    let query =
+        r.db("test")
         .table("test")
+        .filter(args!(|doc| {
+
+            // Filter only documents which match our current TestItem trait
+            doc.has_fields("test").and(doc.get_field("test").type_of().eq("NUMBER"))
+        }))
         .changes()
 
-    // We want rethinkdb to inform us of the change type
+        // We want rethinkdb to inform us of the change type
         .with_args(args!({
             include_types: true
         }))
@@ -85,7 +98,7 @@ fn main()
             // have been returned as such (This simply means that the response
             // we got couldn't be serialised into the type we were expecting)
             Some(Document::Unexpected(change)) => {
-                println!("{}",change)
+                println!("Got unexpected change: {}",change)
             }
             // This is impossible in this particular example since there
             // needs to be at least one server available to give this
