@@ -17,8 +17,7 @@ use reql::{Client, Document, Run};
 use reql_types::ServerStatus;
 use tokio_core::reactor::Core;
 
-fn main()
-{
+fn main() {
     // Create a new ReQL client
     let r = Client::new();
 

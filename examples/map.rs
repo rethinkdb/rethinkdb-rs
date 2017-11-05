@@ -13,8 +13,7 @@ use reql::{Client, Document, Run};
 use slog::Drain;
 use tokio_core::reactor::Core;
 
-fn main()
-{
+fn main() {
     // Build an output drain
     let plain = slog_term::PlainSyncDecorator::new(std::io::stdout());
     let drain = slog_term::FullFormat::new(plain).build();

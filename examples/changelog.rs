@@ -10,10 +10,10 @@ extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
 
-use reql_types::Change;
 use futures::stream::Stream;
-use tokio_core::reactor::Core;
 use reql::{Client, Document, Run};
+use reql_types::Change;
+use tokio_core::reactor::Core;
 
 /**
  * rethinkdb changelog example
@@ -30,7 +30,6 @@ use reql::{Client, Document, Run};
  * // Remove the first item
  * r.db('test').table('test').nth(0).delete();
  */
-
 /**
  * Or, in another rust context, you could run the following:
  *
@@ -47,15 +46,13 @@ use reql::{Client, Document, Run};
  * r.db("test").table("test").nth(0).delete() // => run & unwrap
  *
  */
-
 #[derive(Debug, Serialize, Deserialize)]
 struct TestItem {
     test: i32,
     id: String,
 }
 
-fn main()
-{
+fn main() {
     // Create a new ReQL client
     let r = Client::new();
 
@@ -66,8 +63,7 @@ fn main()
     let conn = r.connect(&core.handle()).unwrap();
 
     // Run the query
-    let query =
-        r.db("test")
+    let query = r.db("test")
         .table("test")
         .filter(args!(|doc| {
 

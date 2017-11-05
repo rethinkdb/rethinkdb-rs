@@ -11,8 +11,7 @@ mod commands;
 use commands::{Command, Commands};
 use config::Config;
 
-fn main()
-{
+fn main() {
     let cfg = Config::new();
     let mut commands = Commands::new(&cfg.menu);
 

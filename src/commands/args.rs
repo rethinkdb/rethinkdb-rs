@@ -4,18 +4,14 @@ use serde_json::value::Value;
 use tokio_core::reactor::{Handle, Remote};
 use types::FromJson;
 
-impl IntoArg for Arg
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for Arg {
+    fn into_arg(self) -> Arg {
         self
     }
 }
 
-impl IntoArg for Client
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for Client {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.query,
             term: self.term,
@@ -25,10 +21,8 @@ impl IntoArg for Client
     }
 }
 
-impl IntoArg for Term
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for Term {
+    fn into_arg(self) -> Arg {
         Arg {
             string: String::new(),
             term: Ok(self),
@@ -38,10 +32,8 @@ impl IntoArg for Term
     }
 }
 
-impl IntoArg for String
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for String {
+    fn into_arg(self) -> Arg {
         Arg {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
@@ -51,10 +43,8 @@ impl IntoArg for String
     }
 }
 
-impl IntoArg for char
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for char {
+    fn into_arg(self) -> Arg {
         Arg {
             string: format!("'{}'", self),
             term: Term::from_json(self),
@@ -64,10 +54,8 @@ impl IntoArg for char
     }
 }
 
-impl<'a> IntoArg for &'a String
-{
-    fn into_arg(self) -> Arg
-    {
+impl<'a> IntoArg for &'a String {
+    fn into_arg(self) -> Arg {
         Arg {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
@@ -77,10 +65,8 @@ impl<'a> IntoArg for &'a String
     }
 }
 
-impl<'a> IntoArg for &'a str
-{
-    fn into_arg(self) -> Arg
-    {
+impl<'a> IntoArg for &'a str {
+    fn into_arg(self) -> Arg {
         Arg {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
@@ -90,10 +76,8 @@ impl<'a> IntoArg for &'a str
     }
 }
 
-impl IntoArg for f32
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for f32 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -103,10 +87,8 @@ impl IntoArg for f32
     }
 }
 
-impl IntoArg for i32
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for i32 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -116,10 +98,8 @@ impl IntoArg for i32
     }
 }
 
-impl IntoArg for u32
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for u32 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -129,10 +109,8 @@ impl IntoArg for u32
     }
 }
 
-impl IntoArg for f64
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for f64 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -142,10 +120,8 @@ impl IntoArg for f64
     }
 }
 
-impl IntoArg for i64
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for i64 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -155,10 +131,8 @@ impl IntoArg for i64
     }
 }
 
-impl IntoArg for u64
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for u64 {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -168,10 +142,8 @@ impl IntoArg for u64
     }
 }
 
-impl IntoArg for bool
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for bool {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -181,10 +153,8 @@ impl IntoArg for bool
     }
 }
 
-impl IntoArg for Value
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for Value {
+    fn into_arg(self) -> Arg {
         Arg {
             string: self.to_string(),
             term: Term::from_json(self),
@@ -195,10 +165,8 @@ impl IntoArg for Value
 }
 
 
-impl IntoArg for Connection
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for Connection {
+    fn into_arg(self) -> Arg {
         Arg {
             string: String::from("conn"),
             term: Ok(Term::new()),
@@ -209,10 +177,8 @@ impl IntoArg for Connection
 }
 
 
-impl<'a> IntoArg for &'a Handle
-{
-    fn into_arg(self) -> Arg
-    {
+impl<'a> IntoArg for &'a Handle {
+    fn into_arg(self) -> Arg {
         Arg {
             string: String::from("&handle"),
             term: Ok(Term::new()),
@@ -223,10 +189,8 @@ impl<'a> IntoArg for &'a Handle
 }
 
 
-impl IntoArg for Remote
-{
-    fn into_arg(self) -> Arg
-    {
+impl IntoArg for Remote {
+    fn into_arg(self) -> Arg {
         Arg {
             string: String::from("remote"),
             term: Ok(Term::new()),
@@ -236,8 +200,7 @@ impl IntoArg for Remote
     }
 }
 
-impl Arg
-{
+impl Arg {
     /// Create a new command argument
     ///
     /// This is the return type of the `IntoArg` trait. You need to
@@ -249,8 +212,7 @@ impl Arg
     /// convert your argument to a term and pass it as `term` to this method.
     /// For debugging and logging purposes, this method also requires that you
     /// pass the string representation of your argument i.e. `as_str`.
-    pub fn new() -> Arg
-    {
+    pub fn new() -> Arg {
         Arg {
             string: String::new(),
             term: Ok(Term::new()),
@@ -260,20 +222,17 @@ impl Arg
     }
 
     #[doc(hidden)]
-    pub fn set_string(&mut self, string: &str)
-    {
+    pub fn set_string(&mut self, string: &str) {
         self.string = string.into();
     }
 
     #[doc(hidden)]
-    pub fn set_term(&mut self, term: Result<Term>)
-    {
+    pub fn set_term(&mut self, term: Result<Term>) {
         self.term = term;
     }
 
     #[doc(hidden)]
-    pub fn add_arg(&mut self, arg: Arg)
-    {
+    pub fn add_arg(&mut self, arg: Arg) {
         if let Some(pool) = arg.pool {
             self.pool = Some(pool);
         }
@@ -295,16 +254,14 @@ impl Arg
     }
 
     #[doc(hidden)]
-    pub fn add_opt(&mut self, temp_pair: TermPair)
-    {
+    pub fn add_opt(&mut self, temp_pair: TermPair) {
         if let Ok(ref mut term) = self.term {
             term.mut_optargs().push(temp_pair);
         }
     }
 
     #[doc(hidden)]
-    pub fn create_term_pair<T: ::IntoArg>(key: &str, val: T) -> Result<TermPair>
-    {
+    pub fn create_term_pair<T: ::IntoArg>(key: &str, val: T) -> Result<TermPair> {
         let mut temp = Term::new();
         temp.mut_args().push(val.into_arg().term?);
         let mut temp_pair = TermPair::new();

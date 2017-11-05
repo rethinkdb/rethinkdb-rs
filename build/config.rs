@@ -7,8 +7,7 @@ use std::io::BufReader;
 use std::path::PathBuf;
 
 #[derive(Debug, Clone)]
-pub struct Config
-{
+pub struct Config {
     pub docs_dir: PathBuf,
     pub cmds_src: PathBuf,
     pub version: String,
@@ -16,21 +15,18 @@ pub struct Config
 }
 
 #[derive(Debug, Clone, Deserialize)]
-struct Menu
-{
+struct Menu {
     section: Section,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct Section
-{
+pub struct Section {
     pub name: String,
     pub commands: Vec<Command>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct Command
-{
+pub struct Command {
     pub name: String,
     #[serde(default)]
     pub section: String,
@@ -39,10 +35,8 @@ pub struct Command
     pub typ: Option<String>,
 }
 
-impl Config
-{
-    pub fn new() -> Config
-    {
+impl Config {
+    pub fn new() -> Config {
         let lang = "javascript";
 
         let root_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
@@ -158,8 +152,7 @@ impl Config
     }
 }
 
-fn build_menu(menu_file: &str) -> Vec<Menu>
-{
+fn build_menu(menu_file: &str) -> Vec<Menu> {
     let file = File::open(&menu_file).unwrap();
     let buf = BufReader::new(file);
     yaml::from_reader(buf).unwrap()

@@ -34,8 +34,7 @@ lazy_static! {
 
 const CHANNEL_SIZE: usize = 1024;
 
-pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection>
-{
+pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
     if let Err(ref error) = client.term {
         return Err(error.clone());
     }
@@ -69,10 +68,8 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection>
     Ok(conn)
 }
 
-impl<A: IntoArg> Run<A> for Client
-{
-    fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>>
-    {
+impl<A: IntoArg> Run<A> for Client {
+    fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>> {
         let cterm = match self.term {
             Ok(ref term) => term.clone(),
             Err(ref error) => {
@@ -109,18 +106,18 @@ impl<A: IntoArg> Run<A> for Client
         // @TODO spawning a thread per query is less than ideal. Ideally we will
         // need first class support for Tokio to get rid of this.
         ::std::thread::spawn(move || {
-                                 let req = Request {
-                                     term: cterm,
-                                     opts: aterm,
-                                     pool: pool,
-                                     cfg: cfg,
-                                     tx: tx,
-                                     write: true,
-                                     retry: false,
-                                     logger: logger,
-                                 };
-                                 req.submit();
-                             });
+            let req = Request {
+                term: cterm,
+                opts: aterm,
+                pool: pool,
+                cfg: cfg,
+                tx: tx,
+                write: true,
+                retry: false,
+                logger: logger,
+            };
+            req.submit();
+        });
         Ok(Response {
                done: false,
                rx: rx,
@@ -128,13 +125,11 @@ impl<A: IntoArg> Run<A> for Client
     }
 }
 
-impl<T: DeserializeOwned + Send> Stream for Response<T>
-{
+impl<T: DeserializeOwned + Send> Stream for Response<T> {
     type Item = Option<Document<T>>;
     type Error = Error;
 
-    fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error>
-    {
+    fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
         if self.done {
             return Ok(Async::Ready(None));
         }
@@ -165,10 +160,8 @@ fn io_error<T>(err: T) -> io::Error
     io::Error::new(io::ErrorKind::Other, err)
 }
 
-impl Default for Opts
-{
-    fn default() -> Opts
-    {
+impl Default for Opts {
+    fn default() -> Opts {
         Opts {
             db: "test".into(),
             user: "admin".into(),
@@ -187,32 +180,25 @@ impl Default for Opts
     }
 }
 
-impl Ord for Server
-{
-    fn cmp(&self, other: &Server) -> Ordering
-    {
+impl Ord for Server {
+    fn cmp(&self, other: &Server) -> Ordering {
         self.latency.cmp(&other.latency)
     }
 }
 
-impl PartialOrd for Server
-{
-    fn partial_cmp(&self, other: &Server) -> Option<Ordering>
-    {
+impl PartialOrd for Server {
+    fn partial_cmp(&self, other: &Server) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl PartialEq for Server
-{
-    fn eq(&self, other: &Server) -> bool
-    {
+impl PartialEq for Server {
+    fn eq(&self, other: &Server) -> bool {
         self.latency == other.latency
     }
 }
 
-fn find_datum(mut term: Term) -> Vec<Datum>
-{
+fn find_datum(mut term: Term) -> Vec<Datum> {
     let mut res = Vec::new();
     if term.has_datum() {
         res.push(term.take_datum());
@@ -226,26 +212,22 @@ fn find_datum(mut term: Term) -> Vec<Datum>
     res
 }
 
-fn take_string(key: &str, val: Vec<Datum>) -> Result<String>
-{
+fn take_string(key: &str, val: Vec<Datum>) -> Result<String> {
     for mut datum in val {
         return Ok(datum.take_r_str());
     }
     Err(DriverError::Other(format!("`{}` must be a string", key)))?
 }
 
-fn take_bool(key: &str, val: Vec<Datum>) -> Result<bool>
-{
+fn take_bool(key: &str, val: Vec<Datum>) -> Result<bool> {
     for datum in val {
         return Ok(datum.get_r_bool());
     }
     Err(DriverError::Other(format!("`{}` must be a boolean", key)))?
 }
 
-impl Connection
-{
-    fn set_config(&self, mut term: Term, remote: Remote, logger: Logger) -> Result<()>
-    {
+impl Connection {
+    fn set_config(&self, mut term: Term, remote: Remote, logger: Logger) -> Result<()> {
         let mut cluster = OrderMap::new();
         let mut hosts = Vec::new();
         let mut opts = Opts::default();
@@ -297,69 +279,63 @@ impl Connection
         Ok(())
     }
 
-    fn maintain(&self)
-    {
+    fn maintain(&self) {
         self.reset_cluster();
         let conn = *self;
         let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
         thread::spawn(move || {
-                          let r = Client::new();
-                          let query = r.db("rethinkdb")
-                              .table("server_status")
-                              .changes()
-                              .with_args(args!({include_initial: true}));
-                          loop {
-                              let changes = query
-                                  .run::<Change<ServerStatus, ServerStatus>>(conn)
-                                  .unwrap();
-                              for change in changes.wait() {
-                                  match change {
-                                      Ok(Some(Document::Expected(change))) => {
-                                          if let Some(ref mut config) =
-                        CONFIG.write().get_mut(&conn) {
-                                              let cluster = &mut config.cluster;
-                                              if let Some(status) = change.new_val {
-                                                  let mut addresses = Vec::new();
-                                                  for addr in status.network.canonical_addresses {
-                                                      let socket =
-                                                          SocketAddr::new(addr.host,
-                                                                          status.network.reql_port);
-                                                      addresses.push(socket);
-                                                  }
-                                                  let mut server = Server::new(&status.name,
-                                                                               addresses);
-                                                  server.set_latency();
-                                                  cluster.insert(server.name.to_owned(), server);
-                                                  let _ = tx.clone().send(());
-                                              } else if let Some(status) = change.old_val {
-                                                  cluster.remove(&status.name);
-                                              }
-                                          }
-                                      }
-                                      Ok(res) => {
-                        println!("unexpected response from server: {:?}", res);
+            let r = Client::new();
+            let query = r.db("rethinkdb")
+                .table("server_status")
+                .changes()
+                .with_args(args!({include_initial: true}));
+            loop {
+                let changes = query
+                    .run::<Change<ServerStatus, ServerStatus>>(conn)
+                    .unwrap();
+                for change in changes.wait() {
+                    match change {
+                        Ok(Some(Document::Expected(change))) => {
+                            if let Some(ref mut config) = CONFIG.write().get_mut(&conn) {
+                                let cluster = &mut config.cluster;
+                                if let Some(status) = change.new_val {
+                                    let mut addresses = Vec::new();
+                                    for addr in status.network.canonical_addresses {
+                                        let socket = SocketAddr::new(addr.host,
+                                                                     status.network.reql_port);
+                                        addresses.push(socket);
+                                    }
+                                    let mut server = Server::new(&status.name, addresses);
+                                    server.set_latency();
+                                    cluster.insert(server.name.to_owned(), server);
+                                    let _ = tx.clone().send(());
+                                } else if let Some(status) = change.old_val {
+                                    cluster.remove(&status.name);
+                                }
+                            }
+                        }
+                        Ok(res) => {
+                            println!("unexpected response from server: {:?}", res);
+                        }
+                        Err(error) => {
+                            println!("{:?}", error);
+                        }
                     }
-                                      Err(error) => {
-                        println!("{:?}", error);
-                    }
-                                  }
-                              }
-                              thread::sleep(Duration::from_millis(500));
-                          }
-                      });
+                }
+                thread::sleep(Duration::from_millis(500));
+            }
+        });
         // wait for at least one database result before continuing
         let _ = rx.wait();
     }
 
-    fn reset_cluster(&self)
-    {
+    fn reset_cluster(&self) {
         if let Some(ref mut config) = CONFIG.write().get_mut(self) {
             config.cluster = OrderMap::new();
         }
     }
 
-    fn set_latency(&self) -> Result<()>
-    {
+    fn set_latency(&self) -> Result<()> {
         match CONFIG.write().get_mut(self) {
             Some(ref mut config) => {
                 for server in config.cluster.values_mut() {
@@ -374,21 +350,17 @@ impl Connection
         }
     }
 
-    fn config(&self) -> Config
-    {
+    fn config(&self) -> Config {
         CONFIG.read().get(self).unwrap().clone()
     }
 
-    fn set_pool(&self, pool: r2d2::Pool<SessionManager>)
-    {
+    fn set_pool(&self, pool: r2d2::Pool<SessionManager>) {
         POOL.write().insert(*self, pool);
     }
 }
 
-impl Server
-{
-    fn new(host: &str, addresses: Vec<SocketAddr>) -> Server
-    {
+impl Server {
+    fn new(host: &str, addresses: Vec<SocketAddr>) -> Server {
         Server {
             name: host.to_string(),
             addresses: addresses,
@@ -396,8 +368,7 @@ impl Server
         }
     }
 
-    fn set_latency(&mut self)
-    {
+    fn set_latency(&mut self) {
         for address in self.addresses.iter() {
             let start = Instant::now();
             if let Ok(_) = TcpStream::connect(address) {
@@ -408,8 +379,7 @@ impl Server
     }
 }
 
-fn write_query(conn: &mut Session, query: &str) -> Result<()>
-{
+fn write_query(conn: &mut Session, query: &str) -> Result<()> {
     let query = query.as_bytes();
     let token = conn.id;
     if let Err(error) = conn.stream.write_u64::<LittleEndian>(token) {
@@ -431,8 +401,7 @@ fn write_query(conn: &mut Session, query: &str) -> Result<()>
     Ok(())
 }
 
-fn read_query(conn: &mut Session) -> Result<Vec<u8>>
-{
+fn read_query(conn: &mut Session) -> Result<Vec<u8>> {
     let _ = match conn.stream.read_u64::<LittleEndian>() {
         Ok(token) => token,
         Err(error) => {
@@ -455,8 +424,7 @@ fn read_query(conn: &mut Session) -> Result<Vec<u8>>
     Ok(resp)
 }
 
-fn wrap_query(query_type: QueryType, query: Option<String>, options: Option<String>) -> String
-{
+fn wrap_query(query_type: QueryType, query: Option<String>, options: Option<String>) -> String {
     let mut qry = format!("[{}", query_type.value());
     if let Some(query) = query {
         qry.push_str(&format!(",{}", query));

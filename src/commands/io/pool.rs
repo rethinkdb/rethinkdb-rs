@@ -4,31 +4,25 @@ use errors::Error;
 use r2d2;
 use std::net::TcpStream;
 
-impl r2d2::ManageConnection for SessionManager
-{
+impl r2d2::ManageConnection for SessionManager {
     type Connection = Session;
     type Error = Error;
 
-    fn connect(&self) -> Result<Session>
-    {
+    fn connect(&self) -> Result<Session> {
         Session::new(self.0)
     }
 
-    fn is_valid(&self, conn: &mut Session) -> Result<()>
-    {
+    fn is_valid(&self, conn: &mut Session) -> Result<()> {
         conn.is_valid()
     }
 
-    fn has_broken(&self, conn: &mut Session) -> bool
-    {
+    fn has_broken(&self, conn: &mut Session) -> bool {
         conn.broken
     }
 }
 
-impl Session
-{
-    fn new(conn: Connection) -> Result<Session>
-    {
+impl Session {
+    fn new(conn: Connection) -> Result<Session> {
         let cfg = conn.config();
         let logger = cfg.logger;
         //let remote = cfg.remote;

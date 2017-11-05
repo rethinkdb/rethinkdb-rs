@@ -58,8 +58,7 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 
 /// The return type of `IntoArg::into_arg`
 #[derive(Clone)]
-pub struct Arg
-{
+pub struct Arg {
     string: String,
     term: Result<Term>,
     pool: Option<Connection>,
@@ -70,14 +69,12 @@ pub struct Arg
 ///
 /// Response returned by `run()`
 #[derive(Debug)]
-pub struct Response<T: DeserializeOwned + Send>
-{
+pub struct Response<T: DeserializeOwned + Send> {
     done: bool,
     rx: Receiver<Result<Option<Document<T>>>>,
 }
 
-struct Request<T: DeserializeOwned + Send>
-{
+struct Request<T: DeserializeOwned + Send> {
     term: Term,
     opts: Term,
     pool: r2d2::Pool<SessionManager>,
@@ -88,8 +85,7 @@ struct Request<T: DeserializeOwned + Send>
     logger: Logger,
 }
 
-struct Session
-{
+struct Session {
     id: u64,
     broken: bool,
     stream: TcpStream,
@@ -97,8 +93,7 @@ struct Session
 }
 
 #[derive(Clone)]
-struct Config
-{
+struct Config {
     cluster: OrderMap<String, Server>,
     opts: Opts,
     remote: Remote,
@@ -119,16 +114,14 @@ struct SessionManager(Connection);
 pub struct Connection(Uuid);
 
 #[derive(Debug, Clone, Eq)]
-struct Server
-{
+struct Server {
     name: String,
     addresses: Vec<SocketAddr>,
     latency: Duration,
 }
 
 #[derive(Debug, Clone)]
-struct Opts
-{
+struct Opts {
     db: String,
     user: String,
     password: String,
@@ -138,16 +131,14 @@ struct Opts
 }
 
 #[derive(Debug, Clone)]
-struct TlsCfg
-{
+struct TlsCfg {
     ca_certs: String,
 }
 
 /// The database cluster client
 #[must_use]
 #[derive(Debug, Clone)]
-pub struct Client
-{
+pub struct Client {
     term: Result<Term>,
     query: String,
     write: bool,
@@ -156,15 +147,13 @@ pub struct Client
 
 /// The JSON document returned by the server
 #[derive(Debug, Clone)]
-pub enum Document<T: DeserializeOwned + Send>
-{
+pub enum Document<T: DeserializeOwned + Send> {
     Expected(T),
     Unexpected(Value),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct ReqlResponse
-{
+struct ReqlResponse {
     t: i32,
     e: Option<i32>,
     r: Value,
@@ -174,15 +163,13 @@ struct ReqlResponse
 }
 
 /// The argument that is passed to any command
-pub trait IntoArg
-{
+pub trait IntoArg {
     /// Converts a supported type into Arg
     fn into_arg(self) -> Arg;
 }
 
 /// Lazily execute a command
-pub trait Run<A: IntoArg>
-{
+pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
     fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>>;
 }

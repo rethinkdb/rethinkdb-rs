@@ -14,8 +14,7 @@ use std::net::TcpStream;
 use std::str;
 
 #[derive(Serialize, Deserialize, Debug)]
-struct ServerInfo
-{
+struct ServerInfo {
     success: bool,
     min_protocol_version: usize,
     max_protocol_version: usize,
@@ -23,16 +22,14 @@ struct ServerInfo
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct AuthRequest
-{
+struct AuthRequest {
     protocol_version: i32,
     authentication_method: String,
     authentication: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct AuthResponse
-{
+struct AuthResponse {
     success: bool,
     authentication: Option<String>,
     error_code: Option<usize>,
@@ -40,15 +37,12 @@ struct AuthResponse
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct AuthConfirmation
-{
+struct AuthConfirmation {
     authentication: String,
 }
 
-impl Session
-{
-    pub fn handshake(&mut self, opts: &Opts) -> Result<()>
-    {
+impl Session {
+    pub fn handshake(&mut self, opts: &Opts) -> Result<()> {
         // Send desired version to the server
         let _ = self.stream.write_u32::<LittleEndian>(Version::V1_0 as u32)?;
         parse_server_version(&self.stream)?;
@@ -105,8 +99,7 @@ impl Session
         }
     }
 
-    pub fn is_valid(&mut self) -> Result<()>
-    {
+    pub fn is_valid(&mut self) -> Result<()> {
         self.id = self.id.wrapping_add(1);
         let query = wrap_query(QueryType::START, Some(String::from("1")), None);
         write_query(self, &query)?;
@@ -125,8 +118,7 @@ impl Session
     }
 }
 
-fn parse_server_version(stream: &TcpStream) -> Result<()>
-{
+fn parse_server_version(stream: &TcpStream) -> Result<()> {
     let resp = parse_server_response(stream)?;
     let info: ServerInfo = from_str(&resp)?;
     if !info.success {
@@ -135,8 +127,7 @@ fn parse_server_version(stream: &TcpStream) -> Result<()>
     Ok(())
 }
 
-fn parse_server_response(stream: &TcpStream) -> Result<String>
-{
+fn parse_server_response(stream: &TcpStream) -> Result<String> {
     // The server will then respond with a NULL-terminated string response.
     // "SUCCESS" indicates that the connection has been accepted. Any other
     // response indicates an error, and the response string should describe
@@ -160,8 +151,7 @@ fn parse_server_response(stream: &TcpStream) -> Result<String>
     Ok(resp)
 }
 
-fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()>
-{
+fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
     let resp = parse_server_response(stream)?;
     let info: AuthResponse = from_str(&resp)?;
     if !info.success {

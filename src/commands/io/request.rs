@@ -12,10 +12,8 @@ use serde::de::DeserializeOwned;
 use serde_json::{Value, from_slice, from_value};
 use std::error::Error as StdError;
 
-impl<T: DeserializeOwned + Send> Request<T>
-{
-    fn conn(&self) -> Result<PooledConnection<SessionManager>>
-    {
+impl<T: DeserializeOwned + Send> Request<T> {
+    fn conn(&self) -> Result<PooledConnection<SessionManager>> {
         match self.pool.get() {
             Ok(mut conn) => {
                 conn.id = conn.id.wrapping_add(1);
@@ -25,8 +23,7 @@ impl<T: DeserializeOwned + Send> Request<T>
         }
     }
 
-    pub fn submit(mut self)
-    {
+    pub fn submit(mut self) {
         let mut conn = match self.conn() {
             Ok(conn) => conn,
             Err(error) => {
@@ -115,8 +112,7 @@ impl<T: DeserializeOwned + Send> Request<T>
         }
     }
 
-    fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()>
-    {
+    fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()> {
         self.retry = false;
         self.write = false;
         match self.handle(conn) {
@@ -153,8 +149,7 @@ impl<T: DeserializeOwned + Send> Request<T>
         Ok(())
     }
 
-    fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>>
-    {
+    fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>> {
         self.retry = false;
         match read_query(conn) {
             Ok(resp) => {
