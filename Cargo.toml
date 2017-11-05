@@ -32,8 +32,8 @@ tokio-core = "0.1"
 futures = "0.1"
 parking_lot = "0.4"
 ordermap = "0.3"
-reql-derive = { version = "0.0.6", path = "./derive" }
-reql-types = { version = "0.0.1", path = "./types" }
+reql-derive = { version = "0.0.7", path = "./derive" }
+reql-types = { version = "0.0.2", path = "./types" }
 uuid = { version = "0.5", features = ["use_std", "v4", "serde"] }
 
 [dev-dependencies]
