@@ -9,10 +9,10 @@ mod io;
 mod util;
 mod args;
 
-use {Client, IntoArg, Result};
 use Connection;
-use ql2::proto::{Term, Term_TermType as Type};
+use {Client, IntoArg, Result};
 use slog::Logger;
+use ql2::proto::{Term, Term_TermType as Type};
 
 impl Client {
     /// Create a new ReQL client

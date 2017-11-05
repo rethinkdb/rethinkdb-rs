@@ -34,12 +34,12 @@ use tokio_core::reactor::Core;
  * Or, in another rust context, you could run the following:
  *
  * // Insert an item
- * r.db("test").table("test").insert(json!({ test: 1 })) // => run & unwrap
+ * r.db("test").table("test").insert(json!({ "test": 1 })) // => run & unwrap
  *
  * // Give the first item a random number
  * r.db("test").table("test").nth(0).update(args!(
- *     { test: r.random(0, 100) },
- *     { nonAtomic: true }
+ *     json!({ "test": r.random(0, 100) }),
+ *     { non_atomic: true }
  * ))  // => run & unwrap
  *
  * // Remove the first item
@@ -72,7 +72,7 @@ fn main() {
         }))
         .changes()
 
-    // We want rethinkdb to inform us of the change type
+        // We want rethinkdb to inform us of the change type
         .with_args(args!({
             include_types: true
         }))
@@ -85,24 +85,21 @@ fn main() {
             // The server returned the response we were expecting,
             // and deserialized the data into our Change structure
             Some(Document::Expected(change)) => {
-
                 // Valid String change type
-                if let Some(action) = change.result_type {
+                match change.result_type {
+                    Some(action) => {
+                        // Extract the change type
+                        print!("{:?} action received\n\t=> ", action);
 
-
-                    // Extract the change type
-                    print!("{:?} action received\n\t=> ", action);
-
-                    // Match the change type
-                    match action.as_str() {
-                        "add" => println!("{:?}", change.new_val),
-                        "remove" => println!("{:?}", change.old_val),
-                        "change" => println!("from {:?} to {:?}", change.old_val, change.new_val),
-
-                        _ => println!("Unsupported change type: {:?}", action)
+                        // Match the change type
+                        match action.as_str() {
+                            "add" => println!("{:?}", change.new_val),
+                            "remove" => println!("{:?}", change.old_val),
+                            "change" => println!("from {:?} to {:?}", change.old_val, change.new_val),
+                            _ => println!("Unsupported change type: {:?}", action)
+                        }
                     }
-                } else {
-                    println!("Invalid change type");
+                    None => println!("No change type"),
                 }
             }
 
@@ -124,10 +121,10 @@ fn main() {
         Ok(())
     })
     // Our query ran into an error
-        .or_else(|error| {
-            println!("{:?}", error);
-            Err(())
-        });
+    .or_else(|error| {
+        println!("{:?}", error);
+        Err(())
+    });
 
     // Wait for all the results to be processed
     for _ in stati.wait() {}
