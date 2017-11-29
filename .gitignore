@@ -2,4 +2,3 @@ target
 *.bk
 Cargo.lock
 src/commands/mod.rs
-build/docs/Gemfile.lock
