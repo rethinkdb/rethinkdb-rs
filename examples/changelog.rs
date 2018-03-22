@@ -1,5 +1,5 @@
-extern crate futures;
-extern crate tokio_core;
+extern crate futures_await as futures;
+extern crate tokio;
 
 #[macro_use]
 extern crate reql;
@@ -13,7 +13,6 @@ extern crate serde_json;
 use futures::stream::Stream;
 use reql::{Client, Document, Run};
 use reql_types::Change;
-use tokio_core::reactor::Core;
 
 /**
  * rethinkdb changelog example
@@ -56,11 +55,8 @@ fn main() {
     // Create a new ReQL client
     let r = Client::new();
 
-    // Create an even loop
-    let core = Core::new().unwrap();
-
     // Create a connection pool
-    let conn = r.connect(&core.handle()).unwrap();
+    let conn = r.connect(args!()).unwrap();
 
     // Run the query
     let query = r.db("test")

@@ -1,4 +1,4 @@
-extern crate futures;
+extern crate futures_await as futures;
 #[macro_use]
 extern crate reql;
 #[macro_use]
@@ -6,12 +6,11 @@ extern crate serde_json;
 #[macro_use]
 extern crate slog;
 extern crate slog_term;
-extern crate tokio_core;
+extern crate tokio;
 
 use futures::stream::Stream;
 use reql::{Client, Document, Run};
 use slog::Drain;
-use tokio_core::reactor::Core;
 
 fn main() {
     // Build an output drain
@@ -24,11 +23,8 @@ fn main() {
     // Create a new ReQL client with the logger
     let r = Client::new().with_logger(logger);
 
-    // Create an even loop
-    let core = Core::new().unwrap();
-
     // Create a connection pool
-    let conn = r.connect(args!(core.handle(), {servers: ["localhost"]}))
+    let conn = r.connect(args!({servers: ["localhost"]}))
         .unwrap();
 
     // Run the query

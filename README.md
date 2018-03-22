@@ -91,6 +91,6 @@ additional terms or conditions.
 [cratesio]: https://crates.io/crates/reql
 [docsrs-badge]: https://docs.rs/reql/badge.svg
 [docsrs]: https://docs.rs/reql
-[rust-version-badge]: https://img.shields.io/badge/rust-1.18+-blue.svg
+[rust-version-badge]: https://img.shields.io/badge/rust-nightly%202018--03--01-blue.svg
 [rust-version]: .travis.yml#L7
 [blocking example]: https://github.com/rethinkdb-rs/reql/blob/master/examples/blocking.rs

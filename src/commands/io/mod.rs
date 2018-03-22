@@ -23,7 +23,6 @@ use std::io::{self, Read, Write};
 use std::net::{SocketAddr, ToSocketAddrs};
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
-use tokio_core::reactor::Remote;
 use uuid::Uuid;
 
 lazy_static! {
@@ -44,12 +43,7 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
     let query = format!("{}.connect({})", client.query, arg.string);
     debug!(logger, "{}", query);
     info!(logger, "creating connection pool...");
-    match arg.remote {
-        Some(remote) => conn.set_config(aterm, remote, logger.clone())?,
-        None => {
-            return Err(io_error("a futures handle is required for `connect`"))?;
-        }
-    }
+    conn.set_config(aterm, logger.clone())?;
     conn.set_latency()?;
     let session = SessionManager(conn);
     let r2d2 = r2d2::Pool::builder()
@@ -99,7 +93,6 @@ impl<A: IntoArg> Run<A> for Client {
             }
         };
         let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
-        //let remote = cfg.remote.clone();
         // @TODO spawning a thread per query is less than ideal. Ideally we will
         // need first class support for Tokio to get rid of this.
         ::std::thread::spawn(move || {
@@ -224,7 +217,7 @@ fn take_bool(key: &str, val: Vec<Datum>) -> Result<bool> {
 }
 
 impl Connection {
-    fn set_config(&self, mut term: Term, remote: Remote, logger: Logger) -> Result<()> {
+    fn set_config(&self, mut term: Term, logger: Logger) -> Result<()> {
         let mut cluster = IndexMap::new();
         let mut hosts = Vec::new();
         let mut opts = Opts::default();
@@ -269,7 +262,6 @@ impl Connection {
                     Config {
                         cluster: cluster,
                         opts: opts,
-                        remote: remote,
                         logger: logger,
                     });
 

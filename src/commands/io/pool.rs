@@ -25,7 +25,6 @@ impl Session {
     fn new(conn: Connection) -> Result<Session> {
         let cfg = conn.config();
         let logger = cfg.logger;
-        //let remote = cfg.remote;
         let mut servers: Vec<_> = cfg.cluster.values().collect();
         servers.sort();
         debug!(logger, "cluster: {:?}", servers);

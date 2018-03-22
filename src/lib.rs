@@ -1,10 +1,12 @@
 //! A native RethinkDB driver written in Rust
 
+#![feature(proc_macro, conservative_impl_trait, generators)]
+
 extern crate bufstream;
 extern crate byteorder;
 #[macro_use]
 extern crate derive_error;
-extern crate futures;
+extern crate futures_await as futures;
 #[macro_use]
 extern crate lazy_static;
 extern crate indexmap;
@@ -24,7 +26,7 @@ extern crate serde_derive;
 extern crate serde_json;
 #[macro_use]
 extern crate slog;
-extern crate tokio_core;
+extern crate tokio;
 extern crate uuid;
 
 #[macro_use]
@@ -50,7 +52,6 @@ use std::net::SocketAddr;
 use std::net::TcpStream;
 use std::time::Duration;
 
-use tokio_core::reactor::Remote;
 use uuid::Uuid;
 
 /// The result of any command that can potentially return an error
@@ -62,7 +63,6 @@ pub struct Arg {
     string: String,
     term: Result<Term>,
     pool: Option<Connection>,
-    remote: Option<Remote>,
 }
 
 /// ReQL Response
@@ -96,7 +96,6 @@ struct Session {
 struct Config {
     cluster: IndexMap<String, Server>,
     opts: Opts,
-    remote: Remote,
     logger: Logger,
 }
 

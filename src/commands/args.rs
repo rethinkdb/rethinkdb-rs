@@ -1,7 +1,6 @@
 use {Arg, Client, Connection, IntoArg, Result};
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 use serde_json::value::Value;
-use tokio_core::reactor::{Handle, Remote};
 use types::FromJson;
 
 impl IntoArg for Arg {
@@ -16,7 +15,6 @@ impl IntoArg for Client {
             string: self.query,
             term: self.term,
             pool: None,
-            remote: None,
         }
     }
 }
@@ -27,7 +25,6 @@ impl IntoArg for Term {
             string: String::new(),
             term: Ok(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -38,7 +35,6 @@ impl IntoArg for String {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -49,7 +45,6 @@ impl IntoArg for char {
             string: format!("'{}'", self),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -60,7 +55,6 @@ impl<'a> IntoArg for &'a String {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -71,7 +65,6 @@ impl<'a> IntoArg for &'a str {
             string: format!(r#""{}""#, self),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -82,7 +75,6 @@ impl IntoArg for f32 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -93,7 +85,6 @@ impl IntoArg for i32 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -104,7 +95,6 @@ impl IntoArg for u32 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -115,7 +105,6 @@ impl IntoArg for f64 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -126,7 +115,6 @@ impl IntoArg for i64 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -137,7 +125,6 @@ impl IntoArg for u64 {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -148,7 +135,6 @@ impl IntoArg for bool {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -159,7 +145,6 @@ impl IntoArg for Value {
             string: self.to_string(),
             term: Term::from_json(self),
             pool: None,
-            remote: None,
         }
     }
 }
@@ -171,34 +156,10 @@ impl IntoArg for Connection {
             string: String::from("conn"),
             term: Ok(Term::new()),
             pool: Some(self),
-            remote: None,
         }
     }
 }
 
-
-impl<'a> IntoArg for &'a Handle {
-    fn into_arg(self) -> Arg {
-        Arg {
-            string: String::from("&handle"),
-            term: Ok(Term::new()),
-            pool: None,
-            remote: Some(self.remote().clone()),
-        }
-    }
-}
-
-
-impl IntoArg for Remote {
-    fn into_arg(self) -> Arg {
-        Arg {
-            string: String::from("remote"),
-            term: Ok(Term::new()),
-            pool: None,
-            remote: Some(self),
-        }
-    }
-}
 
 impl Arg {
     /// Create a new command argument
@@ -217,7 +178,6 @@ impl Arg {
             string: String::new(),
             term: Ok(Term::new()),
             pool: None,
-            remote: None,
         }
     }
 
@@ -235,9 +195,6 @@ impl Arg {
     pub fn add_arg(&mut self, arg: Arg) {
         if let Some(pool) = arg.pool {
             self.pool = Some(pool);
-        }
-        if let Some(remote) = arg.remote {
-            self.remote = Some(remote);
         }
         let mut error = None;
         if let Ok(ref mut term) = self.term {
