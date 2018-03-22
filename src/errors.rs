@@ -2,8 +2,7 @@
 
 use futures::sync::mpsc::SendError;
 use protobuf::ProtobufError;
-use r2d2::GetTimeout;
-use scram;
+use {scram, r2d2};
 use serde_json::Value;
 
 use serde_json::error::Error as JsonError;
@@ -71,7 +70,7 @@ pub enum DriverError {
     Scram(scram::Error),
     Io(IoError),
 
-    GetTimeout(GetTimeout),
+    R2D2(r2d2::Error),
     Response(ResponseError),
     Json(JsonError),
     Protobuf(ProtobufError),
@@ -136,9 +135,9 @@ impl From<ProtobufError> for Error {
 }
 
 
-impl From<GetTimeout> for Error {
-    fn from(err: GetTimeout) -> Error {
-        From::from(DriverError::GetTimeout(err))
+impl From<r2d2::Error> for Error {
+    fn from(err: r2d2::Error) -> Error {
+        From::from(DriverError::R2D2(err))
     }
 }
 

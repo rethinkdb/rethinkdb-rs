@@ -7,7 +7,7 @@ extern crate derive_error;
 extern crate futures;
 #[macro_use]
 extern crate lazy_static;
-extern crate ordermap;
+extern crate indexmap;
 extern crate parking_lot;
 #[macro_use]
 extern crate proc_macro_hack;
@@ -35,7 +35,7 @@ mod types;
 
 use errors::Error;
 use futures::sync::mpsc::{Receiver, Sender};
-use ordermap::OrderMap;
+use indexmap::IndexMap;
 #[doc(hidden)]
 pub use protobuf::repeated::RepeatedField;
 #[doc(hidden)]
@@ -94,7 +94,7 @@ struct Session {
 
 #[derive(Clone)]
 struct Config {
-    cluster: OrderMap<String, Server>,
+    cluster: IndexMap<String, Server>,
     opts: Opts,
     remote: Remote,
     logger: Logger,

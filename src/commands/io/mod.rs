@@ -4,17 +4,16 @@ mod handshake;
 
 
 use {Client, Config, Connection, Document, IntoArg, Opts, Request, Response, Result, Run, Server,
-     Session, SessionManager};
+     Session, SessionManager, r2d2};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use errors::*;
 use futures::{Async, Poll, Sink, Stream};
 use futures::sync::mpsc;
-use ordermap::OrderMap;
+use indexmap::IndexMap;
 use parking_lot::RwLock;
 use protobuf::ProtobufEnum;
 use ql2::proto::{Datum, Term};
 use ql2::proto::Query_QueryType as QueryType;
-use r2d2;
 use reql_types::{Change, ServerStatus};
 use serde::de::DeserializeOwned;
 use slog::Logger;
@@ -28,8 +27,8 @@ use tokio_core::reactor::Remote;
 use uuid::Uuid;
 
 lazy_static! {
-    static ref CONFIG: RwLock<OrderMap<Connection, Config>> = RwLock::new(OrderMap::new());
-    static ref POOL: RwLock<OrderMap<Connection, r2d2::Pool<SessionManager>>> = RwLock::new(OrderMap::new());
+    static ref CONFIG: RwLock<IndexMap<Connection, Config>> = RwLock::new(IndexMap::new());
+    static ref POOL: RwLock<IndexMap<Connection, r2d2::Pool<SessionManager>>> = RwLock::new(IndexMap::new());
 }
 
 const CHANNEL_SIZE: usize = 1024;
@@ -52,16 +51,14 @@ pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
         }
     }
     conn.set_latency()?;
-    let config = r2d2::Config::builder()
-        .pool_size(144)
+    let session = SessionManager(conn);
+    let r2d2 = r2d2::Pool::builder()
+        .max_size(144)
         .idle_timeout(Some(Duration::from_secs(30)))
         .max_lifetime(Some(Duration::from_secs(150)))
         .min_idle(Some(5))
         .connection_timeout(Duration::from_secs(3))
-        .build();
-    let session = SessionManager(conn);
-    let r2d2 = r2d2::Pool::new(config, session)
-        .map_err(|err| io_error(err))?;
+        .build(session)?;
     conn.set_pool(r2d2);
     info!(logger, "connection pool created successfully");
     conn.maintain();
@@ -228,7 +225,7 @@ fn take_bool(key: &str, val: Vec<Datum>) -> Result<bool> {
 
 impl Connection {
     fn set_config(&self, mut term: Term, remote: Remote, logger: Logger) -> Result<()> {
-        let mut cluster = OrderMap::new();
+        let mut cluster = IndexMap::new();
         let mut hosts = Vec::new();
         let mut opts = Opts::default();
 
@@ -331,7 +328,7 @@ impl Connection {
 
     fn reset_cluster(&self) {
         if let Some(ref mut config) = CONFIG.write().get_mut(self) {
-            config.cluster = OrderMap::new();
+            config.cluster = IndexMap::new();
         }
     }
 
