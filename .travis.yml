@@ -5,16 +5,10 @@ language: rust
 
 rust:
 - nightly
-- beta
-- stable
-- 1.18.0
 
 cache: cargo
 
 matrix:
-  allow_failures:
-    - rust: nightly
-
   include:
     - env: TARGET=x86_64-unknown-linux-musl
       addons:
