@@ -31,5 +31,5 @@ before_script:
 - if [[ -n "$TARGET" ]]; then rustup target add "$TARGET"; fi
 
 script:
-- if [[ -n "$TARGET" ]]; then cargo test --target "$TARGET"; fi
-- if [[ -z "$TARGET" ]]; then cargo test; fi
+- if [[ -n "$TARGET" ]]; then cargo test --target "$TARGET" --example minimal blocking changelog; fi
+- if [[ -z "$TARGET" ]]; then cargo test --example minimal blocking changelog; fi
