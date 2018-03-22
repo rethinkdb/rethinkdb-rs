@@ -31,7 +31,7 @@ scram = "0.2"
 tokio-core = "0.1"
 futures = "0.1"
 parking_lot = "0.5"
-indexmap = "0.4"
+indexmap = "1.0"
 reql-derive = { version = "0.0.7", path = "./derive" }
 reql-types = { version = "0.0.3", path = "./types" }
 uuid = { version = "0.6", features = ["v4", "serde"] }
