@@ -6,7 +6,7 @@ use {Client, Config, Connection, Document, IntoArg, Opts, Request, Response, Res
      Session, SessionManager, r2d2};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use errors::*;
-use futures::{Async, Poll, Stream, StreamExt, SinkExt};
+use futures::{Async, Poll, Stream, StreamExt};
 use futures::task::Context;
 use futures::channel::mpsc;
 use futures::executor::block_on;
@@ -272,13 +272,14 @@ impl Connection {
     fn maintain(&self) {
         self.reset_cluster();
         let conn = *self;
-        let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
+        let (tx, rx) = ::std::sync::mpsc::sync_channel::<()>(CHANNEL_SIZE);
         thread::spawn(move || {
             let r = Client::new();
             let query = r.db("rethinkdb")
                 .table("server_status")
                 .changes()
                 .with_args(args!({include_initial: true}));
+            let mut send = true;
             loop {
                 let changes = query
                     .run::<Change<ServerStatus, ServerStatus>>(conn)
@@ -297,7 +298,11 @@ impl Connection {
                                 let mut server = Server::new(&status.name, addresses);
                                 server.set_latency();
                                 cluster.insert(server.name.to_owned(), server);
-                                let _ = block_on(tx.clone().send(()));
+                                if send {
+                                    if let Ok(_) = tx.send(()) {
+                                        send = false;
+                                    }
+                                }
                             } else if let Some(status) = change.old_val {
                                 cluster.remove(&status.name);
                             }
@@ -310,7 +315,7 @@ impl Connection {
             }
         });
         // wait for at least one database result before continuing
-        let _ = block_on(rx.into_future());
+        let _ = rx.recv();
     }
 
     fn reset_cluster(&self) {
