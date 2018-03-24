@@ -1,5 +1,4 @@
 extern crate futures_await as futures;
-extern crate tokio;
 
 #[macro_use]
 extern crate reql;
@@ -10,7 +9,8 @@ extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
 
-use futures::stream::Stream;
+use futures::StreamExt;
+use futures::executor::block_on;
 use reql::{Client, Document, Run};
 use reql_types::Change;
 
@@ -76,7 +76,7 @@ fn main() {
         .unwrap();
 
     // Process the results
-    let stati = query.and_then(|change| {
+    let stati = query.for_each(|change| {
         match change {
             // The server returned the response we were expecting,
             // and deserialized the data into our Change structure
@@ -115,13 +115,8 @@ fn main() {
             }
         }
         Ok(())
-    })
-    // Our query ran into an error
-    .or_else(|error| {
-        println!("{:?}", error);
-        Err(())
     });
 
     // Wait for all the results to be processed
-    for _ in stati.wait() {}
+    let _ = block_on(stati);
 }
