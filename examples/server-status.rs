@@ -5,11 +5,11 @@ extern crate reql_types;
 #[macro_use]
 extern crate slog;
 extern crate slog_term;
-extern crate tokio;
 
-use futures::stream::Stream;
 use reql::{Client, Document, Run};
 use reql_types::{Change, ServerStatus};
+use futures::executor::block_on;
+use futures::StreamExt;
 use slog::Drain;
 
 fn main() {
@@ -24,8 +24,7 @@ fn main() {
     let r = Client::new().with_logger(logger);
 
     // Create a connection pool
-    let conn = r.connect(args!({servers: ["localhost"]}))
-        .unwrap();
+    let conn = r.connect(args!({servers: ["localhost"]})).unwrap();
 
     // Run the query
     let stati = r.db("rethinkdb")
@@ -36,17 +35,12 @@ fn main() {
         .unwrap();
 
     // Process results
-    for res in stati.wait() {
-        match res {
-            Ok(Some(Document::Expected(change))) => {
-                println!("{:?}", change);
-            }
-            Ok(res) => {
-                println!("unexpected response from server: {:?}", res);
-            }
-            Err(error) => {
-                println!("{:?}", error);
-            }
+    match block_on(stati.into_future()).unwrap().0.unwrap() {
+        Some(Document::Expected(change)) => {
+            println!("{:?}", change);
+        }
+        res => {
+            println!("unexpected response from server: {:?}", res);
         }
     }
 }
