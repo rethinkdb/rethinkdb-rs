@@ -6,9 +6,9 @@ extern crate serde_json;
 #[macro_use]
 extern crate slog;
 extern crate slog_term;
-extern crate tokio;
 
-use futures::stream::Stream;
+use futures::executor::block_on;
+use futures::StreamExt;
 use reql::{Client, Document, Run};
 use slog::Drain;
 
@@ -35,21 +35,16 @@ fn main() {
     let sum = r.map(args!(sequence1, sequence2, sequence3, |val1, val2, val3| {
         val1.add(val2).add(val3)
     }))
-        .run::<[i32; 4]>(conn)
+    .run::<[i32; 4]>(conn)
         .unwrap();
 
     // Process results
-    for res in sum.wait() {
-        match res {
-            Ok(Some(Document::Expected(sum))) => {
-                println!("{:?}", sum);
-            }
-            Ok(res) => {
-                println!("unexpected response from DB: {:?}", res);
-            }
-            Err(error) => {
-                println!("{:?}", error);
-            }
+    match block_on(sum.into_future()).unwrap().0.unwrap() {
+        Some(Document::Expected(sum)) => {
+            println!("{:?}", sum);
+        }
+        res => {
+            println!("unexpected response from DB: {:?}", res);
         }
     }
 }
