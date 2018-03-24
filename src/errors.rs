@@ -1,6 +1,6 @@
 //! The errors returned by this driver
 
-use futures::sync::mpsc::SendError;
+use futures::channel::mpsc::SendError;
 use protobuf::ProtobufError;
 use {scram, r2d2};
 use serde_json::Value;
@@ -149,9 +149,8 @@ impl From<scram::Error> for Error {
 }
 
 
-impl<T> From<SendError<T>> for Error {
-    fn from(err: SendError<T>) -> Error {
-        let msg = format!("{:?}", err);
-        From::from(DriverError::Other(msg))
+impl From<SendError> for Error {
+    fn from(err: SendError) -> Error {
+        From::from(DriverError::Other(err.to_string()))
     }
 }

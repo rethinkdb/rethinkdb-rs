@@ -2,9 +2,8 @@ extern crate futures_await as futures;
 #[macro_use]
 extern crate reql;
 extern crate reql_types;
-extern crate tokio;
 
-use futures::stream::Stream;
+use futures::StreamExt;
 use reql::{Client, Document, Run};
 use reql_types::ServerStatus;
 
@@ -52,5 +51,5 @@ fn main() {
     });
 
     // Wait for all the results to be processed
-    for _ in stati.wait() {}
+    let _ = futures::executor::block_on(stati.into_future());
 }

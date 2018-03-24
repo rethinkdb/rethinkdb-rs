@@ -2,12 +2,12 @@ use super::{read_query, wrap_query, write_query};
 use {Document, ReqlResponse, Request, Result, Session, SessionManager};
 
 use errors::*;
-use futures::{Future, Sink};
 use protobuf::ProtobufEnum;
 use ql2::proto::{Query_QueryType as QueryType, Response_ErrorType as ErrorType,
                  Response_ResponseType as ResponseType};
 use r2d2::PooledConnection;
-
+use futures::SinkExt;
+use futures::executor::block_on;
 use serde::de::DeserializeOwned;
 use serde_json::{Value, from_slice, from_value};
 use std::error::Error as StdError;
@@ -27,7 +27,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
         let mut conn = match self.conn() {
             Ok(conn) => conn,
             Err(error) => {
-                let _ = self.tx.clone().send(Err(error)).wait();
+                let _ = block_on(self.tx.clone().send(Err(error)));
                 return;
             }
         };
@@ -48,7 +48,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
                         Ok(c) => c,
                         Err(error) => {
                             if i == self.cfg.opts.retries - 1 {
-                                let _ = self.tx.clone().send(Err(error.into())).wait();
+                                let _ = block_on(self.tx.clone().send(Err(error.into())));
                                 if !reproducible {
                                     return;
                                 }
@@ -82,7 +82,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
                     if let Err(error) = write_query(&mut conn, &query) {
                         connect = true;
                         if i == self.cfg.opts.retries - 1 {
-                            let _ = self.tx.clone().send(Err(error.into())).wait();
+                            let _ = block_on(self.tx.clone().send(Err(error.into())));
                             if !reproducible {
                                 return;
                             }
@@ -99,7 +99,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
                 // Handle the response
                 if let Err(error) = self.process(&mut conn, &mut query) {
                     if i == self.cfg.opts.retries - 1 || !self.retry {
-                        let _ = self.tx.clone().send(Err(error.into())).wait();
+                        let _ = block_on(self.tx.clone().send(Err(error.into())));
                         if !reproducible {
                             return;
                         }
@@ -220,13 +220,10 @@ impl<T: DeserializeOwned + Send> Request<T> {
                 // Since this is a successful query let's process the results and send
                 // them to the caller
                 if let Ok(data) = from_value::<T>(result.r.clone()) {
-                    let _ = self.tx
-                        .clone()
-                        .send(Ok(Some(Document::Expected(data))))
-                        .wait();
+                    let _ = block_on(self.tx.clone().send(Ok(Some(Document::Expected(data)))));
                 } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                     for v in data {
-                        let _ = self.tx.clone().send(Ok(Some(Document::Expected(v)))).wait();
+                        let _ = block_on(self.tx.clone().send(Ok(Some(Document::Expected(v)))));
                     }
                 }
                 // Send unexpected query responses
@@ -237,26 +234,20 @@ impl<T: DeserializeOwned + Send> Request<T> {
                     for v in data {
                         match v {
                             Value::Null => {
-                                let _ = self.tx.clone().send(Ok(None)).wait();
+                                let _ = block_on(self.tx.clone().send(Ok(None)));
                             }
                             value => {
-                                let _ = self.tx
-                                    .clone()
-                                    .send(Ok(Some(Document::Unexpected(value))))
-                                    .wait();
+                                let _ = block_on(self.tx.clone().send(Ok(Some(Document::Unexpected(value)))));
                             }
                         }
                     }
                 } else {
                     match result.r.clone() {
                         Value::Null => {
-                            let _ = self.tx.clone().send(Ok(None)).wait();
+                            let _ = block_on(self.tx.clone().send(Ok(None)));
                         }
                         value => {
-                            let _ = self.tx
-                                .clone()
-                                .send(Ok(Some(Document::Unexpected(value))))
-                                .wait();
+                            let _ = block_on(self.tx.clone().send(Ok(Some(Document::Unexpected(value)))));
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 //! A native RethinkDB driver written in Rust
 
 #![feature(proc_macro, conservative_impl_trait, generators)]
+//#![feature(underscore_imports)]
 
 extern crate bufstream;
 extern crate byteorder;
@@ -26,7 +27,6 @@ extern crate serde_derive;
 extern crate serde_json;
 #[macro_use]
 extern crate slog;
-extern crate tokio;
 extern crate uuid;
 
 #[macro_use]
@@ -36,7 +36,7 @@ pub mod errors;
 mod types;
 
 use errors::Error;
-use futures::sync::mpsc::{Receiver, Sender};
+use futures::channel::mpsc::{Receiver, Sender};
 use indexmap::IndexMap;
 #[doc(hidden)]
 pub use protobuf::repeated::RepeatedField;

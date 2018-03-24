@@ -2,13 +2,14 @@ mod pool;
 mod request;
 mod handshake;
 
-
 use {Client, Config, Connection, Document, IntoArg, Opts, Request, Response, Result, Run, Server,
      Session, SessionManager, r2d2};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use errors::*;
-use futures::{Async, Poll, Sink, Stream};
-use futures::sync::mpsc;
+use futures::{Async, Poll, Stream, StreamExt, SinkExt};
+use futures::task::Context;
+use futures::channel::mpsc;
+use futures::executor::block_on;
 use indexmap::IndexMap;
 use parking_lot::RwLock;
 use protobuf::ProtobufEnum;
@@ -119,12 +120,12 @@ impl<T: DeserializeOwned + Send> Stream for Response<T> {
     type Item = Option<Document<T>>;
     type Error = Error;
 
-    fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
+    fn poll_next(&mut self, cx: &mut Context) -> Poll<Option<Self::Item>, Self::Error> {
         if self.done {
             return Ok(Async::Ready(None));
         }
-        match self.rx.poll() {
-            Ok(Async::NotReady) => Ok(Async::NotReady),
+        match self.rx.poll_next(cx) {
+            Ok(Async::Pending) => Ok(Async::Pending),
             Ok(Async::Ready(Some(res))) => {
                 match res {
                     Ok(data) => Ok(Async::Ready(Some(data))),
@@ -282,40 +283,34 @@ impl Connection {
                 let changes = query
                     .run::<Change<ServerStatus, ServerStatus>>(conn)
                     .unwrap();
-                for change in changes.wait() {
-                    match change {
-                        Ok(Some(Document::Expected(change))) => {
-                            if let Some(ref mut config) = CONFIG.write().get_mut(&conn) {
-                                let cluster = &mut config.cluster;
-                                if let Some(status) = change.new_val {
-                                    let mut addresses = Vec::new();
-                                    for addr in status.network.canonical_addresses {
-                                        let socket = SocketAddr::new(addr.host,
-                                                                     status.network.reql_port);
-                                        addresses.push(socket);
-                                    }
-                                    let mut server = Server::new(&status.name, addresses);
-                                    server.set_latency();
-                                    cluster.insert(server.name.to_owned(), server);
-                                    let _ = tx.clone().send(());
-                                } else if let Some(status) = change.old_val {
-                                    cluster.remove(&status.name);
+                let future = changes.for_each(|change| {
+                    if let Some(Document::Expected(change)) = change {
+                        if let Some(ref mut config) = CONFIG.write().get_mut(&conn) {
+                            let cluster = &mut config.cluster;
+                            if let Some(status) = change.new_val {
+                                let mut addresses = Vec::new();
+                                for addr in status.network.canonical_addresses {
+                                    let socket = SocketAddr::new(addr.host,
+                                                                 status.network.reql_port);
+                                    addresses.push(socket);
                                 }
+                                let mut server = Server::new(&status.name, addresses);
+                                server.set_latency();
+                                cluster.insert(server.name.to_owned(), server);
+                                let _ = block_on(tx.clone().send(()));
+                            } else if let Some(status) = change.old_val {
+                                cluster.remove(&status.name);
                             }
                         }
-                        Ok(res) => {
-                            println!("unexpected response from server: {:?}", res);
-                        }
-                        Err(error) => {
-                            println!("{:?}", error);
-                        }
                     }
-                }
+                    Ok(())
+                });
+                let _ = block_on(future);
                 thread::sleep(Duration::from_millis(500));
             }
         });
         // wait for at least one database result before continuing
-        let _ = rx.wait();
+        let _ = block_on(rx.into_future());
     }
 
     fn reset_cluster(&self) {
