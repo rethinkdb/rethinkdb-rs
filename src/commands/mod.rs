@@ -10,7 +10,7 @@
             mod args;
 
             use Connection;
-            use {Client, IntoArg, Result};
+            use {Config, Client, IntoArg, Result};
             use slog::Logger;
             use ql2::proto::{Term, Term_TermType as Type};
         
@@ -216,8 +216,8 @@
 /// });
 /// ```
 
-                pub fn connect<T: IntoArg>(&self, args: T) -> Result<Connection> {
-                    io::connect(self, args)
+                pub fn connect<'a>(&self, cfg: Config<'a>) -> Result<Connection> {
+                    io::connect(self, cfg)
                 }
             
 

@@ -14,6 +14,9 @@ build = "build/main.rs"
 [badges]
 travis-ci = { repository = "rethinkdb-rs/reql" }
 
+[features]
+tls = ["native-tls"]
+
 [dependencies]
 protobuf = "1.2"
 slog = "2.0"
@@ -34,6 +37,7 @@ indexmap = "1.0"
 reql-derive = { version = "0.0.7", path = "./derive" }
 reql-types = { version = "0.0.3", path = "./types" }
 uuid = { version = "0.6", features = ["v4", "serde"] }
+native-tls = { version = "0.1", optional = true }
 
 [dev-dependencies]
 slog-term = "2.0"

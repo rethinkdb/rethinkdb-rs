@@ -28,6 +28,8 @@ extern crate serde_json;
 #[macro_use]
 extern crate slog;
 extern crate uuid;
+#[cfg(feature = "tls")]
+extern crate native_tls;
 
 #[macro_use]
 mod macros;
@@ -47,9 +49,10 @@ pub use reql_derive::*;
 use serde::de::DeserializeOwned;
 use serde_json::Value;
 use slog::Logger;
+#[cfg(feature = "tls")]
+use native_tls::TlsConnectorBuilder;
 
-use std::net::SocketAddr;
-use std::net::TcpStream;
+use std::net::{TcpStream, SocketAddr};
 use std::time::Duration;
 
 use uuid::Uuid;
@@ -78,7 +81,7 @@ struct Request<T: DeserializeOwned + Send> {
     term: Term,
     opts: Term,
     pool: r2d2::Pool<SessionManager>,
-    cfg: Config,
+    cfg: InnerConfig,
     tx: Sender<Result<Option<Document<T>>>>,
     write: bool,
     retry: bool,
@@ -92,8 +95,22 @@ struct Session {
     logger: Logger,
 }
 
+/// Connection parameters
+#[derive(Debug, Clone)]
+pub struct Config<'a> {
+    pub servers: Vec<SocketAddr>,
+    pub db: &'a str,
+    pub user: &'a str,
+    pub password: &'a str,
+    // May be changed to a timeout in future
+    // See comment on Default impl
+    retries: u64,
+    #[cfg(feature = "tls")]
+    pub tls: Option<TlsConnectorBuilder>,
+}
+
 #[derive(Clone)]
-struct Config {
+struct InnerConfig {
     cluster: IndexMap<String, Server>,
     opts: Opts,
     logger: Logger,
@@ -126,12 +143,8 @@ struct Opts {
     password: String,
     retries: u64,
     reproducible: bool,
-    tls: Option<TlsCfg>,
-}
-
-#[derive(Debug, Clone)]
-struct TlsCfg {
-    ca_certs: String,
+    #[cfg(feature = "tls")]
+    tls: Option<TlsConnectorBuilder>,
 }
 
 /// The database cluster client

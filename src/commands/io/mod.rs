@@ -2,8 +2,8 @@ mod pool;
 mod request;
 mod handshake;
 
-use {Client, Config, Connection, Document, IntoArg, Opts, Request, Response, Result, Run, Server,
-     Session, SessionManager, r2d2};
+use {Client, InnerConfig, Config, Connection, Document, IntoArg, Opts,
+        Request, Response, Result, Run, Server, Session, SessionManager, r2d2};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use errors::*;
 use futures::{Async, Poll, Stream, StreamExt};
@@ -13,7 +13,6 @@ use futures::executor::block_on;
 use indexmap::IndexMap;
 use parking_lot::RwLock;
 use protobuf::ProtobufEnum;
-use ql2::proto::{Datum, Term};
 use ql2::proto::Query_QueryType as QueryType;
 use reql_types::{Change, ServerStatus};
 use serde::de::DeserializeOwned;
@@ -21,30 +20,29 @@ use slog::Logger;
 use std::{error, thread};
 use std::cmp::Ordering;
 use std::io::{self, Read, Write};
-use std::net::{SocketAddr, ToSocketAddrs};
+use std::net::SocketAddr;
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use uuid::Uuid;
 
 lazy_static! {
-    static ref CONFIG: RwLock<IndexMap<Connection, Config>> = RwLock::new(IndexMap::new());
+    static ref CONFIG: RwLock<IndexMap<Connection, InnerConfig>> = RwLock::new(IndexMap::new());
     static ref POOL: RwLock<IndexMap<Connection, r2d2::Pool<SessionManager>>> = RwLock::new(IndexMap::new());
 }
 
 const CHANNEL_SIZE: usize = 1024;
+const DEFAULT_PORT: u16 = 28015;
 
-pub fn connect<A: IntoArg>(client: &Client, args: A) -> Result<Connection> {
+pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
     if let Err(ref error) = client.term {
         return Err(error.clone());
     }
-    let arg = args.into_arg();
-    let aterm = arg.term?;
     let conn = Connection(Uuid::new_v4());
     let logger = client.logger.new(o!("command" => "connect"));
-    let query = format!("{}.connect({})", client.query, arg.string);
-    debug!(logger, "{}", query);
+    //let query = format!("{}.connect({})", client.query, arg.string);
+    //debug!(logger, "{}", query);
     info!(logger, "creating connection pool...");
-    conn.set_config(aterm, logger.clone())?;
+    conn.set_config(cfg, logger.clone())?;
     conn.set_latency()?;
     let session = SessionManager(conn);
     let r2d2 = r2d2::Pool::builder()
@@ -151,12 +149,18 @@ fn io_error<T>(err: T) -> io::Error
     io::Error::new(io::ErrorKind::Other, err)
 }
 
-impl Default for Opts {
-    fn default() -> Opts {
-        Opts {
-            db: "test".into(),
-            user: "admin".into(),
-            password: String::new(),
+impl<'a> Default for Config<'a> {
+    fn default() -> Config<'a> {
+        let ip4 = format!("127.0.0.1:{}", DEFAULT_PORT);
+        let ip6 = format!("[::1]:{}", DEFAULT_PORT);
+        Config {
+            servers: vec![
+                ip4.parse().unwrap(),
+                ip6.parse().unwrap(),
+            ],
+            db: "test",
+            user: "admin",
+            password: "",
             // @TODO number of retries doesn't mean much
             // let's use a timeout instead and make it an
             // option in both connect and run. The connect
@@ -165,7 +169,7 @@ impl Default for Opts {
             // call it `retry_timeout` to communicate clearly
             // what it does.
             retries: 5,
-            reproducible: false,
+            #[cfg(feature = "tls")]
             tls: None,
         }
     }
@@ -189,78 +193,27 @@ impl PartialEq for Server {
     }
 }
 
-fn find_datum(mut term: Term) -> Vec<Datum> {
-    let mut res = Vec::new();
-    if term.has_datum() {
-        res.push(term.take_datum());
-    } else {
-        for term in term.take_args().into_vec() {
-            for datum in find_datum(term) {
-                res.push(datum);
-            }
-        }
-    }
-    res
-}
-
-fn take_string(key: &str, val: Vec<Datum>) -> Result<String> {
-    for mut datum in val {
-        return Ok(datum.take_r_str());
-    }
-    Err(DriverError::Other(format!("`{}` must be a string", key)))?
-}
-
-fn take_bool(key: &str, val: Vec<Datum>) -> Result<bool> {
-    for datum in val {
-        return Ok(datum.get_r_bool());
-    }
-    Err(DriverError::Other(format!("`{}` must be a boolean", key)))?
-}
-
 impl Connection {
-    fn set_config(&self, mut term: Term, logger: Logger) -> Result<()> {
+    fn set_config<'a>(&self, cfg: Config<'a>, logger: Logger) -> Result<()> {
+        let opts = Opts {
+            db: cfg.db.into(),
+            user: cfg.user.into(),
+            password: cfg.password.into(),
+            retries: cfg.retries,
+            reproducible: false,
+            #[cfg(feature = "tls")]
+            tls: cfg.tls,
+        };
+
         let mut cluster = IndexMap::new();
-        let mut hosts = Vec::new();
-        let mut opts = Opts::default();
-
-        let optargs = term.take_optargs().into_vec();
-        for mut arg in optargs {
-            let key = arg.take_key();
-            let val = find_datum(arg.take_val());
-
-            if key == "db" {
-                opts.db = take_string(&key, val)?;
-            } else if key == "user" {
-                opts.user = take_string(&key, val)?;
-            } else if key == "password" {
-                opts.password = take_string(&key, val)?;
-            } else if key == "reproducible" {
-                opts.reproducible = take_bool(&key, val)?;
-            } else if key == "servers" {
-                for host in val {
-                    hosts.push(take_string(&key, vec![host])?);
-                }
-            }
-        }
-
-        if hosts.is_empty() {
-            hosts.push("localhost".into());
-        }
-
-        for host in hosts {
-            let addresses = host.to_socket_addrs()
-                .or_else(|_| {
-                             let host = format!("{}:{}", host, 28015);
-                             host.to_socket_addrs()
-                         })?;
-            let server = Server::new(&host, addresses.collect());
-            cluster.insert(host, server);
-        }
+        let host = String::from("initial-cluster");
+        let server = Server::new(&host, cfg.servers);
+        cluster.insert(host, server);
 
         CONFIG
             .write()
             .insert(*self,
-                    Config {
+                    InnerConfig {
                         cluster: cluster,
                         opts: opts,
                         logger: logger,
@@ -339,7 +292,7 @@ impl Connection {
         }
     }
 
-    fn config(&self) -> Config {
+    fn config(&self) -> InnerConfig {
         CONFIG.read().get(self).unwrap().clone()
     }
 
