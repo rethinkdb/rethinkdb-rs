@@ -57,6 +57,8 @@ use std::time::Duration;
 
 use uuid::Uuid;
 
+pub const DEFAULT_PORT: u16 = 28015;
+
 /// The result of any command that can potentially return an error
 pub type Result<T> = ::std::result::Result<T, Error>;
 

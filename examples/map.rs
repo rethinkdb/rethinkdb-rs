@@ -9,7 +9,7 @@ extern crate slog_term;
 
 use futures::executor::block_on;
 use futures::StreamExt;
-use reql::{Client, Document, Run};
+use reql::{Config, Client, Document, Run};
 use slog::Drain;
 
 fn main() {
@@ -24,8 +24,7 @@ fn main() {
     let r = Client::new().with_logger(logger);
 
     // Create a connection pool
-    let conn = r.connect(args!({servers: ["localhost"]}))
-        .unwrap();
+    let conn = r.connect(Config::default()).unwrap();
 
     // Run the query
     let sequence1 = json!([100, 200, 300, 400]);

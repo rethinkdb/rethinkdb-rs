@@ -1,5 +1,4 @@
 extern crate futures_await as futures;
-
 #[macro_use]
 extern crate reql;
 extern crate reql_types;
@@ -9,10 +8,10 @@ extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
 
+use reql::{Config, Client, Document, Run};
+use reql_types::Change;
 use futures::StreamExt;
 use futures::executor::block_on;
-use reql::{Client, Document, Run};
-use reql_types::Change;
 
 /**
  * rethinkdb changelog example
@@ -56,7 +55,7 @@ fn main() {
     let r = Client::new();
 
     // Create a connection pool
-    let conn = r.connect(args!()).unwrap();
+    let conn = r.connect(Config::default()).unwrap();
 
     // Run the query
     let query = r.db("test")

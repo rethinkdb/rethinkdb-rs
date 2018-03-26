@@ -1,19 +1,18 @@
-extern crate futures_await as futures;
-#[macro_use]
 extern crate reql;
 extern crate reql_types;
+extern crate futures_await as futures;
 
-use reql::{Client, Document, Run};
 use reql_types::ServerStatus;
 use futures::executor::block_on;
 use futures::StreamExt;
+use reql::{Config, Client, Document, Run};
 
 fn main() {
     // Create a new ReQL client
     let r = Client::new();
 
     // Create a connection pool
-    let conn = r.connect(args!()).unwrap();
+    let conn = r.connect(Config::default()).unwrap();
 
     // Run the query
     let stati = r.db("rethinkdb")

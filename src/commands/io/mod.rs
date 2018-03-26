@@ -2,7 +2,7 @@ mod pool;
 mod request;
 mod handshake;
 
-use {Client, InnerConfig, Config, Connection, Document, IntoArg, Opts,
+use {Client, InnerConfig, Config, Connection, Document, IntoArg, Opts, DEFAULT_PORT,
         Request, Response, Result, Run, Server, Session, SessionManager, r2d2};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use errors::*;
@@ -31,7 +31,6 @@ lazy_static! {
 }
 
 const CHANNEL_SIZE: usize = 1024;
-const DEFAULT_PORT: u16 = 28015;
 
 pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
     if let Err(ref error) = client.term {

@@ -6,7 +6,7 @@ extern crate reql_types;
 extern crate slog;
 extern crate slog_term;
 
-use reql::{Client, Document, Run};
+use reql::{Config, Client, Document, Run};
 use reql_types::{Change, ServerStatus};
 use futures::executor::block_on;
 use futures::StreamExt;
@@ -24,7 +24,7 @@ fn main() {
     let r = Client::new().with_logger(logger);
 
     // Create a connection pool
-    let conn = r.connect(args!({servers: ["localhost"]})).unwrap();
+    let conn = r.connect(Config::default()).unwrap();
 
     // Run the query
     let stati = r.db("rethinkdb")
