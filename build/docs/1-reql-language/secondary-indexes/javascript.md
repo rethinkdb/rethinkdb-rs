@@ -4,7 +4,7 @@ title: Using secondary indexes in RethinkDB
 docs_active: secondary-indexes
 permalink: docs/secondary-indexes/javascript/
 switcher: true
-language : JavaScript 
+language : JavaScript
 js: [fancybox]
 ---
 
@@ -111,12 +111,16 @@ r.table("posts").eqJoin(
 ```
 
 Internally, compound indexes and simple indexes are the same type of index in RethinkDB; compound indexes are simply a special case of regular index that returns an array rather than a single value.
+Note that this affects sorting: compound index values are sorted lexicographically, with the first (leftmost) elements of the compound value being more significant than the last (rightmost) ones.
+Therefore, using the `full_name` index, the above example "all users whose last name is Smith" only works for the `last_name` field.
+Searching by `first_name` with a query like `between([r.minval, "John"], [r.maxval, "John"], {index: "full_name"})` would effectively select _every_ user in the table, except (theoretically) users that have `r.minval` as last name and a first name lexicographically smaller than "John" (or the reverse for `r.maxval`).
 
 # Multi indexes #
 
 With simple and compound indexes, a document will be indexed using at most one index key: a single value for a simple index and a set of values for a compound index. Multiple documents may have the same index key. With a _multi index_, a document can be indexed using more than one key in the same index. For instance, a blog post might have multiple tags, and each tag might refer to multiple blog posts.
 
 The keys in a multi index can be single values, compound values or even arbitrary expressions. (See the section below for more detail on indexes using functions.)
+What matters is that the "multi-value" that gets indexed is an _array_: the document will be referenced in the index multiple times, one for each element of this array.
 
 ## Creation ##
 
@@ -180,6 +184,48 @@ by passing the multi option as the last parameter to `indexCreate`.
 r.table("users").indexCreate("activities", r.row("hobbies").add(r.row("sports")),
     {multi: true}).run(conn, callback)
 ```
+
+This can be useful if you want to search documents by multiple criteria at the same time, like messages posted in a forum that should be identifiable by:
+
+* the author
+* a tag (among many)
+* the publication time (range queries should be possible)
+
+This would be an example document representing a posted message:
+
+```
+{
+  id: "XXYYZZ",
+  author: "John"
+  tags: ["art", "hobby", "fun"],
+  time: 123,
+  text: "Text goes here..."
+}
+```
+
+One way to build the index would be:
+
+```
+r.db("db").table("posts").indexCreate(
+  "myIndex",
+  function(post) {
+    return post("tags").map(function(tag) {
+      return [tag, post("author"), post("time")];
+    })
+  },
+  {multi: true}
+)
+```
+
+Then the query selecting posts about `"fun"`, by `"John"`, and posted between `120` and `130`, would be:
+
+```
+r.db("db").table("posts").between(["fun", "John", 120], ["fun", "John", 130], {index:"myIndex"})
+```
+
+Note that, due to the index being sorted lexicographically (and the fact that `between` returns a single contiguous interval of rows), it would be possible to search for posts about `"fun"` by any author but then it would not be possible to limit the time range (not without building a different index, of course).
+
+For the same reason, using this index to look for posts by `"John"` with any tag would not be possible.
 
 ## Use a multi index and a mapping function to speed getAll/contains ##
 
@@ -247,7 +293,7 @@ Secondary indexes will not store `null` values or objects. Thus, the results of 
 r.table("users").indexCreate("group").run(conn, callback)
 r.table("users").orderBy({index: "group"}).run(conn, callback)
 ```
-    
+
 may be different from an equivalent command without an index:
 
 ```js

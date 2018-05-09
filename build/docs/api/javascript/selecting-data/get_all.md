@@ -35,7 +35,7 @@ __Example:__ Without an index argument, we default to the primary index. While `
 r.table('dc').getAll('superman').run(conn, callback)
 ```
 
-__Example:__ You can get multiple documents in a single call to `get_all`.
+__Example:__ You can get multiple documents in a single call to `getAll`.
 
 ```javascript
 r.table('dc').getAll('superman', 'ant man').run(conn, callback)

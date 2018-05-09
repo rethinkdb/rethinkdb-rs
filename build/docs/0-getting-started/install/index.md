@@ -74,6 +74,12 @@ alias: install/
                     <p class="name">Raspbian</p>
                 </a>
             </li>
+            <li>
+                <a href="gentoo/">
+                    <img src="/assets/images/docs/install-platforms/gentoo.png"/>
+                    <p class="name">Gentoo</p>
+                </a>
+            </li>
         </ul>
     </section>
 </section>

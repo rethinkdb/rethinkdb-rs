@@ -100,7 +100,7 @@ Or, Bob's work phone and Skype handle:
 
 ```js
 > r.table('users').get(10001).pluck(
-	{contact: [{phone: 'work', im: 'skype'}]}
+	{contact: {phone: 'work', im: 'skype'}}
 ).run(conn, callback)
 // result passed to callback
 {
@@ -140,7 +140,7 @@ If you ask for a nested field that doesn't exist, you will get an empty object o
 
 ```js
 > r.table('users').get(10001).pluck(
-	{contact: [{phone: 'work', im: 'msn'}]}
+	{contact: {phone: 'work', im: 'msn'}}
 ).run(conn, callback)
 // result passed to callback
 {
@@ -153,7 +153,7 @@ If you ask for a nested field that doesn't exist, you will get an empty object o
 }
 ```
 
-Be aware this behavior holds true when retrieving data from lists, too. If you extracted `subject` from `notes` above and Bob had 10 notes, 7 of which contained no `subject` field,  you would still get a list of 10 objects: 7 of them would be `{subject: <text>}` and 3 of them would be empty, i.e., `{ }`.
+Be aware this behavior holds true when retrieving data from lists, too. If you extracted `subject` from `notes` above and Bob had 10 notes, 3 of which contained no `subject` field, you would still get a list of 10 objects: 7 of them would be `{subject: <text>}` and 3 of them would be empty, i.e., `{ }`.
 
 Also, another caveat: the nested field syntax doesn't guarantee identical schemas between documents that it returns. It's possible to describe a path that matches objects that have different schema, as seen in this simple example.
 

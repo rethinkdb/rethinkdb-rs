@@ -1,10 +1,10 @@
 # RethinkDB Documentation #
 
-This repository contains all the documentation available at [rethinkdb.com](http://rethinkdb.com/). Documentation is written in [kramdown](http://kramdown.gettalong.org/), which is a superset of Markdown.
+This repository contains all the documentation available at <http://rethinkdb.com/>. Documentation is written in [kramdown](http://kramdown.gettalong.org/), which is a superset of Markdown.
 
 ## Building standalone documentation ##
 
-The documentation for the latest RethinkDB release is always available at [rethinkdb.com/docs](). However, if you like, you can build a local version of the documentation for offline viewing or to preview changes.
+The documentation for the latest RethinkDB release is always available at <http://rethinkdb.com/docs>. However, if you like, you can build a local version of the documentation for offline viewing or to preview changes.
 
 __Prerequisites:__
   - Ruby
@@ -22,7 +22,7 @@ Then, to build and serve the docs, simply run:
 rake
 ```
 
-...and visit [http://localhost:4000]() in your browser.
+...and visit <http://localhost:4000> in your browser.
 
 To reset the build environment and purge all generated files:
 

@@ -38,7 +38,8 @@ Install the main dependencies:
 ```
 sudo yum install openssl-devel libcurl-devel wget tar m4 git-core \
                  boost-static m4 gcc-c++ npm ncurses-devel which \
-                 make ncurses-static zlib-devel zlib-static
+                 make ncurses-static zlib-devel zlib-static bzip2 \
+                 patch
 ```
 
 ### Install optional build dependencies ###

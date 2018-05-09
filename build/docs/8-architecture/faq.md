@@ -266,17 +266,7 @@ If the RethinkDB server is started with the `no-update-check` option, these stat
 
 ## How is RethinkDB licensed? ##
 
-The RethinkDB server is licensed under the [GNU Affero General Public License v3.0][agpl]. The client drivers are licensed under the [Apache License v2.0][apl].
+The RethinkDB server and client libraries are licensed under the
+[Apache License v2.0][apl].
 
-[agpl]: http://www.gnu.org/licenses/agpl-3.0.html
 [apl]:  http://www.apache.org/licenses/LICENSE-2.0.html
-
-We wanted to pick a license that balances the interests of three parties&mdash;our end users, our company, and the software development community at large. When picking a license, we decided on three simple goals:
-
-- Allow anyone to download RethinkDB, examine the source code, and use it for free (as in speech and beer) for any purpose.
-- Require users who choose to modify RethinkDB to fit their needs to release the patches to the software development community.
-- Require users who are unwilling to release the patches to the software development community to purchase a commercial license.
-
-Given that an enormous amount of software is offered as a service via the network rather than being distributed in binary form, the most effective license to fulfill all three goals is the GNU AGPL.
-
-We chose to release the client drivers under the Apache License v2.0 to remove any ambiguity as to the extent of the server license. You do not have to license any software that uses RethinkDB under AGPL, and are free to use any licensing mechanism of your choice.
