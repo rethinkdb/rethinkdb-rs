@@ -2,18 +2,18 @@
 
 This is a [RethinkDB] driver written in [Rust].
 
-[![travis-badge][]][travis] [![cratesio-badge][]][cratesio] [![docsrs-badge][]][docsrs] [![rust-version-badge][]][rust-version]
+[![travis-badge][]][travis] [![cratesio-badge][]][cratesio] [![docsrs-badge][]][docsrs]
 
 ## Example
 
 ```rust
 extern crate reql;
 extern crate reql_types;
-extern crate futures_await as futures;
+extern crate futures;
 
-use reql::{Config, Client, Document, Run};
 use reql_types::ServerStatus;
-use futures::StreamExt;
+use futures::executor::block_on_stream;
+use reql::{Config, Client, Document, Run};
 
 fn main() {
     // Create a new ReQL client
@@ -23,47 +23,38 @@ fn main() {
     let conn = r.connect(Config::default()).unwrap();
 
     // Run the query
-    let query = r.db("rethinkdb")
+    let stati = r.db("rethinkdb")
         .table("server_status")
         .run::<ServerStatus>(conn)
         .unwrap();
 
     // Process the results
-    let stati = query.and_then(|status| {
-        match status {
-            // The server returned the response we were expecting
-            Some(Document::Expected(status)) => {
-                println!("{:?}", status);
-            }
-            // We got a response alright, but it wasn't the one we were
-            // expecting plus it's not an error either, otherwise it would
-            // have been returned as such (This simply means that the response
-            // we got couldn't be serialised into the type we were expecting)
-            Some(Document::Unexpected(status)) => {
-                println!("unexpected response from server: {:?}", status);
-            }
-            // This is impossible in this particular example since there
-            // needs to be at least one server available to give this
-            // response otherwise we would have run into an error for
-            // failing to connect
-            None => {
-                println!("got no documents in the database");
-            }
+    match block_on_stream(stati).next().unwrap() {
+        // The server returned the response we were expecting
+        Ok(Some(Document::Expected(status))) => {
+            println!("{:?}", status);
         }
-        Ok(())
-    })
-    // Our query ran into an error
-    .or_else(|error| {
-        println!("{:?}", error);
-        Err(())
-    });
-
-    // Wait for all the results to be processed
-    let _ = futures::executor::block_on(stati.into_future());
+        // We got a response alright, but it wasn't the one we were
+        // expecting plus it's not an error either, otherwise it would
+        // have been returned as such (This simply means that the response
+        // we got couldn't be serialised into the type we were expecting)
+        Ok(Some(Document::Unexpected(status))) => {
+            println!("unexpected response from server: {:?}", status);
+        }
+        // This is impossible in this particular example since there
+        // needs to be at least one server available to give this
+        // response otherwise we would have run into an error for
+        // failing to connect
+        Ok(None) => {
+            println!("got no documents in the database");
+        }
+        // Oops! We ran into an error
+        Err(error) => {
+            println!("error: {}", error);
+        }
+    }
 }
 ```
-
-Check out the [blocking example] to see this same example implemented using a for loop instead.
 
 ## License
 
@@ -86,6 +77,3 @@ additional terms or conditions.
 [cratesio]: https://crates.io/crates/reql
 [docsrs-badge]: https://docs.rs/reql/badge.svg
 [docsrs]: https://docs.rs/reql
-[rust-version-badge]: https://img.shields.io/badge/rust-nightly%202018--03--01-blue.svg
-[rust-version]: .travis.yml#L7
-[blocking example]: https://github.com/rethinkdb-rs/reql/blob/master/examples/blocking.rs

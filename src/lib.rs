@@ -1,13 +1,10 @@
 //! A native RethinkDB driver written in Rust
 
-#![feature(proc_macro, conservative_impl_trait, generators)]
-//#![feature(underscore_imports)]
-
 extern crate bufstream;
 extern crate byteorder;
 #[macro_use]
 extern crate derive_error;
-extern crate futures_await as futures;
+extern crate futures;
 #[macro_use]
 extern crate lazy_static;
 extern crate indexmap;

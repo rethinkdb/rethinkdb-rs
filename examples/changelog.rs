@@ -1,4 +1,4 @@
-extern crate futures_await as futures;
+extern crate futures;
 #[macro_use]
 extern crate reql;
 extern crate reql_types;
@@ -11,7 +11,7 @@ extern crate serde_json;
 use reql::{Config, Client, Document, Run};
 use reql_types::Change;
 use futures::StreamExt;
-use futures::executor::block_on;
+use futures::executor::block_on_stream;
 
 /**
  * rethinkdb changelog example
@@ -117,5 +117,5 @@ fn main() {
     });
 
     // Wait for all the results to be processed
-    let _ = block_on(stati);
+    let _ = block_on_stream(stati);
 }

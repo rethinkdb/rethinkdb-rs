@@ -1,4 +1,4 @@
-extern crate futures_await as futures;
+extern crate futures;
 #[macro_use]
 extern crate reql;
 #[macro_use]
@@ -7,7 +7,7 @@ extern crate serde_json;
 extern crate slog;
 extern crate slog_term;
 
-use futures::executor::block_on;
+use futures::executor::block_on_stream;
 use futures::StreamExt;
 use reql::{Config, Client, Document, Run};
 use slog::Drain;
@@ -38,7 +38,7 @@ fn main() {
         .unwrap();
 
     // Process results
-    match block_on(sum.into_future()).unwrap().0.unwrap() {
+    match block_on_stream(sum).unwrap().0.unwrap() {
         Some(Document::Expected(sum)) => {
             println!("{:?}", sum);
         }

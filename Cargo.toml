@@ -31,7 +31,7 @@ r2d2 = "0.8"
 byteorder = "1.0"
 bufstream = "0.1"
 scram = "0.2"
-futures-await = { git = "https://github.com/Nemo157/futures-await", rev = "a528fc90841762922a6d0379320111a13ec49d6c" }
+futures = "0.2"
 parking_lot = "0.5"
 indexmap = "1.0"
 reql-derive = { version = "0.0.7", path = "./derive" }

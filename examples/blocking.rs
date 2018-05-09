@@ -1,10 +1,9 @@
 extern crate reql;
 extern crate reql_types;
-extern crate futures_await as futures;
+extern crate futures;
 
 use reql_types::ServerStatus;
-use futures::executor::block_on;
-use futures::StreamExt;
+use futures::executor::block_on_stream;
 use reql::{Config, Client, Document, Run};
 
 fn main() {
@@ -21,24 +20,28 @@ fn main() {
         .unwrap();
 
     // Process the results
-    match block_on(stati.into_future()).unwrap().0.unwrap() {
+    match block_on_stream(stati).next().unwrap() {
         // The server returned the response we were expecting
-        Some(Document::Expected(status)) => {
+        Ok(Some(Document::Expected(status))) => {
             println!("{:?}", status);
         }
         // We got a response alright, but it wasn't the one we were
         // expecting plus it's not an error either, otherwise it would
         // have been returned as such (This simply means that the response
         // we got couldn't be serialised into the type we were expecting)
-        Some(Document::Unexpected(status)) => {
+        Ok(Some(Document::Unexpected(status))) => {
             println!("unexpected response from server: {:?}", status);
         }
         // This is impossible in this particular example since there
         // needs to be at least one server available to give this
         // response otherwise we would have run into an error for
         // failing to connect
-        None => {
+        Ok(None) => {
             println!("got no documents in the database");
+        }
+        // Oops! We ran into an error
+        Err(error) => {
+            println!("error: {}", error);
         }
     }
 }
