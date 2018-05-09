@@ -54,6 +54,7 @@ use std::time::Duration;
 
 use uuid::Uuid;
 
+/// Default ReQL port
 pub const DEFAULT_PORT: u16 = 28015;
 
 /// The result of any command that can potentially return an error

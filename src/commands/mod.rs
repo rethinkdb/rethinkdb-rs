@@ -1691,7 +1691,7 @@
 /// r.table('dc').getAll('superman').run(conn, callback)
 /// ```
 /// 
-/// __Example:__ You can get multiple documents in a single call to `get_all`.
+/// __Example:__ You can get multiple documents in a single call to `getAll`.
 /// 
 /// ```javascript
 /// r.table('dc').getAll('superman', 'ant man').run(conn, callback)
@@ -3256,7 +3256,7 @@
 /// 
 /// __Example:__ Finding the arithmetic mode of an array of values:
 /// 
-/// ```javascript
+/// ```js
 /// r.expr([1,2,2,2,3,3]).group(r.row).count().ungroup().orderBy('reduction').nth(-1)('group').run(conn, callback)
 /// ```
 /// 
