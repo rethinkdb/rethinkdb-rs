@@ -18,7 +18,7 @@ travis-ci = { repository = "rethinkdb-rs/reql" }
 tls = ["native-tls"]
 
 [dependencies]
-protobuf = "1.2"
+protobuf = ">= 1.4, < 1.6"
 slog = "2.0"
 serde = "1.0"
 serde_json = "1.0"
