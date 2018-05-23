@@ -1,6 +1,6 @@
-# RethinkDB Driver
+# RebirthDB Driver
 
-This is a [RethinkDB] driver written in [Rust].
+This is a [RebirthDB] driver written in [Rust].
 
 [![travis-badge][]][travis] [![cratesio-badge][]][cratesio] [![docsrs-badge][]][docsrs]
 
@@ -23,7 +23,7 @@ fn main() {
     let conn = r.connect(Config::default()).unwrap();
 
     // Run the query
-    let stati = r.db("rethinkdb")
+    let stati = r.db("rebirthdb")
         .table("server_status")
         .run::<ServerStatus>(conn)
         .unwrap();
@@ -69,10 +69,10 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you shall be dual licensed as above, without any
 additional terms or conditions.
 
-[RethinkDB]: https://www.rethinkdb.com
+[RebirthDB]: https://www.rebirthdb.com
 [Rust]: https://www.rust-lang.org
-[travis-badge]: https://travis-ci.org/rethinkdb-rs/reql.svg?branch=master
-[travis]: https://travis-ci.org/rethinkdb-rs/reql
+[travis-badge]: https://travis-ci.org/rebirthdb/rebirthdb-rs.svg?branch=master
+[travis]: https://travis-ci.org/rebirthdb/rebirthdb-rs
 [cratesio-badge]: https://img.shields.io/crates/v/reql.svg
 [cratesio]: https://crates.io/crates/reql
 [docsrs-badge]: https://docs.rs/reql/badge.svg

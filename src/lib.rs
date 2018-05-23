@@ -1,4 +1,4 @@
-//! A native RethinkDB driver written in Rust
+//! A native RebirthDB driver written in Rust
 
 extern crate bufstream;
 extern crate byteorder;
