@@ -2,7 +2,7 @@ mod pool;
 mod request;
 mod handshake;
 
-use {Client, InnerConfig, Config, Connection, Document, IntoArg, Opts, DEFAULT_PORT,
+use {Client, InnerConfig, Config, Connection, Document, IntoArg, Arg, Opts, DEFAULT_PORT,
         Request, Response, Result, Run, Server, Session, SessionManager, r2d2};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use errors::*;
@@ -227,10 +227,14 @@ impl Connection {
         let (tx, rx) = ::std::sync::mpsc::sync_channel::<()>(CHANNEL_SIZE);
         thread::spawn(move || {
             let r = Client::new();
+            let mut args = Arg::new();
+            args.set_string("{include_initial: true}");
+            let tp = Arg::create_term_pair("include_initial", true).unwrap();
+            args.add_opt(tp);
             let query = r.db("rethinkdb")
                 .table("server_status")
                 .changes()
-                .with_args(args!({include_initial: true}));
+                .with_args(args);
             let mut send = true;
             loop {
                 let changes = query

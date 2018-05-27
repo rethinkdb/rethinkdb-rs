@@ -1,6 +1,9 @@
+#![feature(proc_macro)]
+#![feature(proc_macro_non_items)]
+
 extern crate futures;
-#[macro_use]
 extern crate reql;
+extern crate reql_derive;
 extern crate reql_types;
 #[macro_use]
 extern crate slog;
@@ -8,8 +11,8 @@ extern crate slog_term;
 
 use reql::{Config, Client, Document, Run};
 use reql_types::{Change, ServerStatus};
+use reql_derive::args;
 use futures::executor::block_on_stream;
-use futures::StreamExt;
 use slog::Drain;
 
 fn main() {
@@ -35,12 +38,14 @@ fn main() {
         .unwrap();
 
     // Process results
-    match block_on_stream(stati).unwrap().0.unwrap() {
-        Some(Document::Expected(change)) => {
-            println!("{:?}", change);
-        }
-        res => {
-            println!("unexpected response from server: {:?}", res);
+    for res in block_on_stream(stati) {
+        match res {
+            Ok(Some(Document::Expected(change))) => {
+                println!("{:?}", change);
+            }
+            res => {
+                println!("unexpected response from server: {:?}", res);
+            }
         }
     }
 }

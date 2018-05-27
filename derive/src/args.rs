@@ -34,7 +34,7 @@ impl<'a> Args<'a> {
 
     pub fn process(&mut self) -> &mut Self {
         if self.input.is_empty() {
-            self.tokens = quote!(Term::new());
+            self.tokens = quote!(reql::Term::new());
             return self;
         }
 
@@ -42,6 +42,9 @@ impl<'a> Args<'a> {
         let body = self.body();
 
         self.tokens = quote!({
+            #[allow(unused_imports)]
+            use reql::{Term, IntoArg, Arg};
+
             let mut args = Arg::new();
             args.set_string(#args);
             #body

@@ -1,5 +1,8 @@
 //! A native RebirthDB driver written in Rust
 
+#![feature(proc_macro)]
+#![feature(proc_macro_non_items)]
+
 extern crate bufstream;
 extern crate byteorder;
 #[macro_use]
@@ -9,12 +12,9 @@ extern crate futures;
 extern crate lazy_static;
 extern crate indexmap;
 extern crate parking_lot;
-#[macro_use]
-extern crate proc_macro_hack;
 extern crate protobuf;
 extern crate ql2;
 extern crate r2d2;
-#[macro_use]
 extern crate reql_derive;
 extern crate reql_types;
 extern crate scram;
@@ -42,7 +42,7 @@ pub use protobuf::repeated::RepeatedField;
 #[doc(hidden)]
 pub use ql2::proto::{Datum, Datum_DatumType as DT, Term, Term_TermType as TT};
 #[doc(hidden)]
-pub use reql_derive::*;
+pub use reql_derive::args;
 use serde::de::DeserializeOwned;
 use serde_json::Value;
 use slog::Logger;

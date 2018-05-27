@@ -1,8 +1,11 @@
+#![feature(proc_macro)]
+#![feature(proc_macro_non_items)]
+
 extern crate futures;
 #[macro_use]
 extern crate reql;
+extern crate reql_derive;
 extern crate reql_types;
-
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
@@ -10,6 +13,7 @@ extern crate serde_json;
 
 use reql::{Config, Client, Document, Run};
 use reql_types::Change;
+use reql_derive::args;
 use futures::StreamExt;
 use futures::executor::block_on_stream;
 
@@ -117,5 +121,5 @@ fn main() {
     });
 
     // Wait for all the results to be processed
-    let _ = block_on_stream(stati);
+    for _ in block_on_stream(stati) { }
 }
