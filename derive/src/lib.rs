@@ -18,10 +18,9 @@ mod args;
 ///
 /// # Example
 ///
-/// If `x` is greater than 5 return "big", otherwise return "small".
+/// If `x` is greater than `5` return `big`, otherwise return `small`.
 ///
 /// ```rust,ignore
-/// let x = 10;
 /// r.branch(args!(r.expr(x).gt(5), "big", "small"));
 /// ```
 #[proc_macro]
