@@ -4,8 +4,7 @@ extern crate futures;
 
 use reql::{Config, Client, Document, Run};
 use reql_types::ServerStatus;
-use futures::StreamExt;
-use futures::executor::block_on_stream;
+use futures::Stream;
 
 fn main() {
     // Create a new ReQL client
@@ -51,5 +50,5 @@ fn main() {
     });
 
     // Wait for all the results to be processed
-    block_on_stream(stati).next();
+    for _ in stati.wait() { }
 }

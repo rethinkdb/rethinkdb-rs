@@ -35,14 +35,11 @@ pub mod errors;
 mod types;
 
 use errors::Error;
-use futures::channel::mpsc::{Receiver, Sender};
 use indexmap::IndexMap;
 #[doc(hidden)]
 pub use protobuf::repeated::RepeatedField;
 #[doc(hidden)]
 pub use ql2::proto::{Datum, Datum_DatumType as DT, Term, Term_TermType as TT};
-#[doc(hidden)]
-pub use reql_derive::args;
 use serde::de::DeserializeOwned;
 use serde_json::Value;
 use slog::Logger;
@@ -53,6 +50,7 @@ use std::net::{TcpStream, SocketAddr};
 use std::time::Duration;
 
 use uuid::Uuid;
+use futures::sync::mpsc::{Sender, Receiver};
 
 /// Default ReQL port
 pub const DEFAULT_PORT: u16 = 28015;

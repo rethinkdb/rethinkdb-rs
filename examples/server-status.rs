@@ -12,7 +12,7 @@ extern crate slog_term;
 use reql::{Config, Client, Document, Run};
 use reql_types::{Change, ServerStatus};
 use reql_derive::args;
-use futures::executor::block_on_stream;
+use futures::Stream;
 use slog::Drain;
 
 fn main() {
@@ -38,7 +38,7 @@ fn main() {
         .unwrap();
 
     // Process results
-    for res in block_on_stream(stati) {
+    for res in stati.wait() {
         match res {
             Ok(Some(Document::Expected(change))) => {
                 println!("{:?}", change);

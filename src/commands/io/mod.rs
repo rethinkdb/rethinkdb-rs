@@ -6,10 +6,8 @@ use {Client, InnerConfig, Config, Connection, Document, IntoArg, Arg, Opts, DEFA
         Request, Response, Result, Run, Server, Session, SessionManager, r2d2};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use errors::*;
-use futures::{Async, Poll, Stream, StreamExt};
-use futures::task::Context;
-use futures::channel::mpsc;
-use futures::executor::block_on;
+use futures::{Async, Poll, Future, Stream};
+use futures::sync::mpsc;
 use indexmap::IndexMap;
 use parking_lot::RwLock;
 use protobuf::ProtobufEnum;
@@ -117,12 +115,12 @@ impl<T: DeserializeOwned + Send> Stream for Response<T> {
     type Item = Option<Document<T>>;
     type Error = Error;
 
-    fn poll_next(&mut self, cx: &mut Context) -> Poll<Option<Self::Item>, Self::Error> {
+    fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
         if self.done {
             return Ok(Async::Ready(None));
         }
-        match self.rx.poll_next(cx) {
-            Ok(Async::Pending) => Ok(Async::Pending),
+        match self.rx.poll() {
+            Ok(Async::NotReady) => Ok(Async::NotReady),
             Ok(Async::Ready(Some(res))) => {
                 match res {
                     Ok(data) => Ok(Async::Ready(Some(data))),
@@ -266,7 +264,7 @@ impl Connection {
                     }
                     Ok(())
                 });
-                let _ = block_on(future);
+                let _ = future.wait();
                 thread::sleep(Duration::from_millis(500));
             }
         });

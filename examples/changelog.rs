@@ -14,8 +14,7 @@ extern crate serde_json;
 use reql::{Config, Client, Document, Run};
 use reql_types::Change;
 use reql_derive::args;
-use futures::StreamExt;
-use futures::executor::block_on_stream;
+use futures::{Future, Stream};
 
 /**
  * rethinkdb changelog example
@@ -121,5 +120,5 @@ fn main() {
     });
 
     // Wait for all the results to be processed
-    for _ in block_on_stream(stati) { }
+    for _ in stati.wait() { }
 }

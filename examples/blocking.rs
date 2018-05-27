@@ -3,8 +3,8 @@ extern crate reql_types;
 extern crate futures;
 
 use reql_types::ServerStatus;
-use futures::executor::block_on_stream;
 use reql::{Config, Client, Document, Run};
+use futures::Stream;
 
 fn main() {
     // Create a new ReQL client
@@ -20,7 +20,7 @@ fn main() {
         .unwrap();
 
     // Process the results
-    match block_on_stream(stati).next().unwrap() {
+    match stati.wait().next().unwrap() {
         // The server returned the response we were expecting
         Ok(Some(Document::Expected(status))) => {
             println!("{:?}", status);

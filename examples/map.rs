@@ -1,16 +1,18 @@
+#![feature(proc_macro)]
 #![feature(proc_macro_non_items)]
 
 extern crate futures;
 #[macro_use]
 extern crate reql;
+extern crate reql_derive;
 #[macro_use]
 extern crate serde_json;
 #[macro_use]
 extern crate slog;
 extern crate slog_term;
 
-use futures::executor::block_on_stream;
-use futures::StreamExt;
+use futures::Stream;
+use reql_derive::args;
 use reql::{Config, Client, Document, Run};
 use slog::Drain;
 
@@ -40,7 +42,7 @@ fn main() {
         .unwrap();
 
     // Process results
-    match block_on_stream(sum).unwrap().0.unwrap() {
+    match sum.wait().next().unwrap().unwrap() {
         Some(Document::Expected(sum)) => {
             println!("{:?}", sum);
         }
