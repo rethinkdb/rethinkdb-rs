@@ -7,8 +7,13 @@ repository = "https://github.com/rethinkdb-rs/reql"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
-syn = "0.11"
-quote = "0.3"
+proc-macro2 = "0.4"
+quote = "0.6"
+
+[dependencies.syn]
+version = "0.14"
+#features = ["full", "visit", "visit-mut", "extra-traits", "fold"]
+features = ["full", "extra-traits"]
 
 [lib]
 proc-macro = true

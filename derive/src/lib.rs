@@ -1,14 +1,37 @@
+#![recursion_limit = "128"]
 #![feature(proc_macro)]
 
 #[macro_use]
 extern crate quote;
+#[macro_use]
 extern crate syn;
 extern crate proc_macro;
-
-use proc_macro::TokenStream;
+extern crate proc_macro2;
 
 mod args;
+mod parser;
 
+use proc_macro::TokenStream;
+use syn::punctuated::Punctuated;
+
+#[derive(Debug, Clone)]
+struct KvPair(syn::Ident, syn::Expr);
+
+#[derive(Debug, Clone)]
+struct Object(Punctuated<KvPair, Token![,]>);
+
+#[derive(Debug, Clone)]
+struct List(Punctuated<syn::Expr, Token![,]>);
+
+#[derive(Debug, Clone)]
+struct Elems(Punctuated<syn::Expr, Token![,]>);
+
+#[derive(Debug, Clone)]
+struct Args {
+    elems: Option<Elems>,
+    opts: Option<Object>,
+    closure: Option<syn::Expr>,
+}
 
 /// Splice an array of arguments into another term
 ///
@@ -25,9 +48,26 @@ mod args;
 /// ```
 #[proc_macro]
 pub fn args(input: TokenStream) -> TokenStream {
-    args::Args::new(&input.to_string())
-        .process().tokens
-        .as_str()
+    let body = if input.is_empty() {
+        quote!(Term::new())
+    }
+
+    else {
+        let raw = input.to_string();
+        syn::parse::<Args>(input)
+            .unwrap()
+            .process(raw)
+    };
+
+    let expanded = quote!({
+        #[allow(unused_imports)]
+        use reql::{Term, IntoArg, Arg};
+        #body
+    });
+
+    //expanded.into()
+    expanded
+        .to_string()
         .parse()
         .unwrap()
 }
