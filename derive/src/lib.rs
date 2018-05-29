@@ -35,7 +35,7 @@ struct Args {
 
 /// Splice an array of arguments into another term
 ///
-/// `args` is a macro that’s used to splice a number of arguments into another term. This is
+/// A macro that’s used to splice a number of arguments into another term. This is
 /// useful when you want to call a variadic term such as `branch` with a set of arguments produced at
 /// runtime.
 ///
@@ -65,9 +65,5 @@ pub fn args(input: TokenStream) -> TokenStream {
         #body
     });
 
-    //expanded.into()
-    expanded
-        .to_string()
-        .parse()
-        .unwrap()
+    expanded.into()
 }
