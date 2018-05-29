@@ -30,8 +30,6 @@ macro_rules! func {
         use $crate::{Client, RepeatedField, Term, Datum, TT, DT};
 
         // IDs
-        // when closure has no args ids doesn't need to be mutable
-        // this lint is ignored (see https://github.com/rust-lang/rust/issues/40491)
         #[allow(unused_mut)]
         let mut ids = Vec::new();
         let res: Client = $f(
