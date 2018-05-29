@@ -1,5 +1,3 @@
-
-
 use serde_yaml as yaml;
 use std::env;
 use std::fs::File;
