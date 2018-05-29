@@ -117,6 +117,11 @@ fn main() {
             }
         }
         Ok(())
+    })
+    // Our query ran into an error
+    .or_else(|error| {
+        println!("{:?}", error);
+        Err(())
     });
 
     // Wait for all the results to be processed

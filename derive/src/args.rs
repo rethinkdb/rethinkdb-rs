@@ -1,6 +1,7 @@
 use {Args, KvPair};
-use syn::{Expr, ExprClosure};
+use quote::ToTokens;
 use proc_macro2::TokenStream;
+use syn::{self, Expr, ExprClosure, FnArg, ArgCaptured};
 
 impl Args {
     pub fn process(self, input: String) -> TokenStream {
@@ -35,44 +36,62 @@ fn process_elems(elems: impl IntoIterator<Item=Expr>, body: &mut TokenStream) {
             process_closure(closure, body);
             continue;
         }
-        let arg = quote! {
+        body.extend(quote! {
             args.add_arg(#expr.into_arg());
-        };
-        body.extend(arg);
+        });
     }
 }
 
-fn process_opts(opts: impl IntoIterator<Item=KvPair>, body: &mut TokenStream) {
-    let mut obj = quote! {
-        let mut obj_val = Arg::new();
+fn _process_list(exprs: impl IntoIterator<Item=Expr>, body: &mut TokenStream) {
+    let mut arg = quote! {
+        let mut list_arg = Arg::new();
     };
-    for KvPair(key, val) in opts {
-        let key = key.to_string();
-        let arg = quote! {
-            match Arg::create_term_pair(#key, #val) {
-                Ok(temp_pair) => obj_val.add_opt(temp_pair),
-                Err(error) => obj_val.set_term(Err(error)),
-            }
-        };
-        obj.extend(arg);
+    for expr in exprs {
+        arg.extend(quote! {
+            list_arg.add_arg(#expr.into_arg());
+        });
     }
-    body.extend(obj);
-    let arg = quote! {
-        args.add_arg(obj_val.into_arg());
-    };
+    arg.extend(quote! {
+        args.add_arg(list_arg.into_arg());
+    });
     body.extend(arg);
 }
 
-fn process_closure(closure: ExprClosure, body: &mut TokenStream) {
+fn process_opts(opts: impl IntoIterator<Item=KvPair>, body: &mut TokenStream) {
+    for KvPair(key, val) in opts {
+        let key = key.to_string();
+        body.extend(quote! {
+            match Arg::create_term_pair(#key, #val) {
+                Ok(temp_pair) => args.add_opt(temp_pair),
+                Err(error) => args.set_term(Err(error)),
+            }
+        });
+    }
+}
+
+fn process_closure(mut closure: ExprClosure, body: &mut TokenStream) {
     let mut args = TokenStream::new();
-    for i in 0..closure.inputs.len() {
+    for (i, mut arg) in closure.inputs.iter_mut().enumerate() {
         args.extend(quote! {
             var!(#i),
         });
+        match arg {
+            FnArg::Inferred(pat) => {
+                let captured = ArgCaptured {
+                    pat: pat.clone(),
+                    colon_token: Default::default(),
+                    ty: syn::parse_str("Client").unwrap(),
+                };
+                *arg = FnArg::Captured(captured);
+            }
+            arg => {
+                let arg = arg.clone().into_token_stream().to_string();
+                panic!(format!("`{}`: type annotations are not supported in ReQL closure arguments", arg.replace(" :", ":")));
+            }
+        }
     }
-    let closure = quote! {
+    body.extend(quote! {
         let func = func!((#closure), #args);
         args.add_arg(func.into_arg());
-    };
-    body.extend(closure);
+    });
 }
