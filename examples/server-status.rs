@@ -3,7 +3,7 @@
 
 extern crate futures;
 extern crate reql;
-extern crate reql_derive;
+extern crate reql_macros;
 extern crate reql_types;
 #[macro_use]
 extern crate slog;
@@ -11,7 +11,7 @@ extern crate slog_term;
 
 use reql::{Config, Client, Document, Run};
 use reql_types::{Change, ServerStatus};
-use reql_derive::args;
+use reql_macros::args;
 use futures::Stream;
 use slog::Drain;
 

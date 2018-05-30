@@ -3,7 +3,7 @@
 
 extern crate futures;
 extern crate reql;
-extern crate reql_derive;
+extern crate reql_macros;
 extern crate reql_types;
 #[macro_use]
 extern crate serde_derive;
@@ -12,7 +12,7 @@ extern crate serde_json;
 
 use reql::{Config, Client, Document, Run};
 use reql_types::Change;
-use reql_derive::args;
+use reql_macros::args;
 use futures::{Future, Stream};
 
 /**

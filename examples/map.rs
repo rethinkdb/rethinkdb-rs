@@ -3,7 +3,7 @@
 
 extern crate futures;
 extern crate reql;
-extern crate reql_derive;
+extern crate reql_macros;
 #[macro_use]
 extern crate serde_json;
 #[macro_use]
@@ -11,7 +11,7 @@ extern crate slog;
 extern crate slog_term;
 
 use futures::Stream;
-use reql_derive::args;
+use reql_macros::args;
 use reql::{Config, Client, Document, Run};
 use slog::Drain;
 

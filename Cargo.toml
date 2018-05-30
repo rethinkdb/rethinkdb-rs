@@ -39,7 +39,7 @@ native-tls = { version = "0.1", optional = true }
 
 [dev-dependencies]
 slog-term = "2.0"
-reql-derive = { version = "0.0.8", path = "./derive" }
+reql-macros = { version = "0.0.10", path = "./macros" }
 
 [build-dependencies]
 serde = "1.0"

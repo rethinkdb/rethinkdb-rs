@@ -86,8 +86,8 @@
                 /// # #![feature(proc_macro_non_items)]
                 /// # #![allow(unused_must_use)]
                 /// # extern crate reql;
-                /// # extern crate reql_derive;
-                /// # use reql_derive::args;
+                /// # extern crate reql_macros;
+                /// # use reql_macros::args;
                 /// # fn main() {
                 /// # use reql::Client;
                 /// # let r = Client::new();
