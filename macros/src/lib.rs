@@ -6,7 +6,7 @@
 //! be added in the future.
 //!
 //! In this crate we make use of a couple nightly features, specifically
-//! `proc_macro` and `proc_macro_non_items` so you will need to use the nightly
+//! `proc_macro` and `proc_macro_non_items` so you will need to use the latest nightly
 //! compiler in order to use the macros here. Add the following to your crate:-
 //!
 //! ```rust,ignore
