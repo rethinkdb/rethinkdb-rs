@@ -1,6 +1,6 @@
-# RethinkDB Driver
+# ReQL Driver
 
-This is a [RethinkDB] driver written in [Rust].
+This is a [ReQL] driver written in [Rust].
 
 [![travis-badge][]][travis] [![cratesio-badge][]][cratesio] [![docsrs-badge][]][docsrs]
 
@@ -11,25 +11,24 @@ extern crate reql;
 extern crate reql_types;
 extern crate futures;
 
+use futures::Stream;
 use reql_types::ServerStatus;
-use futures::executor::block_on_stream;
 use reql::{Config, Client, Document, Run};
 
-fn main() {
+fn main() -> reql::Result<()> {
     // Create a new ReQL client
     let r = Client::new();
 
     // Create a connection pool
-    let conn = r.connect(Config::default()).unwrap();
+    let conn = r.connect(Config::default())?;
 
     // Run the query
     let stati = r.db("rethinkdb")
         .table("server_status")
-        .run::<ServerStatus>(conn)
-        .unwrap();
+        .run::<ServerStatus>(conn)?;
 
     // Process the results
-    match block_on_stream(stati).next().unwrap() {
+    match stati.wait().next().unwrap() {
         // The server returned the response we were expecting
         Ok(Some(Document::Expected(status))) => {
             println!("{:?}", status);
@@ -53,6 +52,8 @@ fn main() {
             println!("error: {}", error);
         }
     }
+
+    Ok(())
 }
 ```
 
@@ -69,10 +70,10 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you shall be dual licensed as above, without any
 additional terms or conditions.
 
-[RethinkDB]: https://www.rethinkdb.com
-[Rust]: https://www.rust-lang.org
-[travis-badge]: https://travis-ci.org/rethinkdb-rs/reql.svg?branch=master
-[travis]: https://travis-ci.org/rethinkdb-rs/reql
+[ReQL]: https://rethinkdb.com/api
+[Rust]: https://rust-lang.org
+[travis-badge]: https://travis-ci.org/RebirthDB/rebirthdb-rs.svg?branch=master
+[travis]: https://travis-ci.org/RebirthDB/rebirthdb-rs
 [cratesio-badge]: https://img.shields.io/crates/v/reql.svg
 [cratesio]: https://crates.io/crates/reql
 [docsrs-badge]: https://docs.rs/reql/badge.svg

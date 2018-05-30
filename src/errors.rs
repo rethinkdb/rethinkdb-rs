@@ -1,14 +1,14 @@
 //! The errors returned by this driver
 
-use futures::channel::mpsc::SendError;
-use protobuf::ProtobufError;
-use {scram, r2d2};
-use serde_json::Value;
-
-use serde_json::error::Error as JsonError;
 use std::io::Error as IoError;
 use std::str::Utf8Error;
 use std::sync::Arc;
+
+use protobuf::ProtobufError;
+use {scram, r2d2};
+use serde_json::Value;
+use futures::sync::mpsc::SendError;
+use serde_json::error::Error as JsonError;
 
 /// The most generic error message in ReQL
 #[derive(Debug, Clone, Error)]
@@ -149,8 +149,8 @@ impl From<scram::Error> for Error {
 }
 
 
-impl From<SendError> for Error {
-    fn from(err: SendError) -> Error {
+impl<T> From<SendError<T>> for Error {
+    fn from(err: SendError<T>) -> Error {
         From::from(DriverError::Other(err.to_string()))
     }
 }

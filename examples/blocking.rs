@@ -2,25 +2,24 @@ extern crate reql;
 extern crate reql_types;
 extern crate futures;
 
+use futures::Stream;
 use reql_types::ServerStatus;
-use futures::executor::block_on_stream;
 use reql::{Config, Client, Document, Run};
 
-fn main() {
+fn main() -> reql::Result<()> {
     // Create a new ReQL client
     let r = Client::new();
 
     // Create a connection pool
-    let conn = r.connect(Config::default()).unwrap();
+    let conn = r.connect(Config::default())?;
 
     // Run the query
     let stati = r.db("rethinkdb")
         .table("server_status")
-        .run::<ServerStatus>(conn)
-        .unwrap();
+        .run::<ServerStatus>(conn)?;
 
     // Process the results
-    match block_on_stream(stati).next().unwrap() {
+    match stati.wait().next().unwrap() {
         // The server returned the response we were expecting
         Ok(Some(Document::Expected(status))) => {
             println!("{:?}", status);
@@ -44,4 +43,6 @@ fn main() {
             println!("error: {}", error);
         }
     }
+
+    Ok(())
 }

@@ -1,4 +1,4 @@
-//! A native RethinkDB driver written in Rust
+//! A native ReQL driver written in Rust
 
 extern crate bufstream;
 extern crate byteorder;
@@ -9,13 +9,9 @@ extern crate futures;
 extern crate lazy_static;
 extern crate indexmap;
 extern crate parking_lot;
-#[macro_use]
-extern crate proc_macro_hack;
 extern crate protobuf;
 extern crate ql2;
 extern crate r2d2;
-#[macro_use]
-extern crate reql_derive;
 extern crate reql_types;
 extern crate scram;
 extern crate serde;
@@ -35,14 +31,11 @@ pub mod errors;
 mod types;
 
 use errors::Error;
-use futures::channel::mpsc::{Receiver, Sender};
 use indexmap::IndexMap;
 #[doc(hidden)]
 pub use protobuf::repeated::RepeatedField;
 #[doc(hidden)]
 pub use ql2::proto::{Datum, Datum_DatumType as DT, Term, Term_TermType as TT};
-#[doc(hidden)]
-pub use reql_derive::*;
 use serde::de::DeserializeOwned;
 use serde_json::Value;
 use slog::Logger;
@@ -53,6 +46,7 @@ use std::net::{TcpStream, SocketAddr};
 use std::time::Duration;
 
 use uuid::Uuid;
+use futures::sync::mpsc::{Sender, Receiver};
 
 /// Default ReQL port
 pub const DEFAULT_PORT: u16 = 28015;

@@ -1,18 +1,18 @@
 [package]
 name = "reql"
-description = "A native RethinkDB driver"
-version = "0.0.14-pre"
+description = "A native ReQL driver"
+version = "0.0.17-pre"
 license = "MIT/Apache-2.0"
-repository = "https://github.com/rethinkdb-rs/reql"
+repository = "https://github.com/RebirthDB/rebirthdb-rs"
 documentation = "https://docs.rs/reql"
 readme = "README.md"
-keywords = ["database", "rethinkdb", "reql", "driver"]
+keywords = ["database", "rethinkdb", "rebirthdb", "reql", "driver"]
 categories = ["database"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 build = "build/main.rs"
 
 [badges]
-travis-ci = { repository = "rethinkdb-rs/reql" }
+travis-ci = { repository = "RebirthDB/rebirthdb-rs" }
 
 [features]
 tls = ["native-tls"]
@@ -24,26 +24,21 @@ serde = "1.0"
 serde_json = "1.0"
 ql2 = "1.1"
 derive-error = "0.0.4"
-proc-macro-hack = "0.4"
 lazy_static = "1.0"
 serde_derive = "1.0"
 r2d2 = "0.8"
 byteorder = "1.0"
 bufstream = "0.1"
-scram = "0.2"
-futures = "0.2"
+scram = "0.3"
+futures = "0.1"
 parking_lot = "0.5"
 indexmap = "1.0"
-reql-derive = { version = "0.0.7", path = "./derive" }
 reql-types = { version = "0.0.3", path = "./types" }
 uuid = { version = "0.6", features = ["v4", "serde"] }
 native-tls = { version = "0.1", optional = true }
-
-[dev-dependencies]
-slog-term = "2.0"
 
 [build-dependencies]
 serde = "1.0"
 serde_derive = "1.0"
 serde_yaml = "0.7"
-nom = "3.0"
+nom = "4.0"

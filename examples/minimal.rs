@@ -4,10 +4,9 @@ extern crate futures;
 
 use reql::{Config, Client, Document, Run};
 use reql_types::ServerStatus;
-use futures::StreamExt;
-use futures::executor::block_on_stream;
+use futures::Stream;
 
-fn main() {
+fn main() -> reql::Result<()> {
     // Create a new ReQL client
     let r = Client::new();
 
@@ -17,8 +16,7 @@ fn main() {
     // Run the query
     let query = r.db("rethinkdb")
         .table("server_status")
-        .run::<ServerStatus>(conn)
-        .unwrap();
+        .run::<ServerStatus>(conn)?;
 
     // Process the results
     let stati = query.and_then(|status| {
@@ -51,5 +49,7 @@ fn main() {
     });
 
     // Wait for all the results to be processed
-    block_on_stream(stati).next();
+    for _ in stati.wait() { }
+
+    Ok(())
 }

@@ -1,8 +1,10 @@
-extern crate futures;
-#[macro_use]
-extern crate reql;
-extern crate reql_types;
+#![feature(proc_macro)]
+#![feature(proc_macro_non_items)]
 
+extern crate futures;
+extern crate reql;
+extern crate reql_macros;
+extern crate reql_types;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
@@ -10,8 +12,8 @@ extern crate serde_json;
 
 use reql::{Config, Client, Document, Run};
 use reql_types::Change;
-use futures::StreamExt;
-use futures::executor::block_on_stream;
+use reql_macros::args;
+use futures::{Future, Stream};
 
 /**
  * rethinkdb changelog example
@@ -50,12 +52,12 @@ struct TestItem {
     id: String,
 }
 
-fn main() {
+fn main() -> reql::Result<()> {
     // Create a new ReQL client
     let r = Client::new();
 
     // Create a connection pool
-    let conn = r.connect(Config::default()).unwrap();
+    let conn = r.connect(Config::default())?;
 
     // Run the query
     let query = r.db("test")
@@ -71,8 +73,7 @@ fn main() {
         .with_args(args!({
             include_types: true
         }))
-        .run::<Change<TestItem, TestItem>>(conn)
-        .unwrap();
+        .run::<Change<TestItem, TestItem>>(conn)?;
 
     // Process the results
     let stati = query.for_each(|change| {
@@ -114,8 +115,15 @@ fn main() {
             }
         }
         Ok(())
+    })
+    // Our query ran into an error
+    .or_else(|error| {
+        println!("{:?}", error);
+        Err(())
     });
 
     // Wait for all the results to be processed
-    let _ = block_on_stream(stati);
+    for _ in stati.wait() { }
+
+    Ok(())
 }
