@@ -4,6 +4,7 @@ description = "Macros for the reql crate"
 version = "0.0.11"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/RebirthDB/rebirthdb-rs"
+documentation = "https://docs.rs/reql-macros"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
@@ -16,6 +17,16 @@ features = ["full", "extra-traits"]
 [dependencies.proc-macro2]
 version = "0.4"
 features = ["nightly"]
+
+[dev-dependencies]
+reql = "0.0.15"
+reql-types = "0.0.3"
+futures = "0.1"
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
+slog = "2.0"
+slog-term = "2.0"
 
 [lib]
 proc-macro = true

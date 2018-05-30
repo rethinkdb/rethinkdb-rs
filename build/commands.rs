@@ -119,11 +119,13 @@ impl Commands {
                 /// also takes optional arguments. If the command takes at least one argument, you
                 /// don't need to call `with_args`. However, some commands like [delete](struct.Client.html#method.delete)
                 /// do not have any required arguments but yet they have optional ones. That's when `with_args` comes in.
+                /// The `args` macro is provided by the `reql-macros` crate. NB: That crate
+                /// requires the nightly compiler. See its docs for more details.
                 ///
                 /// __Example__: Delete all documents from the table `comments` without waiting for the operation to be flushed to
                 /// disk.
                 ///
-                /// ```rust
+                /// ```rust,ignore
                 /// # #![feature(proc_macro)]
                 /// # #![feature(proc_macro_non_items)]
                 /// # #![allow(unused_must_use)]
