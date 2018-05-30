@@ -1,8 +1,8 @@
 use {Args, KvPair};
-use quote::ToTokens;
 use proc_macro2::TokenStream;
 use syn::token::Comma;
 use syn::punctuated::Punctuated;
+use syn::spanned::Spanned;
 use syn::{self, Expr, ExprClosure, FnArg, ArgCaptured};
 
 impl Args {
@@ -95,8 +95,10 @@ fn process_closure(mut closure: ExprClosure, body: &mut TokenStream) {
                 *arg = FnArg::Captured(captured);
             }
             arg => {
-                let arg = arg.clone().into_token_stream().to_string();
-                panic!(format!("`{}`: type annotations are not supported in ReQL closure arguments", arg.replace(" :", ":")));
+                arg.span().unstable()
+                    .error("unsupported ReQL closure argument")
+                    .note("only arguments with no type annotations are supported")
+                    .emit();
             }
         }
     }
