@@ -33,13 +33,13 @@ scram = "0.3"
 futures = "0.1"
 parking_lot = "0.5"
 indexmap = "1.0"
-reql-derive = { version = "0.0.8", path = "./derive" }
 reql-types = { version = "0.0.3", path = "./types" }
 uuid = { version = "0.6", features = ["v4", "serde"] }
 native-tls = { version = "0.1", optional = true }
 
 [dev-dependencies]
 slog-term = "2.0"
+reql-derive = { version = "0.0.8", path = "./derive" }
 
 [build-dependencies]
 serde = "1.0"

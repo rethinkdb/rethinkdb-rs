@@ -1,6 +1,8 @@
 use {Args, KvPair};
 use quote::ToTokens;
 use proc_macro2::TokenStream;
+use syn::token::Comma;
+use syn::punctuated::Punctuated;
 use syn::{self, Expr, ExprClosure, FnArg, ArgCaptured};
 
 impl Args {
@@ -70,11 +72,19 @@ fn process_opts(opts: impl IntoIterator<Item=KvPair>, body: &mut TokenStream) {
 }
 
 fn process_closure(mut closure: ExprClosure, body: &mut TokenStream) {
-    let mut args = TokenStream::new();
+    let mut ids = quote! {
+        #[allow(unused_mut)]
+        let mut ids = Vec::new();
+    };
+    let mut args = Punctuated::new();
     for (i, mut arg) in closure.inputs.iter_mut().enumerate() {
-        args.extend(quote! {
-            var!(#i),
+        let var = var(i);
+        ids.extend(quote! {
+            for t in #var.term().unwrap().get_args() {
+                ids.push(t.get_datum().clone());
+            }
         });
+        args.push(syn::parse(var.into()).unwrap());
         match arg {
             FnArg::Inferred(pat) => {
                 let captured = ArgCaptured {
@@ -90,8 +100,62 @@ fn process_closure(mut closure: ExprClosure, body: &mut TokenStream) {
             }
         }
     }
+    ids.extend(quote!(ids));
+    let func = func(closure, args, ids);
     body.extend(quote! {
-        let func = func!((#closure), #args);
-        args.add_arg(func.into_arg());
+        use reql::{Client, RepeatedField, Term, Datum, TT, DT};
+
+        args.add_arg(#func.into_arg());
     });
+}
+
+fn func(closure: ExprClosure, args: Punctuated<Expr, Comma>, ids: TokenStream) -> TokenStream {
+    quote! {{
+        let res: Client = (#closure)(#args);
+        let mut closure = Client::new();
+        match res.term() {
+            Ok(res) => {
+                // ARRAY
+                let mut array = Datum::new();
+                array.set_field_type(DT::R_ARRAY);
+                let args = RepeatedField::from_vec({#ids});
+                array.set_r_array(args);
+                // DATUM
+                let mut datum = Term::new();
+                datum.set_field_type(TT::DATUM);
+                datum.set_datum(array);
+                // FUNC
+                let mut func = Term::new();
+                func.set_field_type(TT::FUNC);
+                let args = RepeatedField::from_vec(vec![datum, res.clone()]);
+                func.set_args(args);
+                closure.set_term(Ok(func));
+            }
+            Err(error) => {
+                closure.set_term(Err(error));
+            }
+        }
+        closure
+    }}
+}
+
+fn var(idx: usize) -> TokenStream {
+    quote! {{
+        // ID
+        let mut id = Datum::new();
+        id.set_field_type(DT::R_NUM);
+        id.set_r_num(#idx as f64);
+        // DATUM
+        let mut datum = Term::new();
+        datum.set_field_type(TT::DATUM);
+        datum.set_datum(id);
+        // VAR
+        let mut var = Term::new();
+        var.set_field_type(TT::VAR);
+        let args = RepeatedField::from_vec(vec![datum]);
+        var.set_args(args);
+        let mut client = Client::new();
+        client.set_term(Ok(var));
+        client
+    }}
 }

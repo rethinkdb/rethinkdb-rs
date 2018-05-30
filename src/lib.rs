@@ -1,8 +1,5 @@
 //! A native RebirthDB driver written in Rust
 
-#![feature(proc_macro)]
-#![feature(proc_macro_non_items)]
-
 extern crate bufstream;
 extern crate byteorder;
 #[macro_use]
@@ -15,7 +12,6 @@ extern crate parking_lot;
 extern crate protobuf;
 extern crate ql2;
 extern crate r2d2;
-extern crate reql_derive;
 extern crate reql_types;
 extern crate scram;
 extern crate serde;

@@ -82,8 +82,12 @@
                 /// disk.
                 ///
                 /// ```rust
+                /// # #![feature(proc_macro)]
+                /// # #![feature(proc_macro_non_items)]
                 /// # #![allow(unused_must_use)]
-                /// # #[macro_use] extern crate reql;
+                /// # extern crate reql;
+                /// # extern crate reql_derive;
+                /// # use reql_derive::args;
                 /// # fn main() {
                 /// # use reql::Client;
                 /// # let r = Client::new();

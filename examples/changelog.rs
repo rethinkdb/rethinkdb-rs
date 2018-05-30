@@ -2,7 +2,6 @@
 #![feature(proc_macro_non_items)]
 
 extern crate futures;
-#[macro_use]
 extern crate reql;
 extern crate reql_derive;
 extern crate reql_types;
