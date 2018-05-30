@@ -1,9 +1,9 @@
 [package]
-name = "reql-derive"
-description = "An implementation of the args macro used by the reql crate"
-version = "0.0.9"
+name = "reql-macros"
+description = "Macros for the reql crate"
+version = "0.0.10"
 license = "MIT/Apache-2.0"
-repository = "https://github.com/rethinkdb-rs/reql"
+repository = "https://github.com/RebirthDB/rebirthdb-rs"
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 
 [dependencies]
