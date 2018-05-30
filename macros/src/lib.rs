@@ -1,6 +1,19 @@
 #![recursion_limit = "128"]
 #![feature(proc_macro)]
 
+//! This crate provides macros for making ReQL types more pleasant to work with.
+//! Currently, it only exposes the `args` macro but it's possible that more will
+//! be added in the future.
+//!
+//! In this crate we make use of a couple nightly features, specifically
+//! `proc_macro` and `proc_macro_non_items` so you will need to use the nightly
+//! compiler in order to use the macros here. Add the following to your crate:-
+//!
+//! ```rust,ignore
+//! #![feature(proc_macro)]
+//! #![feature(proc_macro_non_items)]
+//! ```
+
 #[macro_use]
 extern crate quote;
 #[macro_use]
