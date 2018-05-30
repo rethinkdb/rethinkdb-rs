@@ -1,6 +1,6 @@
-# RebirthDB Driver
+# ReQL Driver
 
-This is a [RebirthDB] driver written in [Rust].
+This is a [ReQL] driver written in [Rust].
 
 [![travis-badge][]][travis] [![cratesio-badge][]][cratesio] [![docsrs-badge][]][docsrs]
 
@@ -70,10 +70,10 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you shall be dual licensed as above, without any
 additional terms or conditions.
 
-[RebirthDB]: https://www.rebirthdb.com
-[Rust]: https://www.rust-lang.org
-[travis-badge]: https://travis-ci.org/rebirthdb/rebirthdb-rs.svg?branch=master
-[travis]: https://travis-ci.org/rebirthdb/rebirthdb-rs
+[ReQL]: https://rethinkdb.com/api
+[Rust]: https://rust-lang.org
+[travis-badge]: https://travis-ci.org/RebirthDB/rebirthdb-rs.svg?branch=master
+[travis]: https://travis-ci.org/RebirthDB/rebirthdb-rs
 [cratesio-badge]: https://img.shields.io/crates/v/reql.svg
 [cratesio]: https://crates.io/crates/reql
 [docsrs-badge]: https://docs.rs/reql/badge.svg
