@@ -15,7 +15,7 @@ use reql_derive::args;
 use futures::Stream;
 use slog::Drain;
 
-fn main() {
+fn main() -> reql::Result<()> {
     // Build an output drain
     let plain = slog_term::PlainSyncDecorator::new(std::io::stdout());
     let drain = slog_term::FullFormat::new(plain).build();
@@ -27,15 +27,14 @@ fn main() {
     let r = Client::new().with_logger(logger);
 
     // Create a connection pool
-    let conn = r.connect(Config::default()).unwrap();
+    let conn = r.connect(Config::default())?;
 
     // Run the query
     let stati = r.db("rethinkdb")
         .table("server_status")
         .changes()
         .with_args(args!({include_initial: true}))
-        .run::<Change<ServerStatus, ServerStatus>>(conn)
-        .unwrap();
+        .run::<Change<ServerStatus, ServerStatus>>(conn)?;
 
     // Process results
     for res in stati.wait() {
@@ -48,4 +47,6 @@ fn main() {
             }
         }
     }
+
+    Ok(())
 }

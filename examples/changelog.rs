@@ -52,12 +52,12 @@ struct TestItem {
     id: String,
 }
 
-fn main() {
+fn main() -> reql::Result<()> {
     // Create a new ReQL client
     let r = Client::new();
 
     // Create a connection pool
-    let conn = r.connect(Config::default()).unwrap();
+    let conn = r.connect(Config::default())?;
 
     // Run the query
     let query = r.db("test")
@@ -73,8 +73,7 @@ fn main() {
         .with_args(args!({
             include_types: true
         }))
-        .run::<Change<TestItem, TestItem>>(conn)
-        .unwrap();
+        .run::<Change<TestItem, TestItem>>(conn)?;
 
     // Process the results
     let stati = query.for_each(|change| {
@@ -125,4 +124,6 @@ fn main() {
 
     // Wait for all the results to be processed
     for _ in stati.wait() { }
+
+    Ok(())
 }

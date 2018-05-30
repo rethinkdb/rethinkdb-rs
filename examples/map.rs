@@ -15,7 +15,7 @@ use reql_derive::args;
 use reql::{Config, Client, Document, Run};
 use slog::Drain;
 
-fn main() {
+fn main() -> reql::Result<()> {
     // Build an output drain
     let plain = slog_term::PlainSyncDecorator::new(std::io::stdout());
     let drain = slog_term::FullFormat::new(plain).build();
@@ -27,7 +27,7 @@ fn main() {
     let r = Client::new().with_logger(logger);
 
     // Create a connection pool
-    let conn = r.connect(Config::default()).unwrap();
+    let conn = r.connect(Config::default())?;
 
     // Run the query
     let sequence1 = json!([100, 200, 300, 400]);
@@ -37,11 +37,10 @@ fn main() {
     let sum = r.map(args!(sequence1, sequence2, sequence3, |val1, val2, val3| {
         val1.add(val2).add(val3)
     }))
-    .run::<[i32; 4]>(conn)
-        .unwrap();
+    .run::<[i32; 4]>(conn)?;
 
     // Process results
-    match sum.wait().next().unwrap().unwrap() {
+    match sum.wait().next().unwrap()? {
         Some(Document::Expected(sum)) => {
             println!("{:?}", sum);
         }
@@ -49,4 +48,6 @@ fn main() {
             println!("unexpected response from DB: {:?}", res);
         }
     }
+
+    Ok(())
 }
