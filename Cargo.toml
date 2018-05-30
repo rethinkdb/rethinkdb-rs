@@ -37,10 +37,6 @@ reql-types = { version = "0.0.3", path = "./types" }
 uuid = { version = "0.6", features = ["v4", "serde"] }
 native-tls = { version = "0.1", optional = true }
 
-[dev-dependencies]
-slog-term = "2.0"
-reql-macros = { version = "0.0.10", path = "./macros" }
-
 [build-dependencies]
 serde = "1.0"
 serde_derive = "1.0"
