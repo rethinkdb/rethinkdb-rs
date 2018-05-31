@@ -1,47 +1,72 @@
-use {Args, KvPair};
+use proc_macro;
+use {Arg, ToComma, Opt, Args, KvPair};
 use proc_macro2::TokenStream;
 use syn::token::Comma;
 use syn::punctuated::Punctuated;
 use syn::spanned::Spanned;
 use syn::{self, Expr, ExprClosure, FnArg, ArgCaptured};
 
-impl Args {
-    pub fn process(self, input: String) -> TokenStream {
+pub fn process(tts: proc_macro::TokenStream) -> TokenStream {
+    let input = tts.to_string();
+    let mut body = TokenStream::new();
+
+    match syn::parse(tts.clone()) {
+        Ok(Args(args)) => {
+            for arg in args {
+                if let Some(arg) = arg.process() {
+                    body.extend(arg);
+                }
+            }
+        }
+        Err(_) => {
+            let arg: TokenStream = tts.into();
+            arg.span().unstable()
+                .error("failed to parse argument")
+                .note("this is a bug, please report it")
+                .emit();
+        }
+    }
+
+    quote!({
+        let mut args = Arg::new();
+        args.set_string(&format!("args!({})", #input));
+        #body
+        args
+    })
+}
+
+impl Arg {
+    fn process(self) -> Option<TokenStream> {
         let mut body = TokenStream::new();
 
-        let Args { elems, opts, closure } = self;
-
-        if let Some(elems) = elems {
-            process_elems(elems.0, &mut body);
+        match self {
+            Arg::Expr(expr) => process_expr(expr, &mut body),
+            Arg::Opt(opts) => {
+                let Opt(opts) = opts;
+                process_opts(opts, &mut body);
+            }
+            Arg::Bad(bad) => {
+                let ToComma(arg) = bad;
+                arg.span().unstable()
+                    .error("unsupported argument")
+                    .note("expected an argument, option or closure")
+                    .emit();
+                return None;
+            }
         }
 
-        if let Some(opts) = opts {
-            process_opts(opts.0, &mut body);
-        }
-
-        if let Some(Expr::Closure(closure)) = closure {
-            process_closure(closure, &mut body);
-        }
-
-        quote!({
-            let mut args = Arg::new();
-            args.set_string(&format!("args!({})", #input));
-            #body
-            args
-        })
+        Some(body)
     }
 }
 
-fn process_elems(elems: impl IntoIterator<Item=Expr>, body: &mut TokenStream) {
-    for expr in elems {
-        if let Expr::Closure(closure) = expr {
-            process_closure(closure, body);
-            continue;
-        }
-        body.extend(quote! {
-            args.add_arg(#expr.into_arg());
-        });
+fn process_expr(expr: Expr, body: &mut TokenStream) {
+    if let Expr::Closure(closure) = expr {
+        process_closure(closure, body);
+        return;
     }
+    body.extend(quote! {
+        args.add_arg(#expr.into_arg());
+    });
 }
 
 fn _process_list(exprs: impl IntoIterator<Item=Expr>, body: &mut TokenStream) {
@@ -84,13 +109,13 @@ fn process_closure(mut closure: ExprClosure, body: &mut TokenStream) {
                 ids.push(t.get_datum().clone());
             }
         });
-        args.push(syn::parse(var.into()).unwrap());
+        args.push(syn::parse(var.into()).expect("a closure arg"));
         match arg {
             FnArg::Inferred(pat) => {
                 let captured = ArgCaptured {
                     pat: pat.clone(),
                     colon_token: Default::default(),
-                    ty: syn::parse_str("Client").unwrap(),
+                    ty: syn::parse_str("Client").expect("add Client annotation"),
                 };
                 *arg = FnArg::Captured(captured);
             }
