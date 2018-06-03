@@ -88,7 +88,7 @@ fn process_opts(opts: impl IntoIterator<Item=KvPair>, body: &mut TokenStream) {
         let key = key.to_string();
         body.extend(quote! {
             match Arg::create_term_pair(#key, #val) {
-                Ok(temp_pair) => args.add_opt(temp_pair),
+                Ok(pair) => args.add_opt(pair),
                 Err(error) => args.set_term(Err(error)),
             }
         });

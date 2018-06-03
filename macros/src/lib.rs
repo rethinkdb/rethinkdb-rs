@@ -64,14 +64,10 @@ enum Arg {
 /// ```
 #[proc_macro]
 pub fn args(input: TokenStream) -> TokenStream {
-    let body: proc_macro2::TokenStream;
-
-    if input.is_empty() {
-        body = quote! { Term::new() };
-    }
-
-    else {
-        body = args::process(input);
+    let body = if input.is_empty() {
+        quote! { Term::new() }
+    } else {
+        args::process(input)
     };
 
     let expanded = quote!({
