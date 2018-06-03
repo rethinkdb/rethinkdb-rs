@@ -1,4 +1,4 @@
-use proc_macro;
+use proc_macro::{self, Span};
 use {Arg, ToComma, Opt, Args, KvPair};
 use proc_macro2::TokenStream;
 use syn::token::Comma;
@@ -6,11 +6,11 @@ use syn::punctuated::Punctuated;
 use syn::spanned::Spanned;
 use syn::{self, Expr, ExprClosure, FnArg, ArgCaptured};
 
-pub fn process(tts: proc_macro::TokenStream) -> TokenStream {
-    let input = tts.to_string();
+pub fn process(stream: proc_macro::TokenStream) -> TokenStream {
+    let input = stream.to_string();
     let mut body = TokenStream::new();
 
-    match syn::parse(tts.clone()) {
+    match syn::parse(stream) {
         Ok(Args(args)) => {
             for arg in args {
                 if let Some(arg) = arg.process() {
@@ -19,8 +19,7 @@ pub fn process(tts: proc_macro::TokenStream) -> TokenStream {
             }
         }
         Err(_) => {
-            let arg: TokenStream = tts.into();
-            arg.span().unstable()
+            Span::call_site()
                 .error("failed to parse argument")
                 .note("this is a bug, please report it")
                 .emit();
