@@ -31,19 +31,22 @@ use syn::punctuated::Punctuated;
 struct KvPair(syn::Ident, syn::Expr);
 
 #[derive(Debug, Clone)]
-struct Object(Punctuated<KvPair, Token![,]>);
+struct Opt(Punctuated<KvPair, Token![,]>);
 
 #[derive(Debug, Clone)]
 struct List(Punctuated<syn::Expr, Token![,]>);
 
 #[derive(Debug, Clone)]
-struct Elems(Punctuated<syn::Expr, Token![,]>);
+struct Args(Punctuated<Arg, Token![,]>);
 
 #[derive(Debug, Clone)]
-struct Args {
-    elems: Option<Elems>,
-    opts: Option<Object>,
-    closure: Option<syn::Expr>,
+struct ToComma(proc_macro2::TokenStream);
+
+#[derive(Debug, Clone)]
+enum Arg {
+    Expr(syn::Expr),
+    Opt(Opt),
+    Bad(ToComma),
 }
 
 /// Splice an array of arguments into another term
@@ -62,14 +65,9 @@ struct Args {
 #[proc_macro]
 pub fn args(input: TokenStream) -> TokenStream {
     let body = if input.is_empty() {
-        quote!(Term::new())
-    }
-
-    else {
-        let raw = input.to_string();
-        syn::parse::<Args>(input)
-            .unwrap()
-            .process(raw)
+        quote! { Term::new() }
+    } else {
+        args::process(input)
     };
 
     let expanded = quote!({
