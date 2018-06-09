@@ -19,6 +19,12 @@ impl IntoArg for Client {
     }
 }
 
+impl<'a> IntoArg for &'a Client {
+    fn into_arg(self) -> Arg {
+        self.clone().into_arg()
+    }
+}
+
 impl IntoArg for Term {
     fn into_arg(self) -> Arg {
         Arg {
