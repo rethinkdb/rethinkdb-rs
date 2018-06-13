@@ -1,4 +1,4 @@
-use {Client, IntoArg, slog};
+use {Client, IntoArg};
 use protobuf::repeated::RepeatedField;
 use ql2::proto::Term;
 use ql2::proto::Term_TermType;
@@ -8,7 +8,6 @@ pub fn new_client() -> Client {
         term: Ok(Term::new()),
         query: String::from("r"),
         write: false,
-        logger: slog::Logger::root(slog::Discard, o!()),
     }
 }
 
@@ -23,7 +22,6 @@ pub fn make_cmd<A: IntoArg>(client: &Client,
             return client.clone();
         }
     };
-    let logger = client.logger.new(o!("command" => name));
     let mut term = Term::new();
     if let Some(cmd_type) = cmd_type {
         term.set_field_type(cmd_type);
@@ -51,14 +49,8 @@ pub fn make_cmd<A: IntoArg>(client: &Client,
             cmd.query = format!("{}.{}()", client.query, name);
         }
     }
-    debug!(cmd.logger, "{}", cmd.query);
-    debug!(cmd.logger, "{:?}", cmd.term);
-    cmd.with_logger(logger)
-}
-
-pub fn with_logger(client: &Client, logger: slog::Logger) -> Client {
-    let mut cmd = client.clone();
-    cmd.logger = logger;
+    debug!("{}", cmd.query);
+    debug!("{:?}", cmd.term);
     cmd
 }
 
@@ -76,9 +68,8 @@ pub fn with_args<A: IntoArg>(client: &Client, args: A) -> Client {
             return cmd;
         }
     };
-    let logger = cmd.logger.new(o!("command" => "with_args"));
     with_args!(cmd, aterm);
-    debug!(logger, "{}", cmd.query);
-    debug!(logger, "{:?}", cmd.term);
-    cmd.with_logger(logger)
+    debug!("{}", cmd.query);
+    debug!("{:?}", cmd.term);
+    cmd
 }

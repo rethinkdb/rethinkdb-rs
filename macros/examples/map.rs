@@ -1,30 +1,18 @@
-#![feature(proc_macro)]
-#![feature(proc_macro_non_items)]
+#![feature(proc_macro, proc_macro_non_items)]
 
 extern crate futures;
 extern crate reql;
 extern crate reql_macros;
 #[macro_use]
 extern crate serde_json;
-#[macro_use]
-extern crate slog;
-extern crate slog_term;
 
 use futures::Stream;
 use reql_macros::args;
 use reql::{Config, Client, Document, Run};
-use slog::Drain;
 
 fn main() -> reql::Result<()> {
-    // Build an output drain
-    let plain = slog_term::PlainSyncDecorator::new(std::io::stdout());
-    let drain = slog_term::FullFormat::new(plain).build();
-
-    // Setup a logger
-    let logger = slog::Logger::root(drain.fuse(), o!());
-
-    // Create a new ReQL client with the logger
-    let r = Client::new().with_logger(logger);
+    // Create a new ReQL client
+    let r = Client::new();
 
     // Create a connection pool
     let conn = r.connect(Config::default())?;

@@ -19,7 +19,7 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 #[macro_use]
-extern crate slog;
+extern crate log;
 extern crate uuid;
 #[cfg(feature = "tls")]
 extern crate native_tls;
@@ -38,7 +38,6 @@ pub use protobuf::repeated::RepeatedField;
 pub use ql2::proto::{Datum, Datum_DatumType as DT, Term, Term_TermType as TT};
 use serde::de::DeserializeOwned;
 use serde_json::Value;
-use slog::Logger;
 #[cfg(feature = "tls")]
 use native_tls::TlsConnectorBuilder;
 
@@ -79,14 +78,12 @@ struct Request<T: DeserializeOwned + Send> {
     tx: Sender<Result<Option<Document<T>>>>,
     write: bool,
     retry: bool,
-    logger: Logger,
 }
 
 struct Session {
     id: u64,
     broken: bool,
     stream: TcpStream,
-    logger: Logger,
 }
 
 /// Connection parameters
@@ -107,7 +104,6 @@ pub struct Config<'a> {
 struct InnerConfig {
     cluster: IndexMap<String, Server>,
     opts: Opts,
-    logger: Logger,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -148,7 +144,6 @@ pub struct Client {
     term: Result<Term>,
     query: String,
     write: bool,
-    logger: Logger,
 }
 
 /// The JSON document returned by the server

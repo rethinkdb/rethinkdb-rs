@@ -14,7 +14,6 @@ use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
 use reql_types::{Change, ServerStatus};
 use serde::de::DeserializeOwned;
-use slog::Logger;
 use std::{error, thread};
 use std::cmp::Ordering;
 use std::io::{self, Read, Write};
@@ -35,11 +34,10 @@ pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
         return Err(error.clone());
     }
     let conn = Connection(Uuid::new_v4());
-    let logger = client.logger.new(o!("command" => "connect"));
-    //let query = format!("{}.connect({})", client.query, arg.string);
-    //debug!(logger, "{}", query);
-    info!(logger, "creating connection pool...");
-    conn.set_config(cfg, logger.clone())?;
+    let query = format!("{}.connect({:?})", client.query, cfg);
+    debug!("{}", query);
+    info!("creating connection pool...");
+    conn.set_config(cfg)?;
     conn.set_latency()?;
     let session = SessionManager(conn);
     let r2d2 = r2d2::Pool::builder()
@@ -50,7 +48,7 @@ pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
         .connection_timeout(Duration::from_secs(3))
         .build(session)?;
     conn.set_pool(r2d2);
-    info!(logger, "connection pool created successfully");
+    info!("connection pool created successfully");
     conn.maintain();
     Ok(conn)
 }
@@ -65,9 +63,8 @@ impl<A: IntoArg> Run<A> for Client {
         };
         let arg = args.into_arg();
         let aterm = arg.term?;
-        let logger = self.logger.new(o!("command" => "run"));
         let query = format!("{}.run({})", self.query, arg.string);
-        debug!(logger, "{}", query);
+        debug!("{}", query);
         let conn = match arg.pool {
             Some(conn) => conn.clone(),
             None => {
@@ -100,7 +97,6 @@ impl<A: IntoArg> Run<A> for Client {
                 tx: tx,
                 write: true,
                 retry: false,
-                logger: logger,
             };
             req.submit();
         });
@@ -191,7 +187,7 @@ impl PartialEq for Server {
 }
 
 impl Connection {
-    fn set_config<'a>(&self, cfg: Config<'a>, logger: Logger) -> Result<()> {
+    fn set_config<'a>(&self, cfg: Config<'a>) -> Result<()> {
         let opts = Opts {
             db: cfg.db.into(),
             user: cfg.user.into(),
@@ -213,7 +209,6 @@ impl Connection {
                     InnerConfig {
                         cluster: cluster,
                         opts: opts,
-                        logger: logger,
                     });
 
         Ok(())

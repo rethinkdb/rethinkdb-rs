@@ -11,7 +11,6 @@
 
             use Connection;
             use {Config, Client, IntoArg, Result};
-            use slog::Logger;
             use ql2::proto::{Term, Term_TermType as Type};
         
             impl Client {
@@ -41,34 +40,6 @@
                         Ok(ref term) => Ok(term),
                         Err(ref error) => Err(error.clone()),
                     }
-                }
-
-                /// Override the current logger
-                ///
-                /// Logging is very useful for tracking down bugs. The logger is typically
-                /// set up when creating a client. We provide it as a separate method so you
-                /// can activate or deactivate logging whenever you want. For example you
-                /// can log only a single command or a few ones by activating a logger just
-                /// before the first command you want to log and then deactivating soon after
-                /// the last command you want to log.
-                ///
-                /// __Example__: Override the default client logger.
-                ///
-                /// ```reql
-                /// # extern crate slog_term;
-                /// # #[macro_use] extern crate slog;
-                /// # use slog::DrainExt;
-                /// # let drain = slog_term::streamer().async().compact().build();
-                /// # let logger = slog::Logger::root(drain.fuse(), o!());
-                /// let r = Client::new().with_logger(logger);
-                /// ```
-                ///
-                /// See [examples/logging.rs] for an example of setting up an [slog](https://docs.rs/slog) `logger`.
-                ///
-                /// [examples/logging.rs]: https://github.com/rethinkdb-rs/reql/blob/master/examples/logging.rs
-
-                pub fn with_logger(&self, logger: Logger) -> Client {
-                    util::with_logger(self, logger)
                 }
 
                 /// Specify optional arguments to a ReQL command

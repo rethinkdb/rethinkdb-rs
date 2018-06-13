@@ -1,5 +1,4 @@
-#![feature(proc_macro)]
-#![feature(proc_macro_non_items)]
+#![feature(proc_macro, proc_macro_non_items)]
 
 extern crate futures;
 extern crate reql;
