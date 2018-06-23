@@ -109,7 +109,7 @@ fn process_closure(mut closure: ExprClosure, body: &mut TokenStream) {
             }
         });
         args.push(syn::parse(var.into()).expect("a closure arg"));
-        match arg {
+        match arg.clone() {
             FnArg::Inferred(pat) => {
                 let captured = ArgCaptured {
                     pat: pat.clone(),
