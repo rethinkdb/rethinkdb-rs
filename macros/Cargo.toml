@@ -1,7 +1,7 @@
 [package]
 name = "reql-macros"
 description = "Macros for the reql crate"
-version = "0.0.15"
+version = "0.0.16"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/RebirthDB/rebirthdb-rs"
 documentation = "https://docs.rs/reql-macros"
