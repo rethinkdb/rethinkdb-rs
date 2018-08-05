@@ -29,7 +29,7 @@ serde_derive = "1.0"
 r2d2 = "0.8"
 byteorder = "1.0"
 bufstream = "0.1"
-scram = { version = "0.4", git = "https://github.com/rushmorem/scram", branch = "update-ring" }
+scram-tmp = "0.4"
 futures = "0.1"
 parking_lot = "0.5"
 indexmap = "1.0"

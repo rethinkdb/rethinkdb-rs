@@ -13,7 +13,7 @@ extern crate protobuf;
 extern crate ql2;
 extern crate r2d2;
 extern crate reql_types;
-extern crate scram;
+extern crate scram_tmp as scram;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
