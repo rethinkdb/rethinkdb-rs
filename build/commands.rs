@@ -7,7 +7,6 @@ include!(concat!(env!("CARGO_MANIFEST_DIR"), "/build/parsers.rs"));
 
 #[derive(Debug, Clone)]
 pub struct Commands {
-    header: String,
     commands: Vec<String>,
     menu: Vec<config::Command>,
 }
@@ -22,27 +21,9 @@ pub struct Command {
 impl Commands {
     pub fn new(menu: &[config::Command]) -> Commands {
         Commands {
-            header: Self::header(),
             commands: Vec::new(),
             menu: menu.to_owned(),
         }
-    }
-
-    fn header() -> String {
-        format!(r#"
-            // AUTO GENERATED
-            // Manual changes made to this file will be overwritten by the build script.
-            // Edit `build/commands.rs` instead...
-            // @generated
-
-            mod io;
-            mod util;
-            mod args;
-
-            use Connection;
-            use {{Config, Client, IntoArg, Result}};
-            use ql2::proto::{{Term, Term_TermType as Type}};
-        "#)
     }
 
     pub fn add_command(&mut self, cmd: &Command) {
@@ -50,11 +31,9 @@ impl Commands {
     }
 
     pub fn generate<P: AsRef<Path>>(&self, path: P) {
-        let header = &self.header;
         let commands: String = self.commands.join("\n");
 
         let src = format!(r#"
-            {}
             impl Client {{
 
                 /// Create a new ReQL client
@@ -116,7 +95,7 @@ impl Commands {
 
                 {}
             }}
-        "#, header, commands);
+        "#, commands);
 
         let mut file = File::create(path).unwrap();
         file.write_all(src.as_bytes()).unwrap();

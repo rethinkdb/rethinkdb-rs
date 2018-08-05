@@ -40,7 +40,8 @@ impl Config {
         let root_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
         let docs_dir = format!("{}/build/docs/api/{}", root_dir, lang);
         let menu_file = format!("{}/build/docs/_jekyll/_data/api_{}.yml", root_dir, lang);
-        let cmds_src = format!("{}/src/commands/mod.rs", root_dir);
+        let out_dir = env::var("OUT_DIR").unwrap();
+        let cmds_src = format!("{}/commands.rs", out_dir);
         let version = env::var("CARGO_PKG_VERSION").unwrap();
 
         let menu = build_menu(&menu_file).into_iter()
