@@ -41,7 +41,7 @@ pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
     conn.set_latency()?;
     let session = SessionManager(conn);
     let r2d2 = r2d2::Pool::builder()
-        .max_size(20_000)
+        .max_size(144)
         .idle_timeout(Some(Duration::from_secs(30)))
         .max_lifetime(Some(Duration::from_secs(150)))
         .min_idle(Some(5))
