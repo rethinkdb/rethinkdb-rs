@@ -19,7 +19,7 @@ version = "0.4"
 features = ["nightly"]
 
 [dev-dependencies]
-reql = "0.0.18"
+reql = "0.0.19"
 reql-types = "0.0.3"
 futures = "0.1"
 serde = "1.0"
