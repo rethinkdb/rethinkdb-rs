@@ -1,5 +1,5 @@
 #![recursion_limit = "128"]
-#![feature(proc_macro)]
+#![feature(proc_macro_diagnostic)]
 
 //! This crate provides macros for making ReQL types more pleasant to work with.
 //! Currently, it only exposes the `args` macro but it's possible that more will
