@@ -15,11 +15,11 @@ use serde_json::Value;
 use uuid::Uuid;
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct DateTime(chrono::DateTime<chrono::Utc>);
 
 /// Status returned by a write command
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct WriteStatus {
     pub inserted: u32,
     pub replaced: u32,
@@ -34,49 +34,49 @@ pub struct WriteStatus {
 }
 
 /// Structure of data in `cluster_config` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct ClusterConfig {
     pub id: String,
     pub heartbeat_timeout_secs: u32,
 }
 
 /// Structure of data in `current_issues` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct CurrentIssue {
 }
 
 /// Structure of data in `db_config` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct DbConfig {
 }
 
 /// Structure of data in `jobs` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Job {
 }
 
 /// Structure of data in `logs` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Log {
 }
 
 /// Structure of data in `permissions` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Permission {
 }
 
 /// Structure of data in `server_config` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct ServerConfig {
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct CanonicalAddress {
     pub host: IpAddr,
     pub port: u16,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Network {
     pub canonical_addresses: Vec<CanonicalAddress>,
     pub cluster_port: u16,
@@ -87,7 +87,7 @@ pub struct Network {
     pub time_connected: DateTime,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Process {
     pub argv: Vec<String>,
     pub cache_size_mb: f64,
@@ -97,7 +97,7 @@ pub struct Process {
 }
 
 /// Structure of data in `server_status` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ServerStatus {
     pub id: Uuid,
     pub name: String,
@@ -106,26 +106,26 @@ pub struct ServerStatus {
 }
 
 /// Structure of data in `cluster_config` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Stat {
 }
 
 /// Structure of data in `cluster_config` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct TableConfig {
 }
 
 /// Structure of data in `table_status` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct TableStatus {
 }
 
 /// Structure of data in `uses` table
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct User {
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Change<O, N> {
     pub old_val: Option<O>,
     pub new_val: Option<N>,
