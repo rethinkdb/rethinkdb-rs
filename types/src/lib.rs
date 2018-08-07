@@ -16,7 +16,7 @@ use uuid::Uuid;
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct DateTime(chrono::DateTime<chrono::Utc>);
+pub struct DateTime(pub chrono::DateTime<chrono::Utc>);
 
 /// Status returned by a write command
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -160,10 +160,17 @@ impl<'de> Deserialize<'de> for DateTime {
 }
 
 impl Serialize for DateTime {
-    fn serialize<S>(&self, _serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where S: Serializer
     {
-        unimplemented!();
+        let reql_type = String::from("TIME");
+        let epoch_time = {
+            let t = format!("{}.{}", self.0.timestamp(), self.0.timestamp_subsec_millis());
+            t.parse().unwrap()
+        };
+        let timezone = String::from("+00:00");
+        let time = Time { reql_type, epoch_time, timezone };
+        time.serialize(serializer)
     }
 }
 
