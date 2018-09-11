@@ -72,8 +72,8 @@ additional terms or conditions.
 
 [ReQL]: https://rethinkdb.com/api
 [Rust]: https://rust-lang.org
-[travis-badge]: https://travis-ci.org/RebirthDB/rebirthdb-rs.svg?branch=master
-[travis]: https://travis-ci.org/RebirthDB/rebirthdb-rs
+[travis-badge]: https://travis-ci.org/RethinkDB/rethinkdb-rs.svg?branch=master
+[travis]: https://travis-ci.org/RethinkDB/rethinkdb-rs
 [cratesio-badge]: https://img.shields.io/crates/v/reql.svg
 [cratesio]: https://crates.io/crates/reql
 [docsrs-badge]: https://docs.rs/reql/badge.svg

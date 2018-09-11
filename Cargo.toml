@@ -3,16 +3,16 @@ name = "reql"
 description = "A native ReQL driver"
 version = "0.0.23-alpha.0"
 license = "MIT/Apache-2.0"
-repository = "https://github.com/RebirthDB/rebirthdb-rs"
+repository = "https://github.com/RethinkDB/rethinkdb-rs"
 documentation = "https://docs.rs/reql"
 readme = "README.md"
-keywords = ["database", "rethinkdb", "rebirthdb", "reql", "driver"]
+keywords = ["database", "rethinkdb", "rethinkdb", "reql", "driver"]
 categories = ["database"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 build = "build/main.rs"
 
 [badges]
-travis-ci = { repository = "RebirthDB/rebirthdb-rs" }
+travis-ci = { repository = "RethinkDB/rethinkdb-rs" }
 
 [features]
 tls = ["native-tls"]
