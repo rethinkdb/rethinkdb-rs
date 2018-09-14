@@ -40,5 +40,5 @@ native-tls = { version = "0.1", optional = true }
 [build-dependencies]
 serde = "1.0"
 serde_derive = "1.0"
-serde_yaml = "0.7"
+serde_yaml = "0.8"
 nom = "4.0"
