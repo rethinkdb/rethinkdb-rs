@@ -31,7 +31,7 @@ byteorder = "1.0"
 bufstream = "0.1"
 scram = "0.4"
 futures = "0.1"
-parking_lot = "0.5"
+parking_lot = "0.6"
 indexmap = "1.0"
 reql-types = { version = "0.0.4", path = "./types" }
 uuid = { version = "0.7", features = ["v4", "serde"] }
