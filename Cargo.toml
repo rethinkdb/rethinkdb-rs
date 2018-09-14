@@ -34,7 +34,7 @@ futures = "0.1"
 parking_lot = "0.5"
 indexmap = "1.0"
 reql-types = { version = "0.0.4", path = "./types" }
-uuid = { version = "0.6", features = ["v4", "serde"] }
+uuid = { version = "0.7", features = ["v4", "serde"] }
 native-tls = { version = "0.1", optional = true }
 
 [build-dependencies]
