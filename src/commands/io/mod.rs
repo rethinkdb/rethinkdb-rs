@@ -2,10 +2,14 @@ mod pool;
 mod request;
 mod handshake;
 
-use {Client, InnerConfig, Config, Connection, Document, IntoArg, Arg, Opts, DEFAULT_PORT,
-        Request, Response, Result, Run, Server, Session, SessionManager, r2d2};
+use crate::{
+    Client, InnerConfig, Config, Connection, Document, IntoArg,
+    Arg, Opts, DEFAULT_PORT, Request, Response, Result, Run,
+    Server, Session, SessionManager,
+    errors::*,
+};
+use r2d2;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-use errors::*;
 use futures::{Async, Poll, Future, Stream};
 use futures::sync::mpsc;
 use indexmap::IndexMap;
@@ -21,6 +25,7 @@ use std::net::SocketAddr;
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use uuid::Uuid;
+use lazy_static::lazy_static;
 
 lazy_static! {
     static ref CONFIG: RwLock<IndexMap<Connection, InnerConfig>> = RwLock::new(IndexMap::new());
@@ -35,8 +40,8 @@ pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
     }
     let conn = Connection(Uuid::new_v4());
     let query = format!("{}.connect({:?})", client.query, cfg);
-    debug!("{}", query);
-    info!("creating connection pool...");
+    log::debug!("{}", query);
+    log::info!("creating connection pool...");
     conn.set_config(cfg)?;
     conn.set_latency()?;
     let session = SessionManager(conn);
@@ -48,7 +53,7 @@ pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
         .connection_timeout(Duration::from_secs(3))
         .build(session)?;
     conn.set_pool(r2d2);
-    info!("connection pool created successfully");
+    log::info!("connection pool created successfully");
     conn.maintain();
     Ok(conn)
 }
@@ -64,7 +69,7 @@ impl<A: IntoArg> Run<A> for Client {
         let arg = args.into_arg();
         let aterm = arg.term?;
         let query = format!("{}.run({})", self.query, arg.string);
-        debug!("{}", query);
+        log::debug!("{}", query);
         let conn = match arg.pool {
             Some(conn) => conn.clone(),
             None => {

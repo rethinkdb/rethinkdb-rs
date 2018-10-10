@@ -1,7 +1,9 @@
-use {Arg, Client, Connection, IntoArg, Result};
+use crate::{
+    Arg, Client, Connection, IntoArg, Result,
+    types::FromJson,
+};
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 use serde_json::value::Value;
-use types::FromJson;
 
 impl IntoArg for Arg {
     fn into_arg(self) -> Arg {
@@ -224,7 +226,7 @@ impl Arg {
     }
 
     #[doc(hidden)]
-    pub fn create_term_pair<T: ::IntoArg>(key: &str, val: T) -> Result<TermPair> {
+    pub fn create_term_pair<T: IntoArg>(key: &str, val: T) -> Result<TermPair> {
         let mut temp = Term::new();
         temp.mut_args().push(val.into_arg().term?);
         let mut temp_pair = TermPair::new();

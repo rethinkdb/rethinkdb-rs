@@ -1,7 +1,9 @@
 //! The ReQL data types
 
-use {Request, Result};
-use errors::DriverError;
+use crate::{
+    Request, Result,
+    errors::DriverError,
+};
 use protobuf::ProtobufEnum;
 use protobuf::repeated::RepeatedField;
 use ql2::proto::{Datum, Datum_AssocPair as DatumPair, Datum_DatumType as DatumType, Term,

@@ -9,9 +9,10 @@ use {scram, r2d2};
 use serde_json::Value;
 use futures::sync::mpsc::SendError;
 use serde_json::error::Error as JsonError;
+use derive_error as de;
 
 /// The most generic error message in ReQL
-#[derive(Debug, Clone, Error)]
+#[derive(Debug, Clone, de::Error)]
 pub enum Error {
     #[error(msg_embedded, non_std, no_from)]
     Compile(String),
@@ -25,7 +26,7 @@ pub enum Error {
 ///
 /// All errors on the server unrelated to compilation. Programs may use this to catch any runtime
 /// error, but the server will always return a more specific error class.
-#[derive(Debug, Error)]
+#[derive(Debug, de::Error)]
 pub enum RuntimeError {
     /// The query contains a logical impossibility, such as adding a number to a string.
     #[error(msg_embedded, non_std, no_from)]
@@ -50,7 +51,7 @@ pub enum RuntimeError {
 /// The parent class of `OpFailedError` and `OpIndeterminateError`. Programs may use this
 /// to catch any availability error, but the server will always return one of this class’s
 /// children.
-#[derive(Debug, Error)]
+#[derive(Debug, de::Error)]
 pub enum AvailabilityError {
     #[error(msg_embedded, non_std, no_from)]
     OpFailed(String),
@@ -62,7 +63,7 @@ pub enum AvailabilityError {
 ///
 /// This may be a driver bug, or it may be an unfulfillable command, such as an unserializable
 /// query.
-#[derive(Debug, Error)]
+#[derive(Debug, de::Error)]
 pub enum DriverError {
     #[error(msg_embedded, non_std, no_from)]
     Auth(String),
@@ -79,7 +80,7 @@ pub enum DriverError {
 }
 
 /// Response related errors
-#[derive(Debug, Error)]
+#[derive(Debug, de::Error)]
 pub enum ResponseError {
     Parse(Utf8Error),
     #[error(non_std, no_from)]

@@ -1,5 +1,3 @@
-extern crate serde;
-extern crate serde_yaml;
 #[macro_use]
 extern crate nom;
 #[macro_use]
@@ -8,8 +6,8 @@ extern crate serde_derive;
 mod config;
 mod commands;
 
-use commands::{Command, Commands};
-use config::Config;
+use self::commands::{Command, Commands};
+use self::config::Config;
 
 fn main() {
     let cfg = Config::new();

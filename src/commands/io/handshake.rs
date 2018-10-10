@@ -1,17 +1,20 @@
+use std::io::{BufRead, Write};
+use std::net::TcpStream;
+use std::str;
 use super::{io_error, read_query, wrap_query, write_query};
 
-use {Opts, ReqlResponse, Result, Session};
+use crate::{
+    Opts, ReqlResponse, Result, Session,
+    errors::*,
+};
 use bufstream::BufStream;
 use byteorder::{LittleEndian, WriteBytesExt};
-use errors::*;
 use protobuf::ProtobufEnum;
 use ql2::proto::{Query_QueryType as QueryType, Response_ResponseType as ResponseType,
                  VersionDummy_Version as Version};
 use scram::client::{ScramClient, ServerFinal};
 use serde_json::{from_slice, from_str, from_value, to_vec};
-use std::io::{BufRead, Write};
-use std::net::TcpStream;
-use std::str;
+use serde_derive::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ServerInfo {

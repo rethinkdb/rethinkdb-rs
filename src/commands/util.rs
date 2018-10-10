@@ -1,4 +1,4 @@
-use {Client, IntoArg};
+use crate::{Client, IntoArg};
 use protobuf::repeated::RepeatedField;
 use ql2::proto::Term;
 use ql2::proto::Term_TermType;
@@ -43,14 +43,14 @@ pub fn make_cmd<A: IntoArg>(client: &Client,
                     return cmd;
                 }
             };
-            with_args!(cmd, aterm);
+            crate::with_args!(cmd, aterm);
         }
         None => {
             cmd.query = format!("{}.{}()", client.query, name);
         }
     }
-    debug!("{}", cmd.query);
-    debug!("{:?}", cmd.term);
+    log::debug!("{}", cmd.query);
+    log::debug!("{:?}", cmd.term);
     cmd
 }
 
@@ -68,8 +68,8 @@ pub fn with_args<A: IntoArg>(client: &Client, args: A) -> Client {
             return cmd;
         }
     };
-    with_args!(cmd, aterm);
-    debug!("{}", cmd.query);
-    debug!("{:?}", cmd.term);
+    crate::with_args!(cmd, aterm);
+    log::debug!("{}", cmd.query);
+    log::debug!("{:?}", cmd.term);
     cmd
 }

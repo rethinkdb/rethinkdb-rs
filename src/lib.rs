@@ -1,36 +1,12 @@
 //! A native ReQL driver written in Rust
 
-extern crate bufstream;
-extern crate byteorder;
-#[macro_use]
-extern crate derive_error;
-extern crate futures;
-#[macro_use]
-extern crate lazy_static;
-extern crate indexmap;
-extern crate parking_lot;
-extern crate protobuf;
-extern crate ql2;
-extern crate r2d2;
-extern crate reql_types;
-extern crate scram;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-#[macro_use]
-extern crate log;
-extern crate uuid;
-#[cfg(feature = "tls")]
-extern crate native_tls;
+#![feature(await_macro, async_await, futures_api, decl_macro)]
 
-#[macro_use]
-mod macros;
-mod commands;
 pub mod errors;
+mod commands;
 mod types;
 
-use errors::Error;
+use self::errors::Error;
 use indexmap::IndexMap;
 #[doc(hidden)]
 pub use protobuf::repeated::RepeatedField;
@@ -46,6 +22,7 @@ use std::time::Duration;
 
 use uuid::Uuid;
 use futures::sync::mpsc::{Sender, Receiver};
+use serde_derive::{Serialize, Deserialize};
 
 /// Default ReQL port
 pub const DEFAULT_PORT: u16 = 28015;
@@ -174,3 +151,19 @@ pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
     fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>>;
 }
+
+macro with_args($cmd: ident, $args: ident) {{
+    let mut tmp_args = $args;
+    if let Ok(ref mut term) = $cmd.term {
+        if tmp_args.has_field_type() { // did not come from the args macro
+            term.mut_args().push(tmp_args);
+        } else { // came from the args macro
+            for arg in tmp_args.take_args().into_vec() {
+                term.mut_args().push(arg);
+            }
+            for pair in tmp_args.take_optargs().into_vec() {
+                term.mut_optargs().push(pair);
+            }
+        }
+    }
+}}

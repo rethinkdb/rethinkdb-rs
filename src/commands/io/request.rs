@@ -1,7 +1,10 @@
 use super::{read_query, wrap_query, write_query};
-use {Document, ReqlResponse, Request, Result, Session, SessionManager};
+use crate::{
+    Document, ReqlResponse, Request, Result,
+    Session, SessionManager,
+    errors::*,
+};
 
-use errors::*;
 use protobuf::ProtobufEnum;
 use ql2::proto::{Query_QueryType as QueryType, Response_ErrorType as ErrorType,
                  Response_ResponseType as ResponseType};
@@ -31,16 +34,16 @@ impl<T: DeserializeOwned + Send> Request<T> {
             }
         };
         // Try sending the query
-        debug!("submiting to server");
+        log::debug!("submiting to server");
         {
             let mut i = 0;
             let mut connect = false;
             let reproducible = self.cfg.opts.reproducible;
             while i < self.cfg.opts.retries || reproducible {
-                debug!("attempt number {}", i+1);
+                log::debug!("attempt number {}", i+1);
                 // Open a new connection if necessary
                 if connect {
-                    debug!("reconnecting...");
+                    log::debug!("reconnecting...");
                     drop(&mut conn);
                     conn = match self.conn() {
                         Ok(c) => c,
@@ -67,15 +70,15 @@ impl<T: DeserializeOwned + Send> Request<T> {
                     if res.is_empty() {
                         None
                     } else {
-                        debug!("{}", res);
+                        log::debug!("{}", res);
                         Some(res)
                     }
                 };
                 let mut query = wrap_query(QueryType::START, Some(commands), opts);
-                debug!("{}", query);
+                log::debug!("{}", query);
                 // Submit the query if necessary
                 if self.write || reproducible {
-                    debug!("submitting query");
+                    log::debug!("submitting query");
                     if let Err(error) = write_query(&mut conn, &query) {
                         connect = true;
                         if i == self.cfg.opts.retries - 1 {

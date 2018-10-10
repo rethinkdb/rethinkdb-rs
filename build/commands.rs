@@ -1,7 +1,7 @@
-use config;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
+use crate::config;
 
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/build/parsers.rs"));
 

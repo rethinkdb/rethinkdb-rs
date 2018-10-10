@@ -1,6 +1,8 @@
 use super::io_error;
-use {Connection, Result, Session, SessionManager};
-use errors::Error;
+use crate::{
+    Connection, Result, Session, SessionManager,
+    errors::Error,
+};
 use r2d2;
 use std::net::TcpStream;
 
@@ -26,11 +28,11 @@ impl Session {
         let cfg = conn.config();
         let mut servers: Vec<_> = cfg.cluster.values().collect();
         servers.sort();
-        debug!("cluster: {:?}", servers);
+        log::debug!("cluster: {:?}", servers);
 
         for server in servers {
             for address in server.addresses.iter() {
-                debug!("connecting to {}", address);
+                log::debug!("connecting to {}", address);
                 match TcpStream::connect(&address) {
                     Ok(stream) => {
                         let mut conn = Session {
@@ -40,11 +42,11 @@ impl Session {
                         };
 
                         conn.handshake(&cfg.opts)?;
-                        debug!("connected successfully");
+                        log::debug!("connected successfully");
                         return Ok(conn);
                     }
                     Err(error) => {
-                        warn!("failed to connect to {}: {}", address, error);
+                        log::warn!("failed to connect to {}: {}", address, error);
                         conn.set_latency()?;
                         if let Ok(session) = Self::new(conn) {
                             return Ok(session);
