@@ -10,8 +10,7 @@
 //! compiler in order to use the macros here. Add the following to your crate:-
 //!
 //! ```rust,ignore
-//! #![feature(proc_macro)]
-//! #![feature(proc_macro_non_items)]
+//! #![feature(proc_macro, proc_macro_hygiene)]
 //! ```
 
 #[macro_use]
