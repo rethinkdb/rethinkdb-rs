@@ -48,9 +48,7 @@ impl Session {
                     Err(error) => {
                         log::warn!("failed to connect to {}: {}", address, error);
                         conn.set_latency()?;
-                        if let Ok(session) = Self::new(conn) {
-                            return Ok(session);
-                        }
+                        continue;
                     }
                 }
             }
