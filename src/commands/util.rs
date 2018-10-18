@@ -43,7 +43,7 @@ pub fn make_cmd<A: IntoArg>(client: &Client,
                     return cmd;
                 }
             };
-            crate::with_args(&mut cmd, aterm);
+            push_args(&mut cmd, aterm);
         }
         None => {
             cmd.query = format!("{}.{}()", client.query, name);
@@ -52,6 +52,21 @@ pub fn make_cmd<A: IntoArg>(client: &Client,
     log::debug!("{}", cmd.query);
     log::debug!("{:?}", cmd.term);
     cmd
+}
+
+fn push_args(cmd: &mut Client, mut tmp_args: Term) {
+    if let Ok(ref mut term) = cmd.term {
+        if tmp_args.has_field_type() { // did not come from the args macro
+            term.mut_args().push(tmp_args);
+        } else { // came from the args macro
+            for arg in tmp_args.take_args().into_vec() {
+                term.mut_args().push(arg);
+            }
+            for pair in tmp_args.take_optargs().into_vec() {
+                term.mut_optargs().push(pair);
+            }
+        }
+    }
 }
 
 pub fn with_args<A: IntoArg>(client: &Client, args: A) -> Client {
@@ -68,7 +83,7 @@ pub fn with_args<A: IntoArg>(client: &Client, args: A) -> Client {
             return cmd;
         }
     };
-    crate::with_args(&mut cmd, aterm);
+    push_args(&mut cmd, aterm);
     log::debug!("{}", cmd.query);
     log::debug!("{:?}", cmd.term);
     cmd
