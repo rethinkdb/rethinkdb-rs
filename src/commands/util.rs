@@ -43,7 +43,7 @@ pub fn make_cmd<A: IntoArg>(client: &Client,
                     return cmd;
                 }
             };
-            crate::with_args!(cmd, aterm);
+            crate::with_args(&mut cmd, aterm);
         }
         None => {
             cmd.query = format!("{}.{}()", client.query, name);
@@ -68,7 +68,7 @@ pub fn with_args<A: IntoArg>(client: &Client, args: A) -> Client {
             return cmd;
         }
     };
-    crate::with_args!(cmd, aterm);
+    crate::with_args(&mut cmd, aterm);
     log::debug!("{}", cmd.query);
     log::debug!("{:?}", cmd.term);
     cmd

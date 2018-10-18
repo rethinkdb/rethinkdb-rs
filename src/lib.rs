@@ -1,7 +1,5 @@
 //! A native ReQL driver written in Rust
 
-#![feature(await_macro, async_await, futures_api, decl_macro)]
-
 pub mod errors;
 mod commands;
 mod types;
@@ -154,9 +152,9 @@ pub trait Run<A: IntoArg> {
     fn run<T: DeserializeOwned + Send + std::fmt::Debug + 'static>(&self, args: A) -> Result<Response<T>>;
 }
 
-macro with_args($cmd: ident, $args: ident) {{
-    let mut tmp_args = $args;
-    if let Ok(ref mut term) = $cmd.term {
+fn with_args(cmd: &mut Client, args: Term) {
+    let mut tmp_args = args;
+    if let Ok(ref mut term) = cmd.term {
         if tmp_args.has_field_type() { // did not come from the args macro
             term.mut_args().push(tmp_args);
         } else { // came from the args macro
@@ -168,4 +166,4 @@ macro with_args($cmd: ident, $args: ident) {{
             }
         }
     }
-}}
+}
