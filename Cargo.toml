@@ -32,7 +32,6 @@ byteorder = "1"
 bufstream = "0.1"
 scram = "0.4"
 futures = "0.1"
-tokio = { version = "0.1", features = ["async-await-preview"] }
 parking_lot = "0.6"
 indexmap = "1"
 reql-types = { version = "0.0.4", path = "./types" }
