@@ -54,7 +54,6 @@ pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
         .build(session)?;
     conn.set_pool(r2d2);
     log::info!("connection pool created successfully");
-    conn.maintain();
     Ok(conn)
 }
 
