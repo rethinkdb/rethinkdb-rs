@@ -128,7 +128,7 @@ impl Encode for Datum {
     }
 }
 
-impl<T: DeserializeOwned + Send> Request<T> {
+impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
     pub fn encode(&mut self, data: &Term, encoding_opts: bool) -> String {
         let mut res = Vec::new();
         if !data.is_datum() {

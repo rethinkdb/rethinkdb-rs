@@ -47,7 +47,8 @@ pub struct Response<T: DeserializeOwned + Send> {
     rx: Receiver<Result<Option<Document<T>>>>,
 }
 
-struct Request<T: DeserializeOwned + Send> {
+#[derive(Debug)]
+struct Request< T: DeserializeOwned + Send + std::fmt::Debug> {
     term: Term,
     opts: Term,
     pool: r2d2::Pool<SessionManager>,
@@ -77,7 +78,7 @@ pub struct Config<'a> {
     pub tls: Option<TlsConnectorBuilder>,
 }
 
-#[derive(Clone)]
+#[derive(Debug,Clone)]
 struct InnerConfig {
     cluster: IndexMap<String, Server>,
     opts: Opts,
@@ -149,7 +150,7 @@ pub trait IntoArg {
 /// Lazily execute a command
 pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
-    fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>>;
+    fn run<T: DeserializeOwned + Send + std::fmt::Debug + 'static>(&self, args: A) -> Result<Response<T>>;
 }
 
 macro with_args($cmd: ident, $args: ident) {{

@@ -14,7 +14,7 @@ use serde_json::{Value, from_slice, from_value};
 use std::error::Error as StdError;
 use futures::{Future, Sink};
 
-impl<T: DeserializeOwned + Send> Request<T> {
+impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
     fn conn(&self) -> Result<PooledConnection<SessionManager>> {
         match self.pool.get() {
             Ok(mut conn) => {
@@ -49,7 +49,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
                         Ok(c) => c,
                         Err(error) => {
                             if i == self.cfg.opts.retries - 1 {
-                                let _ = self.tx.clone().send(Err(error.into())).wait();
+                                let _ = self.tx.clone().send(Err(error.into()));
                                 if !reproducible {
                                     return;
                                 }
@@ -163,6 +163,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
                 }
                 // If the database says this response is an error convert the error
                 // message to our native one.
+                println!("size {:?}", self);
                 let has_generic_error = match respt {
                     ResponseType::CLIENT_ERROR |
                     ResponseType::COMPILE_ERROR |
