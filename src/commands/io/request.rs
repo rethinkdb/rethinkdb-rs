@@ -29,7 +29,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
         let mut conn = match self.conn() {
             Ok(conn) => conn,
             Err(error) => {
-                let _ = self.tx.clone().send(Err(error)).wait();
+                let _ = self.tx.clone().send(Err(error));
                 return;
             }
         };
@@ -82,7 +82,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                     if let Err(error) = write_query(&mut conn, &query) {
                         connect = true;
                         if i == self.cfg.opts.retries - 1 {
-                            let _ = self.tx.clone().send(Err(error.into())).wait();
+                            let _ = self.tx.clone().send(Err(error.into()));
                             if !reproducible {
                                 return;
                             }
@@ -97,35 +97,53 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                     }
                 }
                 // Handle the response
-                if let Err(error) = self.process(&mut conn, &mut query) {
-                    if i == self.cfg.opts.retries - 1 || !self.retry {
-                        let _ = self.tx.clone().send(Err(error.into())).wait();
-                        if !reproducible {
-                            return;
-                        }
+                let mut more = true;
+                while more {
+                    match self.process(&mut conn) {
+                        Err(error) => {
+                            if i == self.cfg.opts.retries - 1 || !self.retry {
+                                let _ = self.tx.clone().send(Err(error.into()));
+                                if !reproducible {
+                                    return;
+                                }
+                            }
+                            i += 1;
+                            //continue;
+                            more = false;
+                            //break;
+                        },
+                        Ok(true) => { // Continue processing, for example in changefeeds
+                            query = wrap_query(QueryType::CONTINUE, None, None);
+                            if let Err(error) = write_query(&mut conn, &mut query) {
+                                self.write = true;
+                                self.retry = true;
+                                let _ = self.tx.clone().send(Err(error.into()));
+                                continue
+                                //return Err(error)?;
+                            }
+                            //println!("Here is the problem!");
+                        },
+                        _ => {
+                            more = false;
+                            //break;
+                        }, // Otherwise we are done processing, time to end
                     }
-                    i += 1;
-                    continue;
                 }
-                break;
+                //break;
             }
         }
     }
-
-    fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()> {
+    /// Process the results return either an error, or true if there was only a partial part
+    /// of the message that got handled
+    fn process(&mut self, conn: &mut Session ) -> Result<bool> {
         self.retry = false;
         self.write = false;
         match self.handle(conn) {
             Ok(t) => {
                 match t {
                     Some(ResponseType::SUCCESS_PARTIAL) => {
-                        *query = wrap_query(QueryType::CONTINUE, None, None);
-                        if let Err(error) = write_query(conn, query) {
-                            self.write = true;
-                            self.retry = true;
-                            return Err(error)?;
-                        }
-                        self.process(conn, query)?;
+
+                        return Ok(true);
                     }
 
                     Some(_) => { /* we are done */ }
@@ -146,11 +164,12 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                 return Err(error)?;
             }
         }
-        Ok(())
+        Ok(false)
     }
 
     fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>> {
         self.retry = false;
+        //println!("size {:?}", self);
         match read_query(conn) {
             Ok(resp) => {
                 let result: ReqlResponse = from_slice(&resp[..])?;
@@ -163,7 +182,6 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                 }
                 // If the database says this response is an error convert the error
                 // message to our native one.
-                println!("size {:?}", self);
                 let has_generic_error = match respt {
                     ResponseType::CLIENT_ERROR |
                     ResponseType::COMPILE_ERROR |
@@ -238,6 +256,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                                 let _ = self.tx.clone().send(Ok(None)).wait();
                             }
                             value => {
+                                // println!("got here");
                                 let _ = self.tx.clone().send(Ok(Some(Document::Unexpected(value)))).wait();
                             }
                         }

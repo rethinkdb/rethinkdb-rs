@@ -3,15 +3,14 @@ mod request;
 mod handshake;
 
 use crate::{
-    Client, InnerConfig, Config, Connection, Document, IntoArg,
+    Client, InnerConfig, Config, Connection, IntoArg,
     Opts, DEFAULT_PORT, Request, Response, Result, Run,
     Server, Session, SessionManager,
     errors::*,
 };
+use crate::Document;
 use r2d2;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-use futures::{Async, Poll, Stream};
-use futures::sync::mpsc;
 use indexmap::IndexMap;
 use parking_lot::RwLock;
 use protobuf::ProtobufEnum;
@@ -25,6 +24,8 @@ use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use uuid::Uuid;
 use lazy_static::lazy_static;
+use futures::sync::mpsc;
+use futures::{Async, Poll, Stream};
 
 lazy_static! {
     static ref CONFIG: RwLock<IndexMap<Connection, InnerConfig>> = RwLock::new(IndexMap::new());
@@ -88,12 +89,13 @@ impl<A: IntoArg + std::fmt::Debug> Run<A> for Client {
                 return Err(io_error("a tokio handle is required"))?;
             }
         };
+        //let (tx, rx) = mpsc::channel();
         let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
         // @TODO spawning a thread per query is less than ideal. Ideally we will
         // need first class support for Tokio to get rid of this.
         let _ = ::std::thread::Builder::new()
             .name("submit".into())
-            //.stack_size(78048)
+            .stack_size(78048)
             .spawn(move || {
             let req = Request {
                 term: cterm,

@@ -22,6 +22,7 @@ use std::time::Duration;
 
 use uuid::Uuid;
 use futures::sync::mpsc::{Sender, Receiver};
+//use std::sync::mpsc::{Sender, Receiver};
 use serde_derive::{Serialize, Deserialize};
 
 /// Default ReQL port
@@ -168,3 +169,16 @@ macro with_args($cmd: ident, $args: ident) {{
         }
     }
 }}
+
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    //Just perform some basic integration tests against a server
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 4);
+    }
+}
