@@ -110,7 +110,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                             i += 1;
                             //continue;
                             more = false;
-                            //break;
+                            break;
                         },
                         Ok(true) => { // Continue processing, for example in changefeeds
                             query = wrap_query(QueryType::CONTINUE, None, None);
@@ -125,11 +125,13 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                         },
                         _ => {
                             more = false;
-                            //break;
+                            break;
                         }, // Otherwise we are done processing, time to end
                     }
                 }
-                //break;
+                if !more {
+                    break;
+                }
             }
         }
     }
