@@ -29,7 +29,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
         let mut conn = match self.conn() {
             Ok(conn) => conn,
             Err(error) => {
-                let _ = self.tx.clone().send(Err(error));
+                let _ = self.tx.clone().send(Err(error)).wait();
                 return;
             }
         };
@@ -49,7 +49,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                         Ok(c) => c,
                         Err(error) => {
                             if i == self.cfg.opts.retries - 1 {
-                                let _ = self.tx.clone().send(Err(error.into()));
+                                let _ = self.tx.clone().send(Err(error.into())).wait();
                                 if !reproducible {
                                     return;
                                 }
@@ -82,7 +82,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                     if let Err(error) = write_query(&mut conn, &query) {
                         connect = true;
                         if i == self.cfg.opts.retries - 1 {
-                            let _ = self.tx.clone().send(Err(error.into()));
+                            let _ = self.tx.clone().send(Err(error.into())).wait();
                             if !reproducible {
                                 return;
                             }
@@ -102,7 +102,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                     match self.process(&mut conn) {
                         Err(error) => {
                             if i == self.cfg.opts.retries - 1 || !self.retry {
-                                let _ = self.tx.clone().send(Err(error.into()));
+                                let _ = self.tx.clone().send(Err(error.into())).wait();
                                 if !reproducible {
                                     return;
                                 }
@@ -117,7 +117,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                             if let Err(error) = write_query(&mut conn, &mut query) {
                                 self.write = true;
                                 self.retry = true;
-                                let _ = self.tx.clone().send(Err(error.into()));
+                                let _ = self.tx.clone().send(Err(error.into())).wait();
                                 continue
                                 //return Err(error)?;
                             }
