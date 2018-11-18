@@ -95,7 +95,7 @@ impl<A: IntoArg + std::fmt::Debug> Run<A> for Client {
         // need first class support for Tokio to get rid of this.
         let _ = ::std::thread::Builder::new()
             .name("submit".into())
-            .stack_size(78048)
+            //.stack_size(78048)
             .spawn(move || {
             let req = Request {
                 term: cterm,
