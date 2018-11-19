@@ -27,6 +27,6 @@ pub fn setup() {
 	.arg("tests/rethinkdb_data")
 	.spawn()
 	.expect("failed to start database");
-
-	std::thread::sleep(std::time::Duration::from_millis(500));
+	// takes time for the test to get tables ready
+	std::thread::sleep(std::time::Duration::from_millis(10000));
 }

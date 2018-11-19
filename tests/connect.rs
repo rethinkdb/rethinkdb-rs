@@ -1,10 +1,5 @@
 extern crate reql;
 use reql::*;
-use reql_types::*;
-use reql::Document::*;
-use futures::Stream;
-use std::process::Command;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 mod common;
 
@@ -12,7 +7,7 @@ mod common;
 fn it_connects() {
 
     common::setup();
-    let mut conf = Config::default();
+    let conf = Config::default();
 
     let r = Client::new();
     // Create a connection pool
