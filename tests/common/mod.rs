@@ -10,17 +10,21 @@ pub fn setup() {
 	.arg("rm -rf tests/rethinkdb_data")
 	.spawn()
 	.expect("failed to kill databases");
+
     Command::new("sh")
 	.arg("-c")
 	.arg("cp -r tests/fresh_data tests/rethinkdb_data")
 	.spawn()
 	.expect("failed to kill databases");
+
     Command::new("sh")
 	.arg("-c")
 	.arg("killall rethinkdb")
 	.spawn()
 	.expect("failed to kill databases");
+
     std::thread::sleep(std::time::Duration::from_millis(500));
+
     Command::new("rethinkdb")
 	.arg("--daemon")
 	.arg("--directory")
