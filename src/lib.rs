@@ -169,16 +169,3 @@ macro with_args($cmd: ident, $args: ident) {{
         }
     }
 }}
-
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    //Just perform some basic integration tests against a server
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
