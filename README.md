@@ -64,7 +64,7 @@ The tests currently only tests a small subset of features in the driver against 
 Running the tests requires that you have rethinkdb installed and in your path, and that the test are run
 one at a time since they would otherwise destroy each other.
 
-    cargo test --lib -- --test-threads=1
+    cargo test -- --test-threads=1
 
 The tests run per file, in alphabetical order, and tests features gradually and most are depending on
 previous that previous tests pass
