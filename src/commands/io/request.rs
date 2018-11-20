@@ -14,7 +14,7 @@ use serde_json::{Value, from_slice, from_value};
 use std::error::Error as StdError;
 use futures::{Future, Sink};
 
-impl<T: DeserializeOwned + Send> Request<T> {
+impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
     fn conn(&self) -> Result<PooledConnection<SessionManager>> {
         match self.pool.get() {
             Ok(mut conn) => {
@@ -97,35 +97,55 @@ impl<T: DeserializeOwned + Send> Request<T> {
                     }
                 }
                 // Handle the response
-                if let Err(error) = self.process(&mut conn, &mut query) {
-                    if i == self.cfg.opts.retries - 1 || !self.retry {
-                        let _ = self.tx.clone().send(Err(error.into())).wait();
-                        if !reproducible {
-                            return;
-                        }
+                let mut more = true;
+                while more {
+                    match self.process(&mut conn) {
+                        Err(error) => {
+                            if i == self.cfg.opts.retries - 1 || !self.retry {
+                                let _ = self.tx.clone().send(Err(error.into())).wait();
+                                if !reproducible {
+                                    return;
+                                }
+                            }
+                            i += 1;
+                            //continue;
+                            more = false;
+                            break;
+                        },
+                        Ok(true) => { // Continue processing, for example in changefeeds
+                            query = wrap_query(QueryType::CONTINUE, None, None);
+                            if let Err(error) = write_query(&mut conn, &mut query) {
+                                self.write = true;
+                                self.retry = true;
+                                let _ = self.tx.clone().send(Err(error.into())).wait();
+                                continue
+                                //return Err(error)?;
+                            }
+                            //println!("Here is the problem!");
+                        },
+                        _ => {
+                            more = false;
+                            break;
+                        }, // Otherwise we are done processing, time to end
                     }
-                    i += 1;
-                    continue;
                 }
-                break;
+                if !more {
+                    break;
+                }
             }
         }
     }
-
-    fn process(&mut self, conn: &mut Session, query: &mut String) -> Result<()> {
+    /// Process the results return either an error, or true if there was only a partial part
+    /// of the message that got handled
+    fn process(&mut self, conn: &mut Session ) -> Result<bool> {
         self.retry = false;
         self.write = false;
         match self.handle(conn) {
             Ok(t) => {
                 match t {
                     Some(ResponseType::SUCCESS_PARTIAL) => {
-                        *query = wrap_query(QueryType::CONTINUE, None, None);
-                        if let Err(error) = write_query(conn, query) {
-                            self.write = true;
-                            self.retry = true;
-                            return Err(error)?;
-                        }
-                        self.process(conn, query)?;
+
+                        return Ok(true);
                     }
 
                     Some(_) => { /* we are done */ }
@@ -146,11 +166,12 @@ impl<T: DeserializeOwned + Send> Request<T> {
                 return Err(error)?;
             }
         }
-        Ok(())
+        Ok(false)
     }
 
     fn handle(&mut self, conn: &mut Session) -> Result<Option<ResponseType>> {
         self.retry = false;
+        //println!("size {:?}", self);
         match read_query(conn) {
             Ok(resp) => {
                 let result: ReqlResponse = from_slice(&resp[..])?;
@@ -237,6 +258,7 @@ impl<T: DeserializeOwned + Send> Request<T> {
                                 let _ = self.tx.clone().send(Ok(None)).wait();
                             }
                             value => {
+                                // println!("got here");
                                 let _ = self.tx.clone().send(Ok(Some(Document::Unexpected(value)))).wait();
                             }
                         }

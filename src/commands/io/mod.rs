@@ -3,22 +3,20 @@ mod request;
 mod handshake;
 
 use crate::{
-    Client, InnerConfig, Config, Connection, Document, IntoArg,
-    Arg, Opts, DEFAULT_PORT, Request, Response, Result, Run,
+    Client, InnerConfig, Config, Connection, IntoArg,
+    Opts, DEFAULT_PORT, Request, Response, Result, Run,
     Server, Session, SessionManager,
     errors::*,
 };
+use crate::Document;
 use r2d2;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-use futures::{Async, Poll, Future, Stream};
-use futures::sync::mpsc;
 use indexmap::IndexMap;
 use parking_lot::RwLock;
 use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
-use reql_types::{Change, ServerStatus};
 use serde::de::DeserializeOwned;
-use std::{error, thread};
+use std::{error};
 use std::cmp::Ordering;
 use std::io::{self, Read, Write};
 use std::net::SocketAddr;
@@ -26,6 +24,8 @@ use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use uuid::Uuid;
 use lazy_static::lazy_static;
+use futures::sync::mpsc;
+use futures::{Async, Poll, Stream};
 
 lazy_static! {
     static ref CONFIG: RwLock<IndexMap<Connection, InnerConfig>> = RwLock::new(IndexMap::new());
@@ -57,8 +57,8 @@ pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
     Ok(conn)
 }
 
-impl<A: IntoArg> Run<A> for Client {
-    fn run<T: DeserializeOwned + Send + 'static>(&self, args: A) -> Result<Response<T>> {
+impl<A: IntoArg + std::fmt::Debug> Run<A> for Client {
+    fn run<T: DeserializeOwned + Send + std::fmt::Debug + 'static>(&self, args: A) -> Result<Response<T>> {
         let cterm = match self.term {
             Ok(ref term) => term.clone(),
             Err(ref error) => {
@@ -89,10 +89,14 @@ impl<A: IntoArg> Run<A> for Client {
                 return Err(io_error("a tokio handle is required"))?;
             }
         };
+        //let (tx, rx) = mpsc::channel();
         let (tx, rx) = mpsc::channel(CHANNEL_SIZE);
         // @TODO spawning a thread per query is less than ideal. Ideally we will
         // need first class support for Tokio to get rid of this.
-        ::std::thread::spawn(move || {
+        let _ = ::std::thread::Builder::new()
+            .name("submit".into())
+            //.stack_size(78048)
+            .spawn(move || {
             let req = Request {
                 term: cterm,
                 opts: aterm,
@@ -111,7 +115,7 @@ impl<A: IntoArg> Run<A> for Client {
     }
 }
 
-impl<T: DeserializeOwned + Send> Stream for Response<T> {
+impl<T: DeserializeOwned + Send + std::fmt::Debug> Stream for Response<T> {
     type Item = Option<Document<T>>;
     type Error = Error;
 
@@ -218,64 +222,6 @@ impl Connection {
         Ok(())
     }
 
-    fn maintain(&self) {
-        self.reset_cluster();
-        let conn = *self;
-        let (tx, rx) = ::std::sync::mpsc::sync_channel::<()>(CHANNEL_SIZE);
-        thread::spawn(move || {
-            let r = Client::new();
-            let mut args = Arg::new();
-            args.set_string("{include_initial: true}");
-            let tp = Arg::create_term_pair("include_initial", true).unwrap();
-            args.add_opt(tp);
-            let query = r.db("rethinkdb")
-                .table("server_status")
-                .changes()
-                .with_args(args);
-            let mut send = true;
-            loop {
-                let changes = query
-                    .run::<Change<ServerStatus, ServerStatus>>(conn)
-                    .unwrap();
-                let future = changes.for_each(|change| {
-                    if let Some(Document::Expected(change)) = change {
-                        if let Some(ref mut config) = CONFIG.write().get_mut(&conn) {
-                            let cluster = &mut config.cluster;
-                            if let Some(status) = change.new_val {
-                                let mut addresses = Vec::new();
-                                for addr in status.network.canonical_addresses {
-                                    let socket = SocketAddr::new(addr.host,
-                                                                 status.network.reql_port);
-                                    addresses.push(socket);
-                                }
-                                let mut server = Server::new(&status.name, addresses);
-                                server.set_latency();
-                                cluster.insert(server.name.to_owned(), server);
-                                if send {
-                                    if let Ok(_) = tx.send(()) {
-                                        send = false;
-                                    }
-                                }
-                            } else if let Some(status) = change.old_val {
-                                cluster.remove(&status.name);
-                            }
-                        }
-                    }
-                    Ok(())
-                });
-                let _ = future.wait();
-                thread::sleep(Duration::from_millis(500));
-            }
-        });
-        // wait for at least one database result before continuing
-        let _ = rx.recv();
-    }
-
-    fn reset_cluster(&self) {
-        if let Some(ref mut config) = CONFIG.write().get_mut(self) {
-            config.cluster = IndexMap::new();
-        }
-    }
 
     fn set_latency(&self) -> Result<()> {
         match CONFIG.write().get_mut(self) {
@@ -363,6 +309,7 @@ fn read_query(conn: &mut Session) -> Result<Vec<u8>> {
         conn.broken = true;
         return Err(io_error(error))?;
     }
+
     Ok(resp)
 }
 
