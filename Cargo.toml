@@ -9,7 +9,6 @@ readme = "README.md"
 keywords = ["database", "rethinkdb", "rethinkdb", "reql", "driver"]
 categories = ["database"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
-build = "build/main.rs"
 edition = "2018"
 
 [badges]
