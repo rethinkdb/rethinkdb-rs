@@ -1,7 +1,7 @@
 [package]
 name = "reql"
 description = "A native ReQL driver"
-version = "0.0.27-alpha.0"
+version = "0.1.0-alpha.0"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/RethinkDB/rethinkdb-rs"
 documentation = "https://docs.rs/reql"
@@ -36,9 +36,3 @@ indexmap = "1"
 reql-types = { version = "0.0.4", path = "./types" }
 uuid = { version = "0.7", features = ["v4", "serde"] }
 native-tls = { version = "0.2", optional = true }
-
-[build-dependencies]
-serde = "1"
-serde_derive = "1"
-serde_yaml = "0.8"
-nom = "4.0"
