@@ -25,7 +25,7 @@ additional terms or conditions.
 
 [ReQL]: https://rethinkdb.com/api
 [Rust]: https://rust-lang.org
-[travis-badge]: https://travis-ci.org/RethinkDB/rethinkdb-rs.svg?branch=master
+[travis-badge]: https://travis-ci.org/RethinkDB/rethinkdb-rs.svg?branch=next
 [travis]: https://travis-ci.org/RethinkDB/rethinkdb-rs
 [cratesio-badge]: https://img.shields.io/crates/v/reql.svg
 [cratesio]: https://crates.io/crates/reql
