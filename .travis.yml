@@ -5,7 +5,7 @@ language: rust
 
 rust:
   #- stable
-  - beta
+  #- beta
   - nightly
 
 cache: cargo
