@@ -1,19 +1,18 @@
 use std::net::SocketAddr;
 
-#[cfg(feature = "tls")]
-use native_tls::TlsConnectorBuilder;
+use crate::{
+    Result,
+    conn::Connection,
+};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Client<'a> {
     server: SocketAddr,
     db: &'a str,
     user: &'a str,
-    password: &'a str,
-    // May be changed to a timeout in future
-    // See comment on Default impl
+    pass: &'a str,
     timeout: u64,
-    #[cfg(feature = "tls")]
-    tls: Option<&'a mut TlsConnectorBuilder>,
+    last_id: u64,
 }
 
 impl<'a> Client<'a> {
@@ -22,47 +21,65 @@ impl<'a> Client<'a> {
             server: ([127, 0, 0, 1], 28015).into(),
             db: "test",
             user: "admin",
-            password: "",
-            // May be changed to a timeout in future
-            // See comment on Default impl
+            pass: "",
             timeout: 5,
-            #[cfg(feature = "tls")]
-            tls: None,
+            last_id: 0,
         }
+    }
+
+    pub fn config(self) -> Config<'a> {
+        Config {
+            client: self,
+        }
+    }
+
+    pub async fn connect(&mut self) -> Result<Connection<'a>> {
+        let id = self.last_id + 1;
+        let conn = await!(Connection::new(*self, id))?;
+        self.last_id = id;
+        Ok(conn)
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct Config<'a>(Client<'a>);
+pub struct Config<'a> {
+    client: Client<'a>,
+}
 
 impl<'a> Default for Config<'a> {
     fn default() -> Self {
-        Config(Client::new())
+        Config {
+            client: Client::new(),
+        }
     }
 }
 
 impl<'a> Config<'a> {
-    pub fn server(&mut self, addr: SocketAddr) -> &mut Self {
-        self.0.server = addr;
+    pub fn set_server(&mut self, addr: SocketAddr) -> &mut Self {
+        self.client.server = addr;
         self
     }
 
-    pub fn db(&mut self, name: &'a str) -> &mut Self {
-        self.0.db = name;
+    pub fn server(&self) -> &SocketAddr {
+        &self.client.server
+    }
+
+    pub fn set_db(&mut self, name: &'a str) -> &mut Self {
+        self.client.db = name;
         self
     }
 
-    pub fn user(&mut self, name: &'a str) -> &mut Self {
-        self.0.user = name;
+    pub fn set_user(&mut self, name: &'a str) -> &mut Self {
+        self.client.user = name;
         self
     }
 
-    pub fn password(&mut self, plain: &'a str) -> &mut Self {
-        self.0.password = plain;
+    pub fn set_password(&mut self, plain: &'a str) -> &mut Self {
+        self.client.pass = plain;
         self
     }
 
     pub fn client(&self) -> Client<'a> {
-        self.0
+        self.client
     }
 }

@@ -14,23 +14,16 @@ edition = "2018"
 [badges]
 travis-ci = { repository = "rethinkdb/rethinkdb-rs" }
 
-[features]
-tls = ["native-tls"]
-
 [dependencies]
 log = "0.4"
 serde = "1"
 serde_json = "1"
-ql2 = "1.1"
-lazy_static = "1"
 serde_derive = "1"
 byteorder = "1"
 bufstream = "0.1"
 scram = "0.4"
-futures = "0.1"
-parking_lot = "0.6"
+futures-preview = "0.3.0-alpha.10"
 indexmap = "1"
 reql-types = { version = "0.0.4", path = "./types" }
 uuid = { version = "0.7", features = ["v4", "serde"] }
-native-tls = { version = "0.2", optional = true }
 romio = "0.3.0-alpha.1"
