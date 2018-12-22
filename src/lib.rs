@@ -3,6 +3,7 @@
 mod client;
 mod conn;
 pub mod error;
+pub(crate) mod proto;
 
 pub use crate::{
     client::{Client, Config},

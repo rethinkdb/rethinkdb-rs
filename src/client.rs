@@ -69,14 +69,26 @@ impl<'a> Config<'a> {
         self
     }
 
+    pub fn db(&self) -> &str {
+        &self.client.db
+    }
+
     pub fn set_user(&mut self, name: &'a str) -> &mut Self {
         self.client.user = name;
         self
     }
 
+    pub fn user(&self) -> &str {
+        &self.client.user
+    }
+
     pub fn set_password(&mut self, plain: &'a str) -> &mut Self {
         self.client.pass = plain;
         self
+    }
+
+    pub fn password(&self) -> &str {
+        &self.client.pass
     }
 
     pub fn client(&self) -> Client<'a> {
