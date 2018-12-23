@@ -1,3 +1,5 @@
+use std::str;
+
 use crate::{
     Client, Result, error,
     proto::Version,
@@ -53,7 +55,7 @@ struct AuthConfirmation {
 
 struct HandShake<'a> {
     // this should be enough for the handshake messages
-    buf: [u8; 128],
+    buf: [u8; 512],
     conn: Connection<'a>,
 }
 
@@ -63,7 +65,7 @@ impl<'a> Connection<'a> {
         let stream = await!(TcpStream::connect(cfg.server()))?;
         let session = Session { id, stream, broken: false };
         let conn = Connection { client, session };
-        let handshake = HandShake { conn, buf: [0u8; 128] };
+        let handshake = HandShake { conn, buf: [0u8; 512] };
         await!(handshake.greet())
     }
 }
@@ -74,9 +76,16 @@ impl<'a> HandShake<'a> {
         await!(self.conn.session.stream.write_all(&self.buf[..4]))?;
         await!(self.conn.session.stream.read(&mut self.buf))?;
         let resp = self.read_buf();
-        let info: ServerInfo = serde_json::from_slice(resp)?;
-        if !info.success {
-            return Err(error::Runtime::Internal(resp.to_owned()))?;
+        match serde_json::from_slice::<ServerInfo>(resp) {
+            Ok(info) => {
+                if !info.success {
+                    return Err(error::Runtime::Internal(resp.to_owned()))?;
+                }
+            }
+            Err(_) => {
+                let msg = str::from_utf8(resp)?;
+                return Err(error::Driver::Other(msg.to_owned()))?;
+            }
         }
         Ok(self)
     }
@@ -120,17 +129,24 @@ impl<'a> HandShake<'a> {
 
 impl AuthResponse {
     fn from_slice(resp: &[u8]) -> Result<Self> {
-        let info: AuthResponse = serde_json::from_slice(resp)?;
-        if !info.success {
-            // If error code is between 10 and 20, this is an auth error
-            if let Some(10...20) = info.error_code {
-                if let Some(msg) = info.error {
-                    return Err(error::Driver::Auth(msg))?;
+        match serde_json::from_slice::<AuthResponse>(resp) {
+            Ok(info) => {
+                if !info.success {
+                    // If error code is between 10 and 20, this is an auth error
+                    if let Some(10...20) = info.error_code {
+                        if let Some(msg) = info.error {
+                            return Err(error::Driver::Auth(msg))?;
+                        }
+                    }
+                    return Err(error::Runtime::Internal(resp.to_owned()))?;
                 }
+                Ok(info)
             }
-            return Err(error::Runtime::Internal(resp.to_owned()))?;
-        };
-        Ok(info)
+            Err(_) => {
+                let msg = str::from_utf8(resp)?;
+                Err(error::Driver::Other(msg.to_owned()))?
+            }
+        }
     }
 }
 

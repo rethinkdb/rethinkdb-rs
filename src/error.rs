@@ -1,6 +1,6 @@
 //! The errors returned by this driver
 
-use std::io;
+use std::{io, str};
 
 use serde_json::error as js;
 
@@ -47,6 +47,7 @@ pub enum Availability {
 #[derive(Debug)]
 pub enum Driver {
     Auth(String),
+    Utf8(str::Utf8Error),
 
     Scram(scram::Error),
     Io(io::Error),
@@ -88,5 +89,11 @@ impl From<js::Error> for Error {
 impl From<scram::Error> for Error {
     fn from(err: scram::Error) -> Error {
         From::from(Driver::Scram(err))
+    }
+}
+
+impl From<str::Utf8Error> for Error {
+    fn from(err: str::Utf8Error) -> Error {
+        From::from(Driver::Utf8(err))
     }
 }
