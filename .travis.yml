@@ -1,6 +1,3 @@
-dist: trusty
-sudo: false
-
 language: rust
 
 rust:
@@ -10,22 +7,7 @@ rust:
 
 cache: cargo
 
-matrix:
-  include:
-    - env: TARGET=x86_64-unknown-linux-musl
-      addons:
-        apt:
-          packages:
-            - musl-tools
-
 addons:
   rethinkdb: '2.3'
 
-before_script:
-- rethinkdb --port-offset 1 --directory rethinkdb_data1 --join localhost:29015 > /dev/null 2>&1 &
-- rethinkdb --port-offset 2 --directory rethinkdb_data2 --join localhost:29015 > /dev/null 2>&1 &
-- if [[ -n "$TARGET" ]]; then rustup target add "$TARGET"; fi
-
-script:
-- if [[ -n "$TARGET" ]]; then cargo test --target "$TARGET" --lib; fi
-- if [[ -z "$TARGET" ]]; then cargo test --lib; fi
+script: cargo test
