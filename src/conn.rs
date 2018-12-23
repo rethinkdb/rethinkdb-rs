@@ -13,6 +13,7 @@ const NULL_BYTE: u8 = b'\0';
 #[derive(Debug)]
 struct Session {
     id: u64,
+    broken: bool,
     stream: TcpStream,
 }
 
@@ -60,7 +61,7 @@ impl<'a> Connection<'a> {
     pub(crate) async fn new(client: Client<'a>, id: u64) -> Result<Connection<'a>> {
         let cfg = client.config();
         let stream = await!(TcpStream::connect(cfg.server()))?;
-        let session = Session { id, stream };
+        let session = Session { id, stream, broken: false };
         let conn = Connection { client, session };
         let handshake = HandShake { conn, buf: [0u8; 128] };
         await!(handshake.greet())
