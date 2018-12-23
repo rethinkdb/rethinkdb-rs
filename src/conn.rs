@@ -6,7 +6,7 @@ use futures::prelude::*;
 use romio::TcpStream;
 use byteorder::{ByteOrder, LittleEndian};
 use serde::{Serialize, Deserialize};
-use scram::client::ScramClient;
+use scram::client::{ScramClient, ServerFirst, ServerFinal};
 
 const NULL_BYTE: u8 = b'\0';
 
@@ -50,82 +50,55 @@ struct AuthConfirmation {
     authentication: String,
 }
 
+struct HandShake<'a> {
+    // this should be enough for the handshake messages
+    buf: [u8; 128],
+    conn: Connection<'a>,
+}
+
 impl<'a> Connection<'a> {
     pub(crate) async fn new(client: Client<'a>, id: u64) -> Result<Connection<'a>> {
         let cfg = client.config();
         let stream = await!(TcpStream::connect(cfg.server()))?;
         let session = Session { id, stream };
         let conn = Connection { client, session };
-        await!(conn.shake_hands())
+        let handshake = HandShake { conn, buf: [0u8; 128] };
+        await!(handshake.greet())
+    }
+}
+
+impl<'a> HandShake<'a> {
+    async fn verify_version(&mut self) -> Result<&mut HandShake<'a>> {
+        LittleEndian::write_u32(&mut self.buf, Version::V1_0 as u32);
+        await!(self.conn.session.stream.write_all(&self.buf[..4]))?;
+        await!(self.conn.session.stream.read(&mut self.buf))?;
+        let resp = self.read_buf();
+        let info: ServerInfo = serde_json::from_slice(resp)?;
+        if !info.success {
+            return Err(error::Runtime::Internal(resp.to_owned()))?;
+        }
+        Ok(self)
     }
 
-    async fn shake_hands(mut self) -> Result<Connection<'a>> {
-        // verify version support on server
-        let mut buf = [0; 4];
-        LittleEndian::write_u32(&mut buf, Version::V1_0 as u32);
-        await!(self.session.stream.write_all(&buf))?;
-        let mut resp = vec![];
-        await!(self.session.read_until(NULL_BYTE, &mut resp))?;
-        resp.pop();
-        let info: ServerInfo = serde_json::from_slice(&resp)?;
-        if !info.success {
-            return Err(error::Runtime::Internal(resp))?;
-        }
+    async fn greet(mut self) -> Result<Connection<'a>> {
+        await!(self.verify_version())?;
 
         // Send client first message
-        let cfg = &self.client.config();
+        let cfg = &self.conn.client.config();
         let scram = ScramClient::new(cfg.user(), cfg.password(), None)?;
-        let (scram, client_first) = scram.client_first();
-        let ar = AuthRequest {
-            protocol_version: 0,
-            authentication_method: String::from("SCRAM-SHA-256"),
-            authentication: client_first,
-        };
-        let mut msg = serde_json::to_vec(&ar)?;
-        msg.push(NULL_BYTE);
-        await!(self.session.stream.write_all(&msg))?;
+        let (scram, msg) = client_first(scram)?;
+        await!(self.conn.session.stream.write_all(&msg))?;
 
         // Send client final message
-        let mut resp = vec![];
-        await!(self.session.read_until(NULL_BYTE, &mut resp))?;
-        resp.pop();
-        let info: AuthResponse = serde_json::from_slice(&resp)?;
-        if !info.success {
-            // If error code is between 10 and 20, this is an auth error
-            if let Some(10...20) = info.error_code {
-                // @TODO consider returning `AuthResponse` in the Auth error
-                return Err(error::Driver::Auth(resp))?;
-            }
-            return Err(error::Runtime::Internal(resp))?;
-        };
+        await!(self.conn.session.stream.read(&mut self.buf))?;
+        let info = AuthResponse::from_slice(self.read_buf())?;
         match info.authentication {
-            Some(auth) => {
-                let scram = scram.handle_server_first(&auth)?;
-                let (scram, client_final) = scram.client_final();
-                let auth = AuthConfirmation { authentication: client_final };
-                let mut msg = serde_json::to_vec(&auth)?;
-                msg.push(NULL_BYTE);
-                await!(self.session.stream.write_all(&msg))?;
-
-                // Validate final server response and flush the buffer
-                let mut resp = vec![];
-                await!(self.session.read_until(NULL_BYTE, &mut resp))?;
-                resp.pop();
-                let info: AuthResponse = serde_json::from_slice(&resp)?;
-                if !info.success {
-                    // If error code is between 10 and 20, this is an auth error
-                    if let Some(10...20) = info.error_code {
-                        // @TODO consider returning `AuthResponse` in the Auth error
-                        return Err(error::Driver::Auth(resp))?;
-                    }
-                    return Err(error::Runtime::Internal(resp))?;
-                };
-                if let Some(auth) = info.authentication {
-                    if let Err(err) = scram.handle_server_final(&auth) {
-                        return Err(err)?;
-                    }
-                }
-                await!(self.session.stream.flush())?;
+            Some(ref auth) => {
+                let (scram, msg) = client_final(scram, auth)?;
+                await!(self.conn.session.stream.write_all(&msg))?;
+                await!(self.conn.session.stream.read(&mut self.buf))?;
+                server_final(scram, self.read_buf())?;
+                await!(self.conn.session.stream.flush())?;
             }
             None => {
                 let msg = String::from("Server did not send authentication info.");
@@ -133,22 +106,60 @@ impl<'a> Connection<'a> {
             }
         }
 
-        Ok(self)
+        Ok(self.conn)
+    }
+
+    fn read_buf(&self) -> &[u8] {
+        let len = self.buf.iter()
+            .take_while(|x| **x != NULL_BYTE)
+            .count();
+        &self.buf[..len]
     }
 }
 
-impl Session {
-    // remove this once https://github.com/rust-lang-nursery/futures-rs/issues/1373 is resolved
-    async fn read_until<'a>(&'a mut self, byte: u8, buf: &'a mut Vec<u8>) -> Result<()> {
-	// this should be more than enough for the handshake responses
-        let mut resp = [0u8; 1024];
-        await!(self.stream.read(&mut resp))?;
-        for b in resp.iter() {
-            buf.push(*b);
-            if *b == byte {
-                break;
+impl AuthResponse {
+    fn from_slice(resp: &[u8]) -> Result<Self> {
+        let info: AuthResponse = serde_json::from_slice(resp)?;
+        if !info.success {
+            // If error code is between 10 and 20, this is an auth error
+            if let Some(10...20) = info.error_code {
+                if let Some(msg) = info.error {
+                    return Err(error::Driver::Auth(msg))?;
+                }
             }
-        }
-        Ok(())
+            return Err(error::Runtime::Internal(resp.to_owned()))?;
+        };
+        Ok(info)
     }
+}
+
+fn client_first<'a>(scram: ScramClient<'a>) -> Result<(ServerFirst<'a>, Vec<u8>)> {
+    let (scram, client_first) = scram.client_first();
+    let ar = AuthRequest {
+        protocol_version: 0,
+        authentication_method: String::from("SCRAM-SHA-256"),
+        authentication: client_first,
+    };
+    let mut msg = serde_json::to_vec(&ar)?;
+    msg.push(NULL_BYTE);
+    Ok((scram, msg))
+}
+
+fn client_final<'a>(scram: ServerFirst<'a>, auth: &str) -> Result<(ServerFinal, Vec<u8>)> {
+    let scram = scram.handle_server_first(auth)?;
+    let (scram, client_final) = scram.client_final();
+    let conf = AuthConfirmation { authentication: client_final };
+    let mut msg = serde_json::to_vec(&conf)?;
+    msg.push(NULL_BYTE);
+    Ok((scram, msg))
+}
+
+fn server_final(scram: ServerFinal, resp: &[u8]) -> Result<()> {
+    let info = AuthResponse::from_slice(resp)?;
+    if let Some(auth) = info.authentication {
+        if let Err(err) = scram.handle_server_final(&auth) {
+            return Err(err)?;
+        }
+    }
+    Ok(())
 }

@@ -46,7 +46,7 @@ pub enum Availability {
 /// query.
 #[derive(Debug)]
 pub enum Driver {
-    Auth(Vec<u8>),
+    Auth(String),
 
     Scram(scram::Error),
     Io(io::Error),
