@@ -34,7 +34,7 @@ impl<'a> Client<'a> {
     }
 
     pub async fn connect(&mut self) -> Result<Connection<'a>> {
-        let id = self.last_id + 1;
+        let id = self.last_id.wrapping_add(1);
         let conn = await!(Connection::new(*self, id))?;
         self.last_id = id;
         Ok(conn)
