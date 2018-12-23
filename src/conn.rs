@@ -71,50 +71,45 @@ impl<'a> Connection<'a> {
 }
 
 impl<'a> HandShake<'a> {
-    async fn verify_version(&mut self) -> Result<&mut HandShake<'a>> {
-        LittleEndian::write_u32(&mut self.buf, Version::V1_0 as u32);
-        await!(self.conn.session.stream.write_all(&self.buf[..4]))?;
-        await!(self.conn.session.stream.read(&mut self.buf))?;
-        let resp = self.read_buf();
-        match serde_json::from_slice::<ServerInfo>(resp) {
-            Ok(info) => {
-                if !info.success {
-                    return Err(error::Runtime::Internal(resp.to_owned()))?;
-                }
-            }
-            Err(_) => {
-                let msg = str::from_utf8(resp)?;
-                return Err(error::Driver::Other(msg.to_owned()))?;
-            }
-        }
-        Ok(self)
-    }
-
+    // Performs the actual handshake
+    //
+    // This method optimises message exchange as suggested in the RethinkDB
+    // documentation by sending message 3 right after message 1, without waiting
+    // for message 2 first.
     async fn greet(mut self) -> Result<Connection<'a>> {
-        await!(self.verify_version())?;
+        // Send the version we support
+        LittleEndian::write_u32(&mut self.buf, Version::V1_0 as u32);
+        await!(self.conn.session.stream.write_all(&self.buf[..4]))?; // message 1
 
         // Send client first message
         let cfg = &self.conn.client.config();
         let scram = ScramClient::new(cfg.user(), cfg.password(), None)?;
         let (scram, msg) = client_first(scram)?;
-        await!(self.conn.session.stream.write_all(&msg))?;
+        await!(self.conn.session.stream.write_all(&msg))?; // message 3
 
-        // Send client final message
-        await!(self.conn.session.stream.read(&mut self.buf))?;
+        // Receive supported versions
+        await!(self.conn.session.stream.read(&mut self.buf))?; // message 2
+        ServerInfo::from_slice(self.read_buf())?;
+
+        // Receive server first message
+        await!(self.conn.session.stream.read(&mut self.buf))?; // message 4
         let info = AuthResponse::from_slice(self.read_buf())?;
-        match info.authentication {
-            Some(ref auth) => {
-                let (scram, msg) = client_final(scram, auth)?;
-                await!(self.conn.session.stream.write_all(&msg))?;
-                await!(self.conn.session.stream.read(&mut self.buf))?;
-                server_final(scram, self.read_buf())?;
-                await!(self.conn.session.stream.flush())?;
-            }
+        let auth = match info.authentication {
+            Some(auth) => auth,
             None => {
                 let msg = String::from("Server did not send authentication info.");
                 return Err(error::Driver::Other(msg))?;
             }
-        }
+        };
+
+        // Send client final message
+        let (scram, msg) = client_final(scram, &auth)?;
+        await!(self.conn.session.stream.write_all(&msg))?; // message 5
+
+        // Receive server final message
+        await!(self.conn.session.stream.read(&mut self.buf))?; // message 6
+        server_final(scram, self.read_buf())?;
+        await!(self.conn.session.stream.flush())?;
 
         Ok(self.conn)
     }
@@ -124,6 +119,23 @@ impl<'a> HandShake<'a> {
             .take_while(|x| **x != NULL_BYTE)
             .count();
         &self.buf[..len]
+    }
+}
+
+impl ServerInfo {
+    fn from_slice(resp: &[u8]) -> Result<Self> {
+        match serde_json::from_slice::<ServerInfo>(resp) {
+            Ok(info) => {
+                if !info.success {
+                    return Err(error::Runtime::Internal(resp.to_owned()))?;
+                }
+                Ok(info)
+            }
+            Err(_) => {
+                let msg = str::from_utf8(resp)?;
+                Err(error::Driver::Other(msg.to_owned()))?
+            }
+        }
     }
 }
 
