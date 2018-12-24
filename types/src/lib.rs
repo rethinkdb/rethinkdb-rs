@@ -1,19 +1,12 @@
 //! Common ReQL data types
 
-extern crate serde_json;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde;
-extern crate uuid;
-extern crate chrono;
-
-use std::net::IpAddr;
 use std::collections::HashMap;
+use std::net::IpAddr;
 use std::ops::Deref;
 
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_json::Value;
 use uuid::Uuid;
-use serde::{Serialize, Deserialize, Serializer, Deserializer};
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct DateTime(pub chrono::DateTime<chrono::Utc>);
@@ -42,33 +35,27 @@ pub struct ClusterConfig {
 
 /// Structure of data in `current_issues` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct CurrentIssue {
-}
+pub struct CurrentIssue {}
 
 /// Structure of data in `db_config` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct DbConfig {
-}
+pub struct DbConfig {}
 
 /// Structure of data in `jobs` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Job {
-}
+pub struct Job {}
 
 /// Structure of data in `logs` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Log {
-}
+pub struct Log {}
 
 /// Structure of data in `permissions` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Permission {
-}
+pub struct Permission {}
 
 /// Structure of data in `server_config` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct ServerConfig {
-}
+pub struct ServerConfig {}
 
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct CanonicalAddress {
@@ -107,23 +94,19 @@ pub struct ServerStatus {
 
 /// Structure of data in `cluster_config` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Stat {
-}
+pub struct Stat {}
 
 /// Structure of data in `cluster_config` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct TableConfig {
-}
+pub struct TableConfig {}
 
 /// Structure of data in `table_status` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct TableStatus {
-}
+pub struct TableStatus {}
 
 /// Structure of data in `uses` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct User {
-}
+pub struct User {}
 
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Change<O, N> {
@@ -146,7 +129,8 @@ struct Time {
 
 impl<'de> Deserialize<'de> for DateTime {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: Deserializer<'de>
+    where
+        D: Deserializer<'de>,
     {
         let time = Time::deserialize(deserializer)?;
         let secs = time.epoch_time.trunc() as i64;
@@ -161,15 +145,24 @@ impl<'de> Deserialize<'de> for DateTime {
 
 impl Serialize for DateTime {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: Serializer
+    where
+        S: Serializer,
     {
         let reql_type = String::from("TIME");
         let epoch_time = {
-            let t = format!("{}.{}", self.0.timestamp(), self.0.timestamp_subsec_millis());
+            let t = format!(
+                "{}.{}",
+                self.0.timestamp(),
+                self.0.timestamp_subsec_millis()
+            );
             t.parse().unwrap()
         };
         let timezone = String::from("+00:00");
-        let time = Time { reql_type, epoch_time, timezone };
+        let time = Time {
+            reql_type,
+            epoch_time,
+            timezone,
+        };
         time.serialize(serializer)
     }
 }
