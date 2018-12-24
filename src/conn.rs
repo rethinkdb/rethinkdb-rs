@@ -6,7 +6,6 @@ use crate::{
 };
 use futures::prelude::*;
 use romio::TcpStream;
-use byteorder::{ByteOrder, LittleEndian};
 use serde::{Serialize, Deserialize};
 use scram::client::{ScramClient, ServerFirst, ServerFinal};
 
@@ -78,8 +77,8 @@ impl<'a> HandShake<'a> {
     // for message 2 first.
     async fn greet(mut self) -> Result<Connection<'a>> {
         // Send the version we support
-        LittleEndian::write_u32(&mut self.buf, Version::V1_0 as u32);
-        await!(self.conn.session.stream.write_all(&self.buf[..4]))?; // message 1
+        let version = (Version::V1_0 as u32).to_le_bytes();
+        await!(self.conn.session.stream.write_all(&version))?; // message 1
 
         // Send client first message
         let cfg = &self.conn.client.config();
@@ -109,8 +108,8 @@ impl<'a> HandShake<'a> {
         // Receive server final message
         await!(self.conn.session.stream.read(&mut self.buf))?; // message 6
         server_final(scram, self.read_buf())?;
-        await!(self.conn.session.stream.flush())?;
 
+        await!(self.conn.session.stream.flush())?;
         Ok(self.conn)
     }
 
