@@ -1,22 +1,13 @@
 #![feature(async_await, await_macro, futures_api, integer_atomics)]
 
-mod client;
-mod conn;
+pub mod cmd;
 pub mod error;
-pub(crate) mod proto;
-
-pub use crate::{client::Client, conn::Connection};
+pub mod opt;
+pub(crate) mod qry;
 
 pub type Result<T> = std::result::Result<T, crate::error::Error>;
 
-#[cfg(test)]
-mod tests {
-    use crate::Client;
-    use futures::executor::block_on;
+#[allow(non_camel_case_types)]
+pub struct r;
 
-    #[test]
-    fn driver_can_connect() {
-        let mut r = Client::default();
-        block_on(r.connect()).unwrap();
-    }
-}
+pub use crate::cmd::Connection;

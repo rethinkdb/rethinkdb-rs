@@ -51,6 +51,7 @@ pub enum Driver {
     Scram(scram::Error),
     Io(io::Error),
     Json(js::Error),
+    ConnectionBroken,
     // The connection token has exhausted all possible IDs
     TokenOverflow,
     Other(String),
