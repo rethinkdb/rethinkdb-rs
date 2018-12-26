@@ -1,4 +1,4 @@
-#![feature(async_await, await_macro, futures_api)]
+#![feature(async_await, await_macro, futures_api, integer_atomics)]
 
 mod client;
 mod conn;

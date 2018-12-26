@@ -1,4 +1,7 @@
-use std::str;
+use std::{
+    str,
+    sync::atomic::{AtomicBool, AtomicU64, Ordering::SeqCst},
+};
 
 use crate::{
     Client, Result, error,
@@ -8,16 +11,15 @@ use futures::prelude::*;
 use romio::TcpStream;
 use serde::{Serialize, Deserialize};
 use scram::client::{ScramClient, ServerFirst, ServerFinal};
-use atomic_counter::ConsistentCounter;
 
 const NULL_BYTE: u8 = b'\0';
 
 #[derive(Debug)]
 pub struct Connection<'a> {
     client: Client<'a>,
-    broken: bool,
+    broken: AtomicBool,
     stream: TcpStream,
-    counter: ConsistentCounter,
+    counter: AtomicU64,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -60,11 +62,37 @@ impl<'a> Connection<'a> {
         let stream = await!(TcpStream::connect(cfg.server()))?;
         let conn = Connection {
             client, stream,
-            broken: false,
-            counter: ConsistentCounter::new(0),
+            broken: AtomicBool::new(false),
+            // Start counting from 1 because we want to use 0 to detect when the
+            // token wraps over. If we allow tokens to be reused, the client may
+            // return data not meant for that particular connection which may be
+            // a security risk. This effectively means that a connection may be
+            // used by `run` only up to `usize::max_value()` times.
+            counter: AtomicU64::new(1),
         };
         let handshake = HandShake { conn, buf: [0u8; 512] };
         await!(handshake.greet())
+    }
+
+    pub(crate) fn mark_broken(&self) {
+        self.broken.store(true, SeqCst);
+    }
+
+    pub fn broken(&self) -> bool {
+        self.broken.load(SeqCst)
+    }
+
+    pub(crate) fn stream(&self) -> &TcpStream {
+        &self.stream
+    }
+
+    pub(crate) fn token(&self) -> Result<u64> {
+        let id = self.counter.fetch_add(1, SeqCst);
+        if id == 0 {
+            self.mark_broken();
+            return Err(error::Driver::TokenOverflow)?;
+        }
+        Ok(id)
     }
 }
 

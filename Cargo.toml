@@ -21,6 +21,4 @@ serde_json = "1.0.33"
 scram = "0.4.0"
 futures-preview = "0.3.0-alpha.10"
 reql-types = { version = "0.0.4", path = "./types" }
-uuid = { version = "0.7.1", features = ["v4", "serde"] }
 romio = "0.3.0-alpha.1"
-atomic-counter = "1.0.1"

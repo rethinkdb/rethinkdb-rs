@@ -48,11 +48,11 @@ pub enum Availability {
 pub enum Driver {
     Auth(String),
     Utf8(str::Utf8Error),
-
     Scram(scram::Error),
     Io(io::Error),
-
     Json(js::Error),
+    // The connection token has exhausted all possible IDs
+    TokenOverflow,
     Other(String),
 }
 
@@ -70,30 +70,30 @@ impl From<Runtime> for Error {
 
 impl From<Availability> for Error {
     fn from(err: Availability) -> Error {
-        From::from(Runtime::Availability(err))
+        Runtime::Availability(err).into()
     }
 }
 
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Error {
-        From::from(Driver::Io(err))
+        Driver::Io(err).into()
     }
 }
 
 impl From<js::Error> for Error {
     fn from(err: js::Error) -> Error {
-        From::from(Driver::Json(err))
+        Driver::Json(err).into()
     }
 }
 
 impl From<scram::Error> for Error {
     fn from(err: scram::Error) -> Error {
-        From::from(Driver::Scram(err))
+        Driver::Scram(err).into()
     }
 }
 
 impl From<str::Utf8Error> for Error {
     fn from(err: str::Utf8Error) -> Error {
-        From::from(Driver::Utf8(err))
+        Driver::Utf8(err).into()
     }
 }
