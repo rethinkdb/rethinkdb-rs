@@ -8,20 +8,16 @@ use futures::prelude::*;
 use romio::TcpStream;
 use serde::{Serialize, Deserialize};
 use scram::client::{ScramClient, ServerFirst, ServerFinal};
+use atomic_counter::ConsistentCounter;
 
 const NULL_BYTE: u8 = b'\0';
 
 #[derive(Debug)]
-struct Session {
-    id: u64,
-    broken: bool,
-    stream: TcpStream,
-}
-
-#[derive(Debug)]
 pub struct Connection<'a> {
     client: Client<'a>,
-    session: Session,
+    broken: bool,
+    stream: TcpStream,
+    counter: ConsistentCounter,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -59,11 +55,14 @@ struct HandShake<'a> {
 }
 
 impl<'a> Connection<'a> {
-    pub(crate) async fn new(client: Client<'a>, id: u64) -> Result<Connection<'a>> {
+    pub(crate) async fn new(client: Client<'a>) -> Result<Connection<'a>> {
         let cfg = client.config();
         let stream = await!(TcpStream::connect(cfg.server()))?;
-        let session = Session { id, stream, broken: false };
-        let conn = Connection { client, session };
+        let conn = Connection {
+            client, stream,
+            broken: false,
+            counter: ConsistentCounter::new(0),
+        };
         let handshake = HandShake { conn, buf: [0u8; 512] };
         await!(handshake.greet())
     }
@@ -78,20 +77,20 @@ impl<'a> HandShake<'a> {
     async fn greet(mut self) -> Result<Connection<'a>> {
         // Send the version we support
         let version = (Version::V1_0 as u32).to_le_bytes();
-        await!(self.conn.session.stream.write_all(&version))?; // message 1
+        await!(self.conn.stream.write_all(&version))?; // message 1
 
         // Send client first message
         let cfg = &self.conn.client.config();
         let scram = ScramClient::new(cfg.user(), cfg.password(), None)?;
         let (scram, msg) = client_first(scram)?;
-        await!(self.conn.session.stream.write_all(&msg))?; // message 3
+        await!(self.conn.stream.write_all(&msg))?; // message 3
 
         // Receive supported versions
-        await!(self.conn.session.stream.read(&mut self.buf))?; // message 2
+        await!(self.conn.stream.read(&mut self.buf))?; // message 2
         ServerInfo::from_slice(self.read_buf())?;
 
         // Receive server first message
-        await!(self.conn.session.stream.read(&mut self.buf))?; // message 4
+        await!(self.conn.stream.read(&mut self.buf))?; // message 4
         let info = AuthResponse::from_slice(self.read_buf())?;
         let auth = match info.authentication {
             Some(auth) => auth,
@@ -103,13 +102,13 @@ impl<'a> HandShake<'a> {
 
         // Send client final message
         let (scram, msg) = client_final(scram, &auth)?;
-        await!(self.conn.session.stream.write_all(&msg))?; // message 5
+        await!(self.conn.stream.write_all(&msg))?; // message 5
 
         // Receive server final message
-        await!(self.conn.session.stream.read(&mut self.buf))?; // message 6
+        await!(self.conn.stream.read(&mut self.buf))?; // message 6
         server_final(scram, self.read_buf())?;
 
-        await!(self.conn.session.stream.flush())?;
+        await!(self.conn.stream.flush())?;
         Ok(self.conn)
     }
 

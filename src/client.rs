@@ -12,7 +12,6 @@ pub struct Client<'a> {
     user: &'a str,
     pass: &'a str,
     timeout: u64,
-    last_id: u64,
 }
 
 impl<'a> Client<'a> {
@@ -23,7 +22,6 @@ impl<'a> Client<'a> {
             user: "admin",
             pass: "",
             timeout: 5,
-            last_id: 0,
         }
     }
 
@@ -34,10 +32,7 @@ impl<'a> Client<'a> {
     }
 
     pub async fn connect(&mut self) -> Result<Connection<'a>> {
-        let id = self.last_id.wrapping_add(1);
-        let conn = await!(Connection::new(*self, id))?;
-        self.last_id = id;
-        Ok(conn)
+        await!(Connection::new(*self))
     }
 }
 
