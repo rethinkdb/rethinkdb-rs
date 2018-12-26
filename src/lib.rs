@@ -5,10 +5,7 @@ mod conn;
 pub mod error;
 pub(crate) mod proto;
 
-pub use crate::{
-    client::{Client, Config},
-    conn::Connection,
-};
+pub use crate::{client::Client, conn::Connection};
 
 pub type Result<T> = std::result::Result<T, crate::error::Error>;
 
@@ -19,7 +16,7 @@ mod tests {
 
     #[test]
     fn driver_can_connect() {
-        let mut r = Client::new();
+        let mut r = Client::default();
         block_on(r.connect()).unwrap();
     }
 }

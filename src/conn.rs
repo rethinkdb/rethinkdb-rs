@@ -15,10 +15,9 @@ use scram::client::{ScramClient, ServerFirst, ServerFinal};
 const NULL_BYTE: u8 = b'\0';
 
 #[derive(Debug)]
-pub struct Connection<'a> {
-    client: Client<'a>,
-    broken: AtomicBool,
+pub struct Connection {
     stream: TcpStream,
+    broken: AtomicBool,
     counter: AtomicU64,
 }
 
@@ -50,18 +49,17 @@ struct AuthConfirmation {
     authentication: String,
 }
 
-struct HandShake<'a> {
+struct HandShake {
     // this should be enough for the handshake messages
     buf: [u8; 512],
-    conn: Connection<'a>,
+    conn: Connection,
 }
 
-impl<'a> Connection<'a> {
-    pub(crate) async fn new(client: Client<'a>) -> Result<Connection<'a>> {
-        let cfg = client.config();
-        let stream = await!(TcpStream::connect(cfg.server()))?;
+impl Connection {
+    pub(crate) async fn new(client: &Client) -> Result<Connection> {
+        let stream = await!(TcpStream::connect(&client.server))?;
         let conn = Connection {
-            client, stream,
+            stream,
             broken: AtomicBool::new(false),
             // Start counting from 1 because we want to use 0 to detect when the
             // token wraps over. If we allow tokens to be reused, the client may
@@ -71,7 +69,7 @@ impl<'a> Connection<'a> {
             counter: AtomicU64::new(1),
         };
         let handshake = HandShake { conn, buf: [0u8; 512] };
-        await!(handshake.greet())
+        await!(handshake.greet(client))
     }
 
     pub(crate) fn mark_broken(&self) {
@@ -96,20 +94,19 @@ impl<'a> Connection<'a> {
     }
 }
 
-impl<'a> HandShake<'a> {
+impl HandShake {
     // Performs the actual handshake
     //
     // This method optimises message exchange as suggested in the RethinkDB
     // documentation by sending message 3 right after message 1, without waiting
     // for message 2 first.
-    async fn greet(mut self) -> Result<Connection<'a>> {
+    async fn greet(mut self, client: &Client) -> Result<Connection> {
         // Send the version we support
         let version = (Version::V1_0 as u32).to_le_bytes();
         await!(self.conn.stream.write_all(&version))?; // message 1
 
         // Send client first message
-        let cfg = &self.conn.client.config();
-        let scram = ScramClient::new(cfg.user(), cfg.password(), None)?;
+        let scram = ScramClient::new(&client.user, &client.pass, None)?;
         let (scram, msg) = client_first(scram)?;
         await!(self.conn.stream.write_all(&msg))?; // message 3
 
@@ -123,7 +120,7 @@ impl<'a> HandShake<'a> {
         let auth = match info.authentication {
             Some(auth) => auth,
             None => {
-                let msg = String::from("Server did not send authentication info.");
+                let msg = String::from("server did not send authentication info");
                 return Err(error::Driver::Other(msg))?;
             }
         };
