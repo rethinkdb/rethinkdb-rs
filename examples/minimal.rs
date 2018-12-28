@@ -1,8 +1,12 @@
-use futures::executor::block_on;
+#![feature(async_await, await_macro, futures_api)]
+
 use reql::r;
 
-fn main() {
-    let conn = block_on(r.connect(Default::default())).unwrap();
-    let resp = block_on(r.expr("hello world").run(&conn, Default::default())).unwrap();
-    println!("{:?}", resp);
+fn main() -> reql::Result<()> {
+    futures::executor::block_on(async {
+        let conn = await!(r.connect(None))?;
+        let resp: String = await!(r.expr("hello world").run(&conn, None))?;
+        println!("{}", resp);
+        Ok(())
+    })
 }
