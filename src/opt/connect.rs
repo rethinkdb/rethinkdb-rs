@@ -10,6 +10,7 @@ impl<'a> Default for super::Connect<'a> {
             password: "",
             timeout: 20,
             ssl: None,
+            multiplex: true,
         }
     }
 }

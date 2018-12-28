@@ -24,8 +24,7 @@ pub(crate) type Controller = SkipMap<RequestId, ()>;
 pub struct Connection {
     stream: TcpStream,
     broken: AtomicBool,
-    counter: AtomicU64,
-    controller: Controller,
+    multiplex: Option<(AtomicU64, Controller)>,
 }
 
 enum Version {
@@ -70,16 +69,19 @@ impl r {
     pub async fn connect<'a>(self, opt: Connect<'a>) -> Result<Connection> {
         let addr = SocketAddr::new(opt.host, opt.port);
         let stream = await!(TcpStream::connect(&addr))?;
-        let conn = Connection {
-            stream,
-            broken: AtomicBool::new(false),
+        let multiplex = if opt.multiplex {
             // Start counting from 1 because we want to use 0 to detect when the
             // token wraps over. If we allow tokens to be reused, the client may
             // return data not meant for that particular connection which may be
             // a security risk. This effectively means that a connection may be
             // used by `run` only up to `usize::max_value()` times.
-            counter: AtomicU64::new(1),
-            controller: SkipMap::new(),
+            Some((AtomicU64::new(1), SkipMap::new()))
+        } else {
+            None
+        };
+        let conn = Connection {
+            stream, multiplex,
+            broken: AtomicBool::new(false),
         };
         let handshake = HandShake { conn, buf: [0u8; BUF_SIZE] };
         await!(handshake.greet(opt))
@@ -100,16 +102,24 @@ impl Connection {
     }
 
     pub(crate) fn token(&self) -> Result<RequestId> {
-        let id = self.counter.fetch_add(1, SeqCst);
-        if id == 0 {
-            self.mark_broken();
-            return Err(error::Driver::TokenOverflow)?;
+        match self.multiplex {
+            Some((ref counter, _)) => {
+                let id = counter.fetch_add(1, SeqCst);
+                if id == 0 {
+                    self.mark_broken();
+                    return Err(error::Driver::TokenOverflow)?;
+                }
+                Ok(id)
+            }
+            None => Ok(1)
         }
-        Ok(id)
     }
 
-    pub(crate) fn controller(&self) -> &Controller {
-        &self.controller
+    pub(crate) fn controller(&self) -> Option<&Controller> {
+        match self.multiplex {
+            Some((_, ref controller)) => Some(controller),
+            None => None,
+        }
     }
 }
 

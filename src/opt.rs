@@ -12,6 +12,7 @@ pub struct Connect<'a> {
     pub password: &'a str,
     pub timeout: u8,
     pub ssl: Option<connect::Ssl<'a>>,
+    pub multiplex: bool,
 }
 
 #[derive(Debug, Clone)]
