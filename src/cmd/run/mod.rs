@@ -1,23 +1,22 @@
 mod opt;
 
 use crate::{
+    cmd::connect::{Connection, RequestId},
     err, Result,
-    cmd::connect::{RequestId, Connection},
 };
-use futures::{prelude::*, channel::mpsc};
+use bytes::{Buf, BufMut, Bytes, BytesMut, IntoBuf};
+use futures::{channel::mpsc, prelude::*};
 use romio::TcpStream;
-use bytes::{Bytes, BytesMut, BufMut};
-use serde::{Serialize, Deserialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 pub use self::opt::*;
 
-const ID_LEN: usize = 8;
-const DATA_LEN: usize = 4;
-const HEADER_LEN: usize = ID_LEN + DATA_LEN;
+const HEADER_LEN: usize = 8 + 4;
 
-pub(crate) async fn run<T, O>(conn: &Connection, query: Bytes, _opts: O) -> Result<T>
-    where T: DeserializeOwned,
-          O: Into<Option<Opts>> + 'static,
+pub(crate) async fn run<O, T>(conn: &Connection, query: Bytes, _opts: O) -> Result<T>
+where
+    O: Into<Option<Opts>> + 'static,
+    T: DeserializeOwned,
 {
     if conn.broken() {
         return Err(err::Driver::ConnectionBroken)?;
@@ -27,9 +26,9 @@ pub(crate) async fn run<T, O>(conn: &Connection, query: Bytes, _opts: O) -> Resu
     // TODO remove the hardcoded 10 after adding handling opts
     let len = query.len() + 10;
     let mut msg = BytesMut::with_capacity(len);
-    msg.put(&b"[1,"[..]);
+    msg.put("[1,");
     msg.put(query.as_ref());
-    msg.put(&b",{}]"[..]);
+    msg.put(",{}]");
     await!(sess.write(msg.as_ref()))?;
     match conn.controller() {
         Some(controller) => {
@@ -42,7 +41,7 @@ pub(crate) async fn run<T, O>(conn: &Connection, query: Bytes, _opts: O) -> Resu
             let mut msg: Message<_> = match serde_json::from_slice(&resp) {
                 Ok(msg) => msg,
                 Err(_) => {
-                    return Err(err::Driver::UnexpectedResponse(resp))?;
+                    return Err(err::Driver::UnexpectedResponse(resp.to_vec()))?;
                 }
             };
             Ok(msg.r.pop().unwrap())
@@ -67,7 +66,7 @@ impl<'a> Session<'a> {
         buf.put_u64_le(self.id);
         buf.put_u32_le(data_len as u32);
         buf.put(data);
-        await!(self.stream.write_all(&buf[..]))?;
+        await!(self.stream.write_all(&buf))?;
         Ok(self)
     }
 }
@@ -75,16 +74,10 @@ impl<'a> Session<'a> {
 #[derive(Debug, Clone)]
 pub(crate) struct Response<'a> {
     id: RequestId,
-    resp: Vec<u8>,
+    resp: Bytes,
     stream: &'a TcpStream,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-enum Value<T> {
-    Ok(T),
-    Err(String),
-}
-    
 #[derive(Serialize, Deserialize, Debug)]
 struct Message<T> {
     t: i32,
@@ -92,22 +85,21 @@ struct Message<T> {
     r: Vec<T>,
     b: Option<Vec<String>>,
     p: Option<String>,
-    n: Option<Vec<String>>
+    n: Option<Vec<String>>,
 }
 
 impl Connection {
     pub(crate) async fn read<'a>(&'a self) -> Result<Response<'a>> {
-        let mut header = [0u8; HEADER_LEN];
+        let mut buf = BytesMut::new();
+        buf.resize(HEADER_LEN, 0);
         let mut stream = self.stream();
-        await!(stream.read_exact(&mut header))?;
-        let mut token = [0u8; ID_LEN];
-        token.copy_from_slice(&header[..ID_LEN]);
-        let id = RequestId::from_le_bytes(token);
-        let mut len_bytes = [0u8; DATA_LEN];
-        len_bytes.copy_from_slice(&header[ID_LEN..]);
-        let len = u32::from_le_bytes(len_bytes) as usize;
-        let mut resp = vec![0; len];
-        await!(stream.read_exact(&mut resp[..len]))?;
+        await!(stream.read_exact(&mut buf))?;
+        let mut header = buf.take().into_buf();
+        let id = header.get_u64_le();
+        let len = header.get_u32_le() as usize;
+        buf.resize(len, 0);
+        await!(stream.read_exact(&mut buf))?;
+        let resp = buf.freeze();
         Ok(Response { id, resp, stream })
     }
 }

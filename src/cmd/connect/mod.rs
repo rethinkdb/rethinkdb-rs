@@ -1,16 +1,17 @@
 mod opt;
 
 use std::{
-    str, net::SocketAddr,
+    net::SocketAddr,
+    str,
     sync::atomic::{AtomicBool, AtomicU64, Ordering::SeqCst},
 };
 
-use crate::{r, err, Result};
-use futures::{prelude::*, channel::mpsc};
-use romio::TcpStream;
-use serde::{Serialize, Deserialize};
-use scram::client::{ScramClient, ServerFirst, ServerFinal};
+use crate::{err, r, Result};
 use crossbeam_skiplist::SkipMap;
+use futures::{channel::mpsc, prelude::*};
+use romio::TcpStream;
+use scram::client::{ScramClient, ServerFinal, ServerFirst};
+use serde::{Deserialize, Serialize};
 
 pub use self::opt::*;
 
@@ -31,7 +32,10 @@ enum Version {
 }
 
 impl r {
-    pub async fn connect(self, opts: impl Into<Option<Opts>>) -> Result<Connection> {
+    pub async fn connect<O>(self, opts: O) -> Result<Connection>
+    where
+        O: Into<Option<Opts>>,
+    {
         let opt = opts.into().unwrap_or_default();
         let addr = SocketAddr::new(opt.host, opt.port);
         let stream = await!(TcpStream::connect(&addr))?;
@@ -43,16 +47,23 @@ impl r {
             // used by `run` only up to `usize::max_value()` times.
             let counter = AtomicU64::new(1);
             let controller = SkipMap::new();
-            Some(Multiplex { counter, controller })
+            Some(Multiplex {
+                counter,
+                controller,
+            })
         } else {
             None
         };
         let conn = Connection {
-            stream, multiplex,
+            stream,
+            multiplex,
             buffer: opt.buffer,
             broken: AtomicBool::new(false),
         };
-        let handshake = HandShake { conn, buf: [0u8; BUF_SIZE] };
+        let handshake = HandShake {
+            conn,
+            buf: [0u8; BUF_SIZE],
+        };
         await!(handshake.greet(opt))
     }
 }
@@ -113,7 +124,8 @@ impl HandShake {
     }
 
     fn read_buf(&self, offset: usize) -> (usize, &[u8]) {
-        let len = (&self.buf[offset..]).iter()
+        let len = (&self.buf[offset..])
+            .iter()
             .take_while(|x| **x != NULL_BYTE)
             .count();
         let max = offset + len;
@@ -140,12 +152,14 @@ impl<'a> ServerInfo<'a> {
                 if !info.success {
                     return Err(err::Runtime::Internal(resp.to_owned()))?;
                 }
-                if info.min_protocol_version > PROTOCOL_VERSION || PROTOCOL_VERSION > info.max_protocol_version {
+                if info.min_protocol_version > PROTOCOL_VERSION
+                    || PROTOCOL_VERSION > info.max_protocol_version
+                {
                     let msg = format!(
                         "unsupported protocol version {version}, expected between {min} and {max}",
-                        version=PROTOCOL_VERSION,
-                        min=info.min_protocol_version,
-                        max=info.max_protocol_version,
+                        version = PROTOCOL_VERSION,
+                        min = info.min_protocol_version,
+                        max = info.max_protocol_version,
                     );
                     Err(err::Driver::Other(msg))?
                 }
@@ -186,7 +200,9 @@ struct AuthConfirmation {
 fn client_final<'a>(scram: ServerFirst<'a>, auth: &str) -> Result<(ServerFinal, Vec<u8>)> {
     let scram = scram.handle_server_first(auth)?;
     let (scram, client_final) = scram.client_final();
-    let conf = AuthConfirmation { authentication: client_final };
+    let conf = AuthConfirmation {
+        authentication: client_final,
+    };
     let mut msg = serde_json::to_vec(&conf)?;
     msg.push(NULL_BYTE);
     Ok((scram, msg))
@@ -261,7 +277,7 @@ impl Connection {
                 }
                 Ok(id)
             }
-            None => Ok(1)
+            None => Ok(1),
         }
     }
 
@@ -289,7 +305,12 @@ mod tests {
     use futures::executor::block_on;
 
     #[test]
-    fn driver_can_connect() {
-        block_on(r.connect(None)).unwrap();
+    fn driver_can_connect() -> crate::Result<()> {
+        block_on(
+            async {
+                await!(r.connect(None))?;
+                Ok(())
+            },
+        )
     }
 }
