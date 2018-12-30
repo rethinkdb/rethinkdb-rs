@@ -39,7 +39,12 @@ pub(crate) async fn run<T, O>(conn: &Connection, query: Bytes, _opts: O) -> Resu
         }
         None => {
             let Response { resp, .. } = await!(conn.read())?;
-            let mut msg: Message<_> = serde_json::from_slice(&resp)?;
+            let mut msg: Message<_> = match serde_json::from_slice(&resp) {
+                Ok(msg) => msg,
+                Err(_) => {
+                    return Err(err::Driver::UnexpectedResponse(resp))?;
+                }
+            };
             Ok(msg.r.pop().unwrap())
         }
     }
@@ -75,13 +80,19 @@ pub(crate) struct Response<'a> {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+enum Value<T> {
+    Ok(T),
+    Err(String),
+}
+    
+#[derive(Serialize, Deserialize, Debug)]
 struct Message<T> {
     t: i32,
     e: Option<i32>,
     r: Vec<T>,
-    b: Option<String>,
+    b: Option<Vec<String>>,
     p: Option<String>,
-    n: Option<String>
+    n: Option<Vec<String>>
 }
 
 impl Connection {

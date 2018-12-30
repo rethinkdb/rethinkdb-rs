@@ -56,5 +56,6 @@ pub enum Driver {
     ConnectionBroken,
     // The connection token has exhausted all possible IDs
     TokenOverflow,
+    UnexpectedResponse(Vec<u8>),
     Other(String),
 }
