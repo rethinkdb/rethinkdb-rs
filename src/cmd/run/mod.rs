@@ -5,7 +5,7 @@ use crate::{
     err, Result,
 };
 use bytes::{Buf, BufMut, Bytes, BytesMut, IntoBuf};
-use futures::{channel::mpsc, prelude::*};
+use futures::prelude::*;
 use romio::TcpStream;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
@@ -30,23 +30,14 @@ where
     msg.put(query.as_ref());
     msg.put(",{}]");
     await!(sess.write(msg.as_ref()))?;
-    match conn.controller() {
-        Some(controller) => {
-            let channel = mpsc::channel(conn.buffer());
-            controller.insert(id, channel);
-            Err(err::Driver::Other(String::from("unimplemented")))?
+    let Response { resp, .. } = await!(conn.read(id))?;
+    let mut msg: Message<_> = match serde_json::from_slice(&resp) {
+        Ok(msg) => msg,
+        Err(_) => {
+            return Err(err::Driver::UnexpectedResponse(resp.to_vec()))?;
         }
-        None => {
-            let Response { resp, .. } = await!(conn.read())?;
-            let mut msg: Message<_> = match serde_json::from_slice(&resp) {
-                Ok(msg) => msg,
-                Err(_) => {
-                    return Err(err::Driver::UnexpectedResponse(resp.to_vec()))?;
-                }
-            };
-            Ok(msg.r.pop().unwrap())
-        }
-    }
+    };
+    Ok(msg.r.pop().unwrap())
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -72,10 +63,9 @@ impl<'a> Session<'a> {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Response<'a> {
+pub(crate) struct Response {
     id: RequestId,
     resp: Bytes,
-    stream: &'a TcpStream,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -89,7 +79,7 @@ struct Message<T> {
 }
 
 impl Connection {
-    pub(crate) async fn read<'a>(&'a self) -> Result<Response<'a>> {
+    async fn read_msg(&self) -> Result<Response> {
         let mut buf = BytesMut::new();
         buf.resize(HEADER_LEN, 0);
         let mut stream = self.stream();
@@ -100,6 +90,29 @@ impl Connection {
         buf.resize(len, 0);
         await!(stream.read_exact(&mut buf))?;
         let resp = buf.freeze();
-        Ok(Response { id, resp, stream })
+        Ok(Response { id, resp })
+    }
+
+    pub(crate) async fn read(&self, id: RequestId) -> Result<Response> {
+        let mut resp = await!(self.read_msg())?;
+        if resp.id != id {
+            if let Some(controller) = self.controller() {
+                let channel = crossbeam_channel::unbounded();
+                controller.insert(id, channel);
+                if let Some(entry) = controller.get(&id) {
+                    let (ref tx, ref rx) = entry.value();
+                    while resp.id != id {
+                        // unwraping here should be safe because we have just
+                        // retrieved this channel and it's still in scope
+                        tx.send(resp).unwrap();
+                        resp = match rx.try_recv() {
+                            Ok(resp) => resp,
+                            Err(_) => await!(self.read_msg())?,
+                        };
+                    }
+                }
+            }
+        }
+        Ok(resp)
     }
 }

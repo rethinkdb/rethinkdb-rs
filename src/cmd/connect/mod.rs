@@ -6,9 +6,10 @@ use std::{
     sync::atomic::{AtomicBool, AtomicU64, Ordering::SeqCst},
 };
 
-use crate::{err, r, Result};
+use crate::{cmd::run::Response, err, r, Result};
+use crossbeam_channel::{Receiver, Sender};
 use crossbeam_skiplist::SkipMap;
-use futures::{channel::mpsc, prelude::*};
+use futures::prelude::*;
 use romio::TcpStream;
 use scram::client::{ScramClient, ServerFinal, ServerFirst};
 use serde::{Deserialize, Serialize};
@@ -23,7 +24,6 @@ const PROTOCOL_VERSION: usize = 0;
 pub struct Connection {
     stream: TcpStream,
     broken: AtomicBool,
-    buffer: usize,
     multiplex: Option<Multiplex>,
 }
 
@@ -39,7 +39,7 @@ impl r {
         let opt = opts.into().unwrap_or_default();
         let addr = SocketAddr::new(opt.host, opt.port);
         let stream = await!(TcpStream::connect(&addr))?;
-        let multiplex = if opt.buffer != 0 {
+        let multiplex = if opt.multiplex {
             // Start counting from 1 because we want to use 0 to detect when the
             // token wraps over. If we allow tokens to be reused, the client may
             // return data not meant for that particular connection which may be
@@ -57,7 +57,6 @@ impl r {
         let conn = Connection {
             stream,
             multiplex,
-            buffer: opt.buffer,
             broken: AtomicBool::new(false),
         };
         let handshake = HandShake {
@@ -258,12 +257,9 @@ impl Connection {
         self.broken.store(true, SeqCst);
     }
 
+    #[doc(hidden)]
     pub fn broken(&self) -> bool {
         self.broken.load(SeqCst)
-    }
-
-    pub(crate) fn buffer(&self) -> usize {
-        self.buffer
     }
 
     pub(crate) fn token(&self) -> Result<RequestId> {
@@ -290,7 +286,7 @@ impl Connection {
 }
 
 pub(crate) type RequestId = u64;
-pub(crate) type Channel = (mpsc::Sender<()>, mpsc::Receiver<()>);
+pub(crate) type Channel = (Sender<Response>, Receiver<Response>);
 pub(crate) type Controller = SkipMap<RequestId, Channel>;
 
 #[derive(Debug)]

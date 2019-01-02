@@ -16,6 +16,7 @@ travis-ci = { repository = "rethinkdb/rethinkdb-rs" }
 
 [dependencies]
 bytes = { version = "0.4.11", features = ["serde"] }
+crossbeam-channel = "0.3.6"
 crossbeam-skiplist = { rev = "91e2ecf", git = "https://github.com/crossbeam-rs/crossbeam" }
 futures-preview = "0.3.0-alpha.11"
 log = "0.4.6"

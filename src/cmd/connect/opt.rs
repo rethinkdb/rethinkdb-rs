@@ -8,9 +8,7 @@ pub struct Opts {
     pub(super) user: String,
     pub(super) password: String,
     pub(super) timeout: u8,
-    // Buffer size of the futures `mpsc::channel`. This is used for connection
-    // multiplexing. A size of 0 disables multiplexing altogether.
-    pub(super) buffer: usize,
+    pub(super) multiplex: bool,
 }
 
 impl Default for Opts {
@@ -22,15 +20,15 @@ impl Default for Opts {
             user: "admin".to_owned(),
             password: String::new(),
             timeout: 20,
-            //buffer: 1024,
-            buffer: 0,
+            multiplex: true,
         }
     }
 }
 
 impl Opts {
-    pub fn buffer(mut self, buffer: usize) -> Self {
-        self.buffer = buffer;
+    #[doc(hidden)]
+    pub fn multiplex(mut self, multiplex: bool) -> Self {
+        self.multiplex = multiplex;
         self
     }
 }
