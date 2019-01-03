@@ -1,4 +1,5 @@
 mod opt;
+pub(crate) mod ser;
 
 use crate::{
     cmd::connect::{Connection, RequestId},
