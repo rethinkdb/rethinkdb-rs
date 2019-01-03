@@ -1,40 +1,37 @@
 mod arg;
 
-use crate::{
-    cmd::{
-        connect::Connection,
-        run::{run, Opts},
-    },
-    Result,
-};
+use crate::cmd::expr::Expr;
 use bytes::{BufMut, Bytes, BytesMut};
-use serde::de::DeserializeOwned;
 
 pub use self::arg::Arg;
 
 #[derive(Debug, Clone)]
-pub struct Merge(Bytes);
+pub struct Merge {
+    pub(super) bytes: Bytes,
+}
 
-pub(crate) fn merge<A>(prev: &Bytes, arg: A) -> Merge
+fn merge<A>(prev: &Bytes, arg: A) -> Merge
 where
     A: Into<Arg>,
 {
-    let arg = arg.into().0;
-    let mut cmd = BytesMut::with_capacity(1024);
-    cmd.put("[35,[");
-    cmd.put(prev.as_ref());
-    cmd.put(",");
-    cmd.put(arg.as_ref());
-    cmd.put("],{}]");
-    Merge(cmd.freeze())
+    let (header, arg, sep, footer) = ("[35,[", arg.into().bytes, ",", "]]");
+    let len = header.len() + prev.len() + arg.len() + sep.len() + footer.len();
+    let mut cmd = BytesMut::with_capacity(len);
+    cmd.put(header);
+    cmd.put(prev);
+    cmd.put(sep);
+    cmd.put(arg);
+    cmd.put(footer);
+    Merge {
+        bytes: cmd.freeze(),
+    }
 }
 
-impl Merge {
-    pub async fn run<O, T>(self, conn: &Connection, opts: O) -> Result<T>
+impl Expr {
+    pub fn merge<A>(&self, arg: A) -> Merge
     where
-        O: Into<Option<Opts>> + 'static,
-        T: DeserializeOwned,
+        A: Into<Arg>,
     {
-        await!(run(conn, self.0, opts.into()))
+        merge(&self.bytes, arg)
     }
 }

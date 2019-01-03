@@ -3,11 +3,14 @@ use bytes::Bytes;
 use serde::Serialize;
 
 #[derive(Debug, Clone)]
-pub struct Arg(pub(super) Bytes);
+pub struct Arg {
+    pub(super) bytes: Bytes,
+}
 
 impl<T: Serialize> From<T> for Arg {
     fn from(t: T) -> Self {
-        let bytes = to_vec(&t).unwrap();
-        Arg(Bytes::from(bytes))
+        Arg {
+            bytes: Bytes::from(to_vec(&t)),
+        }
     }
 }

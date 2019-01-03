@@ -22,13 +22,14 @@ const PROTOCOL_VERSION: usize = 0;
 
 #[derive(Debug)]
 pub struct Connection {
+    db: String,
     stream: TcpStream,
     broken: AtomicBool,
     multiplex: Option<Multiplex>,
 }
 
 enum Version {
-    V1_0 = 0x34c2bdc3,
+    V1_0 = 0x34c2_bdc3,
 }
 
 impl r {
@@ -104,6 +105,7 @@ impl r {
         let conn = Connection {
             stream,
             multiplex,
+            db: String::new(),
             broken: AtomicBool::new(false),
         };
         let handshake = HandShake {
@@ -166,6 +168,7 @@ impl HandShake {
         await!(self.conn.stream.read(&mut self.buf))?; // message 6
         server_final(scram, self.read_buf(0).1)?;
 
+        self.conn.db = opt.db;
         Ok(self.conn)
     }
 
@@ -198,8 +201,8 @@ impl<'a> ServerInfo<'a> {
                 if !info.success {
                     return Err(err::Runtime::Internal(resp.to_owned()))?;
                 }
-                if info.min_protocol_version > PROTOCOL_VERSION
-                    || PROTOCOL_VERSION > info.max_protocol_version
+                if PROTOCOL_VERSION < info.min_protocol_version
+                    || info.max_protocol_version < PROTOCOL_VERSION
                 {
                     let msg = format!(
                         "unsupported protocol version {version}, expected between {min} and {max}",
@@ -296,12 +299,21 @@ fn server_final(scram: ServerFinal, resp: &[u8]) -> Result<()> {
 }
 
 impl Connection {
-    pub(crate) fn stream(&self) -> &TcpStream {
-        &self.stream
-    }
-
-    pub(crate) fn mark_broken(&self) {
-        self.broken.store(true, SeqCst);
+    /// Change the default database on this connection
+    ///
+    /// **Example:** Change the default database so that we don’t need to
+    /// specify the database when referencing a table.
+    ///
+    /// ```rust
+    /// # use reql::r;
+    /// # use futures::executor::block_on;
+    /// # let mut conn = block_on(r.connect(None)).unwrap();
+    /// conn.use_db("marvel");
+    /// r.table("heroes") // refers to r.db("marvel").table("heroes")
+    /// # ;
+    /// ```
+    pub fn use_db(&mut self, name: &str) {
+        self.db = name.to_owned();
     }
 
     #[doc(hidden)]
@@ -309,7 +321,15 @@ impl Connection {
         self.broken.load(SeqCst)
     }
 
-    pub(crate) fn token(&self) -> Result<RequestId> {
+    pub(super) fn stream(&self) -> &TcpStream {
+        &self.stream
+    }
+
+    pub(super) fn mark_broken(&self) {
+        self.broken.store(true, SeqCst);
+    }
+
+    pub(super) fn token(&self) -> Result<RequestId> {
         match self.multiplex {
             Some(Multiplex { ref counter, .. }) => {
                 let id = counter.fetch_add(1, SeqCst);
@@ -324,7 +344,7 @@ impl Connection {
         }
     }
 
-    pub(crate) fn controller(&self) -> Option<&Controller> {
+    pub(super) fn controller(&self) -> Option<&Controller> {
         match self.multiplex {
             Some(Multiplex { ref controller, .. }) => Some(controller),
             None => None,
@@ -332,12 +352,12 @@ impl Connection {
     }
 }
 
-pub(crate) type RequestId = u64;
-pub(crate) type Channel = (Sender<Response>, Receiver<Response>);
-pub(crate) type Controller = SkipMap<RequestId, Channel>;
+pub(super) type RequestId = u64;
+pub(super) type Channel = (Sender<Response>, Receiver<Response>);
+pub(super) type Controller = SkipMap<RequestId, Channel>;
 
 #[derive(Debug)]
-pub(crate) struct Multiplex {
+pub(super) struct Multiplex {
     counter: AtomicU64,
     controller: Controller,
 }

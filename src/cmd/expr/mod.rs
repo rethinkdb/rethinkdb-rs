@@ -1,20 +1,14 @@
 mod arg;
 
-use crate::{
-    cmd::{
-        connect::Connection,
-        merge::{self, merge, Merge},
-        run::{run, Opts},
-    },
-    r, Result,
-};
+use crate::r;
 use bytes::Bytes;
-use serde::de::DeserializeOwned;
 
 pub use self::arg::Arg;
 
 #[derive(Debug, Clone)]
-pub struct Expr(Bytes);
+pub struct Expr {
+    pub(super) bytes: Bytes,
+}
 
 impl r {
     /// Construct a ReQL JSON object from a native object
@@ -32,24 +26,9 @@ impl r {
     where
         A: Into<Arg>,
     {
-        Expr(arg.into().0)
-    }
-}
-
-impl Expr {
-    pub fn merge<A>(&self, arg: A) -> Merge
-    where
-        A: Into<merge::Arg>,
-    {
-        merge(&self.0, arg)
-    }
-
-    pub async fn run<O, T>(self, conn: &Connection, opts: O) -> Result<T>
-    where
-        O: Into<Option<Opts>> + 'static,
-        T: DeserializeOwned,
-    {
-        await!(run(conn, self.0, opts.into()))
+        Expr {
+            bytes: arg.into().bytes,
+        }
     }
 }
 

@@ -2,7 +2,10 @@ mod opt;
 pub(crate) mod ser;
 
 use crate::{
-    cmd::connect::{Connection, RequestId},
+    cmd::{
+        connect::{Connection, RequestId},
+        *,
+    },
     err, Result,
 };
 use bytes::{Buf, BufMut, Bytes, BytesMut, IntoBuf};
@@ -14,6 +17,28 @@ pub use self::opt::*;
 
 const HEADER_LEN: usize = 8 + 4;
 
+macro_rules! runnable {
+    ( $($cmd:ty,)* ) => {
+        $(
+            impl $cmd {
+                pub async fn run<O, T>(self, conn: &Connection, opts: O) -> Result<T>
+                    where
+                    O: Into<Option<Opts>> + 'static,
+                    T: DeserializeOwned,
+                    {
+                        await!(run(conn, self.bytes, opts.into()))
+                    }
+            }
+        )*
+    }
+}
+
+runnable! {
+    expr::Expr,
+    merge::Merge,
+    table::Table,
+}
+
 pub(crate) async fn run<O, T>(conn: &Connection, query: Bytes, _opts: O) -> Result<T>
 where
     O: Into<Option<Opts>> + 'static,
@@ -24,13 +49,13 @@ where
     }
     let id = conn.token()?;
     let sess = Session::new(id, conn.stream());
-    // TODO remove the hardcoded 10 after adding handling opts
-    let len = query.len() + 10;
+    let (header, footer) = ("[1,", ",{}]");
+    let len = header.len() + query.len() + header.len();
     let mut msg = BytesMut::with_capacity(len);
-    msg.put("[1,");
-    msg.put(query.as_ref());
-    msg.put(",{}]");
-    await!(sess.write(msg.as_ref()))?;
+    msg.put(header);
+    msg.put(query);
+    msg.put(footer);
+    await!(sess.write(&msg))?;
     let Response { resp, .. } = await!(conn.read(id))?;
     let mut msg: Message<_> = match serde_json::from_slice(&resp) {
         Ok(msg) => msg,
@@ -103,7 +128,7 @@ impl Connection {
                 if let Some(entry) = controller.get(&id) {
                     let (ref tx, ref rx) = entry.value();
                     while resp.id != id {
-                        // unwraping here should be safe because we have just
+                        // unwrapping here should be safe because we have just
                         // retrieved this channel and it's still in scope
                         tx.send(resp).unwrap();
                         resp = match rx.try_recv() {
