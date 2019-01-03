@@ -3,6 +3,7 @@ mod arg;
 use crate::{
     cmd::{
         connect::Connection,
+        merge::{self, merge, Merge},
         run::{run, Opts},
     },
     r, Result,
@@ -13,18 +14,44 @@ use serde::de::DeserializeOwned;
 pub use self::arg::Arg;
 
 #[derive(Debug, Clone)]
-pub struct Command(Bytes);
+pub struct Expr(Bytes);
 
 impl r {
-    pub fn expr<A>(&self, arg: A) -> Command
+    /// Construct a ReQL JSON object from a native object
+    ///
+    /// **Example:** Objects wrapped with `expr` can then be manipulated by ReQL API functions.
+    ///
+    /// ```rust
+    /// # #![feature(async_await, await_macro, futures_api, integer_atomics)]
+    /// #
+    /// # use reql::r;
+    /// # use serde_json::{json, Value};
+    /// #
+    /// # futures::executor::block_on(
+    /// #   async {
+    /// #       let conn = await!(r.connect(None)).unwrap();
+    /// #       let _: Value = await!(
+    /// r.expr(json!({"a": "b"})).merge(json!({"b": [1,2,3]})).run(&conn, None)
+    /// #       ).unwrap();
+    /// #   }
+    /// # );
+    /// ```
+    pub fn expr<A>(&self, arg: A) -> Expr
     where
         A: Into<Arg>,
     {
-        Command(arg.into().0)
+        Expr(arg.into().0)
     }
 }
 
-impl Command {
+impl Expr {
+    pub fn merge<A>(&self, arg: A) -> Merge
+    where
+        A: Into<merge::Arg>,
+    {
+        merge(&self.0, arg)
+    }
+
     pub async fn run<O, T>(self, conn: &Connection, opts: O) -> Result<T>
     where
         O: Into<Option<Opts>> + 'static,
