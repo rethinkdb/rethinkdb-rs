@@ -32,6 +32,53 @@ enum Version {
 }
 
 impl r {
+    /// Create a new connection to the database server
+    ///
+    /// You can change the default connection options using [Opts].
+    ///
+    /// **Example:** Open a connection using the default host and port,
+    /// specifying the default database.
+    ///
+    /// ```rust
+    /// # use reql::{r, cmd::connect::Opts};
+    /// #
+    /// r.connect(Opts::default().db("marvel"))
+    /// # ;
+    /// ```
+    ///
+    /// The connection is created asynchronously, so you will have to `await`
+    /// the result to get an actual connection.
+    ///
+    /// **Example:** Open a new connection to the database.
+    ///
+    /// ```rust
+    /// # use reql::{r, cmd::connect::Opts};
+    /// #
+    /// let opts = Opts::default()
+    ///     .host([127, 0, 0, 1])
+    ///     .port(28015)
+    ///     .db("marvel");
+    /// r.connect(opts)
+    /// # ;
+    /// ```
+    ///
+    /// **Example:** Open a new connection to the database, specifying a
+    /// user/password combination for authentication.
+    ///
+    /// ```rust
+    /// # use reql::{r, cmd::connect::Opts};
+    /// #
+    /// let opts = Opts::default()
+    ///     .host([127, 0, 0, 1])
+    ///     .port(28015)
+    ///     .db("marvel")
+    ///     .user("herofinder")
+    ///     .password("metropolis");
+    /// r.connect(opts)
+    /// # ;
+    /// ```
+    ///
+    /// [Opts]: cmd/connect/struct.Opts.html
     pub async fn connect<O>(self, opts: O) -> Result<Connection>
     where
         O: Into<Option<Opts>>,

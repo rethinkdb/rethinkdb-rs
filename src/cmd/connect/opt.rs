@@ -26,6 +26,39 @@ impl Default for Opts {
 }
 
 impl Opts {
+    /// The host to connect to (default `127.0.0.1`)
+    pub fn host<T>(mut self, host: T) -> Self
+    where
+        T: Into<IpAddr>,
+    {
+        self.host = host.into();
+        self
+    }
+
+    /// The port to connect on (default `28015`)
+    pub fn port(mut self, port: u16) -> Self {
+        self.port = port;
+        self
+    }
+
+    /// The default database (default `test`)
+    pub fn db(mut self, db: &str) -> Self {
+        self.db = db.to_owned();
+        self
+    }
+
+    /// The user account to connect as (default `admin`)
+    pub fn user(mut self, user: &str) -> Self {
+        self.user = user.to_owned();
+        self
+    }
+
+    /// The password for the user account to connect as (default `""`, empty)
+    pub fn password(mut self, password: &str) -> Self {
+        self.password = password.to_owned();
+        self
+    }
+
     #[doc(hidden)]
     pub fn multiplex(mut self, multiplex: bool) -> Self {
         self.multiplex = multiplex;

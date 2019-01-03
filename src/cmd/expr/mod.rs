@@ -22,19 +22,11 @@ impl r {
     /// **Example:** Objects wrapped with `expr` can then be manipulated by ReQL API functions.
     ///
     /// ```rust
-    /// # #![feature(async_await, await_macro, futures_api, integer_atomics)]
-    /// #
     /// # use reql::r;
-    /// # use serde_json::{json, Value};
+    /// # use serde_json::json;
     /// #
-    /// # futures::executor::block_on(
-    /// #   async {
-    /// #       let conn = await!(r.connect(None)).unwrap();
-    /// #       let _: Value = await!(
-    /// r.expr(json!({"a": "b"})).merge(json!({"b": [1,2,3]})).run(&conn, None)
-    /// #       ).unwrap();
-    /// #   }
-    /// # );
+    /// r.expr(json!({"a": "b"})).merge(json!({"b": [1, 2, 3]}))
+    /// # ;
     /// ```
     pub fn expr<A>(&self, arg: A) -> Expr
     where
