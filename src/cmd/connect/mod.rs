@@ -196,6 +196,7 @@ struct ServerInfo<'a> {
 
 impl<'a> ServerInfo<'a> {
     fn validate(resp: &[u8]) -> Result<()> {
+        #[allow(clippy::absurd_extreme_comparisons)]
         match serde_json::from_slice::<ServerInfo>(resp) {
             Ok(info) => {
                 if !info.success {
