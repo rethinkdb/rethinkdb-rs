@@ -37,82 +37,97 @@ impl r {
     ///
     /// You can change the default connection options using [Opts].
     ///
-    /// **Example:** Open a connection using the default host and port,
+    /// ## Example
+    ///
+    /// Open a connection using the default host and port,
     /// specifying the default database.
     ///
     /// ```rust
     /// # use reql::{r, cmd::connect::Opts};
     /// #
-    /// r.connect(Opts::default().db("marvel"))
+    /// r.connect(Opts::builder().db("marvel").build())
     /// # ;
     /// ```
     ///
     /// The connection is created asynchronously, so you will have to `await`
     /// the result to get an actual connection.
     ///
-    /// **Example:** Open a new connection to the database.
+    /// ## Example
+    ///
+    /// Open a new connection to the database.
     ///
     /// ```rust
     /// # use reql::{r, cmd::connect::Opts};
     /// #
-    /// let opts = Opts::default()
+    /// let opts = Opts::builder()
     ///     .host([127, 0, 0, 1])
     ///     .port(28015)
-    ///     .db("marvel");
+    ///     .db("marvel")
+    ///     .build();
     /// r.connect(opts)
     /// # ;
     /// ```
     ///
-    /// **Example:** Open a new connection to the database, specifying a
+    /// ## Example
+    ///
+    /// Open a new connection to the database, specifying a
     /// user/password combination for authentication.
     ///
     /// ```rust
     /// # use reql::{r, cmd::connect::Opts};
     /// #
-    /// let opts = Opts::default()
+    /// let opts = Opts::builder()
     ///     .host([127, 0, 0, 1])
     ///     .port(28015)
     ///     .db("marvel")
     ///     .user("herofinder")
-    ///     .password("metropolis");
+    ///     .password("metropolis")
+    ///     .build();
     /// r.connect(opts)
     /// # ;
     /// ```
     ///
+    /// ## Related commands
+    ///
+    /// - [use_db]
+    ///
     /// [Opts]: cmd/connect/struct.Opts.html
-    pub async fn connect<O>(self, opts: O) -> Result<Connection>
+    /// [use_db]: cmd/connect/struct.Connection.html#method.use_db
+    pub fn connect<'a, O: 'a>(self, opts: O) -> impl Future<Output = Result<Connection>> + 'a
     where
-        O: Into<Option<Opts>>,
+        O: Into<Opts<'a>>,
     {
-        let opt = opts.into().unwrap_or_default();
-        let addr = SocketAddr::new(opt.host, opt.port);
-        let stream = await!(TcpStream::connect(&addr))?;
-        let multiplex = if opt.multiplex {
-            // Start counting from 1 because we want to use 0 to detect when the
-            // token wraps over. If we allow tokens to be reused, the client may
-            // return data not meant for that particular connection which may be
-            // a security risk. This effectively means that a connection may be
-            // used by `run` only up to `usize::max_value()` times.
-            let counter = AtomicU64::new(1);
-            let controller = SkipMap::new();
-            Some(Multiplex {
-                counter,
-                controller,
-            })
-        } else {
-            None
-        };
-        let conn = Connection {
-            stream,
-            multiplex,
-            db: String::new(),
-            broken: AtomicBool::new(false),
-        };
-        let handshake = HandShake {
-            conn,
-            buf: [0u8; BUF_SIZE],
-        };
-        await!(handshake.greet(opt))
+        async move {
+            let opt = opts.into();
+            let addr = SocketAddr::new(opt.host, opt.port);
+            let stream = await!(TcpStream::connect(&addr))?;
+            let multiplex = if opt.multiplex {
+                // Start counting from 1 because we want to use 0 to detect when the
+                // token wraps over. If we allow tokens to be reused, the client may
+                // return data not meant for that particular connection which may be
+                // a security risk. This effectively means that a connection may be
+                // used by `run` only up to `usize::max_value()` times.
+                let counter = AtomicU64::new(1);
+                let controller = SkipMap::new();
+                Some(Multiplex {
+                    counter,
+                    controller,
+                })
+            } else {
+                None
+            };
+            let conn = Connection {
+                stream,
+                multiplex,
+                db: String::new(),
+                broken: AtomicBool::new(false),
+            };
+            let handshake = HandShake {
+                conn,
+                buf: [0u8; BUF_SIZE],
+            };
+            await!(handshake.greet(opt))
+        }
     }
 }
 
@@ -128,13 +143,13 @@ impl HandShake {
     // This method optimises message exchange as suggested in the RethinkDB
     // documentation by sending message 3 right after message 1, without waiting
     // for message 2 first.
-    async fn greet(mut self, opt: Opts) -> Result<Connection> {
+    async fn greet<'a>(mut self, opt: Opts<'a>) -> Result<Connection> {
         // Send the version we support
         let version = (Version::V1_0 as u32).to_le_bytes();
         await!(self.conn.stream.write_all(&version))?; // message 1
 
         // Send client first message
-        let scram = ScramClient::new(&opt.user, &opt.password, None)?;
+        let scram = ScramClient::new(opt.user, opt.password, None)?;
         let (scram, msg) = client_first(scram)?;
         await!(self.conn.stream.write_all(&msg))?; // message 3
 
@@ -168,7 +183,7 @@ impl HandShake {
         await!(self.conn.stream.read(&mut self.buf))?; // message 6
         server_final(scram, self.read_buf(0).1)?;
 
-        self.conn.db = opt.db;
+        self.conn.db = opt.db.to_owned();
         Ok(self.conn)
     }
 
@@ -308,7 +323,7 @@ impl Connection {
     /// ```rust
     /// # use reql::r;
     /// # use futures::executor::block_on;
-    /// # let mut conn = block_on(r.connect(None)).unwrap();
+    /// # let mut conn = block_on(r.connect(())).unwrap();
     /// conn.use_db("marvel");
     /// r.table("heroes") // refers to r.db("marvel").table("heroes")
     /// # ;
@@ -372,7 +387,7 @@ mod tests {
     fn driver_can_connect() -> crate::Result<()> {
         block_on(
             async {
-                await!(r.connect(None))?;
+                await!(r.connect(()))?;
                 Ok(())
             },
         )

@@ -13,7 +13,9 @@ pub struct Expr {
 impl r {
     /// Construct a ReQL JSON object from a native object
     ///
-    /// **Example:** Objects wrapped with `expr` can then be manipulated by ReQL API functions.
+    /// ## Example
+    ///
+    /// Objects wrapped with `expr` can then be manipulated by ReQL API functions.
     ///
     /// ```rust
     /// # use reql::r;
@@ -41,8 +43,8 @@ mod tests {
     fn hello_world_works() -> crate::Result<()> {
         block_on(
             async {
-                let conn = await!(r.connect(None))?;
-                let resp: String = await!(r.expr("hello world").run(&conn, None))?;
+                let conn = await!(r.connect(()))?;
+                let resp: String = await!(r.expr("hello world").run(&conn))?;
                 assert_eq!(resp, "hello world");
                 Ok(())
             },

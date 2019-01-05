@@ -1,6 +1,8 @@
+mod arg;
 mod opt;
 pub(crate) mod ser;
 
+use self::arg::Arg;
 use crate::{
     cmd::{
         connect::{Connection, RequestId},
@@ -21,12 +23,13 @@ macro_rules! runnable {
     ( $($cmd:ty,)* ) => {
         $(
             impl $cmd {
-                pub async fn run<O, T>(self, conn: &Connection, opts: O) -> Result<T>
+                pub fn run<'a, A, T>(self, arg: A) -> impl Future<Output=Result<T>> + 'a
                     where
-                    O: Into<Option<Opts>> + 'static,
-                    T: DeserializeOwned,
+                    A: Into<Arg<'a>>,
+                    T: DeserializeOwned + 'static,
                     {
-                        await!(run(conn, self.bytes, opts.into()))
+                        let Arg { conn, opts } = arg.into();
+                        run(self.bytes, conn, opts)
                     }
             }
         )*
@@ -39,31 +42,36 @@ runnable! {
     table::Table,
 }
 
-pub(crate) async fn run<O, T>(conn: &Connection, query: Bytes, _opts: O) -> Result<T>
+fn run<'a, T>(
+    query: Bytes,
+    conn: &'a Connection,
+    _opts: Option<Opts<'a>>,
+) -> impl Future<Output = Result<T>> + 'a
 where
-    O: Into<Option<Opts>> + 'static,
     T: DeserializeOwned,
 {
-    if conn.broken() {
-        return Err(err::Driver::ConnectionBroken)?;
-    }
-    let id = conn.token()?;
-    let sess = Session::new(id, conn.stream());
-    let (header, footer) = ("[1,", ",{}]");
-    let len = header.len() + query.len() + header.len();
-    let mut msg = BytesMut::with_capacity(len);
-    msg.put(header);
-    msg.put(query);
-    msg.put(footer);
-    await!(sess.write(&msg))?;
-    let Response { resp, .. } = await!(conn.read(id))?;
-    let mut msg: Message<_> = match serde_json::from_slice(&resp) {
-        Ok(msg) => msg,
-        Err(_) => {
-            return Err(err::Driver::UnexpectedResponse(resp.to_vec()))?;
+    async move {
+        if conn.broken() {
+            return Err(err::Driver::ConnectionBroken)?;
         }
-    };
-    Ok(msg.r.pop().unwrap())
+        let id = conn.token()?;
+        let sess = Session::new(id, conn.stream());
+        let (header, footer) = ("[1,", ",{}]");
+        let len = header.len() + query.len() + header.len();
+        let mut msg = BytesMut::with_capacity(len);
+        msg.put(header);
+        msg.put(query);
+        msg.put(footer);
+        await!(sess.write(&msg))?;
+        let Response { resp, .. } = await!(conn.read(id))?;
+        let mut msg: Message<_> = match serde_json::from_slice(&resp) {
+            Ok(msg) => msg,
+            Err(_) => {
+                return Err(err::Driver::UnexpectedResponse(resp.to_vec()))?;
+            }
+        };
+        Ok(msg.r.pop().unwrap())
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
