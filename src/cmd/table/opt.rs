@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+use crate::cmd::make_builder;
 use serde::Serialize;
 
 #[derive(Debug, Clone, Copy, Serialize, Default)]
@@ -26,9 +27,7 @@ pub enum IdentifierFormat {
 }
 
 impl Opts {
-    pub fn builder() -> Self {
-        Default::default()
-    }
+    make_builder!();
 
     pub fn read_mode(&mut self, mode: ReadMode) -> &mut Self {
         self.read_mode = Some(mode);
@@ -38,9 +37,5 @@ impl Opts {
     pub fn identifier_format(&mut self, fmt: IdentifierFormat) -> &mut Self {
         self.identifier_format = Some(fmt);
         self
-    }
-
-    pub fn build(&self) -> Self {
-        *self
     }
 }

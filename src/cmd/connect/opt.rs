@@ -1,21 +1,19 @@
 use std::net::IpAddr;
 
+use crate::cmd::make_builder;
+
 #[derive(Debug, Clone, Copy)]
 pub struct Opts<'a> {
-    pub(super) host: IpAddr,
-    pub(super) port: u16,
-    pub(super) db: &'a str,
-    pub(super) user: &'a str,
-    pub(super) password: &'a str,
-    pub(super) timeout: u8,
-    pub(super) multiplex: bool,
+    pub(crate) host: IpAddr,
+    pub(crate) port: u16,
+    pub(crate) db: &'a str,
+    pub(crate) user: &'a str,
+    pub(crate) password: &'a str,
+    pub(crate) timeout: u8,
 }
 
 impl<'a> Opts<'a> {
-    /// Start building the options
-    pub fn builder() -> Self {
-        Default::default()
-    }
+    make_builder!();
 
     /// The host to connect to (default `127.0.0.1`)
     pub fn host<T>(&mut self, host: T) -> &mut Self
@@ -49,17 +47,6 @@ impl<'a> Opts<'a> {
         self.password = password;
         self
     }
-
-    #[doc(hidden)]
-    pub fn multiplex(&mut self, multiplex: bool) -> &mut Self {
-        self.multiplex = multiplex;
-        self
-    }
-
-    // Finalise the options
-    pub fn build(&self) -> Self {
-        *self
-    }
 }
 
 impl<'a> Default for Opts<'a> {
@@ -71,7 +58,6 @@ impl<'a> Default for Opts<'a> {
             user: "admin",
             password: "",
             timeout: 20,
-            multiplex: true,
         }
     }
 }

@@ -1,3 +1,4 @@
+use crate::cmd::make_builder;
 use serde::{Serialize, Serializer};
 
 #[derive(Debug, Clone, Copy, Serialize, Default)]
@@ -36,9 +37,7 @@ pub enum Format {
 }
 
 impl<'a> Opts<'a> {
-    pub fn builder() -> Self {
-        Default::default()
-    }
+    make_builder!();
 
     pub fn db(&mut self, name: &'a str) -> &mut Self {
         self.db = Some(Db(name));
@@ -48,10 +47,6 @@ impl<'a> Opts<'a> {
     pub fn profile(&mut self, profile: bool) -> &mut Self {
         self.profile = Some(profile);
         self
-    }
-
-    pub fn build(&self) -> Self {
-        *self
     }
 }
 

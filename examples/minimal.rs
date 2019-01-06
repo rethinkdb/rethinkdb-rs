@@ -1,14 +1,14 @@
 #![feature(async_await, await_macro, futures_api)]
 
-use reql::{r, Response};
+use reql::r;
 
 fn main() -> reql::Result<()> {
-    env_logger::init();
     futures::executor::block_on(
         async {
             let conn = await!(r.connect(()))?;
-            let resp: Response<String> = await!(r.expr("hello world").run(&conn))?;
-            log::info!("result => {}", resp.first().unwrap());
+            let resp = await!(r.expr("hello world").run(&conn))?;
+            let msg: &String = resp.first().unwrap();
+            println!("server response => {:?}", msg);
             Ok(())
         },
     )

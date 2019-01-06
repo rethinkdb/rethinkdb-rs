@@ -3,6 +3,7 @@
 use std::{io, str};
 
 use super::*;
+use futures::channel::oneshot::Canceled;
 use serde_json::error as js;
 
 impl From<Driver> for Error {
@@ -44,5 +45,11 @@ impl From<scram::Error> for Error {
 impl From<str::Utf8Error> for Error {
     fn from(err: str::Utf8Error) -> Error {
         Driver::Utf8(err).into()
+    }
+}
+
+impl From<Canceled> for Error {
+    fn from(_: Canceled) -> Error {
+        Driver::Other("request cancelled".to_owned()).into()
     }
 }

@@ -1,5 +1,5 @@
 use super::opt::Opts;
-use crate::cmd::run::ser::to_vec;
+use crate::ser::to_vec;
 use bytes::Bytes;
 
 #[derive(Debug, Clone)]

@@ -1,10 +1,7 @@
 mod arg;
 mod opt;
 
-use crate::{
-    cmd::{db::Db, run::ser::to_vec},
-    r,
-};
+use crate::{cmd::db::Db, r, ser::to_vec};
 use bytes::{BufMut, Bytes, BytesMut};
 
 pub use self::arg::Arg;
