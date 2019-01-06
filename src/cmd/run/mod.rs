@@ -2,6 +2,8 @@ mod arg;
 mod opt;
 pub(crate) mod ser;
 
+use std::ops::Deref;
+
 use self::arg::Arg;
 use crate::{
     cmd::{
@@ -13,7 +15,8 @@ use crate::{
 use bytes::{Buf, BufMut, Bytes, BytesMut, IntoBuf};
 use futures::prelude::*;
 use romio::TcpStream;
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize};
+use serde_json::Value;
 
 pub use self::opt::*;
 
@@ -23,7 +26,7 @@ macro_rules! runnable {
     ( $($cmd:ty,)* ) => {
         $(
             impl $cmd {
-                pub fn run<'a, A, T>(self, arg: A) -> impl Future<Output=Result<T>> + 'a
+                pub fn run<'a, A, T>(self, arg: A) -> impl Future<Output=Result<Response<T>>> + 'a
                     where
                     A: Into<Arg<'a>>,
                     T: DeserializeOwned + 'static,
@@ -45,8 +48,8 @@ runnable! {
 fn run<'a, T>(
     query: Bytes,
     conn: &'a Connection,
-    _opts: Option<Opts<'a>>,
-) -> impl Future<Output = Result<T>> + 'a
+    mut opts: Opts<'a>,
+) -> impl Future<Output = Result<Response<T>>> + 'a
 where
     T: DeserializeOwned,
 {
@@ -55,22 +58,44 @@ where
             return Err(err::Driver::ConnectionBroken)?;
         }
         let id = conn.token()?;
-        let sess = Session::new(id, conn.stream());
-        let (header, footer) = ("[1,", ",{}]");
-        let len = header.len() + query.len() + header.len();
+        if opts.db.is_none() {
+            let db = conn.db();
+            if !db.is_empty() {
+                opts.db(db);
+            }
+        }
+        // We can't use `ser::to_vec` here because it will wrap the DB term in
+        // an array. Luckily, the options to `run` do not contain arrays so we
+        // can safely use the upstream `to_vec` here.
+        let opts = serde_json::to_vec(&opts)?;
+        let opts_len = opts.len();
+        let (header, sep, footer) = ("[1,", ",", "]");
+        let len = header.len() + query.len() + sep.len() + opts_len + footer.len();
         let mut msg = BytesMut::with_capacity(len);
         msg.put(header);
         msg.put(query);
+        // don't include an empty object
+        if opts_len > 2 {
+            msg.put(sep);
+            msg.put(opts);
+        }
         msg.put(footer);
+        log::debug!("query => {}", std::str::from_utf8(&msg).unwrap());
+        let sess = Session::new(id, conn.stream());
         await!(sess.write(&msg))?;
-        let Response { resp, .. } = await!(conn.read(id))?;
-        let mut msg: Message<_> = match serde_json::from_slice(&resp) {
+        let Payload { resp, .. } = await!(conn.read(id))?;
+        log::debug!("response => {}", std::str::from_utf8(&resp).unwrap());
+        let msg: Message<_> = match serde_json::from_slice(&resp) {
             Ok(msg) => msg,
             Err(_) => {
-                return Err(err::Driver::UnexpectedResponse(resp.to_vec()))?;
+                let msg: Message<Value> = serde_json::from_slice(&resp)?;
+                return Err(err::Driver::UnexpectedResponse(msg.r))?;
             }
         };
-        Ok(msg.r.pop().unwrap())
+        Ok(Response {
+            value: msg.r,
+            profile: msg.p.unwrap_or_default(),
+        })
     }
 }
 
@@ -97,23 +122,23 @@ impl<'a> Session<'a> {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Response {
+pub(crate) struct Payload {
     id: RequestId,
     resp: Bytes,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 struct Message<T> {
-    t: i32,
-    e: Option<i32>,
+    t: u8,
+    e: Option<u32>,
     r: Vec<T>,
-    b: Option<Vec<String>>,
-    p: Option<String>,
-    n: Option<Vec<String>>,
+    b: Option<Vec<Value>>,
+    p: Option<Vec<Profile>>,
+    n: Option<Vec<Value>>,
 }
 
 impl Connection {
-    async fn read_msg(&self) -> Result<Response> {
+    async fn read_msg(&self) -> Result<Payload> {
         let mut buf = BytesMut::new();
         buf.resize(HEADER_LEN, 0);
         let mut stream = self.stream();
@@ -124,10 +149,10 @@ impl Connection {
         buf.resize(len, 0);
         await!(stream.read_exact(&mut buf))?;
         let resp = buf.freeze();
-        Ok(Response { id, resp })
+        Ok(Payload { id, resp })
     }
 
-    pub(crate) async fn read(&self, id: RequestId) -> Result<Response> {
+    pub(crate) async fn read(&self, id: RequestId) -> Result<Payload> {
         let mut resp = await!(self.read_msg())?;
         if resp.id != id {
             if let Some(controller) = self.controller() {
@@ -149,4 +174,27 @@ impl Connection {
         }
         Ok(resp)
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct Response<T> {
+    value: Vec<T>,
+    profile: Vec<Profile>,
+}
+
+impl<T> Deref for Response<T> {
+    type Target = Vec<T>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.value
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Profile {
+    description: Option<String>,
+    #[serde(rename = "duration(ms)")]
+    duration: Option<f64>,
+    sub_tasks: Option<Vec<Profile>>,
+    parallel_tasks: Option<Vec<Vec<Profile>>>,
 }

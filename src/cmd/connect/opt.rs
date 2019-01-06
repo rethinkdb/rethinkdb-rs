@@ -67,7 +67,7 @@ impl<'a> Default for Opts<'a> {
         Self {
             host: [127, 0, 0, 1].into(),
             port: 28015,
-            db: "test",
+            db: "",
             user: "admin",
             password: "",
             timeout: 20,

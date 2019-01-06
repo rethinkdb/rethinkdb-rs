@@ -44,8 +44,8 @@ mod tests {
         block_on(
             async {
                 let conn = await!(r.connect(()))?;
-                let resp: String = await!(r.expr("hello world").run(&conn))?;
-                assert_eq!(resp, "hello world");
+                let resp = await!(r.expr("hello world").run(&conn))?;
+                assert_eq!(resp.first(), Some(&"hello world".to_owned()));
                 Ok(())
             },
         )

@@ -6,7 +6,7 @@ use std::{
     sync::atomic::{AtomicBool, AtomicU64, Ordering::SeqCst},
 };
 
-use crate::{cmd::run::Response, err, r, Result};
+use crate::{cmd::run::Payload, err, r, Result};
 use crossbeam_channel::{Receiver, Sender};
 use crossbeam_skiplist::SkipMap;
 use futures::prelude::*;
@@ -119,7 +119,7 @@ impl r {
             let conn = Connection {
                 stream,
                 multiplex,
-                db: String::new(),
+                db: opt.db.to_owned(),
                 broken: AtomicBool::new(false),
             };
             let handshake = HandShake {
@@ -183,7 +183,6 @@ impl HandShake {
         await!(self.conn.stream.read(&mut self.buf))?; // message 6
         server_final(scram, self.read_buf(0).1)?;
 
-        self.conn.db = opt.db.to_owned();
         Ok(self.conn)
     }
 
@@ -366,10 +365,14 @@ impl Connection {
             None => None,
         }
     }
+
+    pub(super) fn db(&self) -> &str {
+        &self.db
+    }
 }
 
 pub(super) type RequestId = u64;
-pub(super) type Channel = (Sender<Response>, Receiver<Response>);
+pub(super) type Channel = (Sender<Payload>, Receiver<Payload>);
 pub(super) type Controller = SkipMap<RequestId, Channel>;
 
 #[derive(Debug)]

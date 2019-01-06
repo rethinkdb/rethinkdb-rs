@@ -4,7 +4,7 @@ mod impls;
 
 use std::{io, str};
 
-use serde_json::error as js;
+use serde_json::{error as js, Value};
 
 /// The most generic error message in ReQL
 #[derive(Debug)]
@@ -56,6 +56,6 @@ pub enum Driver {
     ConnectionBroken,
     // The connection token has exhausted all possible IDs
     TokenOverflow,
-    UnexpectedResponse(Vec<u8>),
+    UnexpectedResponse(Vec<Value>),
     Other(String),
 }
