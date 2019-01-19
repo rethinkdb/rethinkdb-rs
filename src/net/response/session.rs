@@ -27,13 +27,13 @@ impl<'a> Session<'a> {
         buf.put_u32_le(data_len as u32);
         buf.put(data);
         log::debug!(
-            "session => {}; sending query; data => {}",
+            "id => {}; sending query; data => {}",
             self.id,
             from_utf8(data).unwrap()
         );
         let mut stream = self.conn.stream();
         await!(stream.write_all(&buf))?;
-        log::debug!("session => {}; query sent", self.id);
+        log::debug!("id => {}; query sent", self.id);
         Ok(())
     }
 
@@ -43,22 +43,22 @@ impl<'a> Session<'a> {
             buf.resize(HEADER_LEN, 0);
             let mut reader = self.conn.stream();
             let mut guard = await!(self.conn.senders().lock());
-            log::debug!("session => {}; peeking socket data", self.id);
+            log::debug!("id => {}; peeking socket data", self.id);
             await!(reader.read_exact(&mut buf))?;
             let mut header = buf.take().into_buf();
             let id = header.get_u64_le() as usize;
             log::debug!(
-                "session => {}; peeked successfully, got data for {}",
+                "id => {}; peeked successfully, got data for {}",
                 self.id,
                 id
             );
             let len = header.get_u32_le() as usize;
             buf.resize(len, 0);
-            log::debug!("session => {}; retrieving data", self.id);
+            log::debug!("id => {}; retrieving data", self.id);
             await!(reader.read_exact(&mut buf))?;
             let resp = buf.freeze();
             log::debug!(
-                "session => {}; data retrieved; data => {}",
+                "id => {}; data retrieved; data => {}",
                 self.id,
                 from_utf8(&resp).unwrap()
             );
