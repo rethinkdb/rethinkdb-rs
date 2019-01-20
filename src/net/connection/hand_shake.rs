@@ -105,7 +105,8 @@ impl<'a> ServerInfo<'a> {
         match serde_json::from_slice::<ServerInfo>(resp) {
             Ok(info) => {
                 if !info.success {
-                    return Err(err::Runtime::Internal(resp.to_owned()))?;
+                    let error = str::from_utf8(resp)?;
+                    return Err(err::Runtime::Internal(error.to_owned()))?;
                 }
                 if PROTOCOL_VERSION < info.min_protocol_version
                     || info.max_protocol_version < PROTOCOL_VERSION
@@ -182,13 +183,14 @@ impl AuthResponse {
                             return Err(err::Driver::Auth(msg))?;
                         }
                     }
-                    return Err(err::Runtime::Internal(resp.to_owned()))?;
+                    let error = str::from_utf8(resp)?;
+                    return Err(err::Runtime::Internal(error.to_owned()))?;
                 }
                 Ok(info)
             }
             Err(_) => {
-                let msg = str::from_utf8(resp)?;
-                Err(err::Driver::Other(msg.to_owned()))?
+                let error = str::from_utf8(resp)?;
+                Err(err::Driver::Other(error.to_owned()))?
             }
         }
     }

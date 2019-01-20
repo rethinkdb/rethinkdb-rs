@@ -1,4 +1,11 @@
-#![feature(async_await, await_macro, futures_api, integer_atomics, decl_macro)]
+#![feature(
+    async_await,
+    await_macro,
+    futures_api,
+    integer_atomics,
+    decl_macro,
+    try_trait
+)]
 
 pub mod cmd;
 pub mod err;

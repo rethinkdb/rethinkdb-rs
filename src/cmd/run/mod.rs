@@ -1,6 +1,8 @@
 mod arg;
 mod opt;
 
+use std::str;
+
 use self::arg::Arg;
 use crate::{
     cmd::*,
@@ -12,9 +14,8 @@ use crate::{
     Result,
 };
 use bytes::{BufMut, Bytes, BytesMut};
-use futures::{channel::oneshot, prelude::*};
+use futures::{channel::mpsc, prelude::*};
 use serde::de::DeserializeOwned;
-use serde_json::Value;
 
 pub use self::opt::*;
 
@@ -72,24 +73,26 @@ where
             msg.put(opts);
         }
         msg.put(footer);
-        let (sender, reciever) = oneshot::channel();
+        let (sender, mut reciever) = mpsc::unbounded();
         let id = {
             let mut senders = await!(conn.senders().lock());
             senders.insert(sender)
         };
         let session = Session::new(id, conn);
         await!(session.write(&msg))?;
-        // wait for data
         await!(session.read())?;
-        let resp = await!(reciever)?;
+        let resp = await!(reciever.next())?;
         let msg: Message<_> = match serde_json::from_slice(&resp) {
             Ok(msg) => msg,
-            Err(_) => {
-                let msg: Message<Value> = serde_json::from_slice(&resp)?;
-                return Err(err::Driver::UnexpectedResponse(msg.r))?;
+            Err(error) => {
+                let response = str::from_utf8(&resp)?;
+                return Err(err::Driver::Other(format!(
+                    "failed to parse database response: {}; {}",
+                    response, error
+                )))?;
             }
         };
-        msg.is_valid()?;
-        Ok(Response::new(msg.r, msg.p.unwrap_or_default()))
+        let (_t, r, p) = msg.extract()?;
+        Ok(Response::new(r, p))
     }
 }

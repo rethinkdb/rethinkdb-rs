@@ -1,9 +1,9 @@
 //! The errors returned by this driver
 
-use std::{io, str};
+use std::{io, option::NoneError, str};
 
 use super::*;
-use futures::channel::oneshot::Canceled;
+use futures::channel::mpsc::SendError;
 use serde_json::error as js;
 
 impl From<Driver> for Error {
@@ -48,8 +48,14 @@ impl From<str::Utf8Error> for Error {
     }
 }
 
-impl From<Canceled> for Error {
-    fn from(_: Canceled) -> Error {
-        Driver::Other("request cancelled".to_owned()).into()
+impl From<SendError> for Error {
+    fn from(_err: SendError) -> Error {
+        Driver::Other("message sending failed".to_owned()).into()
+    }
+}
+
+impl From<NoneError> for Error {
+    fn from(_: NoneError) -> Error {
+        Driver::Other("expected message, got None".to_owned()).into()
     }
 }

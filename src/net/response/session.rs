@@ -5,11 +5,11 @@ use crate::{
     Result,
 };
 use bytes::{Buf, BufMut, BytesMut, IntoBuf};
-use futures::{channel::oneshot::Canceled, prelude::*};
+use futures::prelude::*;
 
 const HEADER_LEN: usize = 8 + 4;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub(crate) struct Session<'a> {
     id: RequestId,
     conn: &'a Connection,
@@ -20,7 +20,7 @@ impl<'a> Session<'a> {
         Session { id, conn }
     }
 
-    pub(crate) async fn write(self, data: &'a [u8]) -> Result<()> {
+    pub(crate) async fn write(&'a self, data: &'a [u8]) -> Result<()> {
         let data_len = data.len();
         let mut buf = BytesMut::with_capacity(HEADER_LEN + data_len);
         buf.put_u64_le(self.id as u64);
@@ -37,21 +37,17 @@ impl<'a> Session<'a> {
         Ok(())
     }
 
-    pub(crate) fn read(self) -> impl Future<Output = Result<()>> + 'a {
+    pub(crate) fn read(&'a self) -> impl Future<Output = Result<()>> + 'a {
         async move {
             let mut buf = BytesMut::new();
             buf.resize(HEADER_LEN, 0);
             let mut reader = self.conn.stream();
-            let mut guard = await!(self.conn.senders().lock());
-            log::debug!("id => {}; peeking socket data", self.id);
+            let guard = await!(self.conn.senders().lock());
+            log::debug!("id => {}; retrieving header information", self.id);
             await!(reader.read_exact(&mut buf))?;
             let mut header = buf.take().into_buf();
             let id = header.get_u64_le() as usize;
-            log::debug!(
-                "id => {}; peeked successfully, got data for {}",
-                self.id,
-                id
-            );
+            log::debug!("id => {}; header retrieved, got data for {}", self.id, id);
             let len = header.get_u32_le() as usize;
             buf.resize(len, 0);
             log::debug!("id => {}; retrieving data", self.id);
@@ -62,9 +58,22 @@ impl<'a> Session<'a> {
                 self.id,
                 from_utf8(&resp).unwrap()
             );
-            let sender = guard.remove(id);
-            sender.send(resp).map_err(|_| Canceled)?;
+            let sender = guard.get(id).unwrap();
+            sender
+                .unbounded_send(resp)
+                .map_err(|e| e.into_send_error())?;
             Ok(())
+        }
+    }
+}
+
+impl Drop for Session<'_> {
+    fn drop(&mut self) {
+        loop {
+            if let Some(mut guard) = self.conn.senders().try_lock() {
+                guard.remove(self.id);
+                break;
+            }
         }
     }
 }

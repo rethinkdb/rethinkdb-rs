@@ -8,12 +8,12 @@ use std::{
 use self::hand_shake::HandShake;
 use crate::{cmd::connect::Opts, Result};
 use bytes::Bytes;
-use futures::{channel::oneshot::Sender, lock::Mutex};
+use futures::{channel::mpsc::UnboundedSender, lock::Mutex};
 use romio::TcpStream;
 use slab::Slab;
 
 pub(crate) type RequestId = usize;
-pub(crate) type Senders = Mutex<Slab<Sender<Bytes>>>;
+pub(crate) type Senders = Mutex<Slab<UnboundedSender<Bytes>>>;
 
 /// The connection object returned by `r.connect()`
 #[derive(Debug)]

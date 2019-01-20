@@ -6,7 +6,7 @@ fn queries_are_thread_safe() {
     env_logger::init();
     let conn = block_on(r.connect(())).unwrap();
     crossbeam::scope(|thread| {
-        for i in 0..10_001 {
+        for i in 0..10_000 {
             let conn = &conn;
             thread.spawn(move |_| {
                 let msg = format!("iteration {}", i);

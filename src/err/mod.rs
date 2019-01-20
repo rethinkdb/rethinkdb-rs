@@ -9,7 +9,7 @@ use serde_json::{error as js, Value};
 /// The most generic error message in ReQL
 #[derive(Debug)]
 pub enum Error {
-    Compile(Vec<u8>),
+    Compile(String),
     Runtime(Runtime),
     Driver(Driver),
 }
@@ -21,14 +21,14 @@ pub enum Error {
 #[derive(Debug)]
 pub enum Runtime {
     /// The query contains a logical impossibility, such as adding a number to a string.
-    QueryLogic(Vec<u8>),
-    NonExistence(Vec<u8>),
-    ResourceLimit(Vec<u8>),
-    User(Vec<u8>),
-    Internal(Vec<u8>),
-    Timeout(Vec<u8>),
+    QueryLogic(String),
+    NonExistence(String),
+    ResourceLimit(String),
+    User(String),
+    Internal(String),
+    Timeout(String),
     Availability(Availability),
-    Permission(Vec<u8>),
+    Permission(String),
 }
 
 /// A server in the cluster is unavailable
@@ -38,8 +38,8 @@ pub enum Runtime {
 /// children.
 #[derive(Debug)]
 pub enum Availability {
-    OpFailed(Vec<u8>),
-    OpIndeterminate(Vec<u8>),
+    OpFailed(String),
+    OpIndeterminate(String),
 }
 
 /// An error has occurred within the driver
@@ -54,8 +54,6 @@ pub enum Driver {
     Io(io::Error),
     Json(js::Error),
     ConnectionBroken,
-    // The connection token has exhausted all possible IDs
-    TokenOverflow,
-    UnexpectedResponse(Vec<Value>),
+    UnexpectedResponse(Value),
     Other(String),
 }
