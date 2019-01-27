@@ -4,7 +4,7 @@ pub(crate) mod session;
 
 use std::ops::Deref;
 
-use self::profile::Profile;
+use profile::Profile;
 
 /// The response object returned by `query.run()`
 #[derive(Debug, Clone)]

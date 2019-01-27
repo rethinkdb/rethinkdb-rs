@@ -3,7 +3,7 @@ mod arg;
 use crate::r;
 use bytes::Bytes;
 
-pub use self::arg::Arg;
+pub use arg::Arg;
 
 #[derive(Debug, Clone)]
 pub struct Expr {

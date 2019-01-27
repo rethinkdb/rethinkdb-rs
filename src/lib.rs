@@ -22,4 +22,4 @@ pub use crate::net::{
 };
 
 /// Custom result returned by various ReQL commands
-pub type Result<T> = std::result::Result<T, self::err::Error>;
+pub type Result<T> = std::result::Result<T, err::Error>;

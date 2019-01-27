@@ -121,7 +121,7 @@ impl<'a> ServerInfo<'a> {
                 }
                 Ok(())
             }
-            Err(_) => {
+            Err(..) => {
                 let msg = str::from_utf8(resp)?;
                 Err(err::Driver::Other(msg.to_owned()))?
             }
@@ -188,7 +188,7 @@ impl AuthResponse {
                 }
                 Ok(info)
             }
-            Err(_) => {
+            Err(..) => {
                 let error = str::from_utf8(resp)?;
                 Err(err::Driver::Other(error.to_owned()))?
             }

@@ -5,7 +5,7 @@ use std::{
     sync::atomic::{AtomicBool, Ordering::SeqCst},
 };
 
-use self::hand_shake::HandShake;
+use hand_shake::HandShake;
 use crate::{cmd::connect::Opts, Result};
 use bytes::Bytes;
 use futures::{channel::mpsc::UnboundedSender, lock::Mutex};

@@ -14,7 +14,7 @@ pub struct Opts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     group_format: Option<Format>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) db: Option<Db<'a>>,
+    pub(crate) db: Option<Db<'a>>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize)]
@@ -51,7 +51,7 @@ impl<'a> Opts<'a> {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub(super) struct Db<'a>(pub(super) &'a str);
+pub(crate) struct Db<'a>(&'a str);
 
 impl<'a> Serialize for Db<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

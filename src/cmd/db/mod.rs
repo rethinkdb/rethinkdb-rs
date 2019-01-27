@@ -3,7 +3,7 @@ mod arg;
 use crate::r;
 use bytes::{BufMut, Bytes, BytesMut};
 
-pub use self::arg::Arg;
+pub use arg::Arg;
 
 #[derive(Debug, Clone)]
 pub struct Db {

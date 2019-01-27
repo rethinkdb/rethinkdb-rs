@@ -6,7 +6,7 @@ use crate::{net::connection::Connection, r, Result};
 use futures::prelude::*;
 use romio::TcpStream;
 
-pub use self::opt::*;
+pub use opt::*;
 
 impl r {
     /// Create a new connection to the database server

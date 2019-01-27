@@ -60,7 +60,7 @@ impl<T> Message<T> {
         match self {
             Message::Ok(msg) => Ok((msg.t, msg.r, msg.p.unwrap_or_default())),
             Message::Err(mut msg) => {
-                use self::ErrorType::*;
+                use ErrorType::*;
                 let error = msg.r.pop().unwrap_or_default();
                 let error = match msg.t {
                     Compile => err::Error::Compile(error),
@@ -82,7 +82,7 @@ impl<'de> Deserialize<'de> for SuccessType {
     where
         D: Deserializer<'de>,
     {
-        use self::SuccessType::*;
+        use SuccessType::*;
 
         match u8::deserialize(deserializer)? {
             1 => Ok(SuccessAtom),
@@ -103,7 +103,7 @@ impl<'de> Deserialize<'de> for ErrorType {
     where
         D: Deserializer<'de>,
     {
-        use self::ErrorType::*;
+        use ErrorType::*;
 
         match u8::deserialize(deserializer)? {
             16 => Ok(Client),

@@ -4,7 +4,7 @@ mod opt;
 use crate::{cmd::db::Db, r, ser::to_vec};
 use bytes::{BufMut, Bytes, BytesMut};
 
-pub use self::arg::Arg;
+pub use arg::Arg;
 
 #[derive(Debug, Clone)]
 pub struct Table {

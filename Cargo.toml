@@ -16,14 +16,14 @@ travis-ci = { repository = "rethinkdb/rethinkdb-rs" }
 
 [dependencies]
 bytes = { version = "0.4.11", features = ["serde"] }
-futures-preview = "0.3.0-alpha.11"
+futures-preview = "0.3.0-alpha.12"
 log = { version = "0.4.6", features = ["release_max_level_info"] }
 reql-types = { version = "0.0.4", path = "./types" }
 romio = "0.3.0-alpha.1"
 scram = "0.4.0"
-serde = { version = "1.0.84", features = ["derive"] }
-serde_json = "1.0.35"
-slab = "0.4.1"
+serde = { version = "1.0.85", features = ["derive"] }
+serde_json = "1.0.37"
+slab = "0.4.2"
 
 [dev-dependencies]
 env_logger = "0.6.0"
