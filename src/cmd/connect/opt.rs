@@ -1,6 +1,4 @@
-use std::net::IpAddr;
-
-use crate::cmd::make_builder;
+use {crate::cmd::make_builder, std::net::IpAddr};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Opts<'a> {

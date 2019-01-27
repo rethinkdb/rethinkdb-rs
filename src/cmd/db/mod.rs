@@ -1,7 +1,9 @@
 mod arg;
 
-use crate::r;
-use bytes::{BufMut, Bytes, BytesMut};
+use {
+    crate::r,
+    bytes::{BufMut, Bytes, BytesMut},
+};
 
 pub use arg::Arg;
 

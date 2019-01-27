@@ -1,10 +1,11 @@
 pub(crate) mod opt;
 
-use std::net::SocketAddr;
-
-use crate::{net::connection::Connection, r, Result};
-use futures::prelude::*;
-use romio::TcpStream;
+use {
+    crate::{net::connection::Connection, r, Result},
+    futures::prelude::*,
+    romio::TcpStream,
+    std::net::SocketAddr,
+};
 
 pub use opt::*;
 

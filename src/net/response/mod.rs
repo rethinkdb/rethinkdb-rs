@@ -2,9 +2,7 @@ pub(crate) mod message;
 pub(crate) mod profile;
 pub(crate) mod session;
 
-use std::ops::Deref;
-
-use profile::Profile;
+use {profile::Profile, std::ops::Deref};
 
 /// The response object returned by `query.run()`
 #[derive(Debug, Clone)]

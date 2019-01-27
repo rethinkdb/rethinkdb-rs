@@ -1,5 +1,7 @@
-use crate::cmd::make_builder;
-use serde::{Serialize, Serializer};
+use {
+    crate::cmd::make_builder,
+    serde::{Serialize, Serializer},
+};
 
 #[derive(Debug, Clone, Copy, Serialize, Default)]
 pub struct Opts<'a> {

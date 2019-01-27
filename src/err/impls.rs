@@ -1,10 +1,11 @@
 //! The errors returned by this driver
 
-use std::{io, option::NoneError, str};
-
-use super::*;
-use futures::channel::mpsc::SendError;
-use serde_json::error as js;
+use {
+    super::*,
+    futures::channel::mpsc::SendError,
+    serde_json::error as js,
+    std::{io, option::NoneError, str},
+};
 
 impl From<Driver> for Error {
     fn from(err: Driver) -> Error {

@@ -1,16 +1,17 @@
 mod arg;
 mod opt;
 
-use std::marker::PhantomData;
-
-use crate::{
-    cmd::*,
-    net::{connection::Connection, response::session::Session},
+use {
+    crate::{
+        cmd::*,
+        net::{connection::Connection, response::session::Session},
+    },
+    arg::Arg,
+    bytes::Bytes,
+    futures::channel::mpsc::UnboundedReceiver,
+    serde::de::DeserializeOwned,
+    std::marker::PhantomData,
 };
-use arg::Arg;
-use bytes::Bytes;
-use futures::channel::mpsc::UnboundedReceiver;
-use serde::de::DeserializeOwned;
 
 pub use opt::*;
 

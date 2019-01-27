@@ -1,7 +1,9 @@
 mod arg;
 
-use crate::cmd::expr::Expr;
-use bytes::{BufMut, Bytes, BytesMut};
+use {
+    crate::cmd::expr::Expr,
+    bytes::{BufMut, Bytes, BytesMut},
+};
 
 pub use arg::Arg;
 

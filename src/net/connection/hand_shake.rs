@@ -1,9 +1,10 @@
-use std::str;
-
-use crate::{cmd::connect::Opts, err, net::connection::Connection, Result};
-use futures::prelude::*;
-use scram::client::{ScramClient, ServerFinal, ServerFirst};
-use serde::{Deserialize, Serialize};
+use {
+    crate::{cmd::connect::Opts, err, net::connection::Connection, Result},
+    futures::prelude::*,
+    scram::client::{ScramClient, ServerFinal, ServerFirst},
+    serde::{Deserialize, Serialize},
+    std::str,
+};
 
 const NULL_BYTE: u8 = b'\0';
 const BUF_SIZE: usize = 512;

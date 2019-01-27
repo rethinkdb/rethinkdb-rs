@@ -1,7 +1,6 @@
 mod arg;
 
-use crate::r;
-use bytes::Bytes;
+use {crate::r, bytes::Bytes};
 
 pub use arg::Arg;
 

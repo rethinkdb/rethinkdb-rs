@@ -1,7 +1,8 @@
-use std::io::{Result, Write};
-
-use serde::Serialize;
-use serde_json::ser::{Formatter, Serializer};
+use {
+    serde::Serialize,
+    serde_json::ser::{Formatter, Serializer},
+    std::io::{Result, Write},
+};
 
 // Overrides JSON's formatting of arrays to wrap them in the `MAKE_ARRAY`
 // command since ReQL uses arrays for serialization

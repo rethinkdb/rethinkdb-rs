@@ -1,6 +1,4 @@
-use super::opt::Opts;
-use crate::ser::to_vec;
-use bytes::Bytes;
+use {super::opt::Opts, crate::ser::to_vec, bytes::Bytes};
 
 #[derive(Debug, Clone)]
 pub struct Arg {

@@ -2,9 +2,10 @@
 
 mod impls;
 
-use std::{io, str};
-
-use serde_json::{error as js, Value};
+use {
+    serde_json::{error as js, Value},
+    std::{io, str},
+};
 
 /// The most generic error message in ReQL
 #[derive(Debug)]

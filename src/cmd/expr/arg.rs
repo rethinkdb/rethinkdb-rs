@@ -1,6 +1,4 @@
-use crate::ser::to_vec;
-use bytes::Bytes;
-use serde::Serialize;
+use {crate::ser::to_vec, bytes::Bytes, serde::Serialize};
 
 #[derive(Debug, Clone)]
 pub struct Arg {

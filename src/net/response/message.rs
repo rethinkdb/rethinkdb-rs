@@ -1,7 +1,9 @@
-use super::profile::Profile;
-use crate::{err, Result};
-use serde::{de, Deserialize, Deserializer};
-use serde_json::Value;
+use {
+    super::profile::Profile,
+    crate::{err, Result},
+    serde::{de, Deserialize, Deserializer},
+    serde_json::Value,
+};
 
 #[derive(Deserialize, Debug)]
 pub(crate) struct Success<T> {

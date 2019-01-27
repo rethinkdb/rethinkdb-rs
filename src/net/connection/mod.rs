@@ -1,16 +1,17 @@
 mod hand_shake;
 
-use std::{
-    str,
-    sync::atomic::{AtomicBool, Ordering::SeqCst},
+use {
+    crate::{cmd::connect::Opts, Result},
+    bytes::Bytes,
+    futures::{channel::mpsc::UnboundedSender, lock::Mutex},
+    hand_shake::HandShake,
+    romio::TcpStream,
+    slab::Slab,
+    std::{
+        str,
+        sync::atomic::{AtomicBool, Ordering::SeqCst},
+    },
 };
-
-use hand_shake::HandShake;
-use crate::{cmd::connect::Opts, Result};
-use bytes::Bytes;
-use futures::{channel::mpsc::UnboundedSender, lock::Mutex};
-use romio::TcpStream;
-use slab::Slab;
 
 pub(crate) type RequestId = usize;
 pub(crate) type Senders = Mutex<Slab<UnboundedSender<Bytes>>>;

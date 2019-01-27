@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
-use crate::cmd::make_builder;
-use serde::Serialize;
+use {crate::cmd::make_builder, serde::Serialize};
 
 #[derive(Debug, Clone, Copy, Serialize, Default)]
 pub struct Opts {

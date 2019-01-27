@@ -1,8 +1,10 @@
 mod arg;
 mod opt;
 
-use crate::{cmd::db::Db, r, ser::to_vec};
-use bytes::{BufMut, Bytes, BytesMut};
+use {
+    crate::{cmd::db::Db, r, ser::to_vec},
+    bytes::{BufMut, Bytes, BytesMut},
+};
 
 pub use arg::Arg;
 
