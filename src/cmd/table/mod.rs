@@ -2,28 +2,18 @@ mod arg;
 mod opt;
 
 use {
-    crate::{
-        cmd::{db::Db, Command},
-        r,
-    },
+    crate::{r, Client},
     bytes::Bytes,
 };
 
 pub use arg::Arg;
 
-#[derive(Debug, Clone)]
-pub struct Table {
-    pub(super) bytes: Bytes,
-}
-
-fn table(prev: &Bytes, arg: Arg) -> Table {
-    let Arg { arg, opts } = arg;
-    let cmd = Command::new(prev, 15, arg, opts);
-    Table { bytes: cmd.into() }
+fn table(prev: &Bytes, arg: Arg) -> Client {
+    Client::new(prev, 15, arg)
 }
 
 impl r {
-    pub fn table<A>(&self, arg: A) -> Table
+    pub fn table<A>(&self, arg: A) -> Client
     where
         A: Into<Arg>,
     {
@@ -31,11 +21,11 @@ impl r {
     }
 }
 
-impl Db {
-    pub fn table<A>(&self, arg: A) -> Table
+impl Client {
+    pub fn table<A>(&self, arg: A) -> Client
     where
         A: Into<Arg>,
     {
-        table(&self.bytes, arg.into())
+        table(&self.0, arg.into())
     }
 }

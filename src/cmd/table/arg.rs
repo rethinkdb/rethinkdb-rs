@@ -1,9 +1,12 @@
-use {crate::ser::to_vec, bytes::Bytes};
+use {
+    crate::{cmd::Param, ser::to_vec},
+    bytes::Bytes,
+};
 
 #[derive(Debug, Clone)]
 pub struct Arg {
-    pub(super) arg: Bytes,
-    pub(super) opts: Vec<u8>,
+    arg: Bytes,
+    opts: Vec<u8>,
 }
 
 impl<'a> From<&'a str> for Arg {
@@ -21,5 +24,15 @@ impl From<String> for Arg {
             arg: Bytes::from(to_vec(&t)),
             opts: Vec::new(),
         }
+    }
+}
+
+impl Param for Arg {
+    fn arg(&self) -> &Bytes {
+        &self.arg
+    }
+
+    fn opts(&self) -> &Vec<u8> {
+        &self.opts
     }
 }

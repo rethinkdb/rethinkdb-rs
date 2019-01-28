@@ -3,8 +3,8 @@ mod opt;
 
 use {
     crate::{
-        cmd::*,
         net::{connection::Connection, response::session::Session},
+        Client,
     },
     arg::Arg,
     bytes::Bytes,
@@ -15,27 +15,15 @@ use {
 
 pub use opt::*;
 
-macro_rules! runnable {
-    ( $($cmd:ty,)* ) => {
-        $(
-            impl $cmd {
-                pub fn run<'a, A, T>(self, arg: A) -> Run<'a, T>
-                    where
-                    A: Into<Arg<'a>>,
-                    T: DeserializeOwned + 'static,
-                    {
-                        let Arg { conn, opts } = arg.into();
-                        Run::new(self.bytes, conn, opts)
-                    }
-            }
-        )*
+impl Client {
+    pub fn run<'a, A, T>(self, arg: A) -> Run<'a, T>
+    where
+        A: Into<Arg<'a>>,
+        T: DeserializeOwned + 'static,
+    {
+        let Arg { conn, opts } = arg.into();
+        Run::new(self.0, conn, opts)
     }
-}
-
-runnable! {
-    expr::Expr,
-    merge::Merge,
-    table::Table,
 }
 
 #[derive(Debug)]

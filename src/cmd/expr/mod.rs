@@ -1,13 +1,8 @@
 mod arg;
 
-use {crate::r, bytes::Bytes};
+use crate::{r, Client};
 
 pub use arg::Arg;
-
-#[derive(Debug, Clone)]
-pub struct Expr {
-    pub(super) bytes: Bytes,
-}
 
 impl r {
     /// Construct a ReQL JSON object from a native object
@@ -23,13 +18,11 @@ impl r {
     /// r.expr(json!({"a": "b"})).merge(json!({"b": [1, 2, 3]}))
     /// # ;
     /// ```
-    pub fn expr<A>(&self, arg: A) -> Expr
+    pub fn expr<A>(&self, arg: A) -> Client
     where
         A: Into<Arg>,
     {
-        Expr {
-            bytes: arg.into().arg,
-        }
+        Client(arg.into().arg)
     }
 }
 

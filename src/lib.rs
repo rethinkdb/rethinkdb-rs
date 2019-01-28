@@ -16,6 +16,10 @@ pub(crate) mod ser;
 #[allow(non_camel_case_types)]
 pub struct r;
 
+/// The database cluster client
+#[derive(Debug, Clone)]
+pub struct Client(bytes::Bytes);
+
 pub use crate::net::{
     connection::Connection,
     response::{profile::Profile, Response},

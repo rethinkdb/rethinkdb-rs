@@ -6,9 +6,11 @@ This is a [ReQL] driver written in [Rust].
 [![cratesio-badge][]][cratesio]
 [![docsrs-badge][]][docsrs]
 
-**NB**: There is nothing to see here at the moment. This driver is currently
-being re-written. For a currently working version please see the master branch
-or the latest version on crates.io.
+## Sponsors
+
+Development of this driver has in part been sponsored by [WideFind AB], an 
+IoT company based in Sweden, developing high-accuracy, high performance 
+indoor positioning hardware and software solutions.
 
 ## License
 
@@ -31,4 +33,5 @@ additional terms or conditions.
 [cratesio]: https://crates.io/crates/reql
 [docsrs-badge]: https://docs.rs/reql/badge.svg
 [docsrs]: https://docs.rs/reql
+[WideFind AB]: https://www.widefind.se
 [asl2]: http://www.apache.org/licenses/LICENSE-2.0

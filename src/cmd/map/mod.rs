@@ -5,10 +5,10 @@ use crate::Client;
 pub use arg::Arg;
 
 impl Client {
-    pub fn merge<A>(&self, arg: A) -> Client
+    pub fn map<A>(&self, arg: A) -> Client
     where
         A: Into<Arg>,
     {
-        Client::new(&self.0, 35, arg.into())
+        Client::new(&self.0, 38, arg.into())
     }
 }
