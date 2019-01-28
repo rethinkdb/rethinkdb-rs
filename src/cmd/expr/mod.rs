@@ -28,7 +28,7 @@ impl r {
         A: Into<Arg>,
     {
         Expr {
-            bytes: arg.into().bytes,
+            bytes: arg.into().arg,
         }
     }
 }

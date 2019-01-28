@@ -1,9 +1,6 @@
 mod arg;
 
-use {
-    crate::r,
-    bytes::{BufMut, Bytes, BytesMut},
-};
+use {super::Command, crate::r, bytes::Bytes};
 
 pub use arg::Arg;
 
@@ -42,14 +39,8 @@ impl r {
     where
         A: Into<Arg>,
     {
-        let (header, arg, footer) = ("[14,[", arg.into().bytes, "]]");
-        let len = header.len() + arg.len() + footer.len();
-        let mut cmd = BytesMut::with_capacity(len);
-        cmd.put(header);
-        cmd.put(arg);
-        cmd.put(footer);
-        Db {
-            bytes: cmd.freeze(),
-        }
+        let Arg { arg } = arg.into();
+        let cmd = Command::new(&[], 14, arg, Vec::new());
+        Db { bytes: cmd.into() }
     }
 }
