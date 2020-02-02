@@ -3,8 +3,8 @@ extern crate nom;
 #[macro_use]
 extern crate serde_derive;
 
-mod config;
 mod commands;
+mod config;
 
 use self::commands::{Command, Commands};
 use self::config::Config;

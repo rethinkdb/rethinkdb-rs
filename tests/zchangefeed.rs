@@ -1,17 +1,17 @@
+extern crate futures;
 extern crate reql;
 extern crate reql_types;
-extern crate futures;
 #[macro_use]
 extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
 
+use futures::Stream;
 use reql::*;
 use reql_types::*;
-use futures::Stream;
 
-use std::sync::*;
 use std::io::*;
+use std::sync::*;
 
 mod common;
 
@@ -42,7 +42,8 @@ fn writer() -> u32 {
     loop {
         //println!("sending {}", amount);
         scrap.count += 1;
-        let stat = r.db("test")
+        let stat = r
+            .db("test")
             .table("tests")
             .get("hej")
             .replace(json!(scrap))
@@ -58,13 +59,10 @@ fn writer() -> u32 {
     amount
 }
 
-
-
 #[test]
 /// Starts a thread that will write, a thread that reads the changes and then compares the amount
 fn changefeeds_for_a_long_time() {
     common::setup();
-
 
     let counter = Arc::new(Mutex::new(0));
 
@@ -78,18 +76,19 @@ fn changefeeds_for_a_long_time() {
         println!("");
         println!("Reader Connected");
 
-        let stat = r.db("test")
+        let stat = r
+            .db("test")
             .table("tests")
             .changes()
-            .run::<Change<Scrap,Scrap>>(conn);
+            .run::<Change<Scrap, Scrap>>(conn);
 
         let mut wait = stat.unwrap().wait();
         loop {
-            let _data  = wait.next().unwrap();
+            let _data = wait.next().unwrap();
 
             let mut amount = read_counter.lock().unwrap();
             *amount += 1;
-            print!("Receiving {:6}/{} ... \r", *amount, CHANGES );
+            print!("Receiving {:6}/{} ... \r", *amount, CHANGES);
             let _ = stdout().flush();
         }
     });
@@ -106,6 +105,9 @@ fn changefeeds_for_a_long_time() {
 
     std::thread::sleep(std::time::Duration::from_millis(500));
 
-    assert_eq!(written, *counter.lock().unwrap(), "wrote and read diff amount");
-
+    assert_eq!(
+        written,
+        *counter.lock().unwrap(),
+        "wrote and read diff amount"
+    );
 }

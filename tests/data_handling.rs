@@ -1,15 +1,15 @@
+extern crate futures;
 extern crate reql;
 extern crate reql_types;
-extern crate futures;
 #[macro_use]
 extern crate serde_derive;
 #[macro_use]
 extern crate serde_json;
 
+use futures::Stream;
+use reql::Document::*;
 use reql::*;
 use reql_types::*;
-use reql::Document::*;
-use futures::Stream;
 
 mod common;
 
@@ -40,7 +40,8 @@ fn can_write() {
         count: 0,
     };
 
-    let stat = r.db("test")
+    let stat = r
+        .db("test")
         .table("tests")
         .insert(json!(scrap))
         .run::<WriteStatus>(conn);
@@ -54,7 +55,6 @@ fn can_write() {
     } else {
         assert!(false);
     }
-
 }
 
 /// Reads the server status fields and verifies that the correct port has been inserted in the field
@@ -70,7 +70,8 @@ fn can_read() {
 
     let conn = r.connect(conf).unwrap();
 
-    let stat = r.db("rethinkdb")
+    let stat = r
+        .db("rethinkdb")
         .table("server_status")
         .run::<ServerStatus>(conn);
 
@@ -83,5 +84,4 @@ fn can_read() {
     } else {
         assert!(false);
     }
-
 }

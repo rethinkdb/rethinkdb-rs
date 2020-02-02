@@ -4,12 +4,12 @@ use std::io::Error as IoError;
 use std::str::Utf8Error;
 use std::sync::Arc;
 
-use protobuf::ProtobufError;
-use {scram, r2d2};
-use serde_json::Value;
-use futures::sync::mpsc::SendError;
-use serde_json::error::Error as JsonError;
 use derive_error as de;
+use futures::sync::mpsc::SendError;
+use protobuf::ProtobufError;
+use serde_json::error::Error as JsonError;
+use serde_json::Value;
+use {r2d2, scram};
 
 /// The most generic error message in ReQL
 #[derive(Debug, Clone, de::Error)]
@@ -135,20 +135,17 @@ impl From<ProtobufError> for Error {
     }
 }
 
-
 impl From<r2d2::Error> for Error {
     fn from(err: r2d2::Error) -> Error {
         From::from(DriverError::R2D2(err))
     }
 }
 
-
 impl From<scram::Error> for Error {
     fn from(err: scram::Error) -> Error {
         From::from(DriverError::Scram(err))
     }
 }
-
 
 impl<T> From<SendError<T>> for Error {
     fn from(err: SendError<T>) -> Error {

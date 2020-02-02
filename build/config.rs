@@ -44,7 +44,8 @@ impl Config {
         let cmds_src = format!("{}/commands.rs", out_dir);
         let version = env::var("CARGO_PKG_VERSION").unwrap();
 
-        let menu = build_menu(&menu_file).into_iter()
+        let menu = build_menu(&menu_file)
+            .into_iter()
             // We are only interested in actual commands
             // that are contained in the sections
             .map(|menu| menu.section)
@@ -63,9 +64,7 @@ impl Config {
             })
             // Match filesystem formating of section directories
             .map(|mut section| {
-                section.name = section.name
-                    .replace(" ", "-")
-                    .to_lowercase();
+                section.name = section.name.replace(" ", "-").to_lowercase();
                 section
             });
 
@@ -76,7 +75,8 @@ impl Config {
                 commands.push(command);
             }
         }
-        commands = commands.into_iter()
+        commands = commands
+            .into_iter()
             // Drop blacklisted sections
             .filter(|command| {
                 let blacklist = vec!["cursors"];
@@ -87,60 +87,71 @@ impl Config {
                 }
                 true
             })
-        // Drop blacklisted commands
-        .filter(|command| {
-            let blacklist = vec![
-                "r", "args", "use", "row", "opt_arg", "array", "object", "close", "reconnect",
-                "noreply_wait", "server", "event_emitter", "run",
-            ];
-            for cmd in blacklist {
-                if cmd == command.permalink {
-                    return false;
+            // Drop blacklisted commands
+            .filter(|command| {
+                let blacklist = vec![
+                    "r",
+                    "args",
+                    "use",
+                    "row",
+                    "opt_arg",
+                    "array",
+                    "object",
+                    "close",
+                    "reconnect",
+                    "noreply_wait",
+                    "server",
+                    "event_emitter",
+                    "run",
+                ];
+                for cmd in blacklist {
+                    if cmd == command.permalink {
+                        return false;
+                    }
                 }
-            }
-            true
-        })
-        // Rename special keywords
-        .map(|mut command| {
-            let keywords = vec!["mod", "match", "do"];
-            for cmd in keywords {
-                if cmd == command.permalink {
-                    command.method = Some(format!("{}_", command.permalink));
+                true
+            })
+            // Rename special keywords
+            .map(|mut command| {
+                let keywords = vec!["mod", "match", "do"];
+                for cmd in keywords {
+                    if cmd == command.permalink {
+                        command.method = Some(format!("{}_", command.permalink));
+                    }
                 }
-            }
-            command
-        })
-        // Rename commands
-        .map(|mut command| {
-            let names = vec![("to_json_string", "to_json")];
-            for (old, new) in names {
-                if old == command.permalink {
-                    command.method = Some(new.into());
+                command
+            })
+            // Rename commands
+            .map(|mut command| {
+                let names = vec![("to_json_string", "to_json")];
+                for (old, new) in names {
+                    if old == command.permalink {
+                        command.method = Some(new.into());
+                    }
                 }
-            }
-            command
-        })
-        // Commands with different types
-        .map(|mut command| {
-            let types = vec![("js", "javascript"), ("do", "funcall")];
-            for (cmd, typ) in types {
-                if cmd == command.permalink {
-                    command.typ = Some(typ.into());
+                command
+            })
+            // Commands with different types
+            .map(|mut command| {
+                let types = vec![("js", "javascript"), ("do", "funcall")];
+                for (cmd, typ) in types {
+                    if cmd == command.permalink {
+                        command.typ = Some(typ.into());
+                    }
                 }
-            }
-            command
-        })
-        // Commands in different sections
-        .map(|mut command| {
-            let menu = vec![("changes", "manipulating-tables")];
-            for (cmd, section) in menu {
-                if cmd == command.permalink {
-                    command.section = section.to_owned();
+                command
+            })
+            // Commands in different sections
+            .map(|mut command| {
+                let menu = vec![("changes", "manipulating-tables")];
+                for (cmd, section) in menu {
+                    if cmd == command.permalink {
+                        command.section = section.to_owned();
+                    }
                 }
-            }
-            command
-        })
-        .collect();
+                command
+            })
+            .collect();
 
         Config {
             docs_dir: PathBuf::from(&docs_dir),
