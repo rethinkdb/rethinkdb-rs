@@ -1,10 +1,10 @@
+extern crate futures;
 extern crate reql;
 extern crate reql_types;
-extern crate futures;
 
 use futures::Stream;
+use reql::{Client, Config, Document, Run};
 use reql_types::ServerStatus;
-use reql::{Config, Client, Document, Run};
 
 fn main() -> reql::Result<()> {
     // Create a new ReQL client
@@ -14,7 +14,8 @@ fn main() -> reql::Result<()> {
     let conn = r.connect(Config::default())?;
 
     // Run the query
-    let stati = r.db("rethinkdb")
+    let stati = r
+        .db("rethinkdb")
         .table("server_status")
         .run::<ServerStatus>(conn)?;
 

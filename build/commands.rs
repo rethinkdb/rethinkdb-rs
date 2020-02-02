@@ -1,7 +1,7 @@
+use crate::config;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
-use crate::config;
 
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/build/parsers.rs"));
 
@@ -33,7 +33,8 @@ impl Commands {
     pub fn generate<P: AsRef<Path>>(&self, path: P) {
         let commands: String = self.commands.join("\n");
 
-        let src = format!(r#"
+        let src = format!(
+            r#"
             impl Client {{
 
                 /// Create a new ReQL client
@@ -95,7 +96,9 @@ impl Commands {
 
                 {}
             }}
-        "#, commands);
+        "#,
+            commands
+        );
 
         let mut file = File::create(path).unwrap();
         file.write_all(src.as_bytes()).unwrap();
@@ -141,41 +144,49 @@ impl Command {
 
         let (no_args, docs) = self.gen_docs(docs);
         self.tokens = if name == "connect" {
-            format!(r#"
+            format!(
+                r#"
                 {}
                 pub fn connect<'a>(&self, cfg: Config<'a>) -> Result<Connection> {{
                     io::connect(self, cfg)
                 }}
             "#,
-                    docs)
+                docs
+            )
         } else if name == "expr" {
-            format!(r#"
+            format!(
+                r#"
                 {}
                 pub fn expr<T: IntoArg>(&self, args: T) -> Client {{
                     util::make_cmd(self, "expr", None, Some(args))
                 }}
             "#,
-                    docs)
+                docs
+            )
         } else if no_args {
-            format!(r#"
+            format!(
+                r#"
                 {docs}
                 pub fn {name}(&self) -> Client {{
                     util::make_cmd::<Client>(self, "{name}", Some({typ}), None)
                 }}
             "#,
-                    docs = docs,
-                    name = name,
-                    typ = typ)
+                docs = docs,
+                name = name,
+                typ = typ
+            )
         } else {
-            format!(r#"
+            format!(
+                r#"
                 {docs}
                 pub fn {name}<T: IntoArg>(&self, args: T) -> Client {{
                     util::make_cmd(self, "{name}", Some({typ}), Some(args))
                 }}
             "#,
-                    docs = docs,
-                    name = name,
-                    typ = typ)
+                docs = docs,
+                name = name,
+                typ = typ
+            )
         };
     }
 
@@ -190,7 +201,8 @@ impl Command {
         // The sentence following the title
         let mut next_line = String::new();
 
-        docs = docs.lines()
+        docs = docs
+            .lines()
             // If the command is documented with no args
             // we won't give it args
             .map(|line| {
@@ -223,7 +235,7 @@ impl Command {
                     if let Some(i) = line.find('.') {
                         let (t, n) = line.split_at(i);
                         doc_str.push_str(&format!("/// {}\n", t));
-                        next_line = n.trim_left_matches('.').trim().to_owned();
+                        next_line = n.trim_start_matches('.').trim().to_owned();
                         parse = true;
                         return false;
                     } else {
@@ -237,7 +249,7 @@ impl Command {
                 // Indent commands so they come out nice
                 format!("/// {}\n", line)
             })
-        .collect();
+            .collect();
 
         if !img.is_empty() {
             doc_str.push_str(&format!("///\n/// {}\n", img));
@@ -256,9 +268,13 @@ impl Command {
     }
 
     fn fixup(&self, commands: &str) -> String {
-        commands.lines()
+        commands
+            .lines()
             .map(|line| {
-                line.replace("/assets/images/docs/", "https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/")
+                line.replace(
+                    "/assets/images/docs/",
+                    "https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/",
+                )
             })
             .collect()
     }

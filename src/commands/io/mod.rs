@@ -1,35 +1,34 @@
+mod handshake;
 mod pool;
 mod request;
-mod handshake;
 
-use crate::{
-    Client, InnerConfig, Config, Connection, IntoArg,
-    Opts, DEFAULT_PORT, Request, Response, Result, Run,
-    Server, Session, SessionManager,
-    errors::*,
-};
 use crate::Document;
-use r2d2;
+use crate::{
+    errors::*, Client, Config, Connection, InnerConfig, IntoArg, Opts, Request, Response, Result,
+    Run, Server, Session, SessionManager, DEFAULT_PORT,
+};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
+use futures::sync::mpsc;
+use futures::{Async, Poll, Stream};
 use indexmap::IndexMap;
+use lazy_static::lazy_static;
 use parking_lot::RwLock;
 use protobuf::ProtobufEnum;
 use ql2::proto::Query_QueryType as QueryType;
+use r2d2;
 use serde::de::DeserializeOwned;
-use std::{error};
 use std::cmp::Ordering;
+use std::error;
 use std::io::{self, Read, Write};
 use std::net::SocketAddr;
 use std::net::TcpStream;
 use std::time::{Duration, Instant};
 use uuid::Uuid;
-use lazy_static::lazy_static;
-use futures::sync::mpsc;
-use futures::{Async, Poll, Stream};
 
 lazy_static! {
     static ref CONFIG: RwLock<IndexMap<Connection, InnerConfig>> = RwLock::new(IndexMap::new());
-    static ref POOL: RwLock<IndexMap<Connection, r2d2::Pool<SessionManager>>> = RwLock::new(IndexMap::new());
+    static ref POOL: RwLock<IndexMap<Connection, r2d2::Pool<SessionManager>>> =
+        RwLock::new(IndexMap::new());
 }
 
 const CHANNEL_SIZE: usize = 1024;
@@ -58,7 +57,10 @@ pub fn connect<'a>(client: &Client, cfg: Config<'a>) -> Result<Connection> {
 }
 
 impl<A: IntoArg + std::fmt::Debug> Run<A> for Client {
-    fn run<T: DeserializeOwned + Send + std::fmt::Debug + 'static>(&self, args: A) -> Result<Response<T>> {
+    fn run<T: DeserializeOwned + Send + std::fmt::Debug + 'static>(
+        &self,
+        args: A,
+    ) -> Result<Response<T>> {
         let cterm = match self.term {
             Ok(ref term) => term.clone(),
             Err(ref error) => {
@@ -97,21 +99,21 @@ impl<A: IntoArg + std::fmt::Debug> Run<A> for Client {
             .name("submit".into())
             //.stack_size(78048)
             .spawn(move || {
-            let req = Request {
-                term: cterm,
-                opts: aterm,
-                pool: pool,
-                cfg: cfg,
-                tx: tx,
-                write: true,
-                retry: false,
-            };
-            req.submit();
-        });
+                let req = Request {
+                    term: cterm,
+                    opts: aterm,
+                    pool: pool,
+                    cfg: cfg,
+                    tx: tx,
+                    write: true,
+                    retry: false,
+                };
+                req.submit();
+            });
         Ok(Response {
-               done: false,
-               rx: rx,
-           })
+            done: false,
+            rx: rx,
+        })
     }
 }
 
@@ -125,12 +127,10 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Stream for Response<T> {
         }
         match self.rx.poll() {
             Ok(Async::NotReady) => Ok(Async::NotReady),
-            Ok(Async::Ready(Some(res))) => {
-                match res {
-                    Ok(data) => Ok(Async::Ready(Some(data))),
-                    Err(error) => Err(error),
-                }
-            }
+            Ok(Async::Ready(Some(res))) => match res {
+                Ok(data) => Ok(Async::Ready(Some(data))),
+                Err(error) => Err(error),
+            },
             Ok(Async::Ready(None)) => {
                 self.done = true;
                 Ok(Async::Ready(None))
@@ -145,7 +145,8 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Stream for Response<T> {
 }
 
 fn io_error<T>(err: T) -> io::Error
-    where T: Into<Box<error::Error + Send + Sync>>
+where
+    T: Into<Box<dyn error::Error + Send + Sync>>,
 {
     io::Error::new(io::ErrorKind::Other, err)
 }
@@ -155,10 +156,7 @@ impl<'a> Default for Config<'a> {
         let ip4 = format!("127.0.0.1:{}", DEFAULT_PORT);
         let ip6 = format!("[::1]:{}", DEFAULT_PORT);
         Config {
-            servers: vec![
-                ip4.parse().unwrap(),
-                ip6.parse().unwrap(),
-            ],
+            servers: vec![ip4.parse().unwrap(), ip6.parse().unwrap()],
             db: "test",
             user: "admin",
             password: "",
@@ -211,17 +209,16 @@ impl Connection {
         let server = Server::new(&host, cfg.servers);
         cluster.insert(host, server);
 
-        CONFIG
-            .write()
-            .insert(*self,
-                    InnerConfig {
-                        cluster: cluster,
-                        opts: opts,
-                    });
+        CONFIG.write().insert(
+            *self,
+            InnerConfig {
+                cluster: cluster,
+                opts: opts,
+            },
+        );
 
         Ok(())
     }
-
 
     fn set_latency(&self) -> Result<()> {
         match CONFIG.write().get_mut(self) {

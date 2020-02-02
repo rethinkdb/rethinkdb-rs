@@ -6,7 +6,6 @@ mod common;
 
 #[test]
 fn it_connects() {
-
     common::setup();
     let conf = Config::default();
 
@@ -17,7 +16,7 @@ fn it_connects() {
     let conn = r.connect(conf);
     std::thread::sleep(std::time::Duration::from_millis(1000));
     assert!(conn.is_ok());
-//    assert_eq!(4, adder::add_two(2));
+    //    assert_eq!(4, adder::add_two(2));
 }
 
 // ignored commented due to crashing the test-suite
@@ -29,7 +28,7 @@ fn it_fails_to_connect() {
     // should no be any connection available here
     let socket = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 1234);
 
-    conf.servers = vec!(socket);
+    conf.servers = vec![socket];
 
     let r = Client::new();
     // Create a connection pool

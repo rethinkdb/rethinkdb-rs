@@ -1,8 +1,5 @@
 use super::io_error;
-use crate::{
-    Connection, Result, Session, SessionManager,
-    errors::Error,
-};
+use crate::{errors::Error, Connection, Result, Session, SessionManager};
 use r2d2;
 use std::net::TcpStream;
 

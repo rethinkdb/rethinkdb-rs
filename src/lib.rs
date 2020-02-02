@@ -1,27 +1,27 @@
 //! A native ReQL driver written in Rust
 
-pub mod errors;
 mod commands;
+pub mod errors;
 mod types;
 
 use self::errors::Error;
 use indexmap::IndexMap;
+#[cfg(feature = "tls")]
+use native_tls::TlsConnectorBuilder;
 #[doc(hidden)]
 pub use protobuf::repeated::RepeatedField;
 #[doc(hidden)]
 pub use ql2::proto::{Datum, Datum_DatumType as DT, Term, Term_TermType as TT};
 use serde::de::DeserializeOwned;
 use serde_json::Value;
-#[cfg(feature = "tls")]
-use native_tls::TlsConnectorBuilder;
 
-use std::net::{TcpStream, SocketAddr};
+use std::net::{SocketAddr, TcpStream};
 use std::time::Duration;
 
+use futures::sync::mpsc::{Receiver, Sender};
 use uuid::Uuid;
-use futures::sync::mpsc::{Sender, Receiver};
 //use std::sync::mpsc::{Sender, Receiver};
-use serde_derive::{Serialize, Deserialize};
+use serde_derive::{Deserialize, Serialize};
 
 /// Default ReQL port
 pub const DEFAULT_PORT: u16 = 28015;
@@ -47,7 +47,7 @@ pub struct Response<T: DeserializeOwned + Send> {
 }
 
 #[derive(Debug)]
-struct Request< T: DeserializeOwned + Send + std::fmt::Debug> {
+struct Request<T: DeserializeOwned + Send + std::fmt::Debug> {
     term: Term,
     opts: Term,
     pool: r2d2::Pool<SessionManager>,
@@ -77,7 +77,7 @@ pub struct Config<'a> {
     pub tls: Option<TlsConnectorBuilder>,
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 struct InnerConfig {
     cluster: IndexMap<String, Server>,
     opts: Opts,
@@ -149,5 +149,8 @@ pub trait IntoArg {
 /// Lazily execute a command
 pub trait Run<A: IntoArg> {
     /// Prepare a commmand to be submitted
-    fn run<T: DeserializeOwned + Send + std::fmt::Debug + 'static>(&self, args: A) -> Result<Response<T>>;
+    fn run<T: DeserializeOwned + Send + std::fmt::Debug + 'static>(
+        &self,
+        args: A,
+    ) -> Result<Response<T>>;
 }

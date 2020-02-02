@@ -1,13 +1,13 @@
+extern crate futures;
 extern crate reql;
 extern crate reql_types;
-extern crate futures;
 
 #[macro_use]
 extern crate serde_derive;
 
-use reql::{Config, Client, Run};
-use reql_types::Change;
 use futures::Stream;
+use reql::{Client, Config, Run};
+use reql_types::Change;
 use std::net::IpAddr;
 use std::net::SocketAddr;
 
@@ -19,7 +19,6 @@ struct TestChange {
     id: String,
     data: String,
 }
-
 
 // This example requires a rethinkdb with a db called "test" with a table called "testdata"
 // It will printout the entire "Change" struct when a new entry is inserted/changed/deleted in
@@ -35,7 +34,7 @@ fn main() -> reql::Result<()> {
     let addr = "127.0.0.1".parse::<IpAddr>().unwrap();
     let socket = SocketAddr::new(addr, 28015);
     conf.db = "test";
-    conf.servers = vec!(socket);
+    conf.servers = vec![socket];
     conf.user = "admin";
     conf.password = "";
 
@@ -43,7 +42,8 @@ fn main() -> reql::Result<()> {
     let conn = r.connect(conf).unwrap();
 
     // Run the query on "testdata" table
-    let query = r.db("test")
+    let query = r
+        .db("test")
         .table("testdata")
         .changes()
         .run::<Change<TestChange, TestChange>>(conn)?;
@@ -52,20 +52,18 @@ fn main() -> reql::Result<()> {
 
     // Process each new response from the database
     loop {
-       let change = changes.next();
-       match change {
-
+        let change = changes.next();
+        match change {
             // The server responded with something
             Some(Ok(Some(data))) => {
                 println!("{:?}", data);
-            },
+            }
             Some(Err(e)) => {
                 println!("Error {}", e);
-            },
+            }
             _ => {
                 println!("Something else happened");
-            },
-       };
-
+            }
+        };
     }
 }

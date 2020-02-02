@@ -1,20 +1,19 @@
+use super::{io_error, read_query, wrap_query, write_query};
 use std::io::{BufRead, Write};
 use std::net::TcpStream;
 use std::str;
-use super::{io_error, read_query, wrap_query, write_query};
 
-use crate::{
-    Opts, ReqlResponse, Result, Session,
-    errors::*,
-};
+use crate::{errors::*, Opts, ReqlResponse, Result, Session};
 use bufstream::BufStream;
 use byteorder::{LittleEndian, WriteBytesExt};
 use protobuf::ProtobufEnum;
-use ql2::proto::{Query_QueryType as QueryType, Response_ResponseType as ResponseType,
-                 VersionDummy_Version as Version};
+use ql2::proto::{
+    Query_QueryType as QueryType, Response_ResponseType as ResponseType,
+    VersionDummy_Version as Version,
+};
 use scram::client::{ScramClient, ServerFinal};
+use serde_derive::{Deserialize, Serialize};
 use serde_json::{from_slice, from_str, from_value, to_vec};
-use serde_derive::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ServerInfo {
@@ -47,7 +46,9 @@ struct AuthConfirmation {
 impl Session {
     pub fn handshake(&mut self, opts: &Opts) -> Result<()> {
         // Send desired version to the server
-        let _ = self.stream.write_u32::<LittleEndian>(Version::V1_0 as u32)?;
+        let _ = self
+            .stream
+            .write_u32::<LittleEndian>(Version::V1_0 as u32)?;
         parse_server_version(&self.stream)?;
 
         // Send client first message
@@ -73,7 +74,7 @@ impl Session {
                 err = e;
             }
             // If error code is between 10 and 20, this is an auth error
-            if let Some(10...20) = info.error_code {
+            if let Some(10..=20) = info.error_code {
                 return Err(DriverError::Auth(err))?;
             } else {
                 return Err(io_error(err))?;
@@ -84,7 +85,9 @@ impl Session {
             Some(auth) => {
                 let scram = scram.handle_server_first(&auth)?;
                 let (scram, client_final) = scram.client_final();
-                let auth = AuthConfirmation { authentication: client_final };
+                let auth = AuthConfirmation {
+                    authentication: client_final,
+                };
                 let mut msg = to_vec(&auth)?;
                 msg.push(b'\0');
                 let _ = self.stream.write_all(&msg[..])?;
@@ -95,10 +98,10 @@ impl Session {
 
                 Ok(())
             }
-            None => {
-                Err(io_error(String::from("Server did not send authentication \
-                                                            info.")))?
-            }
+            None => Err(io_error(String::from(
+                "Server did not send authentication \
+                                                            info.",
+            )))?,
         }
     }
 
@@ -163,7 +166,7 @@ fn parse_server_final(scram: ServerFinal, stream: &TcpStream) -> Result<()> {
             err = e;
         }
         // If error code is between 10 and 20, this is an auth error
-        if let Some(10...20) = info.error_code {
+        if let Some(10..=20) = info.error_code {
             return Err(DriverError::Auth(err))?;
         } else {
             return Err(io_error(err))?;

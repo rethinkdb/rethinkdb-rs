@@ -1,16 +1,15 @@
 //! The ReQL data types
 
-use crate::{
-    Request, Result,
-    errors::DriverError,
-};
-use protobuf::ProtobufEnum;
+use crate::{errors::DriverError, Request, Result};
 use protobuf::repeated::RepeatedField;
-use ql2::proto::{Datum, Datum_AssocPair as DatumPair, Datum_DatumType as DatumType, Term,
-                 Term_AssocPair as TermPair, Term_TermType as TermType};
-use serde::Serialize;
+use protobuf::ProtobufEnum;
+use ql2::proto::{
+    Datum, Datum_AssocPair as DatumPair, Datum_DatumType as DatumType, Term,
+    Term_AssocPair as TermPair, Term_TermType as TermType,
+};
 use serde::de::DeserializeOwned;
-use serde_json::value::{Value, to_value};
+use serde::Serialize;
+use serde_json::value::{to_value, Value};
 
 pub trait FromJson {
     fn from_json<T: Serialize>(t: T) -> Result<Term> {
@@ -25,18 +24,16 @@ pub trait FromJson {
                 datum.set_field_type(DatumType::R_BOOL);
                 datum.set_r_bool(val);
             }
-            Value::Number(val) => {
-                match val.as_f64() {
-                    Some(val) => {
-                        datum.set_field_type(DatumType::R_NUM);
-                        datum.set_r_num(val);
-                    }
-                    None => {
-                        let msg = String::from("Value::Number could not be coerced to f64");
-                        return Err(DriverError::Other(msg))?;
-                    }
+            Value::Number(val) => match val.as_f64() {
+                Some(val) => {
+                    datum.set_field_type(DatumType::R_NUM);
+                    datum.set_r_num(val);
                 }
-            }
+                None => {
+                    let msg = String::from("Value::Number could not be coerced to f64");
+                    return Err(DriverError::Other(msg))?;
+                }
+            },
             Value::Array(val) => {
                 datum.set_field_type(DatumType::R_ARRAY);
                 let mut args = Vec::new();
@@ -108,16 +105,20 @@ impl Encode for Datum {
                 for term in self.get_r_array() {
                     args.push_str(&format!("{},", term.encode()));
                 }
-                args = args.trim_right_matches(",").to_string();
+                args = args.trim_end_matches(",").to_string();
                 args.push_str("]]");
                 args
             }
             DatumType::R_OBJECT => {
                 let mut args = String::from("{");
                 for term in self.get_r_object() {
-                    args.push_str(&format!("\"{}\":{},", term.get_key(), term.get_val().encode()));
+                    args.push_str(&format!(
+                        "\"{}\":{},",
+                        term.get_key(),
+                        term.get_val().encode()
+                    ));
                 }
-                args = args.trim_right_matches(",").to_string();
+                args = args.trim_end_matches(",").to_string();
                 args.push_str("}");
                 args
             }
@@ -148,7 +149,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
             for term in terms {
                 args.push_str(&format!("{},", self.encode(&term, encoding_opts)));
             }
-            args = args.trim_right_matches(",").to_string();
+            args = args.trim_end_matches(",").to_string();
             if data.has_field_type() {
                 args.push_str("]");
             }
@@ -168,9 +169,13 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
     fn encode_pairs(&mut self, data: &Vec<TermPair>, encoding_opts: bool) -> String {
         let mut opts = String::from("{");
         for term in data {
-            opts.push_str(&format!("\"{}\":{},", term.get_key(), self.encode(term.get_val(), encoding_opts)));
+            opts.push_str(&format!(
+                "\"{}\":{},",
+                term.get_key(),
+                self.encode(term.get_val(), encoding_opts)
+            ));
         }
-        opts = opts.trim_right_matches(",").to_string();
+        opts = opts.trim_end_matches(",").to_string();
         opts.push_str("}");
         opts
     }

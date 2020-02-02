@@ -1,18 +1,16 @@
 use super::{read_query, wrap_query, write_query};
-use crate::{
-    Document, ReqlResponse, Request, Result,
-    Session, SessionManager,
-    errors::*,
-};
+use crate::{errors::*, Document, ReqlResponse, Request, Result, Session, SessionManager};
 
+use futures::{Future, Sink};
 use protobuf::ProtobufEnum;
-use ql2::proto::{Query_QueryType as QueryType, Response_ErrorType as ErrorType,
-                 Response_ResponseType as ResponseType};
+use ql2::proto::{
+    Query_QueryType as QueryType, Response_ErrorType as ErrorType,
+    Response_ResponseType as ResponseType,
+};
 use r2d2::PooledConnection;
 use serde::de::DeserializeOwned;
-use serde_json::{Value, from_slice, from_value};
+use serde_json::{from_slice, from_value, Value};
 use std::error::Error as StdError;
-use futures::{Future, Sink};
 
 impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
     fn conn(&self) -> Result<PooledConnection<SessionManager>> {
@@ -40,7 +38,7 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
             let mut connect = false;
             let reproducible = self.cfg.opts.reproducible;
             while i < self.cfg.opts.retries || reproducible {
-                log::debug!("attempt number {}", i+1);
+                log::debug!("attempt number {}", i + 1);
                 // Open a new connection if necessary
                 if connect {
                     log::debug!("reconnecting...");
@@ -111,22 +109,23 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                             //continue;
                             more = false;
                             break;
-                        },
-                        Ok(true) => { // Continue processing, for example in changefeeds
+                        }
+                        Ok(true) => {
+                            // Continue processing, for example in changefeeds
                             query = wrap_query(QueryType::CONTINUE, None, None);
                             if let Err(error) = write_query(&mut conn, &mut query) {
                                 self.write = true;
                                 self.retry = true;
                                 let _ = self.tx.clone().send(Err(error.into())).wait();
-                                continue
+                                continue;
                                 //return Err(error)?;
                             }
                             //println!("Here is the problem!");
-                        },
+                        }
                         _ => {
                             more = false;
                             break;
-                        }, // Otherwise we are done processing, time to end
+                        } // Otherwise we are done processing, time to end
                     }
                 }
                 if !more {
@@ -137,14 +136,13 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
     }
     /// Process the results return either an error, or true if there was only a partial part
     /// of the message that got handled
-    fn process(&mut self, conn: &mut Session ) -> Result<bool> {
+    fn process(&mut self, conn: &mut Session) -> Result<bool> {
         self.retry = false;
         self.write = false;
         match self.handle(conn) {
             Ok(t) => {
                 match t {
                     Some(ResponseType::SUCCESS_PARTIAL) => {
-
                         return Ok(true);
                     }
 
@@ -158,8 +156,9 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
             }
             Err(error) => {
                 if error
-                       .description()
-                       .starts_with("Cannot perform write: primary replica for shard") {
+                    .description()
+                    .starts_with("Cannot perform write: primary replica for shard")
+                {
                     self.write = true;
                     self.retry = true;
                 }
@@ -179,15 +178,18 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                 if let Some(t) = ResponseType::from_i32(result.t) {
                     respt = t;
                 } else {
-                    let msg = format!("Unsupported response type ({}), returned by the database.", result.t);
+                    let msg = format!(
+                        "Unsupported response type ({}), returned by the database.",
+                        result.t
+                    );
                     return Err(DriverError::Other(msg))?;
                 }
                 // If the database says this response is an error convert the error
                 // message to our native one.
                 let has_generic_error = match respt {
-                    ResponseType::CLIENT_ERROR |
-                    ResponseType::COMPILE_ERROR |
-                    ResponseType::RUNTIME_ERROR => true,
+                    ResponseType::CLIENT_ERROR
+                    | ResponseType::COMPILE_ERROR
+                    | ResponseType::RUNTIME_ERROR => true,
                     _ => false,
                 };
                 let mut msg = String::new();
@@ -241,7 +243,11 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                 // Since this is a successful query let's process the results and send
                 // them to the caller
                 if let Ok(data) = from_value::<T>(result.r.clone()) {
-                    let _ = self.tx.clone().send(Ok(Some(Document::Expected(data)))).wait();
+                    let _ = self
+                        .tx
+                        .clone()
+                        .send(Ok(Some(Document::Expected(data))))
+                        .wait();
                 } else if let Ok(data) = from_value::<Vec<T>>(result.r.clone()) {
                     for v in data {
                         let _ = self.tx.clone().send(Ok(Some(Document::Expected(v)))).wait();
@@ -259,7 +265,11 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                             }
                             value => {
                                 // println!("got here");
-                                let _ = self.tx.clone().send(Ok(Some(Document::Unexpected(value)))).wait();
+                                let _ = self
+                                    .tx
+                                    .clone()
+                                    .send(Ok(Some(Document::Unexpected(value))))
+                                    .wait();
                             }
                         }
                     }
@@ -269,7 +279,11 @@ impl<T: DeserializeOwned + Send + std::fmt::Debug> Request<T> {
                             let _ = self.tx.clone().send(Ok(None)).wait();
                         }
                         value => {
-                            let _ = self.tx.clone().send(Ok(Some(Document::Unexpected(value)))).wait();
+                            let _ = self
+                                .tx
+                                .clone()
+                                .send(Ok(Some(Document::Unexpected(value))))
+                                .wait();
                         }
                     }
                 }

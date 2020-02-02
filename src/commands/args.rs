@@ -1,7 +1,4 @@
-use crate::{
-    Arg, Client, Connection, IntoArg, Result,
-    types::FromJson,
-};
+use crate::{types::FromJson, Arg, Client, Connection, IntoArg, Result};
 use ql2::proto::{Term, Term_AssocPair as TermPair};
 use serde_json::value::Value;
 
@@ -157,7 +154,6 @@ impl IntoArg for Value {
     }
 }
 
-
 impl IntoArg for Connection {
     fn into_arg(self) -> Arg {
         Arg {
@@ -167,7 +163,6 @@ impl IntoArg for Connection {
         }
     }
 }
-
 
 impl Arg {
     /// Create a new command argument

@@ -11,11 +11,12 @@ pub fn new_client() -> Client {
     }
 }
 
-pub fn make_cmd<A: IntoArg>(client: &Client,
-                            name: &'static str,
-                            cmd_type: Option<Term_TermType>,
-                            args: Option<A>)
-                            -> Client {
+pub fn make_cmd<A: IntoArg>(
+    client: &Client,
+    name: &'static str,
+    cmd_type: Option<Term_TermType>,
+    args: Option<A>,
+) -> Client {
     let cterm = match client.term {
         Ok(ref term) => term.clone(),
         Err(_) => {
@@ -56,9 +57,11 @@ pub fn make_cmd<A: IntoArg>(client: &Client,
 
 fn push_args(cmd: &mut Client, mut tmp_args: Term) {
     if let Ok(ref mut term) = cmd.term {
-        if tmp_args.has_field_type() { // did not come from the args macro
+        if tmp_args.has_field_type() {
+            // did not come from the args macro
             term.mut_args().push(tmp_args);
-        } else { // came from the args macro
+        } else {
+            // came from the args macro
             for arg in tmp_args.take_args().into_vec() {
                 term.mut_args().push(arg);
             }
