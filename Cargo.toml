@@ -30,7 +30,7 @@ serde_derive = "1"
 r2d2 = "0.8"
 byteorder = "1"
 bufstream = "0.1"
-scram = { git = "https://github.com/tomprogrammer/scram.git", branch = "master" }
+scram = "0.5.0"
 futures = "0.1"
 parking_lot = "0.6"
 indexmap = "1"
