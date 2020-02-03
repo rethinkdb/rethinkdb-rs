@@ -52,7 +52,7 @@ impl Session {
         parse_server_version(&self.stream)?;
 
         // Send client first message
-        let scram = ScramClient::new(&opts.user, &opts.password, None)?;
+        let scram = ScramClient::new(&opts.user, &opts.password, None);
         let (scram, client_first) = scram.client_first();
 
         let ar = AuthRequest {
