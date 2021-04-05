@@ -12,3 +12,8 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 edition = "2018"
 
 [dependencies]
+ql2 = "2.0.2"
+scram = "0.6.0"
+serde = { version = "1.0.125", features = ["derive"] }
+serde_json = "1.0.64"
+tokio = { version = "1.4.0", features = ["net", "io-util", "macros", "rt-multi-thread"] }
