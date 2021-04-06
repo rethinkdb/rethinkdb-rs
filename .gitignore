@@ -1,5 +1,5 @@
 target
 *.bk
+*.swp
 Cargo.lock
-src/commands/mod.rs
 rethinkdb_data

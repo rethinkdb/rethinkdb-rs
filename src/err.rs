@@ -1,11 +1,11 @@
-use std::{io, str};
+use std::io;
 
 /// The most generic error message in ReQL
 #[derive(Debug)]
 pub enum Error {
     Compile(String),
     Runtime(Runtime),
-    Driver(Driver),
+    Client(Client),
 }
 
 /// The parent class of all runtime errors
@@ -20,7 +20,6 @@ pub enum Runtime {
     ResourceLimit(String),
     User(String),
     Internal(String),
-    Timeout(String),
     Availability(Availability),
     Permission(String),
 }
@@ -41,19 +40,18 @@ pub enum Availability {
 /// This may be a driver bug, or it may be an unfulfillable command, such as an unserializable
 /// query.
 #[derive(Debug)]
-pub enum Driver {
+#[non_exhaustive]
+pub enum Client {
     Auth(String),
-    Utf8(str::Utf8Error),
-    Scram(scram::Error),
+    ConnectionBroken,
     Io(io::Error),
     Json(serde_json::Error),
-    ConnectionBroken,
     Other(String),
 }
 
-impl From<Driver> for Error {
-    fn from(err: Driver) -> Error {
-        Error::Driver(err)
+impl From<Client> for Error {
+    fn from(err: Client) -> Error {
+        Error::Client(err)
     }
 }
 
@@ -71,24 +69,12 @@ impl From<Availability> for Error {
 
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Error {
-        Driver::Io(err).into()
+        Client::Io(err).into()
     }
 }
 
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Error {
-        Driver::Json(err).into()
-    }
-}
-
-impl From<scram::Error> for Error {
-    fn from(err: scram::Error) -> Error {
-        Driver::Scram(err).into()
-    }
-}
-
-impl From<str::Utf8Error> for Error {
-    fn from(err: str::Utf8Error) -> Error {
-        Driver::Utf8(err).into()
+        Client::Json(err).into()
     }
 }
