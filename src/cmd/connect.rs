@@ -1,6 +1,7 @@
 use crate::{err, r, Connection, Result};
 use scram::client::{ScramClient, ServerFinal, ServerFirst};
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 use std::str;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
@@ -62,11 +63,14 @@ impl<'a> From<&'a String> for Options<'a> {
 }
 
 impl r {
-    pub async fn connect<'a, T: Into<Options<'a>>>(&self, options: T) -> Result<Connection> {
+    pub async fn connect<'a, T: Into<Options<'a>>>(&self, options: T) -> Result<Connection<'a>> {
         let opts = options.into();
         let mut stream = TcpStream::connect((opts.host, opts.port)).await?;
         handshake(&mut stream, opts).await?;
-        Ok(Connection { stream })
+        Ok(Connection {
+            stream,
+            db: Cow::from(opts.db),
+        })
     }
 }
 
