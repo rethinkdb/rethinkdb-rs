@@ -23,34 +23,32 @@ const PROTOCOL_VERSION: usize = 0;
 
 /// Options accepted by [crate::r::connection]
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Options<'a, T> {
-    stream: T,
+pub struct Options<'a> {
     /// The buffer size for each `mpsc::channel` created, by default `1024`
-    buffer: usize,
+    pub buffer: usize,
     /// The database used if not explicitly specified in a query, by default `test`.
-    db: &'a str,
+    pub db: &'a str,
     /// The user account to connect as (default `admin`).
-    user: &'a str,
+    pub user: &'a str,
     /// The password for the user account to connect as (default `""`, empty).
-    password: &'a str,
+    pub password: &'a str,
     /// Timeout period in seconds for the connection to be opened (default `20`).
-    timeout: u8,
+    pub timeout: u8,
     /// A hash of options to support SSL connections (default `None`).
     /// Currently, there is only one option available, and if the `ssl` option is specified,
     /// this key is required:
-    ssl: Option<Ssl<'a>>,
+    pub ssl: Option<Ssl<'a>>,
 }
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Ssl<'a> {
     /// A path to the SSL CA certificate.
-    ca: &'a str,
+    pub ca: &'a str,
 }
 
-impl<'a, T> Options<'a, T> {
-    pub const fn new(stream: T) -> Self {
+impl Default for Options<'_> {
+    fn default() -> Self {
         Self {
-            stream,
             buffer: 1024,
             db: "test",
             user: "admin",
@@ -59,29 +57,33 @@ impl<'a, T> Options<'a, T> {
             ssl: None,
         }
     }
-
-    pub const fn buffer(mut self, buffer: usize) -> Self {
-        self.buffer = buffer;
-        self
-    }
-
-    pub const fn db(mut self, db: &'a str) -> Self {
-        self.db = db;
-        self
-    }
 }
 
-impl<'a, T> From<T> for Options<'a, T>
+pub trait Arg<'a, T> {
+    fn arg(self) -> (T, Options<'a>);
+}
+
+impl<'a, T> Arg<'a, T> for T
 where
     T: TcpStream<'a>,
     &'a T: AsyncRead + AsyncWrite,
 {
-    fn from(stream: T) -> Self {
-        Self::new(stream)
+    fn arg(self) -> (T, Options<'a>) {
+        (self, Default::default())
     }
 }
 
-pub(crate) async fn new<'a, T>(options: Options<'a, T>) -> Result<Connection<'a, T>>
+impl<'a, T> Arg<'a, T> for (T, Options<'a>)
+where
+    T: TcpStream<'a>,
+    &'a T: AsyncRead + AsyncWrite,
+{
+    fn arg(self) -> Self {
+        self
+    }
+}
+
+pub(crate) async fn new<'a, T>((stream, options): (T, Options<'a>)) -> Result<Connection<'a, T>>
 where
     T: TcpStream<'a>,
     &'a T: AsyncRead + AsyncWrite,
@@ -89,9 +91,10 @@ where
     Ok(Connection {
         db: Cow::from(options.db),
         buffer: options.buffer,
-        stream: handshake(options).await?,
+        stream: handshake(stream, options).await?,
         token: AtomicU64::new(0),
         broken: AtomicBool::new(false),
+        change_feed: AtomicBool::new(false),
         senders: DashMap::new(),
         locker: Mutex::new(()),
     })
@@ -102,25 +105,25 @@ where
 // This method optimises message exchange as suggested in the RethinkDB
 // documentation by sending message 3 right after message 1, without waiting
 // for message 2 first.
-async fn handshake<'a, T>(mut opts: Options<'_, T>) -> Result<T>
+async fn handshake<'a, T>(mut stream: T, opts: Options<'_>) -> Result<T>
 where
     T: TcpStream<'a>,
     &'a T: AsyncRead + AsyncWrite,
 {
     trace!("sending supported version to RethinkDB");
-    opts.stream
+    stream
         .write_all(&(Version::V10 as i32).to_le_bytes())
         .await?; // message 1
 
     let scram = ScramClient::new(opts.user, opts.password, None);
     let (scram, msg) = client_first(scram)?;
     trace!("sending client first message");
-    opts.stream.write_all(&msg).await?; // message 3
+    stream.write_all(&msg).await?; // message 3
 
     let mut buf = [0u8; BUF_SIZE];
 
     trace!("receiving message(s) from RethinkDB");
-    opts.stream.read(&mut buf).await?; // message 2
+    stream.read(&mut buf).await?; // message 2
     let (len, resp) = bytes(&buf, 0);
     trace!("received server info; info: {}", debug(resp));
     ServerInfo::validate(resp)?;
@@ -130,7 +133,7 @@ where
         bytes(&buf, offset).1
     } else {
         trace!("reading auth response");
-        opts.stream.read(&mut buf).await?; // message 4
+        stream.read(&mut buf).await?; // message 4
         bytes(&buf, 0).1
     };
     trace!("received auth response");
@@ -145,17 +148,17 @@ where
 
     let (scram, msg) = client_final(scram, &auth)?;
     trace!("sending client final message");
-    opts.stream.write_all(&msg).await?; // message 5
+    stream.write_all(&msg).await?; // message 5
 
     trace!("reading server final message");
-    opts.stream.read(&mut buf).await?; // message 6
+    stream.read(&mut buf).await?; // message 6
     let resp = bytes(&buf, 0).1;
     trace!("received server final message");
     server_final(scram, resp)?;
 
     trace!("client connected successfully");
 
-    Ok(opts.stream)
+    Ok(stream)
 }
 
 fn bytes(buf: &[u8], offset: usize) -> (usize, &[u8]) {

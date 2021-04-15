@@ -1,3 +1,4 @@
+pub mod changes;
 pub mod connection;
 pub mod db;
 pub mod expr;
@@ -23,6 +24,13 @@ impl<'a> Query {
         T: table::Arg,
     {
         table::new(Some(self), arg.arg())
+    }
+
+    pub fn changes<T>(self, arg: T) -> Query
+    where
+        T: changes::Arg,
+    {
+        changes::new(self, arg.arg())
     }
 
     pub fn run<S, A, T>(self, arg: A) -> impl Stream<Item = Result<T>>

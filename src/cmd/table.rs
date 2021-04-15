@@ -29,6 +29,7 @@ impl Arg for &String {
 pub(crate) fn new(parent: Option<Query>, (name, _opts): (String, Option<Options>)) -> Query {
     Query {
         typ: TermType::Table,
+        change_feed: parent.as_ref().map(|x| x.change_feed).unwrap_or_default(),
         args: match parent {
             Some(parent) => vec![parent, Datum::String(name).into()],
             None => vec![Datum::String(name).into()],

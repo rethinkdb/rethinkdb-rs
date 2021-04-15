@@ -1,13 +1,13 @@
 language: rust
 
 rust:
-  #- stable
-  #- beta
-  - nightly-2019-01-23
+  - stable
+  - beta
+  - nightly
 
 cache: cargo
 
 addons:
-  rethinkdb: '2.3'
+  rethinkdb: '2.4'
 
 script: cargo test

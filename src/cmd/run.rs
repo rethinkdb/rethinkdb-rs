@@ -1,4 +1,3 @@
-use crate::cmd::debug;
 use crate::proto::Payload;
 use crate::{err, Connection, Query, Result, TcpStream};
 use async_stream::try_stream;
@@ -30,17 +29,24 @@ pub struct Response {
     n: Option<Vec<i32>>,
 }
 
-#[derive(Debug, Clone, Copy, Default, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Debug, Clone, Copy, Serialize, Default, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Options<'a> {
-    read_mode: Option<ReadMode>,
-    time_format: Option<Format>,
-    profile: Option<bool>,
-    durability: Option<Durability>,
-    group_format: Option<Format>,
-    db: Option<Db<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub read_mode: Option<ReadMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub time_format: Option<Format>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub profile: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub durability: Option<Durability>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub group_format: Option<Format>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub db: Option<Db<'a>>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[serde(rename_all = "lowercase")]
 pub enum ReadMode {
     Single,
     Majority,
@@ -48,12 +54,14 @@ pub enum ReadMode {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[serde(rename_all = "lowercase")]
 pub enum Durability {
     Hard,
     Soft,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[serde(rename_all = "lowercase")]
 pub enum Format {
     Native,
     Raw,
@@ -88,6 +96,10 @@ where
     try_stream! {
         let (conn, opts) = arg.arg();
         conn.broken()?;
+        conn.change_feed()?;
+        if query.change_feed {
+            conn.mark_change_feed();
+        }
         let token = conn.token();
         let (tx, mut rx) = mpsc::channel(conn.buffer);
         conn.senders.insert(token, tx);
@@ -96,20 +108,8 @@ where
         conn.write(token, &payload).await?;
         trace!("query sent; token: {}", token);
         loop {
-            let resp = {
-                trace!("receiving response; token: {}", token);
-                let (db_token, resp) = conn.read(token).await?;
-                trace!("received response; token: {}, db_token: {}, response: {:?}", token, db_token, resp);
-                if db_token != token {
-                    conn.send_response(db_token, resp).await;
-                    match rx.next().await {
-                        Some(resp) => resp?,
-                        None => continue,
-                    }
-                } else {
-                    resp?
-                }
-            };
+            trace!("receiving response; token: {}", token);
+            let resp = conn.read(token, &mut rx).await?;
             let response_type = ResponseType::from_i32(resp.t)
                 .ok_or_else(|| err::Client::Other(format!("uknown response type `{}`", resp.t)))?;
             if let Some(error_type) = resp.e {
@@ -141,6 +141,7 @@ where
         }
         rx.close();
         conn.senders.remove(&token);
+        conn.unmark_change_feed();
     }
 }
 
@@ -171,7 +172,11 @@ where
         Ok(())
     }
 
-    async fn read(&'a self, token: u64) -> Result<(u64, Result<Response>)> {
+    async fn read(
+        &'a self,
+        token: u64,
+        rx: &mut mpsc::Receiver<Result<Response>>,
+    ) -> Result<Response> {
         // reading data from RethinkDB is a 2 step process so
         // we have to get a lock to ensure no other process
         // reads the data while we are reading it
@@ -197,27 +202,42 @@ where
         trace!("reading body; token: {}", token);
         let mut buf = vec![0u8; len];
         let result = (&mut &self.stream).read(&mut buf).await;
+
         // we have finished reading so we can drop the lock
         // and let other processes advance
         drop(guard);
 
         trace!(
-            "body read; token: {}, db_token: {}, response: {}",
+            "body {}; token: {}, db_token: {}",
+            if result.is_ok() {
+                "read"
+            } else {
+                "reading failed"
+            },
             token,
             db_token,
-            debug(&buf)
         );
 
-        if let Err(error) = result {
-            let error = error.into();
-            return if db_token == token {
-                Err(error)
-            } else {
-                Ok((db_token, Err(error)))
-            };
+        match (result, db_token == token) {
+            (result, true) => {
+                result?;
+                return Ok(serde_json::from_slice(&buf)?);
+            }
+            (Ok(_), false) => {
+                let response = serde_json::from_slice(&buf).map_err(Into::into);
+                self.send_response(db_token, response).await;
+            }
+            (Err(error), false) => {
+                self.send_response(db_token, Err(error.into())).await;
+            }
         }
 
-        Ok((token, serde_json::from_slice(&buf).map_err(Into::into)))
+        match rx.next().await {
+            Some(resp) => resp,
+            None => {
+                Err(err::Client::Other("sender stream terminated prematurely".to_owned()).into())
+            }
+        }
     }
 
     async fn send_response(&self, db_token: u64, resp: Result<Response>) {

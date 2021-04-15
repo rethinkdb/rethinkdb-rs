@@ -56,12 +56,14 @@ impl From<Value> for Datum {
     }
 }
 
+/// The query that will be sent to RethinkDB
 #[derive(Debug, Clone, Default)]
 pub struct Query {
     pub(crate) typ: TermType,
     pub(crate) datum: Option<Datum>,
     pub(crate) args: Vec<Query>,
     pub(crate) opts: Option<Datum>,
+    pub(crate) change_feed: bool,
 }
 
 impl From<Datum> for Query {

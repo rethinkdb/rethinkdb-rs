@@ -49,8 +49,9 @@
 //! drivers (`28015` by default). Let's open a connection:
 //!
 //! ```
-//! # use async_std::net::TcpStream;
-//! # use reql::{r, DEFAULT_ADDR};
+//! use async_std::net::TcpStream;
+//! use reql::{r, DEFAULT_ADDR};
+//!
 //! # async fn connect() -> reql::Result<()> {
 //! let stream = TcpStream::connect(DEFAULT_ADDR).await?;
 //! let connection = r.connection(stream).await?;
@@ -63,11 +64,12 @@
 //! # Send a query to the database #
 //!
 //! ```
-//! # use async_std::net::TcpStream;
-//! # use futures::TryStreamExt;
-//! # use reql::{r, DEFAULT_ADDR};
+//! use async_std::net::TcpStream;
+//! use futures::TryStreamExt;
+//! use reql::{r, DEFAULT_ADDR};
+//!
 //! # async fn connect() -> reql::Result<()> {
-//! # let stream = TcpStream::connect(DEFAULT_ADDR).await?;
+//! let stream = TcpStream::connect(DEFAULT_ADDR).await?;
 //! let conn = r.connection(stream).await?;
 //! let mut query = r.expr("Hello world!").run(&conn);
 //! assert_eq!(query.try_next().await?, Some("Hello world!".to_owned()));
@@ -109,18 +111,21 @@ pub struct Connection<'a, T> {
     stream: T,
     token: AtomicU64,
     broken: AtomicBool,
+    change_feed: AtomicBool,
     buffer: usize,
     senders: DashMap<u64, Sender<Result<Response>>>,
     locker: Mutex<()>,
 }
 
 impl<T> Connection<'_, T> {
+    /// Convert the connection into an instance you can move around
     pub fn into_owned(self) -> Connection<'static, T> {
         Connection {
             db: Cow::from(self.db.into_owned()),
             stream: self.stream,
             token: self.token,
             broken: self.broken,
+            change_feed: self.change_feed,
             buffer: self.buffer,
             senders: self.senders,
             locker: self.locker,
@@ -137,8 +142,28 @@ impl<T> Connection<'_, T> {
         }
         Ok(())
     }
+
+    fn mark_change_feed(&self) {
+        self.change_feed.store(true, Ordering::SeqCst);
+    }
+
+    fn unmark_change_feed(&self) {
+        self.change_feed.store(false, Ordering::SeqCst);
+    }
+
+    fn change_feed(&self) -> Result<()> {
+        if self.change_feed.load(Ordering::SeqCst) {
+            return Err(err::Client::ConnectionLocked.into());
+        }
+        Ok(())
+    }
 }
 
+/// A generic, runtime independent, TcpStream
+///
+/// This crate can be used with any runtime that implements
+/// the `AsyncRead` and the `AsyncWrite` traits from the
+/// futures crate
 pub trait TcpStream<'a>: AsyncReadExt + AsyncWriteExt
 where
     Self: Unpin + 'a,
@@ -173,32 +198,32 @@ impl<'a> r {
     /// Open a connection using the default host and port, specifying the default database.
     ///
     /// ```
-    /// # use async_std::net::TcpStream;
-    /// # use reql::connection::Options;
-    /// # use reql::{r, DEFAULT_ADDR};
+    /// use async_std::net::TcpStream;
+    /// use reql::connection::Options;
+    /// use reql::{r, DEFAULT_ADDR};
+    ///
     /// # async fn connect() -> reql::Result<()> {
     /// let stream = TcpStream::connect(DEFAULT_ADDR).await?;
-    /// let opts = Options::new(stream).db("marvel");
-    /// let conn = r.connection(opts).await?;
+    /// let conn = r.connection((stream, Options { db: "marvel", ..Default::default() })).await?;
     /// # Ok(())
     /// # }
     /// ```
     ///
     /// Read more about this command [connection]
-    pub async fn connection<T, O>(self, options: O) -> Result<Connection<'a, T>>
+    pub async fn connection<A, T>(self, options: A) -> Result<Connection<'a, T>>
     where
+        A: connection::Arg<'a, T>,
         T: TcpStream<'a>,
         &'a T: AsyncRead + AsyncWrite,
-        O: Into<cmd::connection::Options<'a, T>>,
     {
-        cmd::connection::new(options.into()).await
+        connection::new(options.arg()).await
     }
 
     pub fn expr<T>(self, value: T) -> Query
     where
         T: Into<Value>,
     {
-        cmd::expr::new(value.into())
+        expr::new(value.into())
     }
 
     /// Reference a database
@@ -218,13 +243,13 @@ impl<'a> r {
     where
         T: Into<String>,
     {
-        cmd::db::new(name.into())
+        db::new(name.into())
     }
 
     pub fn table<T>(self, arg: T) -> Query
     where
-        T: cmd::table::Arg,
+        T: table::Arg,
     {
-        cmd::table::new(None, arg.arg())
+        table::new(None, arg.arg())
     }
 }
