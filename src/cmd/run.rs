@@ -1,4 +1,4 @@
-use crate::cmd::ReadMode;
+use crate::cmd::{Durability, ReadMode};
 use crate::proto::Payload;
 use crate::{err, Connection, Query, Result, TcpStream};
 use async_stream::try_stream;
@@ -31,6 +31,7 @@ pub struct Response {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Default, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct Options<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub read_mode: Option<ReadMode>,
@@ -47,13 +48,7 @@ pub struct Options<'a> {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-#[serde(rename_all = "lowercase")]
-pub enum Durability {
-    Hard,
-    Soft,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 #[serde(rename_all = "lowercase")]
 pub enum Format {
     Native,

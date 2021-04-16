@@ -1,8 +1,6 @@
 //! ReQL is the RethinkDB query language. It offers a very powerful and
 //! convenient way to manipulate JSON documents.
 //!
-//! <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/10-minute-guide.png" width="312" height="387" />
-//!
 //! # Start the server #
 //!
 //! ## Linux and OS X ##
@@ -81,7 +79,7 @@
 
 //#![deny(missing_docs)]
 
-mod cmd;
+pub mod cmd;
 mod err;
 mod proto;
 
@@ -94,7 +92,6 @@ use serde_json::Value;
 use std::borrow::Cow;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 
-pub use cmd::*;
 pub use err::*;
 pub use proto::Query;
 
@@ -199,12 +196,12 @@ impl<'a> r {
     ///
     /// ```
     /// use async_std::net::TcpStream;
-    /// use reql::connection::Options;
+    /// use reql::cmd::connection::Options;
     /// use reql::{r, DEFAULT_ADDR};
     ///
     /// # async fn connect() -> reql::Result<()> {
     /// let stream = TcpStream::connect(DEFAULT_ADDR).await?;
-    /// let conn = r.connection((stream, Options { db: "marvel", ..Default::default() })).await?;
+    /// let conn = r.connection((stream, Options::new().db("marvel"))).await?;
     /// # Ok(())
     /// # }
     /// ```
@@ -212,18 +209,18 @@ impl<'a> r {
     /// Read more about this command [connection]
     pub async fn connection<A, T>(self, options: A) -> Result<Connection<'a, T>>
     where
-        A: connection::Arg<'a, T>,
+        A: cmd::connection::Arg<'a, T>,
         T: TcpStream<'a>,
         &'a T: AsyncRead + AsyncWrite,
     {
-        connection::new(options.arg()).await
+        cmd::connection::new(options.arg()).await
     }
 
     pub fn expr<T>(self, value: T) -> Query
     where
         T: Into<Value>,
     {
-        expr::new(value.into())
+        cmd::expr::new(value.into())
     }
 
     /// Reference a database
@@ -236,20 +233,29 @@ impl<'a> r {
     ///
     /// Explicitly specify a database for a query.
     ///
-    /// ```ignore
-    /// r.db("heroes").table("marvel").run(&conn).await
+    /// ```
+    /// # use async_std::net::TcpStream;
+    /// # use futures::TryStreamExt;
+    /// # use reql::{r, DEFAULT_ADDR};
+    /// # async fn example() -> reql::Result<()> {
+    /// # let stream = TcpStream::connect(DEFAULT_ADDR).await?;
+    /// # let conn = r.connection(stream).await?;
+    /// let mut query = r.db("heroes").table("marvel").run(&conn);
+    /// # assert_eq!(query.try_next().await?, Some(String::new()));
+    /// # Ok(())
+    /// # }
     /// ```
     pub fn db<T>(self, name: T) -> Query
     where
         T: Into<String>,
     {
-        db::new(name.into())
+        cmd::db::new(name.into())
     }
 
     pub fn table<T>(self, arg: T) -> Query
     where
-        T: table::Arg,
+        T: cmd::table::Arg,
     {
-        table::new(None, arg.arg())
+        cmd::table::new(None, arg.arg())
     }
 }

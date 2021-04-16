@@ -1,8 +1,4 @@
 //! Create a new connection to the database server
-//!
-//! <img src="https://raw.githubusercontent.com/rethinkdb/docs/master/_jekyll/_images/api_illustrations/connect_javascript.png" class="api_command_illustration" />
-//!
-//! Accepts the following options:
 
 use crate::cmd::debug;
 use crate::{err, Connection, Result, TcpStream};
@@ -23,6 +19,7 @@ const PROTOCOL_VERSION: usize = 0;
 
 /// Options accepted by [crate::r::connection]
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct Options<'a> {
     /// The buffer size for each `mpsc::channel` created, by default `1024`
     pub buffer: usize,
@@ -32,18 +29,37 @@ pub struct Options<'a> {
     pub user: &'a str,
     /// The password for the user account to connect as (default `""`, empty).
     pub password: &'a str,
-    /// Timeout period in seconds for the connection to be opened (default `20`).
-    pub timeout: u8,
-    /// A hash of options to support SSL connections (default `None`).
-    /// Currently, there is only one option available, and if the `ssl` option is specified,
-    /// this key is required:
-    pub ssl: Option<Ssl<'a>>,
 }
 
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Ssl<'a> {
-    /// A path to the SSL CA certificate.
-    pub ca: &'a str,
+impl<'a> Options<'a> {
+    /// Create new options from default values
+    pub fn new() -> Self {
+        Default::default()
+    }
+
+    /// Set the buffer size for each `mpsc::channel` created, by default `1024`
+    pub const fn buffer(mut self, buffer: usize) -> Self {
+        self.buffer = buffer;
+        self
+    }
+
+    /// Set the database used if not explicitly specified in a query, by default `test`.
+    pub const fn db(mut self, db: &'a str) -> Self {
+        self.db = db;
+        self
+    }
+
+    /// Set the user account to connect as (default `admin`).
+    pub const fn user(mut self, user: &'a str) -> Self {
+        self.user = user;
+        self
+    }
+
+    /// Set the password for the user account to connect as (default `""`, empty).
+    pub const fn password(mut self, password: &'a str) -> Self {
+        self.password = password;
+        self
+    }
 }
 
 impl Default for Options<'_> {
@@ -53,12 +69,11 @@ impl Default for Options<'_> {
             db: "test",
             user: "admin",
             password: "",
-            timeout: 20,
-            ssl: None,
         }
     }
 }
 
+/// The arguments accepted by [crate::r::connection]
 pub trait Arg<'a, T> {
     fn arg(self) -> (T, Options<'a>);
 }

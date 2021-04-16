@@ -5,6 +5,7 @@ use ql2::term::TermType;
 use serde::Serialize;
 
 #[derive(Debug, Clone, Copy, Serialize, Default, PartialEq, PartialOrd)]
+#[non_exhaustive]
 pub struct Options {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub read_mode: Option<ReadMode>,
@@ -13,6 +14,7 @@ pub struct Options {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, PartialOrd)]
+#[non_exhaustive]
 #[serde(rename_all = "lowercase")]
 pub enum IdentifierFormat {
     Name,

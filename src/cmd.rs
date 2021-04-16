@@ -2,6 +2,7 @@ pub mod changes;
 pub mod connection;
 pub mod db;
 pub mod expr;
+pub mod insert;
 pub mod run;
 pub mod table;
 
@@ -11,6 +12,13 @@ use futures::Stream;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::str;
+
+#[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[serde(rename_all = "lowercase")]
+pub enum Durability {
+    Hard,
+    Soft,
+}
 
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[serde(rename_all = "lowercase")]
@@ -33,6 +41,13 @@ impl<'a> Query {
         T: table::Arg,
     {
         table::new(Some(self), arg.arg())
+    }
+
+    pub fn insert<T>(self, arg: T) -> Query
+    where
+        T: insert::Arg,
+    {
+        insert::new(self, arg.arg())
     }
 
     pub fn changes<T>(self, arg: T) -> Query
