@@ -5,6 +5,7 @@ use serde_json::Value;
 
 #[async_std::test]
 async fn table() -> reql::Result<()> {
+    env_logger::init();
     let stream = TcpStream::connect(DEFAULT_ADDR).await?;
     let conn = r.connection(stream).await?;
     let mut query = r.db("rethinkdb").table("users").run(&conn);

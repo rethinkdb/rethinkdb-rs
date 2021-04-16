@@ -42,13 +42,8 @@ impl Arg for Options {
 }
 
 pub(crate) fn new(parent: Query, opts: Option<Options>) -> Query {
-    Query {
-        typ: TermType::Changes,
-        args: vec![parent],
-        opts: opts
-            .map(|x| serde_json::to_value(&x).unwrap())
-            .map(Into::into),
-        change_feed: true,
-        ..Default::default()
-    }
+    parent
+        .append(TermType::Changes)
+        .with_opts(opts)
+        .mark_change_feed()
 }

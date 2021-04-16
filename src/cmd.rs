@@ -9,7 +9,16 @@ use crate::{Query, Result, TcpStream};
 use futures::io::{AsyncRead, AsyncWrite};
 use futures::Stream;
 use serde::de::DeserializeOwned;
+use serde::Serialize;
 use std::str;
+
+#[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[serde(rename_all = "lowercase")]
+pub enum ReadMode {
+    Single,
+    Majority,
+    Outdated,
+}
 
 fn debug(bytes: &[u8]) -> String {
     if let Ok(string) = str::from_utf8(bytes) {

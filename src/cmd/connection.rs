@@ -184,11 +184,11 @@ struct ServerInfo<'a> {
 
 impl ServerInfo<'_> {
     fn validate(resp: &[u8]) -> Result<()> {
-        #[allow(clippy::absurd_extreme_comparisons)]
         let info = serde_json::from_slice::<ServerInfo>(resp)?;
         if !info.success {
             return Err(err::Runtime::Internal(debug(resp)).into());
         }
+        #[allow(clippy::absurd_extreme_comparisons)]
         if PROTOCOL_VERSION < info.min_protocol_version
             || info.max_protocol_version < PROTOCOL_VERSION
         {

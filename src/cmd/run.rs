@@ -1,3 +1,4 @@
+use crate::cmd::ReadMode;
 use crate::proto::Payload;
 use crate::{err, Connection, Query, Result, TcpStream};
 use async_stream::try_stream;
@@ -47,14 +48,6 @@ pub struct Options<'a> {
 
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[serde(rename_all = "lowercase")]
-pub enum ReadMode {
-    Single,
-    Majority,
-    Outdated,
-}
-
-#[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-#[serde(rename_all = "lowercase")]
 pub enum Durability {
     Hard,
     Soft,
@@ -97,7 +90,7 @@ where
         let (conn, opts) = arg.arg();
         conn.broken()?;
         conn.change_feed()?;
-        if query.change_feed {
+        if query.change_feed() {
             conn.mark_change_feed();
         }
         let token = conn.token();

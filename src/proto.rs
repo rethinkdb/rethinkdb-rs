@@ -59,11 +59,66 @@ impl From<Value> for Datum {
 /// The query that will be sent to RethinkDB
 #[derive(Debug, Clone, Default)]
 pub struct Query {
-    pub(crate) typ: TermType,
-    pub(crate) datum: Option<Datum>,
-    pub(crate) args: Vec<Query>,
-    pub(crate) opts: Option<Datum>,
-    pub(crate) change_feed: bool,
+    typ: TermType,
+    datum: Option<Datum>,
+    args: Vec<Query>,
+    opts: Option<Datum>,
+    change_feed: bool,
+}
+
+fn to_datum<T>(opts: T) -> Datum
+where
+    T: Serialize,
+{
+    serde_json::to_value(&opts)
+        // it's safe to unwrap here because we only use opts
+        // types that are derived in this crate and we know
+        // those don't return errors
+        .unwrap()
+        .into()
+}
+
+impl Query {
+    pub(crate) fn new(typ: TermType) -> Self {
+        Self {
+            typ,
+            ..Default::default()
+        }
+    }
+
+    pub(crate) fn append(self, typ: TermType) -> Self {
+        Self {
+            typ,
+            change_feed: self.change_feed,
+            args: vec![self],
+            ..Default::default()
+        }
+    }
+
+    pub(crate) fn with_arg<T>(mut self, arg: T) -> Self
+    where
+        T: Into<Query>,
+    {
+        self.args.push(arg.into());
+        self
+    }
+
+    pub(crate) fn with_opts<T>(mut self, opts: Option<T>) -> Self
+    where
+        T: Serialize,
+    {
+        self.opts = opts.map(to_datum);
+        self
+    }
+
+    pub(crate) fn mark_change_feed(mut self) -> Self {
+        self.change_feed = true;
+        self
+    }
+
+    pub(crate) fn change_feed(&self) -> bool {
+        self.change_feed
+    }
 }
 
 impl From<Datum> for Query {

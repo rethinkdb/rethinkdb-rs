@@ -5,6 +5,8 @@ use reql::{r, DEFAULT_ADDR};
 
 #[async_std::test]
 async fn expr() -> reql::Result<()> {
+    env_logger::init();
+
     let stream = TcpStream::connect(DEFAULT_ADDR).await?;
     let conn = r.connection(stream).await?;
 
