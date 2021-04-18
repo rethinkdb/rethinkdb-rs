@@ -1,3 +1,4 @@
+use crate::cmd::connection::DEFAULT_DB;
 use crate::cmd::{Durability, ReadMode};
 use crate::proto::Payload;
 use crate::{err, Connection, Query, Result, TcpStream};
@@ -47,6 +48,17 @@ pub struct Options<'a> {
     pub db: Option<Db<'a>>,
 }
 
+impl<'a> Options<'a> {
+    pub fn new() -> Self {
+        Default::default()
+    }
+
+    pub const fn db(mut self, db: &'a str) -> Self {
+        self.db = Some(Db(db));
+        self
+    }
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[non_exhaustive]
 #[serde(rename_all = "lowercase")]
@@ -82,7 +94,14 @@ where
     T: Unpin + DeserializeOwned,
 {
     try_stream! {
-        let (conn, opts) = arg.into();
+        let (conn, mut opts) = arg.into();
+        if conn.db != DEFAULT_DB {
+            let mut options = opts.unwrap_or_else(|| Options::new());
+            if options.db.is_none() {
+                options = options.db(conn.db.as_ref());
+            }
+            opts = Some(options);
+        }
         conn.broken()?;
         conn.change_feed()?;
         if query.change_feed() {

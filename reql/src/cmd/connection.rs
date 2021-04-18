@@ -16,6 +16,8 @@ const BUF_SIZE: usize = 1024;
 const NULL_BYTE: u8 = b'\0';
 const PROTOCOL_VERSION: usize = 0;
 
+pub(crate) const DEFAULT_DB: &str = "test";
+
 /// Options accepted by [crate::r::connection]
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[non_exhaustive]
@@ -65,7 +67,7 @@ impl Default for Options<'_> {
     fn default() -> Self {
         Self {
             buffer: 1024,
-            db: "test",
+            db: DEFAULT_DB,
             user: "admin",
             password: "",
         }
