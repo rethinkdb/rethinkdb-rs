@@ -127,6 +127,10 @@ impl<T> Connection<'_, T> {
         }
     }
 
+    pub fn take_tcp_stream(self) -> T {
+        self.stream
+    }
+
     fn mark_broken(&self) {
         self.broken.store(true, Ordering::SeqCst);
     }
