@@ -77,6 +77,8 @@
 //!
 //! [See the `r` struct for more available commands](r)
 
+#![allow(clippy::wrong_self_convention)]
+
 pub mod cmd;
 mod err;
 mod proto;

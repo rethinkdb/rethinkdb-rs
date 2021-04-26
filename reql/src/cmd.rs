@@ -654,41 +654,6 @@ impl<'a> Query {
         Query::new(TermType::Downcase).with_parent(self)
     }
 
-    pub fn add<T>(self, arg: T) -> Query
-    where
-        T: add::Arg,
-    {
-        arg.into_query().with_parent(self)
-    }
-
-    pub fn sub<T>(self, arg: T) -> Query
-    where
-        T: sub::Arg,
-    {
-        arg.into_query().with_parent(self)
-    }
-
-    pub fn mul<T>(self, arg: T) -> Query
-    where
-        T: mul::Arg,
-    {
-        arg.into_query().with_parent(self)
-    }
-
-    pub fn div<T>(self, arg: T) -> Query
-    where
-        T: div::Arg,
-    {
-        arg.into_query().with_parent(self)
-    }
-
-    pub fn rem<T>(self, arg: T) -> Query
-    where
-        T: rem::Arg,
-    {
-        arg.into_query().with_parent(self)
-    }
-
     pub fn and<T>(self, arg: T) -> Query
     where
         T: and::Arg,
