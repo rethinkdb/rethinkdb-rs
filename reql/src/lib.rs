@@ -26,12 +26,6 @@
 //! for more details if it fails to compile.
 //!
 //! Add this crate (`reql`) and the `futures` crate to your dependencies in `Cargo.toml`.
-//! You may also need to depend on a crate that provides an async implementation of a
-//! `TcpStream`, like `async-std`, for example. You can use this crate
-//! with any `TcpStream` that implements `AsyncRead` and `AsyncWrite` from
-//! the futures crate. The implementation also needs to implement the same
-//! traits for `&TcpStream` because we use unmutable references of the
-//! connection to take advantage of RethinkDB's connection pipelining abilities.
 //!
 //! Now import the RethinkDB driver:
 //!
@@ -47,12 +41,10 @@
 //! drivers (`28015` by default). Let's open a connection:
 //!
 //! ```
-//! use async_std::net::TcpStream;
-//! use reql::{r, DEFAULT_ADDR};
+//! use reql::r;
 //!
 //! # async fn connect() -> reql::Result<()> {
-//! let stream = TcpStream::connect(DEFAULT_ADDR).await?;
-//! let connection = r.connection(stream).await?;
+//! let connection = r.connect(()).await?;
 //! # Ok(())
 //! # }
 //! ```
@@ -62,13 +54,11 @@
 //! # Send a query to the database #
 //!
 //! ```
-//! use async_std::net::TcpStream;
 //! use futures::TryStreamExt;
-//! use reql::{r, DEFAULT_ADDR};
+//! use reql::r;
 //!
 //! # async fn connect() -> reql::Result<()> {
-//! let stream = TcpStream::connect(DEFAULT_ADDR).await?;
-//! let conn = r.connection(stream).await?;
+//! let conn = r.connect(()).await?;
 //! let mut query = r.expr("Hello world!").run(&conn);
 //! # let _: Option<String> = query.try_next().await?;
 //! # Ok(())
@@ -83,10 +73,10 @@ pub mod cmd;
 mod err;
 mod proto;
 
+use async_std::net::TcpStream;
 use cmd::run::Response;
 use dashmap::DashMap;
 use futures::channel::mpsc::Sender;
-use futures::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 use futures::lock::Mutex;
 use ql2::term::TermType;
 use std::borrow::Cow;
@@ -95,17 +85,14 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 pub use err::*;
 pub use proto::Query;
 
-/// Default address of the RethinkDB server
-pub const DEFAULT_ADDR: (&str, u16) = ("localhost", 28015);
-
 /// Custom result returned by various ReQL commands
 pub type Result<T> = std::result::Result<T, Error>;
 
-/// The connection object returned by `r.connection()`
+/// The connection object returned by `r.connect()`
 #[derive(Debug)]
-pub struct Connection<'a, T> {
+pub struct Connection<'a> {
     db: Cow<'a, str>,
-    stream: T,
+    stream: TcpStream,
     token: AtomicU64,
     broken: AtomicBool,
     change_feed: AtomicBool,
@@ -114,9 +101,9 @@ pub struct Connection<'a, T> {
     locker: Mutex<()>,
 }
 
-impl<T> Connection<'_, T> {
+impl Connection<'_> {
     /// Convert the connection into an instance you can move around
-    pub fn into_owned(self) -> Connection<'static, T> {
+    pub fn into_owned(self) -> Connection<'static> {
         Connection {
             db: Cow::from(self.db.into_owned()),
             stream: self.stream,
@@ -127,10 +114,6 @@ impl<T> Connection<'_, T> {
             senders: self.senders,
             locker: self.locker,
         }
-    }
-
-    pub fn take_tcp_stream(self) -> T {
-        self.stream
     }
 
     fn mark_broken(&self) {
@@ -160,25 +143,6 @@ impl<T> Connection<'_, T> {
     }
 }
 
-/// A generic, runtime independent, TcpStream
-///
-/// This crate can be used with any runtime that implements
-/// the `AsyncRead` and the `AsyncWrite` traits from the
-/// futures crate
-pub trait TcpStream<'a>: AsyncReadExt + AsyncWriteExt
-where
-    Self: Unpin + 'a,
-    &'a Self: AsyncRead + AsyncWrite,
-{
-}
-
-impl<'a, T: AsyncRead + AsyncWrite + ?Sized> TcpStream<'a> for T
-where
-    Self: Unpin + 'a,
-    &'a Self: AsyncRead + AsyncWrite,
-{
-}
-
 /// The top-level ReQL namespace
 ///
 /// # Example
@@ -199,25 +163,21 @@ impl<'a> r {
     /// Open a connection using the default host and port, specifying the default database.
     ///
     /// ```
-    /// use async_std::net::TcpStream;
-    /// use reql::cmd::connection::Options;
-    /// use reql::{r, DEFAULT_ADDR};
+    /// use reql::cmd::connect::Options;
+    /// use reql::r;
     ///
     /// # async fn connect() -> reql::Result<()> {
-    /// let stream = TcpStream::connect(DEFAULT_ADDR).await?;
-    /// let conn = r.connection((stream, Options::new().db("marvel"))).await?;
+    /// let conn = r.connect(Options::new().db("marvel")).await?;
     /// # Ok(())
     /// # }
     /// ```
     ///
-    /// Read more about this command [cmd::connection]
-    pub async fn connection<A, T>(self, options: A) -> Result<Connection<'a, T>>
+    /// Read more about this command [cmd::connect]
+    pub async fn connect<T>(self, options: T) -> Result<Connection<'a>>
     where
-        A: cmd::connection::Arg<'a, T>,
-        T: TcpStream<'a>,
-        &'a T: AsyncRead + AsyncWrite,
+        T: cmd::connect::Arg<'a>,
     {
-        cmd::connection::new(options.into()).await
+        cmd::connect::new(options.into()).await
     }
 
     pub fn db_create<T>(self, arg: T) -> Query
@@ -242,19 +202,17 @@ impl<'a> r {
     ///
     /// The `db` command is optional. If it is not present in a query, the
     /// query will run against the default database for the connection,
-    /// specified in the `db` argument to [r::connection].
+    /// specified in the `db` argument to [r::connect].
     ///
     /// # Examples
     ///
     /// Explicitly specify a database for a query.
     ///
     /// ```
-    /// # use async_std::net::TcpStream;
     /// # use futures::TryStreamExt;
-    /// # use reql::{r, DEFAULT_ADDR};
+    /// # use reql::r;
     /// # async fn example() -> reql::Result<()> {
-    /// # let stream = TcpStream::connect(DEFAULT_ADDR).await?;
-    /// # let conn = r.connection(stream).await?;
+    /// # let conn = r.connect(()).await?;
     /// let mut query = r.db("heroes").table("marvel").run(&conn);
     /// # let _: Option<String> = query.try_next().await?;
     /// # Ok(())

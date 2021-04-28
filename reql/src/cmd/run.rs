@@ -1,4 +1,3 @@
-use crate::cmd::connection::DEFAULT_DB;
 use crate::cmd::{Durability, ReadMode};
 use crate::proto::Payload;
 use crate::{err, Connection, Query, Result, TcpStream};
@@ -70,38 +69,34 @@ pub enum Format {
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Db<'a>(pub &'a str);
 
-pub trait Arg<'a, T> {
-    fn into(self) -> (&'a Connection<'a, T>, Option<Options<'a>>);
+pub trait Arg<'a> {
+    fn into(self) -> (&'a Connection<'a>, Options<'a>);
 }
 
-impl<'a, T> Arg<'a, T> for &'a Connection<'a, T> {
-    fn into(self) -> (&'a Connection<'a, T>, Option<Options<'a>>) {
-        (self, None)
+impl<'a> Arg<'a> for &'a Connection<'a> {
+    fn into(self) -> (&'a Connection<'a>, Options<'a>) {
+        (self, Options::new().db(self.db.as_ref()))
     }
 }
 
-impl<'a, T> Arg<'a, T> for (&'a Connection<'a, T>, Options<'a>) {
-    fn into(self) -> (&'a Connection<'a, T>, Option<Options<'a>>) {
-        (self.0, Some(self.1))
+impl<'a> Arg<'a> for (&'a Connection<'a>, Options<'a>) {
+    fn into(self) -> (&'a Connection<'a>, Options<'a>) {
+        let opts = if self.1.db.is_none() {
+            self.1.db(self.0.db.as_ref())
+        } else {
+            self.1
+        };
+        (self.0, opts)
     }
 }
 
-pub(crate) fn new<'a, S, A, T>(query: Query, arg: A) -> impl Stream<Item = Result<T>>
+pub(crate) fn new<'a, A, T>(query: Query, arg: A) -> impl Stream<Item = Result<T>>
 where
-    S: TcpStream<'a>,
-    &'a S: AsyncRead + AsyncWrite,
-    A: Arg<'a, S>,
+    A: Arg<'a>,
     T: Unpin + DeserializeOwned,
 {
     try_stream! {
-        let (conn, mut opts) = arg.into();
-        if conn.db != DEFAULT_DB {
-            let mut options = opts.unwrap_or_else(|| Options::new());
-            if options.db.is_none() {
-                options = options.db(conn.db.as_ref());
-            }
-            opts = Some(options);
-        }
+        let (conn, opts) = arg.into();
         conn.broken()?;
         conn.change_feed()?;
         if query.change_feed() {
@@ -131,7 +126,7 @@ where
                     break;
                 }
                 ResponseType::SuccessPartial => {
-                    let payload = Payload(QueryType::Continue, None, None);
+                    let payload = Payload(QueryType::Continue, None, Default::default());
                     conn.write(token, &payload).await?;
                     for val in serde_json::from_value::<Vec<T>>(resp.r)? {
                         yield val;
@@ -152,11 +147,7 @@ where
     }
 }
 
-impl<'a, S> Connection<'a, S>
-where
-    S: TcpStream<'a>,
-    &'a S: AsyncRead + AsyncWrite,
-{
+impl<'a> Connection<'a> {
     fn token(&self) -> u64 {
         let token = self
             .token

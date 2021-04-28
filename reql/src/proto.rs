@@ -148,7 +148,7 @@ impl Serialize for Query {
 pub(crate) struct Payload<'a>(
     pub(crate) QueryType,
     pub(crate) Option<Query>,
-    pub(crate) Option<Options<'a>>,
+    pub(crate) Options<'a>,
 );
 
 impl Serialize for Payload<'_> {
@@ -157,11 +157,10 @@ impl Serialize for Payload<'_> {
         S: Serializer,
     {
         let typ = self.0 as i32;
-        match (&self.1, &self.2) {
-            (Some(query), Some(opts)) => (typ, query, opts).serialize(serializer),
-            (Some(query), None) => (typ, query).serialize(serializer),
-            (None, None) => (typ,).serialize(serializer),
-            (None, Some(_)) => Err(ser::Error::custom("unexpected options with no query")),
+        let opts = &self.2;
+        match &self.1 {
+            Some(query) => (typ, query, opts).serialize(serializer),
+            None => (typ,).serialize(serializer),
         }
     }
 }

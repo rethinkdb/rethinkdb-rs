@@ -19,7 +19,7 @@ pub mod circle;
 pub mod coerce_to;
 pub mod concat_map;
 pub mod config;
-pub mod connection;
+pub mod connect;
 pub mod contains;
 pub mod count;
 pub mod date;
@@ -971,11 +971,9 @@ impl<'a> Query {
         arg.into_query().with_parent(self)
     }
 
-    pub fn run<S, A, T>(self, arg: A) -> impl Stream<Item = Result<T>>
+    pub fn run<A, T>(self, arg: A) -> impl Stream<Item = Result<T>>
     where
-        S: TcpStream<'a>,
-        &'a S: AsyncRead + AsyncWrite,
-        A: run::Arg<'a, S>,
+        A: run::Arg<'a>,
         T: Unpin + DeserializeOwned,
     {
         Box::pin(run::new(self, arg))

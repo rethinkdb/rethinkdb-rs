@@ -58,13 +58,11 @@
 //! Start monitoring the changefeed in one client:
 //!
 //! ```
-//! # use async_std::net::TcpStream;
 //! # use futures::TryStreamExt;
-//! # use reql::{r, DEFAULT_ADDR};
+//! # use reql::r;
 //! # use serde_json::Value;
 //! # async fn example() -> reql::Result<()> {
-//! # let stream = TcpStream::connect(DEFAULT_ADDR).await?;
-//! # let conn = r.connection(stream).await?;
+//! # let conn = r.connect(()).await?;
 //! let mut query = r.table("games").changes(()).run(&conn);
 //!
 //! while let Some(response) = query.try_next().await? {
@@ -80,13 +78,11 @@
 //! As these queries are performed in a second client
 //!
 //! ```
-//! # use async_std::net::TcpStream;
 //! # use futures::TryStreamExt;
-//! # use reql::{r, DEFAULT_ADDR};
+//! # use reql::r;
 //! # use serde_json::{Value, json};
 //! # async fn example() -> reql::Result<()> {
-//! # let stream = TcpStream::connect(DEFAULT_ADDR).await?;
-//! # let conn = r.connection(stream).await?;
+//! # let conn = r.connect(()).await?;
 //! let mut query = r.table("games").insert(json!({"id": 1})).run(&conn);
 //! #
 //! # if let Some(response) = query.try_next().await? {

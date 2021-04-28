@@ -1,19 +1,17 @@
-use async_std::net::TcpStream;
 use futures::stream::select_all;
 use futures::StreamExt;
-use reql::{r, DEFAULT_ADDR};
+use reql::r;
 
-#[async_std::test]
+#[tokio::test]
 async fn expr() -> reql::Result<()> {
     env_logger::init();
 
-    let stream = TcpStream::connect(DEFAULT_ADDR).await?;
-    let conn = r.connection(stream).await?;
+    let conn = r.connect(()).await?;
 
     let mut streams = Vec::new();
     let num = 1_024u32;
     for i in 0..num {
-        streams.push(r.expr(format!("message {}", i)).run::<_, _, String>(&conn));
+        streams.push(r.expr(format!("message {}", i)).run::<_, String>(&conn));
     }
 
     let list = select_all(streams);

@@ -1,8 +1,9 @@
 //! Create a new connection to the database server
 
-use crate::{err, Connection, Result, TcpStream};
+use crate::{err, Connection, Result};
+use async_std::net::TcpStream;
 use dashmap::DashMap;
-use futures::io::{AsyncRead, AsyncWrite};
+use futures::io::{AsyncReadExt, AsyncWriteExt};
 use futures::lock::Mutex;
 use log::trace;
 use ql2::version_dummy::Version;
@@ -18,18 +19,20 @@ const PROTOCOL_VERSION: usize = 0;
 
 pub(crate) const DEFAULT_DB: &str = "test";
 
-/// Options accepted by [crate::r::connection]
+/// Options accepted by [crate::r::connect]
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[non_exhaustive]
 pub struct Options<'a> {
-    /// The buffer size for each `mpsc::channel` created, by default `1024`
-    pub buffer: usize,
+    pub host: &'a str,
+    pub port: u16,
     /// The database used if not explicitly specified in a query, by default `test`.
     pub db: &'a str,
     /// The user account to connect as (default `admin`).
     pub user: &'a str,
     /// The password for the user account to connect as (default `""`, empty).
     pub password: &'a str,
+    /// The buffer size for each `mpsc::channel` created, by default `1024`
+    pub buffer: usize,
 }
 
 impl<'a> Options<'a> {
@@ -66,48 +69,38 @@ impl<'a> Options<'a> {
 impl Default for Options<'_> {
     fn default() -> Self {
         Self {
-            buffer: 1024,
+            host: "localhost",
+            port: 28015,
             db: DEFAULT_DB,
             user: "admin",
             password: "",
+            buffer: 1024,
         }
     }
 }
 
-/// The arguments accepted by [crate::r::connection]
-pub trait Arg<'a, T> {
-    fn into(self) -> (T, Options<'a>);
+/// The arguments accepted by [crate::r::connect]
+pub trait Arg<'a> {
+    fn into(self) -> Options<'a>;
 }
 
-impl<'a, T> Arg<'a, T> for T
-where
-    T: TcpStream<'a>,
-    &'a T: AsyncRead + AsyncWrite,
-{
-    fn into(self) -> (T, Options<'a>) {
-        (self, Default::default())
+impl<'a> Arg<'a> for () {
+    fn into(self) -> Options<'a> {
+        Default::default()
     }
 }
 
-impl<'a, T> Arg<'a, T> for (T, Options<'a>)
-where
-    T: TcpStream<'a>,
-    &'a T: AsyncRead + AsyncWrite,
-{
+impl<'a> Arg<'a> for Options<'a> {
     fn into(self) -> Self {
         self
     }
 }
 
-pub(crate) async fn new<'a, T>((stream, options): (T, Options<'a>)) -> Result<Connection<'a, T>>
-where
-    T: TcpStream<'a>,
-    &'a T: AsyncRead + AsyncWrite,
-{
+pub(crate) async fn new<'a>(options: Options<'a>) -> Result<Connection<'a>> {
     Ok(Connection {
         db: Cow::from(options.db),
         buffer: options.buffer,
-        stream: handshake(stream, options).await?,
+        stream: handshake(options).await?,
         token: AtomicU64::new(0),
         broken: AtomicBool::new(false),
         change_feed: AtomicBool::new(false),
@@ -121,11 +114,9 @@ where
 // This method optimises message exchange as suggested in the RethinkDB
 // documentation by sending message 3 right after message 1, without waiting
 // for message 2 first.
-async fn handshake<'a, T>(mut stream: T, opts: Options<'_>) -> Result<T>
-where
-    T: TcpStream<'a>,
-    &'a T: AsyncRead + AsyncWrite,
-{
+async fn handshake<'a>(opts: Options<'_>) -> Result<TcpStream> {
+    let mut stream = TcpStream::connect((opts.host, opts.port)).await?;
+
     trace!("sending supported version to RethinkDB");
     stream
         .write_all(&(Version::V10 as i32).to_le_bytes())
