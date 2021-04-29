@@ -157,12 +157,12 @@ pub mod without;
 pub mod year;
 pub mod zip;
 
-use crate::{Query, Result, TcpStream};
-use futures::io::{AsyncRead, AsyncWrite};
+use crate::{Query, Result};
 use futures::Stream;
 use ql2::term::TermType;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
+use std::str;
 
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[serde(rename_all = "lowercase")]
@@ -177,6 +177,13 @@ pub enum ReadMode {
     Single,
     Majority,
     Outdated,
+}
+
+fn debug(bytes: &[u8]) -> String {
+    if let Ok(string) = str::from_utf8(bytes) {
+        return string.to_owned();
+    }
+    format!("{:?}", bytes)
 }
 
 impl<'a> Query {

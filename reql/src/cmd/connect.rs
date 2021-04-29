@@ -1,5 +1,6 @@
 //! Create a new connection to the database server
 
+use super::debug;
 use crate::{err, Connection, Result};
 use async_std::net::TcpStream;
 use dashmap::DashMap;
@@ -10,7 +11,6 @@ use ql2::version_dummy::Version;
 use scram::client::{ScramClient, ServerFinal, ServerFirst};
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
-use std::str;
 use std::sync::atomic::{AtomicBool, AtomicU64};
 
 const BUF_SIZE: usize = 1024;
@@ -281,11 +281,4 @@ fn server_final(scram: ServerFinal, resp: &[u8]) -> Result<()> {
         }
     }
     Ok(())
-}
-
-fn debug(bytes: &[u8]) -> String {
-    if let Ok(string) = str::from_utf8(bytes) {
-        return string.to_owned();
-    }
-    format!("{:?}", bytes)
 }

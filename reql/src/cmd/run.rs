@@ -112,6 +112,7 @@ where
         loop {
             trace!("receiving response; token: {}", token);
             let resp = conn.read(token, &mut rx).await?;
+            trace!("response received; token: {}, response: {}", token, resp.r);
             let response_type = ResponseType::from_i32(resp.t)
                 .ok_or_else(|| err::Client::Other(format!("uknown response type `{}`", resp.t)))?;
             if let Some(error_type) = resp.e {
@@ -181,7 +182,7 @@ impl<'a> Connection<'a> {
         let guard = self.locker.lock().await;
         trace!("reading header; token: {}", token);
         let mut header = [0u8; HEADER_SIZE];
-        (&mut &self.stream).read(&mut header).await?;
+        (&mut &self.stream).read_exact(&mut header).await?;
 
         let mut buf = [0u8; TOKEN_SIZE];
         buf.copy_from_slice(&header[..TOKEN_SIZE]);
@@ -199,14 +200,14 @@ impl<'a> Connection<'a> {
 
         trace!("reading body; token: {}", token);
         let mut buf = vec![0u8; len];
-        let result = (&mut &self.stream).read(&mut buf).await;
+        let result = (&mut &self.stream).read_exact(&mut buf).await;
 
         // we have finished reading so we can drop the lock
         // and let other processes advance
         drop(guard);
 
         trace!(
-            "body {}; token: {}, db_token: {}",
+            "body {}; token: {}, db_token: {}, body: {}",
             if result.is_ok() {
                 "read"
             } else {
@@ -214,6 +215,7 @@ impl<'a> Connection<'a> {
             },
             token,
             db_token,
+            super::debug(&buf),
         );
 
         match (result, db_token == token) {
