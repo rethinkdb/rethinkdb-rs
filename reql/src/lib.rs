@@ -222,6 +222,7 @@ impl<'a> r {
         arg.into_query()
     }
 
+    /// See [Query::table_create]
     pub fn table_create<T>(self, arg: T) -> Query
     where
         T: cmd::table_create::Arg,

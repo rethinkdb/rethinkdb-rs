@@ -194,6 +194,53 @@ impl<'a> Query {
         arg.into_query().with_parent(self)
     }
 
+    /// Create a table
+    ///
+    /// A RethinkDB table is a collection of JSON documents.
+    ///
+    /// ## Example
+    ///
+    /// Create a table named "dc_universe" with the default settings.
+    ///
+    /// ```
+    /// # use reql::r;
+    /// # use futures::TryStreamExt;
+    /// # use serde_json::Value;
+    /// # async fn example() -> reql::Result<()> {
+    /// # let conn = r.connect(()).await?;
+    /// let mut query = r.db("heroes").table_create("dc_universe").run(&conn);
+    /// # let _: Option<Value> = query.try_next().await?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    /** ```json
+    {
+        "config_changes": [
+            {
+                "new_val": {
+                    "db": "test",
+                    "durability":  "hard",
+                    "id": "20ea60d4-3b76-4817-8828-98a236df0297",
+                    "name": "dc_universe",
+                    "primary_key": "id",
+                    "shards": [
+                        {
+                            "primary_replica": "rethinkdb_srv1",
+                            "replicas": [
+                                "rethinkdb_srv1",
+                                "rethinkdb_srv2"
+                            ]
+                        }
+                    ],
+                    "write_acks": "majority"
+                },
+                "old_val": None
+            }
+        ],
+        "tables_created": 1
+    }
+        ```
+         */
     pub fn table_create<T>(self, arg: T) -> Query
     where
         T: table_create::Arg,
