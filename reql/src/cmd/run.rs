@@ -1,10 +1,11 @@
+use super::connect::DEFAULT_DB;
 use crate::cmd::{Durability, ReadMode};
 use crate::proto::Payload;
 use crate::{err, Connection, Query, Result};
 use async_stream::try_stream;
-use futures::channel::mpsc;
+use futures::channel::mpsc::{self, UnboundedReceiver};
 use futures::io::{AsyncReadExt, AsyncWriteExt};
-use futures::sink::SinkExt;
+use futures::join;
 use futures::stream::{Stream, StreamExt};
 use log::trace;
 use ql2::query::QueryType;
@@ -75,18 +76,25 @@ pub trait Arg<'a> {
 
 impl<'a> Arg<'a> for &'a Connection<'a> {
     fn into(self) -> (&'a Connection<'a>, Options<'a>) {
-        (self, Options::new().db(self.db.as_ref()))
+        let opts = if self.db == DEFAULT_DB {
+            Options::new()
+        } else {
+            Options::new().db(self.db.as_ref())
+        };
+        (self, opts)
     }
 }
 
 impl<'a> Arg<'a> for (&'a Connection<'a>, Options<'a>) {
     fn into(self) -> (&'a Connection<'a>, Options<'a>) {
-        let opts = if self.1.db.is_none() {
-            self.1.db(self.0.db.as_ref())
+        let (conn, options) = self;
+        let conn_db = conn.db.as_ref();
+        let opts = if options.db.is_none() && conn_db != DEFAULT_DB {
+            options.db(conn_db)
         } else {
-            self.1
+            options
         };
-        (self.0, opts)
+        (conn, opts)
     }
 }
 
@@ -103,22 +111,12 @@ where
             conn.mark_change_feed();
         }
         let token = conn.token();
-        let (tx, mut rx) = mpsc::channel(conn.buffer);
-        conn.senders.insert(token, tx);
-        let payload = Payload(QueryType::Start, Some(query), opts);
-        trace!("sending query; token: {}, payload: {}", token, payload);
-        conn.write(token, &payload).await?;
-        trace!("query sent; token: {}", token);
+        let (tx, mut rx) = mpsc::unbounded();
+        conn.channels.insert(token, tx);
+        let mut payload = Payload(QueryType::Start, Some(query), opts);
         loop {
-            trace!("receiving response; token: {}", token);
-            let resp = conn.read(token, &mut rx).await?;
-            trace!("response received; token: {}, response: {}", token, resp.r);
-            let response_type = ResponseType::from_i32(resp.t)
-                .ok_or_else(|| err::Client::Other(format!("uknown response type `{}`", resp.t)))?;
-            if let Some(error_type) = resp.e {
-                response_error(response_type, Some(error_type), resp)?;
-                break;
-            }
+            let (response_type, resp) = conn.request(token, &payload, &mut rx).await?;
+            trace!("yielding response; token: {}, response: {}", token, resp.r);
             match response_type {
                 ResponseType::SuccessAtom | ResponseType::SuccessSequence | ResponseType::ServerInfo => {
                     for val in serde_json::from_value::<Vec<T>>(resp.r)? {
@@ -127,8 +125,7 @@ where
                     break;
                 }
                 ResponseType::SuccessPartial => {
-                    let payload = Payload(QueryType::Continue, None, Default::default());
-                    conn.write(token, &payload).await?;
+                    payload = Payload(QueryType::Continue, None, Default::default());
                     for val in serde_json::from_value::<Vec<T>>(resp.r)? {
                         yield val;
                     }
@@ -137,13 +134,13 @@ where
                 // TODO what whould we yield here?
                 ResponseType::WaitComplete => { break; }
                 typ => {
-                    response_error(typ, resp.e, resp)?;
+                    Err(response_error(typ, resp.e, resp))?;
                     break;
                 }
             }
         }
         rx.close();
-        conn.senders.remove(&token);
+        conn.channels.remove(&token);
         conn.unmark_change_feed();
     }
 }
@@ -160,34 +157,63 @@ impl<'a> Connection<'a> {
         token
     }
 
-    async fn write(&'a self, token: u64, query: &Payload<'_>) -> Result<()> {
+    fn send_response(&self, db_token: u64, resp: Result<(ResponseType, Response)>) {
+        if let Some(tx) = self.channels.get(&db_token) {
+            if let Err(error) = tx.unbounded_send(resp) {
+                if error.is_disconnected() {
+                    self.channels.remove(&db_token);
+                }
+            }
+        }
+    }
+
+    async fn request(
+        &'a self,
+        token: u64,
+        query: &Payload<'_>,
+        rx: &mut UnboundedReceiver<Result<(ResponseType, Response)>>,
+    ) -> Result<(ResponseType, Response)> {
+        let (_, result) = join!(self.submit(token, query), rx.next());
+        match result {
+            Some(resp) => resp,
+            None => {
+                Err(err::Client::Other("sender stream terminated prematurely".to_owned()).into())
+            }
+        }
+    }
+
+    async fn submit(&'a self, token: u64, query: &Payload<'_>) {
+        let mut db_token = token;
+        let result = self.exec(token, query, &mut db_token).await;
+        self.send_response(db_token, result);
+    }
+
+    async fn exec(
+        &'a self,
+        token: u64,
+        query: &Payload<'_>,
+        db_token: &mut u64,
+    ) -> Result<(ResponseType, Response)> {
         let bytes = query.to_bytes()?;
         let data_len = bytes.len();
         let mut buf = Vec::with_capacity(HEADER_SIZE + data_len);
         buf.extend_from_slice(&token.to_le_bytes());
         buf.extend_from_slice(&(data_len as u32).to_le_bytes());
         buf.extend_from_slice(&bytes);
-        self.stream.clone().write_all(&buf).await?;
-        Ok(())
-    }
 
-    async fn read(
-        &'a self,
-        token: u64,
-        rx: &mut mpsc::Receiver<Result<Response>>,
-    ) -> Result<Response> {
-        let mut stream = self.stream.clone();
-        // reading data from RethinkDB is a 2 step process so
-        // we have to get a lock to ensure no other process
-        // reads the data while we are reading it
-        let guard = self.locker.lock().await;
+        let mut stream = self.stream.access().await.clone();
+
+        trace!("sending query; token: {}, payload: {}", token, query);
+        stream.write_all(&buf).await?;
+        trace!("query sent; token: {}", token);
+
         trace!("reading header; token: {}", token);
         let mut header = [0u8; HEADER_SIZE];
         stream.read_exact(&mut header).await?;
 
         let mut buf = [0u8; TOKEN_SIZE];
         buf.copy_from_slice(&header[..TOKEN_SIZE]);
-        let db_token = u64::from_le_bytes(buf);
+        *db_token = u64::from_le_bytes(buf);
 
         let mut buf = [0u8; DATA_SIZE];
         buf.copy_from_slice(&header[TOKEN_SIZE..]);
@@ -201,55 +227,30 @@ impl<'a> Connection<'a> {
 
         trace!("reading body; token: {}", token);
         let mut buf = vec![0u8; len];
-        let result = stream.read_exact(&mut buf).await;
-
-        // we have finished reading so we can drop the lock
-        // and let other processes advance
-        drop(guard);
+        stream.read_exact(&mut buf).await?;
 
         trace!(
-            "body {}; token: {}, db_token: {}, body: {}",
-            if result.is_ok() {
-                "read"
-            } else {
-                "reading failed"
-            },
+            "body read; token: {}, db_token: {}, body: {}",
             token,
             db_token,
             super::debug(&buf),
         );
 
-        match (result, db_token == token) {
-            (result, true) => {
-                result?;
-                return Ok(serde_json::from_slice(&buf)?);
-            }
-            (Ok(_), false) => {
-                let response = serde_json::from_slice(&buf).map_err(Into::into);
-                self.send_response(db_token, response).await;
-            }
-            (Err(error), false) => {
-                self.send_response(db_token, Err(error.into())).await;
-            }
+        let resp = serde_json::from_slice::<Response>(&buf)?;
+        trace!(
+            "response successfully parsed; token: {}, response: {}",
+            token,
+            resp.r
+        );
+
+        let response_type = ResponseType::from_i32(resp.t)
+            .ok_or_else(|| err::Client::Other(format!("uknown response type `{}`", resp.t)))?;
+
+        if let Some(error_type) = resp.e {
+            return Err(response_error(response_type, Some(error_type), resp));
         }
 
-        match rx.next().await {
-            Some(resp) => resp,
-            None => {
-                Err(err::Client::Other("sender stream terminated prematurely".to_owned()).into())
-            }
-        }
-    }
-
-    async fn send_response(&self, db_token: u64, resp: Result<Response>) {
-        if let Some(sender) = self.senders.get(&db_token) {
-            let mut tx = sender.clone();
-            if let Err(error) = tx.send(resp).await {
-                if error.is_disconnected() {
-                    self.senders.remove(&db_token);
-                }
-            }
-        }
+        Ok((response_type, resp))
     }
 }
 
@@ -257,25 +258,31 @@ fn response_error(
     response_type: ResponseType,
     error_type: Option<i32>,
     resp: Response,
-) -> Result<()> {
-    let msg = serde_json::from_value::<Vec<String>>(resp.r)?.join(" ");
-    Err(match response_type {
+) -> err::Error {
+    let msg = match serde_json::from_value::<Vec<String>>(resp.r) {
+        Ok(messages) => messages.join(" "),
+        Err(error) => {
+            return error.into();
+        }
+    };
+    match response_type {
         ResponseType::ClientError => err::Client::Other(msg).into(),
         ResponseType::CompileError => err::Error::Compile(msg),
-        ResponseType::RuntimeError => match ErrorType::from_i32(
-            error_type
-                .ok_or_else(|| err::Client::Other(format!("unexpected runtime error: {}", msg)))?,
-        ) {
-            Some(ErrorType::Internal) => err::Runtime::Internal(msg).into(),
-            Some(ErrorType::ResourceLimit) => err::Runtime::ResourceLimit(msg).into(),
-            Some(ErrorType::QueryLogic) => err::Runtime::QueryLogic(msg).into(),
-            Some(ErrorType::NonExistence) => err::Runtime::NonExistence(msg).into(),
-            Some(ErrorType::OpFailed) => err::Availability::OpFailed(msg).into(),
-            Some(ErrorType::OpIndeterminate) => err::Availability::OpIndeterminate(msg).into(),
-            Some(ErrorType::User) => err::Runtime::User(msg).into(),
-            Some(ErrorType::PermissionError) => err::Runtime::Permission(msg).into(),
+        ResponseType::RuntimeError => match error_type
+            .map(ErrorType::from_i32)
+            .ok_or_else(|| err::Client::Other(format!("unexpected runtime error: {}", msg)))
+        {
+            Ok(Some(ErrorType::Internal)) => err::Runtime::Internal(msg).into(),
+            Ok(Some(ErrorType::ResourceLimit)) => err::Runtime::ResourceLimit(msg).into(),
+            Ok(Some(ErrorType::QueryLogic)) => err::Runtime::QueryLogic(msg).into(),
+            Ok(Some(ErrorType::NonExistence)) => err::Runtime::NonExistence(msg).into(),
+            Ok(Some(ErrorType::OpFailed)) => err::Availability::OpFailed(msg).into(),
+            Ok(Some(ErrorType::OpIndeterminate)) => err::Availability::OpIndeterminate(msg).into(),
+            Ok(Some(ErrorType::User)) => err::Runtime::User(msg).into(),
+            Ok(Some(ErrorType::PermissionError)) => err::Runtime::Permission(msg).into(),
+            Err(error) => error.into(),
             _ => err::Client::Other(format!("unexpected runtime error: {}", msg)).into(),
         },
         _ => err::Client::Other(format!("unexpected response: {}", msg)).into(),
-    })
+    }
 }

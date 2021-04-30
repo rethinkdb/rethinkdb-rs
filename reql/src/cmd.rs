@@ -158,7 +158,7 @@ pub mod year;
 pub mod zip;
 
 use crate::{Query, Result};
-use futures::Stream;
+use futures::stream::Stream;
 use ql2::term::TermType;
 use serde::de::DeserializeOwned;
 use serde::Serialize;

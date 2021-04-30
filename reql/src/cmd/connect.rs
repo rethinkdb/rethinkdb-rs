@@ -2,10 +2,10 @@
 
 use super::debug;
 use crate::{err, Connection, Result};
+use access_queue::AccessQueue;
 use async_net::TcpStream;
 use dashmap::DashMap;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
-use futures::lock::Mutex;
 use log::trace;
 use ql2::version_dummy::Version;
 use scram::client::{ScramClient, ServerFinal, ServerFirst};
@@ -31,20 +31,12 @@ pub struct Options<'a> {
     pub user: &'a str,
     /// The password for the user account to connect as (default `""`, empty).
     pub password: &'a str,
-    /// The buffer size for each `mpsc::channel` created, by default `1024`
-    pub buffer: usize,
 }
 
 impl<'a> Options<'a> {
     /// Create new options from default values
     pub fn new() -> Self {
         Default::default()
-    }
-
-    /// Set the buffer size for each `mpsc::channel` created, by default `1024`
-    pub const fn buffer(mut self, buffer: usize) -> Self {
-        self.buffer = buffer;
-        self
     }
 
     /// Set the database used if not explicitly specified in a query, by default `test`.
@@ -74,7 +66,6 @@ impl Default for Options<'_> {
             db: DEFAULT_DB,
             user: "admin",
             password: "",
-            buffer: 1024,
         }
     }
 }
@@ -99,13 +90,11 @@ impl<'a> Arg<'a> for Options<'a> {
 pub(crate) async fn new<'a>(options: Options<'a>) -> Result<Connection<'a>> {
     Ok(Connection {
         db: Cow::from(options.db),
-        buffer: options.buffer,
-        stream: handshake(options).await?,
+        stream: AccessQueue::new(handshake(options).await?, 1),
+        channels: DashMap::new(),
         token: AtomicU64::new(0),
         broken: AtomicBool::new(false),
         change_feed: AtomicBool::new(false),
-        senders: DashMap::new(),
-        locker: Mutex::new(()),
     })
 }
 

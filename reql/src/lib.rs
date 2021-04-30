@@ -73,11 +73,12 @@ pub mod cmd;
 mod err;
 mod proto;
 
+use access_queue::AccessQueue;
 use async_net::TcpStream;
 use cmd::run::Response;
 use dashmap::DashMap;
-use futures::channel::mpsc::Sender;
-use futures::lock::Mutex;
+use futures::channel::mpsc::UnboundedSender;
+use ql2::response::ResponseType;
 use ql2::term::TermType;
 use std::borrow::Cow;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -92,13 +93,11 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Debug)]
 pub struct Connection<'a> {
     db: Cow<'a, str>,
-    stream: TcpStream,
+    stream: AccessQueue<TcpStream>,
+    channels: DashMap<u64, UnboundedSender<Result<(ResponseType, Response)>>>,
     token: AtomicU64,
     broken: AtomicBool,
     change_feed: AtomicBool,
-    buffer: usize,
-    senders: DashMap<u64, Sender<Result<Response>>>,
-    locker: Mutex<()>,
 }
 
 impl Connection<'_> {
@@ -107,12 +106,10 @@ impl Connection<'_> {
         Connection {
             db: Cow::from(self.db.into_owned()),
             stream: self.stream,
+            channels: self.channels,
             token: self.token,
             broken: self.broken,
             change_feed: self.change_feed,
-            buffer: self.buffer,
-            senders: self.senders,
-            locker: self.locker,
         }
     }
 

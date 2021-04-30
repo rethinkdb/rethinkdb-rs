@@ -51,25 +51,29 @@ impl Arg for &str {
 
 impl Arg for (Query, Options) {
     fn into_query(self) -> Query {
-        build(self.0).with_opts(self.1)
+        let (query, options) = self;
+        build(query).with_opts(options)
     }
 }
 
 impl Arg for (String, Options) {
     fn into_query(self) -> Query {
-        build(Datum::String(self.0)).with_opts(self.1)
+        let (val, options) = self;
+        build(Datum::String(val)).with_opts(options)
     }
 }
 
 impl Arg for (&String, Options) {
     fn into_query(self) -> Query {
-        build(Datum::String(self.0.to_owned())).with_opts(self.1)
+        let (val, options) = self;
+        build(Datum::String(val.to_owned())).with_opts(options)
     }
 }
 
 impl Arg for (&str, Options) {
     fn into_query(self) -> Query {
-        build(Datum::String(self.0.to_owned())).with_opts(self.1)
+        let (val, options) = self;
+        build(Datum::String(val.to_owned())).with_opts(options)
     }
 }
 

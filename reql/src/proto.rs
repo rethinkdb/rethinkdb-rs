@@ -156,9 +156,9 @@ impl Serialize for Payload<'_> {
     where
         S: Serializer,
     {
-        let typ = self.0 as i32;
-        let opts = &self.2;
-        match &self.1 {
+        let Payload(typ, qry, opts) = self;
+        let typ = *typ as i32;
+        match qry {
             Some(query) => (typ, query, opts).serialize(serializer),
             None => (typ,).serialize(serializer),
         }
@@ -190,6 +190,7 @@ impl Serialize for Db<'_> {
     where
         S: Serializer,
     {
-        r.db(self.0).serialize(serializer)
+        let Self(name) = self;
+        r.db(*name).serialize(serializer)
     }
 }

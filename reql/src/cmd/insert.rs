@@ -45,7 +45,8 @@ impl Arg for Query {
 
 impl Arg for (Query, Options) {
     fn into_query(self) -> Query {
-        build(self.0).with_opts(self.1)
+        let (query, options) = self;
+        build(query).with_opts(options)
     }
 }
 
@@ -70,7 +71,8 @@ where
     T: Into<Value>,
 {
     fn into_query(self) -> Query {
-        build(Datum::from(self.0.into())).with_opts(self.1)
+        let (val, options) = self;
+        build(Datum::from(val.into())).with_opts(options)
     }
 }
 
