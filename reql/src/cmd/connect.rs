@@ -2,7 +2,7 @@
 
 use super::debug;
 use crate::{err, Connection, Result};
-use async_std::net::TcpStream;
+use async_net::TcpStream;
 use dashmap::DashMap;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
 use futures::lock::Mutex;

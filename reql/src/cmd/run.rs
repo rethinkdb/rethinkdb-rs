@@ -1,9 +1,9 @@
 use crate::cmd::{Durability, ReadMode};
 use crate::proto::Payload;
-use crate::{err, Connection, Query, Result, TcpStream};
+use crate::{err, Connection, Query, Result};
 use async_stream::try_stream;
 use futures::channel::mpsc;
-use futures::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
+use futures::io::{AsyncReadExt, AsyncWriteExt};
 use futures::sink::SinkExt;
 use futures::stream::{Stream, StreamExt};
 use log::trace;
@@ -167,7 +167,7 @@ impl<'a> Connection<'a> {
         buf.extend_from_slice(&token.to_le_bytes());
         buf.extend_from_slice(&(data_len as u32).to_le_bytes());
         buf.extend_from_slice(&bytes);
-        (&mut &self.stream).write_all(&buf).await?;
+        self.stream.clone().write_all(&buf).await?;
         Ok(())
     }
 
@@ -176,13 +176,14 @@ impl<'a> Connection<'a> {
         token: u64,
         rx: &mut mpsc::Receiver<Result<Response>>,
     ) -> Result<Response> {
+        let mut stream = self.stream.clone();
         // reading data from RethinkDB is a 2 step process so
         // we have to get a lock to ensure no other process
         // reads the data while we are reading it
         let guard = self.locker.lock().await;
         trace!("reading header; token: {}", token);
         let mut header = [0u8; HEADER_SIZE];
-        (&mut &self.stream).read_exact(&mut header).await?;
+        stream.read_exact(&mut header).await?;
 
         let mut buf = [0u8; TOKEN_SIZE];
         buf.copy_from_slice(&header[..TOKEN_SIZE]);
@@ -200,7 +201,7 @@ impl<'a> Connection<'a> {
 
         trace!("reading body; token: {}", token);
         let mut buf = vec![0u8; len];
-        let result = (&mut &self.stream).read_exact(&mut buf).await;
+        let result = stream.read_exact(&mut buf).await;
 
         // we have finished reading so we can drop the lock
         // and let other processes advance

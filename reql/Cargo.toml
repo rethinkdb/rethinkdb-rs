@@ -12,7 +12,8 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 edition = "2018"
 
 [dependencies]
-async-std = "1.9.0"
+access-queue = "1.1.0"
+async-net = "1.6.0"
 async-stream = "0.3.0"
 dashmap = "4.0.2"
 futures = "0.3.14"

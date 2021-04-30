@@ -73,7 +73,7 @@ pub mod cmd;
 mod err;
 mod proto;
 
-use async_std::net::TcpStream;
+use async_net::TcpStream;
 use cmd::run::Response;
 use dashmap::DashMap;
 use futures::channel::mpsc::Sender;
