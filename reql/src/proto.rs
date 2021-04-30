@@ -2,7 +2,7 @@ use crate::cmd::run::{Db, Options};
 use crate::{err, r};
 use ql2::query::QueryType;
 use ql2::term::TermType;
-use serde::{ser, Serialize, Serializer};
+use serde::{Serialize, Serializer};
 use serde_json::value::{Number, Value};
 use std::collections::{HashMap, VecDeque};
 use std::{fmt, str};
@@ -77,7 +77,7 @@ impl Query {
 
     #[doc(hidden)]
     pub fn with_parent(mut self, parent: Query) -> Self {
-        self.change_feed = parent.change_feed;
+        self.change_feed = self.change_feed || parent.change_feed;
         self.args.push_front(parent);
         self
     }
