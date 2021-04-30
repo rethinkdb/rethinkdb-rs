@@ -1,6 +1,7 @@
 use futures::TryStreamExt;
 use reql::r;
-use reql_types::ServerStatus;
+use reql_types::Change;
+use serde_json::Value;
 
 // We are using `tokio` here as an example but you can use this crate
 // with any runtime
@@ -15,17 +16,17 @@ async fn main() -> reql::Result<()> {
 
     // Create the query you want to run
     // The query returns a `Stream` of responses from RethinkDB
-    let mut query = r.db("rethinkdb").table("server_status").run(&conn);
+    let mut query = r.db("rethinkdb").table("jobs").changes(()).run(&conn);
 
     // Execute the query and handle the result
-    if let Some(server_status) = query.try_next().await? {
-        handle(&server_status)?;
+    while let Some(change) = query.try_next().await? {
+        handle(change)?;
     }
     Ok(())
 }
 
 // We are just going to print the JSON response for this example
-fn handle(server_status: &ServerStatus) -> reql::Result<()> {
-    println!("{}", serde_json::to_string(server_status)?);
+fn handle(change: Change<Value, Value>) -> reql::Result<()> {
+    println!("{}", serde_json::to_string(&change)?);
     Ok(())
 }

@@ -1,21 +1,24 @@
 use futures::stream::select_all;
-use futures::StreamExt;
+use futures::TryStreamExt;
 use reql::r;
 
 #[tokio::test]
-async fn expr() -> reql::Result<()> {
+async fn concurrency() -> reql::Result<()> {
     env_logger::init();
 
     let conn = r.connect(()).await?;
 
     let mut streams = Vec::new();
-    let num = 1_024u32;
+    let num = 10_000;
     for i in 0..num {
         streams.push(r.expr(format!("message {}", i)).run::<_, String>(&conn));
     }
 
-    let list = select_all(streams);
-    assert_eq!(num, list.fold(0u32, |acc, _| async move { acc + 1 }).await);
+    let mut list = select_all(streams);
+
+    while let Some(msg) = list.try_next().await? {
+        log::debug!("{}", msg);
+    }
 
     Ok(())
 }
