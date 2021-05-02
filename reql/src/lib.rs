@@ -167,7 +167,7 @@ impl r {
     where
         T: cmd::connect::Arg,
     {
-        cmd::connect::new(options.into()).await
+        cmd::connect::new(options.into_connect_opts()).await
     }
 
     pub fn db_create<T>(self, arg: T) -> Query

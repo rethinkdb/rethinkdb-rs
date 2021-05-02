@@ -75,13 +75,13 @@ impl Default for Options {
 pub trait Arg {
     type ToAddrs: AsyncToSocketAddrs;
 
-    fn into(self) -> (Option<Self::ToAddrs>, Options);
+    fn into_connect_opts(self) -> (Option<Self::ToAddrs>, Options);
 }
 
 impl Arg for () {
     type ToAddrs = SocketAddr;
 
-    fn into(self) -> (Option<Self::ToAddrs>, Options) {
+    fn into_connect_opts(self) -> (Option<Self::ToAddrs>, Options) {
         (None, Default::default())
     }
 }
@@ -89,7 +89,7 @@ impl Arg for () {
 impl Arg for Options {
     type ToAddrs = SocketAddr;
 
-    fn into(self) -> (Option<Self::ToAddrs>, Options) {
+    fn into_connect_opts(self) -> (Option<Self::ToAddrs>, Options) {
         (None, self)
     }
 }
@@ -97,7 +97,7 @@ impl Arg for Options {
 impl<'a> Arg for &'a str {
     type ToAddrs = (&'a str, u16);
 
-    fn into(self) -> (Option<Self::ToAddrs>, Options) {
+    fn into_connect_opts(self) -> (Option<Self::ToAddrs>, Options) {
         let opts = Options::default();
         (Some((self, opts.port)), opts)
     }
@@ -109,7 +109,7 @@ where
 {
     type ToAddrs = T;
 
-    fn into(self) -> (Option<Self::ToAddrs>, Options) {
+    fn into_connect_opts(self) -> (Option<Self::ToAddrs>, Options) {
         let (addr, opts) = self;
         (Some(addr), opts)
     }

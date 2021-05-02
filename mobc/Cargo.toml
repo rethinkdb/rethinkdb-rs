@@ -1,15 +1,24 @@
 [package]
 name = "mobc-reql"
+description = "RethinkDB support for the mobc connection pool"
 version = "0.1.0"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/rethinkdb/rethinkdb-rs/tree/next/mobc"
+documentation = "https://docs.rs/mobc-reql"
+readme = "README.md"
+keywords = ["async", "database", "pool", "reql"]
 authors = ["rushmorem <rushmore@webenchanter.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-futures-lite = "1.11.3"
+blocking = "1.0.2"
+futures = "0.3.14"
+futures-timer = { version = "3.0.2", default-features = false }
+log = "0.4.14"
 mobc = "0.7.2"
-reql = "0.2.1"
+reql = "0.4.0"
+reql-types = "0.0.4"
 
 [dev-dependencies]
+env_logger = "0.8.3"
 tokio = { version = "1.5.0", features = ["macros", "rt-multi-thread", "sync"] }

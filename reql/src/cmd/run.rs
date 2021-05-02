@@ -73,11 +73,11 @@ pub enum Format {
 pub struct Db(pub Cow<'static, str>);
 
 pub trait Arg<'a> {
-    fn into(self) -> (&'a Connection, Options);
+    fn into_run_opts(self) -> (&'a Connection, Options);
 }
 
 impl<'a> Arg<'a> for &'a Connection {
-    fn into(self) -> (&'a Connection, Options) {
+    fn into_run_opts(self) -> (&'a Connection, Options) {
         let opts = if self.db == DEFAULT_DB {
             Options::new()
         } else {
@@ -88,7 +88,7 @@ impl<'a> Arg<'a> for &'a Connection {
 }
 
 impl<'a> Arg<'a> for (&'a Connection, Options) {
-    fn into(self) -> (&'a Connection, Options) {
+    fn into_run_opts(self) -> (&'a Connection, Options) {
         let (conn, options) = self;
         let opts = if options.db.is_none() && conn.db != DEFAULT_DB {
             options.db(&conn.db)
@@ -105,7 +105,7 @@ where
     T: Unpin + DeserializeOwned,
 {
     try_stream! {
-        let (conn, opts) = arg.into();
+        let (conn, opts) = arg.into_run_opts();
         conn.broken()?;
         conn.change_feed()?;
         if query.change_feed() {
