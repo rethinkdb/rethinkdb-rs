@@ -213,7 +213,15 @@ impl<'a> Connection<'a> {
 
         let mut buf = [0u8; TOKEN_SIZE];
         buf.copy_from_slice(&header[..TOKEN_SIZE]);
-        *db_token = u64::from_le_bytes(buf);
+        *db_token = {
+            let token = u64::from_le_bytes(buf);
+            trace!("db_token: {}", token);
+            if token > self.token.load(Ordering::SeqCst) {
+                self.mark_broken();
+                return Err(err::Client::ConnectionBroken.into());
+            }
+            token
+        };
 
         let mut buf = [0u8; DATA_SIZE];
         buf.copy_from_slice(&header[TOKEN_SIZE..]);
