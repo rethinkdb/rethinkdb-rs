@@ -2,10 +2,10 @@
 
 use super::debug;
 use crate::{err, Connection, Result};
-use access_queue::AccessQueue;
 use async_net::TcpStream;
 use dashmap::DashMap;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
+use futures::lock::Mutex;
 use log::trace;
 use ql2::version_dummy::Version;
 use scram::client::{ScramClient, ServerFinal, ServerFirst};
@@ -90,7 +90,7 @@ impl<'a> Arg<'a> for Options<'a> {
 pub(crate) async fn new<'a>(options: Options<'a>) -> Result<Connection<'a>> {
     Ok(Connection {
         db: Cow::from(options.db),
-        stream: AccessQueue::new(handshake(options).await?, 1),
+        stream: Mutex::new(handshake(options).await?),
         channels: DashMap::new(),
         token: AtomicU64::new(0),
         broken: AtomicBool::new(false),

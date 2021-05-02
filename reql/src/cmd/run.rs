@@ -201,7 +201,8 @@ impl<'a> Connection<'a> {
         buf.extend_from_slice(&(data_len as u32).to_le_bytes());
         buf.extend_from_slice(&bytes);
 
-        let mut stream = self.stream.access().await.clone();
+        let guard = self.stream.lock().await;
+        let mut stream = guard.clone();
 
         trace!("sending query; token: {}, payload: {}", token, query);
         stream.write_all(&buf).await?;

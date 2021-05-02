@@ -73,11 +73,11 @@ pub mod cmd;
 mod err;
 mod proto;
 
-use access_queue::AccessQueue;
 use async_net::TcpStream;
 use cmd::run::Response;
 use dashmap::DashMap;
 use futures::channel::mpsc::UnboundedSender;
+use futures::lock::Mutex;
 use ql2::response::ResponseType;
 use ql2::term::TermType;
 use std::borrow::Cow;
@@ -93,7 +93,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Debug)]
 pub struct Connection<'a> {
     db: Cow<'a, str>,
-    stream: AccessQueue<TcpStream>,
+    stream: Mutex<TcpStream>,
     channels: DashMap<u64, UnboundedSender<Result<(ResponseType, Response)>>>,
     token: AtomicU64,
     broken: AtomicBool,
