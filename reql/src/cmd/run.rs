@@ -1,4 +1,5 @@
 use super::connect::DEFAULT_DB;
+use super::StaticString;
 use crate::cmd::{Durability, ReadMode};
 use crate::proto::Payload;
 use crate::{err, Connection, Query, Result};
@@ -14,6 +15,7 @@ use ql2::Frame;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::borrow::Cow;
 use std::str;
 use std::sync::atomic::Ordering;
 
@@ -31,9 +33,9 @@ pub(crate) struct Response {
     n: Option<Vec<i32>>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Default, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Debug, Clone, Serialize, Default, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[non_exhaustive]
-pub struct Options<'a> {
+pub struct Options {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub read_mode: Option<ReadMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -45,16 +47,16 @@ pub struct Options<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub group_format: Option<Format>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub db: Option<Db<'a>>,
+    pub db: Option<Db>,
 }
 
-impl<'a> Options<'a> {
+impl Options {
     pub fn new() -> Self {
         Default::default()
     }
 
-    pub const fn db(mut self, db: &'a str) -> Self {
-        self.db = Some(Db(db));
+    pub fn db<T: StaticString>(mut self, db: T) -> Self {
+        self.db = Some(Db(db.static_string()));
         self
     }
 }
@@ -67,30 +69,29 @@ pub enum Format {
     Raw,
 }
 
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Db<'a>(pub &'a str);
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct Db(pub Cow<'static, str>);
 
 pub trait Arg<'a> {
-    fn into(self) -> (&'a Connection<'a>, Options<'a>);
+    fn into(self) -> (&'a Connection, Options);
 }
 
-impl<'a> Arg<'a> for &'a Connection<'a> {
-    fn into(self) -> (&'a Connection<'a>, Options<'a>) {
+impl<'a> Arg<'a> for &'a Connection {
+    fn into(self) -> (&'a Connection, Options) {
         let opts = if self.db == DEFAULT_DB {
             Options::new()
         } else {
-            Options::new().db(self.db.as_ref())
+            Options::new().db(&self.db)
         };
         (self, opts)
     }
 }
 
-impl<'a> Arg<'a> for (&'a Connection<'a>, Options<'a>) {
-    fn into(self) -> (&'a Connection<'a>, Options<'a>) {
+impl<'a> Arg<'a> for (&'a Connection, Options) {
+    fn into(self) -> (&'a Connection, Options) {
         let (conn, options) = self;
-        let conn_db = conn.db.as_ref();
-        let opts = if options.db.is_none() && conn_db != DEFAULT_DB {
-            options.db(conn_db)
+        let opts = if options.db.is_none() && conn.db != DEFAULT_DB {
+            options.db(&conn.db)
         } else {
             options
         };
@@ -145,7 +146,7 @@ where
     }
 }
 
-impl<'a> Connection<'a> {
+impl Connection {
     fn token(&self) -> u64 {
         let token = self
             .token
@@ -168,9 +169,9 @@ impl<'a> Connection<'a> {
     }
 
     async fn request(
-        &'a self,
+        &self,
         token: u64,
-        query: &Payload<'_>,
+        query: &Payload,
         rx: &mut UnboundedReceiver<Result<(ResponseType, Response)>>,
     ) -> Result<(ResponseType, Response)> {
         let (_, result) = join!(self.submit(token, query), rx.next());
@@ -182,16 +183,16 @@ impl<'a> Connection<'a> {
         }
     }
 
-    async fn submit(&'a self, token: u64, query: &Payload<'_>) {
+    async fn submit(&self, token: u64, query: &Payload) {
         let mut db_token = token;
         let result = self.exec(token, query, &mut db_token).await;
         self.send_response(db_token, result);
     }
 
     async fn exec(
-        &'a self,
+        &self,
         token: u64,
-        query: &Payload<'_>,
+        query: &Payload,
         db_token: &mut u64,
     ) -> Result<(ResponseType, Response)> {
         let bytes = query.to_bytes()?;

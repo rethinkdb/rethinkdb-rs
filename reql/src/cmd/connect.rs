@@ -1,8 +1,8 @@
 //! Create a new connection to the database server
 
-use super::debug;
+use super::{debug, StaticString};
 use crate::{err, Connection, Result};
-use async_net::TcpStream;
+use async_net::{AsyncToSocketAddrs, TcpStream};
 use dashmap::DashMap;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
 use futures::lock::Mutex;
@@ -11,6 +11,7 @@ use ql2::version_dummy::Version;
 use scram::client::{ScramClient, ServerFinal, ServerFirst};
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
+use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicU64};
 
 const BUF_SIZE: usize = 1024;
@@ -20,77 +21,111 @@ const PROTOCOL_VERSION: usize = 0;
 pub(crate) const DEFAULT_DB: &str = "test";
 
 /// Options accepted by [crate::r::connect]
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[non_exhaustive]
-pub struct Options<'a> {
-    pub host: &'a str,
+pub struct Options {
+    pub host: Cow<'static, str>,
     pub port: u16,
     /// The database used if not explicitly specified in a query, by default `test`.
-    pub db: &'a str,
+    pub db: Cow<'static, str>,
     /// The user account to connect as (default `admin`).
-    pub user: &'a str,
+    pub user: Cow<'static, str>,
     /// The password for the user account to connect as (default `""`, empty).
-    pub password: &'a str,
+    pub password: Cow<'static, str>,
 }
 
-impl<'a> Options<'a> {
+impl Options {
     /// Create new options from default values
     pub fn new() -> Self {
         Default::default()
     }
 
     /// Set the database used if not explicitly specified in a query, by default `test`.
-    pub const fn db(mut self, db: &'a str) -> Self {
-        self.db = db;
+    pub fn db<T: StaticString>(mut self, db: T) -> Self {
+        self.db = db.static_string();
         self
     }
 
     /// Set the user account to connect as (default `admin`).
-    pub const fn user(mut self, user: &'a str) -> Self {
-        self.user = user;
+    pub fn user<T: StaticString>(mut self, user: T) -> Self {
+        self.user = user.static_string();
         self
     }
 
     /// Set the password for the user account to connect as (default `""`, empty).
-    pub const fn password(mut self, password: &'a str) -> Self {
-        self.password = password;
+    pub fn password<T: StaticString>(mut self, password: T) -> Self {
+        self.password = password.static_string();
         self
     }
 }
 
-impl Default for Options<'_> {
+impl Default for Options {
     fn default() -> Self {
         Self {
-            host: "localhost",
+            host: "localhost".static_string(),
             port: 28015,
-            db: DEFAULT_DB,
-            user: "admin",
-            password: "",
+            db: DEFAULT_DB.static_string(),
+            user: "admin".static_string(),
+            password: "".static_string(),
         }
     }
 }
 
 /// The arguments accepted by [crate::r::connect]
-pub trait Arg<'a> {
-    fn into(self) -> Options<'a>;
+pub trait Arg {
+    type ToAddrs: AsyncToSocketAddrs;
+
+    fn into(self) -> (Option<Self::ToAddrs>, Options);
 }
 
-impl<'a> Arg<'a> for () {
-    fn into(self) -> Options<'a> {
-        Default::default()
+impl Arg for () {
+    type ToAddrs = SocketAddr;
+
+    fn into(self) -> (Option<Self::ToAddrs>, Options) {
+        (None, Default::default())
     }
 }
 
-impl<'a> Arg<'a> for Options<'a> {
-    fn into(self) -> Self {
-        self
+impl Arg for Options {
+    type ToAddrs = SocketAddr;
+
+    fn into(self) -> (Option<Self::ToAddrs>, Options) {
+        (None, self)
     }
 }
 
-pub(crate) async fn new<'a>(options: Options<'a>) -> Result<Connection<'a>> {
+impl<'a> Arg for &'a str {
+    type ToAddrs = (&'a str, u16);
+
+    fn into(self) -> (Option<Self::ToAddrs>, Options) {
+        let opts = Options::default();
+        (Some((self, opts.port)), opts)
+    }
+}
+
+impl<T> Arg for (T, Options)
+where
+    T: AsyncToSocketAddrs,
+{
+    type ToAddrs = T;
+
+    fn into(self) -> (Option<Self::ToAddrs>, Options) {
+        let (addr, opts) = self;
+        (Some(addr), opts)
+    }
+}
+
+pub(crate) async fn new<T>((addr, options): (Option<T>, Options)) -> Result<Connection>
+where
+    T: AsyncToSocketAddrs,
+{
+    let stream = match addr {
+        Some(addr) => TcpStream::connect(addr).await?,
+        None => TcpStream::connect((options.host.as_ref(), options.port)).await?,
+    };
     Ok(Connection {
-        db: Cow::from(options.db),
-        stream: Mutex::new(handshake(options).await?),
+        stream: Mutex::new(handshake(stream, &options).await?),
+        db: options.db,
         channels: DashMap::new(),
         token: AtomicU64::new(0),
         broken: AtomicBool::new(false),
@@ -103,15 +138,13 @@ pub(crate) async fn new<'a>(options: Options<'a>) -> Result<Connection<'a>> {
 // This method optimises message exchange as suggested in the RethinkDB
 // documentation by sending message 3 right after message 1, without waiting
 // for message 2 first.
-async fn handshake<'a>(opts: Options<'_>) -> Result<TcpStream> {
-    let mut stream = TcpStream::connect((opts.host, opts.port)).await?;
-
+async fn handshake(mut stream: TcpStream, opts: &Options) -> Result<TcpStream> {
     trace!("sending supported version to RethinkDB");
     stream
         .write_all(&(Version::V10 as i32).to_le_bytes())
         .await?; // message 1
 
-    let scram = ScramClient::new(opts.user, opts.password, None);
+    let scram = ScramClient::new(opts.user.as_ref(), opts.password.as_ref(), None);
     let (scram, msg) = client_first(scram)?;
     trace!("sending client first message");
     stream.write_all(&msg).await?; // message 3

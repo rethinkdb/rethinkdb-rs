@@ -145,13 +145,13 @@ impl Serialize for Query {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Payload<'a>(
+pub(crate) struct Payload(
     pub(crate) QueryType,
     pub(crate) Option<Query>,
-    pub(crate) Options<'a>,
+    pub(crate) Options,
 );
 
-impl Serialize for Payload<'_> {
+impl Serialize for Payload {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -165,14 +165,14 @@ impl Serialize for Payload<'_> {
     }
 }
 
-impl Payload<'_> {
+impl Payload {
     pub(crate) fn to_bytes(&self) -> Result<Vec<u8>, err::Error> {
         Ok(serde_json::to_vec(self)?)
     }
 }
 
 // for debugging purposes only
-impl fmt::Display for Payload<'_> {
+impl fmt::Display for Payload {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // print the serialised string if we can
         if let Ok(payload) = self.to_bytes() {
@@ -185,12 +185,12 @@ impl fmt::Display for Payload<'_> {
     }
 }
 
-impl Serialize for Db<'_> {
+impl Serialize for Db {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
         let Self(name) = self;
-        r.db(*name).serialize(serializer)
+        r.db(name.as_ref()).serialize(serializer)
     }
 }

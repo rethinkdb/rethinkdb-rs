@@ -1,26 +1,27 @@
-use super::Durability;
+use super::{Durability, StaticString};
 use crate::proto::Datum;
 use crate::Query;
 use ql2::term::TermType;
 use serde::{Serialize, Serializer};
+use std::borrow::Cow;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Default, PartialEq)]
 #[non_exhaustive]
-pub struct Options<'a> {
-    pub primary_key: Option<&'a str>,
+pub struct Options {
+    pub primary_key: Option<Cow<'static, str>>,
     pub durability: Option<Durability>,
     pub shards: Option<u8>,
-    pub replicas: Option<Replicas<'a>>,
+    pub replicas: Option<Replicas>,
 }
 
-impl<'a> Options<'a> {
+impl Options {
     pub fn new() -> Self {
         Default::default()
     }
 
-    pub const fn primary_key(mut self, primary_key: &'a str) -> Self {
-        self.primary_key = Some(primary_key);
+    pub fn primary_key<T: StaticString>(mut self, primary_key: T) -> Self {
+        self.primary_key = Some(primary_key.static_string());
         self
     }
 
@@ -34,7 +35,7 @@ impl<'a> Options<'a> {
         self
     }
 
-    pub fn replicas(mut self, replicas: Replicas<'a>) -> Self {
+    pub fn replicas(mut self, replicas: Replicas) -> Self {
         self.replicas = Some(replicas);
         self
     }
@@ -42,15 +43,15 @@ impl<'a> Options<'a> {
 
 #[derive(Debug, Clone, PartialEq)]
 #[non_exhaustive]
-pub enum Replicas<'a> {
+pub enum Replicas {
     Int(u8),
     Map {
-        replicas: HashMap<&'a str, u8>,
-        primary_replica_tag: &'a str,
+        replicas: HashMap<Cow<'static, str>, u8>,
+        primary_replica_tag: Cow<'static, str>,
     },
 }
 
-impl Serialize for Options<'_> {
+impl Serialize for Options {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -58,7 +59,7 @@ impl Serialize for Options<'_> {
         #[derive(Serialize)]
         struct InnerOptions<'a> {
             #[serde(skip_serializing_if = "Option::is_none")]
-            primary_key: Option<&'a str>,
+            primary_key: Option<&'a Cow<'static, str>>,
             #[serde(skip_serializing_if = "Option::is_none")]
             durability: Option<Durability>,
             #[serde(skip_serializing_if = "Option::is_none")]
@@ -66,14 +67,14 @@ impl Serialize for Options<'_> {
             #[serde(skip_serializing_if = "Option::is_none")]
             replicas: Option<InnerReplicas<'a>>,
             #[serde(skip_serializing_if = "Option::is_none")]
-            primary_replica_tag: Option<&'a str>,
+            primary_replica_tag: Option<&'a Cow<'static, str>>,
         }
 
         #[derive(Serialize)]
         #[serde(untagged)]
         enum InnerReplicas<'a> {
             Int(u8),
-            Map(&'a HashMap<&'a str, u8>),
+            Map(&'a HashMap<Cow<'static, str>, u8>),
         }
 
         let (replicas, primary_replica_tag) = match &self.replicas {
@@ -83,7 +84,7 @@ impl Serialize for Options<'_> {
                 primary_replica_tag,
             }) => (
                 Some(InnerReplicas::Map(replicas)),
-                Some(*primary_replica_tag),
+                Some(primary_replica_tag),
             ),
             None => (None, None),
         };
@@ -91,7 +92,7 @@ impl Serialize for Options<'_> {
         let opts = InnerOptions {
             replicas,
             primary_replica_tag,
-            primary_key: self.primary_key,
+            primary_key: self.primary_key.as_ref(),
             durability: self.durability,
             shards: self.shards,
         };
@@ -128,28 +129,28 @@ impl Arg for &str {
     }
 }
 
-impl Arg for (Query, Options<'_>) {
+impl Arg for (Query, Options) {
     fn into_query(self) -> Query {
         let (query, options) = self;
         build(query).with_opts(options)
     }
 }
 
-impl Arg for (String, Options<'_>) {
+impl Arg for (String, Options) {
     fn into_query(self) -> Query {
         let (val, options) = self;
         build(Datum::String(val)).with_opts(options)
     }
 }
 
-impl Arg for (&String, Options<'_>) {
+impl Arg for (&String, Options) {
     fn into_query(self) -> Query {
         let (val, options) = self;
         build(Datum::String(val.to_owned())).with_opts(options)
     }
 }
 
-impl Arg for (&str, Options<'_>) {
+impl Arg for (&str, Options) {
     fn into_query(self) -> Query {
         let (val, options) = self;
         build(Datum::String(val.to_owned())).with_opts(options)

@@ -91,8 +91,8 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 /// The connection object returned by `r.connect()`
 #[derive(Debug)]
-pub struct Connection<'a> {
-    db: Cow<'a, str>,
+pub struct Connection {
+    db: Cow<'static, str>,
     stream: Mutex<TcpStream>,
     channels: DashMap<u64, UnboundedSender<Result<(ResponseType, Response)>>>,
     token: AtomicU64,
@@ -100,19 +100,7 @@ pub struct Connection<'a> {
     change_feed: AtomicBool,
 }
 
-impl Connection<'_> {
-    /// Convert the connection into an instance you can move around
-    pub fn into_owned(self) -> Connection<'static> {
-        Connection {
-            db: Cow::from(self.db.into_owned()),
-            stream: self.stream,
-            channels: self.channels,
-            token: self.token,
-            broken: self.broken,
-            change_feed: self.change_feed,
-        }
-    }
-
+impl Connection {
     fn mark_broken(&self) {
         self.broken.store(true, Ordering::SeqCst);
     }
@@ -122,6 +110,11 @@ impl Connection<'_> {
             return Err(err::Client::ConnectionBroken.into());
         }
         Ok(())
+    }
+
+    #[doc(hidden)]
+    pub fn is_broken(&self) -> bool {
+        self.broken.load(Ordering::SeqCst)
     }
 
     fn mark_change_feed(&self) {
@@ -152,7 +145,7 @@ impl Connection<'_> {
 #[allow(non_camel_case_types)]
 pub struct r;
 
-impl<'a> r {
+impl r {
     /// Create a new connection to the database server
     ///
     /// # Example
@@ -170,9 +163,9 @@ impl<'a> r {
     /// ```
     ///
     /// Read more about this command [cmd::connect]
-    pub async fn connect<T>(self, options: T) -> Result<Connection<'a>>
+    pub async fn connect<T>(self, options: T) -> Result<Connection>
     where
-        T: cmd::connect::Arg<'a>,
+        T: cmd::connect::Arg,
     {
         cmd::connect::new(options.into()).await
     }
