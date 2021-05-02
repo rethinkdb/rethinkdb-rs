@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 futures-lite = "1.11.3"
 mobc = "0.7.2"
-reql = "0.2.0"
+reql = "0.2.1"
 
 [dev-dependencies]
 tokio = { version = "1.5.0", features = ["macros", "rt-multi-thread", "sync"] }
