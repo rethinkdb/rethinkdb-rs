@@ -21,8 +21,3 @@ ql2 = "2.1.0"
 scram = "0.6.0"
 serde = { version = "1.0.125", features = ["derive"] }
 serde_json = "1.0.64"
-
-[dev-dependencies]
-env_logger = "0.8.3"
-reql-types = "0.0.4"
-tokio = { version = "1.5.0", features = ["macros", "rt-multi-thread"] }

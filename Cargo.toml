@@ -3,5 +3,5 @@ members = [
   "mobc",
   "reql",
   "types",
+  "examples",
 ]
-
