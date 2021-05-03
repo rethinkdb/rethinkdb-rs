@@ -1,6 +1,5 @@
 use futures::TryStreamExt;
-use mobc::Pool;
-use mobc_reql::{GetConn, ReqlConnectionManager};
+use mobc_reql::{GetSession, Pool, SessionManager};
 use reql::cmd::connect::Options;
 use reql::r;
 use std::time::Instant;
@@ -9,7 +8,7 @@ use std::time::Instant;
 async fn main() {
     env_logger::init();
 
-    let mut manager = ReqlConnectionManager::new(Options::new());
+    let mut manager = SessionManager::new(Options::new());
     manager.discover_hosts().await.unwrap();
     let pool = Pool::builder().max_open(20).build(manager);
     const MAX: usize = 5000;
@@ -21,7 +20,7 @@ async fn main() {
         let tx_c = tx.clone();
         tokio::spawn(async move {
             let sum = r.expr(1) + r.expr(2);
-            let conn = pool.get_conn().await.unwrap();
+            let conn = pool.session().await.unwrap();
             let value: i32 = sum.run(&conn).try_next().await.unwrap().unwrap();
             assert_eq!(value, 3);
             tx_c.send(i).await.unwrap();

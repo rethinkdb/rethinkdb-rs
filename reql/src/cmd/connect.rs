@@ -1,7 +1,7 @@
 //! Create a new connection to the database server
 
 use super::{debug, StaticString};
-use crate::{err, Connection, Result};
+use crate::{err, Result, Session};
 use async_net::{AsyncToSocketAddrs, TcpStream};
 use dashmap::DashMap;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
@@ -115,7 +115,7 @@ where
     }
 }
 
-pub(crate) async fn new<T>((addr, options): (Option<T>, Options)) -> Result<Connection>
+pub(crate) async fn new<T>((addr, options): (Option<T>, Options)) -> Result<Session>
 where
     T: AsyncToSocketAddrs,
 {
@@ -123,7 +123,7 @@ where
         Some(addr) => TcpStream::connect(addr).await?,
         None => TcpStream::connect((options.host.as_ref(), options.port)).await?,
     };
-    Ok(Connection {
+    Ok(Session {
         stream: Mutex::new(handshake(stream, &options).await?),
         db: options.db,
         channels: DashMap::new(),
@@ -171,7 +171,7 @@ async fn handshake(mut stream: TcpStream, opts: &Options) -> Result<TcpStream> {
         Some(auth) => auth,
         None => {
             let msg = String::from("server did not send authentication info");
-            return Err(err::Client::Other(msg).into());
+            return Err(err::Driver::Other(msg).into());
         }
     };
 
@@ -227,7 +227,7 @@ impl ServerInfo<'_> {
                 min = info.min_protocol_version,
                 max = info.max_protocol_version,
             );
-            return Err(err::Client::Other(msg).into());
+            return Err(err::Driver::Other(msg).into());
         }
         Ok(())
     }
@@ -261,7 +261,7 @@ fn client_final(scram: ServerFirst<'_>, auth: &str) -> Result<(ServerFinal, Vec<
     let scram = scram
         .handle_server_first(auth)
         .map_err(|x| x.to_string())
-        .map_err(err::Client::Other)?;
+        .map_err(err::Driver::Other)?;
     let (scram, client_final) = scram.client_final();
     let conf = AuthConfirmation {
         authentication: client_final,
@@ -286,7 +286,7 @@ impl AuthResponse {
             // If error code is between 10 and 20, this is an auth error
             if let Some(10..=20) = info.error_code {
                 if let Some(msg) = info.error {
-                    return Err(err::Client::Auth(msg).into());
+                    return Err(err::Driver::Auth(msg).into());
                 }
             }
             return Err(err::Runtime::Internal(debug(resp)).into());
@@ -299,7 +299,7 @@ fn server_final(scram: ServerFinal, resp: &[u8]) -> Result<()> {
     let info = AuthResponse::from_slice(resp)?;
     if let Some(auth) = info.authentication {
         if let Err(error) = scram.handle_server_final(&auth) {
-            return Err(err::Client::Other(error.to_string()).into());
+            return Err(err::Driver::Other(error.to_string()).into());
         }
     }
     Ok(())

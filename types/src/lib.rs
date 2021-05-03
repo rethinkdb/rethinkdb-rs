@@ -1,18 +1,20 @@
 //! Common ReQL data types
 
+mod date_time;
+
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::collections::HashMap;
 use std::net::IpAddr;
-use std::ops::Deref;
-
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use serde_json::Value;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct DateTime(pub chrono::DateTime<chrono::Utc>);
 
 /// Status returned by a write command
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[non_exhaustive]
 pub struct WriteStatus {
     pub inserted: u32,
     pub replaced: u32,
@@ -28,6 +30,7 @@ pub struct WriteStatus {
 
 /// Structure of data in `cluster_config` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct ClusterConfig {
     pub id: String,
     pub heartbeat_timeout_secs: u32,
@@ -35,35 +38,43 @@ pub struct ClusterConfig {
 
 /// Structure of data in `current_issues` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct CurrentIssue {}
 
 /// Structure of data in `db_config` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct DbConfig {}
 
 /// Structure of data in `jobs` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct Job {}
 
 /// Structure of data in `logs` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct Log {}
 
 /// Structure of data in `permissions` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct Permission {}
 
 /// Structure of data in `server_config` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct ServerConfig {}
 
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct CanonicalAddress {
     pub host: IpAddr,
     pub port: u16,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[non_exhaustive]
 pub struct Network {
     pub canonical_addresses: Vec<CanonicalAddress>,
     pub cluster_port: u16,
@@ -75,6 +86,7 @@ pub struct Network {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[non_exhaustive]
 pub struct Process {
     pub argv: Vec<String>,
     pub cache_size_mb: f64,
@@ -85,6 +97,7 @@ pub struct Process {
 
 /// Structure of data in `server_status` table
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[non_exhaustive]
 pub struct ServerStatus {
     pub id: Uuid,
     pub name: String,
@@ -94,21 +107,26 @@ pub struct ServerStatus {
 
 /// Structure of data in `cluster_config` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct Stat {}
 
 /// Structure of data in `cluster_config` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct TableConfig {}
 
 /// Structure of data in `table_status` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct TableStatus {}
 
 /// Structure of data in `uses` table
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct User {}
 
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
 pub struct Change<O, N> {
     pub old_val: Option<O>,
     pub new_val: Option<N>,
@@ -120,6 +138,7 @@ pub struct Change<O, N> {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[non_exhaustive]
 struct Time {
     #[serde(rename = "$reql_type$")]
     reql_type: String,
@@ -127,50 +146,10 @@ struct Time {
     timezone: String,
 }
 
-impl<'de> Deserialize<'de> for DateTime {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let time = Time::deserialize(deserializer)?;
-        let secs = time.epoch_time.trunc() as i64;
-        // RethinkDB timestamps have millisecond precision so we need
-        // to convert the milliseconds to nanoseconds first
-        let msecs = time.epoch_time.fract().abs() as u32;
-        let naive = chrono::NaiveDateTime::from_timestamp(secs, msecs * 1_000_000);
-        let dt = chrono::DateTime::<chrono::Utc>::from_utc(naive, chrono::Utc);
-        Ok(DateTime(dt))
-    }
-}
-
-impl Serialize for DateTime {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let reql_type = String::from("TIME");
-        let epoch_time = {
-            let t = format!(
-                "{}.{}",
-                self.0.timestamp(),
-                self.0.timestamp_subsec_millis()
-            );
-            t.parse().unwrap()
-        };
-        let timezone = String::from("+00:00");
-        let time = Time {
-            reql_type,
-            epoch_time,
-            timezone,
-        };
-        time.serialize(serializer)
-    }
-}
-
-impl Deref for DateTime {
-    type Target = chrono::DateTime<chrono::Utc>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
+#[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[non_exhaustive]
+pub struct ServerInfo {
+    pub id: Uuid,
+    pub proxy: bool,
+    pub name: Option<String>,
 }

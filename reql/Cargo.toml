@@ -18,6 +18,7 @@ dashmap = "4.0.2"
 futures = "0.3.14"
 log = "0.4.14"
 ql2 = "2.1.0"
+reql-types = { version = "0.0.4", path = "../types" }
 scram = "0.6.0"
 serde = { version = "1.0.125", features = ["derive"] }
 serde_json = "1.0.64"

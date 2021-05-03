@@ -1,12 +1,12 @@
 use futures::stream::select_all;
 use futures::TryStreamExt;
-use reql::{r, Client, Error};
+use reql::{r, Driver, Error};
 use serde_json::Value;
 
 #[test]
 fn changefeeds_should_be_dedicated_to_a_connection() {
     match futures::executor::block_on(changefeeds()).unwrap_err() {
-        Error::Client(Client::ConnectionLocked) => {}
+        Error::Driver(Driver::ConnectionLocked) => {}
         error => panic!("{:?}", error),
     }
 }

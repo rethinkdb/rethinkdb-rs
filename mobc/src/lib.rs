@@ -3,11 +3,11 @@ use futures::lock::Mutex;
 use futures::TryStreamExt;
 use futures_timer::Delay;
 use log::trace;
-use mobc::{async_trait, Manager, Pool};
+use mobc::{async_trait, Manager};
 use reql::cmd::connect::Options;
 use reql::cmd::run::{self, Arg};
-use reql::{r, Client, Connection, Error, Query, Result};
-use reql_types::{Change, ServerStatus};
+use reql::types::{Change, ServerStatus};
+use reql::{r, Connection, Driver, Error, Query, Result};
 use std::cmp::Ordering;
 use std::io;
 use std::net::{IpAddr, TcpStream};
@@ -15,45 +15,47 @@ use std::ops::Deref;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
+pub use mobc::Pool;
+
 #[async_trait]
-pub trait GetConn {
-    async fn get_conn(&self) -> Result<PooledConnection>;
+pub trait GetSession {
+    async fn session(&self) -> Result<Session>;
 }
 
 #[async_trait]
-impl GetConn for Pool<ReqlConnectionManager> {
-    async fn get_conn(&self) -> Result<PooledConnection> {
-        Ok(PooledConnection {
+impl GetSession for Pool<SessionManager> {
+    async fn session(&self) -> Result<Session> {
+        Ok(Session {
             conn: self.get().await.map_err(to_reql)?,
         })
     }
 }
 
-pub struct PooledConnection {
-    conn: mobc::Connection<ReqlConnectionManager>,
+pub struct Session {
+    conn: mobc::Connection<SessionManager>,
 }
 
-impl Deref for PooledConnection {
-    type Target = Connection;
+impl Deref for Session {
+    type Target = reql::Session;
 
     fn deref(&self) -> &Self::Target {
         &self.conn
     }
 }
 
-impl AsRef<Connection> for PooledConnection {
-    fn as_ref(&self) -> &Connection {
+impl AsRef<reql::Session> for Session {
+    fn as_ref(&self) -> &reql::Session {
         self.deref()
     }
 }
 
-impl<'a> Arg<'a> for &'a PooledConnection {
-    fn into_run_opts(self) -> (&'a Connection, run::Options) {
+impl<'a> Arg<'a> for &'a Session {
+    fn into_run_opts(self) -> Result<(Connection<'a>, run::Options)> {
         self.deref().into_run_opts()
     }
 }
 
-#[derive(Debug, Clone, Eq, Hash)]
+#[derive(Debug, Clone, Eq)]
 struct Server {
     name: String,
     addresses: Vec<IpAddr>,
@@ -93,13 +95,13 @@ impl Server {
 }
 
 #[derive(Clone)]
-pub struct ReqlConnectionManager {
+pub struct SessionManager {
     opts: Options,
     servers: Arc<Mutex<Vec<Server>>>,
     pool: Option<Pool<Self>>,
 }
 
-impl ReqlConnectionManager {
+impl SessionManager {
     pub fn new(opts: Options) -> Self {
         Self {
             opts,
@@ -110,7 +112,8 @@ impl ReqlConnectionManager {
 
     pub async fn discover_hosts(&mut self) -> Result<()> {
         self.pool = Some(Pool::builder().max_open(2).build(self.clone()));
-        *self.servers.lock().await = self.get_servers().await?;
+        let servers = self.get_servers().await?;
+        *self.servers.lock().await = servers;
         let manager = self.clone();
         self.spawn_task(async move {
             let mut wait = 0;
@@ -130,12 +133,13 @@ impl ReqlConnectionManager {
     }
 
     async fn listen_for_hosts(&self, wait: &mut u64) -> Result<()> {
-        let conn = self.pool.as_ref().unwrap().get_conn().await?;
+        let conn = self.pool.as_ref().unwrap().session().await?;
         let mut query = server_status()
             .changes(())
             .run::<_, Change<ServerStatus, ServerStatus>>(&conn);
-        while let Some(_) = query.try_next().await? {
-            *self.servers.lock().await = self.get_servers().await?;
+        while query.try_next().await?.is_some() {
+            let servers = self.get_servers().await?;
+            *self.servers.lock().await = servers;
             *wait = 0;
         }
         Ok(())
@@ -143,7 +147,7 @@ impl ReqlConnectionManager {
 
     async fn get_servers(&self) -> Result<Vec<Server>> {
         let mut servers = Vec::new();
-        let conn = self.pool.as_ref().unwrap().get_conn().await?;
+        let conn = self.pool.as_ref().unwrap().session().await?;
         let mut query = server_status().run(&conn);
         while let Some(status) = query.try_next().await? {
             servers.push(Server::from_status(status));
@@ -161,7 +165,7 @@ async fn set_latency(servers: &mut Vec<Server>) {
             let host = *host;
             let latency = unblock(move || {
                 let start = Instant::now();
-                if let Ok(_) = TcpStream::connect((host, port)) {
+                if TcpStream::connect((host, port)).is_ok() {
                     return Some(start.elapsed());
                 }
                 None
@@ -181,8 +185,8 @@ fn server_status() -> Query {
 }
 
 #[async_trait]
-impl Manager for ReqlConnectionManager {
-    type Connection = Connection;
+impl Manager for SessionManager {
+    type Connection = reql::Session;
     type Error = Error;
 
     async fn connect(&self) -> Result<Self::Connection> {
@@ -194,7 +198,7 @@ impl Manager for ReqlConnectionManager {
                 opts.host,
                 opts.port
             );
-            return Ok(r.connect(opts.clone()).await?);
+            return r.connect(opts.clone()).await;
         } else {
             for server in servers.iter() {
                 for host in &server.addresses {
@@ -223,7 +227,7 @@ impl Manager for ReqlConnectionManager {
         match r.expr(msg).run(&conn).try_next().await? {
             Some(res) => verify(res, msg)?,
             None => {
-                return Err(Client::ConnectionBroken.into());
+                return Err(Driver::ConnectionBroken.into());
             }
         }
         Ok(conn)
@@ -236,7 +240,7 @@ impl Manager for ReqlConnectionManager {
 
 fn verify(res: u32, msg: u32) -> Result<()> {
     if res != msg {
-        return Err(Client::ConnectionBroken.into());
+        return Err(Driver::ConnectionBroken.into());
     }
     Ok(())
 }
@@ -245,6 +249,6 @@ fn to_reql(error: mobc::Error<Error>) -> Error {
     match error {
         mobc::Error::Inner(error) => error,
         mobc::Error::Timeout => io::Error::from(io::ErrorKind::TimedOut).into(),
-        mobc::Error::BadConn => Client::ConnectionBroken.into(),
+        mobc::Error::BadConn => Driver::ConnectionBroken.into(),
     }
 }

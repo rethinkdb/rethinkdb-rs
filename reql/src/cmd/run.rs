@@ -2,11 +2,9 @@ use super::connect::DEFAULT_DB;
 use super::StaticString;
 use crate::cmd::{Durability, ReadMode};
 use crate::proto::Payload;
-use crate::{err, Connection, Query, Result};
+use crate::{err, Connection, Query, Result, Session};
 use async_stream::try_stream;
-use futures::channel::mpsc::{self, UnboundedReceiver};
 use futures::io::{AsyncReadExt, AsyncWriteExt};
-use futures::join;
 use futures::stream::{Stream, StreamExt};
 use log::trace;
 use ql2::query::QueryType;
@@ -27,10 +25,23 @@ const HEADER_SIZE: usize = DATA_SIZE + TOKEN_SIZE;
 pub(crate) struct Response {
     t: i32,
     e: Option<i32>,
-    r: Value,
+    pub(crate) r: Value,
     b: Option<Vec<Frame>>,
     p: Option<Value>,
     n: Option<Vec<i32>>,
+}
+
+impl Response {
+    fn new() -> Self {
+        Self {
+            t: ResponseType::SuccessAtom as i32,
+            e: None,
+            r: Value::Array(Vec::new()),
+            b: None,
+            p: None,
+            n: None,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Default, Eq, PartialEq, Ord, PartialOrd, Hash)]
@@ -47,12 +58,19 @@ pub struct Options {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub group_format: Option<Format>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub noreply: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub db: Option<Db>,
 }
 
 impl Options {
     pub fn new() -> Self {
         Default::default()
+    }
+
+    pub fn noreply(mut self, noreply: bool) -> Self {
+        self.noreply = Some(noreply);
+        self
     }
 
     pub fn db<T: StaticString>(mut self, db: T) -> Self {
@@ -72,30 +90,72 @@ pub enum Format {
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Db(pub Cow<'static, str>);
 
-pub trait Arg<'a> {
-    fn into_run_opts(self) -> (&'a Connection, Options);
-}
-
-impl<'a> Arg<'a> for &'a Connection {
-    fn into_run_opts(self) -> (&'a Connection, Options) {
-        let opts = if self.db == DEFAULT_DB {
+impl Session {
+    fn default_db(&self) -> Options {
+        if self.db == DEFAULT_DB {
             Options::new()
         } else {
             Options::new().db(&self.db)
-        };
-        (self, opts)
+        }
     }
 }
 
-impl<'a> Arg<'a> for (&'a Connection, Options) {
-    fn into_run_opts(self) -> (&'a Connection, Options) {
+impl Options {
+    fn default_db(self, session: &Session) -> Options {
+        if self.db.is_none() && session.db != DEFAULT_DB {
+            return self.db(&session.db);
+        }
+        self
+    }
+}
+
+pub trait Arg<'a> {
+    fn into_run_opts(self) -> Result<(Connection<'a>, Options)>;
+}
+
+impl<'a> Arg<'a> for &'a Session {
+    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
+        let conn = self.connection()?;
+        let opts = self.default_db();
+        Ok((conn, opts))
+    }
+}
+
+impl<'a> Arg<'a> for Connection<'a> {
+    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
+        let opts = self.session.default_db();
+        Ok((self, opts))
+    }
+}
+
+impl<'a> Arg<'a> for (&'a Session, Options) {
+    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
+        let (session, options) = self;
+        let conn = session.connection()?;
+        let opts = options.default_db(session);
+        Ok((conn, opts))
+    }
+}
+
+impl<'a> Arg<'a> for (Connection<'a>, Options) {
+    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
         let (conn, options) = self;
-        let opts = if options.db.is_none() && conn.db != DEFAULT_DB {
-            options.db(&conn.db)
-        } else {
-            options
-        };
-        (conn, opts)
+        let opts = options.default_db(&conn.session);
+        Ok((conn, opts))
+    }
+}
+
+impl<'a> Arg<'a> for &'a mut Session {
+    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
+        self.connection()?.into_run_opts()
+    }
+}
+
+impl<'a> Arg<'a> for (&'a mut Session, Options) {
+    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
+        let (session, options) = self;
+        let conn = session.connection()?;
+        (conn, options).into_run_opts()
     }
 }
 
@@ -105,19 +165,15 @@ where
     T: Unpin + DeserializeOwned,
 {
     try_stream! {
-        let (conn, opts) = arg.into_run_opts();
-        conn.broken()?;
-        conn.change_feed()?;
+        let (mut conn, opts) = arg.into_run_opts()?;
         if query.change_feed() {
-            conn.mark_change_feed();
+            conn.session.mark_change_feed();
         }
-        let token = conn.token();
-        let (tx, mut rx) = mpsc::unbounded();
-        conn.channels.insert(token, tx);
+        let noreply = opts.noreply.unwrap_or_default();
         let mut payload = Payload(QueryType::Start, Some(query), opts);
         loop {
-            let (response_type, resp) = conn.request(token, &payload, &mut rx).await?;
-            trace!("yielding response; token: {}, response: {}", token, resp.r);
+            let (response_type, resp) = conn.request(&payload, noreply).await?;
+            trace!("yielding response; token: {}", conn.token);
             match response_type {
                 ResponseType::SuccessAtom | ResponseType::SuccessSequence | ResponseType::ServerInfo => {
                     for val in serde_json::from_value::<Vec<T>>(resp.r)? {
@@ -132,7 +188,6 @@ where
                     }
                     continue;
                 }
-                // TODO what whould we yield here?
                 ResponseType::WaitComplete => { break; }
                 typ => {
                     Err(response_error(typ, resp.e, resp))?;
@@ -140,76 +195,72 @@ where
                 }
             }
         }
-        rx.close();
-        conn.channels.remove(&token);
-        conn.unmark_change_feed();
     }
 }
 
-impl Connection {
-    fn token(&self) -> u64 {
-        let token = self
-            .token
-            .fetch_update(Ordering::SeqCst, Ordering::SeqCst, |x| Some(x + 1))
-            .unwrap();
-        if token == u64::MAX {
-            self.mark_broken();
-        }
-        token
-    }
-
-    fn send_response(&self, db_token: u64, resp: Result<(ResponseType, Response)>) {
-        if let Some(tx) = self.channels.get(&db_token) {
-            if let Err(error) = tx.unbounded_send(resp) {
-                if error.is_disconnected() {
-                    self.channels.remove(&db_token);
-                }
-            }
-        }
-    }
-
-    async fn request(
-        &self,
-        token: u64,
-        query: &Payload,
-        rx: &mut UnboundedReceiver<Result<(ResponseType, Response)>>,
-    ) -> Result<(ResponseType, Response)> {
-        let (_, result) = join!(self.submit(token, query), rx.next());
-        match result {
-            Some(resp) => resp,
-            None => {
-                Err(err::Client::Other("sender stream terminated prematurely".to_owned()).into())
-            }
-        }
-    }
-
-    async fn submit(&self, token: u64, query: &Payload) {
-        let mut db_token = token;
-        let result = self.exec(token, query, &mut db_token).await;
-        self.send_response(db_token, result);
-    }
-
-    async fn exec(
-        &self,
-        token: u64,
-        query: &Payload,
-        db_token: &mut u64,
-    ) -> Result<(ResponseType, Response)> {
-        let bytes = query.to_bytes()?;
+impl Payload {
+    fn encode(&self, token: u64) -> Result<Vec<u8>> {
+        let bytes = self.to_bytes()?;
         let data_len = bytes.len();
         let mut buf = Vec::with_capacity(HEADER_SIZE + data_len);
         buf.extend_from_slice(&token.to_le_bytes());
         buf.extend_from_slice(&(data_len as u32).to_le_bytes());
         buf.extend_from_slice(&bytes);
+        Ok(buf)
+    }
+}
 
-        let guard = self.stream.lock().await;
+impl Connection<'_> {
+    fn send_response(&self, db_token: u64, resp: Result<(ResponseType, Response)>) {
+        if let Some(tx) = self.session.channels.get(&db_token) {
+            if let Err(error) = tx.unbounded_send(resp) {
+                if error.is_disconnected() {
+                    self.session.channels.remove(&db_token);
+                }
+            }
+        }
+    }
+
+    pub(crate) async fn request(
+        &mut self,
+        query: &Payload,
+        noreply: bool,
+    ) -> Result<(ResponseType, Response)> {
+        self.submit(query, noreply).await;
+        match self.rx.lock().await.next().await {
+            Some(resp) => resp,
+            None => {
+                Err(err::Driver::Other("sender stream terminated prematurely".to_owned()).into())
+            }
+        }
+    }
+
+    async fn submit(&self, query: &Payload, noreply: bool) {
+        let mut db_token = self.token;
+        let result = self.exec(query, noreply, &mut db_token).await;
+        self.send_response(db_token, result);
+    }
+
+    async fn exec(
+        &self,
+        query: &Payload,
+        noreply: bool,
+        db_token: &mut u64,
+    ) -> Result<(ResponseType, Response)> {
+        let buf = query.encode(self.token)?;
+
+        let guard = self.session.stream.lock().await;
         let mut stream = guard.clone();
 
-        trace!("sending query; token: {}, payload: {}", token, query);
+        trace!("sending query; token: {}, payload: {}", self.token, query);
         stream.write_all(&buf).await?;
-        trace!("query sent; token: {}", token);
+        trace!("query sent; token: {}", self.token);
 
-        trace!("reading header; token: {}", token);
+        if noreply {
+            return Ok((ResponseType::SuccessAtom, Response::new()));
+        }
+
+        trace!("reading header; token: {}", self.token);
         let mut header = [0u8; HEADER_SIZE];
         stream.read_exact(&mut header).await?;
 
@@ -218,9 +269,9 @@ impl Connection {
         *db_token = {
             let token = u64::from_le_bytes(buf);
             trace!("db_token: {}", token);
-            if token > self.token.load(Ordering::SeqCst) {
-                self.mark_broken();
-                return Err(err::Client::ConnectionBroken.into());
+            if token > self.session.token.load(Ordering::SeqCst) {
+                self.session.mark_broken();
+                return Err(err::Driver::ConnectionBroken.into());
             }
             token
         };
@@ -230,31 +281,27 @@ impl Connection {
         let len = u32::from_le_bytes(buf) as usize;
         trace!(
             "header read; token: {}, db_token: {}, response_len: {}",
-            token,
+            self.token,
             db_token,
             len
         );
 
-        trace!("reading body; token: {}", token);
+        trace!("reading body; token: {}", self.token);
         let mut buf = vec![0u8; len];
         stream.read_exact(&mut buf).await?;
 
         trace!(
             "body read; token: {}, db_token: {}, body: {}",
-            token,
+            self.token,
             db_token,
             super::debug(&buf),
         );
 
         let resp = serde_json::from_slice::<Response>(&buf)?;
-        trace!(
-            "response successfully parsed; token: {}, response: {}",
-            token,
-            resp.r
-        );
+        trace!("response successfully parsed; token: {}", self.token,);
 
         let response_type = ResponseType::from_i32(resp.t)
-            .ok_or_else(|| err::Client::Other(format!("uknown response type `{}`", resp.t)))?;
+            .ok_or_else(|| err::Driver::Other(format!("unknown response type `{}`", resp.t)))?;
 
         if let Some(error_type) = resp.e {
             return Err(response_error(response_type, Some(error_type), resp));
@@ -276,11 +323,11 @@ fn response_error(
         }
     };
     match response_type {
-        ResponseType::ClientError => err::Client::Other(msg).into(),
+        ResponseType::ClientError => err::Driver::Other(msg).into(),
         ResponseType::CompileError => err::Error::Compile(msg),
         ResponseType::RuntimeError => match error_type
             .map(ErrorType::from_i32)
-            .ok_or_else(|| err::Client::Other(format!("unexpected runtime error: {}", msg)))
+            .ok_or_else(|| err::Driver::Other(format!("unexpected runtime error: {}", msg)))
         {
             Ok(Some(ErrorType::Internal)) => err::Runtime::Internal(msg).into(),
             Ok(Some(ErrorType::ResourceLimit)) => err::Runtime::ResourceLimit(msg).into(),
@@ -291,8 +338,8 @@ fn response_error(
             Ok(Some(ErrorType::User)) => err::Runtime::User(msg).into(),
             Ok(Some(ErrorType::PermissionError)) => err::Runtime::Permission(msg).into(),
             Err(error) => error.into(),
-            _ => err::Client::Other(format!("unexpected runtime error: {}", msg)).into(),
+            _ => err::Driver::Other(format!("unexpected runtime error: {}", msg)).into(),
         },
-        _ => err::Client::Other(format!("unexpected response: {}", msg)).into(),
+        _ => err::Driver::Other(format!("unexpected response: {}", msg)).into(),
     }
 }

@@ -16,6 +16,7 @@ pub mod ceil;
 pub mod change_at;
 pub mod changes;
 pub mod circle;
+pub mod close;
 pub mod coerce_to;
 pub mod concat_map;
 pub mod config;
@@ -230,8 +231,8 @@ impl<'a> Query {
     ///
     /// ```
     /// # reql::example(|r, conn| async_stream::stream! {
-    /// let query = r.db("heroes").table_create("dc_universe").run(conn);
-    /// # query });
+    /// r.db("heroes").table_create("dc_universe").run(conn)
+    /// # });
     /// ```
     /** ```json
     {

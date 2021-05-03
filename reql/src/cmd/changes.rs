@@ -59,8 +59,8 @@
 //!
 //! ```
 //! # reql::example(|r, conn| async_stream::stream! {
-//! let query = r.table("games").changes(()).run(conn);
-//! # query });
+//! r.table("games").changes(()).run(conn)
+//! # });
 //! ```
 //!
 //! As these queries are performed in a second client
@@ -68,8 +68,8 @@
 //! ```
 //! # use serde_json::json;
 //! # reql::example(|r, conn| async_stream::stream! {
-//! let query = r.table("games").insert(json!({"id": 1})).run(conn);
-//! # query });
+//! r.table("games").insert(json!({"id": 1})).run(conn)
+//! # });
 //! ```
 //!
 //! the first client would receive and print the following objects:

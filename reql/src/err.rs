@@ -5,7 +5,7 @@ use std::{error, fmt, io};
 pub enum Error {
     Compile(String),
     Runtime(Runtime),
-    Client(Client),
+    Driver(Driver),
 }
 
 impl error::Error for Error {}
@@ -15,7 +15,7 @@ impl fmt::Display for Error {
         match self {
             Self::Compile(msg) => write!(f, "compile error; {}", msg),
             Self::Runtime(msg) => write!(f, "runtime error; {}", msg),
-            Self::Client(msg) => write!(f, "client error; {}", msg),
+            Self::Driver(msg) => write!(f, "client error; {}", msg),
         }
     }
 }
@@ -88,7 +88,7 @@ impl fmt::Display for Availability {
 /// query.
 #[derive(Debug)]
 #[non_exhaustive]
-pub enum Client {
+pub enum Driver {
     Auth(String),
     ConnectionBroken,
     ConnectionLocked,
@@ -97,13 +97,13 @@ pub enum Client {
     Other(String),
 }
 
-impl From<Client> for Error {
-    fn from(err: Client) -> Error {
-        Error::Client(err)
+impl From<Driver> for Error {
+    fn from(err: Driver) -> Error {
+        Error::Driver(err)
     }
 }
 
-impl fmt::Display for Client {
+impl fmt::Display for Driver {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::Auth(msg) => write!(f, "auth error; {}", msg),
@@ -121,12 +121,12 @@ impl fmt::Display for Client {
 
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Error {
-        Client::Io(err).into()
+        Driver::Io(err).into()
     }
 }
 
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Error {
-        Client::Json(err).into()
+        Driver::Json(err).into()
     }
 }

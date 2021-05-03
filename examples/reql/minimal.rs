@@ -1,6 +1,6 @@
 use futures::TryStreamExt;
 use reql::r;
-use reql_types::ServerStatus;
+use reql::types::ServerStatus;
 
 // We are using `tokio` here as an example but you can use this crate
 // with any runtime
@@ -21,6 +21,7 @@ async fn main() -> reql::Result<()> {
     if let Some(server_status) = query.try_next().await? {
         handle(&server_status)?;
     }
+
     Ok(())
 }
 

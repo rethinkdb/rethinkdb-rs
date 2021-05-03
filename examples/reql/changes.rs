@@ -1,6 +1,6 @@
 use futures::TryStreamExt;
 use reql::r;
-use reql_types::Change;
+use reql::types::Change;
 use serde_json::Value;
 
 // We are using `tokio` here as an example but you can use this crate
@@ -22,6 +22,7 @@ async fn main() -> reql::Result<()> {
     while let Some(change) = query.try_next().await? {
         handle(change)?;
     }
+
     Ok(())
 }
 
