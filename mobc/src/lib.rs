@@ -120,7 +120,7 @@ impl ReqlConnectionManager {
                         wait
                     );
                     Delay::new(Duration::from_secs(wait)).await;
-                    wait += 1;
+                    wait = 300.min(wait + 1);
                 }
             }
         });
