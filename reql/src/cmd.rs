@@ -229,15 +229,9 @@ impl<'a> Query {
     /// Create a table named "dc_universe" with the default settings.
     ///
     /// ```
-    /// # use reql::r;
-    /// # use futures::TryStreamExt;
-    /// # use serde_json::Value;
-    /// # async fn example() -> reql::Result<()> {
-    /// # let conn = r.connect(()).await?;
-    /// let mut query = r.db("heroes").table_create("dc_universe").run(&conn);
-    /// # let _: Option<Value> = query.try_next().await?;
-    /// # Ok(())
-    /// # }
+    /// # reql::example(|r, conn| async_stream::stream! {
+    /// let query = r.db("heroes").table_create("dc_universe").run(conn);
+    /// # query });
     /// ```
     /** ```json
     {

@@ -58,41 +58,18 @@
 //! Start monitoring the changefeed in one client:
 //!
 //! ```
-//! # use futures::TryStreamExt;
-//! # use reql::r;
-//! # use serde_json::Value;
-//! # async fn example() -> reql::Result<()> {
-//! # let conn = r.connect(()).await?;
-//! let mut query = r.table("games").changes(()).run(&conn);
-//!
-//! while let Some(response) = query.try_next().await? {
-//!     print_value(response);
-//! }
-//! # Ok(())
-//! # }
-//! # fn print_value(value: Value) {
-//! # println!("{}", value);
-//! # }
+//! # reql::example(|r, conn| async_stream::stream! {
+//! let query = r.table("games").changes(()).run(conn);
+//! # query });
 //! ```
 //!
 //! As these queries are performed in a second client
 //!
 //! ```
-//! # use futures::TryStreamExt;
-//! # use reql::r;
-//! # use serde_json::{Value, json};
-//! # async fn example() -> reql::Result<()> {
-//! # let conn = r.connect(()).await?;
-//! let mut query = r.table("games").insert(json!({"id": 1})).run(&conn);
-//! #
-//! # if let Some(response) = query.try_next().await? {
-//! #    print_value(response);
-//! # }
-//! # Ok(())
-//! # }
-//! # fn print_value(value: Value) {
-//! # println!("{}", value);
-//! # }
+//! # use serde_json::json;
+//! # reql::example(|r, conn| async_stream::stream! {
+//! let query = r.table("games").insert(json!({"id": 1})).run(conn);
+//! # query });
 //! ```
 //!
 //! the first client would receive and print the following objects:

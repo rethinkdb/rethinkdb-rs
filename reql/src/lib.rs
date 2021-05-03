@@ -43,10 +43,9 @@
 //! ```
 //! use reql::r;
 //!
-//! # async fn connect() -> reql::Result<()> {
-//! let connection = r.connect(()).await?;
-//! # Ok(())
-//! # }
+//! # async fn example() -> reql::Result<()> {
+//! let conn = r.connect(()).await?;
+//! # Ok(()) };
 //! ```
 //!
 //! The variable `connection` is now initialized and we can run queries.
@@ -54,15 +53,9 @@
 //! # Send a query to the database #
 //!
 //! ```
-//! use futures::TryStreamExt;
-//! use reql::r;
-//!
-//! # async fn connect() -> reql::Result<()> {
-//! let conn = r.connect(()).await?;
-//! let mut query = r.expr("Hello world!").run(&conn);
-//! # let _: Option<String> = query.try_next().await?;
-//! # Ok(())
-//! # }
+//! # reql::example(|r, conn| async_stream::stream! {
+//! let query = r.expr("Hello world!").run(conn);
+//! # query });
 //! ```
 //!
 //! [See the `r` struct for more available commands](r)
@@ -153,13 +146,11 @@ impl r {
     /// Open a connection using the default host and port, specifying the default database.
     ///
     /// ```
-    /// use reql::cmd::connect::Options;
-    /// use reql::r;
+    /// use reql::{r, cmd::connect::Options};
     ///
-    /// # async fn connect() -> reql::Result<()> {
+    /// # async fn example() -> reql::Result<()> {
     /// let conn = r.connect(Options::new().db("marvel")).await?;
-    /// # Ok(())
-    /// # }
+    /// # Ok(()) }
     /// ```
     ///
     /// Read more about this command [cmd::connect]
@@ -199,14 +190,9 @@ impl r {
     /// Explicitly specify a database for a query.
     ///
     /// ```
-    /// # use futures::TryStreamExt;
-    /// # use reql::r;
-    /// # async fn example() -> reql::Result<()> {
-    /// # let conn = r.connect(()).await?;
-    /// let mut query = r.db("heroes").table("marvel").run(&conn);
-    /// # let _: Option<String> = query.try_next().await?;
-    /// # Ok(())
-    /// # }
+    /// # reql::example(|r, conn| async_stream::stream! {
+    /// let query = r.db("heroes").table("marvel").run(conn);
+    /// # query });
     /// ```
     pub fn db<T>(self, arg: T) -> Query
     where
@@ -506,4 +492,14 @@ impl r {
     {
         arg.into_query()
     }
+}
+
+// Helper for making writing examples less verbose
+#[doc(hidden)]
+pub fn example<'a, Q, F, S>(_query: Q)
+where
+    Q: FnOnce(r, &'a Connection) -> async_stream::AsyncStream<(), F>,
+    F: futures::Future<Output = S>,
+    S: futures::Stream<Item = Result<serde_json::Value>>,
+{
 }
