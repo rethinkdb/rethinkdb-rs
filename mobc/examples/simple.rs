@@ -9,7 +9,7 @@ use std::time::Instant;
 async fn main() {
     env_logger::init();
 
-    let manager = ReqlConnectionManager::new(Options::new());
+    let mut manager = ReqlConnectionManager::new(Options::new());
     manager.discover_hosts().await.unwrap();
     let pool = Pool::builder().max_open(20).build(manager);
     const MAX: usize = 5000;

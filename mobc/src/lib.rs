@@ -92,10 +92,11 @@ impl Server {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct ReqlConnectionManager {
     opts: Options,
     servers: Arc<Mutex<Vec<Server>>>,
+    pool: Option<Pool<Self>>,
 }
 
 impl ReqlConnectionManager {
@@ -103,12 +104,13 @@ impl ReqlConnectionManager {
         Self {
             opts,
             servers: Arc::new(Mutex::new(Vec::new())),
+            pool: None,
         }
     }
 
-    pub async fn discover_hosts(&self) -> Result<()> {
-        let conn = self.connect().await?;
-        *self.servers.lock().await = self.get_servers(&conn).await?;
+    pub async fn discover_hosts(&mut self) -> Result<()> {
+        self.pool = Some(Pool::builder().max_open(2).build(self.clone()));
+        *self.servers.lock().await = self.get_servers().await?;
         let manager = self.clone();
         self.spawn_task(async move {
             let mut wait = 0;
@@ -128,21 +130,21 @@ impl ReqlConnectionManager {
     }
 
     async fn listen_for_hosts(&self, wait: &mut u64) -> Result<()> {
-        let conn = self.connect().await?;
+        let conn = self.pool.as_ref().unwrap().get_conn().await?;
         let mut query = server_status()
             .changes(())
             .run::<_, Change<ServerStatus, ServerStatus>>(&conn);
-        let conn = self.connect().await?;
         while let Some(_) = query.try_next().await? {
-            *self.servers.lock().await = self.get_servers(&conn).await?;
+            *self.servers.lock().await = self.get_servers().await?;
             *wait = 0;
         }
         Ok(())
     }
 
-    async fn get_servers(&self, conn: &Connection) -> Result<Vec<Server>> {
+    async fn get_servers(&self) -> Result<Vec<Server>> {
         let mut servers = Vec::new();
-        let mut query = server_status().run(conn);
+        let conn = self.pool.as_ref().unwrap().get_conn().await?;
+        let mut query = server_status().run(&conn);
         while let Some(status) = query.try_next().await? {
             servers.push(Server::from_status(status));
         }
@@ -155,7 +157,7 @@ impl ReqlConnectionManager {
 async fn set_latency(servers: &mut Vec<Server>) {
     for server in servers {
         let port = server.port;
-        for host in &server.addresses {
+        for (i, host) in server.addresses.iter().enumerate() {
             let host = *host;
             let latency = unblock(move || {
                 let start = Instant::now();
@@ -166,7 +168,7 @@ async fn set_latency(servers: &mut Vec<Server>) {
             })
             .await;
             if let Some(latency) = latency {
-                if latency > server.latency {
+                if latency > server.latency || i == 0 {
                     server.latency = latency;
                 }
             }
