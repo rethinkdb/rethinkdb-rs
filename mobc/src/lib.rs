@@ -111,9 +111,9 @@ impl ReqlConnectionManager {
         *self.servers.lock().await = self.get_servers(&conn).await?;
         let manager = self.clone();
         self.spawn_task(async move {
-            let mut wait = 1;
+            let mut wait = 0;
             loop {
-                if let Err(error) = manager.listen_for_hosts().await {
+                if let Err(error) = manager.listen_for_hosts(&mut wait).await {
                     trace!(
                         "listening for host changes; error: {}, wait: {}s",
                         error,
@@ -127,7 +127,7 @@ impl ReqlConnectionManager {
         Ok(())
     }
 
-    async fn listen_for_hosts(&self) -> Result<()> {
+    async fn listen_for_hosts(&self, wait: &mut u64) -> Result<()> {
         let conn = self.connect().await?;
         let mut query = server_status()
             .changes(())
@@ -135,6 +135,7 @@ impl ReqlConnectionManager {
         let conn = self.connect().await?;
         while let Some(_) = query.try_next().await? {
             *self.servers.lock().await = self.get_servers(&conn).await?;
+            *wait = 0;
         }
         Ok(())
     }
