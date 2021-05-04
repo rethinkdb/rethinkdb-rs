@@ -49,8 +49,8 @@ impl AsRef<reql::Session> for Session {
     }
 }
 
-impl<'a> Arg<'a> for &'a Session {
-    fn into_run_opts(self) -> Result<(Connection<'a>, run::Options)> {
+impl Arg for &Session {
+    fn into_run_opts(self) -> Result<(Connection, run::Options)> {
         self.deref().into_run_opts()
     }
 }

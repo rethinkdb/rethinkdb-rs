@@ -1,7 +1,7 @@
 //! Create a new connection to the database server
 
 use super::{debug, StaticString};
-use crate::{err, Result, Session};
+use crate::{err, InnerSession, Result, Session};
 use async_net::{AsyncToSocketAddrs, TcpStream};
 use dashmap::DashMap;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicU64};
+use std::sync::Arc;
 
 const BUF_SIZE: usize = 1024;
 const NULL_BYTE: u8 = b'\0';
@@ -123,13 +124,16 @@ where
         Some(addr) => TcpStream::connect(addr).await?,
         None => TcpStream::connect((options.host.as_ref(), options.port)).await?,
     };
-    Ok(Session {
+    let inner = InnerSession {
         stream: Mutex::new(handshake(stream, &options).await?),
-        db: options.db,
+        db: Mutex::new(options.db),
         channels: DashMap::new(),
         token: AtomicU64::new(0),
         broken: AtomicBool::new(false),
         change_feed: AtomicBool::new(false),
+    };
+    Ok(Session {
+        inner: Arc::new(inner),
     })
 }
 

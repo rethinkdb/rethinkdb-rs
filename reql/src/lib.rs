@@ -95,10 +95,9 @@ pub type Result<T> = std::result::Result<T, Error>;
 type Sender = UnboundedSender<Result<(ResponseType, Response)>>;
 type Receiver = UnboundedReceiver<Result<(ResponseType, Response)>>;
 
-/// The connection object returned by `r.connect()`
 #[derive(Debug)]
-pub struct Session {
-    db: Cow<'static, str>,
+struct InnerSession {
+    db: Mutex<Cow<'static, str>>,
     stream: Mutex<TcpStream>,
     channels: DashMap<u64, Sender>,
     token: AtomicU64,
@@ -106,7 +105,7 @@ pub struct Session {
     change_feed: AtomicBool,
 }
 
-impl Session {
+impl InnerSession {
     fn token(&self) -> u64 {
         let token = self
             .token
@@ -118,13 +117,51 @@ impl Session {
         token
     }
 
-    pub fn connection(&self) -> Result<Connection<'_>> {
-        self.broken()?;
-        self.change_feed()?;
-        let token = self.token();
+    fn mark_broken(&self) {
+        self.broken.store(true, Ordering::SeqCst);
+    }
+
+    fn broken(&self) -> Result<()> {
+        if self.broken.load(Ordering::SeqCst) {
+            return Err(err::Driver::ConnectionBroken.into());
+        }
+        Ok(())
+    }
+
+    fn mark_change_feed(&self) {
+        self.change_feed.store(true, Ordering::SeqCst);
+    }
+
+    fn unmark_change_feed(&self) {
+        self.change_feed.store(false, Ordering::SeqCst);
+    }
+
+    fn is_change_feed(&self) -> bool {
+        self.change_feed.load(Ordering::SeqCst)
+    }
+
+    fn change_feed(&self) -> Result<()> {
+        if self.change_feed.load(Ordering::SeqCst) {
+            return Err(err::Driver::ConnectionLocked.into());
+        }
+        Ok(())
+    }
+}
+
+/// The connection object returned by `r.connect()`
+#[derive(Debug, Clone)]
+pub struct Session {
+    inner: Arc<InnerSession>,
+}
+
+impl Session {
+    pub fn connection(&self) -> Result<Connection> {
+        self.inner.broken()?;
+        self.inner.change_feed()?;
+        let token = self.inner.token();
         let (tx, rx) = mpsc::unbounded();
-        self.channels.insert(token, tx);
-        Ok(Connection::new(self, rx, token))
+        self.inner.channels.insert(token, tx);
+        Ok(Connection::new(self.clone(), rx, token))
     }
 
     /// Change the default database on this connection
@@ -136,7 +173,7 @@ impl Session {
     ///
     /// ```
     /// # reql::example(|r, conn| async_stream::stream! {
-    /// conn.r#use("marvel");
+    /// conn.r#use("marvel").await;
     /// r.table("heroes").run(conn) // refers to r.db("marvel").table("heroes")
     /// # });
     /// ```
@@ -144,11 +181,11 @@ impl Session {
     /// ## Related commands
     /// * [connect](r::connect)
     /// * [close](Connection::close)
-    pub fn r#use<T>(&mut self, db_name: T)
+    pub async fn r#use<T>(&mut self, db_name: T)
     where
         T: StaticString,
     {
-        self.db = db_name.static_string();
+        *self.inner.db.lock().await = db_name.static_string();
     }
 
     /// Ensures that previous queries with the `noreply` flag have been
@@ -202,55 +239,27 @@ impl Session {
         Ok(info)
     }
 
-    fn mark_broken(&self) {
-        self.broken.store(true, Ordering::SeqCst);
-    }
-
-    fn broken(&self) -> Result<()> {
-        if self.broken.load(Ordering::SeqCst) {
-            return Err(err::Driver::ConnectionBroken.into());
-        }
-        Ok(())
-    }
-
     #[doc(hidden)]
     pub fn is_broken(&self) -> bool {
-        self.broken.load(Ordering::SeqCst)
-    }
-
-    fn mark_change_feed(&self) {
-        self.change_feed.store(true, Ordering::SeqCst);
-    }
-
-    fn unmark_change_feed(&self) {
-        self.change_feed.store(false, Ordering::SeqCst);
-    }
-
-    fn is_change_feed(&self) -> bool {
-        self.change_feed.load(Ordering::SeqCst)
-    }
-
-    fn change_feed(&self) -> Result<()> {
-        if self.change_feed.load(Ordering::SeqCst) {
-            return Err(err::Driver::ConnectionLocked.into());
-        }
-        Ok(())
+        self.inner.broken.load(Ordering::SeqCst)
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct Connection<'a> {
-    session: &'a Session,
+pub struct Connection {
+    session: Session,
     rx: Arc<Mutex<Receiver>>,
     token: u64,
+    closed: Arc<AtomicBool>,
 }
 
-impl<'a> Connection<'a> {
-    fn new(session: &'a Session, rx: Receiver, token: u64) -> Connection<'a> {
+impl Connection {
+    fn new(session: Session, rx: Receiver, token: u64) -> Connection {
         Connection {
             session,
             token,
             rx: Arc::new(Mutex::new(rx)),
+            closed: Arc::new(AtomicBool::new(false)),
         }
     }
 
@@ -273,13 +282,14 @@ impl<'a> Connection<'a> {
     where
         T: cmd::close::Arg,
     {
-        if !self.session.is_change_feed() {
+        if !self.session.inner.is_change_feed() {
             trace!(
                 "ignoring conn.close() called on a normal connection; token: {}",
                 self.token
             );
             return Ok(());
         }
+        self.set_closed(true);
         let arg = if arg.noreply_wait() {
             None
         } else {
@@ -288,7 +298,7 @@ impl<'a> Connection<'a> {
         let payload = Payload(QueryType::Stop, arg, Default::default());
         trace!("closing a changefeed; token: {}", self.token);
         let (typ, _) = self.request(&payload, false).await?;
-        self.session.unmark_change_feed();
+        self.session.inner.unmark_change_feed();
         trace!(
             "conn.close() run; token: {}, response type: {:?}",
             self.token,
@@ -296,13 +306,21 @@ impl<'a> Connection<'a> {
         );
         Ok(())
     }
+
+    fn closed(&self) -> bool {
+        self.closed.load(Ordering::SeqCst)
+    }
+
+    fn set_closed(&self, closed: bool) {
+        self.closed.store(closed, Ordering::SeqCst);
+    }
 }
 
-impl Drop for Connection<'_> {
+impl Drop for Connection {
     fn drop(&mut self) {
-        self.session.channels.remove(&self.token);
-        if self.session.is_change_feed() {
-            self.session.unmark_change_feed();
+        self.session.inner.channels.remove(&self.token);
+        if self.session.inner.is_change_feed() {
+            self.session.inner.unmark_change_feed();
         }
     }
 }

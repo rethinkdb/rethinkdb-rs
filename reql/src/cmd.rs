@@ -213,7 +213,7 @@ fn debug(bytes: &[u8]) -> String {
     format!("{:?}", bytes)
 }
 
-impl<'a> Query {
+impl Query {
     pub fn changes<T>(self, arg: T) -> Query
     where
         T: changes::Arg,
@@ -1048,7 +1048,7 @@ impl<'a> Query {
 
     pub fn run<A, T>(self, arg: A) -> impl Stream<Item = Result<T>>
     where
-        A: run::Arg<'a>,
+        A: run::Arg,
         T: Unpin + DeserializeOwned,
     {
         Box::pin(run::new(self, arg))

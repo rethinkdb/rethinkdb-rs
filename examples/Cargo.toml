@@ -8,6 +8,8 @@ publish = false
 [dependencies]
 env_logger = "0.8.3"
 futures = "0.3.14"
+futures-timer = "3.0.2"
+log = "0.4.14"
 mobc-reql = { path = "../mobc" }
 reql = { path = "../reql" }
 serde_json = "1.0.64"
@@ -24,6 +26,10 @@ path = "reql/changes.rs"
 [[example]]
 name = "closing-changefeeds"
 path = "reql/closing-changefeeds.rs"
+
+[[example]]
+name = "closing-spawned-feed"
+path = "reql/closing-spawned-feed.rs"
 
 [[example]]
 name = "simple"

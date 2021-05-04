@@ -90,84 +90,72 @@ pub enum Format {
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct Db(pub Cow<'static, str>);
 
-impl Session {
-    fn default_db(&self) -> Options {
-        if self.db == DEFAULT_DB {
-            Options::new()
-        } else {
-            Options::new().db(&self.db)
-        }
-    }
-}
-
 impl Options {
-    fn default_db(self, session: &Session) -> Options {
-        if self.db.is_none() && session.db != DEFAULT_DB {
-            return self.db(&session.db);
+    async fn default_db(self, session: &Session) -> Options {
+        let session_db = session.inner.db.lock().await;
+        if self.db.is_none() && *session_db != DEFAULT_DB {
+            return self.db(&*session_db);
         }
         self
     }
 }
 
-pub trait Arg<'a> {
-    fn into_run_opts(self) -> Result<(Connection<'a>, Options)>;
+pub trait Arg {
+    fn into_run_opts(self) -> Result<(Connection, Options)>;
 }
 
-impl<'a> Arg<'a> for &'a Session {
-    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
+impl Arg for &Session {
+    fn into_run_opts(self) -> Result<(Connection, Options)> {
         let conn = self.connection()?;
-        let opts = self.default_db();
-        Ok((conn, opts))
+        Ok((conn, Default::default()))
     }
 }
 
-impl<'a> Arg<'a> for Connection<'a> {
-    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
-        let opts = self.session.default_db();
-        Ok((self, opts))
+impl Arg for Connection {
+    fn into_run_opts(self) -> Result<(Connection, Options)> {
+        Ok((self, Default::default()))
     }
 }
 
-impl<'a> Arg<'a> for (&'a Session, Options) {
-    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
+impl Arg for (&Session, Options) {
+    fn into_run_opts(self) -> Result<(Connection, Options)> {
         let (session, options) = self;
         let conn = session.connection()?;
-        let opts = options.default_db(session);
-        Ok((conn, opts))
+        Ok((conn, options))
     }
 }
 
-impl<'a> Arg<'a> for (Connection<'a>, Options) {
-    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
-        let (conn, options) = self;
-        let opts = options.default_db(&conn.session);
-        Ok((conn, opts))
+impl Arg for (Connection, Options) {
+    fn into_run_opts(self) -> Result<(Connection, Options)> {
+        Ok(self)
     }
 }
 
-impl<'a> Arg<'a> for &'a mut Session {
-    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
+impl Arg for &mut Session {
+    fn into_run_opts(self) -> Result<(Connection, Options)> {
         self.connection()?.into_run_opts()
     }
 }
 
-impl<'a> Arg<'a> for (&'a mut Session, Options) {
-    fn into_run_opts(self) -> Result<(Connection<'a>, Options)> {
+impl Arg for (&mut Session, Options) {
+    fn into_run_opts(self) -> Result<(Connection, Options)> {
         let (session, options) = self;
         let conn = session.connection()?;
         (conn, options).into_run_opts()
     }
 }
 
-pub(crate) fn new<'a, A, T>(query: Query, arg: A) -> impl Stream<Item = Result<T>>
+pub(crate) fn new<A, T>(query: Query, arg: A) -> impl Stream<Item = Result<T>>
 where
-    A: Arg<'a>,
+    A: Arg,
     T: Unpin + DeserializeOwned,
 {
     try_stream! {
-        let (mut conn, opts) = arg.into_run_opts()?;
-        if query.change_feed() {
-            conn.session.mark_change_feed();
+        let (mut conn, mut opts) = arg.into_run_opts()?;
+        opts = opts.default_db(&conn.session).await;
+        let change_feed = query.change_feed();
+        if change_feed {
+            conn.session.inner.mark_change_feed();
         }
         let noreply = opts.noreply.unwrap_or_default();
         let mut payload = Payload(QueryType::Start, Some(query), opts);
@@ -182,6 +170,12 @@ where
                     break;
                 }
                 ResponseType::SuccessPartial => {
+                    if conn.closed() {
+                        // reopen so we can use the connection in future
+                        conn.set_closed(false);
+                        trace!("connection closed; token: {}", conn.token);
+                        break;
+                    }
                     payload = Payload(QueryType::Continue, None, Default::default());
                     for val in serde_json::from_value::<Vec<T>>(resp.r)? {
                         yield val;
@@ -190,8 +184,12 @@ where
                 }
                 ResponseType::WaitComplete => { break; }
                 typ => {
-                    Err(response_error(typ, resp.e, resp))?;
-                    break;
+                    let msg = error_message(resp.r)?;
+                    match typ {
+                        // This feed has been closed by conn.close().
+                        ResponseType::ClientError if change_feed && msg.contains("not in stream cache") => { break; }
+                        _ => Err(response_error(typ, resp.e, msg))?,
+                    }
                 }
             }
         }
@@ -210,12 +208,12 @@ impl Payload {
     }
 }
 
-impl Connection<'_> {
+impl Connection {
     fn send_response(&self, db_token: u64, resp: Result<(ResponseType, Response)>) {
-        if let Some(tx) = self.session.channels.get(&db_token) {
+        if let Some(tx) = self.session.inner.channels.get(&db_token) {
             if let Err(error) = tx.unbounded_send(resp) {
                 if error.is_disconnected() {
-                    self.session.channels.remove(&db_token);
+                    self.session.inner.channels.remove(&db_token);
                 }
             }
         }
@@ -229,9 +227,7 @@ impl Connection<'_> {
         self.submit(query, noreply).await;
         match self.rx.lock().await.next().await {
             Some(resp) => resp,
-            None => {
-                Err(err::Driver::Other("sender stream terminated prematurely".to_owned()).into())
-            }
+            None => Ok((ResponseType::SuccessAtom, Response::new())),
         }
     }
 
@@ -249,7 +245,7 @@ impl Connection<'_> {
     ) -> Result<(ResponseType, Response)> {
         let buf = query.encode(self.token)?;
 
-        let guard = self.session.stream.lock().await;
+        let guard = self.session.inner.stream.lock().await;
         let mut stream = guard.clone();
 
         trace!("sending query; token: {}, payload: {}", self.token, query);
@@ -269,8 +265,8 @@ impl Connection<'_> {
         *db_token = {
             let token = u64::from_le_bytes(buf);
             trace!("db_token: {}", token);
-            if token > self.session.token.load(Ordering::SeqCst) {
-                self.session.mark_broken();
+            if token > self.session.inner.token.load(Ordering::SeqCst) {
+                self.session.inner.mark_broken();
                 return Err(err::Driver::ConnectionBroken.into());
             }
             token
@@ -304,24 +300,20 @@ impl Connection<'_> {
             .ok_or_else(|| err::Driver::Other(format!("unknown response type `{}`", resp.t)))?;
 
         if let Some(error_type) = resp.e {
-            return Err(response_error(response_type, Some(error_type), resp));
+            let msg = error_message(resp.r)?;
+            return Err(response_error(response_type, Some(error_type), msg));
         }
 
         Ok((response_type, resp))
     }
 }
 
-fn response_error(
-    response_type: ResponseType,
-    error_type: Option<i32>,
-    resp: Response,
-) -> err::Error {
-    let msg = match serde_json::from_value::<Vec<String>>(resp.r) {
-        Ok(messages) => messages.join(" "),
-        Err(error) => {
-            return error.into();
-        }
-    };
+fn error_message(response: Value) -> Result<String> {
+    let messages = serde_json::from_value::<Vec<String>>(response)?;
+    Ok(messages.join(" "))
+}
+
+fn response_error(response_type: ResponseType, error_type: Option<i32>, msg: String) -> err::Error {
     match response_type {
         ResponseType::ClientError => err::Driver::Other(msg).into(),
         ResponseType::CompileError => err::Error::Compile(msg),
