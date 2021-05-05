@@ -2,7 +2,7 @@
 
 ReQL connection pool implementation
 
-```
+```rust
 use mobc_reql::{GetSession, Pool, SessionManager};
 
 // Create the session manager
