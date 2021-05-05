@@ -153,3 +153,22 @@ pub struct ServerInfo {
     pub proxy: bool,
     pub name: Option<String>,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+struct BINARY;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Binary {
+    #[serde(rename = "$reql_type$")]
+    reql_type: BINARY,
+    pub data: String,
+}
+
+impl Binary {
+    pub fn new(bytes: &[u8]) -> Self {
+        Self {
+            reql_type: BINARY,
+            data: base64::encode(bytes),
+        }
+    }
+}
