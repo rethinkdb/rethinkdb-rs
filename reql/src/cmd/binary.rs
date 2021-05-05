@@ -9,13 +9,13 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        build(self)
+        Query::new(TermType::Binary).with_arg(self)
     }
 }
 
 impl Arg for Binary {
     fn into_query(self) -> Query {
-        build(r.expr(json!(self)))
+        r.expr(json!(self)).into_query()
     }
 }
 
@@ -35,8 +35,4 @@ impl Arg for Vec<u8> {
     fn into_query(self) -> Query {
         Binary::new(&self).into_query()
     }
-}
-
-fn build(arg: Query) -> Query {
-    Query::new(TermType::Binary).with_arg(arg)
 }

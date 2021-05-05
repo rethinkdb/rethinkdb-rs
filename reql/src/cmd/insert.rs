@@ -1,5 +1,4 @@
 use crate::cmd::Durability;
-use crate::proto::Datum;
 use crate::Query;
 use ql2::term::TermType;
 use serde::{Serialize, Serializer};
@@ -39,20 +38,20 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        build(self)
+        Query::new(TermType::Insert).with_arg(self)
     }
 }
 
 impl Arg for (Query, Options) {
     fn into_query(self) -> Query {
         let (query, options) = self;
-        build(query).with_opts(options)
+        query.into_query().with_opts(options)
     }
 }
 
 impl Arg for Value {
     fn into_query(self) -> Query {
-        build(Datum::from(self))
+        Query::from(self).into_query()
     }
 }
 
@@ -62,7 +61,7 @@ where
 {
     fn into_query(self) -> Query {
         let arg = Value::Array(self.into_iter().map(Into::into).collect());
-        build(Datum::from(arg))
+        Query::from(arg).into_query()
     }
 }
 
@@ -72,13 +71,6 @@ where
 {
     fn into_query(self) -> Query {
         let (val, options) = self;
-        build(Datum::from(val.into())).with_opts(options)
+        Query::from(val.into()).into_query().with_opts(options)
     }
-}
-
-fn build<T>(arg: T) -> Query
-where
-    T: Into<Query>,
-{
-    Query::new(TermType::Insert).with_arg(arg)
 }

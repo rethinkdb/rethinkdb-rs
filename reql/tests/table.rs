@@ -1,11 +1,13 @@
-use futures::executor;
-use reql::{r, Result};
+use futures::TryStreamExt;
+use reql::r;
 use serde_json::Value;
 
-#[test]
-fn table() -> Result<()> {
-    let conn = executor::block_on(r.connect(()))?;
-    let query = r.db("rethinkdb").table("users").run(&conn);
-    let _: Option<Result<Value>> = executor::block_on_stream(query).next();
+#[tokio::test]
+async fn table() -> reql::Result<()> {
+    env_logger::init();
+    let conn = r.connect(()).await?;
+    let mut query = r.db("rethinkdb").table("users").run(&conn);
+    let user: Option<Value> = query.try_next().await?;
+    assert!(user.is_some());
     Ok(())
 }

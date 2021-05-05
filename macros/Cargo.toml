@@ -1,0 +1,17 @@
+[package]
+name = "reql-macros"
+description = "Macros for the reql crate"
+version = "0.1.0"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/RethinkDB/rethinkdb-rs"
+documentation = "https://docs.rs/reql-macros"
+authors = ["rushmorem <rushmore@webenchanter.com>"]
+edition = "2018"
+
+[dependencies]
+quote = "1.0.9"
+syn = { version = "1.0.72", default-features = false }
+proc-macro2 = "1.0.26"
+
+[lib]
+proc-macro = true

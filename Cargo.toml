@@ -3,5 +3,6 @@ members = [
   "mobc",
   "reql",
   "types",
+  "macros",
   "examples",
 ]

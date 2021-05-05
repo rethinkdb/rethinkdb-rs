@@ -76,7 +76,6 @@ use log::trace;
 use proto::Payload;
 use ql2::query::QueryType;
 use ql2::response::ResponseType;
-use ql2::term::TermType;
 use serde_json::json;
 use std::borrow::Cow;
 use std::ops::Drop;
@@ -85,9 +84,23 @@ use std::sync::Arc;
 use types::ServerInfo;
 
 pub use err::*;
+#[doc(hidden)]
+pub use proto::Func;
 pub use proto::Query;
+#[doc(hidden)]
+pub use ql2::term::TermType;
+#[doc(inline)]
+pub use reql_macros as macros;
 #[doc(inline)]
 pub use reql_types as types;
+
+#[doc(hidden)]
+pub static VAR_COUNTER: AtomicU64 = AtomicU64::new(0);
+
+#[doc(hidden)]
+pub fn var_counter() -> u64 {
+    VAR_COUNTER.fetch_add(1, Ordering::SeqCst)
+}
 
 /// Custom result returned by various ReQL commands
 pub type Result<T> = std::result::Result<T, Error>;

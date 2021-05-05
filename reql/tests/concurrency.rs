@@ -1,10 +1,11 @@
-use futures::executor;
-use futures::stream::select_all;
+use futures::stream::{select_all, TryStreamExt};
 use reql::r;
 
-#[test]
-fn concurrency() -> reql::Result<()> {
-    let conn = executor::block_on(r.connect(()))?;
+#[tokio::test]
+async fn concurrency() -> reql::Result<()> {
+    env_logger::init();
+
+    let conn = r.connect(()).await?;
 
     let mut streams = Vec::new();
 
@@ -13,12 +14,9 @@ fn concurrency() -> reql::Result<()> {
         streams.push(r.expr(format!("message {}", i)).run::<_, String>(&conn));
     }
 
-    let list = select_all(streams);
-    let mut iter = executor::block_on_stream(list);
+    let mut list = select_all(streams);
 
-    while let Some(msg) = iter.next() {
-        msg.unwrap();
-    }
+    while list.try_next().await?.is_some() {}
 
     Ok(())
 }

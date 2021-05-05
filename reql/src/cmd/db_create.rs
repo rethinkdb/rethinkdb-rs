@@ -1,4 +1,3 @@
-use crate::proto::Datum;
 use crate::Query;
 use ql2::term::TermType;
 
@@ -8,7 +7,7 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        build(self)
+        Query::new(TermType::DbCreate).with_arg(self)
     }
 }
 
@@ -17,13 +16,6 @@ where
     T: Into<String>,
 {
     fn into_query(self) -> Query {
-        build(Datum::String(self.into()))
+        Query::from_json(self.into()).into_query()
     }
-}
-
-fn build<T>(arg: T) -> Query
-where
-    T: Into<Query>,
-{
-    Query::new(TermType::DbCreate).with_arg(arg)
 }

@@ -201,16 +201,12 @@ pub trait Arg {
 
 impl Arg for () {
     fn into_query(self) -> Query {
-        build()
+        Query::new(TermType::Changes).mark_change_feed()
     }
 }
 
 impl Arg for Options {
     fn into_query(self) -> Query {
-        build().with_opts(self)
+        ().into_query().with_opts(self)
     }
-}
-
-fn build() -> Query {
-    Query::new(TermType::Changes).mark_change_feed()
 }

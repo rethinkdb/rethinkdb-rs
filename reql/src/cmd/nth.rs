@@ -10,3 +10,9 @@ impl Arg for Query {
         Query::new(TermType::Nth).with_arg(self)
     }
 }
+
+impl Arg for isize {
+    fn into_query(self) -> Query {
+        Query::from_json(self).into_query()
+    }
+}

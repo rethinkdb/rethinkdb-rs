@@ -1,5 +1,4 @@
 use super::{Durability, StaticString};
-use crate::proto::Datum;
 use crate::Query;
 use ql2::term::TermType;
 use serde::{Serialize, Serializer};
@@ -107,59 +106,52 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        build(self)
+        Query::new(TermType::TableCreate).with_arg(self)
     }
 }
 
 impl Arg for String {
     fn into_query(self) -> Query {
-        build(Datum::String(self))
+        Query::from_json(self).into_query()
     }
 }
 
 impl Arg for &String {
     fn into_query(self) -> Query {
-        build(Datum::String(self.to_owned()))
+        Query::from_json(self.to_owned()).into_query()
     }
 }
 
 impl Arg for &str {
     fn into_query(self) -> Query {
-        build(Datum::String(self.to_owned()))
+        Query::from_json(self).into_query()
     }
 }
 
 impl Arg for (Query, Options) {
     fn into_query(self) -> Query {
         let (query, options) = self;
-        build(query).with_opts(options)
+        query.into_query().with_opts(options)
     }
 }
 
 impl Arg for (String, Options) {
     fn into_query(self) -> Query {
-        let (val, options) = self;
-        build(Datum::String(val)).with_opts(options)
+        let (name, options) = self;
+        name.into_query().with_opts(options)
     }
 }
 
 impl Arg for (&String, Options) {
     fn into_query(self) -> Query {
-        let (val, options) = self;
-        build(Datum::String(val.to_owned())).with_opts(options)
+        let (name, options) = self;
+        name.into_query().with_opts(options)
     }
 }
 
 impl Arg for (&str, Options) {
     fn into_query(self) -> Query {
-        let (val, options) = self;
-        build(Datum::String(val.to_owned())).with_opts(options)
+        let (name, options) = self;
+        name.into_query().with_opts(options)
     }
-}
-
-fn build<T>(arg: T) -> Query
-where
-    T: Into<Query>,
-{
-    Query::new(TermType::TableCreate).with_arg(arg)
 }

@@ -1,11 +1,12 @@
-use futures::stream::select_all;
-use futures::TryStreamExt;
+use futures::stream::{select_all, TryStreamExt};
 use reql::{r, Driver, Error};
 use serde_json::Value;
 
-#[test]
-fn changefeeds_should_be_dedicated_to_a_connection() {
-    match futures::executor::block_on(changefeeds()).unwrap_err() {
+#[tokio::test]
+async fn changefeeds_should_use_dedicated_connections() {
+    env_logger::init();
+
+    match changefeeds().await.unwrap_err() {
         Error::Driver(Driver::ConnectionLocked) => {}
         error => panic!("{:?}", error),
     }

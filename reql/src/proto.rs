@@ -56,6 +56,15 @@ impl From<Value> for Datum {
     }
 }
 
+#[derive(Debug)]
+pub struct Func(pub Query);
+
+impl From<Func> for Query {
+    fn from(Func(func): Func) -> Self {
+        func
+    }
+}
+
 /// The query that will be sent to RethinkDB
 #[derive(Debug, Clone, Default)]
 pub struct Query {
@@ -76,7 +85,12 @@ impl Query {
     }
 
     #[doc(hidden)]
-    pub fn with_parent(mut self, parent: Query) -> Self {
+    pub fn var(id: u64) -> Self {
+        let index = Self::from_json(id);
+        Self::new(TermType::Var).with_arg(index)
+    }
+
+    pub(crate) fn with_parent(mut self, parent: Query) -> Self {
         self.change_feed = self.change_feed || parent.change_feed;
         self.args.push_front(parent);
         self
@@ -91,8 +105,7 @@ impl Query {
         self
     }
 
-    #[doc(hidden)]
-    pub fn with_opts<T>(mut self, opts: T) -> Self
+    pub(crate) fn with_opts<T>(mut self, opts: T) -> Self
     where
         T: Serialize,
     {
@@ -104,6 +117,14 @@ impl Query {
             .into();
         self.opts = Some(opts);
         self
+    }
+
+    #[doc(hidden)]
+    pub fn from_json<T>(arg: T) -> Self
+    where
+        T: Into<Value>,
+    {
+        arg.into().into()
     }
 
     pub(crate) fn mark_change_feed(mut self) -> Self {
@@ -123,6 +144,12 @@ impl From<Datum> for Query {
             datum: Some(datum),
             ..Default::default()
         }
+    }
+}
+
+impl From<Value> for Query {
+    fn from(value: Value) -> Self {
+        Datum::from(value).into()
     }
 }
 
