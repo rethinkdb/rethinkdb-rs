@@ -1,6 +1,8 @@
 pub mod add;
 pub mod and;
 pub mod append;
+pub mod args;
+pub mod asc;
 pub mod avg;
 pub mod between;
 pub mod binary;
@@ -34,11 +36,12 @@ pub mod db_list;
 pub mod default;
 pub mod delete;
 pub mod delete_at;
+pub mod desc;
 pub mod difference;
 pub mod distance;
 pub mod distinct;
 pub mod div;
-pub mod r#do;
+pub mod do_;
 pub mod downcase;
 pub mod during;
 pub mod epoch_time;
@@ -67,6 +70,7 @@ pub mod hours;
 pub mod http;
 pub mod in_timezone;
 pub mod includes;
+pub mod index;
 pub mod index_create;
 pub mod index_drop;
 pub mod index_list;
@@ -89,7 +93,7 @@ pub mod line;
 pub mod literal;
 pub mod lt;
 pub mod map;
-pub mod r#match;
+pub mod match_;
 pub mod max;
 pub mod merge;
 pub mod min;
@@ -214,7 +218,7 @@ fn debug(bytes: &[u8]) -> String {
 }
 
 impl Query {
-    pub fn changes<T>(self, arg: T) -> Query
+    pub fn changes<T>(self, arg: T) -> Self
     where
         T: changes::Arg,
     {
@@ -262,784 +266,781 @@ impl Query {
     }
         ```
          */
-    pub fn table_create<T>(self, arg: T) -> Query
+    pub fn table_create<T>(self, arg: T) -> Self
     where
         T: table_create::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn table_drop<T>(self, arg: T) -> Query
+    pub fn table_drop<T>(self, arg: T) -> Self
     where
         T: table_drop::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn table_list(self) -> Query {
-        Query::new(TermType::TableList).with_parent(self)
+    pub fn table_list(self) -> Self {
+        Self::new(TermType::TableList).with_parent(self)
     }
 
-    pub fn table<T>(self, arg: T) -> Query
+    pub fn table<T>(self, arg: T) -> Self
     where
         T: table::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn index_create<T>(self, arg: T) -> Query
+    pub fn index_create<T>(self, arg: T) -> Self
     where
         T: index_create::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn index_drop<T>(self, arg: T) -> Query
+    pub fn index_drop<T>(self, arg: T) -> Self
     where
         T: index_drop::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn index_list(self) -> Query {
-        Query::new(TermType::IndexList).with_parent(self)
+    pub fn index_list(self) -> Self {
+        Self::new(TermType::IndexList).with_parent(self)
     }
 
-    pub fn index_rename<T>(self, arg: T) -> Query
+    pub fn index_rename<T>(self, arg: T) -> Self
     where
         T: index_rename::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn index_status<T>(self, arg: T) -> Query
+    pub fn index_status<T>(self, arg: T) -> Self
     where
         T: index_status::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn index_wait<T>(self, arg: T) -> Query
+    pub fn index_wait<T>(self, arg: T) -> Self
     where
         T: index_wait::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn set_write_hook<T>(self, arg: T) -> Query
+    pub fn set_write_hook<T>(self, arg: T) -> Self
     where
         T: set_write_hook::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn get_write_hook(self) -> Query {
-        Query::new(TermType::GetWriteHook).with_parent(self)
+    pub fn get_write_hook(self) -> Self {
+        Self::new(TermType::GetWriteHook).with_parent(self)
     }
 
-    pub fn insert<T>(self, arg: T) -> Query
+    pub fn insert<T>(self, arg: T) -> Self
     where
         T: insert::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn update<T>(self, arg: T) -> Query
+    pub fn update<T>(self, arg: T) -> Self
     where
         T: update::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn replace<T>(self, arg: T) -> Query
+    pub fn replace<T>(self, arg: T) -> Self
     where
         T: replace::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn delete<T>(self, arg: T) -> Query
+    pub fn delete<T>(self, arg: T) -> Self
     where
         T: delete::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn sync<T>(self, arg: T) -> Query
-    where
-        T: sync::Arg,
-    {
-        arg.into_query().with_parent(self)
+    pub fn sync(self) -> Self {
+        Self::new(TermType::Sync).with_parent(self)
     }
 
-    pub fn get<T>(self, arg: T) -> Query
+    pub fn get<T>(self, arg: T) -> Self
     where
         T: get::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn get_all<T>(self, arg: T) -> Query
+    pub fn get_all<T>(self, arg: T) -> Self
     where
         T: get_all::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn between<T>(self, arg: T) -> Query
+    pub fn between<T>(self, arg: T) -> Self
     where
         T: between::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn filter<T>(self, arg: T) -> Query
+    pub fn filter<T>(self, arg: T) -> Self
     where
         T: filter::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn inner_join<T>(self, arg: T) -> Query
+    pub fn inner_join<T>(self, arg: T) -> Self
     where
         T: inner_join::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn outer_join<T>(self, arg: T) -> Query
+    pub fn outer_join<T>(self, arg: T) -> Self
     where
         T: outer_join::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn eq_join<T>(self, arg: T) -> Query
+    pub fn eq_join<T>(self, arg: T) -> Self
     where
         T: eq_join::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn zip(self) -> Query {
-        Query::new(TermType::Zip).with_parent(self)
+    pub fn zip(self) -> Self {
+        Self::new(TermType::Zip).with_parent(self)
     }
 
-    pub fn map<T>(self, arg: T) -> Query
+    pub fn map<T>(self, arg: T) -> Self
     where
         T: map::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn with_fields<T>(self, arg: T) -> Query
+    pub fn with_fields<T>(self, arg: T) -> Self
     where
         T: with_fields::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn concat_map<T>(self, arg: T) -> Query
+    pub fn concat_map<T>(self, arg: T) -> Self
     where
         T: concat_map::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn order_by<T>(self, arg: T) -> Query
+    pub fn order_by<T>(self, arg: T) -> Self
     where
         T: order_by::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn skip<T>(self, arg: T) -> Query
+    pub fn skip<T>(self, arg: T) -> Self
     where
         T: skip::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn limit<T>(self, arg: T) -> Query
+    pub fn limit<T>(self, arg: T) -> Self
     where
         T: limit::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn slice<T>(self, arg: T) -> Query
+    pub fn slice<T>(self, arg: T) -> Self
     where
         T: slice::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn nth<T>(self, arg: T) -> Query
+    pub fn nth<T>(self, arg: T) -> Self
     where
         T: nth::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn offsets_of<T>(self, arg: T) -> Query
+    pub fn offsets_of<T>(self, arg: T) -> Self
     where
         T: offsets_of::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn is_empty(self) -> Query {
-        Query::new(TermType::IsEmpty).with_parent(self)
+    pub fn is_empty(self) -> Self {
+        Self::new(TermType::IsEmpty).with_parent(self)
     }
 
-    pub fn union<T>(self, arg: T) -> Query
+    pub fn union<T>(self, arg: T) -> Self
     where
         T: union::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn sample<T>(self, arg: T) -> Query
+    pub fn sample<T>(self, arg: T) -> Self
     where
         T: sample::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn group<T>(self, arg: T) -> Query
+    pub fn group<T>(self, arg: T) -> Self
     where
         T: group::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn ungroup(self) -> Query {
-        Query::new(TermType::Ungroup).with_parent(self)
+    pub fn ungroup(self) -> Self {
+        Self::new(TermType::Ungroup).with_parent(self)
     }
 
-    pub fn reduce<T>(self, arg: T) -> Query
+    pub fn reduce<T>(self, arg: T) -> Self
     where
         T: reduce::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn fold<T>(self, arg: T) -> Query
+    pub fn fold<T>(self, arg: T) -> Self
     where
         T: fold::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn count<T>(self, arg: T) -> Query
+    pub fn count<T>(self, arg: T) -> Self
     where
         T: count::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn sum<T>(self, arg: T) -> Query
+    pub fn sum<T>(self, arg: T) -> Self
     where
         T: sum::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn avg<T>(self, arg: T) -> Query
+    pub fn avg<T>(self, arg: T) -> Self
     where
         T: avg::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn min<T>(self, arg: T) -> Query
+    pub fn min<T>(self, arg: T) -> Self
     where
         T: min::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn max<T>(self, arg: T) -> Query
+    pub fn max<T>(self, arg: T) -> Self
     where
         T: max::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn distinct<T>(self, arg: T) -> Query
+    pub fn distinct<T>(self, arg: T) -> Self
     where
         T: distinct::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn contains<T>(self, arg: T) -> Query
+    pub fn contains<T>(self, arg: T) -> Self
     where
         T: contains::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn pluck<T>(self, arg: T) -> Query
+    pub fn pluck<T>(self, arg: T) -> Self
     where
         T: pluck::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn without<T>(self, arg: T) -> Query
+    pub fn without<T>(self, arg: T) -> Self
     where
         T: without::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn merge<T>(self, arg: T) -> Query
+    pub fn merge<T>(self, arg: T) -> Self
     where
         T: merge::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn append<T>(self, arg: T) -> Query
+    pub fn append<T>(self, arg: T) -> Self
     where
         T: append::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn prepend<T>(self, arg: T) -> Query
+    pub fn prepend<T>(self, arg: T) -> Self
     where
         T: prepend::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn difference<T>(self, arg: T) -> Query
+    pub fn difference<T>(self, arg: T) -> Self
     where
         T: difference::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn set_insert<T>(self, arg: T) -> Query
+    pub fn set_insert<T>(self, arg: T) -> Self
     where
         T: set_insert::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn set_union<T>(self, arg: T) -> Query
+    pub fn set_union<T>(self, arg: T) -> Self
     where
         T: set_union::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn set_intersection<T>(self, arg: T) -> Query
+    pub fn set_intersection<T>(self, arg: T) -> Self
     where
         T: set_intersection::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn set_difference<T>(self, arg: T) -> Query
+    pub fn set_difference<T>(self, arg: T) -> Self
     where
         T: set_difference::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn bracket<T>(self, arg: T) -> Query
+    pub fn bracket<T>(self, arg: T) -> Self
     where
         T: bracket::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn get_field<T>(self, arg: T) -> Query
+    pub fn get_field<T>(self, arg: T) -> Self
     where
         T: get_field::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn has_fields<T>(self, arg: T) -> Query
+    pub fn has_fields<T>(self, arg: T) -> Self
     where
         T: has_fields::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn insert_at<T>(self, arg: T) -> Query
+    pub fn insert_at<T>(self, arg: T) -> Self
     where
         T: insert_at::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn splice_at<T>(self, arg: T) -> Query
+    pub fn splice_at<T>(self, arg: T) -> Self
     where
         T: splice_at::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn delete_at<T>(self, arg: T) -> Query
+    pub fn delete_at<T>(self, arg: T) -> Self
     where
         T: delete_at::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn change_at<T>(self, arg: T) -> Query
+    pub fn change_at<T>(self, arg: T) -> Self
     where
         T: change_at::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn keys(self) -> Query {
-        Query::new(TermType::Keys).with_parent(self)
+    pub fn keys(self) -> Self {
+        Self::new(TermType::Keys).with_parent(self)
     }
 
-    pub fn values(self) -> Query {
-        Query::new(TermType::Values).with_parent(self)
+    pub fn values(self) -> Self {
+        Self::new(TermType::Values).with_parent(self)
     }
 
-    pub fn r#match<T>(self, arg: T) -> Query
+    pub fn match_<T>(self, arg: T) -> Self
     where
-        T: r#match::Arg,
+        T: match_::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn split<T>(self, arg: T) -> Query
+    pub fn split<T>(self, arg: T) -> Self
     where
         T: split::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn upcase(self) -> Query {
-        Query::new(TermType::Upcase).with_parent(self)
+    pub fn upcase(self) -> Self {
+        Self::new(TermType::Upcase).with_parent(self)
     }
 
-    pub fn downcase(self) -> Query {
-        Query::new(TermType::Downcase).with_parent(self)
+    pub fn downcase(self) -> Self {
+        Self::new(TermType::Downcase).with_parent(self)
     }
 
-    pub fn and<T>(self, arg: T) -> Query
+    pub fn and<T>(self, arg: T) -> Self
     where
         T: and::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn or<T>(self, arg: T) -> Query
+    pub fn or<T>(self, arg: T) -> Self
     where
         T: or::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn eq<T>(self, arg: T) -> Query
+    pub fn eq<T>(self, arg: T) -> Self
     where
         T: eq::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn ne<T>(self, arg: T) -> Query
+    pub fn ne<T>(self, arg: T) -> Self
     where
         T: ne::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn gt<T>(self, arg: T) -> Query
+    pub fn gt<T>(self, arg: T) -> Self
     where
         T: gt::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn ge<T>(self, arg: T) -> Query
+    pub fn ge<T>(self, arg: T) -> Self
     where
         T: ge::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn lt<T>(self, arg: T) -> Query
+    pub fn lt<T>(self, arg: T) -> Self
     where
         T: lt::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn le<T>(self, arg: T) -> Query
+    pub fn le<T>(self, arg: T) -> Self
     where
         T: le::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn not<T>(self, arg: T) -> Query
+    pub fn not<T>(self, arg: T) -> Self
     where
         T: not::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn bit_and<T>(self, arg: T) -> Query
+    pub fn bit_and<T>(self, arg: T) -> Self
     where
         T: bit_and::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn bit_or<T>(self, arg: T) -> Query
+    pub fn bit_or<T>(self, arg: T) -> Self
     where
         T: bit_or::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn bit_xor<T>(self, arg: T) -> Query
+    pub fn bit_xor<T>(self, arg: T) -> Self
     where
         T: bit_xor::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn bit_not(self) -> Query {
+    pub fn bit_not(self) -> Self {
         !self
     }
 
-    pub fn bit_sal<T>(self, arg: T) -> Query
+    pub fn bit_sal<T>(self, arg: T) -> Self
     where
         T: bit_sal::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn bit_sar<T>(self, arg: T) -> Query
+    pub fn bit_sar<T>(self, arg: T) -> Self
     where
         T: bit_sar::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn round(self) -> Query {
-        Query::new(TermType::Round).with_parent(self)
+    pub fn round(self) -> Self {
+        Self::new(TermType::Round).with_parent(self)
     }
 
-    pub fn ceil(self) -> Query {
-        Query::new(TermType::Ceil).with_parent(self)
+    pub fn ceil(self) -> Self {
+        Self::new(TermType::Ceil).with_parent(self)
     }
 
-    pub fn floor(self) -> Query {
-        Query::new(TermType::Floor).with_parent(self)
+    pub fn floor(self) -> Self {
+        Self::new(TermType::Floor).with_parent(self)
     }
 
-    pub fn in_timezone<T>(self, arg: T) -> Query
+    pub fn in_timezone<T>(self, arg: T) -> Self
     where
         T: in_timezone::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn timezone(self) -> Query {
-        Query::new(TermType::Timezone).with_parent(self)
+    pub fn timezone(self) -> Self {
+        Self::new(TermType::Timezone).with_parent(self)
     }
 
-    pub fn during<T>(self, arg: T) -> Query
+    pub fn during<T>(self, arg: T) -> Self
     where
         T: during::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn date(self) -> Query {
-        Query::new(TermType::Date).with_parent(self)
+    pub fn date(self) -> Self {
+        Self::new(TermType::Date).with_parent(self)
     }
 
-    pub fn time_of_day(self) -> Query {
-        Query::new(TermType::TimeOfDay).with_parent(self)
+    pub fn time_of_day(self) -> Self {
+        Self::new(TermType::TimeOfDay).with_parent(self)
     }
 
-    pub fn year(self) -> Query {
-        Query::new(TermType::Year).with_parent(self)
+    pub fn year(self) -> Self {
+        Self::new(TermType::Year).with_parent(self)
     }
 
-    pub fn month(self) -> Query {
-        Query::new(TermType::Month).with_parent(self)
+    pub fn month(self) -> Self {
+        Self::new(TermType::Month).with_parent(self)
     }
 
-    pub fn day(self) -> Query {
-        Query::new(TermType::Day).with_parent(self)
+    pub fn day(self) -> Self {
+        Self::new(TermType::Day).with_parent(self)
     }
 
-    pub fn day_of_week(self) -> Query {
-        Query::new(TermType::DayOfWeek).with_parent(self)
+    pub fn day_of_week(self) -> Self {
+        Self::new(TermType::DayOfWeek).with_parent(self)
     }
 
-    pub fn day_of_year(self) -> Query {
-        Query::new(TermType::DayOfYear).with_parent(self)
+    pub fn day_of_year(self) -> Self {
+        Self::new(TermType::DayOfYear).with_parent(self)
     }
 
-    pub fn hours(self) -> Query {
-        Query::new(TermType::Hours).with_parent(self)
+    pub fn hours(self) -> Self {
+        Self::new(TermType::Hours).with_parent(self)
     }
 
-    pub fn minutes(self) -> Query {
-        Query::new(TermType::Minutes).with_parent(self)
+    pub fn minutes(self) -> Self {
+        Self::new(TermType::Minutes).with_parent(self)
     }
 
-    pub fn seconds(self) -> Query {
-        Query::new(TermType::Seconds).with_parent(self)
+    pub fn seconds(self) -> Self {
+        Self::new(TermType::Seconds).with_parent(self)
     }
 
-    pub fn to_iso8601(self) -> Query {
-        Query::new(TermType::ToIso8601).with_parent(self)
+    pub fn to_iso8601(self) -> Self {
+        Self::new(TermType::ToIso8601).with_parent(self)
     }
 
-    pub fn to_epoch_time(self) -> Query {
-        Query::new(TermType::ToEpochTime).with_parent(self)
+    pub fn to_epoch_time(self) -> Self {
+        Self::new(TermType::ToEpochTime).with_parent(self)
     }
 
-    pub fn binary<T>(self, arg: T) -> Query
+    pub fn binary<T>(self, arg: T) -> Self
     where
         T: binary::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn r#do<T>(self, arg: T) -> Query
+    pub fn do_<T>(self, arg: T) -> Self
     where
-        T: r#do::Arg,
+        T: do_::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn branch<T>(self, arg: T) -> Query
+    pub fn branch<T>(self, arg: T) -> Self
     where
         T: branch::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn for_each<T>(self, arg: T) -> Query
+    pub fn for_each<T>(self, arg: T) -> Self
     where
         T: for_each::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn default<T>(self, arg: T) -> Query
+    pub fn default<T>(self, arg: T) -> Self
     where
         T: default::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn coerce_to<T>(self, arg: T) -> Query
+    pub fn coerce_to<T>(self, arg: T) -> Self
     where
         T: coerce_to::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn type_of(self) -> Query {
-        Query::new(TermType::TypeOf).with_parent(self)
+    pub fn type_of(self) -> Self {
+        Self::new(TermType::TypeOf).with_parent(self)
     }
 
-    pub fn info(self) -> Query {
-        Query::new(TermType::Info).with_parent(self)
+    pub fn info(self) -> Self {
+        Self::new(TermType::Info).with_parent(self)
     }
 
-    pub fn to_json(self) -> Query {
-        Query::new(TermType::ToJsonString).with_parent(self)
+    pub fn to_json(self) -> Self {
+        Self::new(TermType::ToJsonString).with_parent(self)
     }
 
-    pub fn distance<T>(self, arg: T) -> Query
+    pub fn distance<T>(self, arg: T) -> Self
     where
         T: distance::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn fill(self) -> Query {
-        Query::new(TermType::Fill).with_parent(self)
+    pub fn fill(self) -> Self {
+        Self::new(TermType::Fill).with_parent(self)
     }
 
-    pub fn to_geojson(self) -> Query {
-        Query::new(TermType::ToGeojson).with_parent(self)
+    pub fn to_geojson(self) -> Self {
+        Self::new(TermType::ToGeojson).with_parent(self)
     }
 
-    pub fn get_intersecting<T>(self, arg: T) -> Query
+    pub fn get_intersecting<T>(self, arg: T) -> Self
     where
         T: get_intersecting::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn get_nearest<T>(self, arg: T) -> Query
+    pub fn get_nearest<T>(self, arg: T) -> Self
     where
         T: get_nearest::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn includes<T>(self, arg: T) -> Query
+    pub fn includes<T>(self, arg: T) -> Self
     where
         T: includes::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn intersects<T>(self, arg: T) -> Query
+    pub fn intersects<T>(self, arg: T) -> Self
     where
         T: intersects::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn polygon_sub<T>(self, arg: T) -> Query
+    pub fn polygon_sub<T>(self, arg: T) -> Self
     where
         T: polygon_sub::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn grant<T>(self, arg: T) -> Query
+    pub fn grant<T>(self, arg: T) -> Self
     where
         T: grant::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn config(self) -> Query {
-        Query::new(TermType::Config).with_parent(self)
+    pub fn config(self) -> Self {
+        Self::new(TermType::Config).with_parent(self)
     }
 
-    pub fn rebalance(self) -> Query {
-        Query::new(TermType::Rebalance).with_parent(self)
+    pub fn rebalance(self) -> Self {
+        Self::new(TermType::Rebalance).with_parent(self)
     }
 
-    pub fn reconfigure<T>(self, arg: T) -> Query
+    pub fn reconfigure<T>(self, arg: T) -> Self
     where
         T: reconfigure::Arg,
     {
         arg.into_query().with_parent(self)
     }
 
-    pub fn status(self) -> Query {
-        Query::new(TermType::Status).with_parent(self)
+    pub fn status(self) -> Self {
+        Self::new(TermType::Status).with_parent(self)
     }
 
-    pub fn wait<T>(self, arg: T) -> Query
+    pub fn wait<T>(self, arg: T) -> Self
     where
         T: wait::Arg,
     {

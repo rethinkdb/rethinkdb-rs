@@ -1,3 +1,4 @@
+use super::args::Args;
 use crate::{Func, Query};
 use ql2::term::TermType;
 use serde::Serialize;
@@ -16,44 +17,45 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        Query::new(TermType::IndexCreate).with_arg(self)
+        Self::new(TermType::IndexCreate).with_arg(self)
     }
 }
 
-impl Arg for String {
-    fn into_query(self) -> Query {
-        Query::from_json(self).into_query()
-    }
-}
-
-impl Arg for &str {
-    fn into_query(self) -> Query {
-        Query::from_json(self).into_query()
-    }
-}
-
-impl Arg for &String {
-    fn into_query(self) -> Query {
-        self.as_str().into_query()
-    }
-}
-
-impl<T> Arg for (T, Func)
+impl<T> Arg for T
 where
-    T: Arg,
+    T: Into<String>,
 {
     fn into_query(self) -> Query {
-        let (name, func) = self;
+        Query::from_json(self.into()).into_query()
+    }
+}
+
+impl<T> Arg for Args<(T, Func)>
+where
+    T: Into<String>,
+{
+    fn into_query(self) -> Query {
+        let Args((name, func)) = self;
         name.into_query().with_arg(func)
     }
 }
 
-impl<T> Arg for (T, Options)
+impl<T> Arg for Args<(T, Options)>
 where
-    T: Arg,
+    T: Into<String>,
 {
     fn into_query(self) -> Query {
-        let (arg, opts) = self;
-        arg.into_query().with_opts(opts)
+        let Args((name, opts)) = self;
+        name.into_query().with_opts(opts)
+    }
+}
+
+impl<T> Arg for Args<(T, Func, Options)>
+where
+    T: Into<String>,
+{
+    fn into_query(self) -> Query {
+        let Args((name, func, opts)) = self;
+        name.into_query().with_arg(func).with_opts(opts)
     }
 }

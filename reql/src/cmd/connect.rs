@@ -1,5 +1,6 @@
 //! Create a new connection to the database server
 
+use super::args::Args;
 use super::{debug, StaticString};
 use crate::{err, InnerSession, Result, Session};
 use async_net::{AsyncToSocketAddrs, TcpStream};
@@ -104,14 +105,14 @@ impl<'a> Arg for &'a str {
     }
 }
 
-impl<T> Arg for (T, Options)
+impl<T> Arg for Args<(T, Options)>
 where
     T: AsyncToSocketAddrs,
 {
     type ToAddrs = T;
 
     fn into_connect_opts(self) -> (Option<Self::ToAddrs>, Options) {
-        let (addr, opts) = self;
+        let Args((addr, opts)) = self;
         (Some(addr), opts)
     }
 }

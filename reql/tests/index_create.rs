@@ -1,6 +1,5 @@
 use futures::TryStreamExt;
-use reql::macros::func;
-use reql::r;
+use reql::{func, r};
 use serde_json::Value;
 
 #[tokio::test]
@@ -22,16 +21,32 @@ async fn index_create() -> reql::Result<()> {
         .try_next()
         .await;
 
-    let mut query = r
+    let _ = r
         .table("comments")
-        .index_create((
+        .index_create(r.args((
             "author_name",
             func!(|doc| { doc.get_field("author").bracket("name") }),
-        ))
-        .run(&conn);
+        )))
+        .run::<_, Value>(&conn)
+        .try_next()
+        .await?;
 
-    let user: Option<Value> = query.try_next().await?;
-    assert!(user.is_some());
+    let _ = r
+        .table("comments")
+        .index_drop("post_and_date")
+        .run::<_, Value>(&conn)
+        .try_next()
+        .await;
+
+    let _ = r
+        .table("comments")
+        .index_create(r.args((
+            "post_and_date",
+            func!(|doc| [doc.clone().get_field("post_id"), doc.get_field("date")]),
+        )))
+        .run::<_, Value>(&conn)
+        .try_next()
+        .await?;
 
     Ok(())
 }

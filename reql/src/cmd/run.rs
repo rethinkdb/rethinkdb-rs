@@ -1,15 +1,15 @@
+use super::args::Args;
 use super::connect::DEFAULT_DB;
 use super::StaticString;
 use crate::cmd::{Durability, ReadMode};
 use crate::proto::Payload;
-use crate::{err, Connection, Query, Result, Session};
+use crate::{err, r, Connection, Query, Result, Session};
 use async_stream::try_stream;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
 use futures::stream::{Stream, StreamExt};
 use log::trace;
 use ql2::query::QueryType;
 use ql2::response::{ErrorType, ResponseType};
-use ql2::Frame;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -26,9 +26,9 @@ pub(crate) struct Response {
     t: i32,
     e: Option<i32>,
     pub(crate) r: Value,
-    b: Option<Vec<Frame>>,
+    b: Option<Value>,
     p: Option<Value>,
-    n: Option<Vec<i32>>,
+    n: Option<Value>,
 }
 
 impl Response {
@@ -117,17 +117,18 @@ impl Arg for Connection {
     }
 }
 
-impl Arg for (&Session, Options) {
+impl Arg for Args<(&Session, Options)> {
     fn into_run_opts(self) -> Result<(Connection, Options)> {
-        let (session, options) = self;
+        let Args((session, options)) = self;
         let conn = session.connection()?;
         Ok((conn, options))
     }
 }
 
-impl Arg for (Connection, Options) {
+impl Arg for Args<(Connection, Options)> {
     fn into_run_opts(self) -> Result<(Connection, Options)> {
-        Ok(self)
+        let Args(arg) = self;
+        Ok(arg)
     }
 }
 
@@ -137,11 +138,11 @@ impl Arg for &mut Session {
     }
 }
 
-impl Arg for (&mut Session, Options) {
+impl Arg for Args<(&mut Session, Options)> {
     fn into_run_opts(self) -> Result<(Connection, Options)> {
-        let (session, options) = self;
+        let Args((session, options)) = self;
         let conn = session.connection()?;
-        (conn, options).into_run_opts()
+        r.args((conn, options)).into_run_opts()
     }
 }
 

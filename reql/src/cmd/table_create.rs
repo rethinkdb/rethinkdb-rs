@@ -1,3 +1,4 @@
+use super::args::Args;
 use super::{Durability, StaticString};
 use crate::Query;
 use ql2::term::TermType;
@@ -106,52 +107,32 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        Query::new(TermType::TableCreate).with_arg(self)
+        Self::new(TermType::TableCreate).with_arg(self)
     }
 }
 
-impl Arg for String {
+impl Arg for Args<(Query, Options)> {
     fn into_query(self) -> Query {
-        Query::from_json(self).into_query()
-    }
-}
-
-impl Arg for &String {
-    fn into_query(self) -> Query {
-        Query::from_json(self.to_owned()).into_query()
-    }
-}
-
-impl Arg for &str {
-    fn into_query(self) -> Query {
-        Query::from_json(self).into_query()
-    }
-}
-
-impl Arg for (Query, Options) {
-    fn into_query(self) -> Query {
-        let (query, options) = self;
+        let Args((query, options)) = self;
         query.into_query().with_opts(options)
     }
 }
 
-impl Arg for (String, Options) {
+impl<T> Arg for T
+where
+    T: Into<String>,
+{
     fn into_query(self) -> Query {
-        let (name, options) = self;
-        name.into_query().with_opts(options)
+        Query::from_json(self.into()).into_query()
     }
 }
 
-impl Arg for (&String, Options) {
+impl<T> Arg for Args<(T, Options)>
+where
+    T: Into<String>,
+{
     fn into_query(self) -> Query {
-        let (name, options) = self;
-        name.into_query().with_opts(options)
-    }
-}
-
-impl Arg for (&str, Options) {
-    fn into_query(self) -> Query {
-        let (name, options) = self;
+        let Args((name, options)) = self;
         name.into_query().with_opts(options)
     }
 }

@@ -1,9 +1,11 @@
+use super::args::Args;
 use crate::cmd::Durability;
 use crate::Query;
 use ql2::term::TermType;
 use serde::{Serialize, Serializer};
 use serde_json::Value;
 
+// TODO finish this struct
 #[derive(Debug, Clone, Copy, Serialize, Default, PartialEq, PartialOrd)]
 #[non_exhaustive]
 pub struct Options {
@@ -38,13 +40,13 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        Query::new(TermType::Insert).with_arg(self)
+        Self::new(TermType::Insert).with_arg(self)
     }
 }
 
-impl Arg for (Query, Options) {
+impl Arg for Args<(Query, Options)> {
     fn into_query(self) -> Query {
-        let (query, options) = self;
+        let Args((query, options)) = self;
         query.into_query().with_opts(options)
     }
 }
@@ -65,12 +67,12 @@ where
     }
 }
 
-impl<T> Arg for (T, Options)
+impl<T> Arg for Args<(T, Options)>
 where
     T: Into<Value>,
 {
     fn into_query(self) -> Query {
-        let (val, options) = self;
+        let Args((val, options)) = self;
         Query::from(val.into()).into_query().with_opts(options)
     }
 }

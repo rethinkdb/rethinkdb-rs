@@ -1,5 +1,8 @@
-use crate::Query;
+use crate::{Func, Query};
 use ql2::term::TermType;
+
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct Asc(pub(crate) Query);
 
 pub trait Arg {
     fn into_query(self) -> Query;
@@ -7,7 +10,7 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        Self::new(TermType::Db).with_arg(self)
+        Self::new(TermType::Asc).with_arg(self)
     }
 }
 
@@ -17,5 +20,12 @@ where
 {
     fn into_query(self) -> Query {
         Query::from_json(self.into()).into_query()
+    }
+}
+
+impl Arg for Func {
+    fn into_query(self) -> Query {
+        let Func(func) = self;
+        func.into_query()
     }
 }

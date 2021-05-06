@@ -155,6 +155,7 @@ pub struct ServerInfo {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[allow(clippy::upper_case_acronyms)]
 struct BINARY;
 
 #[derive(Debug, Serialize, Deserialize)]

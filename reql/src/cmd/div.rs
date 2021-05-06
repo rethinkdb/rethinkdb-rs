@@ -8,7 +8,7 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        Query::new(TermType::Div).with_arg(self)
+        Self::new(TermType::Div).with_arg(self)
     }
 }
 

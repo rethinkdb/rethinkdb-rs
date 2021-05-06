@@ -89,8 +89,7 @@ pub use proto::Func;
 pub use proto::Query;
 #[doc(hidden)]
 pub use ql2::term::TermType;
-#[doc(inline)]
-pub use reql_macros as macros;
+pub use reql_macros::*;
 #[doc(inline)]
 pub use reql_types as types;
 
@@ -186,7 +185,7 @@ impl Session {
     ///
     /// ```
     /// # reql::example(|r, conn| async_stream::stream! {
-    /// conn.r#use("marvel").await;
+    /// conn.use_("marvel").await;
     /// r.table("heroes").run(conn) // refers to r.db("marvel").table("heroes")
     /// # });
     /// ```
@@ -194,7 +193,7 @@ impl Session {
     /// ## Related commands
     /// * [connect](r::connect)
     /// * [close](Connection::close)
-    pub async fn r#use<T>(&mut self, db_name: T)
+    pub async fn use_<T>(&mut self, db_name: T)
     where
         T: StaticString,
     {
@@ -572,9 +571,9 @@ impl r {
         arg.into_query()
     }
 
-    pub fn r#do<T>(self, arg: T) -> Query
+    pub fn do_<T>(self, arg: T) -> Query
     where
-        T: cmd::r#do::Arg,
+        T: cmd::do_::Arg,
     {
         arg.into_query()
     }
@@ -703,6 +702,31 @@ impl r {
         T: cmd::wait::Arg,
     {
         arg.into_query()
+    }
+
+    pub fn asc<T>(self, arg: T) -> cmd::asc::Asc
+    where
+        T: cmd::asc::Arg,
+    {
+        cmd::asc::Asc(arg.into_query())
+    }
+
+    pub fn desc<T>(self, arg: T) -> cmd::desc::Desc
+    where
+        T: cmd::desc::Arg,
+    {
+        cmd::desc::Desc(arg.into_query())
+    }
+
+    pub fn index<T>(self, arg: T) -> cmd::index::Index
+    where
+        T: cmd::index::Arg,
+    {
+        cmd::index::Index(arg.into_query())
+    }
+
+    pub fn args<T>(self, arg: T) -> cmd::args::Args<T> {
+        cmd::args::Args(arg)
     }
 }
 

@@ -1,13 +1,16 @@
 use crate::Query;
 use ql2::term::TermType;
 
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct Desc(pub(crate) Query);
+
 pub trait Arg {
     fn into_query(self) -> Query;
 }
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        Self::new(TermType::Db).with_arg(self)
+        Self::new(TermType::Desc).with_arg(self)
     }
 }
 

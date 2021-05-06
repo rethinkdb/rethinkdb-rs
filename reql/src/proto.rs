@@ -7,7 +7,7 @@ use serde_json::value::{Number, Value};
 use std::collections::{HashMap, VecDeque};
 use std::{fmt, str};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub(crate) enum Datum {
     Null,
     Bool(bool),
@@ -39,6 +39,22 @@ impl Serialize for Datum {
     }
 }
 
+#[allow(array_into_iter)]
+#[allow(clippy::into_iter_on_ref)]
+impl<const N: usize> From<[Query; N]> for Query {
+    fn from(arr: [Query; N]) -> Self {
+        let mut query = Self::new(TermType::MakeArray);
+        query.args = arr
+            .into_iter()
+            // TODO remove this clone on Rust v1.53 once
+            // https://twitter.com/m_ou_se/status/1385966446254166020
+            // is available on stable
+            .cloned()
+            .collect();
+        query
+    }
+}
+
 impl From<Value> for Datum {
     fn from(value: Value) -> Self {
         match value {
@@ -66,7 +82,7 @@ impl From<Func> for Query {
 }
 
 /// The query that will be sent to RethinkDB
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Query {
     typ: TermType,
     datum: Option<Datum>,
@@ -80,7 +96,10 @@ impl Query {
     pub fn new(typ: TermType) -> Self {
         Self {
             typ,
-            ..Default::default()
+            datum: None,
+            args: VecDeque::new(),
+            opts: None,
+            change_feed: false,
         }
     }
 
@@ -139,11 +158,9 @@ impl Query {
 
 impl From<Datum> for Query {
     fn from(datum: Datum) -> Self {
-        Self {
-            typ: TermType::Datum,
-            datum: Some(datum),
-            ..Default::default()
-        }
+        let mut query = Self::new(TermType::Datum);
+        query.datum = Some(datum);
+        query
     }
 }
 

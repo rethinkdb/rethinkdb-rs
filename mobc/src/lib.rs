@@ -209,7 +209,7 @@ impl Manager for SessionManager {
                         server.port
                     );
                     let addr = (*host, server.port);
-                    if let Ok(conn) = r.connect((addr, opts.clone())).await {
+                    if let Ok(conn) = r.connect(r.args((addr, opts.clone()))).await {
                         return Ok(conn);
                     }
                 }

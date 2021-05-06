@@ -7,6 +7,6 @@ pub trait Arg {
 
 impl Arg for Query {
     fn into_query(self) -> Query {
-        Query::new(TermType::Min).with_arg(self)
+        Self::new(TermType::Min).with_arg(self)
     }
 }
