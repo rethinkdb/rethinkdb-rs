@@ -12,7 +12,9 @@ cache: cargo
 
 matrix:
   include:
-    - env: TARGET=x86_64-unknown-linux-musl
+    - env:
+        - TARGET=x86_64-unknown-linux-musl
+        - RUST_LOG=reql,mobc_reql
       addons:
         apt:
           packages:
