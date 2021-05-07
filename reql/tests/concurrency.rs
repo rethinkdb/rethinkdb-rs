@@ -3,8 +3,6 @@ use reql::r;
 
 #[tokio::test]
 async fn concurrency() -> reql::Result<()> {
-    env_logger::init();
-
     let conn = r.connect(()).await?;
 
     let mut streams = Vec::new();
