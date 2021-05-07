@@ -10,11 +10,11 @@ rust:
 
 cache: cargo
 
+env: RUST_LOG=reql,mobc_reql
+
 matrix:
   include:
-    - env:
-        - TARGET=x86_64-unknown-linux-musl
-        - RUST_LOG=reql,mobc_reql
+    - env: TARGET=x86_64-unknown-linux-musl
       addons:
         apt:
           packages:
