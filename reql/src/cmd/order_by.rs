@@ -1,15 +1,15 @@
 use super::args::Args;
 use super::index::Index;
-use crate::{Func, Query};
+use crate::{cmd, Func, Query};
 use ql2::term::TermType;
 
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<()>;
 }
 
 impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::OrderBy).with_arg(self)
+    fn arg(self) -> cmd::Arg<()> {
+        Self::new(TermType::OrderBy).with_arg(self).into_arg()
     }
 }
 
@@ -17,8 +17,8 @@ impl<T> Arg for T
 where
     T: Into<String>,
 {
-    fn into_query(self) -> Query {
-        Query::from_json(self.into()).into_query()
+    fn arg(self) -> cmd::Arg<()> {
+        Query::from_json(self.into()).arg()
     }
 }
 
@@ -26,29 +26,29 @@ impl<T> Arg for Args<(T, Index)>
 where
     T: Into<String>,
 {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<()> {
         let Args((key, Index(index))) = self;
-        Query::from_json(key.into()).into_query().with_arg(index)
+        Query::from_json(key.into()).arg().with_arg(index)
     }
 }
 
 impl Arg for Func {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<()> {
         let Func(func) = self;
-        func.into_query()
+        func.arg()
     }
 }
 
 impl Arg for Args<(Func, Index)> {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<()> {
         let Args((Func(func), Index(index))) = self;
-        func.into_query().with_arg(index)
+        func.arg().with_arg(index)
     }
 }
 
 impl Arg for Index {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<()> {
         let Index(query) = self;
-        query.into_query()
+        query.arg()
     }
 }

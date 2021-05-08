@@ -1,22 +1,17 @@
-use crate::Query;
+use crate::{cmd, Query};
 use ql2::term::TermType;
-use serde_json::Value;
+use serde::Serialize;
 
 pub trait Arg {
-    fn into_query(self) -> Query;
-}
-
-impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::Get).with_arg(self)
-    }
+    fn arg(self) -> cmd::Arg<()>;
 }
 
 impl<T> Arg for T
 where
-    T: Into<Value>,
+    T: Serialize,
 {
-    fn into_query(self) -> Query {
-        Query::from_json(self.into()).into_query()
+    fn arg(self) -> cmd::Arg<()> {
+        let arg = Query::from_json(self);
+        Query::new(TermType::Get).with_arg(arg).into_arg()
     }
 }

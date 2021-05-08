@@ -25,7 +25,7 @@ pub struct WriteStatus {
     pub first_error: Option<String>,
     pub generated_keys: Option<Vec<Uuid>>,
     pub warnings: Option<Vec<String>>,
-    pub changes: Option<Value>,
+    pub changes: Option<Vec<Change<Value, Value>>>,
 }
 
 /// Structure of data in `cluster_config` table

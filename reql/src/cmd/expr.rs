@@ -1,21 +1,15 @@
-use crate::Query;
-use serde_json::Value;
+use crate::{cmd, Query};
+use serde::Serialize;
 
 pub trait Arg {
-    fn into_query(self) -> Query;
-}
-
-impl Arg for Query {
-    fn into_query(self) -> Query {
-        self
-    }
+    fn arg(self) -> cmd::Arg<()>;
 }
 
 impl<T> Arg for T
 where
-    T: Into<Value>,
+    T: Serialize,
 {
-    fn into_query(self) -> Query {
-        Query::from_json(self)
+    fn arg(self) -> cmd::Arg<()> {
+        Query::from_json(self).into_arg()
     }
 }

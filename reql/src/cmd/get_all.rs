@@ -1,15 +1,15 @@
 use super::args::Args;
 use super::index::Index;
-use crate::Query;
+use crate::{cmd, Query};
 use ql2::term::TermType;
 
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<()>;
 }
 
 impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::GetAll).with_arg(self)
+    fn arg(self) -> cmd::Arg<()> {
+        Self::new(TermType::GetAll).with_arg(self).into_arg()
     }
 }
 
@@ -17,15 +17,15 @@ impl<T> Arg for T
 where
     T: Into<String>,
 {
-    fn into_query(self) -> Query {
-        Query::from_json(self.into()).into_query()
+    fn arg(self) -> cmd::Arg<()> {
+        Query::from_json(self.into()).arg()
     }
 }
 
 impl Arg for Args<(&str, Index)> {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<()> {
         let Args((key, Index(index))) = self;
-        key.into_query().with_arg(index)
+        key.arg().with_arg(index)
     }
 }
 
@@ -35,7 +35,7 @@ impl<T, const N: usize> Arg for Args<[T; N]>
 where
     T: Into<String> + Clone,
 {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<()> {
         let Args(arr) = self;
         let mut query = Query::new(TermType::GetAll);
         // TODO get rid of the clone in Rust v1.53
@@ -43,7 +43,7 @@ where
             let arg = Query::from_json(arg.into());
             query = query.with_arg(arg);
         }
-        query
+        query.into_arg()
     }
 }
 
@@ -53,7 +53,7 @@ impl<T, const N: usize> Arg for Args<([T; N], Index)>
 where
     T: Into<String> + Clone,
 {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<()> {
         let Args((arr, Index(index))) = self;
         let mut query = Query::new(TermType::GetAll);
         // TODO get rid of the clone in Rust v1.53
@@ -61,6 +61,6 @@ where
             let arg = Query::from_json(arg.into());
             query = query.with_arg(arg);
         }
-        query.with_arg(index)
+        query.with_arg(index).into_arg()
     }
 }

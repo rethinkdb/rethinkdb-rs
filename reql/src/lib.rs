@@ -76,6 +76,7 @@ use log::trace;
 use proto::Payload;
 use ql2::query::QueryType;
 use ql2::response::ResponseType;
+use ql2::term::TermType;
 use serde_json::json;
 use std::borrow::Cow;
 use std::ops::Drop;
@@ -83,18 +84,17 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 use types::ServerInfo;
 
+#[doc(hidden)]
+pub use cmd::func::Func;
 pub use err::*;
-#[doc(hidden)]
-pub use proto::Func;
 pub use proto::Query;
-#[doc(hidden)]
-pub use ql2::term::TermType;
-pub use reql_macros::*;
+pub use reql_macros::func;
 #[doc(inline)]
 pub use reql_types as types;
 
 #[doc(hidden)]
-pub static VAR_COUNTER: AtomicU64 = AtomicU64::new(0);
+// start from 1; reserving 0 for r.row
+pub static VAR_COUNTER: AtomicU64 = AtomicU64::new(1);
 
 #[doc(hidden)]
 pub fn var_counter() -> u64 {
@@ -376,14 +376,14 @@ impl r {
     where
         T: cmd::db_create::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn db_drop<T>(self, arg: T) -> Query
     where
         T: cmd::db_drop::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn db_list(self) -> Query {
@@ -409,7 +409,7 @@ impl r {
     where
         T: cmd::db::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     /// See [Query::table_create]
@@ -417,133 +417,133 @@ impl r {
     where
         T: cmd::table_create::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn table<T>(self, arg: T) -> Query
     where
         T: cmd::table::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn map<T>(self, arg: T) -> Query
     where
         T: cmd::map::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn union<T>(self, arg: T) -> Query
     where
         T: cmd::union::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn group<T>(self, arg: T) -> Query
     where
         T: cmd::group::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn reduce<T>(self, arg: T) -> Query
     where
         T: cmd::reduce::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn count<T>(self, arg: T) -> Query
     where
         T: cmd::count::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn sum<T>(self, arg: T) -> Query
     where
         T: cmd::sum::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn avg<T>(self, arg: T) -> Query
     where
         T: cmd::avg::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn min<T>(self, arg: T) -> Query
     where
         T: cmd::min::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn max<T>(self, arg: T) -> Query
     where
         T: cmd::max::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn distinct<T>(self, arg: T) -> Query
     where
         T: cmd::distinct::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn contains<T>(self, arg: T) -> Query
     where
         T: cmd::contains::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn literal<T>(self, arg: T) -> Query
     where
         T: cmd::literal::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn object<T>(self, arg: T) -> Query
     where
         T: cmd::object::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn random<T>(self, arg: T) -> Query
     where
         T: cmd::random::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn round<T>(self, arg: T) -> Query
     where
         T: cmd::round::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn ceil<T>(self, arg: T) -> Query
     where
         T: cmd::ceil::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn floor<T>(self, arg: T) -> Query
     where
         T: cmd::floor::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn now(self) -> Query {
@@ -554,179 +554,186 @@ impl r {
     where
         T: cmd::time::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn epoch_time<T>(self, arg: T) -> Query
     where
         T: cmd::epoch_time::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn iso8601<T>(self, arg: T) -> Query
     where
         T: cmd::iso8601::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn do_<T>(self, arg: T) -> Query
     where
         T: cmd::do_::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn branch<T>(self, arg: T) -> Query
     where
         T: cmd::branch::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn range<T>(self, arg: T) -> Query
     where
         T: cmd::range::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn error<T>(self, arg: T) -> Query
     where
         T: cmd::error::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn expr<T>(self, arg: T) -> Query
     where
         T: cmd::expr::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn js<T>(self, arg: T) -> Query
     where
         T: cmd::js::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn info<T>(self, arg: T) -> Query
     where
         T: cmd::info::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn json<T>(self, arg: T) -> Query
     where
         T: cmd::json::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn http<T>(self, arg: T) -> Query
     where
         T: cmd::http::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn uuid<T>(self, arg: T) -> Query
     where
         T: cmd::uuid::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn circle<T>(self, arg: T) -> Query
     where
         T: cmd::circle::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn distance<T>(self, arg: T) -> Query
     where
         T: cmd::distance::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn geojson<T>(self, arg: T) -> Query
     where
         T: cmd::geojson::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn intersects<T>(self, arg: T) -> Query
     where
         T: cmd::intersects::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn line<T>(self, arg: T) -> Query
     where
         T: cmd::line::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn point<T>(self, arg: T) -> Query
     where
         T: cmd::point::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn polygon<T>(self, arg: T) -> Query
     where
         T: cmd::polygon::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn grant<T>(self, arg: T) -> Query
     where
         T: cmd::grant::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn wait<T>(self, arg: T) -> Query
     where
         T: cmd::wait::Arg,
     {
-        arg.into_query()
+        arg.arg().into_query()
     }
 
     pub fn asc<T>(self, arg: T) -> cmd::asc::Asc
     where
         T: cmd::asc::Arg,
     {
-        cmd::asc::Asc(arg.into_query())
+        cmd::asc::Asc(arg.arg().into_query())
     }
 
     pub fn desc<T>(self, arg: T) -> cmd::desc::Desc
     where
         T: cmd::desc::Arg,
     {
-        cmd::desc::Desc(arg.into_query())
+        cmd::desc::Desc(arg.arg().into_query())
     }
 
     pub fn index<T>(self, arg: T) -> cmd::index::Index
     where
         T: cmd::index::Arg,
     {
-        cmd::index::Index(arg.into_query())
+        cmd::index::Index(arg.arg().into_query())
     }
 
     pub fn args<T>(self, arg: T) -> cmd::args::Args<T> {
         cmd::args::Args(arg)
+    }
+
+    pub fn row<T>(self, arg: T) -> Query
+    where
+        T: cmd::row::Arg,
+    {
+        arg.arg().into_query()
     }
 }
 

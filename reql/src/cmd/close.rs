@@ -41,7 +41,7 @@
 //! ## Related commands
 //!
 //! * [connect](crate::r::connect)
-//! * [use](crate::Session::use)
+//! * [use](crate::Session::use_)
 
 /// Skip waiting for `noreply` queries
 #[derive(Debug)]

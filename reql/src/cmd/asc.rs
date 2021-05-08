@@ -1,16 +1,22 @@
-use crate::{Func, Query};
+use crate::{cmd, Func, Query};
 use ql2::term::TermType;
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Asc(pub(crate) Query);
 
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<()>;
+}
+
+impl Arg for cmd::Arg<()> {
+    fn arg(self) -> cmd::Arg<()> {
+        self
+    }
 }
 
 impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::Asc).with_arg(self)
+    fn arg(self) -> cmd::Arg<()> {
+        Self::new(TermType::Asc).with_arg(self).into_arg()
     }
 }
 
@@ -18,14 +24,14 @@ impl<T> Arg for T
 where
     T: Into<String>,
 {
-    fn into_query(self) -> Query {
-        Query::from_json(self.into()).into_query()
+    fn arg(self) -> cmd::Arg<()> {
+        Query::from_json(self.into()).arg()
     }
 }
 
 impl Arg for Func {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<()> {
         let Func(func) = self;
-        func.into_query()
+        func.arg()
     }
 }

@@ -1,6 +1,5 @@
 use super::args::Args;
 use super::connect::DEFAULT_DB;
-use super::StaticString;
 use crate::cmd::{Durability, ReadMode};
 use crate::proto::Payload;
 use crate::{err, r, Connection, Query, Result, Session};
@@ -10,6 +9,7 @@ use futures::stream::{Stream, StreamExt};
 use log::trace;
 use ql2::query::QueryType;
 use ql2::response::{ErrorType, ResponseType};
+use reql_macros::CommandOptions;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -44,7 +44,9 @@ impl Response {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Default, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(
+    Debug, Clone, CommandOptions, Serialize, Default, Eq, PartialEq, Ord, PartialOrd, Hash,
+)]
 #[non_exhaustive]
 pub struct Options {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -61,22 +63,6 @@ pub struct Options {
     pub noreply: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub db: Option<Db>,
-}
-
-impl Options {
-    pub fn new() -> Self {
-        Default::default()
-    }
-
-    pub fn noreply(mut self, noreply: bool) -> Self {
-        self.noreply = Some(noreply);
-        self
-    }
-
-    pub fn db<T: StaticString>(mut self, db: T) -> Self {
-        self.db = Some(Db(db.static_string()));
-        self
-    }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]

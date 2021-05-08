@@ -1,12 +1,12 @@
 use super::args::Args;
-use crate::cmd::Durability;
-use crate::Query;
+use crate::cmd::{Durability, ReturnChanges};
+use crate::{cmd, Query};
 use ql2::term::TermType;
-use serde::{Serialize, Serializer};
-use serde_json::Value;
+use reql_macros::CommandOptions;
+use serde::Serialize;
 
 // TODO finish this struct
-#[derive(Debug, Clone, Copy, Serialize, Default, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, CommandOptions, Serialize, Default, PartialEq, PartialOrd)]
 #[non_exhaustive]
 pub struct Options {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -15,64 +15,32 @@ pub struct Options {
     pub return_changes: Option<ReturnChanges>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-#[non_exhaustive]
-pub enum ReturnChanges {
-    Bool(bool),
-    Always,
-}
-
-impl Serialize for ReturnChanges {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        match self {
-            Self::Bool(boolean) => boolean.serialize(serializer),
-            Self::Always => "always".serialize(serializer),
-        }
-    }
-}
-
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<Options>;
 }
 
-impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::Insert).with_arg(self)
+impl Arg for cmd::Arg<Options> {
+    fn arg(self) -> cmd::Arg<Options> {
+        self
     }
 }
 
-impl Arg for Args<(Query, Options)> {
-    fn into_query(self) -> Query {
-        let Args((query, options)) = self;
-        query.into_query().with_opts(options)
-    }
-}
-
-impl Arg for Value {
-    fn into_query(self) -> Query {
-        Query::from(self).into_query()
-    }
-}
-
-impl<T> Arg for Vec<T>
+impl<T> Arg for T
 where
-    T: Into<Value>,
+    T: Serialize,
 {
-    fn into_query(self) -> Query {
-        let arg = Value::Array(self.into_iter().map(Into::into).collect());
-        Query::from(arg).into_query()
+    fn arg(self) -> cmd::Arg<Options> {
+        let arg = Query::from_json(self);
+        Query::new(TermType::Insert).with_arg(arg).into_arg()
     }
 }
 
 impl<T> Arg for Args<(T, Options)>
 where
-    T: Into<Value>,
+    T: Serialize,
 {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options> {
         let Args((val, options)) = self;
-        Query::from(val.into()).into_query().with_opts(options)
+        Query::from_json(val).arg().with_opts(options)
     }
 }

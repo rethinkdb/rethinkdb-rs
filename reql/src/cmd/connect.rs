@@ -9,6 +9,7 @@ use futures::io::{AsyncReadExt, AsyncWriteExt};
 use futures::lock::Mutex;
 use log::trace;
 use ql2::version_dummy::Version;
+use reql_macros::CommandOptions;
 use scram::client::{ScramClient, ServerFinal, ServerFirst};
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
@@ -23,10 +24,12 @@ const PROTOCOL_VERSION: usize = 0;
 pub(crate) const DEFAULT_DB: &str = "test";
 
 /// Options accepted by [crate::r::connect]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Debug, Clone, CommandOptions, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[non_exhaustive]
 pub struct Options {
+    /// Host of the RethinkDB instance. The default value is `localhost`.
     pub host: Cow<'static, str>,
+    /// The driver port, by default `28015`.
     pub port: u16,
     /// The database used if not explicitly specified in a query, by default `test`.
     pub db: Cow<'static, str>,
@@ -34,31 +37,6 @@ pub struct Options {
     pub user: Cow<'static, str>,
     /// The password for the user account to connect as (default `""`, empty).
     pub password: Cow<'static, str>,
-}
-
-impl Options {
-    /// Create new options from default values
-    pub fn new() -> Self {
-        Default::default()
-    }
-
-    /// Set the database used if not explicitly specified in a query, by default `test`.
-    pub fn db<T: StaticString>(mut self, db: T) -> Self {
-        self.db = db.static_string();
-        self
-    }
-
-    /// Set the user account to connect as (default `admin`).
-    pub fn user<T: StaticString>(mut self, user: T) -> Self {
-        self.user = user.static_string();
-        self
-    }
-
-    /// Set the password for the user account to connect as (default `""`, empty).
-    pub fn password<T: StaticString>(mut self, password: T) -> Self {
-        self.password = password.static_string();
-        self
-    }
 }
 
 impl Default for Options {

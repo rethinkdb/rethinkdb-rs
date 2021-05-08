@@ -1,34 +1,42 @@
 use super::asc::Asc;
 use super::desc::Desc;
-use crate::Query;
-use serde_json::json;
+use crate::{cmd, Query};
+use serde::Serialize;
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Index(pub(crate) Query);
 
+#[derive(Serialize)]
+struct Inner {
+    index: Query,
+}
+
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<()>;
 }
 
 impl<T> Arg for T
 where
     T: Into<String>,
 {
-    fn into_query(self) -> Query {
-        Query::from_json(json!({"index": self.into() }))
+    fn arg(self) -> cmd::Arg<()> {
+        Query::from_json(Inner {
+            index: Query::from_json(self.into()),
+        })
+        .into_arg()
     }
 }
 
 impl Arg for Asc {
-    fn into_query(self) -> Query {
-        let Asc(query) = self;
-        Query::from_json(json!({ "index": query }))
+    fn arg(self) -> cmd::Arg<()> {
+        let Asc(index) = self;
+        Query::from_json(Inner { index }).into_arg()
     }
 }
 
 impl Arg for Desc {
-    fn into_query(self) -> Query {
-        let Desc(query) = self;
-        Query::from_json(json!({ "index": query }))
+    fn arg(self) -> cmd::Arg<()> {
+        let Desc(index) = self;
+        Query::from_json(Inner { index }).into_arg()
     }
 }

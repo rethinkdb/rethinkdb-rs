@@ -1,59 +1,63 @@
 use super::args::Args;
+use crate::cmd::{self, Durability, ReturnChanges};
 use crate::{Func, Query};
 use ql2::term::TermType;
+use reql_macros::CommandOptions;
 use serde::Serialize;
-use serde_json::Value;
 
 // TODO finish this struct
-#[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct Options {}
+#[derive(Debug, Clone, Copy, CommandOptions, Serialize, Default, PartialEq, PartialOrd)]
+#[non_exhaustive]
+pub struct Options {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub durability: Option<Durability>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_changes: Option<ReturnChanges>,
+}
 
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<Options>;
 }
 
-impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::Update).with_arg(self)
-    }
-}
-
-impl Arg for Args<(Query, Options)> {
-    fn into_query(self) -> Query {
-        let Args((arg, opts)) = self;
-        arg.into_query().with_opts(opts)
+impl Arg for cmd::Arg<Options> {
+    fn arg(self) -> cmd::Arg<Options> {
+        self
     }
 }
 
 impl<T> Arg for T
 where
-    T: Into<Value>,
+    T: Serialize,
 {
-    fn into_query(self) -> Query {
-        Query::from_json(self.into()).into_query()
+    fn arg(self) -> cmd::Arg<Options> {
+        let arg = Query::from_json(self);
+        Query::new(TermType::Update)
+            .with_arg(arg.wrap_row())
+            .into_arg()
     }
 }
 
 impl<T> Arg for Args<(T, Options)>
 where
-    T: Into<Value>,
+    T: Serialize,
 {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options> {
         let Args((arg, opts)) = self;
-        arg.into_query().with_opts(opts)
+        let arg = Query::from_json(arg);
+        arg.arg().with_opts(opts)
     }
 }
 
 impl Arg for Func {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options> {
         let Func(func) = self;
-        func.into_query()
+        func.arg()
     }
 }
 
 impl Arg for Args<(Func, Options)> {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options> {
         let Args((Func(func), opts)) = self;
-        func.into_query().with_opts(opts)
+        func.arg().with_opts(opts)
     }
 }

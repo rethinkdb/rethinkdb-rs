@@ -1,14 +1,14 @@
-use crate::Query;
+use crate::{cmd, Query};
 use ql2::term::TermType;
 use std::ops::BitOr;
 
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<()>;
 }
 
 impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::BitOr).with_arg(self)
+    fn arg(self) -> cmd::Arg<()> {
+        Self::new(TermType::BitOr).with_arg(self).into_arg()
     }
 }
 
@@ -19,6 +19,6 @@ where
     type Output = Self;
 
     fn bitor(self, arg: T) -> Self {
-        arg.into_query().with_parent(self)
+        arg.arg().with_parent(self).into_query()
     }
 }

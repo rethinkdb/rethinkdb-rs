@@ -53,7 +53,7 @@ impl Func {
         }
         header.extend(quote!(|));
         let closure = quote!(#header #body);
-        quote!(reql::Func({
+        quote!({
             let closure = #closure;
             let mut ids = Vec::with_capacity(#func_args);
             for _ in 0..#func_args {
@@ -61,9 +61,8 @@ impl Func {
                 ids.push(id);
             }
             let func = closure(#params);
-            let args = reql::Query::from_json(ids);
-            reql::Query::new(reql::TermType::Func).with_arg(args).with_arg(func)
-        }))
+            reql::Func::new(ids, func)
+        })
     }
 }
 

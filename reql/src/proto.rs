@@ -1,8 +1,8 @@
 use crate::cmd::run::{Db, Options};
-use crate::{err, r};
+use crate::{err, r, Func};
 use ql2::query::QueryType;
 use ql2::term::TermType;
-use serde::{Serialize, Serializer};
+use serde::ser::{self, Serialize, Serializer};
 use serde_json::value::{Number, Value};
 use std::collections::{HashMap, VecDeque};
 use std::{fmt, str};
@@ -44,13 +44,12 @@ impl Serialize for Datum {
 impl<const N: usize> From<[Query; N]> for Query {
     fn from(arr: [Query; N]) -> Self {
         let mut query = Self::new(TermType::MakeArray);
-        query.args = arr
-            .into_iter()
-            // TODO remove this clone on Rust v1.53 once
-            // https://twitter.com/m_ou_se/status/1385966446254166020
-            // is available on stable
-            .cloned()
-            .collect();
+        // TODO remove this clone on Rust v1.53 once
+        // https://twitter.com/m_ou_se/status/1385966446254166020
+        // is available on stable
+        for arg in arr.into_iter().cloned() {
+            query = query.with_arg(arg);
+        }
         query
     }
 }
@@ -72,23 +71,16 @@ impl From<Value> for Datum {
     }
 }
 
-#[derive(Debug)]
-pub struct Func(pub Query);
-
-impl From<Func> for Query {
-    fn from(Func(func): Func) -> Self {
-        func
-    }
-}
-
 /// The query that will be sent to RethinkDB
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Query {
     typ: TermType,
-    datum: Option<Datum>,
-    args: VecDeque<Query>,
-    opts: Option<Datum>,
+    datum: Option<super::Result<Datum>>,
+    #[doc(hidden)]
+    pub args: VecDeque<super::Result<Query>>,
+    opts: Option<super::Result<Datum>>,
     change_feed: bool,
+    contains_implicit_var: bool,
 }
 
 impl Query {
@@ -100,6 +92,7 @@ impl Query {
             args: VecDeque::new(),
             opts: None,
             change_feed: false,
+            contains_implicit_var: false,
         }
     }
 
@@ -111,7 +104,8 @@ impl Query {
 
     pub(crate) fn with_parent(mut self, parent: Query) -> Self {
         self.change_feed = self.change_feed || parent.change_feed;
-        self.args.push_front(parent);
+        self.contains_implicit_var = self.contains_implicit_var || parent.contains_implicit_var;
+        self.args.push_front(Ok(parent));
         self
     }
 
@@ -120,7 +114,8 @@ impl Query {
     where
         T: Into<Query>,
     {
-        self.args.push_back(arg.into());
+        let arg = arg.into();
+        self.args.push_back(Ok(arg));
         self
     }
 
@@ -129,11 +124,8 @@ impl Query {
         T: Serialize,
     {
         let opts = serde_json::to_value(&opts)
-            // it's safe to unwrap here because we only use opts
-            // types that are derived in this crate and we know
-            // those don't return errors
-            .unwrap()
-            .into();
+            .map(Into::into)
+            .map_err(Into::into);
         self.opts = Some(opts);
         self
     }
@@ -141,9 +133,9 @@ impl Query {
     #[doc(hidden)]
     pub fn from_json<T>(arg: T) -> Self
     where
-        T: Into<Value>,
+        T: Serialize,
     {
-        arg.into().into()
+        serde_json::to_value(arg).map_err(super::Error::from).into()
     }
 
     pub(crate) fn mark_change_feed(mut self) -> Self {
@@ -154,19 +146,57 @@ impl Query {
     pub(crate) fn change_feed(&self) -> bool {
         self.change_feed
     }
+
+    pub(crate) fn mark_implicit_var(mut self) -> Self {
+        self.contains_implicit_var = true;
+        self
+    }
+
+    pub(crate) fn wrap_row(mut self) -> Self {
+        if self.contains_implicit_var {
+            let Func(func) = Func::row(self);
+            self = func;
+            self.contains_implicit_var = false;
+        }
+        self
+    }
+
+    pub(crate) fn into_arg<T>(self) -> Arg<T> {
+        Arg {
+            arg: self,
+            opts: None,
+        }
+    }
 }
 
 impl From<Datum> for Query {
     fn from(datum: Datum) -> Self {
+        Ok(datum).into()
+    }
+}
+
+impl From<super::Result<Datum>> for Query {
+    fn from(result: super::Result<Datum>) -> Self {
         let mut query = Self::new(TermType::Datum);
-        query.datum = Some(datum);
+        query.datum = Some(result);
         query
     }
 }
 
+#[doc(hidden)]
 impl From<Value> for Query {
     fn from(value: Value) -> Self {
         Datum::from(value).into()
+    }
+}
+
+#[doc(hidden)]
+impl From<super::Result<Value>> for Query {
+    fn from(result: super::Result<Value>) -> Self {
+        match result {
+            Ok(value) => Datum::from(value).into(),
+            Err(error) => (Err(error) as super::Result<Datum>).into(),
+        }
     }
 }
 
@@ -176,14 +206,68 @@ impl Serialize for Query {
         S: Serializer,
     {
         match self.typ {
-            TermType::Datum => self.datum.serialize(serializer),
+            TermType::Datum => match &self.datum {
+                Some(Ok(datum)) => datum.serialize(serializer),
+                Some(Err(error)) => Err(ser::Error::custom(error)),
+                _ => (None as Option<Datum>).serialize(serializer),
+            },
             _ => {
                 let typ = self.typ as i32;
                 match &self.opts {
-                    Some(map) => (typ, &self.args, map).serialize(serializer),
-                    None => (typ, &self.args).serialize(serializer),
+                    Some(Ok(map)) => (typ, to_result(&self.args).map_err(ser::Error::custom)?, map)
+                        .serialize(serializer),
+                    None => (typ, to_result(&self.args).map_err(ser::Error::custom)?)
+                        .serialize(serializer),
+                    Some(Err(error)) => Err(ser::Error::custom(error)),
                 }
             }
+        }
+    }
+}
+
+fn to_result(args: &VecDeque<super::Result<Query>>) -> super::Result<Vec<&Query>> {
+    let mut vec = Vec::with_capacity(args.len());
+    for result in args {
+        let arg = result.as_ref().map_err(|error| error.clone())?;
+        vec.push(arg);
+    }
+    Ok(vec)
+}
+
+#[derive(Debug, Clone)]
+pub struct Arg<T> {
+    #[doc(hidden)]
+    pub arg: Query,
+    #[doc(hidden)]
+    pub opts: Option<T>,
+}
+
+impl<T> Arg<T>
+where
+    T: Serialize,
+{
+    pub(crate) fn with_parent(mut self, parent: Query) -> Self {
+        self.arg = self.arg.with_parent(parent);
+        self
+    }
+
+    pub(crate) fn with_arg<Q>(mut self, arg: Q) -> Self
+    where
+        Q: Into<Query>,
+    {
+        self.arg = self.arg.with_arg(arg);
+        self
+    }
+
+    pub(crate) fn with_opts(mut self, opts: T) -> Self {
+        self.opts = Some(opts);
+        self
+    }
+
+    pub(crate) fn into_query(self) -> Query {
+        match self.opts {
+            Some(opts) => self.arg.with_opts(opts),
+            None => self.arg,
         }
     }
 }

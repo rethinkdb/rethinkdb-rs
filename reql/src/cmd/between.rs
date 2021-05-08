@@ -1,10 +1,12 @@
 use super::args::Args;
-use crate::Query;
+use crate::{cmd, Query};
 use ql2::term::TermType;
+use reql_macros::CommandOptions;
 use serde::Serialize;
-use serde_json::Value;
 
-#[derive(Debug, Clone, Copy, Serialize, Default, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(
+    Debug, Clone, Copy, CommandOptions, Serialize, Default, Eq, PartialEq, Ord, PartialOrd, Hash,
+)]
 #[non_exhaustive]
 pub struct Options<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23,42 +25,41 @@ pub enum Status {
     Closed,
 }
 
-pub trait Arg {
-    fn into_query(self) -> Query;
+pub trait Arg<'a> {
+    fn arg(self) -> cmd::Arg<Options<'a>>;
 }
 
-impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::Between).with_arg(self)
+impl<'a> Arg<'a> for Query {
+    fn arg(self) -> cmd::Arg<Options<'a>> {
+        Self::new(TermType::Between).with_arg(self).into_arg()
     }
 }
 
-impl Arg for Args<(Query, Options<'_>)> {
-    fn into_query(self) -> Query {
+impl<'a> Arg<'a> for Args<(Query, Options<'a>)> {
+    fn arg(self) -> cmd::Arg<Options<'a>> {
         let Args((query, opts)) = self;
-        query.into_query().with_opts(opts)
+        query.arg().with_opts(opts)
     }
 }
 
-impl<T> Arg for Args<(T, T)>
+impl<'a, T> Arg<'a> for Args<(T, T)>
 where
-    T: Into<Value>,
+    T: Serialize,
 {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options<'a>> {
         let Args((min, max)) = self;
-        Query::from_json(min).into_query().with_arg(max.into())
+        let max = Query::from_json(max);
+        Query::from_json(min).arg().with_arg(max)
     }
 }
 
-impl<T> Arg for Args<(T, T, Options<'_>)>
+impl<'a, T> Arg<'a> for Args<(T, T, Options<'a>)>
 where
-    T: Into<Value>,
+    T: Serialize,
 {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options<'a>> {
         let Args((min, max, opts)) = self;
-        Query::from_json(min)
-            .into_query()
-            .with_arg(max.into())
-            .with_opts(opts)
+        let max = Query::from_json(max);
+        Query::from_json(min).arg().with_arg(max).with_opts(opts)
     }
 }

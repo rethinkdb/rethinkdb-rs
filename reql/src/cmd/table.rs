@@ -1,10 +1,11 @@
 use super::args::Args;
 use super::ReadMode;
-use crate::Query;
+use crate::{cmd, Query};
 use ql2::term::TermType;
+use reql_macros::CommandOptions;
 use serde::Serialize;
 
-#[derive(Debug, Clone, Copy, Serialize, Default, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, CommandOptions, Serialize, Default, PartialEq, PartialOrd)]
 #[non_exhaustive]
 pub struct Options {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -22,12 +23,12 @@ pub enum IdentifierFormat {
 }
 
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<Options>;
 }
 
 impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::Table).with_arg(self)
+    fn arg(self) -> cmd::Arg<Options> {
+        Self::new(TermType::Table).with_arg(self).into_arg()
     }
 }
 
@@ -35,15 +36,15 @@ impl<T> Arg for T
 where
     T: Into<String>,
 {
-    fn into_query(self) -> Query {
-        Query::from_json(self.into()).into_query()
+    fn arg(self) -> cmd::Arg<Options> {
+        Query::from_json(self.into()).arg()
     }
 }
 
 impl Arg for Args<(Query, Options)> {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options> {
         let Args((query, options)) = self;
-        query.into_query().with_opts(options)
+        query.arg().with_opts(options)
     }
 }
 
@@ -51,8 +52,8 @@ impl<T> Arg for Args<(T, Options)>
 where
     T: Into<String>,
 {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options> {
         let Args((name, options)) = self;
-        name.into_query().with_opts(options)
+        name.arg().with_opts(options)
     }
 }

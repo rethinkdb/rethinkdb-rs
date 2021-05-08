@@ -1,44 +1,19 @@
 use super::args::Args;
-use super::{Durability, StaticString};
-use crate::Query;
+use super::Durability;
+use crate::{cmd, Query};
 use ql2::term::TermType;
+use reql_macros::CommandOptions;
 use serde::{Serialize, Serializer};
 use std::borrow::Cow;
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, Default, PartialEq)]
+#[derive(Debug, Clone, CommandOptions, Default, PartialEq)]
 #[non_exhaustive]
 pub struct Options {
     pub primary_key: Option<Cow<'static, str>>,
     pub durability: Option<Durability>,
     pub shards: Option<u8>,
     pub replicas: Option<Replicas>,
-}
-
-impl Options {
-    pub fn new() -> Self {
-        Default::default()
-    }
-
-    pub fn primary_key<T: StaticString>(mut self, primary_key: T) -> Self {
-        self.primary_key = Some(primary_key.static_string());
-        self
-    }
-
-    pub const fn durability(mut self, durability: Durability) -> Self {
-        self.durability = Some(durability);
-        self
-    }
-
-    pub const fn shards(mut self, shards: u8) -> Self {
-        self.shards = Some(shards);
-        self
-    }
-
-    pub fn replicas(mut self, replicas: Replicas) -> Self {
-        self.replicas = Some(replicas);
-        self
-    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -102,19 +77,19 @@ impl Serialize for Options {
 }
 
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<Options>;
 }
 
 impl Arg for Query {
-    fn into_query(self) -> Query {
-        Self::new(TermType::TableCreate).with_arg(self)
+    fn arg(self) -> cmd::Arg<Options> {
+        Self::new(TermType::TableCreate).with_arg(self).into_arg()
     }
 }
 
 impl Arg for Args<(Query, Options)> {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options> {
         let Args((query, options)) = self;
-        query.into_query().with_opts(options)
+        query.arg().with_opts(options)
     }
 }
 
@@ -122,8 +97,8 @@ impl<T> Arg for T
 where
     T: Into<String>,
 {
-    fn into_query(self) -> Query {
-        Query::from_json(self.into()).into_query()
+    fn arg(self) -> cmd::Arg<Options> {
+        Query::from_json(self.into()).arg()
     }
 }
 
@@ -131,8 +106,8 @@ impl<T> Arg for Args<(T, Options)>
 where
     T: Into<String>,
 {
-    fn into_query(self) -> Query {
+    fn arg(self) -> cmd::Arg<Options> {
         let Args((name, options)) = self;
-        name.into_query().with_opts(options)
+        name.arg().with_opts(options)
     }
 }

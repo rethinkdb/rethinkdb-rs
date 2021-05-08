@@ -1,5 +1,5 @@
-use crate::Query;
+use crate::cmd;
 
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<()>;
 }

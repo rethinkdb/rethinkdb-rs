@@ -78,12 +78,13 @@
 //! {old_val: null, new_val: {id: 1}}
 //! ```
 
-use crate::Query;
+use crate::{cmd, Query};
 use ql2::term::TermType;
+use reql_macros::CommandOptions;
 use serde::Serialize;
 
 /// Optional arguments to `changes`
-#[derive(Debug, Clone, Copy, Serialize, Default, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, CommandOptions, Serialize, Default, PartialEq, PartialOrd)]
 #[non_exhaustive]
 pub struct Options {
     /// Controls how change notifications are batched
@@ -140,42 +141,6 @@ pub struct Options {
     pub include_types: Option<bool>,
 }
 
-impl Options {
-    pub fn new() -> Self {
-        Default::default()
-    }
-
-    pub const fn squash(mut self, squash: Squash) -> Self {
-        self.squash = Some(squash);
-        self
-    }
-
-    pub const fn changefeed_queue_size(mut self, changefeed_queue_size: u32) -> Self {
-        self.changefeed_queue_size = Some(changefeed_queue_size);
-        self
-    }
-
-    pub const fn include_initial(mut self, include_initial: bool) -> Self {
-        self.include_initial = Some(include_initial);
-        self
-    }
-
-    pub const fn include_states(mut self, include_states: bool) -> Self {
-        self.include_states = Some(include_states);
-        self
-    }
-
-    pub const fn include_offsets(mut self, include_offsets: bool) -> Self {
-        self.include_offsets = Some(include_offsets);
-        self
-    }
-
-    pub const fn include_types(mut self, include_types: bool) -> Self {
-        self.include_types = Some(include_types);
-        self
-    }
-}
-
 /// Controls how change notifications are batched
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, PartialOrd)]
 #[non_exhaustive]
@@ -196,17 +161,17 @@ pub enum Squash {
 }
 
 pub trait Arg {
-    fn into_query(self) -> Query;
+    fn arg(self) -> cmd::Arg<Options>;
 }
 
 impl Arg for () {
-    fn into_query(self) -> Query {
-        Query::new(TermType::Changes).mark_change_feed()
+    fn arg(self) -> cmd::Arg<Options> {
+        Query::new(TermType::Changes).mark_change_feed().into_arg()
     }
 }
 
 impl Arg for Options {
-    fn into_query(self) -> Query {
-        ().into_query().with_opts(self)
+    fn arg(self) -> cmd::Arg<Options> {
+        ().arg().with_opts(self)
     }
 }
