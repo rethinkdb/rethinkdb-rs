@@ -95,5 +95,5 @@ fn param(typ: &Type) -> Param {
             }
         }
     }
-    panic!("{:#?}", typ);
+    unimplemented!()
 }
