@@ -8,8 +8,8 @@ use std::time::Instant;
 async fn main() {
     env_logger::init();
 
-    let mut manager = SessionManager::new(Options::new());
-    manager.discover_hosts().await.unwrap();
+    let manager = SessionManager::new(Options::new());
+    tokio::spawn(manager.clone().discover_hosts());
     let pool = Pool::builder().max_open(20).build(manager);
     const MAX: usize = 5000;
 

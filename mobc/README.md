@@ -6,13 +6,13 @@ ReQL connection pool implementation
 use mobc_reql::{GetSession, Pool, SessionManager};
 
 // Create the session manager
-let mut manager = SessionManager::new(Default::default());
+let manager = SessionManager::new(Default::default());
 
 // Pull the rest of your nodes from your cluster. The connection pool
 // connects to the node with the lowest latency.
 // It is optional but highly recommended. This way, your app will
 // continue working even when nodes go up and down.
-manager.discover_hosts().await?;
+tokio::spawn(manager.clone().discover_hosts());
 
 // Create the pool
 let pool = Pool::builder().max_open(20).build(manager);

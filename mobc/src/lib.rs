@@ -110,26 +110,20 @@ impl SessionManager {
         }
     }
 
-    pub async fn discover_hosts(&mut self) -> Result<()> {
+    pub async fn discover_hosts(mut self) {
         self.pool = Some(Pool::builder().max_open(2).build(self.clone()));
-        let servers = self.get_servers().await?;
-        *self.servers.lock().await = servers;
-        let manager = self.clone();
-        self.spawn_task(async move {
-            let mut wait = 0;
-            loop {
-                if let Err(error) = manager.listen_for_hosts(&mut wait).await {
-                    trace!(
-                        "listening for host changes; error: {}, wait: {}s",
-                        error,
-                        wait
-                    );
-                    Delay::new(Duration::from_secs(wait)).await;
-                    wait = 300.min(wait + 1);
-                }
+        let mut wait = 0;
+        loop {
+            if let Err(error) = self.listen_for_hosts(&mut wait).await {
+                trace!(
+                    "listening for host changes; error: {}, wait: {}s",
+                    error,
+                    wait
+                );
+                Delay::new(Duration::from_secs(wait)).await;
+                wait = 300.min(wait + 1);
             }
-        });
-        Ok(())
+        }
     }
 
     async fn listen_for_hosts(&self, wait: &mut u64) -> Result<()> {
