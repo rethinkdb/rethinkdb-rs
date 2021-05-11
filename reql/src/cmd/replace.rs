@@ -31,9 +31,7 @@ where
 {
     fn arg(self) -> cmd::Arg<Options> {
         let arg = Query::from_json(self);
-        Query::new(TermType::Replace)
-            .with_arg(arg.wrap_row())
-            .into_arg()
+        Query::new(TermType::Replace).with_arg(arg).into_arg()
     }
 }
 

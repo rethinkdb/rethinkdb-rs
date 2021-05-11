@@ -123,7 +123,6 @@ pub mod reduce;
 pub mod rem;
 pub mod replace;
 pub mod round;
-pub mod row;
 pub mod run;
 pub mod sample;
 pub mod seconds;

@@ -93,7 +93,6 @@ pub use reql_macros::func;
 pub use reql_types as types;
 
 #[doc(hidden)]
-// start from 1; reserving 0 for r.row
 pub static VAR_COUNTER: AtomicU64 = AtomicU64::new(1);
 
 #[doc(hidden)]
@@ -727,13 +726,6 @@ impl r {
 
     pub fn args<T>(self, arg: T) -> cmd::args::Args<T> {
         cmd::args::Args(arg)
-    }
-
-    pub fn row<T>(self, arg: T) -> Query
-    where
-        T: cmd::row::Arg,
-    {
-        arg.arg().into_query()
     }
 }
 

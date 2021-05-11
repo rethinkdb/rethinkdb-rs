@@ -1,5 +1,5 @@
 use crate::cmd::run::{Db, Options};
-use crate::{err, r, Func};
+use crate::{err, r};
 use ql2::query::QueryType;
 use ql2::term::TermType;
 use serde::ser::{self, Serialize, Serializer};
@@ -80,7 +80,6 @@ pub struct Query {
     pub args: VecDeque<super::Result<Query>>,
     opts: Option<super::Result<Datum>>,
     change_feed: bool,
-    contains_implicit_var: bool,
 }
 
 impl Query {
@@ -92,7 +91,6 @@ impl Query {
             args: VecDeque::new(),
             opts: None,
             change_feed: false,
-            contains_implicit_var: false,
         }
     }
 
@@ -104,7 +102,6 @@ impl Query {
 
     pub(crate) fn with_parent(mut self, parent: Query) -> Self {
         self.change_feed = self.change_feed || parent.change_feed;
-        self.contains_implicit_var = self.contains_implicit_var || parent.contains_implicit_var;
         self.args.push_front(Ok(parent));
         self
     }
@@ -145,20 +142,6 @@ impl Query {
 
     pub(crate) fn change_feed(&self) -> bool {
         self.change_feed
-    }
-
-    pub(crate) fn mark_implicit_var(mut self) -> Self {
-        self.contains_implicit_var = true;
-        self
-    }
-
-    pub(crate) fn wrap_row(mut self) -> Self {
-        if self.contains_implicit_var {
-            let Func(func) = Func::row(self);
-            self = func;
-            self.contains_implicit_var = false;
-        }
-        self
     }
 
     pub(crate) fn into_arg<T>(self) -> Arg<T> {

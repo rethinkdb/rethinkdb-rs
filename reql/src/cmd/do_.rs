@@ -13,9 +13,7 @@ where
 {
     fn arg(self) -> cmd::Arg<()> {
         let arg = Query::from_json(self);
-        Query::new(TermType::Funcall)
-            .with_arg(arg.wrap_row())
-            .into_arg()
+        Query::new(TermType::Funcall).with_arg(arg).into_arg()
     }
 }
 
