@@ -15,7 +15,7 @@ use std::ops::Deref;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-pub use mobc::Pool;
+pub type Pool = mobc::Pool<SessionManager>;
 
 #[async_trait]
 pub trait GetSession {
@@ -23,7 +23,7 @@ pub trait GetSession {
 }
 
 #[async_trait]
-impl GetSession for Pool<SessionManager> {
+impl GetSession for Pool {
     async fn session(&self) -> Result<Session> {
         Ok(Session {
             conn: self.get().await.map_err(to_reql)?,
@@ -98,7 +98,7 @@ impl Server {
 pub struct SessionManager {
     opts: Options,
     servers: Arc<Mutex<Vec<Server>>>,
-    pool: Option<Pool<Self>>,
+    pool: Option<Pool>,
 }
 
 impl SessionManager {
