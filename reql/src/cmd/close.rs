@@ -7,7 +7,7 @@
 //! writes.
 //!
 //! A noreply query is executed by passing the `noreply` option to the
-//! [run](crate::Query::run) command, indicating that `run()` should not
+//! [run](crate::Command::run) command, indicating that `run()` should not
 //! wait for the query to complete before returning. You may also
 //! explicitly wait for a noreply query to complete by using the
 //! [noreply_wait](crate::Session::noreply_wait) command.

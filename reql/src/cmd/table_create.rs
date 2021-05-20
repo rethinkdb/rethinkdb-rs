@@ -1,6 +1,6 @@
 use super::args::Args;
 use super::Durability;
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 use reql_macros::CommandOptions;
 use serde::{Serialize, Serializer};
@@ -80,13 +80,13 @@ pub trait Arg {
     fn arg(self) -> cmd::Arg<Options>;
 }
 
-impl Arg for Query {
+impl Arg for Command {
     fn arg(self) -> cmd::Arg<Options> {
         Self::new(TermType::TableCreate).with_arg(self).into_arg()
     }
 }
 
-impl Arg for Args<(Query, Options)> {
+impl Arg for Args<(Command, Options)> {
     fn arg(self) -> cmd::Arg<Options> {
         let Args((query, options)) = self;
         query.arg().with_opts(options)
@@ -98,7 +98,7 @@ where
     T: Into<String>,
 {
     fn arg(self) -> cmd::Arg<Options> {
-        Query::from_json(self.into()).arg()
+        Command::from_json(self.into()).arg()
     }
 }
 

@@ -42,12 +42,12 @@ impl Func {
         let mut params = TokenStream::new();
         let func_args = args.len();
         for (i, arg) in args.into_iter().enumerate() {
-            let var = quote!(reql::Query::var(*ids.get(#i).unwrap()));
+            let var = quote!(reql::Command::var(*ids.get(#i).unwrap()));
             if i == func_args - 1 {
-                header.extend(quote!(#arg: reql::Query));
+                header.extend(quote!(#arg: reql::Command));
                 params.extend(quote!(#var));
             } else {
-                header.extend(quote!(#arg: reql::Query, ));
+                header.extend(quote!(#arg: reql::Command, ));
                 params.extend(quote!(#var, ));
             }
         }

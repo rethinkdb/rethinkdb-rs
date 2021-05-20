@@ -1,5 +1,5 @@
 use super::args::Args;
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 
 pub trait Arg {
@@ -14,11 +14,11 @@ impl Arg for cmd::Arg<()> {
 
 impl Arg for () {
     fn arg(self) -> cmd::Arg<()> {
-        Query::new(TermType::Uuid).into_arg()
+        Command::new(TermType::Uuid).into_arg()
     }
 }
 
-impl Arg for Query {
+impl Arg for Command {
     fn arg(self) -> cmd::Arg<()> {
         ().arg().with_arg(self)
     }
@@ -30,6 +30,6 @@ where
 {
     fn arg(self) -> cmd::Arg<()> {
         let Args(arg) = self;
-        Query::from_json(arg.into()).arg()
+        Command::from_json(arg.into()).arg()
     }
 }

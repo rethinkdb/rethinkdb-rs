@@ -1,8 +1,8 @@
 use super::args::Args;
 use super::connect::DEFAULT_DB;
 use crate::cmd::{Durability, ReadMode};
-use crate::proto::Payload;
-use crate::{err, r, Connection, Query, Result, Session};
+use crate::proto::{Payload, Query};
+use crate::{err, r, Command, Connection, Result, Session};
 use async_stream::try_stream;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
 use futures::stream::{Stream, StreamExt};
@@ -132,7 +132,7 @@ impl Arg for Args<(&mut Session, Options)> {
     }
 }
 
-pub(crate) fn new<A, T>(query: Query, arg: A) -> impl Stream<Item = Result<T>>
+pub(crate) fn new<A, T>(query: Command, arg: A) -> impl Stream<Item = Result<T>>
 where
     A: Arg,
     T: Unpin + DeserializeOwned,
@@ -145,7 +145,7 @@ where
             conn.session.inner.mark_change_feed();
         }
         let noreply = opts.noreply.unwrap_or_default();
-        let mut payload = Payload(QueryType::Start, Some(query), opts);
+        let mut payload = Payload(QueryType::Start, Some(Query(&query)), opts);
         loop {
             let (response_type, resp) = conn.request(&payload, noreply).await?;
             trace!("yielding response; token: {}", conn.token);
@@ -183,7 +183,7 @@ where
     }
 }
 
-impl Payload {
+impl Payload<'_> {
     fn encode(&self, token: u64) -> Result<Vec<u8>> {
         let bytes = self.to_bytes()?;
         let data_len = bytes.len();
@@ -206,9 +206,9 @@ impl Connection {
         }
     }
 
-    pub(crate) async fn request(
+    pub(crate) async fn request<'a>(
         &mut self,
-        query: &Payload,
+        query: &'a Payload<'a>,
         noreply: bool,
     ) -> Result<(ResponseType, Response)> {
         self.submit(query, noreply).await;
@@ -218,15 +218,15 @@ impl Connection {
         }
     }
 
-    async fn submit(&self, query: &Payload, noreply: bool) {
+    async fn submit<'a>(&self, query: &'a Payload<'a>, noreply: bool) {
         let mut db_token = self.token;
         let result = self.exec(query, noreply, &mut db_token).await;
         self.send_response(db_token, result);
     }
 
-    async fn exec(
+    async fn exec<'a>(
         &self,
-        query: &Payload,
+        query: &'a Payload<'a>,
         noreply: bool,
         db_token: &mut u64,
     ) -> Result<(ResponseType, Response)> {

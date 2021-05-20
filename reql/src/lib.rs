@@ -73,7 +73,7 @@ use dashmap::DashMap;
 use futures::channel::mpsc::{self, UnboundedReceiver, UnboundedSender};
 use futures::lock::Mutex;
 use log::trace;
-use proto::Payload;
+use proto::{Payload, Query};
 use ql2::query::QueryType;
 use ql2::response::ResponseType;
 use ql2::term::TermType;
@@ -87,7 +87,7 @@ use types::ServerInfo;
 #[doc(hidden)]
 pub use cmd::func::Func;
 pub use err::*;
-pub use proto::Query;
+pub use proto::Command;
 pub use reql_macros::func;
 #[doc(inline)]
 pub use reql_types as types;
@@ -98,6 +98,11 @@ pub static VAR_COUNTER: AtomicU64 = AtomicU64::new(1);
 #[doc(hidden)]
 pub fn var_counter() -> u64 {
     VAR_COUNTER.fetch_add(1, Ordering::SeqCst)
+}
+
+#[cfg(test)]
+fn current_counter() -> u64 {
+    VAR_COUNTER.load(Ordering::SeqCst)
 }
 
 /// Custom result returned by various ReQL commands
@@ -306,7 +311,7 @@ impl Connection {
         } else {
             Some(r.expr(json!({ "noreply": false })))
         };
-        let payload = Payload(QueryType::Stop, arg, Default::default());
+        let payload = Payload(QueryType::Stop, arg.as_ref().map(Query), Default::default());
         trace!("closing a changefeed; token: {}", self.token);
         let (typ, _) = self.request(&payload, false).await?;
         self.session.inner.unmark_change_feed();
@@ -371,22 +376,22 @@ impl r {
         cmd::connect::new(options.into_connect_opts()).await
     }
 
-    pub fn db_create<T>(self, arg: T) -> Query
+    pub fn db_create<T>(self, arg: T) -> Command
     where
         T: cmd::db_create::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn db_drop<T>(self, arg: T) -> Query
+    pub fn db_drop<T>(self, arg: T) -> Command
     where
         T: cmd::db_drop::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn db_list(self) -> Query {
-        Query::new(TermType::DbList)
+    pub fn db_list(self) -> Command {
+        Command::new(TermType::DbList)
     }
 
     /// Reference a database
@@ -404,324 +409,324 @@ impl r {
     /// r.db("heroes").table("marvel").run(conn)
     /// # });
     /// ```
-    pub fn db<T>(self, arg: T) -> Query
+    pub fn db<T>(self, arg: T) -> Command
     where
         T: cmd::db::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    /// See [Query::table_create]
-    pub fn table_create<T>(self, arg: T) -> Query
+    /// See [Command::table_create]
+    pub fn table_create<T>(self, arg: T) -> Command
     where
         T: cmd::table_create::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn table<T>(self, arg: T) -> Query
+    pub fn table<T>(self, arg: T) -> Command
     where
         T: cmd::table::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn map<T>(self, arg: T) -> Query
+    pub fn map<T>(self, arg: T) -> Command
     where
         T: cmd::map::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn union<T>(self, arg: T) -> Query
+    pub fn union<T>(self, arg: T) -> Command
     where
         T: cmd::union::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn group<T>(self, arg: T) -> Query
+    pub fn group<T>(self, arg: T) -> Command
     where
         T: cmd::group::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn reduce<T>(self, arg: T) -> Query
+    pub fn reduce<T>(self, arg: T) -> Command
     where
         T: cmd::reduce::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn count<T>(self, arg: T) -> Query
+    pub fn count<T>(self, arg: T) -> Command
     where
         T: cmd::count::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn sum<T>(self, arg: T) -> Query
+    pub fn sum<T>(self, arg: T) -> Command
     where
         T: cmd::sum::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn avg<T>(self, arg: T) -> Query
+    pub fn avg<T>(self, arg: T) -> Command
     where
         T: cmd::avg::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn min<T>(self, arg: T) -> Query
+    pub fn min<T>(self, arg: T) -> Command
     where
         T: cmd::min::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn max<T>(self, arg: T) -> Query
+    pub fn max<T>(self, arg: T) -> Command
     where
         T: cmd::max::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn distinct<T>(self, arg: T) -> Query
+    pub fn distinct<T>(self, arg: T) -> Command
     where
         T: cmd::distinct::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn contains<T>(self, arg: T) -> Query
+    pub fn contains<T>(self, arg: T) -> Command
     where
         T: cmd::contains::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn literal<T>(self, arg: T) -> Query
+    pub fn literal<T>(self, arg: T) -> Command
     where
         T: cmd::literal::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn object<T>(self, arg: T) -> Query
+    pub fn object<T>(self, arg: T) -> Command
     where
         T: cmd::object::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn random<T>(self, arg: T) -> Query
+    pub fn random<T>(self, arg: T) -> Command
     where
         T: cmd::random::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn round<T>(self, arg: T) -> Query
+    pub fn round<T>(self, arg: T) -> Command
     where
         T: cmd::round::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn ceil<T>(self, arg: T) -> Query
+    pub fn ceil<T>(self, arg: T) -> Command
     where
         T: cmd::ceil::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn floor<T>(self, arg: T) -> Query
+    pub fn floor<T>(self, arg: T) -> Command
     where
         T: cmd::floor::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn now(self) -> Query {
-        Query::new(TermType::Now)
+    pub fn now(self) -> Command {
+        Command::new(TermType::Now)
     }
 
-    pub fn time<T>(self, arg: T) -> Query
+    pub fn time<T>(self, arg: T) -> Command
     where
         T: cmd::time::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn epoch_time<T>(self, arg: T) -> Query
+    pub fn epoch_time<T>(self, arg: T) -> Command
     where
         T: cmd::epoch_time::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn iso8601<T>(self, arg: T) -> Query
+    pub fn iso8601<T>(self, arg: T) -> Command
     where
         T: cmd::iso8601::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn do_<T>(self, arg: T) -> Query
+    pub fn do_<T>(self, arg: T) -> Command
     where
         T: cmd::do_::Arg,
     {
-        arg.arg().into_query()
+        arg.arg(None).into_cmd()
     }
 
-    pub fn branch<T>(self, arg: T) -> Query
+    pub fn branch<T>(self, arg: T) -> Command
     where
         T: cmd::branch::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn range<T>(self, arg: T) -> Query
+    pub fn range<T>(self, arg: T) -> Command
     where
         T: cmd::range::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn error<T>(self, arg: T) -> Query
+    pub fn error<T>(self, arg: T) -> Command
     where
         T: cmd::error::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn expr<T>(self, arg: T) -> Query
+    pub fn expr<T>(self, arg: T) -> Command
     where
         T: cmd::expr::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn js<T>(self, arg: T) -> Query
+    pub fn js<T>(self, arg: T) -> Command
     where
         T: cmd::js::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn info<T>(self, arg: T) -> Query
+    pub fn info<T>(self, arg: T) -> Command
     where
         T: cmd::info::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn json<T>(self, arg: T) -> Query
+    pub fn json<T>(self, arg: T) -> Command
     where
         T: cmd::json::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn http<T>(self, arg: T) -> Query
+    pub fn http<T>(self, arg: T) -> Command
     where
         T: cmd::http::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn uuid<T>(self, arg: T) -> Query
+    pub fn uuid<T>(self, arg: T) -> Command
     where
         T: cmd::uuid::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn circle<T>(self, arg: T) -> Query
+    pub fn circle<T>(self, arg: T) -> Command
     where
         T: cmd::circle::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn distance<T>(self, arg: T) -> Query
+    pub fn distance<T>(self, arg: T) -> Command
     where
         T: cmd::distance::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn geojson<T>(self, arg: T) -> Query
+    pub fn geojson<T>(self, arg: T) -> Command
     where
         T: cmd::geojson::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn intersects<T>(self, arg: T) -> Query
+    pub fn intersects<T>(self, arg: T) -> Command
     where
         T: cmd::intersects::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn line<T>(self, arg: T) -> Query
+    pub fn line<T>(self, arg: T) -> Command
     where
         T: cmd::line::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn point<T>(self, arg: T) -> Query
+    pub fn point<T>(self, arg: T) -> Command
     where
         T: cmd::point::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn polygon<T>(self, arg: T) -> Query
+    pub fn polygon<T>(self, arg: T) -> Command
     where
         T: cmd::polygon::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn grant<T>(self, arg: T) -> Query
+    pub fn grant<T>(self, arg: T) -> Command
     where
         T: cmd::grant::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
-    pub fn wait<T>(self, arg: T) -> Query
+    pub fn wait<T>(self, arg: T) -> Command
     where
         T: cmd::wait::Arg,
     {
-        arg.arg().into_query()
+        arg.arg().into_cmd()
     }
 
     pub fn asc<T>(self, arg: T) -> cmd::asc::Asc
     where
         T: cmd::asc::Arg,
     {
-        cmd::asc::Asc(arg.arg().into_query())
+        cmd::asc::Asc(arg.arg().into_cmd())
     }
 
     pub fn desc<T>(self, arg: T) -> cmd::desc::Desc
     where
         T: cmd::desc::Arg,
     {
-        cmd::desc::Desc(arg.arg().into_query())
+        cmd::desc::Desc(arg.arg().into_cmd())
     }
 
     pub fn index<T>(self, arg: T) -> cmd::index::Index
     where
         T: cmd::index::Arg,
     {
-        cmd::index::Index(arg.arg().into_query())
+        cmd::index::Index(arg.arg().into_cmd())
     }
 
     pub fn args<T>(self, arg: T) -> cmd::args::Args<T> {

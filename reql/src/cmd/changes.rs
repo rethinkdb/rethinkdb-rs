@@ -33,7 +33,7 @@
 //!
 //! Certain document transformation commands can be chained before changefeeds.
 //! For more information, read the [discussion of changefeeds](https://rethinkdb.com/docs/changefeeds/)
-//! in the "Query language" documentation.
+//! in the "Command language" documentation.
 //!
 //! Changefeeds ignore the `read_mode` flag to `run`, and always behave as if
 //! it is set to `single` (i.e., the values they return are in memory on the primary
@@ -78,7 +78,7 @@
 //! {old_val: null, new_val: {id: 1}}
 //! ```
 
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 use reql_macros::CommandOptions;
 use serde::Serialize;
@@ -166,7 +166,9 @@ pub trait Arg {
 
 impl Arg for () {
     fn arg(self) -> cmd::Arg<Options> {
-        Query::new(TermType::Changes).mark_change_feed().into_arg()
+        Command::new(TermType::Changes)
+            .mark_change_feed()
+            .into_arg()
     }
 }
 

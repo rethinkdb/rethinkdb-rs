@@ -7,7 +7,7 @@ use mobc::{async_trait, Manager};
 use reql::cmd::connect::Options;
 use reql::cmd::run::{self, Arg};
 use reql::types::{Change, ServerStatus};
-use reql::{r, Connection, Driver, Error, Query, Result};
+use reql::{r, Command, Connection, Driver, Error, Result};
 use std::cmp::Ordering;
 use std::io;
 use std::net::{IpAddr, TcpStream};
@@ -174,7 +174,7 @@ async fn set_latency(servers: &mut Vec<Server>) {
     }
 }
 
-fn server_status() -> Query {
+fn server_status() -> Command {
     r.db("rethinkdb").table("server_status")
 }
 

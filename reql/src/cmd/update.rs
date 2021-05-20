@@ -1,6 +1,6 @@
 use super::args::Args;
 use crate::cmd::{self, Durability, ReturnChanges};
-use crate::{Func, Query};
+use crate::{Command, Func};
 use ql2::term::TermType;
 use reql_macros::CommandOptions;
 use serde::Serialize;
@@ -25,13 +25,25 @@ impl Arg for cmd::Arg<Options> {
     }
 }
 
+impl Arg for Command {
+    fn arg(self) -> cmd::Arg<Options> {
+        Command::new(TermType::Update).with_arg(self).into_arg()
+    }
+}
+
 impl<T> Arg for T
 where
     T: Serialize,
 {
     fn arg(self) -> cmd::Arg<Options> {
-        let arg = Query::from_json(self);
-        Query::new(TermType::Update).with_arg(arg).into_arg()
+        Command::from_json(self).arg()
+    }
+}
+
+impl Arg for Args<(Command, Options)> {
+    fn arg(self) -> cmd::Arg<Options> {
+        let Args((arg, opts)) = self;
+        arg.arg().with_opts(opts)
     }
 }
 
@@ -41,7 +53,7 @@ where
 {
     fn arg(self) -> cmd::Arg<Options> {
         let Args((arg, opts)) = self;
-        let arg = Query::from_json(arg);
+        let arg = Command::from_json(arg);
         arg.arg().with_opts(opts)
     }
 }

@@ -1,4 +1,4 @@
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 use serde::Serialize;
 use std::ops::Add;
@@ -13,23 +13,28 @@ impl Arg for cmd::Arg<()> {
     }
 }
 
+impl Arg for Command {
+    fn arg(self) -> cmd::Arg<()> {
+        Command::new(TermType::Add).with_arg(self).into_arg()
+    }
+}
+
 impl<T> Arg for T
 where
     T: Serialize,
 {
     fn arg(self) -> cmd::Arg<()> {
-        let arg = Query::from_json(self);
-        Query::new(TermType::Add).with_arg(arg).into_arg()
+        Command::from_json(self).arg()
     }
 }
 
-impl<T> Add<T> for Query
+impl<T> Add<T> for Command
 where
     T: Arg,
 {
     type Output = Self;
 
     fn add(self, arg: T) -> Self {
-        arg.arg().with_parent(self).into_query()
+        arg.arg().with_parent(self).into_cmd()
     }
 }

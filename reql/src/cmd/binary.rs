@@ -1,12 +1,12 @@
 use crate::types::Binary;
-use crate::{cmd, r, Query};
+use crate::{cmd, r, Command};
 use ql2::term::TermType;
 
 pub trait Arg {
     fn arg(self) -> cmd::Arg<()>;
 }
 
-impl Arg for Query {
+impl Arg for Command {
     fn arg(self) -> cmd::Arg<()> {
         Self::new(TermType::Binary).with_arg(self).into_arg()
     }

@@ -1,5 +1,5 @@
 use super::args::Args;
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 use reql_macros::CommandOptions;
 use serde::Serialize;
@@ -29,13 +29,13 @@ pub trait Arg<'a> {
     fn arg(self) -> cmd::Arg<Options<'a>>;
 }
 
-impl<'a> Arg<'a> for Query {
+impl<'a> Arg<'a> for Command {
     fn arg(self) -> cmd::Arg<Options<'a>> {
         Self::new(TermType::Between).with_arg(self).into_arg()
     }
 }
 
-impl<'a> Arg<'a> for Args<(Query, Options<'a>)> {
+impl<'a> Arg<'a> for Args<(Command, Options<'a>)> {
     fn arg(self) -> cmd::Arg<Options<'a>> {
         let Args((query, opts)) = self;
         query.arg().with_opts(opts)
@@ -48,8 +48,8 @@ where
 {
     fn arg(self) -> cmd::Arg<Options<'a>> {
         let Args((min, max)) = self;
-        let max = Query::from_json(max);
-        Query::from_json(min).arg().with_arg(max)
+        let max = Command::from_json(max);
+        Command::from_json(min).arg().with_arg(max)
     }
 }
 
@@ -59,7 +59,7 @@ where
 {
     fn arg(self) -> cmd::Arg<Options<'a>> {
         let Args((min, max, opts)) = self;
-        let max = Query::from_json(max);
-        Query::from_json(min).arg().with_arg(max).with_opts(opts)
+        let max = Command::from_json(max);
+        Command::from_json(min).arg().with_arg(max).with_opts(opts)
     }
 }

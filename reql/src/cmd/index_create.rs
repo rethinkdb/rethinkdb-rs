@@ -1,5 +1,5 @@
 use super::args::Args;
-use crate::{cmd, Func, Query};
+use crate::{cmd, Command, Func};
 use ql2::term::TermType;
 use reql_macros::CommandOptions;
 use serde::Serialize;
@@ -16,7 +16,7 @@ pub trait Arg {
     fn arg(self) -> cmd::Arg<Options>;
 }
 
-impl Arg for Query {
+impl Arg for Command {
     fn arg(self) -> cmd::Arg<Options> {
         Self::new(TermType::IndexCreate).with_arg(self).into_arg()
     }
@@ -27,7 +27,7 @@ where
     T: Into<String>,
 {
     fn arg(self) -> cmd::Arg<Options> {
-        Query::from_json(self.into()).arg()
+        Command::from_json(self.into()).arg()
     }
 }
 
@@ -44,7 +44,7 @@ where
 impl<T, R> Arg for Args<(T, R)>
 where
     T: Into<String>,
-    R: Into<Query>,
+    R: Into<Command>,
 {
     fn arg(self) -> cmd::Arg<Options> {
         let Args((name, query)) = self;
@@ -76,7 +76,7 @@ where
 impl<T, R> Arg for Args<(T, R, Options)>
 where
     T: Into<String>,
-    R: Into<Query>,
+    R: Into<Command>,
 {
     fn arg(self) -> cmd::Arg<Options> {
         let Args((name, query, opts)) = self;

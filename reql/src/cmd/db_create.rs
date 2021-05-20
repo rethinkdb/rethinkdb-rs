@@ -1,11 +1,11 @@
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 
 pub trait Arg {
     fn arg(self) -> cmd::Arg<()>;
 }
 
-impl Arg for Query {
+impl Arg for Command {
     fn arg(self) -> cmd::Arg<()> {
         Self::new(TermType::DbCreate).with_arg(self).into_arg()
     }
@@ -16,6 +16,6 @@ where
     T: Into<String>,
 {
     fn arg(self) -> cmd::Arg<()> {
-        Query::from_json(self.into()).arg()
+        Command::from_json(self.into()).arg()
     }
 }

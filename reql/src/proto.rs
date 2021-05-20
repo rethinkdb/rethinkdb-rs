@@ -41,8 +41,8 @@ impl Serialize for Datum {
 
 #[allow(array_into_iter)]
 #[allow(clippy::into_iter_on_ref)]
-impl<const N: usize> From<[Query; N]> for Query {
-    fn from(arr: [Query; N]) -> Self {
+impl<const N: usize> From<[Command; N]> for Command {
+    fn from(arr: [Command; N]) -> Self {
         let mut query = Self::new(TermType::MakeArray);
         // TODO remove this clone on Rust v1.53 once
         // https://twitter.com/m_ou_se/status/1385966446254166020
@@ -73,16 +73,16 @@ impl From<Value> for Datum {
 
 /// The query that will be sent to RethinkDB
 #[derive(Debug, Clone)]
-pub struct Query {
+pub struct Command {
     typ: TermType,
     datum: Option<super::Result<Datum>>,
     #[doc(hidden)]
-    pub args: VecDeque<super::Result<Query>>,
+    pub args: VecDeque<super::Result<Command>>,
     opts: Option<super::Result<Datum>>,
     change_feed: bool,
 }
 
-impl Query {
+impl Command {
     #[doc(hidden)]
     pub fn new(typ: TermType) -> Self {
         Self {
@@ -100,7 +100,7 @@ impl Query {
         Self::new(TermType::Var).with_arg(index)
     }
 
-    pub(crate) fn with_parent(mut self, parent: Query) -> Self {
+    pub(crate) fn with_parent(mut self, parent: Command) -> Self {
         self.change_feed = self.change_feed || parent.change_feed;
         self.args.push_front(Ok(parent));
         self
@@ -109,7 +109,7 @@ impl Query {
     #[doc(hidden)]
     pub fn with_arg<T>(mut self, arg: T) -> Self
     where
-        T: Into<Query>,
+        T: Into<Command>,
     {
         let arg = arg.into();
         self.args.push_back(Ok(arg));
@@ -152,13 +152,13 @@ impl Query {
     }
 }
 
-impl From<Datum> for Query {
+impl From<Datum> for Command {
     fn from(datum: Datum) -> Self {
         Ok(datum).into()
     }
 }
 
-impl From<super::Result<Datum>> for Query {
+impl From<super::Result<Datum>> for Command {
     fn from(result: super::Result<Datum>) -> Self {
         let mut query = Self::new(TermType::Datum);
         query.datum = Some(result);
@@ -167,14 +167,14 @@ impl From<super::Result<Datum>> for Query {
 }
 
 #[doc(hidden)]
-impl From<Value> for Query {
+impl From<Value> for Command {
     fn from(value: Value) -> Self {
         Datum::from(value).into()
     }
 }
 
 #[doc(hidden)]
-impl From<super::Result<Value>> for Query {
+impl From<super::Result<Value>> for Command {
     fn from(result: super::Result<Value>) -> Self {
         match result {
             Ok(value) => Datum::from(value).into(),
@@ -183,23 +183,31 @@ impl From<super::Result<Value>> for Query {
     }
 }
 
-impl Serialize for Query {
+#[derive(Debug, Clone)]
+pub(crate) struct Query<'a>(pub(crate) &'a Command);
+
+impl Serialize for Query<'_> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        match self.typ {
-            TermType::Datum => match &self.datum {
+        let Query(cmd) = self;
+        match cmd.typ {
+            TermType::Datum => match &cmd.datum {
                 Some(Ok(datum)) => datum.serialize(serializer),
                 Some(Err(error)) => Err(ser::Error::custom(error)),
                 _ => (None as Option<Datum>).serialize(serializer),
             },
             _ => {
-                let typ = self.typ as i32;
-                match &self.opts {
-                    Some(Ok(map)) => (typ, to_result(&self.args).map_err(ser::Error::custom)?, map)
+                let typ = cmd.typ as i32;
+                match &cmd.opts {
+                    Some(Ok(map)) => (
+                        typ,
+                        to_query_result(&cmd.args).map_err(ser::Error::custom)?,
+                        map,
+                    )
                         .serialize(serializer),
-                    None => (typ, to_result(&self.args).map_err(ser::Error::custom)?)
+                    None => (typ, to_query_result(&cmd.args).map_err(ser::Error::custom)?)
                         .serialize(serializer),
                     Some(Err(error)) => Err(ser::Error::custom(error)),
                 }
@@ -208,11 +216,11 @@ impl Serialize for Query {
     }
 }
 
-fn to_result(args: &VecDeque<super::Result<Query>>) -> super::Result<Vec<&Query>> {
+fn to_query_result(args: &VecDeque<super::Result<Command>>) -> super::Result<Vec<Query<'_>>> {
     let mut vec = Vec::with_capacity(args.len());
     for result in args {
         let arg = result.as_ref().map_err(|error| error.clone())?;
-        vec.push(arg);
+        vec.push(Query(arg));
     }
     Ok(vec)
 }
@@ -220,7 +228,7 @@ fn to_result(args: &VecDeque<super::Result<Query>>) -> super::Result<Vec<&Query>
 #[derive(Debug, Clone)]
 pub struct Arg<T> {
     #[doc(hidden)]
-    pub arg: Query,
+    pub arg: Command,
     #[doc(hidden)]
     pub opts: Option<T>,
 }
@@ -229,14 +237,21 @@ impl<T> Arg<T>
 where
     T: Serialize,
 {
-    pub(crate) fn with_parent(mut self, parent: Query) -> Self {
+    pub(crate) fn new() -> Self {
+        Self {
+            arg: Command::new(TermType::Datum),
+            opts: None,
+        }
+    }
+
+    pub(crate) fn with_parent(mut self, parent: Command) -> Self {
         self.arg = self.arg.with_parent(parent);
         self
     }
 
     pub(crate) fn with_arg<Q>(mut self, arg: Q) -> Self
     where
-        Q: Into<Query>,
+        Q: Into<Command>,
     {
         self.arg = self.arg.with_arg(arg);
         self
@@ -247,7 +262,7 @@ where
         self
     }
 
-    pub(crate) fn into_query(self) -> Query {
+    pub(crate) fn into_cmd(self) -> Command {
         match self.opts {
             Some(opts) => self.arg.with_opts(opts),
             None => self.arg,
@@ -256,13 +271,13 @@ where
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct Payload(
+pub(crate) struct Payload<'a>(
     pub(crate) QueryType,
-    pub(crate) Option<Query>,
+    pub(crate) Option<Query<'a>>,
     pub(crate) Options,
 );
 
-impl Serialize for Payload {
+impl Serialize for Payload<'_> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -276,14 +291,14 @@ impl Serialize for Payload {
     }
 }
 
-impl Payload {
+impl Payload<'_> {
     pub(crate) fn to_bytes(&self) -> Result<Vec<u8>, err::Error> {
         Ok(serde_json::to_vec(self)?)
     }
 }
 
 // for debugging purposes only
-impl fmt::Display for Payload {
+impl fmt::Display for Payload<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // print the serialised string if we can
         if let Ok(payload) = self.to_bytes() {
@@ -302,6 +317,7 @@ impl Serialize for Db {
         S: Serializer,
     {
         let Self(name) = self;
-        r.db(name.as_ref()).serialize(serializer)
+        let cmd = r.db(name.as_ref());
+        Query(&cmd).serialize(serializer)
     }
 }

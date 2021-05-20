@@ -1,11 +1,11 @@
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 
 pub trait Arg {
     fn arg(self) -> cmd::Arg<()>;
 }
 
-impl Arg for Query {
+impl Arg for Command {
     fn arg(self) -> cmd::Arg<()> {
         Self::new(TermType::Geojson).with_arg(self).into_arg()
     }

@@ -29,5 +29,5 @@ before_script:
 - if [[ -n "$TARGET" ]]; then rustup target add "$TARGET"; fi
 
 script:
-- if [[ -n "$TARGET" ]]; then cargo test --target "$TARGET" --lib; fi
-- if [[ -z "$TARGET" ]]; then cargo test; fi
+- if [[ -n "$TARGET" ]]; then cargo test --target "$TARGET" --lib -- --test-threads=1; fi
+- if [[ -z "$TARGET" ]]; then cargo test -- --test-threads=1; fi

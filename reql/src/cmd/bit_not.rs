@@ -1,8 +1,8 @@
-use crate::Query;
+use crate::Command;
 use ql2::term::TermType;
 use std::ops::Not;
 
-impl Not for Query {
+impl Not for Command {
     type Output = Self;
 
     fn not(self) -> Self {

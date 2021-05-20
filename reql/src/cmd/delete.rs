@@ -1,5 +1,5 @@
 use crate::cmd::{self, Durability, ReturnChanges};
-use crate::Query;
+use crate::Command;
 use ql2::term::TermType;
 use reql_macros::CommandOptions;
 use serde::Serialize;
@@ -26,7 +26,7 @@ impl Arg for cmd::Arg<Options> {
 
 impl Arg for () {
     fn arg(self) -> cmd::Arg<Options> {
-        Query::new(TermType::Delete).into_arg()
+        Command::new(TermType::Delete).into_arg()
     }
 }
 

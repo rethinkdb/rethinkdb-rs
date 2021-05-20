@@ -1,13 +1,13 @@
 use super::args::Args;
 use super::index::Index;
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 
 pub trait Arg {
     fn arg(self) -> cmd::Arg<()>;
 }
 
-impl Arg for Query {
+impl Arg for Command {
     fn arg(self) -> cmd::Arg<()> {
         Self::new(TermType::GetAll).with_arg(self).into_arg()
     }
@@ -18,7 +18,7 @@ where
     T: Into<String>,
 {
     fn arg(self) -> cmd::Arg<()> {
-        Query::from_json(self.into()).arg()
+        Command::from_json(self.into()).arg()
     }
 }
 
@@ -37,10 +37,10 @@ where
 {
     fn arg(self) -> cmd::Arg<()> {
         let Args(arr) = self;
-        let mut query = Query::new(TermType::GetAll);
+        let mut query = Command::new(TermType::GetAll);
         // TODO get rid of the clone in Rust v1.53
         for arg in arr.into_iter().cloned() {
-            let arg = Query::from_json(arg.into());
+            let arg = Command::from_json(arg.into());
             query = query.with_arg(arg);
         }
         query.into_arg()
@@ -55,10 +55,10 @@ where
 {
     fn arg(self) -> cmd::Arg<()> {
         let Args((arr, Index(index))) = self;
-        let mut query = Query::new(TermType::GetAll);
+        let mut query = Command::new(TermType::GetAll);
         // TODO get rid of the clone in Rust v1.53
         for arg in arr.into_iter().cloned() {
-            let arg = Query::from_json(arg.into());
+            let arg = Command::from_json(arg.into());
             query = query.with_arg(arg);
         }
         query.with_arg(index).into_arg()

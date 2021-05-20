@@ -1,13 +1,13 @@
 use super::args::Args;
 use super::index::Index;
-use crate::{cmd, Func, Query};
+use crate::{cmd, Command, Func};
 use ql2::term::TermType;
 
 pub trait Arg {
     fn arg(self) -> cmd::Arg<()>;
 }
 
-impl Arg for Query {
+impl Arg for Command {
     fn arg(self) -> cmd::Arg<()> {
         Self::new(TermType::OrderBy).with_arg(self).into_arg()
     }
@@ -18,7 +18,7 @@ where
     T: Into<String>,
 {
     fn arg(self) -> cmd::Arg<()> {
-        Query::from_json(self.into()).arg()
+        Command::from_json(self.into()).arg()
     }
 }
 
@@ -28,7 +28,7 @@ where
 {
     fn arg(self) -> cmd::Arg<()> {
         let Args((key, Index(index))) = self;
-        Query::from_json(key.into()).arg().with_arg(index)
+        Command::from_json(key.into()).arg().with_arg(index)
     }
 }
 

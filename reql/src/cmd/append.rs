@@ -1,4 +1,4 @@
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 
 pub trait Arg {
@@ -11,7 +11,7 @@ impl Arg for cmd::Arg<()> {
     }
 }
 
-impl Arg for Query {
+impl Arg for Command {
     fn arg(self) -> cmd::Arg<()> {
         Self::new(TermType::Append).with_arg(self).into_arg()
     }

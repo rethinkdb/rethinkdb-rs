@@ -1,4 +1,4 @@
-use crate::{cmd, Query};
+use crate::{cmd, Command};
 use ql2::term::TermType;
 use serde::Serialize;
 
@@ -17,7 +17,7 @@ where
     T: Serialize,
 {
     fn arg(self) -> cmd::Arg<()> {
-        let arg = Query::from_json(self);
-        Query::new(TermType::Eq).with_arg(arg).into_arg()
+        let arg = Command::from_json(self);
+        Command::new(TermType::Eq).with_arg(arg).into_arg()
     }
 }
