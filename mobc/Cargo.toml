@@ -1,7 +1,7 @@
 [package]
 name = "mobc-reql"
 description = "RethinkDB support for the mobc connection pool"
-version = "0.5.0"
+version = "0.6.0"
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rethinkdb/rethinkdb-rs/tree/next/mobc"
 documentation = "https://docs.rs/mobc-reql"
@@ -21,4 +21,4 @@ futures = "0.3.15"
 futures-timer = { version = "3.0.2", default-features = false }
 log = "0.4.14"
 mobc = { version = "0.7.2", default-features = false }
-reql = { version = "0.9.0", path = "../reql" }
+reql = { version = "0.10.0", path = "../reql" }
