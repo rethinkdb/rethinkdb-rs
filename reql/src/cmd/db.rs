@@ -19,3 +19,16 @@ where
         Command::from_json(self.into()).arg()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{cmd, r};
+
+    #[test]
+    fn r_db() {
+        let query = r.db("foo");
+        let serialised = cmd::serialise(&query);
+        let expected = r#"[14,["foo"]]"#;
+        assert_eq!(serialised, expected);
+    }
+}

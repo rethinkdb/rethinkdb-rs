@@ -57,3 +57,22 @@ where
         Command::from_json(val).arg().with_opts(options)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{cmd, r};
+    use serde::Serialize;
+
+    #[derive(Serialize)]
+    struct Document<'a> {
+        item: &'a str,
+    }
+
+    #[test]
+    fn r_table_insert() {
+        let query = r.table("foo").insert(Document { item: "bar" });
+        let serialised = cmd::serialise(&query);
+        let expected = r#"[56,[[15,["foo"]],{"item":"bar"}]]"#;
+        assert_eq!(serialised, expected);
+    }
+}

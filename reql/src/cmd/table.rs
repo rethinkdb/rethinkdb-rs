@@ -57,3 +57,24 @@ where
         name.arg().with_opts(options)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{cmd, r};
+
+    #[test]
+    fn r_table() {
+        let query = r.table("foo");
+        let serialised = cmd::serialise(&query);
+        let expected = r#"[15,["foo"]]"#;
+        assert_eq!(serialised, expected);
+    }
+
+    #[test]
+    fn r_db_table() {
+        let query = r.db("foo").table("bar");
+        let serialised = cmd::serialise(&query);
+        let expected = r#"[15,[[14,["foo"]],"bar"]]"#;
+        assert_eq!(serialised, expected);
+    }
+}
