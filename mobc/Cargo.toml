@@ -1,9 +1,9 @@
 [package]
 name = "mobc-reql"
 description = "RethinkDB support for the mobc connection pool"
-version = "0.6.1"
+version = "0.6.2"
 license = "MIT/Apache-2.0"
-repository = "https://github.com/rethinkdb/rethinkdb-rs/tree/next/mobc"
+repository = "https://github.com/rethinkdb/rethinkdb-rs/tree/main/mobc"
 documentation = "https://docs.rs/mobc-reql"
 readme = "README.md"
 keywords = ["async", "database", "pool", "reql"]
