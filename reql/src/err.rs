@@ -47,7 +47,7 @@ impl fmt::Display for Runtime {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::QueryLogic(msg) => write!(f, "query logic; {}", msg),
-            Self::NonExistence(msg) => write!(f, "non-existance error; {}", msg),
+            Self::NonExistence(msg) => write!(f, "non-existence error; {}", msg),
             Self::ResourceLimit(msg) => write!(f, "resource limit error; {}", msg),
             Self::User(msg) => write!(f, "user error; {}", msg),
             Self::Internal(msg) => write!(f, "internal error; {}", msg),
