@@ -12,7 +12,7 @@ let manager = SessionManager::new(Default::default());
 // connects to the node with the lowest latency.
 // It is optional but highly recommended. This way, your app will
 // continue working even when nodes go up and down.
-tokio::spawn(manager.clone().discover_hosts());
+tokio::spawn(manager.discover_hosts());
 
 // Create the pool
 let pool = Pool::builder().max_open(20).build(manager);

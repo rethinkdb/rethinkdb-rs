@@ -1,6 +1,6 @@
 use blocking::unblock;
 use futures::lock::Mutex;
-use futures::TryStreamExt;
+use futures::{Future, TryStreamExt};
 use futures_timer::Delay;
 use log::trace;
 use mobc::{async_trait, Manager};
@@ -110,18 +110,21 @@ impl SessionManager {
         }
     }
 
-    pub async fn discover_hosts(mut self) {
-        self.pool = Some(Pool::builder().max_open(2).build(self.clone()));
-        let mut wait = 0;
-        loop {
-            if let Err(error) = self.listen_for_hosts(&mut wait).await {
-                trace!(
-                    "listening for host changes; error: {}, wait: {}s",
-                    error,
-                    wait
-                );
-                Delay::new(Duration::from_secs(wait)).await;
-                wait = 300.min(wait + 1);
+    pub fn discover_hosts(&self) -> impl Future<Output = ()> {
+        let mut manager = self.clone();
+        manager.pool = Some(Pool::builder().max_open(2).build(self.clone()));
+        async move {
+            let mut wait = 0;
+            loop {
+                if let Err(error) = manager.listen_for_hosts(&mut wait).await {
+                    trace!(
+                        "listening for host changes; error: {}, wait: {}s",
+                        error,
+                        wait
+                    );
+                    Delay::new(Duration::from_secs(wait)).await;
+                    wait = 300.min(wait + 1);
+                }
             }
         }
     }

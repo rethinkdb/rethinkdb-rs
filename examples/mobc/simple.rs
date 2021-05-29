@@ -9,7 +9,7 @@ async fn main() {
     env_logger::init();
 
     let manager = SessionManager::new(Options::new());
-    tokio::spawn(manager.clone().discover_hosts());
+    tokio::spawn(manager.discover_hosts());
     let pool = Pool::builder().max_open(20).build(manager);
     const MAX: usize = 5000;
 
