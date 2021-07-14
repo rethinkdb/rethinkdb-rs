@@ -1,9 +1,12 @@
 use super::args::Args;
 use super::index::Index;
-use crate::{cmd, Command, Func};
-use crate::cmd::desc::Desc;
-
 use ql2::term::TermType;
+use crate::{
+    cmd,
+    cmd::{desc::Desc, asc::Asc},
+    Command,
+    Func
+};
 
 pub trait Arg {
     fn arg(self) -> cmd::Arg<()>;
@@ -15,13 +18,17 @@ impl Arg for Command {
     }
 }
 
-
 impl Arg for Desc {
     fn arg(self) -> cmd::Arg<()> {
         Command::new(TermType::OrderBy).with_arg(self.0).into_arg()
     }
 }
 
+impl Arg for Asc {
+    fn arg(self) -> cmd::Arg<()> {
+        Command::new(TermType::OrderBy).with_arg(self.0).into_arg()
+    }
+}
 
 impl<T> Arg for T
 where
