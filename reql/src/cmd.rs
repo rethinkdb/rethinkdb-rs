@@ -486,7 +486,7 @@ impl<'a> Command {
 
     /// Limits the result set to the given amount.
     ///
-    /// Argument can either be an isize.
+    /// Argument can be an isize.
     ///
     /// ## Example
     ///
