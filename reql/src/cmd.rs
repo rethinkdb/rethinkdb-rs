@@ -483,6 +483,20 @@ impl<'a> Command {
         arg.arg().into_cmd().with_parent(self)
     }
 
+
+    /// Limits the result set to the given amount.
+    ///
+    /// Argument can either be an isize.
+    ///
+    /// ## Example
+    ///
+    /// Get 5 records.
+    /// ```
+    /// # reql::example(|r, conn| async_stream::stream! {
+    /// r.db("database").table("users").limit(5).run(conn)
+    /// # });
+    /// ```
+    ///
     pub fn limit<T>(self, arg: T) -> Self
     where
         T: limit::Arg,
