@@ -469,6 +469,20 @@ impl<'a> Command {
         arg.arg().into_cmd().with_parent(self)
     }
 
+    /// Orders the result based on the given column.
+    ///
+    /// Argument can either be a string, `r.asc("column")` for ascending or `r.desc("column")` for descending.
+    /// If the given argument is a string, the direction will default to ascending.
+    ///
+    /// ## Example
+    ///
+    /// Sort the result in descending order based on the `created_at` column.
+    /// ```
+    /// # reql::example(|r, conn| async_stream::stream! {
+    /// r.db("database").table("users").order_by(r.desc("created_at")).run(conn)
+    /// # });
+    /// ```
+    ///
     pub fn order_by<T>(self, arg: T) -> Self
     where
         T: order_by::Arg,
