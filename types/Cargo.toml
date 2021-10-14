@@ -9,8 +9,8 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 edition = "2018"
 
 [dependencies]
-serde = { version = "1.0.126", features = ["derive"] }
-serde_json = "1.0.64"
+serde = { version = "1.0.130", features = ["derive"] }
+serde_json = "1.0.68"
 chrono = "0.4.19"
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
 base64 = "0.13.0"

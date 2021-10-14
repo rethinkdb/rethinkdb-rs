@@ -9,9 +9,9 @@ authors = ["rushmorem <rushmore@webenchanter.com>"]
 edition = "2018"
 
 [dependencies]
-quote = "1.0.9"
-syn = { version = "1.0.72", default-features = false, features = ["parsing", "proc-macro", "derive", "printing"] }
-proc-macro2 = "1.0.27"
+quote = "1.0.10"
+syn = { version = "1.0.80", default-features = false, features = ["parsing", "proc-macro", "derive", "printing"] }
+proc-macro2 = "1.0.30"
 
 [lib]
 proc-macro = true
