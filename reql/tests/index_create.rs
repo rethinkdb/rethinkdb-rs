@@ -4,7 +4,7 @@ use serde_json::Value;
 
 #[tokio::test]
 async fn index_create() -> reql::Result<()> {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let conn = r.connect(()).await?;
 

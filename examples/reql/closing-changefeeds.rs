@@ -7,7 +7,7 @@ use serde_json::Value;
 #[tokio::main]
 async fn main() -> reql::Result<()> {
     // Initialise the logger if you need to debug this crate
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     // Connect to create a RethinkDB session
     let session = r.connect(()).await?;

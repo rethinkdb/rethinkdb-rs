@@ -1,12 +1,11 @@
 use super::args::Args;
 use super::index::Index;
-use ql2::term::TermType;
 use crate::{
     cmd,
-    cmd::{desc::Desc, asc::Asc},
-    Command,
-    Func
+    cmd::{asc::Asc, desc::Desc},
+    Command, Func,
 };
+use ql2::term::TermType;
 
 pub trait Arg {
     fn arg(self) -> cmd::Arg<()>;

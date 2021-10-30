@@ -6,7 +6,6 @@ use crate::{err, r, Command, Connection, Result, Session};
 use async_stream::try_stream;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
 use futures::stream::{Stream, StreamExt};
-use log::trace;
 use ql2::query::QueryType;
 use ql2::response::{ErrorType, ResponseType};
 use reql_macros::CommandOptions;
@@ -16,6 +15,7 @@ use serde_json::Value;
 use std::borrow::Cow;
 use std::str;
 use std::sync::atomic::Ordering;
+use tracing::trace;
 
 const DATA_SIZE: usize = 4;
 const TOKEN_SIZE: usize = 8;
@@ -277,7 +277,7 @@ impl Connection {
             "body read; token: {}, db_token: {}, body: {}",
             self.token,
             db_token,
-            super::debug(&buf),
+            super::bytes_to_string(&buf),
         );
 
         let resp = serde_json::from_slice::<Response>(&buf)?;

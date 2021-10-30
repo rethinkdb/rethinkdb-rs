@@ -1,16 +1,16 @@
 use futures::{StreamExt, TryStreamExt};
 use futures_timer::Delay;
-use log::error;
 use reql::r;
 use serde_json::Value;
 use std::time::Duration;
+use tracing::error;
 
 // We are using `tokio` here as an example but you can use this crate
 // with any runtime
 #[tokio::main]
 async fn main() -> reql::Result<()> {
     // Initialise the logger if you need to debug this crate
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     // Connect to create a RethinkDB session
     let session = r.connect(()).await?;

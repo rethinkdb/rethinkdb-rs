@@ -16,14 +16,16 @@ async-net = "1.6.1"
 async-stream = "0.3.2"
 dashmap = "4.0.2"
 futures = "0.3.17"
-log = "0.4.14"
 ql2 = "2.1.1"
 reql-macros = { version = "0.3.0", path = "../macros" }
 reql-types = { version = "0.2.0", path = "../types" }
 scram = "0.6.0"
 serde = { version = "1.0.130", features = ["derive"] }
 serde_json = "1.0.68"
+tracing = "0.1.29"
 
 [dev-dependencies]
-env_logger = "0.9.0"
 tokio = { version = "1.12.0", features = ["macros", "rt-multi-thread"] }
+tracing-subscriber = "0.3.1"
+
+[features]

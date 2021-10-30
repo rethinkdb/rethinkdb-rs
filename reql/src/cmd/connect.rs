@@ -1,13 +1,12 @@
 //! Create a new connection to the database server
 
 use super::args::Args;
-use super::{debug, StaticString};
+use super::{bytes_to_string, StaticString};
 use crate::{err, InnerSession, Result, Session};
 use async_net::{AsyncToSocketAddrs, TcpStream};
 use dashmap::DashMap;
 use futures::io::{AsyncReadExt, AsyncWriteExt};
 use futures::lock::Mutex;
-use log::trace;
 use ql2::version_dummy::Version;
 use reql_macros::CommandOptions;
 use scram::client::{ScramClient, ServerFinal, ServerFirst};
@@ -16,6 +15,7 @@ use std::borrow::Cow;
 use std::net::SocketAddr;
 use std::sync::atomic::{AtomicBool, AtomicU64};
 use std::sync::Arc;
+use tracing::trace;
 
 const BUF_SIZE: usize = 1024;
 const NULL_BYTE: u8 = b'\0';
@@ -137,7 +137,7 @@ async fn handshake(mut stream: TcpStream, opts: &Options) -> Result<TcpStream> {
     trace!("receiving message(s) from RethinkDB");
     stream.read(&mut buf).await?; // message 2
     let (len, resp) = bytes(&buf, 0);
-    trace!("received server info; info: {}", debug(resp));
+    trace!("received server info; info: {}", bytes_to_string(resp));
     ServerInfo::validate(resp)?;
 
     let offset = len + 1;
@@ -198,7 +198,7 @@ impl ServerInfo<'_> {
     fn validate(resp: &[u8]) -> Result<()> {
         let info = serde_json::from_slice::<ServerInfo>(resp)?;
         if !info.success {
-            return Err(err::Runtime::Internal(debug(resp)).into());
+            return Err(err::Runtime::Internal(bytes_to_string(resp)).into());
         }
         #[allow(clippy::absurd_extreme_comparisons)]
         if PROTOCOL_VERSION < info.min_protocol_version
@@ -272,7 +272,7 @@ impl AuthResponse {
                     return Err(err::Driver::Auth(msg).into());
                 }
             }
-            return Err(err::Runtime::Internal(debug(resp)).into());
+            return Err(err::Runtime::Internal(bytes_to_string(resp)).into());
         }
         Ok(info)
     }

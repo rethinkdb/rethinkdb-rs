@@ -6,7 +6,7 @@ use std::time::Instant;
 
 #[tokio::main]
 async fn main() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let manager = SessionManager::new(Options::new());
     tokio::spawn(manager.discover_hosts());

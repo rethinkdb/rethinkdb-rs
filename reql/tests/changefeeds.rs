@@ -4,7 +4,7 @@ use serde_json::Value;
 
 #[tokio::test]
 async fn changefeeds_should_use_dedicated_connections() {
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     match changefeeds().await.unwrap_err() {
         Error::Driver(Driver::ConnectionLocked) => {}

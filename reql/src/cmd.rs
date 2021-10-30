@@ -232,7 +232,8 @@ impl StaticString for &Cow<'static, str> {
     }
 }
 
-fn debug(bytes: &[u8]) -> String {
+// for debug purposes only
+fn bytes_to_string(bytes: &[u8]) -> String {
     if let Ok(string) = str::from_utf8(bytes) {
         return string.to_owned();
     }
@@ -496,7 +497,6 @@ impl<'a> Command {
     {
         arg.arg().into_cmd().with_parent(self)
     }
-
 
     /// Limits the result set to the given amount.
     ///

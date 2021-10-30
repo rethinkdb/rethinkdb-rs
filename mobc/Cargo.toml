@@ -19,6 +19,6 @@ async-std = ["mobc/async-std"]
 blocking = "1.0.2"
 futures = "0.3.17"
 futures-timer = { version = "3.0.2", default-features = false }
-log = "0.4.14"
 mobc = { version = "0.7.3", default-features = false }
 reql = { version = "^0.10.3-alpha.0", path = "../reql" }
+tracing = "0.1.29"

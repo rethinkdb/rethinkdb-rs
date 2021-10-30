@@ -72,7 +72,6 @@ use cmd::StaticString;
 use dashmap::DashMap;
 use futures::channel::mpsc::{self, UnboundedReceiver, UnboundedSender};
 use futures::lock::Mutex;
-use log::trace;
 use proto::{Payload, Query};
 use ql2::query::QueryType;
 use ql2::response::ResponseType;
@@ -82,6 +81,7 @@ use std::borrow::Cow;
 use std::ops::Drop;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
+use tracing::trace;
 use types::ServerInfo;
 
 #[doc(hidden)]

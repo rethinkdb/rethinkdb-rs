@@ -2,7 +2,6 @@ use blocking::unblock;
 use futures::lock::Mutex;
 use futures::{Future, TryStreamExt};
 use futures_timer::Delay;
-use log::trace;
 use mobc::{async_trait, Manager};
 use reql::cmd::connect::Options;
 use reql::cmd::run::{self, Arg};
@@ -14,6 +13,7 @@ use std::net::{IpAddr, TcpStream};
 use std::ops::Deref;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
+use tracing::trace;
 
 pub type Pool = mobc::Pool<SessionManager>;
 
