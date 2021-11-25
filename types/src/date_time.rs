@@ -37,9 +37,7 @@ impl<'de> Deserialize<'de> for DateTime {
         };
         let (secs, msecs) = match time.epoch_time.split_once('.') {
             Some(parts) => parts,
-            None => {
-                return Err(de::Error::custom("invalid epoch time"));
-            }
+            None => (time.epoch_time.as_str(), "0"),
         };
         let secs = match secs.parse::<i128>() {
             Ok(secs) => match secs.checked_mul(NANOS_PER_SEC) {
@@ -164,8 +162,24 @@ mod test {
     use time::macros::datetime;
 
     #[test]
-    fn date_time() {
+    fn with_milliseconds() {
         let dt = DateTime(datetime!(2042-10-28 17:53:47.060 +1:30));
+        let serialized = serde_json::to_string(&dt).unwrap();
+        let parsed = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(dt, parsed);
+    }
+
+    #[test]
+    fn with_seconds() {
+        let dt = DateTime(datetime!(2042-10-28 17:53:47 +1:30));
+        let serialized = serde_json::to_string(&dt).unwrap();
+        let parsed = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(dt, parsed);
+    }
+
+    #[test]
+    fn with_minutes() {
+        let dt = DateTime(datetime!(2042-10-28 17:53 +1:30));
         let serialized = serde_json::to_string(&dt).unwrap();
         let parsed = serde_json::from_str(&serialized).unwrap();
         assert_eq!(dt, parsed);
