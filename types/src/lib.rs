@@ -6,11 +6,23 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::net::IpAddr;
+use time::OffsetDateTime;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
-#[non_exhaustive]
-pub struct DateTime(pub chrono::DateTime<chrono::Utc>);
+pub struct DateTime(OffsetDateTime);
+
+impl From<OffsetDateTime> for DateTime {
+    fn from(dt: OffsetDateTime) -> Self {
+        Self(dt)
+    }
+}
+
+impl From<DateTime> for OffsetDateTime {
+    fn from(DateTime(dt): DateTime) -> Self {
+        dt
+    }
+}
 
 /// Status returned by a write command
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -135,15 +147,6 @@ pub struct Change<O, N> {
     pub old_offset: Option<usize>,
     pub new_offset: Option<usize>,
     pub state: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[non_exhaustive]
-struct Time {
-    #[serde(rename = "$reql_type$")]
-    reql_type: String,
-    epoch_time: f64,
-    timezone: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
