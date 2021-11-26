@@ -80,7 +80,7 @@ impl<'de> Deserialize<'de> for DateTime {
             }
         };
         let dt = match OffsetDateTime::from_unix_timestamp_nanos(timestamp) {
-            Ok(date_time) => date_time.replace_offset(offset),
+            Ok(date_time) => date_time.to_offset(offset),
             Err(error) => {
                 return Err(de::Error::custom(error));
             }
@@ -96,18 +96,6 @@ impl Serialize for DateTime {
     {
         let dt = &self.0;
         let offset = dt.offset();
-        let epoch_time = {
-            let seconds = match dt
-                .unix_timestamp()
-                .checked_add(offset.whole_seconds() as i64)
-            {
-                Some(secs) => secs,
-                None => {
-                    return Err(ser::Error::custom("timestamp addition overflow"));
-                }
-            };
-            format!("{}.{:03}", seconds, dt.millisecond())
-        };
         let timezone = {
             let (hours, minutes, _) = offset.as_hms();
             format!(
@@ -119,7 +107,7 @@ impl Serialize for DateTime {
         };
         let time = Time {
             reql_type: "TIME".to_owned(),
-            epoch_time,
+            epoch_time: format!("{}.{:03}", dt.unix_timestamp(), dt.millisecond()),
             timezone,
         };
         time.serialize(serializer)
