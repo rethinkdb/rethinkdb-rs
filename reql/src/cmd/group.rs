@@ -10,3 +10,12 @@ impl Arg for Command {
         Self::new(TermType::Group).with_arg(self).into_arg()
     }
 }
+
+impl<T> Arg for T
+where
+    T: Into<String>,
+{
+    fn arg(self) -> cmd::Arg<()> {
+        Command::from_json(self.into()).arg()
+    }
+}

@@ -22,6 +22,7 @@ const TOKEN_SIZE: usize = 8;
 const HEADER_SIZE: usize = DATA_SIZE + TOKEN_SIZE;
 
 #[derive(Deserialize, Debug)]
+#[allow(dead_code)]
 pub(crate) struct Response {
     t: i32,
     e: Option<i32>,
