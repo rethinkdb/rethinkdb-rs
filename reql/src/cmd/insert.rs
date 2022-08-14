@@ -1,5 +1,5 @@
 use super::args::Args;
-use crate::cmd::{Durability, ReturnChanges};
+use crate::cmd::{Conflict, Durability, ReturnChanges};
 use crate::{cmd, Command};
 use ql2::term::TermType;
 use reql_macros::CommandOptions;
@@ -13,6 +13,8 @@ pub struct Options {
     pub durability: Option<Durability>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_changes: Option<ReturnChanges>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub conflict: Option<Conflict>,
 }
 
 pub trait Arg {

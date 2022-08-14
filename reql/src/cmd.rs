@@ -201,6 +201,14 @@ pub enum Durability {
 
 #[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[serde(rename_all = "lowercase")]
+pub enum Conflict {
+    Replace,
+    Update,
+    Error,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[serde(rename_all = "lowercase")]
 pub enum ReadMode {
     Single,
     Majority,
