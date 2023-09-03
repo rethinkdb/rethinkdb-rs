@@ -47,9 +47,8 @@ where
     R: Into<Command>,
 {
     fn arg(self) -> cmd::Arg<Options> {
-        let Args((name, query)) = self;
-        let func = Func::row(query);
-        Args((name, func)).arg()
+        let Args((name, func)) = self;
+        name.arg().with_arg(func)
     }
 }
 
@@ -79,8 +78,7 @@ where
     R: Into<Command>,
 {
     fn arg(self) -> cmd::Arg<Options> {
-        let Args((name, query, opts)) = self;
-        let Func(func) = Func::row(query);
+        let Args((name, func, opts)) = self;
         name.arg().with_arg(func).with_opts(opts)
     }
 }
