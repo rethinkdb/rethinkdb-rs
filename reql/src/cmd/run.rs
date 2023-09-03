@@ -151,7 +151,23 @@ where
             let (response_type, resp) = conn.request(&payload, noreply).await?;
             trace!("yielding response; token: {}", conn.token);
             match response_type {
-                ResponseType::SuccessAtom | ResponseType::SuccessSequence | ResponseType::ServerInfo => {
+                ResponseType::SuccessAtom => {
+                    // If response is array then will try to flat it
+                    // [[1, 2, 3]] => [1, 2, 3]
+                    let atom_val = if let Value::Array(arr) = resp.r {
+                        match &arr[0] {
+                            Value::Array(inner_arr) => Value::Array(inner_arr.clone()),
+                            _ => Value::Array(arr),
+                        }
+                    } else {
+                        resp.r
+                    };
+                    for val in serde_json::from_value::<Vec<T>>(atom_val)? {
+                        yield val;
+                    }
+                    break;
+                },
+                ResponseType::SuccessSequence | ResponseType::ServerInfo => {
                     for val in serde_json::from_value::<Vec<T>>(resp.r)? {
                         yield val;
                     }
